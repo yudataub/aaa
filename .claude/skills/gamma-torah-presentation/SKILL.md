@@ -340,6 +340,43 @@ allowed-tools: "Read, mcp__Gamma__generate, mcp__Gamma__generate_from_template, 
 5. **הזכר למשתמש במפורש**: גם בבנייה ישירה, יש לעבור על כל תמונה שנוצרה ולוודא צניעות לפני
    השימוש בפועל בכיתה — לא לסמוך אוטומטית על הפלט.
 
+### הגדרות תמונה — לקחים מתקלות אמיתיות ⚠️
+
+**א. `imageOptions.stylePreset` חייב להיות `"custom"`.**
+רק אז `imageOptions.style` נקרא בכלל. אם מעבירים preset בעל שם (`illustration`,
+`photorealistic` וכו') — גמה **מתעלמת לחלוטין** מ-`style` וזורקת את כל תיאור הסגנון
+שכתבת. זו תקלה שקרתה בפועל.
+
+**ב. דגם ברירת המחדל: `flux-2-klein`** — זול ואיכותי (~5 קרדיטים לשקופית), נבדק ואושר
+על ידי המשתמש כתוצאה מעולה. חלופות איכותיות יותר ויקרות משמעותית:
+`gemini-3-pro-image` (~1000 קרדיטים למצגת), `gemini-3.1-flash-image`, `flux-2-pro`.
+
+**ג. סגנון מומלץ כברירת מחדל** (ציור ריאליסטי-פיינטרלי עשיר, לא וקטור שטוח / קריקטורה):
+```
+stylePreset: "custom"
+model: "flux-2-klein"
+style: "Richly rendered near-photorealistic painterly digital artwork in the style of a
+premium illustrated biblical storybook. Highly detailed lifelike human faces with real skin
+texture, expressive eyes, individual beard and hair strands. Realistic woven wool and linen
+fabric with visible weave and natural folds. Warm cinematic golden-hour lighting with soft
+god rays, atmospheric haze and gentle depth of field. Ancient Judean landscape: olive groves,
+terraced stone hillsides, wildflowers, dusty paths. Deep saturated natural earth tones.
+Painterly brushwork over photoreal detail, luminous and reverent, no flat vector shapes,
+no cartoon simplification, no line art. Modest full-length biblical clothing covering arms
+and ankles, head coverings and kippot for all men, married women with hair modestly covered,
+no exposed skin, dignified expressions, family-friendly and appropriate for children."
+```
+
+**ד. בדוק תמיד את שדה ה-`warnings` בתשובת `generate`.** אם גמה מדווחת שפרמטר הוזנח
+(ignored) — עצור, תקן את הקריאה והרץ מחדש. אל תמשיך הלאה עם אזהרה פתוחה.
+
+**ה. הוראות workspace עלולות לדרוס אותך.** אם ב-workspace של המשתמש שמורה הוראה שמכריחה
+סגנון איור לדמויות אדם (`IMAGE STYLE REQUIREMENT ... photorealistic images of humans are
+NOT allowed`) — היא תדרוס את בקשת הריאליזם. נטרל אותה דרך `additionalInstructions`,
+והודע למשתמש לבדוק את Gamma → Settings → Custom Instructions.
+
+---
+
 אם המשתמש לא ציין העדפה מפורשת — ברירת המחדל היא **העתקה-הדבקה ידנית** (המסלול הקיים),
 מכיוון שהיא נותנת למורה שליטה מלאה ובדיקה ידנית של כל תמונה לפני שהיא נכנסת למצגת.
 
