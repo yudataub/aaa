@@ -7,13 +7,16 @@
 - **טקסט עברי דקורטיבי בלבד** (על מגילה עתיקה, שלט, כתובת על אבן, כרזה) — מותר לבקש אותו בפרומפט אם הוא תורם לאותנטיות ההיסטורית של הסצנה, ובתנאי שהוא לא הטקסט שהתלמיד אמור לקרוא.
 - אם לא בטוחים / לא נדרש טקסט בתמונה כלל — השתמש ב-`blank scroll` / `empty parchment` / `blank stone tablet` כברירת מחדל הבטוחה ביותר.
 
-### 2. צניעות מובנית — כלול תמיד
+### 2. צניעות מובנית — כלול תמיד (גם בסגנון איור וגם בסגנון ריאליסטי/פוטוריאליסטי)
 ```
 modest biblical clothing, fully covered,
 long sleeves and full-length garments,
-kippot/head coverings for all men and boys,
+kippah on head for every male figure (mandatory, no exceptions),
+visible tzitzit strings where appropriate,
 no exposed skin, dignified expressions
 ```
+תמונות ריאליסטיות/פוטוריאליסטיות של בני אדם **מותרות** בסקיל הזה (לא רק סגנון איור) —
+בתנאי שכל דמות זכר עם כיפה על הראש, ראה גם הערה ב-SKILL.md ("הבהרת מדיניות תמונות אנוש").
 
 ### 3. גיוון זוויות — לעולם לא שתי שקופיות עוקבות זהות
 | שקופית | זווית |
