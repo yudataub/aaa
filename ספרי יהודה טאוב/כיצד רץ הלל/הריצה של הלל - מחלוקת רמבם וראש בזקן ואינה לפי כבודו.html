@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כבוד הבריות דוחה כבוד הנשיאות – ספר עיוני</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;600;700&display=swap');
+
+  :root{
+    --bg:#faf3e6;
+    --ink:#2e2a25;
+    --gold:#c9a15a;
+    --card:#f2e8d3;
+    --c1:#6b4e2e; /* צבע ברירת מחדל */
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    font-family:'Frank Ruhl Libre',serif;
+    color:var(--ink);
+  }
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  /* ===== דף בית ===== */
+  #home{max-width:900px;margin:0 auto;padding:50px 30px 80px;}
+  .hero{text-align:center;margin-bottom:40px;}
+  .hero h1{font-size:36px;color:#4a3c28;margin-bottom:10px;}
+  .hero p{font-size:19px;color:#5a4a35;}
+  #search{
+    display:block;width:100%;max-width:520px;margin:20px auto 30px;
+    padding:14px 18px;font-size:18px;border-radius:30px;border:2px solid var(--gold);
+    background:#fff8ec;font-family:inherit;color:var(--ink);
+  }
+  #topics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;}
+  .topic-card{
+    --c:var(--c1);
+    background:var(--card);border-radius:18px;padding:26px 20px;text-align:center;
+    cursor:pointer;border:3px solid var(--c);transition:transform .2s;
+  }
+  .topic-card:hover{transform:translateY(-4px);}
+  .topic-card .emo{font-size:44px;display:block;margin-bottom:10px;}
+  .topic-card h3{margin:6px 0;color:var(--c);font-size:22px;}
+  .topic-card .cnt{font-size:15px;color:#7a6a4e;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px;}
+  .chip{
+    background:#fff;border:1px solid var(--gold);border-radius:16px;
+    padding:5px 12px;font-size:14px;cursor:pointer;color:var(--c1);
+  }
+  .chip:hover{background:var(--gold);color:#fff;}
+
+  /* ===== קורא ===== */
+  #reader{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:50;}
+  #reader.active{display:flex;}
+  .reader-top{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 20px;border-bottom:1px solid var(--gold);
+  }
+  .btn{
+    background:var(--card);border:2px solid var(--c1,var(--gold));border-radius:10px;
+    padding:8px 16px;font-size:16px;font-family:inherit;cursor:pointer;color:var(--ink);
+  }
+  .btn:hover{background:var(--gold);color:#fff;}
+  .progress-wrap{flex:1;margin:0 20px;background:#e9dcc0;border-radius:10px;height:8px;overflow:hidden;}
+  .progress-bar{height:100%;background:var(--c1);width:0%;transition:width .25s;}
+  .page-count{font-size:15px;color:#7a6a4e;white-space:nowrap;}
+
+  .pages-viewport{flex:1;position:relative;overflow:hidden;}
+  .page{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    padding:40px 60px;opacity:0;transform:translateX(20px);transition:opacity .3s, transform .3s;
+    pointer-events:none;
+  }
+  .page.current{opacity:1;transform:translateX(0);pointer-events:auto;}
+
+  .page-inner{max-width:800px;width:100%;}
+  .cover{text-align:center;}
+  .cover .big-emo{font-size:100px;}
+  .cover h2{font-size:34px;color:var(--c1);margin:14px 0;}
+  .cover p{font-size:18px;color:#5a4a35;margin-bottom:24px;}
+
+  .item-layout{display:flex;gap:36px;align-items:center;}
+  .item-visual{
+    flex:0 0 220px;height:220px;border-radius:16px;background:var(--card);
+    display:flex;align-items:center;justify-content:center;font-size:70px;
+    border:3px solid var(--c1);
+  }
+  .item-text{flex:1;}
+  .item-text h3{font-size:26px;color:var(--c1);margin-bottom:14px;}
+  .item-text p{font-size:20px;line-height:1.9;margin-bottom:16px;text-align:justify;}
+  .meta-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .meta-tag{font-size:13px;background:#fff;border:1px solid var(--gold);border-radius:10px;padding:3px 10px;color:#7a6a4e;}
+
+  @media (max-width:640px){
+    .item-layout{flex-direction:column;}
+    .item-visual{width:140px;height:140px;font-size:50px;}
+    .page{padding:20px;}
+  }
+
+  .nav-arrows{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 20px;border-top:1px solid var(--gold);
+  }
+  .arrow-btn{
+    background:var(--c1);color:#fff;border:none;border-radius:50%;
+    width:52px;height:52px;font-size:22px;cursor:pointer;
+  }
+  .arrow-btn:disabled{opacity:.3;cursor:default;}
+
+  /* TOC */
+  #toc-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;z-index:60;
+  }
+  #toc-overlay.active{display:block;}
+  #toc-panel{
+    position:absolute;top:0;right:0;height:100%;width:300px;max-width:85vw;
+    background:var(--bg);padding:24px;overflow-y:auto;box-shadow:-4px 0 20px rgba(0,0,0,.2);
+  }
+  #toc-panel h4{color:var(--c1);margin-top:0;}
+  .toc-item{
+    padding:10px 8px;border-bottom:1px solid #e9dcc0;cursor:pointer;font-size:16px;
+  }
+  .toc-item:hover{color:var(--c1);}
+
+  @media (prefers-reduced-motion: reduce){
+    .page{transition:none;}
+    .topic-card{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ נתוני התוכן ============ -->
+<script type="application/json" id="book-data">
+{
+  "topics": [
+    {
+      "id": "hillel",
+      "emoji": "🎭",
+      "name": "כבוד הבריות דוחה כבוד הנשיאות",
+      "color": "#6b4e2e",
+      "items": [
+        {
+          "emoji": "❓",
+          "title": "פרק א׳ – השאלה: כיצד ביזה הלל את כבוד הנשיאות?",
+          "desc": "מעשהו של הלל הזקן, שרץ בעצמו לפני סוסו של העני, מציב שאלה חריפה: תלמיד חכם, ובוודאי נשיא, אינו רשאי למחול על כבוד התורה שבו. כיצד אפוא ויתר הלל על כבודו הפומבי, עד כדי ריצה ברחובות כעבד?",
+          "meta": ["סוגיה", "כתובות סז ע\"ב"]
+        },
+        {
+          "emoji": "📖",
+          "title": "פרק ב׳ – שיטת הרמב\"ם: קיום המצווה הוא הכבוד הגדול ביותר",
+          "desc": "לפי דרך אחת, אין כאן ויתור על כבוד כלל. עשיית רצון ה' וקיום מצוותיו בשלמותן היא-היא הכבוד הנעלה ביותר שיכול אדם לזכות בו – ואין כבוד גדול מזה. מתוך הבנה זו, גם באבידה נאמר להלכה שמותר, ואף ראוי, להחזירה לבעליה לפנים משורת הדין, גם כשהדבר כרוך בפגיעה מסוימת בכבוד המחזיר, שכן קיום המצווה עצמו מכבד את המקיים אותה.",
+          "meta": ["שיטת הרמב\"ם", "לפנים משורת הדין"]
+        },
+        {
+          "emoji": "⚖️",
+          "title": "פרק ג׳ – שיטת הרא\"ש: אין להתיר החזרת אבידה לפנים משורת הדין",
+          "desc": "לעומת זאת, הרא\"ש חולק על עיקרון זה: אין להתיר לתלמיד חכם לוותר על כבודו ולפעול לפנים משורת הדין באופן שפוגע בכבוד התורה שבו, גם כשמדובר במצווה כמו השבת אבידה. לשיטתו, כבוד התורה עומד כערך עצמאי שאינו נדחה מחמת קיום מצווה נוספת. מכאן מתחדדת השאלה: אם כן, כיצד יסביר הרא\"ש את מעשה הלל, שרץ בעצמו ברחוב לפני העני?",
+          "meta": ["שיטת הרא\"ש", "קושיה"]
+        },
+        {
+          "emoji": "🛑",
+          "title": "פרק ד׳ – יישוב הרא\"ש: כבוד האדם כאן הוא פיקוח נפש",
+          "desc": "לפי הרא\"ש יש להעמיד את מעשה הלל לא כ'לפנים משורת הדין' רגיל, אלא כמקום של ספק פיקוח נפש. אדם שהיה רגיל בכבוד ואיבד אותו פתאום, עלול לחוש בושה וכלימה עד כדי סכנת נפשות ממש. ההלכה קובעת שספק פיקוח נפש דוחה את התורה כולה – וממילא דוחה גם את כבוד הנשיאות. הלל לא ויתר על כבודו סתם; הוא פעל מתוך הכרעה הלכתית שהצלת נפש עומדת לפניו.",
+          "meta": ["פיקוח נפש", "יישוב הרא\"ש"]
+        },
+        {
+          "emoji": "📜",
+          "title": "פרק ה׳ – המקור: שערי תשובה לרבינו יונה, שער ג׳ אות קיא",
+          "desc": "רבינו יונה מלמד שכלימה פומבית חמורה אף ממוות ממש: \"והמוציא שם רע... כי צער הכלימה מר ממות\". מכאן יסוד לדברי הרא\"ש: אם על הוצאת שם רע – עוון שגורם בושה – ענש הכתוב יותר מאשר על ניסיון להמית בעדי שקר, קל וחומר שבושה פומבית ממשית יכולה להיחשב לסכנת נפשות של ממש, המצדיקה דחיית כבוד תלמיד חכם ואף נשיא.",
+          "meta": ["שערי תשובה ג, קיא", "מקור"]
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<!-- ============ דף בית ============ -->
+<div id="home" class="screen active">
+  <div class="hero">
+    <h1>🕮 עיוני כבוד הבריות</h1>
+    <p>ספר דיגיטלי מתחלף – עיון בשאלת כבוד הנשיאות מול כבוד האדם</p>
+  </div>
+  <input id="search" type="text" placeholder="חיפוש נושא או פרק... 🔍">
+  <div id="topics"></div>
+</div>
+
+<!-- ============ קורא ============ -->
+<div id="reader" class="screen">
+  <div class="reader-top">
+    <button class="btn" id="home-btn">🏠 חזרה לבית</button>
+    <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+    <span class="page-count" id="page-count">1 / 1</span>
+    <button class="btn" id="toc-btn">☰</button>
+  </div>
+  <div class="pages-viewport" id="pages-viewport"></div>
+  <div class="nav-arrows">
+    <button class="arrow-btn" id="next-btn">→</button>
+    <span></span>
+    <button class="arrow-btn" id="prev-btn">←</button>
+  </div>
+</div>
+
+<!-- TOC -->
+<div id="toc-overlay">
+  <div id="toc-panel">
+    <h4>תוכן העניינים</h4>
+    <div id="toc-list"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const data = JSON.parse(document.getElementById('book-data').textContent);
+  const homeScreen = document.getElementById('home');
+  const readerScreen = document.getElementById('reader');
+  const topicsEl = document.getElementById('topics');
+  const searchEl = document.getElementById('search');
+  const pagesViewport = document.getElementById('pages-viewport');
+  const progressBar = document.getElementById('progress-bar');
+  const pageCount = document.getElementById('page-count');
+  const tocOverlay = document.getElementById('toc-overlay');
+  const tocList = document.getElementById('toc-list');
+
+  let currentTopic = null;
+  let currentPageIndex = 0;
+  let pagesArr = []; // {type:'cover'|'item', data}
+
+  function renderTopics(filter){
+    filter = (filter||'').trim().toLowerCase();
+    topicsEl.innerHTML = '';
+    data.topics.forEach(topic=>{
+      const nameMatch = topic.name.toLowerCase().includes(filter);
+      const matchedItems = topic.items.filter(it =>
+        (it.title+ ' ' + it.desc).toLowerCase().includes(filter)
+      );
+      if(filter && !nameMatch && matchedItems.length===0) return;
+
+      const card = document.createElement('div');
+      card.className = 'topic-card';
+      card.style.setProperty('--c', topic.color);
+      card.innerHTML = `
+        <span class="emo">${topic.emoji}</span>
+        <h3>${topic.name}</h3>
+        <div class="cnt">${topic.items.length} פרקים</div>
+      `;
+      card.addEventListener('click', ()=> openReader(topic, 0));
+
+      if(filter && matchedItems.length){
+        const chips = document.createElement('div');
+        chips.className='chips';
+        matchedItems.forEach(it=>{
+          const idx = topic.items.indexOf(it);
+          const chip = document.createElement('span');
+          chip.className='chip';
+          chip.textContent = it.title.length>28 ? it.title.slice(0,28)+'…' : it.title;
+          chip.addEventListener('click', (e)=>{
+            e.stopPropagation();
+            openReader(topic, idx+1); // +1 בגלל עמוד השער
+          });
+          chips.appendChild(chip);
+        });
+        card.appendChild(chips);
+      }
+      topicsEl.appendChild(card);
+    });
+    if(topicsEl.children.length===0){
+      topicsEl.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#7a6a4e;">לא נמצאו תוצאות 🔍</p>';
+    }
+  }
+
+  function buildPages(topic){
+    pagesArr = [{type:'cover', topic}];
+    topic.items.forEach(it => pagesArr.push({type:'item', topic, item:it}));
+  }
+
+  function renderReader(){
+    pagesViewport.innerHTML = '';
+    pagesArr.forEach((p, idx)=>{
+      const pageEl = document.createElement('div');
+      pageEl.className = 'page';
+      pageEl.dataset.index = idx;
+      if(p.type==='cover'){
+        pageEl.innerHTML = `
+          <div class="page-inner cover">
+            <div class="big-emo">${p.topic.emoji}</div>
+            <h2>${p.topic.name}</h2>
+            <p>${p.topic.items.length} פרקים</p>
+            <button class="btn" id="start-btn">התחילו לדפדף ✨</button>
+          </div>`;
+      } else {
+        pageEl.innerHTML = `
+          <div class="page-inner">
+            <div class="item-layout">
+              <div class="item-visual">${p.item.emoji}</div>
+              <div class="item-text">
+                <h3>${p.item.title}</h3>
+                <p>${p.item.desc}</p>
+                <div class="meta-tags">
+                  ${p.item.meta.map(m=>`<span class="meta-tag">${m}</span>`).join('')}
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }
+      pagesViewport.appendChild(pageEl);
+    });
+    const startBtn = document.getElementById('start-btn');
+    if(startBtn) startBtn.addEventListener('click', ()=> goToPage(1));
+  }
+
+  function goToPage(idx){
+    if(idx<0) idx=0;
+    if(idx>pagesArr.length-1) idx=pagesArr.length-1;
+    currentPageIndex = idx;
+    const allPages = pagesViewport.querySelectorAll('.page');
+    allPages.forEach((el,i)=> el.classList.toggle('current', i===idx));
+    progressBar.style.width = ((idx+1)/pagesArr.length*100)+'%';
+    pageCount.textContent = (idx+1)+' / '+pagesArr.length;
+    document.getElementById('prev-btn').disabled = idx===0;
+    document.getElementById('next-btn').disabled = idx===pagesArr.length-1;
+  }
+
+  function openReader(topic, startIndex){
+    currentTopic = topic;
+    buildPages(topic);
+    document.documentElement.style.setProperty('--c1', topic.color);
+    renderReader();
+    goToPage(startIndex||0);
+    homeScreen.classList.remove('active');
+    readerScreen.classList.add('active');
+    buildToc(topic);
+    document.body.style.overflow='hidden';
+  }
+
+  function closeReader(){
+    readerScreen.classList.remove('active');
+    homeScreen.classList.add('active');
+    document.body.style.overflow='';
+  }
+
+  function buildToc(topic){
+    tocList.innerHTML = '';
+    const coverItem = document.createElement('div');
+    coverItem.className='toc-item';
+    coverItem.textContent = '🔖 שער הנושא';
+    coverItem.addEventListener('click', ()=>{ goToPage(0); tocOverlay.classList.remove('active'); });
+    tocList.appendChild(coverItem);
+
+    topic.items.forEach((it, i)=>{
+      const el = document.createElement('div');
+      el.className='toc-item';
+      el.textContent = it.emoji+' '+it.title;
+      el.addEventListener('click', ()=>{ goToPage(i+1); tocOverlay.classList.remove('active'); });
+      tocList.appendChild(el);
+    });
+  }
+
+  // ===== אירועים =====
+  searchEl.addEventListener('input', e=> renderTopics(e.target.value));
+  document.getElementById('home-btn').addEventListener('click', closeReader);
+  document.getElementById('next-btn').addEventListener('click', ()=> goToPage(currentPageIndex+1));
+  document.getElementById('prev-btn').addEventListener('click', ()=> goToPage(currentPageIndex-1));
+  document.getElementById('toc-btn').addEventListener('click', ()=> tocOverlay.classList.add('active'));
+  tocOverlay.addEventListener('click', (e)=>{ if(e.target===tocOverlay) tocOverlay.classList.remove('active'); });
+
+  document.addEventListener('keydown', (e)=>{
+    if(!readerScreen.classList.contains('active')) return;
+    if(e.key==='ArrowRight') goToPage(currentPageIndex-1); // RTL: ימינה = אחורה
+    else if(e.key==='ArrowLeft') goToPage(currentPageIndex+1);
+    else if(e.key==='Home') goToPage(0);
+    else if(e.key==='End') goToPage(pagesArr.length-1);
+    else if(e.key==='Escape'){
+      if(tocOverlay.classList.contains('active')) tocOverlay.classList.remove('active');
+      else closeReader();
+    }
+  });
+
+  // swipe
+  let touchStartX = null;
+  pagesViewport.addEventListener('touchstart', e=>{ touchStartX = e.touches[0].clientX; });
+  pagesViewport.addEventListener('touchend', e=>{
+    if(touchStartX===null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if(Math.abs(dx) > 40){
+      if(dx>0) goToPage(currentPageIndex-1); // גרירה ימינה
+      else goToPage(currentPageIndex+1);
+    }
+    touchStartX = null;
+  });
+
+  renderTopics('');
+})();
+</script>
+</body>
+</html>
