@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""מוסיף לראש כל סיפור את מקורו בחז"ל, עם ציטוט מלא מתוך ספריא.
+"""מוסיף לראש כל סיפור את מקורו בחז"ל, עם ציטוט מלא.
 
 המקורות שמורים ב‑`scripts/sources.json` — מפתח לכל סיפור, ובו מראה המקום
-בעברית, קישור לספריא, והציטוט עצמו כפי שנשלף משם. הסקריפט אינו ממציא
+בעברית, קישור למקור, והציטוט עצמו. הציטוטים נשלפו משלושה מקומות: ספריא
+(רוב הבבלי, המשנה ומדרשי רבה), ויקיטקסט (הירושלמי והפסיקתא, שספריא אינה
+מחזיקה בחלוקה שהספר מפנה אליה), וספר האגדה שבפרויקט בן־יהודה (מקומות
+שבהם המדרש המקורי אינו זמין דיגיטלית, ושם מצוין הדבר במפורש בתווית). הסקריפט אינו ממציא
 מקורות ואינו פונה לרשת: הוא מזריק לספר את מה שכבר אומת ונשמר בקובץ.
 
 הרצה חוזרת מחליפה בלוקים קיימים במקום לשכפל אותם.
@@ -43,8 +46,20 @@ BLOCK = ('<div class="source-box">\n'
          '<div class="source-ref">📜 הַמָּקוֹר: {label}</div>\n'
          '<blockquote class="source-quote">{text}</blockquote>\n'
          '<div class="source-link"><a href="{url}" target="_blank" rel="noopener">'
-         'לַמָּקוֹר הַמָּלֵא בְּסֶפָרְיָא ↗</a></div>\n'
+         'לַמָּקוֹר הַמָּלֵא {site} ↗</a></div>\n'
          '</div>\n')
+
+SITES = [('sefaria.org', 'בְּסֶפָרְיָא'),
+         ('wikisource.org', 'בְּוִיקִיטֶקְסְט'),
+         ('benyehuda.org', 'בְּפְרוֹיֶקְט בֶּן־יְהוּדָה')]
+
+
+def site_of(url):
+    for host, name in SITES:
+        if host in url:
+            return name
+    return 'בַּמְּקוֹר'
+
 
 EXISTING = re.compile(r'<div class="source-box">.*?</div>\n</div>\n', re.S)
 
@@ -76,7 +91,8 @@ def main():
             added += 1
         block = BLOCK.format(label=html.escape(s['label']),
                              text=html.escape(s['text']),
-                             url=html.escape(s['url'], quote=True))
+                             url=html.escape(s['url'], quote=True),
+                             site=site_of(s['url']))
         doc = doc[:j] + '\n' + block + doc[j:]
 
     print('בלוקי מקור: %d נוספו, %d הוחלפו. סיפורים ללא מקור: %d.'
