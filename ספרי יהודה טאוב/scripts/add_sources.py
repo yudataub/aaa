@@ -74,29 +74,41 @@ def main():
         if '.source-box' not in doc:
             sys.exit('לא נמצא מקום לשתול בו את ה‑CSS')
 
-    added = replaced = 0
-    for sid, s in src.items():
-        head = '<article class="story-card" id="story-%s"' % sid
-        i = doc.find(head)
-        if i < 0:
-            sys.exit('הסיפור story-%s אינו בספר' % sid)
-        j = doc.index('<div class="story-body">', i) + len('<div class="story-body">')
+    # מעבר אחד על כל כרטיסי הסיפורים: מסירים בלוק ישן אם יש, ושותלים חדש
+    # אם לסיפור הזה יש מקור. סיפור שהמקור שלו הוסר מ‑sources.json מאבד גם
+    # את הבלוק שלו, כדי שלא יישאר בספר ציטוט שכבר איננו במפה.
+    out, pos = [], 0
+    added = replaced = orphan = 0
+    seen = set()
+    for m in re.finditer(r'<article class="story-card" id="story-(\d+)"', doc):
+        sid = m.group(1)
+        seen.add(sid)
+        j = doc.index('<div class="story-body">', m.start()) + len('<div class="story-body">')
+        out.append(doc[pos:j])
         rest = doc[j:]
-        m = EXISTING.match(rest.lstrip('\n'))
-        if m:
-            lead = len(rest) - len(rest.lstrip('\n'))
-            doc = doc[:j + lead] + doc[j + lead + m.end():]
-            replaced += 1
-        else:
-            added += 1
-        block = BLOCK.format(label=html.escape(s['label']),
-                             text=html.escape(s['text']),
-                             url=html.escape(s['url'], quote=True),
-                             site=site_of(s['url']))
-        doc = doc[:j] + '\n' + block + doc[j:]
+        lead = len(rest) - len(rest.lstrip('\n'))
+        old = EXISTING.match(rest.lstrip('\n'))
+        pos = j + lead + old.end() if old else j
+        if sid in src:
+            s = src[sid]
+            out.append('\n' + BLOCK.format(label=html.escape(s['label']),
+                                           text=html.escape(s['text']),
+                                           url=html.escape(s['url'], quote=True),
+                                           site=site_of(s['url'])))
+            replaced += 1 if old else 0
+            added += 0 if old else 1
+        elif old:
+            orphan += 1
+    out.append(doc[pos:])
+    doc = ''.join(out)
 
-    print('בלוקי מקור: %d נוספו, %d הוחלפו. סיפורים ללא מקור: %d.'
-          % (added, replaced, doc.count('<article class="story-card"') - len(src)))
+    missing = sorted(set(src) - seen, key=int)
+    if missing:
+        sys.exit('סיפורים שב‑sources.json ואינם בספר: %s' % ', '.join(missing))
+
+    print('בלוקי מקור: %d נוספו, %d הוחלפו, %d יתומים הוסרו. '
+          'סיפורים ללא מקור: %d.'
+          % (added, replaced, orphan, len(seen) - len(src)))
     if check:
         print('(--check: הקובץ לא נכתב)')
         return
