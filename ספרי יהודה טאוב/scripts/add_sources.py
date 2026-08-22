@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """מוסיף לראש כל סיפור את מקורו בחז"ל, עם ציטוט מלא.
 
-המקורות שמורים ב‑`scripts/sources.json` — מפתח לכל סיפור, ובו מראה המקום
+המקורות שמורים ב‑`scripts/sources.json` (רשומה אחת לסיפור, ובה מקור
+אחד או רשימה של כמה) — מפתח לכל סיפור, ובו מראה המקום
 בעברית, קישור למקור, והציטוט עצמו. הציטוטים נשלפו משלושה מקומות: ספריא
 (רוב הבבלי, המשנה ומדרשי רבה), ויקיטקסט (הירושלמי והפסיקתא, שספריא אינה
 מחזיקה בחלוקה שהספר מפנה אליה), וספר האגדה שבפרויקט בן־יהודה (מקומות
@@ -42,23 +43,41 @@ CSS = """
 @media print { .source-box { break-inside: avoid; } .source-link { display: none; } }
 """
 
-BLOCK = ('<div class="source-box">\n'
-         '<div class="source-ref">📜 הַמָּקוֹר: {label}</div>\n'
-         '<blockquote class="source-quote">{text}</blockquote>\n'
-         '<div class="source-link"><a href="{url}" target="_blank" rel="noopener">'
-         'לַמָּקוֹר הַמָּלֵא {site} ↗</a></div>\n'
-         '</div>\n')
+BLOCK_OPEN = '<div class="source-box">\n'
+BLOCK_ONE = ('<div class="source-ref">📜 {tag}{label}</div>\n'
+             '<blockquote class="source-quote">{text}</blockquote>\n'
+             '<div class="source-link"><a href="{url}" target="_blank" rel="noopener">'
+             'לַמָּקוֹר הַמָּלֵא בְּ{site} ↗</a></div>\n')
 
-SITES = [('sefaria.org', 'בְּסֶפָרְיָא'),
-         ('wikisource.org', 'בְּוִיקִיטֶקְסְט'),
-         ('benyehuda.org', 'בְּפְרוֹיֶקְט בֶּן־יְהוּדָה')]
+SITES = [('sefaria.org', 'סֶפָרְיָא'), ('wikisource.org', 'וִיקִיטֶקְסְט'),
+         ('benyehuda.org', 'פְּרוֹיֶקְט בֶּן־יְהוּדָה'),
+         ('toratemetfreeware.com', 'תּוֹרַת אֱמֶת'),
+         ('yudataub.github.io', 'מַאֲגַר הַסְּפָרִים')]
 
 
 def site_of(url):
     for host, name in SITES:
         if host in url:
             return name
-    return 'בַּמְּקוֹר'
+    return 'מְקוֹרוֹ'
+BLOCK_CLOSE = '</div>\n'
+
+
+def render(entry):
+    """בלוק אחד לסיפור, ובתוכו מקור אחד או כמה. סיפור שעיקרו במקום אחד
+       ואמרתו במקום אחר לא ייוצג נאמנה במקור יחיד."""
+    items = entry if isinstance(entry, list) else [entry]
+    out = [BLOCK_OPEN]
+    many = len(items) > 1
+    for i, s in enumerate(items, 1):
+        out.append(BLOCK_ONE.format(
+            tag=('הַמָּקוֹר %d: ' % i) if many else 'הַמָּקוֹר: ',
+            label=html.escape(s['label']),
+            text=html.escape(s['text']),
+            url=html.escape(s['url'], quote=True),
+            site=site_of(s['url'])))
+    out.append(BLOCK_CLOSE)
+    return ''.join(out)
 
 
 EXISTING = re.compile(r'<div class="source-box">.*?</div>\n</div>\n', re.S)
@@ -91,10 +110,7 @@ def main():
         pos = j + lead + old.end() if old else j
         if sid in src:
             s = src[sid]
-            out.append('\n' + BLOCK.format(label=html.escape(s['label']),
-                                           text=html.escape(s['text']),
-                                           url=html.escape(s['url'], quote=True),
-                                           site=site_of(s['url'])))
+            out.append('\n' + render(s))
             replaced += 1 if old else 0
             added += 0 if old else 1
         elif old:

@@ -141,6 +141,20 @@ def retitle(doc, sid, title, subtitle):
                   lambda x: x.group(1) + title + x.group(2), doc, count=1)
 
 
+def remove_story(doc, sid):
+    """מסיר סיפור מן הספר לחלוטין — כרטיס ופריט תוכן עניינים ומדד חיפוש.
+       שמור לשימוש נדיר: כשהתברר שאין לסיפור שום מקור בחז\"ל. מזהה הסיפור
+       שהוסר אינו מוקצה מחדש לעולם."""
+    doc, card = cut_card(doc, sid)
+    doc, item = cut_toc_item(doc, sid)
+    title = strip_tags(re.search(r'<h3 class="story-title">(.*?)</h3>', card, re.S).group(1))
+    m = re.search(r'const searchData = (\[.*?\]);\n', doc, re.S)
+    data = json.loads(m.group(1))
+    data = [d for d in data if d['id'] != 'story-%s' % sid]
+    doc = doc[:m.start(1)] + json.dumps(data, ensure_ascii=False) + doc[m.end(1):]
+    return doc, title
+
+
 def prune(doc):
     dropped = []
     while True:
@@ -249,6 +263,8 @@ def main():
     ap.add_argument('--move', action='append', default=[], help='"מספר|פרק-יעד"')
     ap.add_argument('--retitle', action='append', default=[],
                     help='"מספר|כותרת|כותרת-משנה"')
+    ap.add_argument('--remove', action='append', default=[],
+                    help='מספר סיפור להסרה סופית מן הספר')
     ap.add_argument('--prune', action='store_true', help='סגירת פרקים שהתרוקנו')
     ap.add_argument('--book', default=BOOK)
     a = ap.parse_args()
@@ -261,6 +277,9 @@ def main():
         sid, target = [x.strip() for x in spec.split('|')]
         doc, title = move_story(doc, sid, target)
         print('story-%s הועבר לפרק "%s".' % (sid, title))
+    for sid in a.remove:
+        doc, title = remove_story(doc, sid.strip())
+        print('story-%s ("%s") הוסר לצמיתות מן הספר.' % (sid.strip(), title))
     for spec in a.retitle:
         parts = [x.strip() for x in spec.split('|')]
         doc = retitle(doc, parts[0], parts[1], parts[2] if len(parts) > 2 else '')
