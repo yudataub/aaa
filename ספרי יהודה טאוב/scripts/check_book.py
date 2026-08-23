@@ -12,7 +12,7 @@
 import html, json, re, sys
 from html.parser import HTMLParser
 
-BOOK = 'gdolei_yisrael_ledorotam.html'
+BOOK = 'גדולי ישראל לדורותיהם.html'
 CATALOG = 'tzadikim_catalog_with_52_learning_games.html'
 VOID = {'meta', 'link', 'img', 'br', 'hr', 'input', 'source', 'area',
         'base', 'col', 'embed', 'param', 'track', 'wbr'}

@@ -17,7 +17,7 @@
 import html, json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BOOK = os.path.join(os.path.dirname(HERE), 'gdolei_yisrael_ledorotam.html')
+BOOK = os.path.join(os.path.dirname(HERE), 'גדולי ישראל לדורותיהם.html')
 DATA = os.path.join(HERE, 'sources.json')
 
 CSS = """
