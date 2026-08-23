@@ -10,7 +10,7 @@ import html, json, re, sys, collections, urllib.parse
 from html.parser import HTMLParser
 
 CATALOG = 'tzadikim_catalog_with_52_learning_games.html'
-BOOK = 'גדולי ישראל לדורותיהם.html'
+BOOK = 'gdolei_yisrael_ledorotam.html'
 BOOK_URL_TAIL = '%D7%9C%D7%93%D7%95%D7%A8%D7%95%D7%AA%D7%99%D7%94%D7%9D.html'
 VOID = {'meta', 'link', 'img', 'br', 'hr', 'input', 'source', 'area',
         'base', 'col', 'embed', 'param', 'track', 'wbr'}

@@ -17,7 +17,7 @@
 """
 import argparse, html, json, re, sys
 
-BOOK = 'גדולי ישראל לדורותיהם.html'
+BOOK = 'gdolei_yisrael_ledorotam.html'
 
 
 def plural(n):
