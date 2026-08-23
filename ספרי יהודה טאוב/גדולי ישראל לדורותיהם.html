@@ -110,6 +110,9 @@ body {
 }
 #searchResults .sr-item { padding: .5rem .8rem; cursor: pointer; font-size: .9rem; border-bottom: 1px solid #fce; }
 #searchResults .sr-item:hover { background: #ffe0ee; }
+#searchResults .sr-chapter { background: #fff6db; border-bottom: 2px solid var(--yellow); }
+#searchResults .sr-chapter:hover { background: #ffeeb0; }
+#searchResults .sr-chapter small { color: #8a6d00; }
 #searchResults mark { background: var(--yellow); border-radius: 3px; }
 
 .era-jump { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: 1rem; }
@@ -136,6 +139,11 @@ body {
 .toc-chapter.open .toc-arrow { transform: rotate(180deg); }
 .toc-stories { list-style: none; max-height: 0; overflow: hidden; transition: max-height .3s ease; background: #fff; }
 .toc-chapter.open .toc-stories { max-height: 3000px; padding: .3rem 0; }
+.toc-chapter.flash { animation: toc-flash 1s ease 2; }
+@keyframes toc-flash {
+  0%,100% { box-shadow: none; }
+  50%     { box-shadow: 0 0 0 4px var(--yellow); }
+}
 .toc-stories li {
   display: flex; align-items: center; justify-content: space-between; gap: .3rem;
   padding: .3rem .7rem; font-size: .8rem; line-height: 1.45; border-bottom: 1px solid #f0e8ff;
@@ -40085,6 +40093,19 @@ function toggleTocChapter(el) {
 // link, where the chapter holding that story is the one to open instead.
 if (!window.location.hash) document.querySelectorAll('.toc-chapter')[0]?.classList.add('open');
 
+// ── Story numbers the reader can follow ─────────────────────────────────
+// The badge shows where a story sits in the reading order. Its id is a
+// different thing -- a permanent address people paste into WhatsApp
+// (#story-191) -- and the two drift apart on purpose: a new story takes the
+// next free id but is placed beside its sage, mid-book. So the badge is
+// numbered here, at load, and nobody has to renumber anything by hand.
+// The markup keeps the id as the badge text, which is what a reader sees if
+// this script never runs: a real number rather than a blank.
+document.querySelectorAll('.story-card').forEach((card, i) => {
+  const badge = card.querySelector('.story-num');
+  if (badge) badge.textContent = '#' + (i + 1);
+});
+
 // ── Back to top ─────────────────────────────────────────────────────────
 const btn = document.getElementById('backTop');
 window.addEventListener('scroll', () => {
@@ -40098,21 +40119,40 @@ window.addEventListener('scroll', () => {
 // lands on the right characters -- including their vowels.
 const NIKUD = /[֑-ׇ]/;
 
-function fold(text) {
+// Pointed Hebrew is written defectively -- סיפור is pointed סִפּוּר -- so a
+// reader typing the everyday spelling does not match a pointed title letter
+// for letter. When the direct comparison fails, run it again with vav and yod
+// dropped from both sides, which brings the two spellings together.
+const MATRES = /[וי]/;
+
+function fold(text, loose) {
   let plain = '';
   const map = [];
   for (let i = 0; i < text.length; i++) {
-    if (!NIKUD.test(text[i])) { plain += text[i]; map.push(i); }
+    const ch = text[i];
+    if (NIKUD.test(ch)) continue;
+    if (loose && MATRES.test(ch)) continue;
+    plain += ch; map.push(i);
   }
   map.push(text.length);
   return { plain, map };
 }
 
-function findFolded(text, query) {
-  const f = fold(text);
+function findFolded(text, query, loose) {
+  const f = fold(text, loose);
   const i = f.plain.indexOf(query);
   if (i < 0) return null;
   return { start: f.map[i], end: f.map[i + query.length] };
+}
+
+// The loose spelling of the query, used only as a second chance: on its own it
+// is too blunt a key to search by.
+function looseQuery(query) {
+  const bare = query.replace(/[וי]/g, '');
+  return bare.length >= 3 ? bare : null;
+}
+function matchIn(text, query, loose) {
+  return findFolded(text, query) || (loose ? findFolded(text, loose, true) : null);
 }
 
 function escapeHtml(s) {
@@ -40128,30 +40168,70 @@ function markSlice(text, hit) {
        + escapeHtml(text.slice(hit.end));
 }
 
+// The contents sidebar already lists every sage and every story under them,
+// so the search can offer the sage themselves without a second list to keep
+// in step with the book. Read it from the DOM once, on the first search.
+let sageIndex = null;
+function sageChapters() {
+  if (!sageIndex) {
+    sageIndex = [...document.querySelectorAll('.toc-chapter')].map(chapter => {
+      const link = chapter.querySelector('.toc-sage-link');
+      return {
+        name: link.textContent.trim(),
+        href: link.getAttribute('href'),
+        count: chapter.querySelectorAll('.toc-stories > li').length,
+      };
+    });
+  }
+  return sageIndex;
+}
+
 function doSearch(raw) {
   const box = document.getElementById('searchResults');
   const query = raw.trim().replace(new RegExp(NIKUD.source, 'g'), '');
   if (query.length < 2) { box.style.display = 'none'; return; }
 
+  // Sages first. Someone typing a sage's name wants that sage, not whichever
+  // of their stories happens to match first -- and with a prolific one the
+  // twenty-story cap below would bury the rest entirely.
+  const loose = looseQuery(query);
+  const sages = sageChapters()
+    .map(c => ({ c, hit: matchIn(c.name, query, loose) }))
+    .filter(s => s.hit)
+    .slice(0, 3);
+
   const hits = [];
   for (const d of searchData) {
-    const inTitle = findFolded(d.title, query);
-    const inBody = findFolded(d.body, query);
+    const inTitle = matchIn(d.title, query, loose);
+    const inBody = matchIn(d.body, query, loose);
     if (inTitle || inBody) hits.push({ d, inTitle, inBody });
     if (hits.length >= 20) break;
   }
 
-  if (!hits.length) {
+  if (!sages.length && !hits.length) {
     box.innerHTML = '<div class="sr-item">לא נמצאו תוצאות</div>';
     box.style.display = 'block';
     return;
   }
 
-  box.innerHTML = hits.map(h => `<div class="sr-item" onclick="jumpTo('${h.d.id}')">
+  box.innerHTML = sages.map(s => `<div class="sr-item sr-chapter" onclick="openChapterInToc('${s.c.href}')">
+      <strong>📚 ${markSlice(s.c.name, s.hit)}</strong> — ${s.c.count === 1 ? 'סיפור אחד' : s.c.count + ' סיפורים'}<br>
+      <small>פתח את הרשימה שבצד ובחר סיפור</small>
+    </div>`).join('')
+    + hits.map(h => `<div class="sr-item" onclick="jumpTo('${h.d.id}')">
       <strong>${markSlice(h.d.title, h.inTitle)}</strong><br>
       <small>${getSnippet(h.d.body, h.inBody)}</small>
     </div>`).join('');
   box.style.display = 'block';
+}
+
+// Clicking the sage row: hand the reader the whole chapter in the contents,
+// open, in view and briefly flashing, so they can choose a story themselves.
+function openChapterInToc(href) {
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchBox').value = '';
+  const link = document.querySelector('.toc-sage-link[href="' + href + '"]');
+  if (link) revealInToc(link.closest('.toc-chapter'), true);
 }
 
 function getSnippet(text, hit) {
@@ -40173,6 +40253,10 @@ function jumpTo(id) {
   el.scrollIntoView({behavior:'smooth', block:'start'});
   el.classList.add('highlight-story');
   setTimeout(() => el.classList.remove('highlight-story'), 2200);
+  // Open the sage's chapter alongside, so the reader lands on their story and
+  // can still see what else that sage has. The page keeps going to the card,
+  // so this must not scroll it -- hence allowPageScroll = false.
+  revealInToc(tocChapterFor(id), false);
 }
 
 // close search when clicking outside
@@ -40278,26 +40362,35 @@ window.addEventListener('hashchange', () => highlightCurrentStory(false));
 // A shared link lands on one story; its sage's chapter in the contents should
 // already be open, otherwise the reader sees a closed list and cannot tell
 // where they are.
-function openTocFor(id) {
+function tocChapterFor(id) {
   const link = document.querySelector('.toc-stories a[href="#' + id + '"]');
-  if (link) link.closest('.toc-chapter').classList.add('open');
+  return link ? link.closest('.toc-chapter') : null;
 }
-function syncTocWithHash() {
-  const id = window.location.hash.replace('#', '');
-  if (!id) return;
-  openTocFor(id);
-  // Bring that entry into view inside the contents panel, so a shared link
-  // shows the reader where in the book they have landed. scrollIntoView would
-  // also scroll the page itself and fight the landing on the story, so move
-  // only the sidebar's own scroll position.
-  const link = document.querySelector('.toc-stories a[href="#' + id + '"]');
+
+// Open a chapter in the contents and make sure the reader can actually see it.
+// On a wide screen the sidebar is sticky with a scrollbar of its own, so moving
+// its scrollTop leaves the page where it is. Below 900px the sidebar is an
+// ordinary block at the top of the page and the only way to show it is to
+// scroll the page itself -- which fights a jump already heading for a story.
+// So callers that are sending the reader somewhere pass allowPageScroll false.
+function revealInToc(chapter, allowPageScroll) {
+  if (!chapter) return;
+  chapter.classList.add('open');
   const sidebar = document.getElementById('toc');
-  if (link && sidebar.scrollHeight > sidebar.clientHeight) {
-    const chapter = link.closest('.toc-chapter');
+  if (sidebar.scrollHeight > sidebar.clientHeight) {
     sidebar.scrollTop += chapter.getBoundingClientRect().top
                        - sidebar.getBoundingClientRect().top
                        - sidebar.clientHeight / 3;
+  } else if (allowPageScroll) {
+    chapter.scrollIntoView({behavior: 'smooth', block: 'center'});
   }
+  chapter.classList.add('flash');
+  setTimeout(() => chapter.classList.remove('flash'), 2000);
+}
+
+function syncTocWithHash() {
+  const id = window.location.hash.replace('#', '');
+  if (id) revealInToc(tocChapterFor(id), false);
 }
 syncTocWithHash();
 window.addEventListener('hashchange', syncTocWithHash);
