@@ -101,6 +101,21 @@ def main():
             bad.append('בסרגל הפרק "%s" כתוב "%s" במקום "%s"'
                        % (c['title'], strip_tags(m.group(1)), want))
 
+    # מוני הדור — הבאנר הראשי ומונה הסרגל הצדדי, שני מקומות נפרדים שחייבים
+    # להסכים עם המספר האמיתי של הסיפורים בדור. הבאנר תוקן פעם אחת ידנית מבלי
+    # שהמונה בסרגל תוקן איתו, וזו התקלה שבדיקה זו נועדה לתפוס בפעם הבאה.
+    head, sep, rest = doc.partition('<section class="era-block"')
+    for part in (sep + rest).split('<section class="era-block"')[1:]:
+        era_id = re.search(r'id="([^"]+)"', part)
+        actual = part.count('<article class="story-card"')
+        banner = re.search(r'<div class="era-banner-sub">.*?(\d+) סיפורים', part, re.S)
+        toc = re.search(r'id="toc-%s"[^>]*>.*?<span class="toc-era-count">(\d+)</span>'
+                        % re.escape(era_id.group(1)), doc, re.S) if era_id else None
+        if banner and int(banner.group(1)) != actual:
+            bad.append('בבאנר הדור כתוב %s סיפורים אך יש %d' % (banner.group(1), actual))
+        if toc and int(toc.group(1)) != actual:
+            bad.append('במונה הסרגל של הדור כתוב %s סיפורים אך יש %d' % (toc.group(1), actual))
+
     # שרשרת הקודם/הבא לפי סדר הקריאה
     for i, sid in enumerate(ids):
         m = re.search(r'<article class="story-card" id="%s".*?'
