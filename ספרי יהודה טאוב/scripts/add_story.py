@@ -135,11 +135,16 @@ def main():
     # is easy to get subtly wrong. Split on the opening tag instead.
     head, sep, rest = doc.partition('<section class="era-block"')
     parts = (sep + rest).split('<section class="era-block"')
+    era_stories = {}  # era id -> story count, for the sidebar counter pass below
     for i, part in enumerate(parts):
         if not part.strip():
             continue
         stories = part.count('<article class="story-card"')
         people = part.count('<section class="chapter-section"')
+        era_id = re.match(r'\s*id="([^"]+)"', part)
+        if era_id:
+            era_stories[era_id.group(1)] = stories
+
         def counters(x):
             # keep whatever description the era already carries, and drop the
             # separator entirely when there is none — otherwise the line opens
@@ -153,6 +158,12 @@ def main():
         parts[i] = re.sub(r'(<div class="era-banner-sub">)(.*?)(</div>)',
                           counters, part, count=1)
     doc = head + '<section class="era-block"'.join(parts)
+
+    # אותו מספר מופיע גם במונה הסרגל הצדדי, בלוק נפרד לגמרי מבאנר הדור —
+    # שני מקומות שחייבים להסכים, וזו בדיוק הדריפט שהתגלה בעבר.
+    for era_id, stories in era_stories.items():
+        doc = re.sub(r'(id="toc-%s"[^>]*><span>.*?</span><span class="toc-era-count">)\d+(</span>)'
+                     % re.escape(era_id), r'\g<1>%d\2' % stories, doc, count=1)
 
     total = doc.count('<article class="story-card"')
     chapters = doc.count('<section class="chapter-section"')
