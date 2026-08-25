@@ -91,9 +91,21 @@ def main():
                         r'style="border-top:6px solid (#[0-9a-fA-F]{6})">\s*'
                         r'<div class="story-header" style="background:(#[0-9a-fA-F]{6})">',
                         section)
-    if not sibling:
-        sys.exit('לא הצלחתי לקרוא את צבעי הפרק %r.' % chapter_name)
-    colour, tint = sibling.group(1), sibling.group(2)
+    if sibling:
+        colour, tint = sibling.group(1), sibling.group(2)
+    else:
+        # פרק חדש שנפתח עם reorg.py --create, עדיין בלי אף סיפור: אין
+        # כרטיס-אח לקרוא ממנו צבעים, אז נגזור אותם מכותרת הפרק עצמה —
+        # הצבע החי מהגרדיאנט, וגוון בהיר שלו לרקע כותרת הסיפור.
+        header = re.search(r'<div class="chapter-header" '
+                           r'style="background:linear-gradient\(135deg,(#[0-9a-fA-F]{6}),',
+                           section)
+        if not header:
+            sys.exit('לא הצלחתי לקרוא את צבעי הפרק %r.' % chapter_name)
+        colour = header.group(1)
+        r, g, b = (int(colour[i:i + 2], 16) for i in (1, 3, 5))
+        blend = lambda c: round(c + (255 - c) * 0.88)
+        tint = '#%02x%02x%02x' % (blend(r), blend(g), blend(b))
 
     card = (
         '<article class="story-card" id="{id}" style="border-top:6px solid {c}">\n'

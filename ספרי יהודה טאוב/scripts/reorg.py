@@ -73,7 +73,10 @@ def create_chapter(doc, spec):
     anchor = 'chapter-' + re.sub(r'\s+', '-', re.sub(r'[^\w֐-׿ ]', '', title)).strip('-')
     if 'id="%s"' % anchor in doc:
         sys.exit('כבר קיים פרק בעוגן %s.' % anchor)
-    dark = colour.replace('#', '#')
+    # שאר הפרקים משתמשים בגרדיאנט דו-גוני (חי ← כהה ממנו); בלי זה
+    # הכותרת יוצאת שטוחה. גוזרים את הגוון הכהה מ-colour עצמו.
+    r, g, b = (int(colour[i:i + 2], 16) for i in (1, 3, 5))
+    dark = '#%02x%02x%02x' % (round(r * 0.55), round(g * 0.55), round(b * 0.55))
     section = (
         '<section class="chapter-section" id="{a}">\n'
         '<div class="chapter-header" style="background:linear-gradient(135deg,{c},{c})">'
