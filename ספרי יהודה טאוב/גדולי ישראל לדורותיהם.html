@@ -191,6 +191,10 @@ body {
   box-shadow: 0 4px 20px rgba(0,0,0,.08);
   transition: box-shadow .2s;
   scroll-margin-top: 1rem;
+  /* 328 stories laid out at once is enough to make load itself the cost, not
+     just the download — skip what's off screen. Heights measured on this
+     book (desktop median 4835px, mobile median 9816px), not guessed. */
+  content-visibility: auto; contain-intrinsic-size: auto 5500px;
 }
 .story-card:hover { box-shadow: 0 10px 40px rgba(0,0,0,.14); }
 
@@ -287,11 +291,12 @@ body {
   .story-body { padding: 1rem 1.2rem; }
   .story-subtitle { padding: 0 1.2rem .2rem; }
   .story-navigation { padding: .8rem 1.2rem 1.2rem; }
+  .story-card { contain-intrinsic-size: auto 11200px; }
 }
 @media print {
   .sidebar, .confetti, #backTop, .story-navigation, .copy-story-link { display: none !important; }
   .main { padding: 0; }
-  .story-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+  .story-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; content-visibility: visible; }
 }
 </style>
 </head>
@@ -41128,17 +41133,40 @@ function highlightCurrentStory(jump) {
   setTimeout(() => story.classList.remove('highlight-story'), 3000);
 }
 
+// content-visibility means most of the book is unmeasured at load time, so
+// the target story's position keeps shifting as off-screen cards above it
+// get their real height. A couple of fixed-delay retries land off target on
+// a book this size; re-assert every frame instead, until the position holds
+// still for a few frames in a row (settled) or a frame budget runs out.
+function settleScrollToHashStory() {
+  let lastTop = null, stableFrames = 0, frames = 0;
+  const MAX_FRAMES = 180, NEEDED_STABLE = 6;
+  function tick() {
+    const story = storyFromHash();
+    if (!story) return;
+    const top = story.getBoundingClientRect().top;
+    if (lastTop !== null && Math.abs(top - lastTop) < 1) {
+      stableFrames++;
+    } else {
+      stableFrames = 0;
+      story.scrollIntoView({block: 'start'});
+    }
+    lastTop = top;
+    frames++;
+    if (stableFrames >= NEEDED_STABLE || frames >= MAX_FRAMES) {
+      document.documentElement.style.scrollBehavior = '';
+      return;
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
 window.addEventListener('load', () => {
   if (!arrivedOnStory) return;
   setTimeout(() => {
     highlightCurrentStory(true);
-    // Re-assert once the last images and late layout have settled, then hand
-    // smooth scrolling back for ordinary in-page navigation.
-    setTimeout(scrollToHashStory, 200);
-    setTimeout(() => {
-      scrollToHashStory();
-      document.documentElement.style.scrollBehavior = '';
-    }, 500);
+    settleScrollToHashStory();
   }, 300);
 });
 
