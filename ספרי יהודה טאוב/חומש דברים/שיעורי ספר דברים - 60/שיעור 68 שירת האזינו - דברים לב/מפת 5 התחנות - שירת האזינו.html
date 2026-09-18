@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>מפת 5 התחנות - שירת האזינו</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Rubik:wght@400;500;700&display=swap');
+
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body {
+    font-family: 'Rubik', sans-serif;
+    background: linear-gradient(135deg,#3a0d1a 0%,#5c1428 40%,#7a1e2f 70%,#4a1020 100%);
+    min-height: 100vh;
+    padding: 30px 15px;
+    color:#3a0d1a;
+  }
+  .page {
+    max-width: 850px;
+    margin: 0 auto;
+    background: #fdf6ea;
+    border-radius: 22px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.4);
+    overflow: hidden;
+    border: 6px solid #d4a017;
+    position: relative;
+  }
+  .header {
+    background: linear-gradient(135deg,#7a1e2f,#a3223e 50%,#7a1e2f);
+    color:#fdf6ea;
+    text-align:center;
+    padding: 34px 20px 28px;
+    position: relative;
+    border-bottom: 5px solid #d4a017;
+  }
+  .header .emoji-row { font-size: 30px; letter-spacing: 10px; margin-bottom:8px; }
+  .header h1 {
+    font-family:'Frank Ruhl Libre', serif;
+    font-size: 32px;
+    font-weight: 900;
+    text-shadow: 0 2px 6px rgba(0,0,0,.4);
+  }
+  .header .sub {
+    font-size: 15px;
+    margin-top: 8px;
+    color:#f3d9a8;
+    font-weight:500;
+  }
+  .student-line {
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    background:#f3d9a8;
+    padding: 12px 20px;
+    font-size:15px;
+    font-weight:700;
+    color:#5c1428;
+    border-bottom: 2px dashed #a3223e;
+  }
+  .student-line span { border-bottom:1px solid #7a1e2f; padding-bottom:2px; min-width:160px; display:inline-block; text-align:center; }
+
+  .content { padding: 26px 28px 34px; }
+
+  .intro-box {
+    background: #fff9ee;
+    border: 2px solid #d4a017;
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: 15px;
+    line-height:1.7;
+    box-shadow: 0 3px 10px rgba(0,0,0,.06);
+  }
+  .intro-box b { color:#7a1e2f; }
+
+  .level-block {
+    border-radius: 18px;
+    margin-bottom: 26px;
+    overflow:hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,.12);
+    border: 3px solid transparent;
+  }
+  .level-header {
+    padding: 14px 22px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-family:'Frank Ruhl Libre', serif;
+    font-size: 20px;
+    font-weight: 900;
+    color:#fdf6ea;
+  }
+  .level-body {
+    background:#fffdf7;
+    padding: 20px 22px 24px;
+  }
+
+  /* level 1 - מתחילים */
+  .lvl1 .level-header { background: linear-gradient(90deg,#2f6b3a,#3f8c4e); }
+  .lvl1 { border-color:#3f8c4e; }
+  .lvl1-star { color:#a3223e; font-size:15px; }
+
+  /* level 2 - מתקדמים */
+  .lvl2 .level-header { background: linear-gradient(90deg,#a3223e,#c73754); }
+  .lvl2 { border-color:#a3223e; }
+
+  /* level 3 - מובילים */
+  .lvl3 .level-header { background: linear-gradient(90deg,#6b3fa0,#8c53c9); }
+  .lvl3 { border-color:#8c53c9; }
+
+  .badge {
+    display:inline-block;
+    background: rgba(255,255,255,.25);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-right: auto;
+  }
+
+  /* level 1 content: pomegranate ordering */
+  .stations-pool {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin: 14px 0 20px;
+    justify-content:center;
+  }
+  .station-chip {
+    background: linear-gradient(135deg,#fdf6ea,#f3d9a8);
+    border: 2px solid #d4a017;
+    border-radius: 14px;
+    padding: 10px 16px;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-align:center;
+    max-width: 220px;
+    box-shadow: 0 3px 8px rgba(0,0,0,.1);
+    line-height:1.5;
+  }
+  .order-row {
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:12px;
+  }
+  .order-num {
+    width:38px; height:38px;
+    border-radius:50%;
+    background: linear-gradient(135deg,#3f8c4e,#2f6b3a);
+    color:#fdf6ea;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    font-size:17px;
+    flex-shrink:0;
+    box-shadow:0 3px 6px rgba(0,0,0,.2);
+  }
+  .order-fill {
+    flex:1;
+    border-bottom: 2px dotted #a3223e;
+    min-height: 26px;
+    font-size: 14px;
+    padding-bottom:2px;
+  }
+
+  /* level 2 content */
+  .match-table {
+    width:100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  .match-table th {
+    background:#a3223e;
+    color:#fdf6ea;
+    padding: 10px 8px;
+    font-family:'Frank Ruhl Libre',serif;
+    font-size:15px;
+  }
+  .match-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f0d9c0;
+    vertical-align: middle;
+    line-height:1.6;
+  }
+  .match-table tr:nth-child(even) td { background:#fdf6ea; }
+  .pasuk-cell { font-weight:600; }
+  .pasuk-cell .letter {
+    display:inline-block;
+    width:24px;height:24px;
+    background:#d4a017;
+    color:#3a0d1a;
+    border-radius:50%;
+    text-align:center;
+    line-height:24px;
+    font-weight:900;
+    margin-left:6px;
+    font-size:13px;
+  }
+  .answer-box-small {
+    width: 60px;
+    height: 36px;
+    border: 2px solid #a3223e;
+    border-radius: 8px;
+    background:#fff;
+    margin: 0 auto;
+  }
+
+  /* level 3 content */
+  .verse-range-row {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#f7edfb;
+    border: 2px solid #d9c2ef;
+    border-radius: 14px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+  }
+  .verse-range-row .stnum {
+    width:34px;height:34px;
+    border-radius:50%;
+    background: linear-gradient(135deg,#8c53c9,#6b3fa0);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    flex-shrink:0;
+  }
+  .verse-range-row .label {
+    font-weight:700;
+    font-size:14px;
+    min-width: 150px;
+  }
+  .range-inputs {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:1;
+    flex-wrap:wrap;
+  }
+  .range-box {
+    border: 2px dashed #8c53c9;
+    border-radius: 10px;
+    background:#fff;
+    padding: 6px 14px;
+    font-size:13px;
+    min-width: 90px;
+    text-align:center;
+    color:#6b3fa0;
+    font-weight:600;
+  }
+  .arrow-between { color:#8c53c9; font-weight:900; font-size:16px; }
+
+  .pomegranate-divider {
+    text-align:center;
+    font-size:20px;
+    letter-spacing:14px;
+    margin: 6px 0 18px;
+    opacity:.7;
+  }
+
+  .footer-note {
+    text-align:center;
+    font-size:13px;
+    color:#7a1e2f;
+    margin-top:10px;
+    font-style:italic;
+  }
+
+  @media print {
+    body { background:#fff; padding:0; }
+    .page { box-shadow:none; border-width:3px; }
+    .header { padding: 20px 15px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="emoji-row">🍎🔍🍎🔍🍎</div>
+    <h1>מפת 5 התחנות – התאמת פסוקים</h1>
+    <div class="sub">שירת האזינו · פעילות בלשית בשלוש דרגות עבודה</div>
+  </div>
+
+  <div class="student-line">
+    <div>שם התלמיד/ה: <span>&nbsp;</span></div>
+    <div>תאריך: <span>&nbsp;</span></div>
+  </div>
+
+  <div class="content">
+
+    <div class="intro-box">
+      🍇 שירת האזינו מספרת את <b>הסיפור הרוחני</b> של עם ישראל דרך 5 תחנות: משמירה במדבר, לשפע בארץ, לשכחה וחטא, להסתר פנים ולבסוף — רחמים וגאולה. בחרו את הדרגה המתאימה לכם ופתרו את המשימה שלה!
+    </div>
+
+    <!-- LEVEL 1 -->
+    <div class="level-block lvl1">
+      <div class="level-header">
+        🌱 דרגה א׳ — מתחילים
+        <span class="badge">סדרו את 5 התחנות לפי הסדר</span>
+      </div>
+      <div class="level-body">
+        <p style="font-size:14px; margin-bottom:12px;">לפניכם 5 התחנות מבולבלות. <b>קראו אותן היטב וסדרו אותן לפי הסדר הנכון</b> — מה קרה ראשון, מה קרה אחר כך, ומה קרה בסוף השירה.</p>
+
+        <div class="stations-pool">
+          <div class="station-chip">ה' מכניס את בני ישראל לארץ (השפע החקלאי)</div>
+          <div class="station-chip">ה' שומר על בני ישראל במדבר</div>
+          <div class="station-chip">הסתר פנים (העונש והצרות)</div>
+          <div class="station-chip">בני ישראל מרגישים שבעים ועוזבים את ה' (חטא השובע)</div>
+          <div class="station-chip">ולבסוף ה' ירחם על עמו ישראל (רחמים וגאולה)</div>
+        </div>
+
+        <div class="pomegranate-divider">🍎🍎🍎🍎🍎</div>
+
+        <p style="font-size:14px; font-weight:700; margin-bottom:10px; color:#2f6b3a;">כתבו כאן את הסדר הנכון:</p>
+
+        <div class="order-row"><div class="order-num">1</div><div class="order-fill">&nbsp;</div></div>
+        <div class="order-row"><div class="order-num">2</div><div class="order-fill">&nbsp;</div></div>
+        <div class="order-row"><div class="order-num">3</div><div class="order-fill">&nbsp;</div></div>
+        <div class="order-row"><div class="order-num">4</div><div class="order-fill">&nbsp;</div></div>
+        <div class="order-row"><div class="order-num">5</div><div class="order-fill">&nbsp;</div></div>
+      </div>
+    </div>
+
+    <!-- LEVEL 2 -->
+    <div class="level-block lvl2">
+      <div class="level-header">
+        🔎 דרגה ב׳ — מתקדמים
+        <span class="badge">מצאו את הפסוק המתאר כל תחנה</span>
+      </div>
+      <div class="level-body">
+        <p style="font-size:14px; margin-bottom:12px;">לכל תחנה מתאים <b>פסוק מתוך השירה</b>. <b>מתחו קו או רשמו את האות המתאימה</b> בתיבה שלצד כל תחנה.</p>
+
+        <table class="match-table">
+          <tr>
+            <th style="width:60%">הפסוק מתוך שירת האזינו</th>
+            <th style="width:15%">התאמה</th>
+            <th style="width:25%">התחנה</th>
+          </tr>
+          <tr>
+            <td class="pasuk-cell"><span class="letter">א</span>"יִמְצָאֵהוּ בְּאֶרֶץ מִדְבָּר... כְּנֶשֶׁר יָעִיר קִנּוֹ עַל גּוֹזָלָיו יְרַחֵף"</td>
+            <td><div class="answer-box-small"></div></td>
+            <td>ה' שומר על בני ישראל במדבר</td>
+          </tr>
+          <tr>
+            <td class="pasuk-cell"><span class="letter">ב</span>"וַיִּשְׁמַן יְשֻׁרוּן וַיִּבְעָט... וַיִּטֹּשׁ אֱלוֹהַ עָשָׂהוּ"</td>
+            <td><div class="answer-box-small"></div></td>
+            <td>חטא השובע</td>
+          </tr>
+          <tr>
+            <td class="pasuk-cell"><span class="letter">ג</span>"יַרְכִּבֵהוּ עַל בָּמֳתֵי אָרֶץ... חֶמְאַת בָּקָר וַחֲלֵב צֹאנוֹ"</td>
+            <td><div class="answer-box-small"></div></td>
+            <td>השפע החקלאי בארץ</td>
+          </tr>
+          <tr>
+            <td class="pasuk-cell"><span class="letter">ד</span>"וַיֹּאמֶר אַסְתִּירָה פָנַי מֵהֶם... כִּי דוֹר תַּהְפֻּכֹת הֵמָּה"</td>
+            <td><div class="answer-box-small"></div></td>
+            <td>הסתר פנים</td>
+          </tr>
+          <tr>
+            <td class="pasuk-cell"><span class="letter">ה</span>"כִּי יָדִין ה' עַמּוֹ... וְכִפֶּר אַדְמָתוֹ עַמּוֹ"</td>
+            <td><div class="answer-box-small"></div></td>
+            <td>רחמים וגאולה</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- LEVEL 3 -->
+    <div class="level-block lvl3">
+      <div class="level-header">
+        👑 דרגה ג׳ — המובילים
+        <span class="badge">מפסוק עד פסוק — פתחו חומש!</span>
+      </div>
+      <div class="level-body">
+        <p style="font-size:14px; margin-bottom:16px;"><b>פתחו חומש דברים, פרק ל"ב</b> — שירת האזינו. עבור כל תחנה, מצאו <b>היכן היא מתחילה והיכן היא נגמרת</b>, ורשמו את מספרי הפסוקים המדויקים.</p>
+
+        <div class="verse-range-row">
+          <div class="stnum">1</div>
+          <div class="label">שמירה במדבר</div>
+          <div class="range-inputs">
+            <span>מפסוק</span><div class="range-box">&nbsp;</div>
+            <span class="arrow-between">←→</span>
+            <span>עד פסוק</span><div class="range-box">&nbsp;</div>
+          </div>
+        </div>
+
+        <div class="verse-range-row">
+          <div class="stnum">2</div>
+          <div class="label">השפע בארץ</div>
+          <div class="range-inputs">
+            <span>מפסוק</span><div class="range-box">&nbsp;</div>
+            <span class="arrow-between">←→</span>
+            <span>עד פסוק</span><div class="range-box">&nbsp;</div>
+          </div>
+        </div>
+
+        <div class="verse-range-row">
+          <div class="stnum">3</div>
+          <div class="label">חטא השובע</div>
+          <div class="range-inputs">
+            <span>מפסוק</span><div class="range-box">&nbsp;</div>
+            <span class="arrow-between">←→</span>
+            <span>עד פסוק</span><div class="range-box">&nbsp;</div>
+          </div>
+        </div>
+
+        <div class="verse-range-row">
+          <div class="stnum">4</div>
+          <div class="label">הסתר פנים</div>
+          <div class="range-inputs">
+            <span>מפסוק</span><div class="range-box">&nbsp;</div>
+            <span class="arrow-between">←→</span>
+            <span>עד פסוק</span><div class="range-box">&nbsp;</div>
+          </div>
+        </div>
+
+        <div class="verse-range-row">
+          <div class="stnum">5</div>
+          <div class="label">רחמים וגאולה</div>
+          <div class="range-inputs">
+            <span>מפסוק</span><div class="range-box">&nbsp;</div>
+            <span class="arrow-between">←→</span>
+            <span>עד פסוק</span><div class="range-box">&nbsp;</div>
+          </div>
+        </div>
+
+        <p class="footer-note">💡 שימו לב: תחנות מסוימות עלולות להיות קצרות מאוד — פסוק אחד בלבד!</p>
+      </div>
+    </div>
+
+    <div class="pomegranate-divider">🍎🍇🍎🍇🍎</div>
+
+  </div>
+</div>
+<script>window.parent.postMessage({ action: "ready" }, "*"); 
+ 
+window.console = new Proxy(console, {
+  get(target, prop) {
+    if (['log', 'warn', 'error'].includes(prop)) {
+      return new Proxy(target[prop], {
+        apply(fn, thisArg, args) {
+          fn.apply(thisArg, args);
+          window.parent.postMessage({ action: 'console', 
+            type: prop, 
+            args: args.map((arg) => {
+              try {
+                return JSON.stringify(arg).replace(/^["']|["']$/g, '');
+              } catch (e) {
+                return arg;
+              }
+            }) 
+          }, '*');
+        }
+      });
+    }
+    return target[prop];
+  }
+});
+</script></body>
+</html>
