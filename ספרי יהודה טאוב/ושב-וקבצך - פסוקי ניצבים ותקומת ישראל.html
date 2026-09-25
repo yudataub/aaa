@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>וְשָׁב וְקִבֶּצְךָ</title>
+</head>
+<body>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&family=Frank+Ruhl+Libre:wght@500;700;900&family=Fredoka+One&display=swap" rel="stylesheet">
+
+<style>
+html { direction: rtl; }
+:root {
+  --pink:   #ff6b9d;
+  --blue:   #4ec9f0;
+  --yellow: #ffd93d;
+  --red:    #ff4757;
+  --green:  #7bed9f;
+  --purple: #a29bfe;
+  --gold:   #d4af37;
+  --white:  #ffffff;
+  --dark:   #2d1b69;
+  --shadow: 0 8px 32px rgba(174,0,255,.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+  background: linear-gradient(135deg, #ffe0f7 0%, #e0f4ff 30%, #fff8cc 60%, #ffe0e3 100%);
+  min-height: 100vh;
+  color: #2d1b69;
+  direction: rtl;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(0deg); opacity:.8; }
+  50%      { transform: translateY(-20px) rotate(180deg); opacity:1; }
+}
+.confetti {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.confetti span {
+  position: absolute; font-size: 1.5rem;
+  animation: float 3s ease-in-out infinite;
+}
+
+.hero {
+  position: relative; z-index: 1;
+  background: linear-gradient(135deg, #2d1b69 0%, #4a2f8f 35%, #a29bfe 70%, var(--gold) 100%);
+  padding: 3rem 2rem 4rem;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='4' fill='rgba(255,255,255,.12)'/%3E%3C/svg%3E") repeat;
+}
+.hero-title {
+  font-family: 'Frank Ruhl Libre', 'Heebo', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 6vw, 4rem);
+  color: white;
+  text-shadow: 3px 3px 0 #7a5c00, 6px 6px 0 rgba(0,0,0,.2);
+  letter-spacing: .04em;
+  line-height: 1.2;
+  position: relative;
+}
+.hero-subtitle {
+  font-size: 1.3rem;
+  color: rgba(255,255,255,.92);
+  margin-top: .8rem;
+  font-weight: 700;
+  position: relative;
+}
+.hero-stats {
+  display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
+  margin-top: 1.5rem; position: relative;
+}
+.stat-bubble {
+  background: rgba(255,255,255,.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255,255,255,.5);
+  border-radius: 50px;
+  padding: .5rem 1.2rem;
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.layout {
+  display: flex; gap: 0; max-width: 1400px; margin: 0 auto;
+  position: relative; z-index: 1;
+}
+
+.sidebar {
+  width: 300px; flex-shrink: 0;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(20px);
+  border-left: 4px solid var(--gold);
+  box-shadow: -4px 0 20px rgba(212,175,55,.2);
+  padding: 1rem;
+}
+.sidebar-title {
+  font-size: 1.1rem; font-weight: 900; color: var(--dark);
+  text-align: center; padding: .8rem;
+  background: linear-gradient(135deg, var(--purple), var(--gold));
+  color: white; border-radius: 12px; margin-bottom: 1rem;
+}
+
+.search-wrap { position: relative; margin-bottom: 1rem; }
+#searchBox {
+  width: 100%; padding: .6rem 1rem .6rem 2.5rem;
+  border: 2px solid var(--purple);
+  border-radius: 50px; font-size: .95rem; font-family: inherit;
+  background: white; outline: none; direction: rtl;
+  transition: border-color .2s;
+}
+#searchBox:focus { border-color: var(--gold); }
+.search-icon {
+  position: absolute; right: .8rem; top: 50%; transform: translateY(-50%);
+  font-size: 1rem; pointer-events: none;
+}
+#searchResults {
+  background: white; border: 2px solid var(--purple); border-radius: 12px;
+  max-height: 60vh; overflow-y: auto; margin-top: .5rem; display: none;
+}
+#searchResults .sr-item {
+  padding: .5rem .8rem; cursor: pointer; font-size: .9rem;
+  border-bottom: 1px solid #eee; transition: background .15s;
+}
+#searchResults .sr-item:hover { background: #f3edff; }
+#searchResults .sr-item mark { background: var(--yellow); border-radius: 3px; }
+
+.toc-chapter { margin-bottom: .5rem; border: 2px solid; border-radius: 10px; overflow: hidden; }
+.toc-chapter-title {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .5rem .7rem; cursor: pointer; font-weight: 700;
+  font-size: .9rem; color: white;
+  user-select: none;
+}
+.toc-sage-link { color: white; text-decoration: none; flex: 1; }
+.toc-count {
+  font-size: .75rem; background: rgba(255,255,255,.3);
+  border-radius: 50px; padding: .1rem .5rem; white-space: nowrap;
+}
+.toc-arrow { margin-right: auto; transition: transform .2s; }
+.toc-chapter.open .toc-arrow { transform: rotate(180deg); }
+.toc-stories {
+  list-style: none; max-height: 0; overflow: hidden;
+  transition: max-height .3s ease;
+  background: white; padding: 0;
+}
+.toc-chapter.open .toc-stories { max-height: 900px; padding: .3rem 0; }
+.toc-stories li { padding: .25rem .8rem; font-size: .85rem; border-bottom: 1px solid #f0e8ff; display: flex; align-items: center; justify-content: space-between; gap: .3rem; }
+.toc-stories a { color: var(--dark); text-decoration: none; }
+.toc-stories a:hover { color: var(--purple); font-weight: 700; }
+.toc-copy-link { border: none; background: transparent; cursor: pointer; font-size: .85rem; opacity: .7; padding: 0 .3rem; flex-shrink: 0; }
+.toc-copy-link:hover { opacity: 1; }
+
+.main { flex: 1; min-width: 0; padding: 2rem; }
+
+.chapter-section { margin-bottom: 3rem; }
+.chapter-header {
+  border-radius: 20px; padding: 2rem;
+  display: flex; align-items: center; gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,.15);
+  position: relative; overflow: hidden;
+}
+.chapter-header::after {
+  content: '';
+  position: absolute; top: -50%; right: -50%;
+  width: 100%; height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,.2) 0%, transparent 60%);
+}
+.chapter-icon { font-size: 3rem; }
+.chapter-title {
+  font-family: 'Frank Ruhl Libre', 'Heebo', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: white;
+  text-shadow: 2px 2px 6px rgba(0,0,0,.25);
+}
+.chapter-subtitle { color: rgba(255,255,255,.85); font-size: 1rem; font-weight: 600; }
+
+.story-card {
+  background: white;
+  border-radius: 16px;
+  margin-bottom: 1.8rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,.08);
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+  scroll-margin-top: 20px;
+}
+.story-card:hover { transform: translateY(-3px); box-shadow: 0 10px 40px rgba(0,0,0,.15); }
+.story-header {
+  padding: 1rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+.story-num {
+  color: white; font-weight: 900; font-size: .85rem;
+  padding: .3rem .7rem; border-radius: 50px; white-space: nowrap;
+}
+.story-title {
+  font-family: 'Frank Ruhl Libre', 'Heebo', sans-serif;
+  font-size: 1.25rem; font-weight: 900; color: var(--dark); flex: 1;
+}
+
+.story-body {
+  padding: 1.5rem 2rem;
+  font-size: 1.05rem; line-height: 1.9;
+  color: #2d2d3a;
+}
+.story-body h3.section-heading {
+  font-size: 1.1rem; font-weight: 900;
+  color: var(--purple); margin: 1.5rem 0 .5rem;
+  padding-right: .8rem;
+  border-right: 4px solid var(--gold);
+}
+.story-body p { margin-bottom: .8rem; }
+.story-body p.bold-para {
+  font-weight: 900; font-size: 1.1rem;
+  color: var(--dark);
+  background: linear-gradient(135deg, #fff8cc, #f0e8ff);
+  border-radius: 8px; padding: .5rem 1rem;
+  margin: .8rem 0;
+  border-right: 4px solid var(--gold);
+}
+.story-body strong { color: var(--red); }
+.story-body em { color: var(--purple); font-style: normal; font-weight: 600; }
+.story-body ul.story-list { margin: .5rem 0 .8rem 1.5rem; padding: 0; }
+.story-body ul.story-list li { margin-bottom: .4rem; padding-right: .3rem; list-style: none; position: relative; }
+.story-body ul.story-list li::before {
+  content: '✨';
+  position: absolute; right: -1.5rem; font-size: .8rem;
+}
+.story-body hr.story-sep {
+  border: none; height: 3px;
+  background: linear-gradient(90deg, var(--purple), var(--gold), var(--blue));
+  border-radius: 3px; margin: 1.5rem 0;
+}
+
+#backTop {
+  position: fixed; bottom: 2rem; left: 2rem; z-index: 100;
+  background: linear-gradient(135deg, var(--purple), var(--gold));
+  color: white; border: none; cursor: pointer;
+  border-radius: 50%; width: 48px; height: 48px;
+  font-size: 1.3rem; box-shadow: 0 4px 15px rgba(90,60,150,.4);
+  display: none; align-items: center; justify-content: center;
+  transition: transform .2s;
+}
+#backTop:hover { transform: scale(1.1); }
+
+html { scroll-behavior: smooth; }
+.copy-story-link {
+  border: none; border-radius: 50px; padding: .35rem .8rem;
+  font-size: .78rem; font-weight: 700; cursor: pointer;
+  background: rgba(0,0,0,.08); color: var(--dark);
+  transition: background .2s, transform .2s;
+  white-space: nowrap;
+}
+.copy-story-link:hover { background: rgba(0,0,0,.15); transform: translateY(-1px); }
+.story-navigation {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .8rem; flex-wrap: wrap;
+  padding: 1rem 2rem 1.5rem;
+  border-top: 1px dashed rgba(0,0,0,.1);
+}
+.story-navigation a {
+  color: var(--dark); text-decoration: none; font-weight: 700;
+  font-size: .9rem; padding: .4rem .8rem; border-radius: 50px;
+  background: rgba(0,0,0,.05); transition: background .2s;
+}
+.story-navigation a:hover { background: rgba(0,0,0,.12); }
+.back-to-toc-nav { order: 2; }
+
+.highlight-story { animation: pulse-border 1s ease 2; }
+@keyframes pulse-border {
+  0%,100% { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
+  50% { box-shadow: 0 0 0 6px var(--gold), 0 4px 30px rgba(0,0,0,.2); }
+}
+
+footer.book-footer {
+  text-align: center; padding: 3rem 2rem; color: var(--dark);
+  font-weight: 700; font-size: 1rem;
+}
+footer.book-footer .love { color: var(--red); font-size: 1.3rem; margin-top: .5rem; }
+
+@media (max-width: 900px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; position: relative; border-left: none; border-bottom: 4px solid var(--gold); }
+  .main { padding: 1rem; }
+}
+@media print {
+  .sidebar, .confetti, #backTop { display: none !important; }
+  .main { padding: 0; }
+  .story-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
+}
+</style>
+
+<div class="confetti" aria-hidden="true">
+<span style="top:5%;left:10%;animation-delay:0s;animation-duration:3s">✨</span><span style="top:8%;left:90%;animation-delay:1s;animation-duration:4s">🕊️</span><span style="top:15%;left:45%;animation-delay:2s;animation-duration:3.5s">📜</span><span style="top:3%;left:70%;animation-delay:0.5s;animation-duration:3s">🇮🇱</span><span style="top:20%;left:25%;animation-delay:1.5s;animation-duration:4s">✡️</span><span style="top:12%;left:60%;animation-delay:2.5s;animation-duration:3s">🕯️</span><span style="top:6%;left:80%;animation-delay:0s;animation-duration:4s">✨</span><span style="top:18%;left:15%;animation-delay:1s;animation-duration:3.5s">📖</span>
+</div>
+
+<header class="hero">
+  <h1 class="hero-title">וְשָׁב וְקִבֶּצְךָ</h1>
+  <p class="hero-subtitle">פסוקי הַנִּצָּבִים וְהִשְׁתַּקְּפוּתָם בְּתִקּוּמַת יִשְׂרָאֵל</p>
+  <div class="hero-stats">
+    <div class="stat-bubble">📖 14 סיפורים</div>
+    <div class="stat-bubble">📚 5 פרקים</div>
+    <div class="stat-bubble">🔍 חיפוש מובנה</div>
+    <div class="stat-bubble">🔗 קישור לכל סיפור</div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar" id="toc">
+    <div class="sidebar-title">📖 תוכן העניינים</div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchBox" placeholder="חפש בספר..." oninput="doSearch(this.value)">
+      <div id="searchResults"></div>
+    </div>
+<div class="toc-chapter open" style="border-color:#ff6b9d">
+<div class="toc-chapter-title" style="background:#ff6b9d" onclick="toggleTocChapter(this)"><span class="toc-icon">🌅</span><a href="#chapter-פתיחה-—-נבואה-שהיא-מסע" class="toc-sage-link">פתיחה — נבואה שהיא מסע</a><span class="toc-count">2 סיפורים</span><span class="toc-arrow">▼</span></div>
+<ul class="toc-stories">
+<li><a href="#story-1" onclick="return jumpTo('story-1')">וְשָׁב וְקִבֶּצְךָ — שַׁעַר הַמַּסָּע</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-1', this)">🔗</button></li><li><a href="#story-2" onclick="return jumpTo('story-2')">שְׁמוֹנָה פְּסוּקִים — מַסָּע לְאֻמִּי שָׁלֵם</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-2', this)">🔗</button></li>
+</ul>
+</div>
+<div class="toc-chapter" style="border-color:#ff4757">
+<div class="toc-chapter-title" style="background:#ff4757" onclick="toggleTocChapter(this)"><span class="toc-icon">🕯️</span><a href="#chapter-מֵהַחֻרְבָּן-אֶל-הַתִּקְוָה" class="toc-sage-link">מֵהַחֻרְבָּן אֶל הַתִּקְוָה</a><span class="toc-count">3 סיפורים</span><span class="toc-arrow">▼</span></div>
+<ul class="toc-stories">
+<li><a href="#story-3" onclick="return jumpTo('story-3')">וְהָיָה כִּי יָבֹאוּ עָלֶיךָ כָּל הַדְּבָרִים הָאֵלֶּה</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-3', this)">🔗</button></li><li><a href="#story-4" onclick="return jumpTo('story-4')">וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-4', this)">🔗</button></li><li><a href="#story-5" onclick="return jumpTo('story-5')">וְשַׁבְתָּ עַד ה׳ אֱלֹהֶיךָ</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-5', this)">🔗</button></li>
+</ul>
+</div>
+<div class="toc-chapter" style="border-color:#4ec9f0">
+<div class="toc-chapter-title" style="background:#4ec9f0" onclick="toggleTocChapter(this)"><span class="toc-icon">🌍</span><a href="#chapter-קִבּוּץ-גָּלֻיּוֹת" class="toc-sage-link">קִבּוּץ גָּלֻיּוֹת</a><span class="toc-count">3 סיפורים</span><span class="toc-arrow">▼</span></div>
+<ul class="toc-stories">
+<li><a href="#story-6" onclick="return jumpTo('story-6')">וְשָׁב וְקִבֶּצְךָ מִכָּל הָעַמִּים</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-6', this)">🔗</button></li><li><a href="#story-7" onclick="return jumpTo('story-7')">אִם יִהְיֶה נִדַּחֲךָ בִּקְצֵה הַשָּׁמָיִם</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-7', this)">🔗</button></li><li><a href="#story-8" onclick="return jumpTo('story-8')">וֶהֱבִיאֲךָ אֶל הָאָרֶץ אֲשֶׁר יָרְשׁוּ אֲבֹתֶיךָ</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-8', this)">🔗</button></li>
+</ul>
+</div>
+<div class="toc-chapter" style="border-color:#7bed9f">
+<div class="toc-chapter-title" style="background:#7bed9f" onclick="toggleTocChapter(this)"><span class="toc-icon">🌱</span><a href="#chapter-בִּנְיַן-הָאָרֶץ-וְהָעָם" class="toc-sage-link">בִּנְיַן הָאָרֶץ וְהָעָם</a><span class="toc-count">3 סיפורים</span><span class="toc-arrow">▼</span></div>
+<ul class="toc-stories">
+<li><a href="#story-9" onclick="return jumpTo('story-9')">וְהֵיטִבְךָ וְהִרְבְּךָ מֵאֲבֹתֶיךָ</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-9', this)">🔗</button></li><li><a href="#story-10" onclick="return jumpTo('story-10')">וּמָל ה׳ אֱלֹהֶיךָ אֶת לְבָבְךָ וְאֶת לְבַב זַרְעֶךָ</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-10', this)">🔗</button></li><li><a href="#story-11" onclick="return jumpTo('story-11')">עַל אֹיְבֶיךָ וְעַל שֹׂנְאֶיךָ אֲשֶׁר רְדָפוּךָ</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-11', this)">🔗</button></li>
+</ul>
+</div>
+<div class="toc-chapter" style="border-color:#a29bfe">
+<div class="toc-chapter-title" style="background:#a29bfe" onclick="toggleTocChapter(this)"><span class="toc-icon">🕊️</span><a href="#chapter-אֶל-הַגְּאֻלָּה-הַשְּׁלֵמָה" class="toc-sage-link">אֶל הַגְּאֻלָּה הַשְּׁלֵמָה</a><span class="toc-count">3 סיפורים</span><span class="toc-arrow">▼</span></div>
+<ul class="toc-stories">
+<li><a href="#story-12" onclick="return jumpTo('story-12')">וְאַתָּה תָשׁוּב וְשָׁמַעְתָּ בְּקוֹל ה׳</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-12', this)">🔗</button></li><li><a href="#story-13" onclick="return jumpTo('story-13')">אָז וְהַיּוֹם — טַבְלַת הַשְׁתַּקְּפוּת</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-13', this)">🔗</button></li><li><a href="#story-14" onclick="return jumpTo('story-14')">אֲנַחְנוּ חַיִּים בְּתוֹךְ הַסִּפּוּר</a><button class="toc-copy-link" title="העתק קישור" onclick="event.preventDefault();event.stopPropagation();copyStoryLink('story-14', this)">🔗</button></li>
+</ul>
+</div>
+  </aside>
+
+  <main class="main">
+<section class="chapter-section" id="chapter-פתיחה-—-נבואה-שהיא-מסע">
+<div class="chapter-header" style="background: linear-gradient(135deg, #ff6b9d, #c62b6b)">
+<div class="chapter-icon">🌅</div>
+<div>
+<h2 class="chapter-title">פתיחה — נבואה שהיא מסע</h2>
+<div class="chapter-subtitle">2 סיפורים</div>
+</div>
+</div>
+<article class="story-card" id="story-1" style="border-top: 6px solid #ff6b9d">
+<div class="story-header">
+<span class="story-num" style="background:#ff6b9d">סיפור 1</span>
+<span class="story-title">וְשָׁב וְקִבֶּצְךָ — שַׁעַר הַמַּסָּע</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-1', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p class="bold-para">מַסָּע מִגָּלוּת לִתְקוּמָה, מִפִּזּוּר לְקִבּוּץ, וּמִמַּשְׁבֵּר לְשִׁיבָה.</p>
+<p>לִפְנֵי אַלְפֵי שָׁנִים, בְּעֵת שֶׁעַם יִשְׂרָאֵל עָמַד עַל סַף הַכְּנִיסָה לְאֶרֶץ הַמּוּבְטָחַת, נֶאֶמְרוּ לוֹ פְּסוּקִים מְיֻחָדִים בְּפָרָשַׁת נִצָּבִים. אֵלֶּה אֵינָם רַק דִּבְרֵי אַזְהָרָה — הֵם מַפָּה שְׁלֵמָה שֶׁל מַסָּע: מָה יִקְרֶה לָעָם לְאֹרֶךְ הַדּוֹרוֹת, וְאֵיךְ יִשׁוּב אֶל בֵּיתוֹ בְּסוֹפוֹ שֶׁל דָּבָר.</p>
+<p>בְּכָל הַדֶּרֶךְ הָאֲרֻכָּה הַזֹּאת, יָד אַחַת מְלַוָּה בְּשֶׁקֶט — אַהֲבַת ה׳ לְעַמּוֹ. גַּם כְּשֶׁהַדֶּרֶךְ קָשָׁה, הַקֶּשֶׁר לֹא נִפְסָק. וְזֶה בְּעַצְמוֹ סוֹד גָּדוֹל: עַם שֶׁחוֹוֶה נְפִילוֹת רַבּוֹת, וּבְכָל זֹאת קָם וְחוֹזֵר — כִּי מִישֶׁהוּ לְמַעְלָה אוֹהֵב אוֹתוֹ וּמְחַכֶּה לוֹ.</p>
+<h3 class="section-heading">🎨 תמונה מוצעת</h3>
+<p>מַפַּת הָעוֹלָם, שֶׁמִּמֶּנָּה יוֹצְאִים נְתִיבֵי אוֹר זָהֹב לְעֵבֶר אֶרֶץ יִשְׂרָאֵל — כְּסֵמֶל לְכָל הַיְּהוּדִים הַשָּׁבִים הַבַּיְתָה מִכָּל קְצוֹת תֵּבֵל.</p>
+
+</div>
+<div class="story-navigation">
+<span></span>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-2" onclick="return jumpTo('story-2')">שְׁמוֹנָה פְּסוּקִים — מַסָּע לְאֻמִּי שָׁלֵם ←</a>
+</div>
+</article><article class="story-card" id="story-2" style="border-top: 6px solid #ff6b9d">
+<div class="story-header">
+<span class="story-num" style="background:#ff6b9d">סיפור 2</span>
+<span class="story-title">שְׁמוֹנָה פְּסוּקִים — מַסָּע לְאֻמִּי שָׁלֵם</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-2', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>הַפְּסוּקִים שֶׁנַּכִּיר בַּסֵּפֶר הַזֶּה אֵינָם מְתָאֲרִים רֶגַע בּוֹדֵד. הֵם מְתָאֲרִים תַּהֲלִיךְ הִיסְטוֹרִי וְרוּחָנִי שָׁלֵם, שֶׁלָּב לָב שֶׁלּוֹ הוּא הַחְזָרַת עַם יִשְׂרָאֵל אֶל אַרְצוֹ וְאֶל אָבִיו שֶׁבַּשָּׁמַיִם.</p>
+<h3 class="section-heading">📜 שְׁמוֹנֶה תַּחֲנוֹת בַּדֶּרֶךְ</h3>
+<ul class="story-list">
+<li>גָּלוּת וּמַשְׁבֵּר.</li>
+<li>הִתְעוֹרְרוּת פְּנִימִית.</li>
+<li>תְּשׁוּבָה.</li>
+<li>קִבּוּץ גָּלֻיּוֹת.</li>
+<li>שִׁיבָה לָאָרֶץ.</li>
+<li>בִּנְיָן וְשִׂגְשׂוּג.</li>
+<li>הִתְחַדְּשׁוּת הַלֵּב.</li>
+<li>שְׁמִירַת הַמִּצְווֹת.</li>
+</ul>
+<p class="bold-para">כָּל תַּחֲנָה בַּמַּסָּע הַזֶּה הִיא גַּם הִזְדַּמְּנוּת לְהִתְקָרֵב מְעַט יוֹתֵר אֶל אַהֲבַת ה׳ — כִּי הַגְּאֻלָּה הַשְּׁלֵמָה אֵינָה רַק מְקוֹם, אֶלָּא גַּם לֵב.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-1" onclick="return jumpTo('story-1')">→ וְשָׁב וְקִבֶּצְךָ — שַׁעַר הַמַּסָּע</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-3" onclick="return jumpTo('story-3')">וְהָיָה כִּי יָבֹאוּ עָלֶיךָ כָּל הַדְּבָרִים הָאֵלֶּה ←</a>
+</div>
+</article>
+</section>
+<section class="chapter-section" id="chapter-מֵהַחֻרְבָּן-אֶל-הַתִּקְוָה">
+<div class="chapter-header" style="background: linear-gradient(135deg, #ff4757, #8b0000)">
+<div class="chapter-icon">🕯️</div>
+<div>
+<h2 class="chapter-title">מֵהַחֻרְבָּן אֶל הַתִּקְוָה</h2>
+<div class="chapter-subtitle">3 סיפורים</div>
+</div>
+</div>
+<article class="story-card" id="story-3" style="border-top: 6px solid #ff4757">
+<div class="story-header">
+<span class="story-num" style="background:#ff4757">סיפור 3</span>
+<span class="story-title">וְהָיָה כִּי יָבֹאוּ עָלֶיךָ כָּל הַדְּבָרִים הָאֵלֶּה</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-3', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>עַם יִשְׂרָאֵל חָוָה לְאֹרֶךְ הַדּוֹרוֹת גַּם בְּרָכָה גְּדוֹלָה וְגַם רְדִיפוֹת קָשׁוֹת מְאֹד. הַגָּלוּת הָאֲרֻכָּה הִגִּיעָה בַּדּוֹרוֹת הָאַחֲרוֹנִים לִשְׁפָל נוֹרָא בַּשּׁוֹאָה — פֶּרֶק כָּאֵב שֶׁקָּשֶׁה לִמְצֹא לוֹ מִלִּים.</p>
+<p>וּבְכָל זֹאת, דַּוְקָא מִתּוֹךְ הַחֻרְבָּן הַנּוֹרָא הַזֶּה, הִתְעוֹרְרוּ בְּעַם יִשְׂרָאֵל זִכָּרוֹן, זֶהוּת וְכִסּוּפִים עֲמֻקִּים לָאָרֶץ. הַמָּקוֹר הַנִּבְחָר קוֹשֵׁר אֶת לְשׁוֹן הַקְּלָלוֹת שֶׁבַּתּוֹרָה לָעֵת הַקָּשָׁה הַזּוֹ, וְאֶת הֶמְשֵׁךְ הַפָּרָשָׁה לְמַה שֶּׁבָּא בְּעִקְבוֹתֶיהָ — תְּקוּמָה.</p>
+<p class="bold-para">גַּם בְּתוֹךְ הַחֹשֶׁךְ הַגָּדוֹל בְּיוֹתֵר, אַהֲבַת ה׳ לֹא נֶעֶלְמָה — הִיא רַק חִכְּתָה לְרֶגַע שֶׁבּוֹ הָעָם יִפְנֶה אֵלֶיהָ מֵחָדָשׁ.</p>
+<h3 class="section-heading">🎨 תמונה מוצעת</h3>
+<p>מְסִלַּת רַכֶּבֶת חֲשׁוּכָה, שֶׁבָּאֹפֶק שֶׁלָּהּ עוֹלֶה אוֹר רִאשׁוֹן.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-2" onclick="return jumpTo('story-2')">→ שְׁמוֹנָה פְּסוּקִים — מַסָּע לְאֻמִּי שָׁלֵם</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-4" onclick="return jumpTo('story-4')">וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ ←</a>
+</div>
+</article><article class="story-card" id="story-4" style="border-top: 6px solid #ff4757">
+<div class="story-header">
+<span class="story-num" style="background:#ff4757">סיפור 4</span>
+<span class="story-title">וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-4', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>הַגְּאֻלָּה, מִסְתַּבֵּר, לֹא מַתְחִילָה בְּמָקוֹם. הִיא מַתְחִילָה בְּתוֹדָעָה. הַפָּסוּק אוֹמֵר: "וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ" — לִפְנֵי הַשִּׁיבָה הַחִיצוֹנִית, יֵשׁ שִׁיבָה פְּנִימִית.</p>
+<ul class="story-list">
+<li>יְהוּדִים בַּגּוֹלָה נִזְכָּרִים בְּזֶהוּתָם וּבְמוֹלַדְתָּם.</li>
+<li>הַשִּׁיבָה הַחִיצוֹנִית מַתְחִילָה בְּשִׁיבָה פְּנִימִית.</li>
+<li>הַתִּקְוָה מַחְלִיפָה בְּהַדְרָגָה אֶת תְּחוּשַׁת חֹסֶר הַבַּיִת.</li>
+</ul>
+<p class="bold-para">לִפְנֵי שֶׁחוֹזְרִים אֶל הָאָרֶץ — חוֹזְרִים אֶל הַלֵּב. וְהַלֵּב הַיְּהוּדִי, כְּשֶׁהוּא נֶעֱצָר לְרֶגַע וּמַקְשִׁיב, תָּמִיד מוֹצֵא בְּתוֹכוֹ נִיצוֹץ שֶׁל אַהֲבַת ה׳.</p>
+<h3 class="section-heading">🎨 תמונה מוצעת</h3>
+<p>פָּנִים יְהוּדִיּוֹת מִמְּדִינוֹת שׁוֹנוֹת, וּבְמֶרְכָּזָן אוֹר בְּצוּרַת לֵב.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-3" onclick="return jumpTo('story-3')">→ וְהָיָה כִּי יָבֹאוּ עָלֶיךָ כָּל הַדְּבָרִים הָאֵלֶּה</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-5" onclick="return jumpTo('story-5')">וְשַׁבְתָּ עַד ה׳ אֱלֹהֶיךָ ←</a>
+</div>
+</article><article class="story-card" id="story-5" style="border-top: 6px solid #ff4757">
+<div class="story-header">
+<span class="story-num" style="background:#ff4757">סיפור 5</span>
+<span class="story-title">וְשַׁבְתָּ עַד ה׳ אֱלֹהֶיךָ</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-5', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>בְּיָמֵינוּ אֶפְשָׁר לִרְאוֹת תּוֹפָעוֹת מְעוֹרְרוֹת הַשְׁרָאָה בְּתוֹךְ הָעָם:</p>
+<ul class="story-list">
+<li>חֲזָרָה לְלִמּוּד תּוֹרָה.</li>
+<li>הִתְחַזְּקוּת בְּקִיּוּם מִצְווֹת.</li>
+<li>הִתְעַנְיְנוּת מְחֻדֶּשֶׁת בַּזֶּהוּת הַיְּהוּדִית.</li>
+<li>בָּתֵּי מִדְרָשׁ, קְהִלּוֹת וּתְנוּעוֹת תְּשׁוּבָה.</li>
+<li>חִפּוּשׂ מַשְׁמָעוּת בְּקֶרֶב צְעִירִים וּמְבֻגָּרִים כְּאֶחָד.</li>
+</ul>
+<p class="bold-para">אֶפְשָׁר לִרְאוֹת בְּתוֹפָעוֹת אֵלּוּ הֵד לַתַּהֲלִיךְ שֶׁמְּתֹאָר בַּפָּסוּק — בְּלִי לִטְעֹן שֶׁהַשְׁלָמָתוֹ כְּבָר הִתְרַחֲשָׁה. כָּל אָדָם שֶׁמִּתְקָרֵב עוֹד קְצָת אֶל ה׳, מוֹסִיף עוֹד אוֹר קָטָן לַתַּהֲלִיךְ הַגָּדוֹל.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-4" onclick="return jumpTo('story-4')">→ וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-6" onclick="return jumpTo('story-6')">וְשָׁב וְקִבֶּצְךָ מִכָּל הָעַמִּים ←</a>
+</div>
+</article>
+</section>
+<section class="chapter-section" id="chapter-קִבּוּץ-גָּלֻיּוֹת">
+<div class="chapter-header" style="background: linear-gradient(135deg, #4ec9f0, #1a5f8a)">
+<div class="chapter-icon">🌍</div>
+<div>
+<h2 class="chapter-title">קִבּוּץ גָּלֻיּוֹת</h2>
+<div class="chapter-subtitle">3 סיפורים</div>
+</div>
+</div>
+<article class="story-card" id="story-6" style="border-top: 6px solid #4ec9f0">
+<div class="story-header">
+<span class="story-num" style="background:#4ec9f0">סיפור 6</span>
+<span class="story-title">וְשָׁב וְקִבֶּצְךָ מִכָּל הָעַמִּים</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-6', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>יְהוּדִים שָׁבוּ מֵאֵירוֹפָּה, מִצְּפוֹן אַפְרִיקָה וּמֵהַמִּזְרָח הַתִּיכוֹן. קְהִלּוֹת עָלוּ מֵאֶתְיוֹפְּיָה, מִבְּרִית הַמּוֹעָצוֹת וּמֵאֲמֶרִיקָה. מָסֹרוֹת וּשְׂפוֹת רַבּוֹת נִפְגְּשׁוּ מֵחָדָשׁ בְּאֶרֶץ אַחַת.</p>
+<p class="bold-para">קִבּוּץ הַגָּלֻיּוֹת הָפַךְ מֵרַעְיוֹן עַתִּיק לְמְצִיאוּת חַיָּה — כָּל עוֹלֶה חָדָשׁ הוּא עוֹד סִימָן לְכָךְ שֶׁהַהַבְטָחָה הַזֹּאת לֹא נִשְׁכְּחָה.</p>
+<p>הַמָּקוֹר מַדְגִּישׁ שֶׁהַשִּׁיבָה מִתְרַחֶשֶׁת גַּם מִמְּקוֹמוֹת רְחוֹקִים בְּיוֹתֵר, וְשֶׁהַיַּעַד הַמְּתֹאָר בַּפָּסוּק הוּא אֶרֶץ יִשְׂרָאֵל.</p>
+<h3 class="section-heading">🎨 תמונה מוצעת</h3>
+<p>דְּיוֹקְנָאוֹת שֶׁל עוֹלִים סְבִיב מַפַּת יִשְׂרָאֵל.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-5" onclick="return jumpTo('story-5')">→ וְשַׁבְתָּ עַד ה׳ אֱלֹהֶיךָ</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-7" onclick="return jumpTo('story-7')">אִם יִהְיֶה נִדַּחֲךָ בִּקְצֵה הַשָּׁמָיִם ←</a>
+</div>
+</article><article class="story-card" id="story-7" style="border-top: 6px solid #4ec9f0">
+<div class="story-header">
+<span class="story-num" style="background:#4ec9f0">סיפור 7</span>
+<span class="story-title">אִם יִהְיֶה נִדַּחֲךָ בִּקְצֵה הַשָּׁמָיִם</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-7', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p class="bold-para">גַּם מִן הַמָּקוֹם הָרָחוֹק בְּיוֹתֵר — הַדֶּרֶךְ הַבַּיְתָה פְּתוּחָה.</p>
+<p>הַפָּסוּק מַבְטִיחַ שֶׁאֵין מָקוֹם רָחוֹק מִדַּי מֵאַהֲבַת ה׳. הִיסְטוֹרְיָה שְׁלֵמָה שֶׁל עֲלִיּוֹת מְתָאֶמֶת אֶת זֶה בְּדִיּוּק:</p>
+<ul class="story-list">
+<li>תֵּימָן ← עַל כַּנְפֵי נְשָׁרִים.</li>
+<li>עִירָאק ← עֶזְרָא וּנְחֶמְיָה.</li>
+<li>אֶתְיוֹפְּיָה ← מִבְצָע מֹשֶׁה וּמִבְצָע שְׁלֹמֹה.</li>
+<li>בְּרִית הַמּוֹעָצוֹת לְשֶׁעָבַר ← גַּלֵּי הָעֲלִיָּה הַגְּדוֹלִים.</li>
+</ul>
+<p>מְטוֹסִים וּנְתִיבֵי אוֹר נָעִים בְּהַדְרָגָה אֶל יִשְׂרָאֵל — וּבְכָל טִיסָה כָּזוֹ יֵשׁ מַשֶּׁהוּ מֵהַנֵּס שֶׁל שִׁיבָה הַבַּיְתָה.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-6" onclick="return jumpTo('story-6')">→ וְשָׁב וְקִבֶּצְךָ מִכָּל הָעַמִּים</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-8" onclick="return jumpTo('story-8')">וֶהֱבִיאֲךָ אֶל הָאָרֶץ אֲשֶׁר יָרְשׁוּ אֲבֹתֶיךָ ←</a>
+</div>
+</article><article class="story-card" id="story-8" style="border-top: 6px solid #4ec9f0">
+<div class="story-header">
+<span class="story-num" style="background:#4ec9f0">סיפור 8</span>
+<span class="story-title">וֶהֱבִיאֲךָ אֶל הָאָרֶץ אֲשֶׁר יָרְשׁוּ אֲבֹתֶיךָ</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-8', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>הָעָם שָׁב לָאָרֶץ הַקְּשׁוּרָה לְזִכְרוֹנוֹ הַהִיסְטוֹרִי. הוּקְמָה רִבּוֹנוּת יְהוּדִית, הָעִבְרִית שָׁבָה לִהְיוֹת שָׂפָה מְדֻבֶּרֶת, וְעָרִים, יִשּׁוּבִים וּמוֹסָדוֹת לְאֻמִּיִּים נִבְנוּ בְּמוֹ יְדֵי הָעָם.</p>
+<ul class="story-list">
+<li>הָעָם שָׁב לָאָרֶץ הַקְּשׁוּרָה לְזִכְרוֹנוֹ.</li>
+<li>הוּקְמָה רִבּוֹנוּת יְהוּדִית.</li>
+<li>הָעִבְרִית שָׁבָה לִהְיוֹת שָׂפָה מְדֻבֶּרֶת.</li>
+<li>עָרִים, יִשּׁוּבִים וּמוֹסָדוֹת לְאֻמִּיִּים נִבְנוּ.</li>
+<li>הַקֶּשֶׁר בֵּין הָעָם לְאַרְצוֹ נַעֲשָׂה מַמָּשִׁי וְיוֹם־יוֹמִי.</li>
+</ul>
+<p class="bold-para">הַמָּקוֹר מַצִּיג אֶת הַשִּׁיבָה לָאָרֶץ וְאֶת הַיְּרֻשָּׁה הַמְּחֻדֶּשֶׁת שֶׁלָּהּ כְּמֶרְכַּז הָרֶצֶף שֶׁבַּפְּסוּקִים — וְאֶפְשָׁר לְהַרְגִּישׁ בָּזֶה גַּם אֶת חֶסֶד ה׳ שֶׁמֵּשִׁיב אֶת בָּנָיו הַבַּיְתָה.</p>
+<h3 class="section-heading">🎨 תמונה מוצעת</h3>
+<p>שִׁלּוּב בֵּין כְּתָב עִבְרִי עַתִּיק, הַכְרָזַת הָעַצְמָאוּת וִירוּשָׁלַיִם.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-7" onclick="return jumpTo('story-7')">→ אִם יִהְיֶה נִדַּחֲךָ בִּקְצֵה הַשָּׁמָיִם</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-9" onclick="return jumpTo('story-9')">וְהֵיטִבְךָ וְהִרְבְּךָ מֵאֲבֹתֶיךָ ←</a>
+</div>
+</article>
+</section>
+<section class="chapter-section" id="chapter-בִּנְיַן-הָאָרֶץ-וְהָעָם">
+<div class="chapter-header" style="background: linear-gradient(135deg, #7bed9f, #1e824c)">
+<div class="chapter-icon">🌱</div>
+<div>
+<h2 class="chapter-title">בִּנְיַן הָאָרֶץ וְהָעָם</h2>
+<div class="chapter-subtitle">3 סיפורים</div>
+</div>
+</div>
+<article class="story-card" id="story-9" style="border-top: 6px solid #7bed9f">
+<div class="story-header">
+<span class="story-num" style="background:#7bed9f">סיפור 9</span>
+<span class="story-title">וְהֵיטִבְךָ וְהִרְבְּךָ מֵאֲבֹתֶיךָ</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-9', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>הַשִּׁיבָה אֵינָהּ רַק הַגָּעָה פִיזִית. הִיא גַּם בְּנִיָּה, צְמִיחָה וִיצִירָה. אֻכְלוֹסִיָּה יְהוּדִית גְּדוֹלָה וְצוֹמַחַת בָּאָרֶץ, הַפְרָחַת אֲזוֹרִים שׁוֹמְמִים, וְהִתְפַּתְּחוּת מְדַהִימָה בְּכָל תְּחוּם.</p>
+<ul class="story-list">
+<li>אֻכְלוֹסִיָּה יְהוּדִית גְּדוֹלָה וְצוֹמַחַת בָּאָרֶץ.</li>
+<li>הַפְרָחַת אֲזוֹרִים שׁוֹמְמִים.</li>
+<li>הִתְפַּתְּחוּת בַּחַקְלָאוּת וּבַתַּשְׁתִּיּוֹת.</li>
+<li>הֶשֵּׂגִים בַּמַּדָּע, בָּרְפוּאָה וּבַטֶּכְנוֹלוֹגְיָה.</li>
+<li>יְצִירָה יְהוּדִית־יִשְׂרְאֵלִית חֲדָשָׁה.</li>
+</ul>
+<p class="bold-para">כָּל שָׂדֶה שֶׁפּוֹרֵחַ, כָּל תִּינוֹק שֶׁנּוֹלָד בָּאָרֶץ, הוּא עוֹד תְּפִלָּה שֶׁמִּתְקַיֶּמֶת — וְעוֹד סִבָּה לְהוֹדוֹת לְה׳.</p>
+<h3 class="section-heading">🎨 תמונה מוצעת</h3>
+<p>שָׂדֶה פּוֹרֵחַ הַמִּשְׁתַּלֵּב בְּקַו הָרָקִיעַ שֶׁל עִיר מוֹדֶרְנִית.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-8" onclick="return jumpTo('story-8')">→ וֶהֱבִיאֲךָ אֶל הָאָרֶץ אֲשֶׁר יָרְשׁוּ אֲבֹתֶיךָ</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-10" onclick="return jumpTo('story-10')">וּמָל ה׳ אֱלֹהֶיךָ אֶת לְבָבְךָ וְאֶת לְבַב זַרְעֶךָ ←</a>
+</div>
+</article><article class="story-card" id="story-10" style="border-top: 6px solid #7bed9f">
+<div class="story-header">
+<span class="story-num" style="background:#7bed9f">סיפור 10</span>
+<span class="story-title">וּמָל ה׳ אֱלֹהֶיךָ אֶת לְבָבְךָ וְאֶת לְבַב זַרְעֶךָ</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-10', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>אֶחָד הַדְּבָרִים הַמְּיֻחָדִים בְּיוֹתֵר בְּמְדִינַת יִשְׂרָאֵל הוּא הַמִּפְגָּשׁ בֵּין יְהוּדִים מִכָּל קְצוֹת תֵּבֵל — מָסֹרוֹת שׁוֹנוֹת, נִגּוּנִים שׁוֹנִים, טְעָמִים שׁוֹנִים, וְכֻלָּם יַחַד בּוֹנִים זֶהוּת אַחַת מְשֻׁתֶּפֶת.</p>
+<ul class="story-list">
+<li>חִבּוּר בֵּין מָסֹרוֹת שֶׁהִגִּיעוּ מִקְּהִלּוֹת שׁוֹנוֹת.</li>
+<li>זֶהוּת מְשֻׁתֶּפֶת הַנִּבְנֵית בָּאָרֶץ.</li>
+<li>הִתְקָרְבוּת בֵּין חֶלְקֵי הָעָם.</li>
+<li>הַעֲבָרַת הָאֱמוּנָה וְהַזִּכָּרוֹן לַדּוֹר הַבָּא.</li>
+<li>שְׁאִיפָה לְאַהֲבַת ה׳ בְּכָל הַלֵּב וּבְכָל הַנֶּפֶשׁ.</li>
+</ul>
+<p class="bold-para">הַמָּקוֹר מַצְבִּיעַ עַל הַפָּסוּק כְּמַעֲנֶה לִשְׁאֵלַת הַמִּפְגָּשׁ וְהַחִבּוּר בֵּין הָעֵדוֹת לְאַחַר הַשִּׁיבָה לָאָרֶץ. וְלֵב אֶחָד שֶׁמָּל ה׳, זֶה בְּעֶצֶם כָּל עַם יִשְׂרָאֵל שֶׁלּוֹמֵד לֶאֱהֹב מֵחָדָשׁ — גַּם אֶת ה׳ וְגַם אֶת אֶחָיו.</p>
+<h3 class="section-heading">🎨 תמונה מוצעת</h3>
+<p>יְלָדִים מֵרְקָעִים שׁוֹנִים בְּמַעְגָּל סְבִיב סֵפֶר תּוֹרָה.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-9" onclick="return jumpTo('story-9')">→ וְהֵיטִבְךָ וְהִרְבְּךָ מֵאֲבֹתֶיךָ</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-11" onclick="return jumpTo('story-11')">עַל אֹיְבֶיךָ וְעַל שֹׂנְאֶיךָ אֲשֶׁר רְדָפוּךָ ←</a>
+</div>
+</article><article class="story-card" id="story-11" style="border-top: 6px solid #7bed9f">
+<div class="story-header">
+<span class="story-num" style="background:#7bed9f">סיפור 11</span>
+<span class="story-title">עַל אֹיְבֶיךָ וְעַל שֹׂנְאֶיךָ אֲשֶׁר רְדָפוּךָ</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-11', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>גַּם לְאַחַר הַשִּׁיבָה, הָאִיּוּם אֵינוֹ נֶעֱלָם לְגַמְרֵי. הַהֶבְדֵּל הַגָּדוֹל הוּא שֶׁעַם יִשְׂרָאֵל אֵינוֹ עוֹד חֲסַר הֲגָנָה — מְדִינַת יִשְׂרָאֵל מְסֻגֶּלֶת לְהָגֵן עַל תּוֹשָׁבֶיהָ.</p>
+<p>יֵשׁ הָרוֹאִים בְּעֶצֶם הַהִשָּׂרְדוּת מוּל אוֹיְבִים חֵלֶק מֵהַתַּהֲלִיךְ הַמְּתֹאָר בַּפָּסוּק, הַמְּחַבֵּר בֵּין רְדִיפַת יִשְׂרָאֵל לְבֵין הֶמְשֵׁךְ הַשִּׁיבָה אֶל הַמִּצְווֹת.</p>
+<p class="bold-para">⚠️ דגש חינוכי: יש להציג זאת בענווה רבה, בלי לקבוע מהו חשבון שמים בכל אירוע מסוים. אנחנו רק בני אדם, ורק ה׳ יודע את מלוא הסיפור — אבל אנחנו יכולים תמיד לבטוח באהבתו.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-10" onclick="return jumpTo('story-10')">→ וּמָל ה׳ אֱלֹהֶיךָ אֶת לְבָבְךָ וְאֶת לְבַב זַרְעֶךָ</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-12" onclick="return jumpTo('story-12')">וְאַתָּה תָשׁוּב וְשָׁמַעְתָּ בְּקוֹל ה׳ ←</a>
+</div>
+</article>
+</section>
+<section class="chapter-section" id="chapter-אֶל-הַגְּאֻלָּה-הַשְּׁלֵמָה">
+<div class="chapter-header" style="background: linear-gradient(135deg, #a29bfe, #5b4bd6)">
+<div class="chapter-icon">🕊️</div>
+<div>
+<h2 class="chapter-title">אֶל הַגְּאֻלָּה הַשְּׁלֵמָה</h2>
+<div class="chapter-subtitle">3 סיפורים</div>
+</div>
+</div>
+<article class="story-card" id="story-12" style="border-top: 6px solid #a29bfe">
+<div class="story-header">
+<span class="story-num" style="background:#a29bfe">סיפור 12</span>
+<span class="story-title">וְאַתָּה תָשׁוּב וְשָׁמַעְתָּ בְּקוֹל ה׳</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-12', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>הַתַּהֲלִיךְ כֻּלּוֹ אֵינוֹ מִסְתַּיֵּם בְּעַצְמָאוּת מְדִינִית בִּלְבַד. יֵשׁ עוֹד דֶּרֶךְ — פְּנִימִית וְעֲדִינָה — שֶׁמּוֹבִילָה לַיַּעַד הָאֲמִתִּי:</p>
+<ul class="story-list">
+<li>קִבּוּץ גָּלֻיּוֹת.</li>
+<li>בִּנְיַן הָאָרֶץ.</li>
+<li>אִחוּד הָעָם.</li>
+<li>תִּקּוּן הַלֵּב.</li>
+<li>שְׁמִיעָה בְּקוֹל ה׳.</li>
+<li>חַיִּים שֶׁל תּוֹרָה, מוּסָר וְאַחֲרָיוּת.</li>
+</ul>
+<p class="bold-para">הָאָרֶץ הִיא הַבַּיִת. הַתּוֹרָה מְעַנִּיקָה לַבַּיִת אֶת נִשְׁמָתוֹ — וְאַהֲבַת ה׳ הִיא הָאוֹר שֶׁמֵּאִיר אֶת כָּל הַבַּיִת הַזֶּה מִבִּפְנִים.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-11" onclick="return jumpTo('story-11')">→ עַל אֹיְבֶיךָ וְעַל שֹׂנְאֶיךָ אֲשֶׁר רְדָפוּךָ</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-13" onclick="return jumpTo('story-13')">אָז וְהַיּוֹם — טַבְלַת הַשְׁתַּקְּפוּת ←</a>
+</div>
+</article><article class="story-card" id="story-13" style="border-top: 6px solid #a29bfe">
+<div class="story-header">
+<span class="story-num" style="background:#a29bfe">סיפור 13</span>
+<span class="story-title">אָז וְהַיּוֹם — טַבְלַת הַשְׁתַּקְּפוּת</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-13', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p>כְּדֵי לִרְאוֹת אֵיךְ לְשׁוֹן הַפָּסוּק פּוֹגֶשֶׁת אֶת יְמֵי חַיֵּינוּ, הִנֵּה טַבְלָה קְטַנָּה שֶׁמְּחַבֶּרֶת בֵּין הֶעָבָר לְהוֶה:</p>
+<h3 class="section-heading">✨ אָז וְהַיּוֹם</h3>
+<ul class="story-list">
+<li><strong>״בְּכָל הַגּוֹיִם״</strong> — תְּפוּצָה יְהוּדִית בִּרְחָבֵי הָעוֹלָם.</li>
+<li><strong>״וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ״</strong> — הִתְעוֹרְרוּת זֶהוּתִית וּלְאֻמִּית.</li>
+<li><strong>״וְקִבֶּצְךָ״</strong> — גַּלֵּי עֲלִיָּה וְקִבּוּץ גָּלֻיּוֹת.</li>
+<li><strong>״מִקְּצֵה הַשָּׁמַיִם״</strong> — עֲלִיּוֹת מֵאֲרָצוֹת רְחוֹקוֹת.</li>
+<li><strong>״אֶל הָאָרֶץ״</strong> — שִׁיבָה וְרִבּוֹנוּת בְּאֶרֶץ יִשְׂרָאֵל.</li>
+<li><strong>״וְהֵיטִבְךָ וְהִרְבְּךָ״</strong> — בִּנְיָן, צְמִיחָה וְהִתְפַּתְּחוּת.</li>
+<li><strong>״אֶת לְבַב זַרְעֶךָ״</strong> — הִתְחַדְּשׁוּת רוּחָנִית בֵּין־דּוֹרִית.</li>
+<li><strong>״תָּשׁוּב וְשָׁמַעְתָּ״</strong> — שְׁאִיפָה לְחַיִּים שֶׁל תּוֹרָה וּמִצְווֹת.</li>
+</ul>
+
+</div>
+<div class="story-navigation">
+<a href="#story-12" onclick="return jumpTo('story-12')">→ וְאַתָּה תָשׁוּב וְשָׁמַעְתָּ בְּקוֹל ה׳</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<a href="#story-14" onclick="return jumpTo('story-14')">אֲנַחְנוּ חַיִּים בְּתוֹךְ הַסִּפּוּר ←</a>
+</div>
+</article><article class="story-card" id="story-14" style="border-top: 6px solid #a29bfe">
+<div class="story-header">
+<span class="story-num" style="background:#a29bfe">סיפור 14</span>
+<span class="story-title">אֲנַחְנוּ חַיִּים בְּתוֹךְ הַסִּפּוּר</span>
+<button class="copy-story-link" onclick="copyStoryLink('story-14', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-body">
+
+<p class="bold-para">פְּסוּקִים שֶׁנֶּאֶמְרוּ לִפְנֵי אַלְפֵי שָׁנִים נִשְׁמָעִים בְּדוֹרֵנוּ כְּתֵאוּר שֶׁל מַסָּע חַי: מִן הַגָּלוּת אֶל הָאָרֶץ, מִן הַפִּזּוּר אֶל הָאַחְדוּת, וּמִן הַשִּׁיבָה הַבַּיְתָה אֶל הַשִּׁיבָה אֶל הַלֵּב.</p>
+<p>וְהַסִּפּוּר הַזֶּה עוֹד לֹא נִגְמַר. אֲנַחְנוּ — כָּל אֶחָד מֵאִתָּנוּ — נִמְצָאִים בְּתוֹכוֹ מַמָּשׁ עַכְשָׁו. וְכָל מַעֲשֶׂה טוֹב, כָּל מִלָּה שֶׁל תְּפִלָּה, כָּל רֶגַע שֶׁל אַהֲבַת ה׳ שֶׁאָנוּ מוֹסִיפִים — הוּא עוֹד שׁוּרָה בַּסִּפּוּר הַגָּדוֹל הַזֶּה.</p>
+<h3 class="section-heading">💬 שְׁאֵלַת סִיּוּם לַקָּהָל</h3>
+<p class="bold-para">אִם אָנוּ חַיִּים בְּתוֹךְ הַתַּהֲלִיךְ — מַה הוּא הַתַּפְקִיד שֶׁלָּנוּ בְּהֶמְשֵׁכוֹ?</p>
+<h3 class="section-heading">✅ הצעות למנחה / למורה</h3>
+<ul class="story-list">
+<li>לשלב מפה מונפשת של קיבוץ הגלויות.</li>
+<li>להשתמש בתמונה חזקה אחת בכל פרק.</li>
+<li>להקריא את הפסוקים בקול, לאט ובכוונה.</li>
+<li>לשלב מוזיקה יהודית עדינה ברקע.</li>
+<li>לסיים בתמונת דמיון של זריחה מעל ירושלים, ובתפילה קטנה של תודה לה׳.</li>
+</ul>
+<h3 class="section-heading">🎨 תמונה מוצעת</h3>
+<p>זְרִיחָה מֵעַל יְרוּשָׁלַיִם.</p>
+
+</div>
+<div class="story-navigation">
+<a href="#story-13" onclick="return jumpTo('story-13')">→ אָז וְהַיּוֹם — טַבְלַת הַשְׁתַּקְּפוּת</a>
+<a class="back-to-toc-nav" href="#toc">↑ חזרה לתוכן העניינים</a>
+<span></span>
+</div>
+</article>
+</section>
+  </main>
+
+</div>
+
+<button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">⬆️</button>
+
+<footer class="book-footer">
+  <div>בְּאַהֲבַת ה׳ וּבְאַהֲבַת עַם יִשְׂרָאֵל וְאַרְצוֹ 💛</div>
+  <div class="love">🇮🇱 עַם יִשְׂרָאֵל חַי 🇮🇱</div>
+</footer>
+
+<script>
+function toggleTocChapter(el) {
+  el.closest('.toc-chapter').classList.toggle('open');
+}
+document.querySelectorAll('.toc-chapter')[0]?.classList.add('open');
+
+const btn = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  btn.style.display = window.scrollY > 400 ? 'flex' : 'none';
+});
+
+const searchData = [
+{id:'story-1',title:'ושב וקבצך — שער המסע',plain:'ושב וקבצך — שער המסע מסע מגלות לתקומה, מפזור לקבוץ, וממשבר לשיבה. לפני אלפי שנים, בעת שעם ישראל עמד על סף הכניסה לארץ המובטחת, נאמרו לו פסוקים מיחדים בפרשת נצבים. אלה אינם רק דברי אזהרה — הם מפה שלמה של מסע: מה יקרה לעם לארך הדורות, ואיך ישוב אל ביתו בסופו של דבר. בכל הדרך הארכה הזאת, יד אחת מלוה בשקט — אהבת ה׳ לעמו. גם כשהדרך קשה, הקשר לא נפסק. וזה בעצמו סוד גדול: עם שחווה נפילות רבות, ובכל זאת קם וחוזר — כי מישהו למעלה אוהב אותו ומחכה לו. 🎨 תמונה מוצעת מפת העולם, שממנה יוצאים נתיבי אור זהב לעבר ארץ ישראל — כסמל לכל היהודים השבים הביתה מכל קצות תבל.',plainNoVY:'שב קבצך — שער המסע מסע מגלת לתקמה, מפזר לקבץ, ממשבר לשבה. לפנ אלפ שנם, בעת שעם שראל עמד על סף הכנסה לארץ המבטחת, נאמר ל פסקם מחדם בפרשת נצבם. אלה אנם רק דבר אזהרה — הם מפה שלמה של מסע: מה קרה לעם לארך הדרת, אך שב אל בת בספ של דבר. בכל הדרך הארכה הזאת, ד אחת מלה בשקט — אהבת ה׳ לעמ. גם כשהדרך קשה, הקשר לא נפסק. זה בעצמ סד גדל: עם שחה נפלת רבת, בכל זאת קם חזר — כ משה למעלה אהב את מחכה ל. 🎨 תמנה מצעת מפת העלם, שממנה צאם נתב אר זהב לעבר ארץ שראל — כסמל לכל ההדם השבם הבתה מכל קצת תבל.'},
+{id:'story-2',title:'שמונה פסוקים — מסע לאמי שלם',plain:'שמונה פסוקים — מסע לאמי שלם הפסוקים שנכיר בספר הזה אינם מתארים רגע בודד. הם מתארים תהליך היסטורי ורוחני שלם, שלב לב שלו הוא החזרת עם ישראל אל ארצו ואל אביו שבשמים. 📜 שמונה תחנות בדרך גלות ומשבר. התעוררות פנימית. תשובה. קבוץ גליות. שיבה לארץ. בנין ושגשוג. התחדשות הלב. שמירת המצוות. כל תחנה במסע הזה היא גם הזדמנות להתקרב מעט יותר אל אהבת ה׳ — כי הגאלה השלמה אינה רק מקום, אלא גם לב.',plainNoVY:'שמנה פסקם — מסע לאמ שלם הפסקם שנכר בספר הזה אנם מתארם רגע בדד. הם מתארם תהלך הסטר רחנ שלם, שלב לב של הא החזרת עם שראל אל ארצ אל אב שבשמם. 📜 שמנה תחנת בדרך גלת משבר. התעררת פנמת. תשבה. קבץ גלת. שבה לארץ. בנן שגשג. התחדשת הלב. שמרת המצת. כל תחנה במסע הזה הא גם הזדמנת להתקרב מעט תר אל אהבת ה׳ — כ הגאלה השלמה אנה רק מקם, אלא גם לב.'},
+{id:'story-3',title:'והיה כי יבאו עליך כל הדברים האלה',plain:'והיה כי יבאו עליך כל הדברים האלה עם ישראל חוה לארך הדורות גם ברכה גדולה וגם רדיפות קשות מאד. הגלות הארכה הגיעה בדורות האחרונים לשפל נורא בשואה — פרק כאב שקשה למצא לו מלים. ובכל זאת, דוקא מתוך החרבן הנורא הזה, התעוררו בעם ישראל זכרון, זהות וכסופים עמקים לארץ. המקור הנבחר קושר את לשון הקללות שבתורה לעת הקשה הזו, ואת המשך הפרשה למה שבא בעקבותיה — תקומה. גם בתוך החשך הגדול ביותר, אהבת ה׳ לא נעלמה — היא רק חכתה לרגע שבו העם יפנה אליה מחדש. 🎨 תמונה מוצעת מסלת רכבת חשוכה, שבאפק שלה עולה אור ראשון.',plainNoVY:'הה כ בא עלך כל הדברם האלה עם שראל חה לארך הדרת גם ברכה גדלה גם רדפת קשת מאד. הגלת הארכה הגעה בדרת האחרנם לשפל נרא בשאה — פרק כאב שקשה למצא ל מלם. בכל זאת, דקא מתך החרבן הנרא הזה, התערר בעם שראל זכרן, זהת כספם עמקם לארץ. המקר הנבחר קשר את לשן הקללת שבתרה לעת הקשה הז, את המשך הפרשה למה שבא בעקבתה — תקמה. גם בתך החשך הגדל בתר, אהבת ה׳ לא נעלמה — הא רק חכתה לרגע שב העם פנה אלה מחדש. 🎨 תמנה מצעת מסלת רכבת חשכה, שבאפק שלה עלה אר ראשן.'},
+{id:'story-4',title:'והשבת אל לבבך',plain:'והשבת אל לבבך הגאלה, מסתבר, לא מתחילה במקום. היא מתחילה בתודעה. הפסוק אומר: "והשבת אל לבבך" — לפני השיבה החיצונית, יש שיבה פנימית. יהודים בגולה נזכרים בזהותם ובמולדתם. השיבה החיצונית מתחילה בשיבה פנימית. התקוה מחליפה בהדרגה את תחושת חסר הבית. לפני שחוזרים אל הארץ — חוזרים אל הלב. והלב היהודי, כשהוא נעצר לרגע ומקשיב, תמיד מוצא בתוכו ניצוץ של אהבת ה׳. 🎨 תמונה מוצעת פנים יהודיות ממדינות שונות, ובמרכזן אור בצורת לב.',plainNoVY:'השבת אל לבבך הגאלה, מסתבר, לא מתחלה במקם. הא מתחלה בתדעה. הפסק אמר: "השבת אל לבבך" — לפנ השבה החצנת, ש שבה פנמת. הדם בגלה נזכרם בזהתם במלדתם. השבה החצנת מתחלה בשבה פנמת. התקה מחלפה בהדרגה את תחשת חסר הבת. לפנ שחזרם אל הארץ — חזרם אל הלב. הלב ההד, כשהא נעצר לרגע מקשב, תמד מצא בתכ נצץ של אהבת ה׳. 🎨 תמנה מצעת פנם הדת ממדנת שנת, במרכזן אר בצרת לב.'},
+{id:'story-5',title:'ושבת עד ה׳ אלהיך',plain:'ושבת עד ה׳ אלהיך בימינו אפשר לראות תופעות מעוררות השראה בתוך העם: חזרה ללמוד תורה. התחזקות בקיום מצוות. התענינות מחדשת בזהות היהודית. בתי מדרש, קהלות ותנועות תשובה. חפוש משמעות בקרב צעירים ומבגרים כאחד. אפשר לראות בתופעות אלו הד לתהליך שמתאר בפסוק — בלי לטען שהשלמתו כבר התרחשה. כל אדם שמתקרב עוד קצת אל ה׳, מוסיף עוד אור קטן לתהליך הגדול.',plainNoVY:'שבת עד ה׳ אלהך במנ אפשר לראת תפעת מעררת השראה בתך העם: חזרה ללמד תרה. התחזקת בקם מצת. התעננת מחדשת בזהת ההדת. בת מדרש, קהלת תנעת תשבה. חפש משמעת בקרב צערם מבגרם כאחד. אפשר לראת בתפעת אל הד לתהלך שמתאר בפסק — בל לטען שהשלמת כבר התרחשה. כל אדם שמתקרב עד קצת אל ה׳, מסף עד אר קטן לתהלך הגדל.'},
+{id:'story-6',title:'ושב וקבצך מכל העמים',plain:'ושב וקבצך מכל העמים יהודים שבו מאירופה, מצפון אפריקה ומהמזרח התיכון. קהלות עלו מאתיופיה, מברית המועצות ומאמריקה. מסרות ושפות רבות נפגשו מחדש בארץ אחת. קבוץ הגליות הפך מרעיון עתיק למציאות חיה — כל עולה חדש הוא עוד סימן לכך שההבטחה הזאת לא נשכחה. המקור מדגיש שהשיבה מתרחשת גם ממקומות רחוקים ביותר, ושהיעד המתאר בפסוק הוא ארץ ישראל. 🎨 תמונה מוצעת דיוקנאות של עולים סביב מפת ישראל.',plainNoVY:'שב קבצך מכל העמם הדם שב מארפה, מצפן אפרקה מהמזרח התכן. קהלת על מאתפה, מברת המעצת מאמרקה. מסרת שפת רבת נפגש מחדש בארץ אחת. קבץ הגלת הפך מרען עתק למצאת חה — כל עלה חדש הא עד סמן לכך שההבטחה הזאת לא נשכחה. המקר מדגש שהשבה מתרחשת גם ממקמת רחקם בתר, שהעד המתאר בפסק הא ארץ שראל. 🎨 תמנה מצעת דקנאת של עלם סבב מפת שראל.'},
+{id:'story-7',title:'אם יהיה נדחך בקצה השמים',plain:'אם יהיה נדחך בקצה השמים גם מן המקום הרחוק ביותר — הדרך הביתה פתוחה. הפסוק מבטיח שאין מקום רחוק מדי מאהבת ה׳. היסטוריה שלמה של עליות מתאמת את זה בדיוק: תימן ← על כנפי נשרים. עיראק ← עזרא ונחמיה. אתיופיה ← מבצע משה ומבצע שלמה. ברית המועצות לשעבר ← גלי העליה הגדולים. מטוסים ונתיבי אור נעים בהדרגה אל ישראל — ובכל טיסה כזו יש משהו מהנס של שיבה הביתה.',plainNoVY:'אם הה נדחך בקצה השמם גם מן המקם הרחק בתר — הדרך הבתה פתחה. הפסק מבטח שאן מקם רחק מד מאהבת ה׳. הסטרה שלמה של עלת מתאמת את זה בדק: תמן ← על כנפ נשרם. עראק ← עזרא נחמה. אתפה ← מבצע משה מבצע שלמה. ברת המעצת לשעבר ← גל העלה הגדלם. מטסם נתב אר נעם בהדרגה אל שראל — בכל טסה כז ש משה מהנס של שבה הבתה.'},
+{id:'story-8',title:'והביאך אל הארץ אשר ירשו אבתיך',plain:'והביאך אל הארץ אשר ירשו אבתיך העם שב לארץ הקשורה לזכרונו ההיסטורי. הוקמה רבונות יהודית, העברית שבה להיות שפה מדברת, וערים, ישובים ומוסדות לאמיים נבנו במו ידי העם. העם שב לארץ הקשורה לזכרונו. הוקמה רבונות יהודית. העברית שבה להיות שפה מדברת. ערים, ישובים ומוסדות לאמיים נבנו. הקשר בין העם לארצו נעשה ממשי ויוםיומי. המקור מציג את השיבה לארץ ואת הירשה המחדשת שלה כמרכז הרצף שבפסוקים — ואפשר להרגיש בזה גם את חסד ה׳ שמשיב את בניו הביתה. 🎨 תמונה מוצעת שלוב בין כתב עברי עתיק, הכרזת העצמאות וירושלים.',plainNoVY:'הבאך אל הארץ אשר רש אבתך העם שב לארץ הקשרה לזכרנ ההסטר. הקמה רבנת הדת, העברת שבה להת שפה מדברת, ערם, שבם מסדת לאמם נבנ במ ד העם. העם שב לארץ הקשרה לזכרנ. הקמה רבנת הדת. העברת שבה להת שפה מדברת. ערם, שבם מסדת לאמם נבנ. הקשר בן העם לארצ נעשה ממש םמ. המקר מצג את השבה לארץ את הרשה המחדשת שלה כמרכז הרצף שבפסקם — אפשר להרגש בזה גם את חסד ה׳ שמשב את בנ הבתה. 🎨 תמנה מצעת שלב בן כתב עבר עתק, הכרזת העצמאת רשלם.'},
+{id:'story-9',title:'והיטבך והרבך מאבתיך',plain:'והיטבך והרבך מאבתיך השיבה אינה רק הגעה פיזית. היא גם בניה, צמיחה ויצירה. אכלוסיה יהודית גדולה וצומחת בארץ, הפרחת אזורים שוממים, והתפתחות מדהימה בכל תחום. אכלוסיה יהודית גדולה וצומחת בארץ. הפרחת אזורים שוממים. התפתחות בחקלאות ובתשתיות. השגים במדע, ברפואה ובטכנולוגיה. יצירה יהודיתישראלית חדשה. כל שדה שפורח, כל תינוק שנולד בארץ, הוא עוד תפלה שמתקימת — ועוד סבה להודות לה׳. 🎨 תמונה מוצעת שדה פורח המשתלב בקו הרקיע של עיר מודרנית.',plainNoVY:'הטבך הרבך מאבתך השבה אנה רק הגעה פזת. הא גם בנה, צמחה צרה. אכלסה הדת גדלה צמחת בארץ, הפרחת אזרם שממם, התפתחת מדהמה בכל תחם. אכלסה הדת גדלה צמחת בארץ. הפרחת אזרם שממם. התפתחת בחקלאת בתשתת. השגם במדע, ברפאה בטכנלגה. צרה הדתשראלת חדשה. כל שדה שפרח, כל תנק שנלד בארץ, הא עד תפלה שמתקמת — עד סבה להדת לה׳. 🎨 תמנה מצעת שדה פרח המשתלב בק הרקע של ער מדרנת.'},
+{id:'story-10',title:'ומל ה׳ אלהיך את לבבך ואת לבב זרעך',plain:'ומל ה׳ אלהיך את לבבך ואת לבב זרעך אחד הדברים המיחדים ביותר במדינת ישראל הוא המפגש בין יהודים מכל קצות תבל — מסרות שונות, נגונים שונים, טעמים שונים, וכלם יחד בונים זהות אחת משתפת. חבור בין מסרות שהגיעו מקהלות שונות. זהות משתפת הנבנית בארץ. התקרבות בין חלקי העם. העברת האמונה והזכרון לדור הבא. שאיפה לאהבת ה׳ בכל הלב ובכל הנפש. המקור מצביע על הפסוק כמענה לשאלת המפגש והחבור בין העדות לאחר השיבה לארץ. ולב אחד שמל ה׳, זה בעצם כל עם ישראל שלומד לאהב מחדש — גם את ה׳ וגם את אחיו. 🎨 תמונה מוצעת ילדים מרקעים שונים במעגל סביב ספר תורה.',plainNoVY:'מל ה׳ אלהך את לבבך את לבב זרעך אחד הדברם המחדם בתר במדנת שראל הא המפגש בן הדם מכל קצת תבל — מסרת שנת, נגנם שנם, טעמם שנם, כלם חד בנם זהת אחת משתפת. חבר בן מסרת שהגע מקהלת שנת. זהת משתפת הנבנת בארץ. התקרבת בן חלק העם. העברת האמנה הזכרן לדר הבא. שאפה לאהבת ה׳ בכל הלב בכל הנפש. המקר מצבע על הפסק כמענה לשאלת המפגש החבר בן העדת לאחר השבה לארץ. לב אחד שמל ה׳, זה בעצם כל עם שראל שלמד לאהב מחדש — גם את ה׳ גם את אח. 🎨 תמנה מצעת לדם מרקעם שנם במעגל סבב ספר תרה.'},
+{id:'story-11',title:'על איביך ועל שנאיך אשר רדפוך',plain:'על איביך ועל שנאיך אשר רדפוך גם לאחר השיבה, האיום אינו נעלם לגמרי. ההבדל הגדול הוא שעם ישראל אינו עוד חסר הגנה — מדינת ישראל מסגלת להגן על תושביה. יש הרואים בעצם ההשרדות מול אויבים חלק מהתהליך המתאר בפסוק, המחבר בין רדיפת ישראל לבין המשך השיבה אל המצוות. ⚠️ דגש חינוכי: יש להציג זאת בענווה רבה, בלי לקבוע מהו חשבון שמים בכל אירוע מסוים. אנחנו רק בני אדם, ורק ה׳ יודע את מלוא הסיפור — אבל אנחנו יכולים תמיד לבטוח באהבתו.',plainNoVY:'על אבך על שנאך אשר רדפך גם לאחר השבה, האם אנ נעלם לגמר. ההבדל הגדל הא שעם שראל אנ עד חסר הגנה — מדנת שראל מסגלת להגן על תשבה. ש הראם בעצם ההשרדת מל אבם חלק מהתהלך המתאר בפסק, המחבר בן רדפת שראל לבן המשך השבה אל המצת. ⚠️ דגש חנכ: ש להצג זאת בענה רבה, בל לקבע מה חשבן שמם בכל ארע מסם. אנחנ רק בנ אדם, רק ה׳ דע את מלא הספר — אבל אנחנ כלם תמד לבטח באהבת.'},
+{id:'story-12',title:'ואתה תשוב ושמעת בקול ה׳',plain:'ואתה תשוב ושמעת בקול ה׳ התהליך כלו אינו מסתים בעצמאות מדינית בלבד. יש עוד דרך — פנימית ועדינה — שמובילה ליעד האמתי: קבוץ גליות. בנין הארץ. אחוד העם. תקון הלב. שמיעה בקול ה׳. חיים של תורה, מוסר ואחריות. הארץ היא הבית. התורה מעניקה לבית את נשמתו — ואהבת ה׳ היא האור שמאיר את כל הבית הזה מבפנים.',plainNoVY:'אתה תשב שמעת בקל ה׳ התהלך כל אנ מסתם בעצמאת מדנת בלבד. ש עד דרך — פנמת עדנה — שמבלה לעד האמת: קבץ גלת. בנן הארץ. אחד העם. תקן הלב. שמעה בקל ה׳. חם של תרה, מסר אחרת. הארץ הא הבת. התרה מענקה לבת את נשמת — אהבת ה׳ הא האר שמאר את כל הבת הזה מבפנם.'},
+{id:'story-13',title:'אז והיום — טבלת השתקפות',plain:'אז והיום — טבלת השתקפות כדי לראות איך לשון הפסוק פוגשת את ימי חיינו, הנה טבלה קטנה שמחברת בין העבר להוה: ✨ אז והיום ״בכל הגוים״ — תפוצה יהודית ברחבי העולם. ״והשבת אל לבבך״ — התעוררות זהותית ולאמית. ״וקבצך״ — גלי עליה וקבוץ גליות. ״מקצה השמים״ — עליות מארצות רחוקות. ״אל הארץ״ — שיבה ורבונות בארץ ישראל. ״והיטבך והרבך״ — בנין, צמיחה והתפתחות. ״את לבב זרעך״ — התחדשות רוחנית ביןדורית. ״תשוב ושמעת״ — שאיפה לחיים של תורה ומצוות.',plainNoVY:'אז הם — טבלת השתקפת כד לראת אך לשן הפסק פגשת את מ חנ, הנה טבלה קטנה שמחברת בן העבר להה: ✨ אז הם ״בכל הגם״ — תפצה הדת ברחב העלם. ״השבת אל לבבך״ — התעררת זהתת לאמת. ״קבצך״ — גל עלה קבץ גלת. ״מקצה השמם״ — עלת מארצת רחקת. ״אל הארץ״ — שבה רבנת בארץ שראל. ״הטבך הרבך״ — בנן, צמחה התפתחת. ״את לבב זרעך״ — התחדשת רחנת בןדרת. ״תשב שמעת״ — שאפה לחם של תרה מצת.'},
+{id:'story-14',title:'אנחנו חיים בתוך הספור',plain:'אנחנו חיים בתוך הספור פסוקים שנאמרו לפני אלפי שנים נשמעים בדורנו כתאור של מסע חי: מן הגלות אל הארץ, מן הפזור אל האחדות, ומן השיבה הביתה אל השיבה אל הלב. והספור הזה עוד לא נגמר. אנחנו — כל אחד מאתנו — נמצאים בתוכו ממש עכשו. וכל מעשה טוב, כל מלה של תפלה, כל רגע של אהבת ה׳ שאנו מוסיפים — הוא עוד שורה בספור הגדול הזה. 💬 שאלת סיום לקהל אם אנו חיים בתוך התהליך — מה הוא התפקיד שלנו בהמשכו? ✅ הצעות למנחה / למורה לשלב מפה מונפשת של קיבוץ הגלויות. להשתמש בתמונה חזקה אחת בכל פרק. להקריא את הפסוקים בקול, לאט ובכוונה. לשלב מוזיקה יהודית עדינה ברקע. לסיים בתמונת דמיון של זריחה מעל ירושלים, ובתפילה קטנה של תודה לה׳. 🎨 תמונה מוצעת זריחה מעל ירושלים.',plainNoVY:'אנחנ חם בתך הספר פסקם שנאמר לפנ אלפ שנם נשמעם בדרנ כתאר של מסע ח: מן הגלת אל הארץ, מן הפזר אל האחדת, מן השבה הבתה אל השבה אל הלב. הספר הזה עד לא נגמר. אנחנ — כל אחד מאתנ — נמצאם בתכ ממש עכש. כל מעשה טב, כל מלה של תפלה, כל רגע של אהבת ה׳ שאנ מספם — הא עד שרה בספר הגדל הזה. 💬 שאלת סם לקהל אם אנ חם בתך התהלך — מה הא התפקד שלנ בהמשכ? ✅ הצעת למנחה / למרה לשלב מפה מנפשת של קבץ הגלת. להשתמש בתמנה חזקה אחת בכל פרק. להקרא את הפסקם בקל, לאט בכנה. לשלב מזקה הדת עדנה ברקע. לסם בתמנת דמן של זרחה מעל רשלם, בתפלה קטנה של תדה לה׳. 🎨 תמנה מצעת זרחה מעל רשלם.'}
+];
+
+function stripNikud(s) { return s.normalize('NFKD').replace(/[\u0591-\u05C7]/g, ''); }
+function fold(s, dropVY) {
+  let t = stripNikud(s);
+  if (dropVY) t = t.replace(/[וי]/g, '');
+  return t;
+}
+
+function doSearch(q) {
+  const box = document.getElementById('searchResults');
+  q = q.trim();
+  if (q.length < 2) { box.style.display = 'none'; return; }
+  const q1 = fold(q, false);
+  let hits = searchData.filter(d => d.plain.includes(q1) || d.title.includes(q1));
+  if (!hits.length) {
+    const q2 = fold(q, true);
+    hits = searchData.filter(d => d.plainNoVY.includes(q2));
+  }
+  hits = hits.slice(0, 20);
+  if (!hits.length) {
+    box.innerHTML = '<div class="sr-item">לא נמצאו תוצאות</div>';
+    box.style.display = 'block';
+    return;
+  }
+  box.innerHTML = hits.map(h => {
+    const snip = getSnippet(h.plain, q1);
+    return `<div class="sr-item" onclick="jumpTo('${h.id}')">
+      <strong>${h.title}</strong><br>
+      <small>${snip}</small>
+    </div>`;
+  }).join('');
+  box.style.display = 'block';
+}
+
+function getSnippet(text, q) {
+  const idx = text.indexOf(q);
+  if (idx < 0) return text.slice(0, 80) + '...';
+  const start = Math.max(0, idx - 30);
+  const end   = Math.min(text.length, idx + q.length + 50);
+  const snip  = text.slice(start, end);
+  let re;
+  try { re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'); } catch (e) { return snip; }
+  return (start > 0 ? '...' : '') + snip.replace(re, m => '<mark>' + m + '</mark>') + (end < text.length ? '...' : '');
+}
+
+function jumpTo(id) {
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchBox').value = '';
+  const el = document.getElementById(id);
+  if (!el) return false;
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  el.classList.add('highlight-story');
+  setTimeout(() => el.classList.remove('highlight-story'), 2200);
+  history.pushState(null, '', '#' + id);
+  return false;
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap'))
+    document.getElementById('searchResults').style.display = 'none';
+});
+
+function shareableBaseUrl() {
+  let base = window.location.href;
+  if (window.self !== window.top && document.referrer && /^https?:/i.test(document.referrer)) {
+    base = document.referrer;
+  }
+  return base.split('#')[0];
+}
+
+function copyStoryLink(storyId, button) {
+  const storyUrl = shareableBaseUrl() + '#' + storyId;
+
+  function showCopied() {
+    const oldText = button.innerHTML;
+    button.innerHTML = button.classList.contains('toc-copy-link') ? '✅' : '✅ הקישור הועתק';
+    setTimeout(() => { button.innerHTML = oldText; }, 1800);
+  }
+
+  function fallbackCopy() {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = storyUrl;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (ok) { showCopied(); return; }
+    } catch (err) { /* fall through */ }
+    window.prompt('העתק את הקישור:', storyUrl);
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(storyUrl).then(showCopied, fallbackCopy);
+  } else {
+    fallbackCopy();
+  }
+}
+
+const arrivedOnStory = !!window.location.hash;
+if (arrivedOnStory) document.documentElement.style.scrollBehavior = 'auto';
+
+function storyFromHash() {
+  const id = window.location.hash.replace('#', '');
+  return id ? document.getElementById(id) : null;
+}
+
+function scrollToHashStory() {
+  const story = storyFromHash();
+  if (story) story.scrollIntoView({block: 'start'});
+}
+
+function highlightCurrentStory(jump) {
+  const story = storyFromHash();
+  if (!story) return;
+  if (jump) scrollToHashStory();
+  story.classList.add('highlight-story');
+  setTimeout(() => story.classList.remove('highlight-story'), 3000);
+}
+
+window.addEventListener('load', () => {
+  if (!arrivedOnStory) return;
+  setTimeout(() => {
+    highlightCurrentStory(true);
+    setTimeout(scrollToHashStory, 200);
+    setTimeout(() => {
+      scrollToHashStory();
+      document.documentElement.style.scrollBehavior = '';
+    }, 500);
+  }, 300);
+});
+
+window.addEventListener('hashchange', () => highlightCurrentStory(false));
+</script>
+</body>
+</html>
