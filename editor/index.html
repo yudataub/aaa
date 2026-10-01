@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>עריכת קבצים באתר</title>
+<!--
+  עורך הקבצים של האתרים (aaa / sfarim / nosaim / dvarim).
+  מקור: site-editor/index.html בריפו YUDA. באתר: yudataub.github.io/aaa/editor/
+  כל הבדיקות (סיסמה, תיקייה, סוג קובץ, התנגשות) קורות בשרת — site_editor.gs.
+  הדף רק מציג ושולח. בקשות POST כ-text/plain (בלי preflight — Apps Script לא עונה לו).
+  דפי HTML נפתחים ב-visual.html (העורך הוויזואלי); ?code=1 פותח אותם כאן כקוד.
+-->
+<style>
+  :root {
+    --bg: #f6f4fb; --panel: #ffffff; --ink: #1f1b2e; --muted: #6b6580; --line: #e4dff0;
+    --accent: #6a3fd1; --accent-ink: #ffffff; --accent-soft: #efe9fc;
+    --ok: #1e7d4f; --warn: #a15c00; --err: #b3261e; --code-bg: #fbfaff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15131c; --panel: #1e1b28; --ink: #ece9f5; --muted: #a29cb8; --line: #322d42;
+      --accent: #a78bfa; --accent-ink: #15131c; --accent-soft: #2a2440; --ok: #5fd39a; --warn: #f0b35a; --err: #ff8a80; --code-bg: #191622; }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { display: flex; flex-direction: column; background: var(--bg); color: var(--ink); font: 15px/1.5 "Segoe UI", "Rubik", "Assistant", Arial, sans-serif; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 1px solid var(--line); background: var(--panel); border-radius: 8px; padding: 6px 12px; }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:disabled { opacity: .5; cursor: default; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  a { color: var(--accent); }
+  [hidden] { display: none !important; }
+
+  header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 18px; margin: 0; flex: 1; }
+  header .who { color: var(--muted); font-size: 14px; }
+
+  #login { max-width: 380px; margin: 12vh auto 0; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 28px 24px; }
+  #login h2 { margin: 0 0 6px; font-size: 20px; }
+  #login p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+  #login input { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); margin-bottom: 12px; }
+  #login button { width: 100%; padding: 10px; }
+
+  #app { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(260px, 340px) 1fr; }
+  #side { border-left: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; min-height: 0; }
+  #repos { display: flex; gap: 6px; padding: 10px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+  #repos button { padding: 4px 10px; font-size: 14px; }
+  #repos button.on { background: var(--accent-soft); border-color: var(--accent); font-weight: 600; }
+  #search { margin: 10px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+  #tree { flex: 1; overflow: auto; padding: 0 6px 16px; font-size: 14px; }
+  .row { display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row:hover { background: var(--accent-soft); }
+  .row.cur { background: var(--accent-soft); font-weight: 600; }
+  .row.dim { color: var(--muted); cursor: default; }
+  .row.dim:hover { background: none; }
+  .row .ic { flex: none; width: 1.2em; text-align: center; }
+  .row .nm { overflow: hidden; text-overflow: ellipsis; }
+  .row .sub { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
+  .kids { padding-right: 14px; }
+  .empty { color: var(--muted); padding: 16px; font-size: 14px; }
+
+  #main { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  #bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  #crumb { flex: 1; min-width: 160px; font-size: 14px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; }
+  #crumb b { color: var(--ink); }
+  #dirty { color: var(--warn); font-size: 13px; }
+  #edwrap { flex: 1; display: flex; min-height: 0; background: var(--code-bg); }
+  #gutter { flex: none; padding: 12px 8px; text-align: left; color: var(--muted); font: 13px/1.6 Consolas, "Cascadia Mono", monospace; overflow: hidden; user-select: none; border-left: 1px solid var(--line); white-space: pre; }
+  #ed { flex: 1; border: 0; resize: none; padding: 12px 14px; background: transparent; outline: none; font: 14px/1.6 Consolas, "Cascadia Mono", "Courier New", monospace; tab-size: 2; }
+  #ed.wrap { white-space: pre-wrap; font-family: "Segoe UI", "Rubik", Arial, sans-serif; font-size: 15px; }
+  #ed:not(.wrap) { white-space: pre; overflow-wrap: normal; overflow-x: auto; }
+  #welcome { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--muted); padding: 24px; text-align: center; }
+
+  #toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); background: var(--ink); color: var(--panel); padding: 10px 18px; border-radius: 10px; font-size: 14px; max-width: 90vw; box-shadow: 0 6px 24px rgba(0,0,0,.2); z-index: 20; }
+  #toast.err { background: var(--err); color: #fff; }
+
+  #hist { position: fixed; inset: 0; background: rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center; z-index: 10; padding: 16px; }
+  #hist > div { background: var(--panel); border-radius: 14px; padding: 18px; width: min(520px, 100%); max-height: 80vh; overflow: auto; }
+  #hist h3 { margin: 0 0 4px; }
+  #hist p { margin: 0 0 12px; color: var(--muted); font-size: 14px; }
+  .ver { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); }
+  .ver div { flex: 1; min-width: 0; }
+  .ver small { color: var(--muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  #back { display: none; }
+  @media (max-width: 760px) {
+    #app { grid-template-columns: 1fr; }
+    #app.editing #side { display: none; }
+    #app:not(.editing) #main { display: none; }
+    #back { display: inline-block; }
+    header h1 { font-size: 16px; }
+    #crumb { order: -1; flex-basis: 100%; }
+    #gutter { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>✏️ עריכת קבצים באתר</h1>
+  <span class="who" id="who"></span>
+  <button id="logout" hidden>יציאה</button>
+</header>
+
+<form id="login" hidden>
+  <h2>כניסה</h2>
+  <p>הסיסמה מתקבלת מבעל האתר. כל אחד רואה רק את הקבצים שמותר לו לערוך.</p>
+  <input id="pw" type="password" autocomplete="current-password" placeholder="סיסמה" required>
+  <button class="primary" type="submit">כניסה</button>
+</form>
+
+<div id="app" hidden>
+  <aside id="side">
+    <div id="repos"></div>
+    <input id="search" type="search" placeholder="🔎 חיפוש קובץ…">
+    <div id="tree"></div>
+  </aside>
+  <section id="main">
+    <div id="bar" hidden>
+      <button id="back">→ לרשימה</button>
+      <span id="crumb"></span>
+      <span id="dirty" hidden>● לא נשמר</span>
+      <button id="wrapBtn" title="גלישת שורות">↵</button>
+      <button id="histBtn">🕒 גרסאות קודמות</button>
+      <a id="viewBtn" target="_blank" rel="noopener">🌐 צפייה באתר</a>
+      <button id="saveBtn" class="primary">📤 שמור</button>
+    </div>
+    <div id="welcome">בחרו קובץ מהרשימה כדי לערוך אותו.<br>דפי HTML נפתחים בעורך הוויזואלי.</div>
+    <div id="edwrap" hidden><pre id="gutter"></pre><textarea id="ed" spellcheck="false"></textarea></div>
+  </section>
+</div>
+
+<div id="hist" hidden><div>
+  <h3>🕒 גרסאות קודמות</h3>
+  <p>טעינת גרסה מכניסה אותה לעורך. היא תחליף את הקובץ באתר רק אחרי "📤 שמור".</p>
+  <div id="vers"></div>
+  <div style="text-align:left;margin-top:10px"><button id="histClose">סגירה</button></div>
+</div></div>
+
+<div id="toast" hidden></div>
+
+<script>
+const PASS_KEY = 'hx-site-edit-password';   // משותף עם visual.html ועם העורך הישן של התמלולים
+const TEXT_WRAP = /\.(md|txt|csv)$/i;        // קבצי טקסט עבריים — גלישת שורות וימין-לשמאל
+const $ = id => document.getElementById(id);
+let cfg = {}, password = '', me = null, files = [], repo = '', cur = null; // cur = {path, sha, url, saved}
+
+function store(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+function stored(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+
+let toastTimer;
+function toast(msg, err) {
+  const t = $('toast');
+  t.textContent = msg; t.className = err ? 'err' : ''; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.hidden = true, err ? 7000 : 3500);
+}
+
+async function api(body) {
+  if (!cfg.endpoint) return { ok: false, error: 'העריכה עוד לא הופעלה — פנו לבעל האתר' };
+  try {
+    const t = await fetch(cfg.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ password }, body)) }).then(r => r.text());
+    try { return JSON.parse(t); }
+    catch (e) { return { ok: false, error: 'שרת השמירה לא עונה כמו שצריך — פנו לבעל האתר' }; }
+  } catch (e) { return { ok: false, error: 'אין חיבור לשרת השמירה (' + e.message + ')' }; }
+}
+
+// ─── כניסה ───
+async function login(pw) {
+  password = pw;
+  const r = await api({ action: 'login' });
+  if (!r.ok) {
+    if (r.badPassword) store(PASS_KEY, null);
+    showLogin(r.error);
+    return;
+  }
+  store(PASS_KEY, pw);
+  me = r;
+  $('login').hidden = true; $('app').hidden = false; $('logout').hidden = false;
+  $('who').textContent = 'שלום ' + r.name;
+  (r.warnings || []).forEach(w => toast(w, true));
+  const box = $('repos'); box.innerHTML = '';
+  r.repos.forEach(name => {
+    const b = document.createElement('button');
+    b.textContent = name; b.dataset.repo = name;
+    b.onclick = () => chooseRepo(name);
+    box.appendChild(b);
+  });
+  box.hidden = r.repos.length < 2;
+  const q = new URLSearchParams(location.search);
+  const want = q.get('repo');
+  await chooseRepo(r.repos.includes(want) ? want : r.repos[0]);
+  if (want && q.get('path')) openFile(q.get('path'), q.get('code') === '1');
+}
+
+function showLogin(err) {
+  $('app').hidden = true; $('logout').hidden = true; $('who').textContent = '';
+  $('login').hidden = false; $('pw').value = ''; $('pw').focus();
+  if (err) toast(err, true);
+}
+
+$('login').onsubmit = e => { e.preventDefault(); login($('pw').value.trim()); };
+$('logout').onclick = () => { if (!confirmLeave()) return; store(PASS_KEY, null); password = ''; cur = null; showLogin(); };
+
+// ─── רשימת קבצים ───
+async function chooseRepo(name) {
+  if (name !== repo && !confirmLeave()) return;
+  repo = name;
+  document.querySelectorAll('#repos button').forEach(b => b.classList.toggle('on', b.dataset.repo === name));
+  $('tree').innerHTML = '<div class="empty">טוען…</div>';
+  const r = await api({ action: 'list', repo: name });
+  if (!r.ok) { $('tree').innerHTML = ''; toast(r.error, true); return; }
+  files = r.files;
+  if (!cur || cur.repo !== name) closeEditor();
+  renderTree();
+}
+
+const ICONS = { html: '🌐', htm: '🌐', md: '📝', txt: '📝', json: '🧩', css: '🎨', js: '⚙️', csv: '📊', svg: '🖼️', pdf: '📕', png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️', webp: '🖼️', docx: '📘', mp3: '🎵', mp4: '🎬' };
+const ext = p => (p.split('.').pop() || '').toLowerCase();
+const open = new Set();
+
+function renderTree() {
+  const q = $('search').value.trim().toLowerCase();
+  const box = $('tree'); box.innerHTML = '';
+  if (!files.length) { box.innerHTML = '<div class="empty">אין כאן קבצים.</div>'; return; }
+  if (q) {
+    const hits = files.filter(f => f.path.toLowerCase().includes(q)).slice(0, 300);
+    if (!hits.length) box.innerHTML = '<div class="empty">לא נמצא.</div>';
+    hits.forEach(f => box.appendChild(fileRow(f, true)));
+    return;
+  }
+  // עץ: תיקיות קודם, ואז קבצים; ילדים נבנים רק כשהתיקייה פתוחה
+  const root = { dirs: {}, files: [] };
+  files.forEach(f => {
+    const parts = f.path.split('/'); let node = root;
+    parts.slice(0, -1).forEach(p => node = node.dirs[p] = node.dirs[p] || { dirs: {}, files: [] });
+    node.files.push(f);
+  });
+  // תיקייה יחידה בשורש (מרצה עם תיקייה אחת) — פותחים אותה מראש
+  let prefix = '', node = root;
+  while (!node.files.length && Object.keys(node.dirs).length === 1) {
+    const k = Object.keys(node.dirs)[0]; prefix += k + '/'; node = node.dirs[k]; open.add(prefix.slice(0, -1));
+  }
+  box.appendChild(renderNode(root, ''));
+}
+
+function renderNode(node, base) {
+  const frag = document.createDocumentFragment();
+  Object.keys(node.dirs).sort((a, b) => a.localeCompare(b, 'he')).forEach(name => {
+    const full = base + name, isOpen = open.has(full);
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = '<span class="ic">' + (isOpen ? '📂' : '📁') + '</span><span class="nm"></span>';
+    row.querySelector('.nm').textContent = name;
+    const kids = document.createElement('div'); kids.className = 'kids';
+    if (isOpen) kids.appendChild(renderNode(node.dirs[name], full + '/'));
+    row.onclick = () => {
+      if (open.has(full)) { open.delete(full); kids.innerHTML = ''; row.querySelector('.ic').textContent = '📁'; }
+      else { open.add(full); kids.appendChild(renderNode(node.dirs[name], full + '/')); row.querySelector('.ic').textContent = '📂'; }
+    };
+    frag.appendChild(row); frag.appendChild(kids);
+  });
+  node.files.slice().sort((a, b) => a.path.localeCompare(b.path, 'he')).forEach(f => frag.appendChild(fileRow(f, false)));
+  return frag;
+}
+
+function fileRow(f, showDir) {
+  const row = document.createElement('div');
+  const name = f.path.split('/').pop();
+  row.className = 'row' + (f.editable ? '' : ' dim') + (cur && cur.path === f.path ? ' cur' : '');
+  row.title = f.editable ? f.path : f.path + ' — אי אפשר לערוך את סוג הקובץ הזה כאן';
+  row.innerHTML = '<span class="ic">' + (ICONS[ext(name)] || '📄') + '</span><span class="nm"></span>' + (showDir ? '<span class="sub"></span>' : '');
+  row.querySelector('.nm').textContent = name;
+  if (showDir) row.querySelector('.sub').textContent = f.path.split('/').slice(0, -1).join('/');
+  if (f.editable) row.onclick = () => openFile(f.path, false);
+  return row;
+}
+
+$('search').oninput = renderTree;
+
+// ─── עורך ───
+async function openFile(path, asCode) {
+  if (/\.html?$/i.test(path) && !asCode) {
+    if (!confirmLeave()) return;
+    location.href = 'visual.html?repo=' + encodeURIComponent(repo) + '&path=' + encodeURIComponent(path);
+    return;
+  }
+  if (!confirmLeave()) return;
+  toast('טוען…');
+  const r = await api({ action: 'read', repo, path });
+  if (!r.ok) { toast(r.error, true); return; }
+  cur = { repo, path, sha: r.sha, url: r.url, saved: r.text };
+  const ed = $('ed');
+  ed.value = r.text;
+  const wrap = TEXT_WRAP.test(path);
+  ed.classList.toggle('wrap', wrap);
+  ed.dir = wrap ? 'rtl' : 'ltr';
+  $('welcome').hidden = true; $('edwrap').hidden = false; $('bar').hidden = false;
+  const parts = path.split('/');
+  $('crumb').innerHTML = ''; $('crumb').title = repo + '/' + path;
+  $('crumb').append(repo + ' / ' + (parts.length > 1 ? parts.slice(0, -1).join(' / ') + ' / ' : ''));
+  const b = document.createElement('b'); b.textContent = parts.pop(); $('crumb').appendChild(b);
+  $('viewBtn').href = r.url;
+  $('app').classList.add('editing');
+  history.replaceState(null, '', '?repo=' + encodeURIComponent(repo) + '&path=' + encodeURIComponent(path) + (asCode && /\.html?$/i.test(path) ? '&code=1' : ''));
+  updateGutter(); markDirty();
+  renderTree();   // סימון הקובץ הפתוח
+  $('toast').hidden = true;
+  ed.focus(); ed.setSelectionRange(0, 0); ed.scrollTop = 0;
+}
+
+function closeEditor() {
+  cur = null;
+  $('welcome').hidden = false; $('edwrap').hidden = true; $('bar').hidden = true;
+  $('app').classList.remove('editing');
+}
+
+function markDirty() { $('dirty').hidden = !cur || $('ed').value === cur.saved; }
+function confirmLeave() { return !cur || $('ed').value === cur.saved || confirm('יש שינויים שלא נשמרו. לצאת בלי לשמור?'); }
+
+function updateGutter() {
+  const ed = $('ed'), g = $('gutter');
+  if (ed.classList.contains('wrap')) { g.hidden = true; return; }
+  g.hidden = false;
+  const n = ed.value.split('\n').length;
+  if (g.dataset.n != n) { g.textContent = Array.from({ length: n }, (_, i) => i + 1).join('\n'); g.dataset.n = n; }
+  g.scrollTop = ed.scrollTop;
+}
+
+$('ed').addEventListener('input', () => { updateGutter(); markDirty(); });
+$('ed').addEventListener('scroll', () => $('gutter').scrollTop = $('ed').scrollTop);
+$('ed').addEventListener('keydown', e => {
+  if (e.key === 'Tab' && !e.ctrlKey && !e.altKey) { // Tab מוסיף רווחים במקום לצאת מהעורך
+    e.preventDefault();
+    document.execCommand('insertText', false, '  ');
+  }
+});
+$('wrapBtn').onclick = () => { $('ed').classList.toggle('wrap'); updateGutter(); };
+$('back').onclick = () => { if (confirmLeave()) { closeEditor(); history.replaceState(null, '', '?repo=' + encodeURIComponent(repo)); } };
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); if (cur) save(false); }
+});
+window.addEventListener('beforeunload', e => { if (cur && $('ed').value !== cur.saved) { e.preventDefault(); e.returnValue = ''; } });
+
+let saving = false;
+async function save(confirmShrink) {
+  if (saving || !cur) return;
+  if ($('ed').value === cur.saved) { toast('אין שינויים לשמור'); return; }  // בלי גרסה ריקה בהיסטוריה
+  saving = true; $('saveBtn').disabled = true;
+  toast('שומר…');
+  const text = $('ed').value;
+  const r = await api({ action: 'save', repo: cur.repo, path: cur.path, text, sha: cur.sha, confirmShrink });
+  saving = false; $('saveBtn').disabled = false;
+  if (r.ok) {
+    cur.sha = r.sha; cur.saved = text; markDirty();
+    toast('✓ נשמר באתר — הגרסה החדשה תופיע בתוך כדקה');
+    const f = files.find(x => x.path === cur.path); if (f) f.sha = r.sha;
+    return;
+  }
+  if (r.shrink && confirm('הקובץ התקצר מאוד לעומת הגרסה באתר. לשמור בכל זאת?')) return save(true);
+  if (r.conflict) {
+    if (confirm('מישהו אחר שמר את הקובץ הזה בינתיים.\nלטעון את הגרסה החדשה מהאתר? השינויים שלך יועתקו ללוח, כדי שתוכלו להדביק אותם.')) {
+      await keepMine(text, cur.path);
+      cur.saved = $('ed').value;   // לא לשאול שוב "לצאת בלי לשמור"
+      openFile(cur.path, true);
+    }
+    return;
+  }
+  if (r.badPassword) { store(PASS_KEY, null); showLogin(r.error); return; }
+  toast('השמירה נכשלה: ' + (r.error || 'שגיאה לא ידועה'), true);
+}
+$('saveBtn').onclick = () => save(false);
+
+// השינויים של המרצה לפני טעינת הגרסה של מישהו אחר: ללוח, ואם אי אפשר — כקובץ שיורד
+async function keepMine(text, path) {
+  try { await navigator.clipboard.writeText(text); return; } catch (e) {}
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+  a.download = 'השינויים שלי - ' + path.split('/').pop();
+  document.body.appendChild(a); a.click(); a.remove();
+  toast('השינויים שלך ירדו כקובץ: ' + a.download);
+}
+
+// ─── גרסאות קודמות ───
+$('histBtn').onclick = async () => {
+  if (!cur) return;
+  $('vers').innerHTML = '<div class="empty">טוען…</div>'; $('hist').hidden = false;
+  const r = await api({ action: 'history', repo: cur.repo, path: cur.path });
+  $('vers').innerHTML = '';
+  if (!r.ok) { $('vers').innerHTML = '<div class="empty"></div>'; $('vers').firstChild.textContent = r.error; return; }
+  r.versions.forEach((v, i) => {
+    const row = document.createElement('div'); row.className = 'ver';
+    const when = new Date(v.date).toLocaleString('he-IL', { dateStyle: 'medium', timeStyle: 'short' });
+    row.innerHTML = '<div><b></b><small></small></div>';
+    row.querySelector('b').textContent = when + (i === 0 ? ' (הנוכחית)' : '');
+    row.querySelector('small').textContent = v.message;
+    if (i > 0) {
+      const b = document.createElement('button'); b.textContent = 'טען גרסה זו';
+      b.onclick = async () => {
+        const old = await api({ action: 'version', repo: cur.repo, path: cur.path, commit: v.commit });
+        if (!old.ok) { toast(old.error, true); return; }
+        $('ed').value = old.text; updateGutter(); markDirty(); $('hist').hidden = true;
+        toast('נטענה הגרסה מ-' + when + '. כדי לשחזר אותה — "📤 שמור"');
+      };
+      row.appendChild(b);
+    }
+    $('vers').appendChild(row);
+  });
+};
+$('histClose').onclick = () => $('hist').hidden = true;
+$('hist').onclick = e => { if (e.target === $('hist')) $('hist').hidden = true; };
+
+// ─── התחלה ───
+(async function start() {
+  try { cfg = await fetch('config.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : {}); } catch (e) { cfg = {}; }
+  const pw = stored(PASS_KEY);
+  if (pw) login(pw); else showLogin(cfg.endpoint ? '' : 'העריכה עוד לא הופעלה — פנו לבעל האתר');
+})();
+</script>
+</body>
+</html>
