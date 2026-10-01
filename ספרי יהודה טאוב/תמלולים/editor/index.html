@@ -389,7 +389,7 @@
   <div class="preview-wrap">
     <div class="preview-header">
       <h2>תצוגה מקדימה</h2>
-      <div id="siteBar"><span>✏️ עריכת שיעור:</span><span class="site-title" id="siteTitle"></span><a id="siteBack" href="#">↩ חזרה לשיעור</a></div>
+      <div id="siteBar"><span id="siteLabel">✏️ עריכת שיעור:</span><span class="site-title" id="siteTitle"></span><a id="siteBack" href="#">↩ חזרה לשיעור</a><a id="siteFiles" href="#" style="display:none;">📁 כל הקבצים</a><a id="siteCode" href="#" style="display:none;" title="עריכת קוד ה-HTML כטקסט">&lt;/&gt; קוד</a></div>
       <div class="preview-toolbar" id="previewToolbar">
         <button class="fmt-btn" onmousedown="event.preventDefault()" onclick="formatText('bold')" title="הדגשה"><b>B</b></button>
         <button class="fmt-btn" onmousedown="event.preventDefault()" onclick="formatText('underline')" title="קו תחתון"><u>U</u></button>
@@ -403,6 +403,7 @@
         <button class="fmt-btn" onmousedown="event.preventDefault()" onclick="openTooltipModal()" title="הוסף בלון הסבר">💬 הוסף בלון</button>
         <button class="fmt-btn" onmousedown="event.preventDefault()" onclick="openNoteModal()" title="הוסף פתק מתקפל עם טקסט ארוך על הטקסט המסומן">📝 הוסף פתק</button>
         <button class="fmt-btn" onmousedown="event.preventDefault()" onclick="togglePageBreak()" title="התחל עמוד חדש בהדפסה/PDF מכאן">📄⏎ עמוד חדש (PDF)</button>
+        <button id="siteHistBtn" onclick="openSiteHistory()" style="display:none;" title="גרסאות קודמות של הדף — לשחזור">🕒 גרסאות</button>
         <button id="siteSaveBtn" onclick="saveToSite()" style="display:none;" title="שמירת השיעור הערוך באתר (גם Ctrl+S)">📤 שמור באתר</button>
         <button class="secondary" id="fullWindowToggleBtn" onclick="toggleFullWindow()">⛶ פתח בחלון מלא</button>
       </div>
@@ -806,7 +807,11 @@ function previewHTML() {
     doc.addEventListener('click', handlePreviewNoteClick);
   };
 
-  iframe.srcdoc = content;
+  /* עריכה מהאתר: הסקריפטים של הדף לא רצים בתצוגה. התצוגה ב-srcdoc חולקת origin עם
+     העורך (yudataub.github.io), וסקריפט בדף היה יכול לקרוא את סיסמת העריכה מה-localStorage.
+     allow-same-origin בלי allow-scripts — העורך עצמו עדיין ניגש ל-contentDocument כרגיל. */
+  if (siteEdit) iframe.setAttribute('sandbox', 'allow-same-origin allow-popups allow-popups-to-escape-sandbox');
+  iframe.srcdoc = withSiteBase(content);
 }
 
 /* לחיצה על קישור בתוך העורך.
@@ -900,6 +905,8 @@ function getCleanHtml(iframe) {
   if (!doc || !doc.documentElement) return null;
 
   const clone = doc.documentElement.cloneNode(true);
+  /* ה-<base> שהוזרק לתצוגה בלבד (withSiteBase) — לא נכנס לקובץ */
+  clone.querySelectorAll('base[data-site-editor]').forEach(function (b) { b.remove(); });
   const cloneBody = clone.querySelector('body');
   if (cloneBody) {
     cloneBody.removeAttribute('contenteditable');
@@ -1755,7 +1762,9 @@ const SITE_PASS_KEY = 'hx-site-edit-password';
 
 (function setupSiteEdit() {
   document.addEventListener('DOMContentLoaded', async function () {
-    const file = new URLSearchParams(location.search).get('file');
+    const q = new URLSearchParams(location.search);
+    if (q.get('repo') && q.get('path') && /^https?:$/.test(location.protocol)) return setupFileEdit(q.get('repo'), q.get('path'));
+    const file = q.get('file');
     if (!file || !/^https?:$/.test(location.protocol)) return;
     const msg = document.getElementById('msg');
     if (!/^[^\/\\]+\.html$/.test(file)) { msg.textContent = 'קישור עריכה לא תקין'; return; }
@@ -1788,6 +1797,7 @@ const SITE_PASS_KEY = 'hx-site-edit-password';
 
 async function saveToSite() {
   if (!siteEdit) return;
+  if (siteEdit.repo) return saveFileToSite(false);
   if (!siteEdit.endpoint) { notifyPreview('השמירה לאתר עוד לא הופעלה — פנו לבעל האתר'); return; }
   flushPendingSync();
   let password = '';
@@ -1823,6 +1833,156 @@ async function saveToSite() {
   } finally {
     btn.disabled = false;
   }
+}
+
+/* ═══ עריכת כל דף HTML באתרים (עורך הקבצים) ═══
+   נפתח מ-editor/index.html באתר עם ?repo=<אתר>&path=<נתיב>. הקריאה והשמירה דרך
+   הפעולות read/save של site_editor.gs (באותו Web App), עם ה-sha שהדף נפתח בו —
+   אם מישהו שמר בינתיים, השרת מחזיר conflict ולא דורס.
+   תמונות/CSS שליד הדף מוצגים בזכות <base> שמוזרק לתצוגה בלבד (withSiteBase)
+   ומוסר ב-getCleanHtml, כך שהקובץ השמור לא משתנה מעבר למה שערכו. */
+function withSiteBase(html) {
+  if (!siteEdit || !siteEdit.base) return html;
+  const tag = '<base href="' + siteEdit.base.replace(/"/g, '&quot;') + '" data-site-editor>';
+  const m = /<head(\s[^>]*)?>/i.exec(html);
+  return m ? html.slice(0, m.index + m[0].length) + tag + html.slice(m.index + m[0].length) : tag + html;
+}
+
+async function siteApi(body) {
+  let password = '';
+  try { password = localStorage.getItem(SITE_PASS_KEY) || ''; } catch (e) {}
+  try {
+    const t = await fetch(siteEdit.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ password: password }, body)) }).then(r => r.text());
+    try { return JSON.parse(t); }
+    catch (e) { return { ok: false, error: 'שרת השמירה לא עונה כמו שצריך — פנו לבעל האתר' }; }
+  } catch (e) { return { ok: false, error: 'אין חיבור לשרת השמירה (' + e.message + ')' }; }
+}
+
+function toFileList(extra) {
+  return 'index.html?repo=' + encodeURIComponent(siteEdit.repo) + (extra || '');
+}
+
+async function setupFileEdit(repo, path) {
+  const msg = document.getElementById('msg');
+  let password = '';
+  try { password = localStorage.getItem(SITE_PASS_KEY) || ''; } catch (e) {}
+  const back = 'index.html?repo=' + encodeURIComponent(repo) + '&path=' + encodeURIComponent(path);
+  if (!password) { location.replace(back); return; }   /* הכניסה בסיסמה — בדף הרשימה */
+  try {
+    const cfg = await fetch('config.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : {});
+    siteEdit = { repo: repo, path: path, endpoint: cfg.endpoint || '', sha: '' };
+    if (!siteEdit.endpoint) { msg.textContent = 'העריכה עוד לא הופעלה — פנו לבעל האתר'; return; }
+    const r = await siteApi({ action: 'read', repo: repo, path: path });
+    if (!r.ok) {
+      if (r.badPassword) { try { localStorage.removeItem(SITE_PASS_KEY); } catch (e) {} location.replace(back); return; }
+      msg.textContent = 'שגיאה בטעינת הדף: ' + r.error;
+      return;
+    }
+    const dir = path.split('/').slice(0, -1).map(encodeURIComponent).join('/');
+    /* cfg.pagesBase — רק בשרת הפיתוח (dev_server.js); באתר: התיקייה של הדף ב-Pages */
+    siteEdit.base = cfg.pagesBase ? cfg.pagesBase + repo + '/' + (dir ? dir + '/' : '')
+                                  : r.url.slice(0, r.url.lastIndexOf('/') + 1);
+    siteEdit.sha = r.sha;
+    const name = path.split('/').pop();
+    document.getElementById('code').value = r.text;
+    document.getElementById('filename').value = name.replace(/\.html?$/i, '');
+    document.body.classList.add('site-mode');
+    document.title = '✏️ ' + name;
+    document.getElementById('siteLabel').textContent = '✏️ עריכה:';
+    document.getElementById('siteTitle').textContent = name;
+    document.getElementById('siteTitle').title = repo + '/' + path;
+    const view = document.getElementById('siteBack');
+    view.textContent = '🌐 צפייה באתר'; view.href = r.url; view.target = '_blank';
+    const files = document.getElementById('siteFiles');
+    files.href = toFileList(); files.style.display = '';
+    const code = document.getElementById('siteCode');
+    code.href = back + '&code=1'; code.style.display = '';
+    document.getElementById('siteSaveBtn').style.display = '';
+    document.getElementById('siteHistBtn').style.display = '';
+    previewHTML();
+    markClean();
+    notifyPreview('מתקנים ישירות על הדף, ובסוף "📤 שמור באתר" (או Ctrl+S)');
+  } catch (err) {
+    msg.textContent = 'שגיאה בטעינת הדף: ' + err.message;
+  }
+}
+
+async function saveFileToSite(confirmShrink) {
+  flushPendingSync();
+  const btn = document.getElementById('siteSaveBtn');
+  if (btn.disabled) return;
+  if (!isDirty) { notifyPreview('אין שינויים לשמור'); return; }  /* בלי גרסה ריקה בהיסטוריה */
+  btn.disabled = true;
+  notifyPreview('שומר באתר...');
+  const text = getContent();
+  const res = await siteApi({ action: 'save', repo: siteEdit.repo, path: siteEdit.path, text: text, sha: siteEdit.sha, confirmShrink: !!confirmShrink });
+  btn.disabled = false;
+  if (res.ok) {
+    siteEdit.sha = res.sha;
+    markClean();
+    notifyPreview('✓ נשמר באתר — הגרסה החדשה תופיע תוך כדקה');
+    return;
+  }
+  if (res.shrink && confirm('הדף התקצר מאוד לעומת הגרסה באתר. לשמור בכל זאת?')) return saveFileToSite(true);
+  if (res.conflict) {
+    if (confirm('מישהו אחר שמר את הדף הזה בינתיים.\nלטעון את הגרסה החדשה מהאתר? השינויים שלך יירדו כקובץ, כדי שלא ילכו לאיבוד.')) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([text], { type: 'text/html;charset=utf-8' }));
+      a.download = 'השינויים שלי - ' + siteEdit.path.split('/').pop();
+      document.body.appendChild(a); a.click(); a.remove();
+      markClean();
+      setTimeout(function () { location.reload(); }, 300);
+    }
+    return;
+  }
+  if (res.badPassword) {
+    try { localStorage.removeItem(SITE_PASS_KEY); } catch (e) {}
+    notifyPreview('הסיסמה כבר לא תקפה — היכנסו מחדש מדף "📁 כל הקבצים" (השינויים עדיין כאן, לא לסגור את הדף)');
+    return;
+  }
+  notifyPreview('השמירה נכשלה: ' + (res.error || 'שגיאה לא ידועה'));
+}
+
+/* גרסאות קודמות: טעינה לעורך בלבד. מחליפה את הדף באתר רק אחרי "📤 שמור באתר" */
+async function openSiteHistory() {
+  const old = document.getElementById('siteHistory');
+  if (old) old.remove();
+  const box = document.createElement('div');
+  box.id = 'siteHistory';
+  box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px';
+  box.innerHTML = '<div style="background:#fff;border-radius:14px;padding:18px;width:min(520px,100%);max-height:80vh;overflow:auto;direction:rtl;font-size:14px">' +
+    '<h3 style="margin:0 0 4px">🕒 גרסאות קודמות</h3><p style="margin:0 0 10px;color:#666">טעינת גרסה מכניסה אותה לעורך. היא תחליף את הדף באתר רק אחרי "📤 שמור באתר".</p>' +
+    '<div class="vers">טוען…</div><div style="text-align:left;margin-top:10px"><button type="button" class="close">סגירה</button></div></div>';
+  box.addEventListener('click', function (e) { if (e.target === box || e.target.classList.contains('close')) box.remove(); });
+  document.body.appendChild(box);
+  const list = box.querySelector('.vers');
+  const r = await siteApi({ action: 'history', repo: siteEdit.repo, path: siteEdit.path });
+  if (!r.ok) { list.textContent = r.error; return; }
+  list.textContent = '';
+  r.versions.forEach(function (v, i) {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid #eee';
+    const when = new Date(v.date).toLocaleString('he-IL', { dateStyle: 'medium', timeStyle: 'short' });
+    const info = document.createElement('div'); info.style.flex = '1';
+    const b = document.createElement('b'); b.textContent = when + (i === 0 ? ' (הנוכחית)' : '');
+    const small = document.createElement('div'); small.style.color = '#777'; small.textContent = v.message;
+    info.append(b, small); row.appendChild(info);
+    if (i > 0) {
+      const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = 'טען גרסה זו';
+      btn.onclick = async function () {
+        const ver = await siteApi({ action: 'version', repo: siteEdit.repo, path: siteEdit.path, commit: v.commit });
+        if (!ver.ok) { notifyPreview(ver.error); return; }
+        document.getElementById('code').value = ver.text;
+        previewHTML();
+        markDirty();
+        box.remove();
+        notifyPreview('נטענה הגרסה מ-' + when + '. כדי לשחזר אותה — "📤 שמור באתר"');
+      };
+      row.appendChild(btn);
+    }
+    list.appendChild(row);
+  });
 }
 
 </script>
