@@ -1805,7 +1805,11 @@ async function saveToSite() {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({ file: siteEdit.file, password: password, html: getContent() })
-    }).then(r => r.json());
+    }).then(r => r.text()).then(t => {
+      /* כתובת שגויה / פריסה ישנה — גוגל מחזיר דף HTML ולא JSON */
+      try { return JSON.parse(t); }
+      catch (e) { return { ok: false, error: 'שרת השמירה לא עונה כמו שצריך — פנו לבעל האתר (צריך לבדוק את כתובת ה-Web App)' }; }
+    });
     if (res.ok) {
       try { localStorage.setItem(SITE_PASS_KEY, password); } catch (e) {}
       markClean();
