@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 אֶרֶץ חֶמְדָּה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>📖 אֶרֶץ חֶמְדָּה</h1>
+  <p>תיקון חטא המרגלים על ידי הודיה על ארץ ישראל — מסולם יעקב ועד מכתבו הנרגש של הרב דסלר</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+        <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ השיעור המלא בווידאו" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/XqJ8FW4PENo?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/XqJ8FW4PENo/hqdefault.jpg" alt="השיעור המלא בווידאו" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=XqJ8FW4PENo" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+    <div style="margin:-12px 6px 24px;color:var(--ink-soft)"><div style="font-weight:700;margin-bottom:4px">סרטונים נוספים הקשורים לשיעור:</div><div><a href="https://www.youtube.com/watch?v=hEOeL9asSPI" target="_blank" rel="noopener" style="color:#c4002b;text-decoration:none;font-weight:700">הודיה על ארץ ישראל ↗</a></div></div>
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">הקדמה</div>
+      <h3 class="story-title">📖 הקדמה</h3>
+      <p>חטא המרגלים היה, במהותו, הוצאת דיבה על ארץ ישראל — זלזול במתנה האלוקית הגדולה ביותר שהובטחה לאבותינו. שיעורים אלה, שנמסרו בסמוך לפרשת שלח, בונים יחד תמונה עשירה של מה שהתורה, המדרש והפוסקים מלמדים על ערכה וקדושתה של הארץ, ומראים שהתיקון האמיתי לחטא המרגלים הוא הודיה מלאה על ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גַּן עֵדֶן עֲלֵי אֲדָמוֹת</div>
+      <h3 class="story-title">🌿 מדוע פטור השוכן בחוץ לארץ מן המצוות</h3>
+      <p>בפרשת שלח, לפני חטא המרגלים, מסופר על המקושש עצים — אומרים חז"ל שהמקושש לשם שמים נתכוון. עם ישראל, לאחר שנאנשו וחשבו שלא יבואו לארץ ישראל, סברו שממילא הם פטורים מן המצוות. המקושש הראה להם שאין הדבר כך — גם עכשיו מוטלות עליהם המצוות. יש להבין: מדוע בכלל היה צד לחשוב שמי שאינו גר בארץ ישראל פטור מכל המצוות? כפי שמסביר רש"י על "וּקְשַׁרְתָּם לְאוֹת עַל יֶדְכֶם" — שגם לאחר הגלות עם ישראל מצוּוים במצוות, אך עדיין יש להבין מדוע היה בכלל צד לחשוב אחרת.</p>
+      <p class="bold-para">הברית בין הבתרים מגלה את התשובה: הקדוש ברוך הוא כורת ברית עם אברהם אבינו — אברהם מקבל על עצמו למול את עצמו, ובתמורה מקבל מהקדוש ברוך הוא: להיות לו לאלוקים, ולקבל את ארץ ישראל. שכר המצוות, לאורך כל התורה, הוא ארץ ישראל — כפי שאנו קוראים בכל יום בקריאת שמע: "לְמַעַן יִרְבּוּ יְמֵיכֶם וִימֵי בְנֵיכֶם עַל הָאֲדָמָה". התורה כולה נקראת "ספר הברית" — עם ישראל מקיים מצוות, והקדוש ברוך הוא נותן שכר: ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a><a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גַּן עֵדֶן עֲלֵי אֲדָמוֹת</div>
+      <h3 class="story-title">🌿 ארצות החיים</h3>
+      <p><strong>שאלה:</strong> מדוע לא מוזכר בתורה במפורש שכר העולם הבא?</p>
+      <p class="bold-para">מבארים: הקדוש ברוך הוא אינו מעוניין רק שאנו נעלה אליו, אלא שהוא ירד וידבק בנו — "וְהִתְהַלַּכְתִּי בְּתוֹכְכֶם וְהָיִיתִי לָכֶם לֵאלֹקִים". תכלית הבריאה היא דבקות בה'. הרמח"ל, בדרך ה', מסביר שכשם שהגוף כרגע נקבר באדמה בעוד הנשמה עולה לגן עדן, כך לעתיד לבוא — הנשמה תרד לגוף ותקדשו. כך גם ארץ ישראל: כרגע היא גשמית, אך לעתיד לבוא יתגלה שכאן, ממש כאן, הוא הגן עדן. לכן נקראת ארץ ישראל בתנ"ך "אַרְצוֹת הַחַיִּים" — "אֶתְהַלֵּךְ לִפְנֵי ה' בְּאַרְצוֹת הַחַיִּים" — מפרש רש"י: זו ארץ ישראל. וכפי שכותב האבן עזרא: "כָּל הַקּוֹנֶה חֶלְקָה בְּאֶרֶץ יִשְׂרָאֵל כְּקוֹנֶה חֵלֶק בָּעוֹלָם הַבָּא" — כי כאן ממש זה עולם הבא, אלא שהמחיצה עוד לא הוסרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a><a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · סֻלָּם יַעֲקֹב וּמִצְוַת הַבִּכּוּרִים</div>
+      <h3 class="story-title">💛 "כי באתי אל הארץ" — לא "אני באתי"</h3>
+      <p>מלמד האריז"ל: מצוות ביכורים היא התיקון לחטא המרגלים. אין מטרתה רק הודיה על הפירות — אומר הפסוק: "וּבָאתָ אֶל הַכֹּהֵן... וְאָמַרְתָּ אֵלָיו: הִגַּדְתִּי הַיּוֹם לַה' אֱלֹקֶיךָ, כִּי בָאתִי אֶל הָאָרֶץ". כותב ספר "עבד המלך": גם אם עברו כבר מאה שנים מאז שנכנס עמנו לארץ, אל יאמר "אני באתי" בעבר, אלא "כי באתי" — כאילו היום עצמו נכנס לארץ. תיקון חטא המרגלים הוא בכך שכל יהודי מרגיש, גם דורות אחרי הכניסה הראשונה לארץ, שהוא נכנס עתה, ושהארץ חביבה עליו כביום הראשון.</p>
+      <p class="bold-para">וכן מתגלה בסיפור יעקב אבינו: כשהגיע לבאר, בדרכו לחרן, "וַיִּפְגַּע בַּמָּקוֹם", וראה חלום — "סֻלָּם מֻצָּב אַרְצָה, וְרֹאשׁוֹ מַגִּיעַ הַשָּׁמַיְמָה". מה הבטיח לו הקדוש ברוך הוא? "הָאָרֶץ אֲשֶׁר אַתָּה שֹׁכֵב עָלֶיהָ לְךָ אֶתְּנֶנָּה" — לא הבטיח לו בנים תלמידי חכמים, לא דורות צדיקים, לא גן עדן — רק ארץ ישראל. מכאן נלמד שארץ ישראל היא מתנה אלוקית גדולה מאוד, ואם רוצים לתקן את חטא המרגלים, עלינו ללמוד להודות ולשבח את בורא עולם על המתנה הנפלאה הזו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a><a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · סֻלָּם יַעֲקֹב וּמִצְוַת הַבִּכּוּרִים</div>
+      <h3 class="story-title">💛 🕯️ פנקס ההודיה וסיפורי השגחה פרטית על אברכים</h3>
+      <p><strong>🕯️ שלושה טלפונים ביום הפיטורים</strong></p>
+      <p>מסופר בחוברת "השותפות" (מסדרת "עין לא ראתה") על משפחת אברך עם שני ילדים, שכמה חודשים לא נתנו לה מלגת כולל. בנוסף, התבשרה האישה שעומדים לפטרה מעבודתה. ניסו לדבר עם המעביד, אך לא הועיל. ביום הפיטורים עצמו הגיע הטלפון הראשון: אכזבה. הטלפון השני: השארת קלטת מלגה. אך הטלפון השלישי היה מפתיע: זוג שהשכיר מהם דירה לפני כשנתיים, ונעלמו עם חוב של 13,500 שקל, התקשר. אמרה האישה בטלפון: "רצינו להתנצל, נקלענו לחובות אדירים ולא הייתה בידינו פרוטה. אני מפקידה לך היום ארבעה אלף שקל, ואת השאר אפקיד בחודשים הקרובים". האישה, שלא יכלה לדבר, פרצה בבכי, מודה לבורא עולם שידע לשלוח את הטלפון המנחם ברגע המתאים ביותר.</p>
+      <p class="bold-para">נוסח מכתב פתיחה נרגש בחוברת "עין לא ראתה": "בורא כל העולמים בעשרות השנים האחרונות הגדיל את השפע והוריק לבניו האהובים לומדי התורה... מי ימלל ומי יספר רוב חסדיו וטובותיו עלינו, על אחד מאלפי אלפי הנפלאות שעשה עמנו מזמן השואה ועד היום בכינון וביסוס עולם התורה בתקומה פלאית וחסרת כל סיכוי". יהי רצון שנזכה לרשום את הסיפורים, לזכור אותם, ולהודות ולהלל על טובת הארץ מאוד מאוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a><a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · שִׁבְחֵי הָאָרֶץ</div>
+      <h3 class="story-title">🕯️ המדרש: חביבה עליי ארץ ישראל מן הכל</h3>
+      <p>אומר מדרש תנחומא (פרשת ראה): "אֵין לְךָ חָבִיב מִבִּרְכַּת הָאָרֶץ וְעַל הַמָּזוֹן". אמר הקדוש ברוך הוא: "חֲבִיבָה עָלַי אֶרֶץ יִשְׂרָאֵל יוֹתֵר מִן הַכֹּל" — שאני הוא שתרתי אותה. הרשב"א מוסיף שארץ ישראל היא נחלת ה' — "הַר חֶמֶד ה' לְשִׁבְתּוֹ" — וכל ענייני הארץ מתנהלים בהשגחה תמידית, כמו שכתוב: "עֵינֵי ה' אֱלֹקֶיךָ בָּהּ מֵרֵאשִׁית הַשָּׁנָה וְעַד אַחֲרִית שָׁנָה". והכוזרי כותב שדווקא ארץ ישראל היא סיבת הקנאה בין קין והבל — שרצו לדעת מי יזכה בה, כי היא המקום הקרוב ביותר לעניין האלוקי. ובמדרש שוחר טוב מבואר שלימוד התורה בארץ מיוחד לגילוי פני השכינה, ואף התפילה בארץ ישראל מקובלת ורצויה יותר.</p>
+      <p class="bold-para">מוסיפים המקורות שבחים גשמיים רבים לארץ: מזג האוויר הנעים והממוצע, המים המתוקים והמעיינות הרבים, החיטה המשובחת ("אֶרֶץ אֲשֶׁר לֹא בְמִסְכֵּנֻת תֹּאכַל בָּהּ לֶחֶם" — מפרש האלשיך: הלחם עצמו כה טעים שאין צריך ללפתו בדבר אחר), הפרנסה המבורכת, פריה ורביה, אריכות ימים, ואף שמחה מיוחדת — "וְשָׂמַחְתָּ לִפְנֵי ה' אֱלֹקֶיךָ".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a><a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · שִׁבְחֵי הָאָרֶץ</div>
+      <h3 class="story-title">🕯️ 🕯️ מכתבו הנרגש של הרב דסלר לבניו</h3>
+      <p><strong>🕯️ "חיי נשמות אוירך"</strong></p>
+      <p>כותב הרב אליהו אליעזר דסלר במכתב לבניו: "מה אומר לכם, חביבַי, אני מרגיש בחוש אמתת דברי רבנו יהודה הלוי שאמר: 'חַיֵּי נְשָׁמוֹת אַרְצֵךְ, חַיֵּי נְשָׁמוֹת אֲוִירֵךְ, חַיֵּי נְשָׁמוֹת מָנֵךְ'. ואם גם יש מקומות גם בארץ הקדושה אשר הרוחניות גנוזה שם ולא תתגלה על נקל, אבל במקומות התורה נראה זאת כבחוש ממש: כאן, בארמונותיה של תורה בארץ הקודש, נחוש אושר — ולא באושר ממון, אלא בחיים עצמם, בחירות — חירות מן הגויים, חירות מדעותיהם ומהשקפותיהם, חירות מעבודתה של עולם הזה, שאין עבדות כמותה. רחבת ידיים מאוד היא קדושת הארץ, המשמחת ומענגת לבלי סוף... יזכה השם יתברך שלא תהיה זו התפעלות גרידה, אלא לקנות מן הקדושה בעצמה. אמן כן יהי רצון".</p>
+      <p class="bold-para">יהי רצון שנזכה לראות את מעלותיה וקדושתה של ארץ ישראל, שנזכה להודות לקדוש ברוך הוא על ארץ חמדה שנתן לנו — ארץ שאבותינו חמדו אותה, שהקדוש ברוך הוא חמד בה, ארץ שבה אפשר להשיג ולקנות את הטוב האמיתי הנצחי, את הדבקות בקדוש ברוך הוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a><a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="5" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">מקורות</div>
+      <h3 class="story-title">🎶 מקורות ומראי מקומות</h3>
+      <ol><li>במדבר טו, לב-לו — המקושש עצים; דברים ו, ח — "וקשרתם לאות על ידך"</li><li>בראשית טו — ברית בין הבתרים; דברים ל, כ — "כי הוא חייך וארך ימיך"</li><li>שמות כה, ח — "והתהלכתי בתוככם"; רמח"ל, דרך ה'; תהלים קטז, ט — "אתהלך לפני ה' בארצות החיים"; אבן עזרא</li><li>דברים כו, ג — "הגדתי היום לה' אלקיך כי באתי אל הארץ"; ספר עבד המלך</li><li>בראשית כח, יג — "הארץ אשר אתה שכב עליה לך אתננה"</li><li>מדרש תנחומא, פרשת ראה; רשב"א; ספר הכוזרי, מאמר ב; מדרש שוחר טוב, תהלים כז</li><li>דברים ח, ט — "ארץ אשר לא במסכנת תאכל בה לחם"; אלשיך הקדוש</li><li>הרב אליהו אליעזר דסלר, מכתב לבניו על קדושת ארץ ישראל</li></ol>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">שיעורו של הרב יהודה טאוב · <a href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%A9%D7%91%D7%95%D7%A2%20%D7%95%D7%97%D7%92%D7%99%D7%9D/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%A7%D7%95%D7%9C%20%D7%AA%D7%95%D7%93%D7%94%20-%20%20%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%94%D7%A9%D7%91%D7%95%D7%A2/037%20%D7%A9%D7%9C%D7%97/%D7%90%D6%B6%D7%A8%D6%B6%D7%A5%20%D7%97%D6%B6%D7%9E%D6%B0%D7%93%D6%B8%D6%BC%D7%94.html" target="_blank" rel="noopener">הספר המלא עם הקראה</a></div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id": 1, "name": "הקדמה", "icon": "📖", "color": "#c62b6b", "stories": [{"id": 1, "title": "הקדמה", "icon": "📖"}]}, {"id": 2, "name": "גַּן עֵדֶן עֲלֵי אֲדָמוֹת", "icon": "🌿", "color": "#6d28d9", "stories": [{"id": 2, "title": "מדוע פטור השוכן בחוץ לארץ מן המצוות", "icon": "🌿"}, {"id": 3, "title": "ארצות החיים", "icon": "🌿"}]}, {"id": 3, "name": "סֻלָּם יַעֲקֹב וּמִצְוַת הַבִּכּוּרִים", "icon": "💛", "color": "#e08e00", "stories": [{"id": 4, "title": "\"כי באתי אל הארץ\" — לא \"אני באתי\"", "icon": "💛"}, {"id": 5, "title": "🕯️ פנקס ההודיה וסיפורי השגחה פרטית על אברכים", "icon": "💛"}]}, {"id": 4, "name": "שִׁבְחֵי הָאָרֶץ", "icon": "🕯️", "color": "#0f8f87", "stories": [{"id": 6, "title": "המדרש: חביבה עליי ארץ ישראל מן הכל", "icon": "🕯️"}, {"id": 7, "title": "🕯️ מכתבו הנרגש של הרב דסלר לבניו", "icon": "🕯️"}]}, {"id": 5, "name": "מקורות", "icon": "🎶", "color": "#1e63c9", "stories": [{"id": 8, "title": "מקורות ומראי מקומות", "icon": "🎶"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+
