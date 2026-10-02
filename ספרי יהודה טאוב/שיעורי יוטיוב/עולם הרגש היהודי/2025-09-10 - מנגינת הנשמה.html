@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מנגינת הנשמה</title>
+<style>
+:root{--pink-1:#f4b942;--pink-2:#8a4b08;--purple-1:#e7a72f;--purple-2:#704214;--blue-1:#d89b2b;--blue-2:#9a6500;--amber-1:#ffd978;--amber-2:#a86600;--bg:#fff8e8;--card-bg:#fffdf6;--ink:#4a2d12;--ink-soft:#765b3b;--shadow:0 10px 30px rgba(154,101,0,.16);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#fff0c7 0,transparent 45%),radial-gradient(circle at 100% 10%,#fff7df 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #f5d58a;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fffaf0;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#fff2cf;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#fff7e4;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff4d6;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/%D7%A2%D7%95%D7%9C%D7%9D%20%D7%94%D7%A8%D7%92%D7%A9%20%D7%94%D7%99%D7%94%D7%95%D7%93%D7%99/">📚 כל השיעורים</a>
+  <h1>🍭 מנגינת הנשמה</h1>
+  <p>שירה כגשר בין לב האדם לתורה</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מנגינת הנשמה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/vKz28VXYY-I?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/vKz28VXYY-I/hqdefault.jpg" alt="מנגינת הנשמה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=vKz28VXYY-I" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מנגינת הנשמה — חלק 1</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 1</h3>
+      <p><b>"מנגינת הנשמה: שירה כגשר בין לב האדם לתורה" טוב אנו הלכים בעזרת השם היום נלמדת על חודש שבת שירה נלמד קצת בעזרת השם קצת על מעלת השירה ביהדות א תחיל עם סיפור לפני שתחל זה ספר לכם סיפור שה השבת זה היה פשוט סיפור מדים היה שבת שב הברכות של אח שלי את יודע שבת שבע ברכות כל האנשים מדברים זה מדבר זה מדבר זה מדבר כי את השם הטובה אתה יודע כל אחד אתה שואל את עצמך בקות שבת בסוף השבת מה דיברו תנסה להיזכר קשה להיזכר אה דיברו כל כך הרבה והכל לך תיזכר מה דיברו אה שדיבורים והכל לא זוכרים הפעים בסוף תשמעו מה זה היה א אני דיברתי שם לפני כן אם ביקש ממני ניגש למנהל יום לפני כן אמר לי תראה אני רוצה למסור להורים סים כמה חוב לה משש בכיתה לא יקו סתם את משניות אלא יהיה מנגינה יהיה מנגינה וישאירו את זה אתה יכול למצ לי מקורות אחר זה ר אני אחפש לך ישבתי חיפשתי ריבה מקות נה במשך חל מהמק במשך זה ו ך שאני מחפש הכל אמרתי טוב בוא נראה</b></p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מנגינת הנשמה — חלק 1</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 2</h3>
+      <p>איך זה בדיוק מה זה ואחד בוא ננסה אני בעצמי לראות איך אני מוסה את הדבר תורה בשבת בשירה תשמעו מה זה היה אמרת כזה דבר תורה פרשת השבוע שקראנו פרשת בו פרעה די הרגיש שגעו מים עד נפש לא מסוגל יותר ד אמרו לו עד מתי זהו די לא מסוגלים שלח אותם אומר למשה ע אתם יכולים ללכת בסדר גמור רק מי הולך לכו נ הגברים מה אומר לו משה לא לא בן ארנו נלך בזקנו נלך בבנינו בננו לך כך אומר לו אומר לו למה לכו נ הגברים ועבדו את השם כי אותה אתם מקשים ומשה רבנו לא מסכים מה היה וח ביניהם מה מה בדיוק היה ויכוח תשמעו שאדם הולך לעבודה את מי הוא לוקח איתו הוא הולך לעבודה ראית פעם ד שלוקח את ילדים לעבודה ילדים לא לוקחים לעבודה הם רוצים לא לעבוד לוקחים אות לעבודה לא וקים ילדים לאיפה וחים את הילדים שיש מסיבה יש אירוע יש איזה ככה אקשן שזה שמחת תורה וכדומה אז לוקחים את כולם יש איזה מופע לוקחים אומר פרעה לכו נ הגברים ועיבדו את השם שלכו הגברים למה כי אותה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מנגינת הנשמה — חלק 1</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 3</h3>
+      <p>אתם מבקשים מה אתם מבקשים לעבוד מי הולך לעבודה הגברים אומר לו משלא נרנו נלך בסכנון בירנו זכנו כולם נו בקרנו נלך לא לא לא מה פתאום נרנו נלך דע למה למה כי חג השם לנו אצלנו עבודת השם זה לא איזה עבודה קשה זה חגיגה זה מסיבה אבל למסיבה כולם הולכים לכן נרנו נרנו נלך בזקנו נלך בבנינו בנותנו למה כי חג השם לנו זה חגיגה לחגיגה כולם הולכים ומשם המשכתי כמה חשוב לחנך בצורה כמה הבית שחתן היה בצורה ש כל מצווה היייתה חגיגה והכל אבל מהוא אמר לך תשמע מה זה כל השבת לא הפסיקו אנשים לנגן נרנו נלך בזקנו נלך בבנינו בנותנו כל פעם עוד פעם הזכירו את זה עוד פעם הזכירו את זה אפילו אני ברתי בלל שבת אפילו בסעודה שלישית רגע לפני הסוף עוד הזכירו את זה אתם זוכרים את הדבר תורה בליל שבת בנר לא גמ עוד פעם ועוד פעם ועוד פעם חייתי מכאן תראה מה זה שאתה אומר דבר בצורה של שירה הוא יכול להיכנס לנפש של הבן אדם בצורה כזאתי ש זה לא לא לא נשכח תגיד איזה דבר תורה אנשים</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מנגינת הנשמה — חלק 2</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 4</h3>
+      <p>זכו לא צ דבר תורה שכולם זכו כולם זה אבל שהיה עם מנגינה הה מנגינה כזאת התלהב נרנו נלך משכננו נלך בבנינו בנותנו זה שי של אברהם פריד היה אחר כך משיר התייצבו זה שלם פרי ה מגינה והכל ו כזה משהו כלית מאוד את זה לא שכחו זה נשאר ונשאר ונשאר תשאל כלם מה היה בשבת לא יודע אם מישהו זוכר א דבר תורה אמרו בשבת אבל דבר אחד כם זכרו נרנו כי חג השם לנו אצלנו זה חגיגה לחגיגה וחים את כולם זה נשאר אצל כולם אתה רואה מכאן דבר עצום אותו מנהל ביקש ממני אם אני יכול לשלוח לו את הדבר תורה זה זהזה הוא רוצה לפתוח עם זה כי כי תראה מה עושה שירה זה א' תה רואה שירה יש לה כוח אדיר שאדם לומד זה נכנס במוח נכנס ויוצא השירה נוגעת ברגש זה משהו מובנה בתוך הבן אדם יכול להישאר אין גבול כמה זה יכול להשאיר זה גם הסיבה למה תחזור על אותו משפט פעם פעמיים שלוש אחרי חמש פעמים נמאס לך למה שאתה יכול להשיר עוד פעם עוד פעם ועוד פעם למה לא נשבר</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מנגינת הנשמה — חלק 2</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 5</h3>
+      <p>על אנשים ברוך אתונו נו מלך שכל בדמ השמה א הנשמה אבשי נשמה אוהבת השיר א מה אתה א למה שירה אדם יכול להשיר להשיר ולשיר ולשיר מה יש אה כי את אתה השם זה איך השיר הולך הזה רוחני אה איך השיר הום ולך זה כיהנו איךך זה נו איך זה נו השיר על הית הזה זה א כן לא כי אתה השם אוהב אותי וזה ויהיה לי תבר כן תמיד אוהב אותי ותמיד יהיה לי גבק טוב כמה אנשים שרים את זה בלי סוף למה מה קרה כי השם יתברך תמיד אוהב אותי ותמיד תהייה רבו א לי עוד יותר טוב ועוד יותר טוב ועוד יותר את וד כ משרים את זה למה לא נשבר לנשים מה קרה מה אתה לא מכיר את זה שכחת אתה לא זוכר בשר עוד פעם כי השם יתברך מתלהב עוד פעם ושר הפוך שיר שאדם מכיר הוא הרבה יותר אוהב את שומע שה לא מכיר בתח אתה לא נהנה מזה אד שאתה לא מתחבר לזה והכל אתה לא נהנה שי שאתה מכיר הוא כי השם יתברך תשב ברחוב מה קרה שיר זה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מנגינת הנשמה — חלק 2</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 6</h3>
+      <p>לא נוגע מהשכל זה הרגשות זה זה הרגש והכל ש את הנשמה והכל וזה דבר שכאילו אדם אין לו בעיה שעוד פעם ועוד פעם הפוך הוא מתרגש עוד פעם והכל אז זה דבר אחד אתה רואה מכאן מעלת השיירה פרשת שירה שאת יכולים לשד עוד פעם ועוד פעם ועוד פעם ועוד פעם זה לא זה מגיע מהרגש זה לא נגמר אשכנז לא אומרים את השירה בושירה היום צרנו הרב אין אין לנו איזה מגילה מיוחדת שנוים הים ביום חול בש א עד למה מהכ עד היום ש זה כל יום אה זהש כל יום במהל כל יום אז ישי משה ובני ישראל בשירה הזו נכון כל יום כל יום גם יום חול בסר לא הם הם החליטו לפני כמה שנים ם יקין או ים ותיקין רק ים ותיקין לפני כמה שי יקן החליטו להכניס את זה כל יום שרים את זה זה החסידים שרים בראש חודש מה אתזה שיר לא שרים כן תעלה לי תעלה שרים יפה טוב בוא נתחיל ללמוד את הסוגיה של שירה אנחנו חים למוד את הסוגיה זה מתחיל בגמרא מסכת מגילה דף לב אומרת שם הגמרא</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מנגינת הנשמה — חלק 3</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 7</h3>
+      <p>אמר רבי יוחנן כל הקורא בלא נעימה ושונה בלא זמרה עליו הכתוב אומר וגם אני נתתי להם חוקים לא טובים אז אמרת כל הקורה בלא נעימה ושונה בלא זמרה מה זה הכפל בוא נבין מה זה הכפל קורא בלא נעימה שונה בלא זמרה מה ההבדל בין שני החלקים מה ההבדל כל הקורא בלא נעמה ושונה בלא זמרה מה זה זה לא סתם כפול קורה בלא נעימה הולך על מה על חומש קורה יכול קריאה בתורה כן קורא בתורה אז הוא קורא מה בלי טעמי המקרא קורא זה יבש ושונה מלשון מה מלשון שונה מה זה מה שונים שונה מלשון מה משנה שונה מלשון משנה אדם ששונה את המשניות בלי לזמר אותם בזמנם היה נהוג שאת המשניות היו אומרים ומגינה איך יך עושים את זה יש היום על פרקי אבות בואו פורסם הוציאו את זה בו שקיבל תורה מסיני רה לישוע וישוע לכ מסכני נבים מוב לאנשי כנסת הגדולה הם המרו שלושה דברים אבו מתונים בדין ועמדו תלמידים הרבה וסוס יג לתורה כן זה יש היום על כל כל פרק א' וד ודאי שש כל פרקי אבות ועושים את זה בבית</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מנגינת הנשמה — חלק 3</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 8</h3>
+      <p>הספר כן נכון אבא שיודע אחראי על זה מתעסק עם זה הרבה מאוד וזה מאוד הולך הילדים נהנים שירים והכל שר שמון הצדיק היה מי שי פני איך אני זוכר כזה זה נמצא מקומות הום עושים את זהזה מאוד מפורסם היום העסק הזה זה היום בנהה המון עבודה זה והכל אז משניות בזמנם ה בזמנם משניות לא היו כותבים אז היו עושים הרבה מאוד שירים וככ אתה זוכר שיש זה זמר אתה זוכר את זה אז אומרת ה כל הקורה בלא נעימה ושונה בלא זמרה עליו הכתוב אומר וגם אני נתתי להם חוקים לא טובים הוא כביכול מתייחס לתורה כמו דבר יבש הוא לא מרגיש אזה חגיגה אם הוא היה מרגיש אזה חגיגה היה שר את זה מה ההבדל בין נעימה לזמרה לא אני גם לא יודע לאחי מה אתם אומר אני גם מתלת מה הבדל בין נעימה לבין זמרה לא יודע להחליט נעמה זה יותר שקטע כן שקד רגוע כן את אומר אתה אומר נעימה זה בדרך כ שאדם כאילו כמ רבותי נבר זה נעימה כן כלו מתון לאט לאט הוא נהנה מכל מילה הי שם השם אבו כן</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מנגינת הנשמה — חלק 3</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 9</h3>
+      <p>מגיע כמו שעושים נגיד בשבת בזה בחו נרננה שמהו ל ויה נערות עמך וכף יחד רים ירננו נקא נעמה אין פה איזה שיר זה לא שיר מה זה ניק נעמה ל מה שאתה אומר זה לא שיר אין פה שיר זה כזה ן נ חסק אלדול כל המ זה שיר זה זמרה ככה הוא לומד קב כן הוא לומד שנימה מנעים את הדברים זה נקרא נעים כ עושה נעים את המילים שאדם נהנה מהמילים וזמר אשיר לילה לילה ילה לילה כן זה נקרא לילה כן מזמור זה נקרא זמרה אזה אז לא מג הפסוקים בתורה הטעמים זה יותר נקרא נעימה כן זה אם בשח פ ק דרך כיקר זה אז אדם שקורא ככה ולא קוראים עמים זה נקרא נעמה אז אדם אומרת הגמרא מה אדם שקורא בלי נעמה קורא סתם יבש גם כר אלוקים כמו אזה קורא תהילים נורה יום ככה קוראים זה נראה שהחוקים לא מעניינים אותך אתה לא ננ מה תורה זהזה יבש ככה קוראים זה אסור אומרת הגמרא מה ציפלה הביי שאל אותו הבי את רבי יוחנן משום דלא ידע לוסו מקלה משום שהוא לא יודע מה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מנגינת הנשמה — חלק 4</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 10</h3>
+      <p>לנגן יפה אין לו כל בסו מזה יפה נעים זה משפטים לא יחיו בהם קריד בי בגלל שהבן אדם לא יודע מה לבשם את כל מה לעשות את כל נעים אתה קורא את הפסוק המשך הפסוק משפטים לא יחיו ומגיע לו מוות איך ייתכן כזה עונש חמור לא יכול להיות אלא אמר אביה כדי רב משרשיא דאמר שני תלמידי חכמים היושבים בעיר אחת והן וכים זה את זה בהלכה שלא באים כדך נמצאים ולא באים לדון אחד עם השני והרבה פעמים הלכה בשביל שיצא לך דבר ברור מה אתה חייב מה לדון עוד מישהו אדם שיושב ודן לבד ולא הולך לדון עם עוד מישהו קשה מאוד ידע להגיע לתשובה קשה ל לא לא קשה וגם קשה להגיע לדבר ברור כי הרבה פעמים צריך מישהו שתוכח איתך ישמע ידון יבדוק מסכין לא מסכן כשאדם דן עם מישהו אז הוא יודע צדדים והכל אבל שאתה לא קשה מזה אז זה נראה מש לא יחיו בהם זה דן לעצמו והכל מחליט לבד אז זה נאמר משפטים לא יחיו בהים טוב למעשה הפוסקים כתבו שוודאי שרבי יוחנן לא נדחה אלא זה לא כזה חמור</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מנגינת הנשמה — חלק 4</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 11</h3>
+      <p>שנמר שחייב מיתה אבל וודאי שראוי לאדם ל להשאיר את מה שהוא לומד לנגן את מה שהוא לומד ועל זה נאמר כמו שהוא אמר שמי שלא עושה ככה כ חוקים לא טובים רק שאדם מנגן אז התורה נקראת חוקים טובים כן זה אנחנו וים בגמרא כל הקורה בלא נעימה שלא זמרה אז זה דבר לא טוב רואים מכאן הלכה למעשה שלימוד תורה ותפילה צריך לשות בנעימה בזמרה בלא באופן יבש וחסר חיות ולדם הפסוק כמו שנו ביחזקאל וד הפסוק שמה למה כל כך חשוב לנגן למה הגמרא רואה באיזה כזה ערך גדול עד כדי כ שהיה כביכול נאמר עליו וגם חוקים לא טובים כביכול הוא מזלזל בכל התורה למה הרוח תסביר תסביר זה ומות אה פלומות רוחנית מה חבד ג ש אז בוא נסביר יפה בוא יש כמה טעמים טעם ראשון נאמר במפרשים למה הלימוד בנעימה מסייע לחדד את ההבנה ולרדת לעומקם של דברים כן שאתה לוקח דבר ה מתחיל לנגן אותו עוד פעם אתה חושב עליו אתה יורד לעומק של הדברים ונביא לזה ראיה מאוד מעניינת דואג אומר לשאול יש לדוד ילד מאוד מיוחד מה הילד המיוחד מה הוא</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מנגינת הנשמה — חלק 4</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 12</h3>
+      <p>הוא יפה תואר ונעים ויודע נגן כפשוטו מהזה יודע נגן יודע לקחת גיטרה ו הלילי נגן אומרת הגמרא מה זה יודע לנגן יודע לשת ולתת בעומקה של תורה את יכולה נראה שהגמרא לקחה פסוק ו הוציא אותו עם שוטו מה זה אמור להיות ראיתי ביור מאוד יפה הגמרא התכוונה לומר איך אדם זוכה להגיע למצב שבו הוא יורד לעומק של ההלכה יורד לעומקם של דברים שהוא לוקח דבר ומנגן אותו ו מתעמק בו וחושב עליו עוד פעם ועוד פעם ועוד פעם ככה האדם יורד לעומק של הדברים אז ניגון מסוגל מאוד מה לעזור לבן אדם לרדת לעומקם של דברים זה טעם אחד טעם שני הזמרה מאפשרת חיבור רגשי עמוק יותר לתוכן הנלמד בוא נזבי האם המצווה שלנו ללמוד תורה היא לדעת חומר כמו שלומדים באוניברסיטה מה המטרה של ודים באוניברסיטה מה המטרה של דים באוניברסיטה לדעת כולם עכשיו דנים יודע זה עכשיו הני בעולם כולו האם עוד מעט יהיו פטורים ללמוד למה הבינ המלכותית עוד רגע יודעת הכל יותר לא טוב ממך אתה יודע הבינה המלכותית עוד רגע כבר יודעת הכל מכל כל כל שה שתשאל אותה היא תדע להייד</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מנגינת הנשמה — חלק 5</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 13</h3>
+      <p>לך תשובה מקום אולי המה לא יצרכו ללמוד הכל הידע כל דבר מה באמת את יודע זה כבר עובד היום א אומר לך אתה יודע אתה יודע מה זה תן לך דוגמה מהבוקר הבוקר הייתי צריך בתוכנה במחשב לבקש שלא יעשה את הכל דפים רצוף שייעשה דף דף דף דף בנפרד לא יסת הכול ברצף אבל לא יודע איך עושים את זה מה עושים אנגלית אני יודע אבל נגלית ד מינימלית זה לא יודע מה כתו ש תמיד סובח בשבילי מה עושים אתה יודע מה עושים גל עושים צילום מסך מביאים לבינה מלאכותית אומ תגידי לי איך עושים ש יעשה לי את פיסי דף דף דף היא מסתכלת חושבת תלחץ על הכפתור הזה והזה והכפתור הזה והזה וידיס לך דף דף בנפרד וככה היה באמת יודעת מהש משה אתה יודע מה לא להאמין כל ש מה שאתה רוצה לשאול אותה אתה יכול לשאול אותה לך עוד דוגמה מהבוקר אי זה היה סיפור תשמע היה לי ויכוח עם ארגון מאוד גדול בארץ ארגון ענק אני טענתי להם שיש להם בעיה אצלהם שלכן א זה לכן הגוגל לא מזהה אותם את האתר</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מנגינת הנשמה — חלק 5</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 14</h3>
+      <p>שלהם ויש להם בעיה וה לקחו איתי לא מה פתאום זה הבעייה אצלי גוגל זה טוב כל פעם י ויכוח הבוקר באלוקים נתן לי רעיון ניגשת לבינה מלאכותית אמרתי לה תראו למה באתר הזה את לא מצליחה לסרוק אותו חשבה דקה שלמה סרקה הביאה לי 10 בעיות שיש באתר הזה שלחתי את זה למנהל הוא נדהם כולו אמה זה ו אני עכשיו מפעיל את כל הצוות כולם עכשיו אני מפעיל את הקל אומר אני מפד כל הצוות שתקנו את הבעייה מה קרה כל ות לא יודע איפה הבעיה מי אמר שאנחנו הבעיה אולי אם הבעייה יה קורה פתאום תשמע אתה מביא לו דוח הנה כתוב דוח הוציאו לך דוח איפה הבעיה זהו אמר את הסיפור ו כולם התעוררו מקווה שיתקנו וכתת הסיפור כתוב גם מה לתקן איפה הבעייה בוא נש זב בחזרה תורה שאנחנו לומדים האם זה כמו מדע שמה המטרה לדעת רופא לומד בשביל לדעת איך לרפות אה ההוא לומד מחשבין ש לדעת איך מה המטרה שיהיה כאן חומר שידך לטפל בדברים שצריך אי הבנה מלאכותי תדע את זה לבריאות נישה בבית רצחו אין טעם האם גם לימוד תורה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מנגינת הנשמה — חלק 5</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 15</h3>
+      <p>זה מטרה רק בשביל לדעת זה רוחני אה לקיים אבל עוד דבר מה עוד המטרה של לימוד לימוד ה לשמור לע אה ללמוד ו לשמו ולעשות בוא נחשוב איך נדע מה המטרה בוא נסתכל איפה כתוב בתורה את מצוות לימוד תורה איפה היא כתובה בלילה זה כתוב בישוע בסדר אני שואל אותך איפה כתוב בתורה איפה כתוב בתורה מצוות לימוד תורה אז יש טעם אחד מישהו פה אמר זה בפסוק בדברים ולמדתם אותם ושמרתם לעשותם כאן זה ללמוד בשביל לעשות זה חלק א' זה נכון ואז לפי זה אם הבנה מלכותי תהיה טוב מאוד כיום כבר לא רע היום אני שואל הב פעים של בהלכה זה עונה לא רע גרסות בגסות החדשות בלבד לא אסור לסמו זה לבד כן צריך סתכל לבדוק זה אבל לא לא בגסות הפשוטות א תפשט אבל גרסות החדשות והכל עונה די כמעט 100% נכון 90% נכון עונ בכלל חלך דוגמאות מלא דוגמאות עשיתי כבר א זה עולה דיזה די כמעט 90% אפילו י מ זה נכון אבל אם זה המטרה אולי אם יהיה 100% זו תהיה בעיה אבל איפה כתובה מתת תמות תורה איפה היא</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מנגינת הנשמה — חלק 6</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 16</h3>
+      <p>כתובה בעוד מקום איפה כתוב עוד מקום מצוות למוד תורה אתה אומר כל יום בקריאת שמע איפה איפה כתוב שמה למו תואה ודיברת בשך בבתך ובלכתך דך בוא נראה כתוב שמה גם מה המטרה בוא נראה כתוב שמה ואהבת את השם אלוקיך בכל לבבך כל נפשך וכל מאודך איך איך תאהב ויו הדברים האלה אשר אנוכי מצבך היום על לבך ושתן לבניך וכולי וכולי איך תאהב את בורא עולם עידי שתלמד תשב וב מה כתוב כאן מה בורא עולם רוצה והכל ככה מה אתה מתחבר לאלוקים שאתה לומד דבריו מתעמק בדבריו אתה מבין מה אלוקים רוצה נמצא שלימוד יש עוד מטרה לא רק בשביל לדעת טכנית כד לקיים בשביל להתחבר לבורא עולם בשביל וב את בורא להתחבר לבורא עולם שה טוב מאוד אם המטרה היא להתחבר מתי אדם מתחבר שהוא קורא את זה סתם טכנית קורה ככה אדם מתחבר אפשר אבל חלש כ שאתה קורא טקסט כן צריך לשלם שק הכנסה תחבר אבל כשאדם שר את הדבר מת קורים שמ בערבית משעה שהכהנים נכסים לאכול בתרומתם אן עכשיו הוא קורא בצורה נרה ו בשלח פרעה את ה הוא פרו ברוך</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מנגינת הנשמה — חלק 6</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 17</h3>
+      <p>השם ובני ישראל יוצאים ביד רמה ה מתוך הוא ויושע השם אז מתלהב הוא מרגיש את ישועת השם או זה הרבה יותר מכבר אותו לבורא עולם לכן כמובן לפי זה טוב מאוד לכן מה ללמוד מתוך שירה זה מעלה מאוד מאוד מאוד גבוהה הזמרה מאשת חיבור רגשי עמוק יותר לתוכן הנלמד זה טעם שני למה הגמרא כל כך מחשיבה את הלימון מתוך שירה טעם שלישי אז זיכרון טוב יותר כך אומרת התוספות על המקום הלימוד בנעמה מסייע לזכור את החומר הנלמד באופן טוב יותר כש אדם מה לומד או לא ש אדם מזמר או לא ש נאמר פסוק מפורש בחוקיך אש תעשה ך יפה מאוד שזה נהיה שעשוע אתה לא שוכח שאדם אוהב את השיר נהנה והכל הוא לא שוכח ה אות ראיה אומרים פה ניים זמירות אומרים פה אומים פה אתה יודע בעל פה זמירות אתה יודע נכון פה אתה יודע בעל פה הני זמירות כי לך נשיו נפשי אתה יודע בעל פה איך יודע בעל פה פעם בשבוע זה לא מספיק בשי לזכור אבל למה כולם זוכרים את זה כי לא אומרים אתזה להם מה עושים שרים דבר</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מנגינת הנשמה — חלק 6</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 18</h3>
+      <p>שאדם שר הרבה יותר קל לזכור אם אתה רוצה לזכור דבר שאתה נהנה מדבר וכדומה הרבה יותר קל לזכור את זה שאדם שר דבר הרבה יותר קל לזכור אז כך אומר סות על המקום למה כך חשוב מה לנגן כי כך האדם זוכר את הדבר יפה מאוד אז ראינו פה ארבעה עמים למה חשוב לשיר סיבה הראשונה הייתה בגלל שעל ידי זה אדם יורד לעומק של הדברים זה הייתה סיבה הראשונה סיבה ה שנייה הייתה על ידי זה הוא מתחבר לה לבורא עולם הוא זוכר לאהוב את הקדוש ברוך הוא על ידי זה הוא זוכר את הדבר על ידי זה הוא נזכר בדברים זה מקיים או וגם עד זה ה יות ירצה לקיים את זה גם כמו שאתה אומר על ידי זה הוא יצה לקיים את זה יפה מאוד על ידי זהוא יצה לקיים דברים כ הוא נהנה מהם וכדומה זה בשבילו חוויה ה יצה לזכור את הדברים יפה מאוד תגידו אתם ראיתם בת אנשים ששרים שהם לומדים טוב תריך קודם כל לשאול איזה שיר הכוונה האם ממש שמו כי לה מה מה ששיר או שהכוונה היא שאדם לא לומד</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="7" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ז · מנגינת הנשמה — חלק 7</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 19</h3>
+      <p>יבש א מנגינה בצורה כ ומתי קורים שם בערית משעה שהכהנים נכנסים לכל מתומתם עד סוף שמו הרב זר וחכמים אומרים ל חצות הב גמ אומר מוד השכר זהו בא ום משתה לא בטוח שהכוונה הי דוק שירה שלומד עם התלהבות וזה אתה רצה דוגמה שלחתי את השאלה הזאתי הלילה לתלמיד חכם אחד האם באמת כל התלמידי חכמים שרים הם חובה שתשיר למה התשובה הוא ענה לי תשובה ענה לי שלח לי סרטון של הרב אלי ושיר זה התשובה שוא נהלי בוא נראה אולי אפילו נוכל לשמוע אותו כאן בוא נפתח את זה נראה לי זה יעבוד עכשיו בוא נקווה שזה יעבוד בוא נפתח את זה הנה אני פותח לכם את זה בואו נראה איפה זה הנה הנה בוא בוא נראה אםו שזה יעבוד עכשיו בוא נראה טובזה יעבוד רשמ ה זה שכג ש נמצא לבד בשת בלילה כן הוא לבד לבד ש בלילה לא יודעים אותו כן לא יודע זוד שקש אתה רואה אז הנה אתה רואה הנ אתה רואה מפורש היה זה אתה ר מי שרוצה יכול לראות את זה אחר כך נמצ צתי את זה באתר ש</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="7" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ז · מנגינת הנשמה — חלק 7</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 20</h3>
+      <p>מי שרוצה יכול לראות את זה אחר כך את לראות אתזה אחר כך מי שרוצ נשלח לו קישור יכול לראות את זה אחר כך אז הנה רואה הנה מפורש אתה רואה שמתם שהיו שרים את זה ועל זה נהיה המנגינה המפורסמת אומר הב אומר הב אומר הבי אדם באמת חמ אתה רואה באמת שהרבה מאוד תלמידי חמים במת פידו לא זה מישהו אמר לי פשוט מאוד בדרך כל הוא אמר לי תבדוק אלה שמקפידים על מה שאמרה הגמרא שצריך האדם ללמוד בקול שנאמר את מכ הסיפור ברוריה אשתו של רב מאיר תה פעם בחור לומד בשקט ר מה כתוב הגמרא שמה סתה בעת בו עתה בו אמרה לו ארוחה בכל הו שמורה אם ארוך בכל רמך איברים שבך אז היא שמורה ואם לא ככה אתה לומד אינ שמורה ככה לומדים תראה תח זהבת היא אמרה לו הרוחה בכל הו שבורה הכה בכל רמ החברים אז הוא אמר לי ככה מישהו אמר לי תבדוק דוק ותשכח הוא אמר לי אלה שלומדים בקול לומדים ע מנגינה מה אתה שואל אלה שלא לומדים בקול בן כל לא עושים דבר הגמרא שמה צריך ות</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="7" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ז · מנגינת הנשמה — חלק 7</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 21</h3>
+      <p>בקול מה אתה שואל עושים מנגינה קשה לא יודע בדיוק עסוקים זה זה לא לומדים בקול בדרך כלל אמר תבדוק אלה שלומדים בקול כלומדים מנגינה זה התשובה שענה לי תשובה מעניינת הוכה בכל השמורה אם אורכה בכל רמך איברים שבך שמורה ומה צריך יותר מזה הגמרא אומרת כמה ומרת את זה אומרת כל אומרת שיש מצווה ד למוד בלילה שנאמר לשמוע אל רינה ולתפילה איפה כתוב כ ללמוד אין רינה אלא תורה אד תורה תורה למה קום מרוני בלילה טוב תורה איך כ הגמרא למדה שאיך לומדים תורה בתורה של רינה ככה לומדים לומדים תורה מדהים אתה רוא שכך אים הגמרא שלמדה זה יפה מאוד רבנו יונה בספר היראה הוא כותב לגבי שניים מקרא ואחד תרגום שאדם קורא הוא כותב ככה כי התורה חוגרת שק על הקורא בלא טעמים תשמע איזה ביטוי חריף הוא אומר כי התורה חוגרת צק על קורה בלא טעמים תראה כמה ביטוי ממחיש את הצעק ויכול של התורה כאשר ה נקראת ללא הנגינה והמנגינה הראויות לה תראה כמה זה חמור תורה לא לא כלל מי שקור שים מקרה יש כאלה שאומרים נכון יש כאלה שאומרים שאולי</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="8" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ח · מנגינת הנשמה — חלק 8</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 22</h3>
+      <p>זה נאמר רק עלמי שקורא בספר תורה ככה יש כאלה שאומרים אני לא בטוח א זה א שזה אני חושב שם גם לא משנה הרעיון מובן כן אבל אני חושב שגם מי שלא יודע תאמין זה לא מפריע מה הבעייה כל אחד יכול להמציא מה הבעיה כוח קשה ו מה אכפ לך הימים ו ושלח פרעו את נחם אלוקים דרך כקו כ קר היא נעימה כי קור בשק חובה נכון לא חובה מה בציבור לא עצמו כן צוד לא אמר לצוק שלו הפך כאן לומדים הרבני למד ש רבנו ינ למן שיש ממש מצווה אפילו קצת חובה כ בע לחוס מרחיב עוד יותר מורה כי יש ליקו כל פסוק בטעמו אפילו במהלך הלימוד הרגיל הוא מסת על הכלל שכל השונה בלא נעמה בלא זמרה מס מגילה שו שאדם צריך שלומד תורה לקרוא את זה ממש עם טעמים ובה ככה צריך אדם לקרוא לתורה כ אומר לא שיעור א לא בשיעור אין בעיה אתה יוצא ך שומע כעונה בשו אתה יוצא בשומע כעונה ש שה המלמד מלמד צורה התלהבות והכל א זה א זה כן אל ם אתה ואה מכאן זה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="8" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ח · מנגינת הנשמה — חלק 8</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 23</h3>
+      <p>על ידי שאדם כמו שאמרנו על ידי שאדם מה לומד בזמר הוא מרוויח הוא מעמיק בהבנה הוא מחזק את הזיכרון הוא מגביר את המוטיבציה ועל ידי זה הוא יזכה גם ליישם את זה בחיה יום יום כי הוא וא התלמה והכל אחר כך הוא בעזרת השם אחר כך ישם את זהם זה מאוד גורם לאדם ל סה סות הדברים במדרש מופיע מדהים במדרש מופיע תשמע איזה משפט מופיע במדרש כהנים רב לוי ככ אומר שמה הוא אומר שמה הקורא את המקרא באינו גו ניגונו כלומר בנועם קולו בהתאמה הנכונה עליו נאמר הפסוק דבש וחלב תחת לשונך שמע מה אומר קורא את המקרא בעינוג ניגונו אני הוא מתענג מכל מילה ומנגן אותו מה שצריך עליו נאמר דבש וחלב תחת לשונך הנו מתיקות הוא מסביר פה מאוד יפה תראה למה דבש וחלב א אומר ל ככה מתיקות הניגון והנעימה מוספים את תיקו לדברי התורה הופכים אותם לערבים לאוזן ולנפש וזה דבש וחלב כשם שחלב מזין את הגוף כך קריאה בנעימה מזינה את הנשמה ומעמיקה את הקשר לתורה תראה כמה זה מעלה כל הקורא מקרא בעינוג ניגונו עליו נאמר דבש וחלב תחת לשונך</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="8" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ח · מנגינת הנשמה — חלק 8</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 24</h3>
+      <p>יש שיר אני פה כר פליד זה זה הוציאו שיר על בחור אח לימוד התורה הם עשו שיר המה שרב נחמ ברסלב אמר ככה רב נחמ ברסלב אמר כזה דבר הוא אמר ככה אשרי הזוכה להרגיש נעימות התורה כי יש נעימות בתורה וזהו העיקר לזכות להרגיש הנעימות שיש בתורה יש איזה שיר אין לי פה איזה להפיל את זה פה ע את השיר הזה זה אבל ככשיר זה אשרי הזוכה כ אמר אשרי הזוכה להרגיש ימוד התורה כי יש נעימות בתורה וזהו העיקר לזכות להרגיש הנעימות שיש בתורה אדם שלומד תורה זה לא רק לדע תחו כמו שאמרנו המצווה היא בעיקר מה ת בר לדברים להתחבר לבורא עולם להתחבר לתורה האלוקית אם אתה לא שר את זה לא מנגן את זה חסר הרבה מאוד בשביל להתחבר לדבר זה זה ע ידי שאדם לומד אז יש לו חשק ללמוד מתגבר על היצר מתחבר את הקשר לתורה והוא זוכה מה לשפר את הזיכרון על ידי זה הרבה יותר זה אז זה חשוב לאדם זה דבר עצום אדם זוכה לכזה דבר זה זה צרך כל אחד צרך לחפש איך הוא ק איפה הוא</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="9" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ט · מנגינת הנשמה — חלק 9</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 25</h3>
+      <p>יכול לעשות את זה בזה לעשות כזה דבר זה רואים מכאן כמה זה מדהימה איך הזה כמה זכות עצומה יש לאדם שזוכה לחפש איפה שהוא יכול לנגן לנגן את הדברים והכל לא סתם ש יבש זה זה משהו מדהים א זה כמה זה הנה אני רוא מקש בה את השיר הזה הנה בוא נשמע את השיר הזה שיעבוד עכשיו הנ בוא נבדוק שנייה אמור לעבוד עכשיו בוא נראה עובד או לא עובד לא רוצה לעבוד דוא בוא נראה הנה זה השיר על שהם עשו על ה על המשפט שרב נחם ברסלב אמר הוא עשה אזה שיר על הזה על המילים האלה שהוא אמר אשרי הזוכה להרגיש לימוד התורה הם את השיר הזה הם הוציאו ו נשמת בחור ש רק באסון מירון אז הם הוציאו את השיר הזה לנשמתו את השיר הזה הוא היה בחור שהיה מאוד אהב ללמוד תורה והכל את השיר הזה מוציאו על נשמתו תראו על המילים של הברס אשרי אזוכן לי הרגיש אשרי הזוח להרגיש נמוס אשרי הזו זוכן רגיש זוכן רגיש במתו י אשרי זוכ רגיש אשרי הזוח רגיש נמוס אשר הזוי זוי כלי ר זוכרי</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="9" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ט · מנגינת הנשמה — חלק 9</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 26</h3>
+      <p>וסתר אוי אוי אוי אוי אשרז חש מסתו יר אוי אוי אוי אוי אשרז רגיש נמוס התרו יש נמוס בתרו יש וסר וזהו ל להרגיש הנע שיש בתר יפה בוא נסכם מה שלמדנו היום ש יפה מאוד בוא נסכם למנו היום הלנו התחלנו את השיעור עם קודם כל מציאות סיפרנו סיפור ראנו איך שאמת דבר ורה הוספתי לו מנגינה כ שנו בננו נלך קננו נלך ננו בנותנו מה קרה כולם זכרו את זה כל השבת זכרו את זה יש למנגינה כוח טוע דבר בנפש שאדם לא ישכח אותו זה ראינו כ כל מציאות זה ה דבר אחד ואז הבנו את הגמרא יכות שבת שר את הגמרא הגמרא אומרת במסכת מגילה דף לב אומרת הגמרא אמר רבי יוחנן כל הקורא בלא נעימה ושונה בלא זמרה רבי יוחנן החמיר מאוד אמר שלו נאמר הפסוק וגם אני אתן להם חוקים לא טובים הבי הקשה עליו איך אש למר שהפסוק נאמר עליו המשך הפסוק זה משפטים לא יחיו בהם איך אתה יכול לומר אדם אם הוא לא יודע לנגן טוב מה איש לומר זה אז הבי לקח את הפסוק למשהו אחר אמרו המפרשים שגם</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="9" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ט · מנגינת הנשמה — חלק 9</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 27</h3>
+      <p>הב מוד שזה חשוב מאוד להשאיר את את הגמר את התורה ואת המשניות ו יקב אומר אי אפשר לומר כזה אדם שלומד יבש שחייב מיתה משפטים לא יחיו בהם זה ודאי חסר אבל לא חייב מיתה אבל לכו עלמה אומרת הגמרא וככה נפסקת את כולם שמה לכול עלמה צריך האדם להשתדל לא רק לקרוא סתם לקרוא את הגמרא היא נעימה וזמרה וסנו להבין למה זה כל כך חשוב למה כל כך חשוב מה ר אם אני קורא את זה כמו טקסט למה כל כך חשוב חוקים לא טובים כביכול וגמר ככ מחייבת את זה והבאנו בזה ארבעה טעמים טעם ראשון היה בגלל שעל ידי זה אדם זוכה לרדת לעומק של הדברים הוא נגן יודע לרדת לדברים חש הדברים מתבונן בדברים סיבה השנייה והיא העיקרית נראה לי מהכל זה היה כי מצוות לימוד תורה אינה רק בשלת ומר אם בינה מלאכותית תדע תעזור תדע את כל התשובות זה לא יפתור אותנו מללמוד כי ללמוד לא לומדים רק בשביל לדעת מה לעשות אלא בשביל לאהוב את בורא עולם כמו שנ בתורה ואהבת והיו הדברים האלה כך אוהבים אמ ש מנגן הוא הרבה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="10" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק י · מנגינת הנשמה — חלק 10</div>
+      <h3 class="story-title">💛 מנגינת הנשמה — 28</h3>
+      <p>יותר מתחבר סיבה שס אמרנו תוספות למקם אומר את זה כי על ידי הלימוד על ידי שאתה מנגן הוא זוכר את הדברים כמו שנאמר בחוקיך השתעשע ולי זה לא ישכח דבריך וטעם רביעי כמו שהביאו פה כמה וכמה שאדם מנגן את הדבר אז הוא רוצה לקיים כי הוא אוהב את זה הוא מתחבר לדבר רוצה לקיים מה שהוא עושה שאלנו מה קורה למעשה קודם כנו את הדוגמה מה עשיתי נו מה הרב יושיב נומ איננו איך שהיה מנגן והיכון וכמו שאמר כמו שאמר לי יהודי צדיק אמר לי דע לך בד בדרך כלל אומר מי שמקיים את הגמרא שצריך לומר דברי בקול בקל בדרך כלל הוא מנגן וסיימנו ם דיבר רב נחמ מ ברסל שאמר אשרי הזוכה להרגיש לימוד התורה כי יש נעימות איך הרשון שלו היה אשריה זוכה להרגיש לימוד התורה כי יש נעימות בתורה וזהו העיקר לזכות להרגיש הנעימות שיש בתורה ואיך אדם זוכה לזה שהוא לומד לקור גו והכל אז האדם זוכה והרצון שנזכה כולנו בת השם להרגיש את הנעימות שיש בתורה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור ביוטיוב https://youtu.be/vKz28VXYY-I · 2025-09-10 · נערך לספר: Codex</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מנגינת הנשמה — חלק 1","icon":"🌿","color":"#c62b6b","stories":[{"id":1,"title":"מנגינת הנשמה — 1","icon":"💛"},{"id":2,"title":"מנגינת הנשמה — 2","icon":"💛"},{"id":3,"title":"מנגינת הנשמה — 3","icon":"💛"}]},{"id":2,"name":"מנגינת הנשמה — חלק 2","icon":"💛","color":"#6d28d9","stories":[{"id":4,"title":"מנגינת הנשמה — 4","icon":"💛"},{"id":5,"title":"מנגינת הנשמה — 5","icon":"💛"},{"id":6,"title":"מנגינת הנשמה — 6","icon":"💛"}]},{"id":3,"name":"מנגינת הנשמה — חלק 3","icon":"🧭","color":"#e08e00","stories":[{"id":7,"title":"מנגינת הנשמה — 7","icon":"💛"},{"id":8,"title":"מנגינת הנשמה — 8","icon":"💛"},{"id":9,"title":"מנגינת הנשמה — 9","icon":"💛"}]},{"id":4,"name":"מנגינת הנשמה — חלק 4","icon":"🌅","color":"#1e88b8","stories":[{"id":10,"title":"מנגינת הנשמה — 10","icon":"💛"},{"id":11,"title":"מנגינת הנשמה — 11","icon":"💛"},{"id":12,"title":"מנגינת הנשמה — 12","icon":"💛"}]},{"id":5,"name":"מנגינת הנשמה — חלק 5","icon":"🌿","color":"#c62b6b","stories":[{"id":13,"title":"מנגינת הנשמה — 13","icon":"💛"},{"id":14,"title":"מנגינת הנשמה — 14","icon":"💛"},{"id":15,"title":"מנגינת הנשמה — 15","icon":"💛"}]},{"id":6,"name":"מנגינת הנשמה — חלק 6","icon":"💛","color":"#6d28d9","stories":[{"id":16,"title":"מנגינת הנשמה — 16","icon":"💛"},{"id":17,"title":"מנגינת הנשמה — 17","icon":"💛"},{"id":18,"title":"מנגינת הנשמה — 18","icon":"💛"}]},{"id":7,"name":"מנגינת הנשמה — חלק 7","icon":"🧭","color":"#e08e00","stories":[{"id":19,"title":"מנגינת הנשמה — 19","icon":"💛"},{"id":20,"title":"מנגינת הנשמה — 20","icon":"💛"},{"id":21,"title":"מנגינת הנשמה — 21","icon":"💛"}]},{"id":8,"name":"מנגינת הנשמה — חלק 8","icon":"🌅","color":"#1e88b8","stories":[{"id":22,"title":"מנגינת הנשמה — 22","icon":"💛"},{"id":23,"title":"מנגינת הנשמה — 23","icon":"💛"},{"id":24,"title":"מנגינת הנשמה — 24","icon":"💛"}]},{"id":9,"name":"מנגינת הנשמה — חלק 9","icon":"🌿","color":"#c62b6b","stories":[{"id":25,"title":"מנגינת הנשמה — 25","icon":"💛"},{"id":26,"title":"מנגינת הנשמה — 26","icon":"💛"},{"id":27,"title":"מנגינת הנשמה — 27","icon":"💛"}]},{"id":10,"name":"מנגינת הנשמה — חלק 10","icon":"💛","color":"#6d28d9","stories":[{"id":28,"title":"מנגינת הנשמה — 28","icon":"💛"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+
