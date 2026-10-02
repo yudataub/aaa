@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 להיכנס לתוך תיבות התורה והתפילה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>📖 להיכנס לתוך תיבות התורה והתפילה</h1>
+  <p>הצדיק שלא התפלל על דורו, התיקון של משה רבנו, והאותיות החיות של התורה ושל התפילה</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+        <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ השיעור המלא בווידאו" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/Xm7_BM-15Rg?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/Xm7_BM-15Rg/hqdefault.jpg" alt="השיעור המלא בווידאו" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=Xm7_BM-15Rg" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">הקדמה</div>
+      <h3 class="story-title">📖 הקדמה</h3>
+      <p>המילה ״תיבה״ בלשון הקודש היא גם התיבה שבה ניצל נח וגם המילה שבה אנחנו מתפללים. את הפסוק ״צֹהַר תַּעֲשֶׂה לַתֵּבָה״ אפשר לקרוא כך: כל מילה בתפילה ובתורה צריכה להיות מאירה.</p>
+      <p>השיעור הזה נאמר בימי מלחמה, והמרצה פותח בכך שמי שיכול לעזור בפועל יעשה, אבל המינימום שאין ממנו פטור הוא להתפלל על חברינו שנמצאים בצרה. מכאן הוא עובר לשאלה על נח: כיצד ייתכן שאדם צדיק לא התפלל על דורו?</p>
+      <p>שלוש שאלות בשיעור: למה לא התפלל נח, איך משה רבנו תיקן זאת, ומה צריך כדי שהתפילה שלנו תעלה כאור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הצדיק שלא התפלל</div>
+      <h3 class="story-title">🌿 ״כי מי נח זאת לי״</h3>
+      <p>בהפטרת נח כתוב: ״כִּי מֵי נֹחַ זֹאת לִי אֲשֶׁר נִשְׁבַּעְתִּי מֵעֲבֹר מֵי נֹחַ עוֹד עַל הָאָרֶץ״ (ישעיה נד, ט). המבול נקרא על שם נח. הזוהר הקדוש מסביר מדוע: נח לא התפלל על דורו, ולכן נקרא המבול על שמו.</p>
+      <p>הזוהר מביא גם שנח התפלל בתוך התיבה, והמדרש מספר מה הוא אמר שם: ״הוֹצִיאָה מִמַּסְגֵּר נַפְשִׁי״. היה קשה מאוד בתיבה: היא הייתה סגורה, ומצופה בזפת, והחיות בתוכה אכלו בשעות שונות, כל אחת בזמנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a><a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הצדיק שלא התפלל</div>
+      <h3 class="story-title">🌿 קושיית החתם סופר</h3>
+      <p>החתם סופר שואל: לקדוש ברוך הוא דרכים רבות להציל, ויכול היה להציל את נח בלי להכניסו לתיבה כזו. ומשיב שהצער בתיבה היה חלק מהחשבון. הסיבה הייתה שני דברים: נח לא הוכיח את בני דורו, ולא התפלל עליהם.</p>
+      <p>והשיעור מציין שתפילה היא תביעה קשה יותר מתוכחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a><a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הצדיק שלא התפלל</div>
+      <h3 class="story-title">🌿 למה לא הוכיח?</h3>
+      <p>העבודת ישראל מקוזניץ מלמד מהלכות חנוכה: בשעת סכנה מניחים את הנר על השולחן, ולא בפתח מבחוץ. כשהסכנה רוחנית, אדם צריך להשגיח על עצמו ועל ביתו. כך מי שרוצה להוציא מישהו מהבור צריך לוודא שהוא עצמו לא נופל לבור.</p>
+      <p>הדור של נח היה כל כך מקולקל שגם בעלי חיים, שאין להם יצר הרע, חטאו. לכן התורה כותבת ״לְמִינֵהוּ״ שוב ושוב. מי שהיה בא עם אנשים כאלה במגע היה בסכנה של ממש. אפשר לראות בכך זכות ללימוד זכות על נח, ובכל זאת הזוהר מטיל עליו תביעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a><a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הצדיק שלא התפלל</div>
+      <h3 class="story-title">🌿 למה לא התפלל?</h3>
+      <p>על תפילה מבואר בספר נשמת חתן שהדבר לא פשוט כלל. תפילה היא חיבור, והוא צריך מלוא האדם. בפסוק ״נַפְתּוּלֵי אֱלֹקִים נִפְתַּלְתִּי״ רש״י מביא שני פירושים: ״צמיד פתיל״ (חיבור) ו״עקש ופתלתול״. תפילה היא חיבור כמו מכסה שסוגרים עליו.</p>
+      <p>מי שמתפלל על אחרים מתחבר אליהם, וצריך לפייס את כל המקטרגים שנבראו מהחטאים שלהם. לפעמים צריך אפילו ״תמורה״, ויש צדיקים שהתפללו והצליחו, וגם היו צריכים לתת תשלום. ובדור שהחטא בו גדול כל כך, מידת הדין מתגברת, והקדוש ברוך הוא, הרחום והחנון, מגיע למצב של ״נִחַמְתִּי כִּי עֲשִׂיתִם״. נח חשש שאין בכוחו לפייס את מידת הדין.</p>
+      <p>לכן הזוהר קורא לו ״רועה שוטה״ ולא ״רועה עצל״: לא עצלות הייתה כאן, אלא שלא היו לו הכוחות של משה רבנו ושל אברהם אבינו.</p>
+      <p>אבל בשום מקרה אין בכך היתר לנו. תפילה של צדיקים היא ״להיכנס בגוב האריות״, ובכל זאת, כמו שאמר המגיד ממזריץ׳, גם היא חובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a><a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תיבה שיש בה כפרה</div>
+      <h3 class="story-title">💛 ״לשון״ חסר ו׳</h3>
+      <p>המגיד ממזריץ׳ מוצא רמז במידות התיבה: ״שלוש מאות אמה אורך, חמישים אמה רוחב, שלושים אמה קומה״. אם הופכים את המספרים לאותיות, מקבלים ״לשון״, אבל חסר בה ו׳, והפגם הוא בלשון: לא הוכיח ולא התפלל.</p>
+      <p>ובספר תורה ושמחה נאמר ש״מבול״ אותיות ״ברית לשון״ ו״ברית מעור״, וגם זה הפגם בלשון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a><a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תיבה שיש בה כפרה</div>
+      <h3 class="story-title">💛 חיפוי מבפנים ומבחוץ</h3>
+      <p>הרב פנחס פרידמן מעיר: אצל משה רבנו, בתיבת הגומא, נאמר ״וַתַּחְמְרָה בַחֵמָר וּבַזָּפֶת״ רק מבחוץ, כדי להגן מהמים. ואילו אצל נח נאמר ״וְכָפַרְתָּ אֹתָהּ מִבַּיִת וּמִחוּץ״ (בראשית ו, יד): מבפנים וגם מבחוץ, ״כפר״ מלשון כפרה. כי גם מי שבפנים היה צריך כפרה.</p>
+      <p>וכך כתוב בגמרא (סנהדרין קח ע״ב): אף נח, נחתם עליו הדין, אלא שמצא חן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a><a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · משה רבנו מתקן</div>
+      <h3 class="story-title">🕯️ ״מחני נא מספרך״</h3>
+      <p>בחטא העגל ה׳ רצה לכלות את ישראל ולעשות ממשה גוי גדול. משה התפלל, ואמר: ״וְעַתָּה אִם תִּשָּׂא חַטָּאתָם וְאִם אַיִן מְחֵנִי נָא מִסִּפְרְךָ״ (שמות לב, לב). רבי חיים ויטאל מגלה: ״מחני״ אותיות ״מי נח״. משה תיקן את מה שנח לא עשה.</p>
+      <p>ויש עוד קשר: ״בְּשַׁגַּם״ (בראשית ו, ג) בגימטריה ״משה״, וה׳ אומר שימיו מאה ועשרים. ו״אֹתְךָ רָאִיתִי צַדִּיק לְפָנַי בַּדּוֹר הַזֶּה״ בגימטריה ״משה רבנו״. ולפי חשבון הדורות שבפרקי אבות, משה הוא הדור השבעה עשר מנח. כך ה׳ אמר לנח: ״בֹּא אַתָּה וְכָל בֵּיתְךָ אֶל הַתֵּבָה״ בזכות הצדיק שיבוא בעתיד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a><a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · משה רבנו מתקן</div>
+      <h3 class="story-title">🕯️ עין אחת פתוחה</h3>
+      <p>המדרש על שיר השירים: ״דּוֹמֶה דוֹדִי לִצְבִי״. הצבי ישן ועין אחת פתוחה. כך הקדוש ברוך הוא: כשאין לישראל מספיק זכויות, הוא ״סוגר עין אחת״ מלהסתכל על ההווה, ו״פותח עין אחת״ על העתיד, ומצרף את מה שיעשו. כך במצרים: ״וְזֶה לְּךָ הָאוֹת... תַּעַבְדוּן אֶת הָאֱלֹקִים עַל הָהָר הַזֶּה״ - זכות קבלת התורה שעוד לא הייתה.</p>
+      <p>הרבי פנחס מקוריץ מלמד שכך גם בהקפות של שמחת תורה: אנחנו מבקשים כל כך הרבה בימים הנוראים, ואין לנו במה לשלם. בהקפות אנחנו רומזים לקדוש ברוך הוא ״תרשום״, ובמשך השנה נפרע בתורה ובמעשים טובים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a><a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="5" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">פרק ה · לבקש בחן</div>
+      <h3 class="story-title">🎶 תפילות בלי חן</h3>
+      <p>רבי נחמן מברסלב, בתורה הראשונה בליקוטי מוהר״ן, מסביר שהסיבה שתפילות לא מתקבלות היא שאין להן חן. כמו בין אדם לחברו: מי שמוצא חן בעיני חברו, מילא את בקשתו. ואפילו משה רבנו ביקש ״בעבור מציאת חן״.</p>
+      <p>״חן״ ו״נח״ הם אותן אותיות. הספר חרדים מביא שנח ניצל מפני שהיה אדם נוח, ולא קשה. ומכאן שדרך אחת למצוא חן היא להיות נוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a><a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="5" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">פרק ה · לבקש בחן</div>
+      <h3 class="story-title">🎶 התורה והתפילה עוזרות זו לזו</h3>
+      <p>יש יחסי גומלין. הגמרא (נידה ע ע״ב) מספרת ששאלו את רבי יהושע בן חנניה מה יעשה אדם ויחכם, והוא אמר: ירבה בישיבה. אמרו לו: הרבה עשו כך ולא החכימו. אמר: יתפלל למי שהחכמה שלו. תפילה היא הכלי שאליו יורד השפע, כמו ״שָׁאֲלִי לָךְ כֵלִים״. ואפילו שאלות בלימוד הן כלים לתשובות.</p>
+      <p>וגם להפך: התורה מביאה חן על התפילה, כמו שנאמר ״אַיֶּלֶת אֲהָבִים וְיַעֲלַת חֵן״ (משלי ה, יט). ואדם שלומד בקביעות והמקום ללימוד הוא מקום תפילתו, מעלה חן על תפילותיו.</p>
+      <p>אבל מי שמסיר את אוזנו משמוע תורה, ״גם תפילתו תועבה״ (משלי כח, ט).</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a><a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="5" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">פרק ה · לבקש בחן</div>
+      <h3 class="story-title">🎶 ענווה</h3>
+      <p>עוד דבר שמביא חן: ״וְלַעֲנָיִּים יִתֶּן חֵן״ (משלי ג, לד). ענווה אמיתית מביאה חסד מהשמיים, גם בתפילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a><a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="6" style="--chap-color:#ff9f43;--chap-color-2:#c4620a;">
+      <div class="story-kicker">פרק ו · אותיות חיות</div>
+      <h3 class="story-title">✨ מה עולה למעלה בתפילה?</h3>
+      <p>השיעור מביא מתורת הבעל שם טוב (דרך האור המאיר) על הפסוק ״מִי זֹאת עֹלָה מִן הַמִּדְבָּר כְּתִימֲרוֹת עָשָׁן״. בחורף, כשאדם מדבר, יוצא מפיו עשן. אבל העשן הזה אינו מה שעולה בתפילה. מה שעולה הוא הרצון, ״רעותא דליבא״: ההתעוררות וההתלהבות שהאדם מכניס בתוך הדיבור.</p>
+      <p>״מן המדבר״ הוא לשון דיבור, והפירוש: מתוך הדיבורים עולה מה שיש בתוכם. ולא רק בתפילה, אלא גם בתורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a><a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="6" style="--chap-color:#ff9f43;--chap-color-2:#c4620a;">
+      <div class="story-kicker">פרק ו · אותיות חיות</div>
+      <h3 class="story-title">✨ אור שירד לאותיות</h3>
+      <p>המרצה מסביר שהתורה היא בראשיתה אור מופשט, ויורדת בשלבים: באצילות אור, בבריאה אותיות, ביצירה צירוף אותיות לתיבות, ובעשייה כתב על קלף. אסור להישאר בצורה החיצונית. כדברי הגמרא ״אנא נפשי כתבית יהבית״: הקדוש ברוך הוא נתן את חיותו באותיות.</p>
+      <p>הגמרא בגיטין אומרת שספר תורה שכתב מין יישרף ואינו נגנז, ולמה? כי נדרשת קדושה של הכותב, ולא רק האותיות. אילו התורה הייתה רק דרך להעביר הוראות, לא היה חשוב מי כתב אותה. אבל אנחנו אומרים לתורה ״אל תשכחי אותנו״, והגמרא אומרת ש״נפש עמל עמלה לו״, כלומר התורה מבקשת רחמים על הלומד. היא ישות חיה.</p>
+      <p>ומכאן הלימוד: בכל מקום בתורה, גם בדיני שור שנגח את הפרה, צריך לראות ״שמע ישראל״, את אחדות ה׳, כמו שאמר הרבי מקוזמיר: ״בתורתך כתוב לאמור שמע ישראל״.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a><a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="6" style="--chap-color:#ff9f43;--chap-color-2:#c4620a;">
+      <div class="story-kicker">פרק ו · אותיות חיות</div>
+      <h3 class="story-title">✨ תשתית ומספר נכון</h3>
+      <p>הלב אליהו מסביר מה עשו האבות כשתיקנו תפילות: הם הניחו את התשתית, את ״הכבלים״ בין האדם לבורא. היום אפשר להרים טלפון ולדבר, כי לפני כן הונחה תשתית. כך כל אדם יכול להגיד ״ברוך אתה״ בכל שפה, והקדוש ברוך הוא שומע. אבל גם התשתית לא מספיקה בלי הכתובת והמספר הנכון, ולכן אנשי כנסת הגדולה תיקנו מטבע של ברכות.</p>
+      <p>והשיעור מזכיר שצריך להבין כמה נס הוא שאדם מדבר שלוש פעמים ביום עם בורא עולם. מי שהתרגל לכך לא מרגיש בכך, וצריך להתרגש בכל פעם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a><a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="6" style="--chap-color:#ff9f43;--chap-color-2:#c4620a;">
+      <div class="story-kicker">פרק ו · אותיות חיות</div>
+      <h3 class="story-title">✨ כוונה</h3>
+      <p>תפילה בלי כוונה היא כמו ״גוף בלי נשמה״ (חובות הלבבות והאברבנאל). ויש מה שמעכב: הרב חיים מבריסק אומר שבברכות הראשונות צריך לכוון את פירוש המילים, ובכל התפילה צריך לדעת לפני מי עומדים. ולא מחליפים את הפשט בכוונות: ״לשם יחוד״ שאומרים לפני מצווה הוא נוסח שיש בו הכל, ומי שלא יודע את הכוונות יאמר אותו.</p>
+      <p>גדולי עולם רעדו לפני כל מילה בתפילה, כמו שכתב הרמב״ן באיגרתו ״וחשוב מה שאתה אומר קודם שתוציא אותו מפיך״, ועל אחת כמה וכמה בעמידה לפני מלך.</p>
+      <p class="bold-para">נח נכנס לתיבה, ומשה למד אותנו לצאת מהתיבה ולהתפלל על כולם. אנחנו נכנסים לתיבות התפילה, וכל מילה בהן יכולה להאיר אם נכניס בה רצון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a><a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="7" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">מקורות</div>
+      <h3 class="story-title">🔍 מקורות ומראי מקומות</h3>
+      <ol><li>בראשית ו–ט; ישעיה נד, ט — הפטרת נח; זוהר הקדוש פרשת נח; תנחומא</li><li>חתם סופר; העבודת ישראל מקוזניץ; נשמת חתן; המגיד ממזריץ׳</li><li>שמות לב, לב; רבי חיים ויטאל, לקוטי תורה; חולין קלט ע״ב; סנהדרין קח ע״ב</li><li>מדרש שיר השירים רבה (״דומה דודי לצבי״); רש״י על שמות ג, יב</li><li>רבי נחמן מברסלב, ליקוטי מוהר״ן ח״א תורה א; ספר חרדים</li><li>נידה ע ע״ב; משלי ג, לד; ה, יט; כח, ט</li><li>הבעל שם טוב על התורה; האור המאיר; ספר יצירה; שבת קה ע״א</li><li>לב אליהו (הרב אליהו לופיאן); חובות הלבבות; אברבנאל על אבות; הרמב״ן באיגרת</li></ol>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">שיעורו של הרב יהודה טאוב · <a href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%A9%D7%91%D7%95%D7%A2%20%D7%95%D7%97%D7%92%D7%99%D7%9D/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%A7%D7%95%D7%9C%20%D7%AA%D7%95%D7%93%D7%94%20-%20%20%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%94%D7%A9%D7%91%D7%95%D7%A2/002%20%D7%A0%D7%97/%D7%9C%D7%94%D7%99%D7%9B%D7%A0%D7%A1%20%D7%9C%D7%AA%D7%95%D7%9A%20%D7%AA%D7%99%D7%91%D7%95%D7%AA%20%D7%94%D7%AA%D7%95%D7%A8%D7%94%20%D7%95%D7%94%D7%AA%D7%A4%D7%99%D7%9C%D7%94.html" target="_blank" rel="noopener">הספר המלא עם הקראה</a></div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id": 1, "name": "הקדמה", "icon": "📖", "color": "#c62b6b", "stories": [{"id": 1, "title": "הקדמה", "icon": "📖"}]}, {"id": 2, "name": "הצדיק שלא התפלל", "icon": "🌿", "color": "#6d28d9", "stories": [{"id": 2, "title": "״כי מי נח זאת לי״", "icon": "🌿"}, {"id": 3, "title": "קושיית החתם סופר", "icon": "🌿"}, {"id": 4, "title": "למה לא הוכיח?", "icon": "🌿"}, {"id": 5, "title": "למה לא התפלל?", "icon": "🌿"}]}, {"id": 3, "name": "תיבה שיש בה כפרה", "icon": "💛", "color": "#e08e00", "stories": [{"id": 6, "title": "״לשון״ חסר ו׳", "icon": "💛"}, {"id": 7, "title": "חיפוי מבפנים ומבחוץ", "icon": "💛"}]}, {"id": 4, "name": "משה רבנו מתקן", "icon": "🕯️", "color": "#0f8f87", "stories": [{"id": 8, "title": "״מחני נא מספרך״", "icon": "🕯️"}, {"id": 9, "title": "עין אחת פתוחה", "icon": "🕯️"}]}, {"id": 5, "name": "לבקש בחן", "icon": "🎶", "color": "#1e63c9", "stories": [{"id": 10, "title": "תפילות בלי חן", "icon": "🎶"}, {"id": 11, "title": "התורה והתפילה עוזרות זו לזו", "icon": "🎶"}, {"id": 12, "title": "ענווה", "icon": "🎶"}]}, {"id": 6, "name": "אותיות חיות", "icon": "✨", "color": "#c4620a", "stories": [{"id": 13, "title": "מה עולה למעלה בתפילה?", "icon": "✨"}, {"id": 14, "title": "אור שירד לאותיות", "icon": "✨"}, {"id": 15, "title": "תשתית ומספר נכון", "icon": "✨"}, {"id": 16, "title": "כוונה", "icon": "✨"}]}, {"id": 7, "name": "מקורות", "icon": "🔍", "color": "#c62b6b", "stories": [{"id": 17, "title": "מקורות ומראי מקומות", "icon": "🔍"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+
