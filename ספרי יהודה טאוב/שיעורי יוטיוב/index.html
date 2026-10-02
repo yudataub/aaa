@@ -64,6 +64,7 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
   <div class="toolbar">
     <input type="search" id="search" placeholder="🔍 חיפוש שיעור — נושא, חג, פרשה, מושג...">
     <div class="chips" id="chips"></div>
+    <div class="chips" id="chips2"></div>
   </div>
   <div id="featuredBox"></div>
   <div class="section-title" id="gridTitle"></div>
@@ -75,7 +76,14 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
 (function(){
   var PALETTE = {"חגים ומועדים":["#ff6b9d","#c62b6b"],"פרשת השבוע":["#a78bfa","#6d28d9"],"גמרא":["#60d3ff","#1e88b8"],"הלכה":["#34d399","#047857"],
     "אמונה ומחשבה":["#ffd166","#e08e00"],"מוסר ומידות":["#fb923c","#c2410c"],"סיפורי צדיקים":["#f472b6","#9d174d"],"תפילה":["#818cf8","#4338ca"],"אחר":["#94a3b8","#475569"]};
-  var all = [], cat = "", q = "";
+  var all = [], cat = "", q = "", chm = "";
+  var CHUMASH = {"בראשית":"בראשית","נח":"בראשית","לך לך":"בראשית","וירא":"בראשית","חיי שרה":"בראשית","תולדות":"בראשית","ויצא":"בראשית","וישלח":"בראשית","וישב":"בראשית","מקץ":"בראשית","ויגש":"בראשית","ויחי":"בראשית",
+    "שמות":"שמות","וארא":"שמות","בא":"שמות","בשלח":"שמות","יתרו":"שמות","משפטים":"שמות","תרומה":"שמות","תצוה":"שמות","כי תשא":"שמות","ויקהל":"שמות","פקודי":"שמות",
+    "ויקרא":"ויקרא","צו":"ויקרא","שמיני":"ויקרא","תזריע":"ויקרא","מצורע":"ויקרא","אחרי מות":"ויקרא","קדושים":"ויקרא","אמור":"ויקרא","בהר":"ויקרא","בחוקותי":"ויקרא",
+    "במדבר":"במדבר","נשא":"במדבר","בהעלותך":"במדבר","שלח":"במדבר","קרח":"במדבר","חוקת":"במדבר","בלק":"במדבר","פינחס":"במדבר","פנחס":"במדבר","מטות":"במדבר","מסעי":"במדבר",
+    "דברים":"דברים","ואתחנן":"דברים","עקב":"דברים","ראה":"דברים","שופטים":"דברים","כי תצא":"דברים","כי תבוא":"דברים","נצבים":"דברים","וילך":"דברים","האזינו":"דברים","וזאת הברכה":"דברים"};
+  var CH_ORDER = ["בראשית","שמות","ויקרא","במדבר","דברים","שבתות מיוחדות"];
+  function chumashOf(l){ var t = l.tags || []; for (var i = 0; i < t.length; i++){ if (t[i] === "שבתות מיוחדות") return "שבתות מיוחדות"; if (CHUMASH[t[i]]) return CHUMASH[t[i]]; } return ""; }
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function colors(c){ return PALETTE[c] || PALETTE["אחר"]; }
   function gem(n){
@@ -123,9 +131,18 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
     keys.forEach(function(k){ html += '<button class="chip' + (cat === k ? " on" : "") + '" data-c="' + esc(k) + '">' + esc(k) + '<span class="n">' + counts[k] + "</span></button>"; });
     document.getElementById("chips").innerHTML = html;
   }
+  function chips2(){
+    var box = document.getElementById("chips2"), counts = {}, total = 0;
+    all.forEach(function(l){ if (cat && (l.category || "אחר") !== cat) return; var g = chumashOf(l); if (g) { counts[g] = (counts[g] || 0) + 1; total++; } });
+    var keys = CH_ORDER.filter(function(k){ return counts[k]; });
+    if (!keys.length) { box.innerHTML = ""; return; }
+    var html = '<button class="chip' + (chm ? "" : " on") + '" data-h="">כל החומשים<span class="n">' + total + "</span></button>";
+    keys.forEach(function(k){ html += '<button class="chip' + (chm === k ? " on" : "") + '" data-h="' + esc(k) + '">' + (k === "שבתות מיוחדות" ? "✨ " : "📖 ") + esc(k === "שבתות מיוחדות" ? k : "חומש " + k) + '<span class="n">' + counts[k] + "</span></button>"; });
+    box.innerHTML = html;
+  }
   function render(){
-    var list = all.filter(function(l){ return (!cat || (l.category || "אחר") === cat) && (!q || text(l).indexOf(q) !== -1); });
-    var showFeatured = !cat && !q && all.length > 1;
+    var list = all.filter(function(l){ return (!cat || (l.category || "אחר") === cat) && (!chm || chumashOf(l) === chm) && (!q || text(l).indexOf(q) !== -1); });
+    var showFeatured = !cat && !chm && !q && all.length > 1;
     var fb = ""; if (showFeatured) { try { fb = featured(all[0]); } catch(e){ fb = ""; } }
     document.getElementById("featuredBox").innerHTML = fb;
     var rest = showFeatured ? list.slice(1) : list;
@@ -134,11 +151,15 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
     var msg = document.getElementById("msg");
     msg.style.display = list.length ? "none" : "block";
     msg.textContent = all.length ? "לא נמצאו שיעורים 🔍" : "עוד אין כאן שיעורים — הראשון בדרך 🍭";
-    chips();
+    chips(); chips2();
   }
   document.getElementById("chips").addEventListener("click", function(e){
     var b = e.target.closest(".chip"); if (!b) return;
-    cat = b.getAttribute("data-c"); render();
+    cat = b.getAttribute("data-c"); chm = ""; render();
+  });
+  document.getElementById("chips2").addEventListener("click", function(e){
+    var b = e.target.closest(".chip"); if (!b) return;
+    chm = b.getAttribute("data-h"); render();
   });
   document.getElementById("search").addEventListener("input", function(e){ q = e.target.value.trim().toLowerCase(); render(); });
   fetch("lessons.json?t=" + Date.now(), {cache:"no-store"}).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
