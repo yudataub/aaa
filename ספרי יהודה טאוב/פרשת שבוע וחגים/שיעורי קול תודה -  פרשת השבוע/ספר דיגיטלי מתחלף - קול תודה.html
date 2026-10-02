@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="ספר דיגיטלי מתחלף (פליפבוק) של שיעורי קול תודה מאת הרב יהודה טאוב — עמוד לכל פרשה, עם תקציר נושאים וקישורים לכל השיעורים.">
+<title>ספר דיגיטלי מתחלף — קול תודה</title>
+<style>
+:root {
+    --purple: #7e22ce;  --blue: #2563eb;   --green: #059669;
+    --gold:   #f59e0b;  --pink: #ec4899;   --ink:   #1f2937;
+    --paper:  #ffffff;  --muted: #6b7280;  --line:  rgba(0,0,0,.08);
+    --g-page:      linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --g-verse:     linear-gradient(135deg, #e0e7ff 0%, #fce7f3 100%);
+    --g-highlight: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+    --g-quote:     linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    --g-story:     linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+    --g-divider:   linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #ec4899 100%);
+    --g-title:     linear-gradient(135deg, #7e22ce 0%, #ec4899 50%, #f59e0b 100%);
+}
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; overflow-x:hidden; }
+body {
+    font-family: 'Segoe UI', 'Assistant', 'Noto Sans Hebrew', Arial, sans-serif;
+    background: var(--g-page);
+    color: var(--ink);
+    line-height: 1.7;
+    min-height:100vh;
+}
+a { color: inherit; }
+button { font-family: inherit; }
+
+/* ============ HOME SCREEN ============ */
+#homeScreen { padding: 40px 20px 80px; max-width: 1180px; margin: 0 auto; }
+.hero {
+    max-width: 980px; margin: 0 auto 30px; padding: 50px 60px;
+    background: var(--paper); border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,.12);
+    text-align:center;
+}
+.hero .main-title {
+    font-size: 2.9em; font-weight: bold; margin: 0 0 10px;
+    background: var(--g-title); -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: var(--purple);
+}
+.hero .subtitle { font-size: 1.2em; color: var(--muted); margin-bottom: 6px; }
+.hero .author { font-size: 1.05em; color: var(--purple); font-weight: bold; margin-bottom: 4px; }
+.hero .desc { max-width: 640px; margin: 18px auto 0; color: var(--ink); font-size: 1.02em; }
+
+.search-wrap { max-width: 980px; margin: 26px auto; padding: 0 4px; }
+.search-bar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    padding: 16px 22px;
+    background: var(--g-quote); border-radius: 14px;
+    border-right: 6px solid var(--gold);
+    box-shadow: 0 5px 18px rgba(0,0,0,.15);
+}
+.search-bar input {
+    flex: 1 1 240px; font-family: inherit; font-size: 1.1em;
+    padding: 10px 16px; border-radius: 30px; border: 2px solid var(--purple);
+    background: #fff; color: var(--ink);
+}
+.search-bar input:focus { outline: 3px solid var(--purple); outline-offset: 1px; }
+#resultCount { font-weight: bold; color: #78350f; white-space: nowrap; }
+
+.lesson-chips { max-width: 980px; margin: 0 auto 10px; display:flex; flex-wrap:wrap; gap:8px; }
+.lesson-chip {
+    display:inline-block; padding:7px 14px; border-radius:16px; cursor:pointer;
+    background:#fff; border:1.5px solid var(--blue); color:var(--blue); font-size:.92em;
+    transition: transform .15s, background .15s, color .15s;
+}
+.lesson-chip:hover { background: var(--blue); color:#fff; transform: translateY(-2px); }
+
+.card-grid {
+    max-width: 1180px; margin: 20px auto 0; padding: 0 4px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px;
+}
+.parasha-card {
+    background: var(--paper); border-radius: 16px; padding: 20px 20px 18px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.1); cursor: pointer; text-align: center;
+    border-top: 6px solid var(--accent, var(--purple));
+    transition: transform .18s, box-shadow .18s;
+    display:flex; flex-direction:column; gap:8px; align-items:center;
+}
+.parasha-card:hover { transform: translateY(-5px); box-shadow: 0 10px 26px rgba(0,0,0,.18); }
+.parasha-card .pnum {
+    width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background: var(--accent, var(--purple)); color:#fff; font-weight:bold; font-size:.85em;
+}
+.parasha-card .pname { font-size: 1.25em; font-weight: bold; color: var(--ink); }
+.parasha-card .pcount { font-size: .92em; color: var(--muted); }
+.parasha-card.hidden { display:none; }
+.no-results { text-align: center; color: var(--muted); font-size: 1.2em; padding: 50px 0; display:none; }
+.no-results.visible { display:block; }
+
+/* ============ READER SCREEN ============ */
+#readerScreen { display:none; position:fixed; inset:0; z-index:100; background: var(--g-page); }
+#readerScreen.active { display:block; }
+
+.reader-topbar {
+    position:sticky; top:0; z-index: 20;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding: 10px 18px; background: rgba(255,255,255,.92); backdrop-filter: blur(6px);
+    box-shadow: 0 2px 12px rgba(0,0,0,.12);
+}
+:root[data-theme="dark"] .reader-topbar, @media (prefers-color-scheme: dark) { }
+.reader-btn {
+    background:#fff; color: var(--purple); border:2px solid var(--purple); border-radius:24px;
+    padding:8px 16px; font-size:.95em; font-weight:bold; cursor:pointer; white-space:nowrap;
+    transition: transform .15s, background .15s;
+}
+.reader-btn:hover { transform: translateY(-2px); background:#f3e8ff; }
+.reader-progress-wrap { flex:1 1 160px; min-width:120px; }
+.reader-progress-bar { height:8px; border-radius:6px; background:rgba(0,0,0,.08); overflow:hidden; }
+.reader-progress-fill { height:100%; background: var(--g-title); transition: width .25s; }
+.reader-pagenum { font-size:.9em; color: var(--muted); font-weight:bold; white-space:nowrap; }
+
+.reader-stage { position:relative; height: calc(100vh - 64px); overflow: hidden; }
+.book-page {
+    position:absolute; inset:0; overflow-y:auto;
+    padding: 40px 20px 100px;
+    opacity:0; transform: translateX(0); pointer-events:none;
+    transition: opacity .32s ease, transform .32s ease;
+}
+.book-page.current { opacity:1; transform: translateX(0); pointer-events:auto; z-index:5; }
+.book-page.enter-from-right { transform: translateX(40px); }
+.book-page.enter-from-left { transform: translateX(-40px); }
+@media (prefers-reduced-motion: reduce) {
+    .book-page { transition: opacity .01ms !important; transform:none !important; }
+}
+
+.page-inner {
+    max-width: 780px; margin: 0 auto; background: var(--paper); border-radius: 18px;
+    padding: 40px 50px; box-shadow: 0 10px 40px rgba(0,0,0,.15);
+}
+.page-inner h2 {
+    font-size: 2.1em; color: var(--purple); border-right: 6px solid var(--purple);
+    padding-right: 18px; margin: 0 0 6px;
+}
+.page-inner .page-count { font-size:.5em; color: var(--muted); font-weight:normal; }
+.page-summary {
+    background: var(--g-highlight); border-right: 6px solid var(--blue);
+    border-radius: 12px; padding: 20px 24px; margin: 20px 0 28px;
+    font-size: 1.05em; text-align: justify;
+}
+.page-lessons-title { font-size: 1.2em; color: var(--green); margin: 0 0 14px; }
+.lesson-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; }
+.lesson-list li a {
+    display:block; padding: 12px 16px; border-radius: 12px;
+    background: var(--g-quote); border-right: 5px solid var(--gold);
+    color: var(--ink); text-decoration:none; font-size: 1.0em; line-height:1.5;
+    transition: transform .15s, box-shadow .15s, background .15s;
+}
+.lesson-list li a:hover { transform: translateX(-4px); box-shadow: 0 5px 15px rgba(37,99,235,.2); background: var(--g-verse); color: var(--purple); }
+@media (max-width: 640px) { .lesson-list { grid-template-columns: 1fr; } .page-inner { padding: 26px 20px; } }
+
+.nav-arrow {
+    position:fixed; top:50%; transform: translateY(-50%); z-index: 30;
+    width:50px; height:50px; border-radius:50%; border:none; cursor:pointer;
+    background: var(--g-title); color:#fff; font-size:1.4em; box-shadow: 0 5px 15px rgba(0,0,0,.25);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform .15s, opacity .15s;
+}
+.nav-arrow:hover { transform: translateY(-50%) scale(1.08); }
+.nav-arrow:disabled { opacity:.3; cursor:default; }
+.nav-arrow.prev { right: 22px; }
+.nav-arrow.next { left: 22px; }
+@media (max-width:600px) { .nav-arrow { width:40px;height:40px;font-size:1.1em; } .nav-arrow.prev{right:8px;} .nav-arrow.next{left:8px;} }
+
+/* TOC panel */
+#tocPanel {
+    position:fixed; inset:0 0 0 auto; width: min(340px, 88vw); height:100vh; z-index: 200;
+    background: var(--paper); box-shadow: -10px 0 30px rgba(0,0,0,.25);
+    transform: translateX(100%); transition: transform .25s ease; overflow-y:auto; padding: 20px;
+}
+[dir="rtl"] #tocPanel { inset: 0 auto 0 0; transform: translateX(-100%); }
+#tocPanel.open { transform: translateX(0); }
+#tocOverlay { position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:190; display:none; }
+#tocOverlay.open { display:block; }
+#tocPanel h3 { color: var(--purple); margin-top:0; }
+.toc-item {
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+    padding: 9px 10px; border-radius: 10px; cursor:pointer; font-size: .96em;
+}
+.toc-item:hover { background: var(--g-highlight); }
+.toc-item .tn { color: var(--muted); font-size:.85em; }
+.toc-close { background:none; border:none; font-size:1.4em; cursor:pointer; color: var(--muted); float:left; }
+
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --paper: #1c1b22; --ink: #e8e6ef; --muted: #a8a4b8; --line: rgba(255,255,255,.10);
+        --purple: #c084fc; --blue: #7dd3fc; --green: #4ade80; --gold: #fbbf24; --pink: #f9a8d4;
+        --g-page:      linear-gradient(135deg, #14131a 0%, #221f2e 100%);
+        --g-verse:     linear-gradient(135deg, #2a2440 0%, #3a2436 100%);
+        --g-highlight: linear-gradient(135deg, #1e2c44 0%, #262244 100%);
+        --g-quote:     linear-gradient(135deg, #3a2f16 0%, #4a3a18 100%);
+        --g-story:     linear-gradient(135deg, #16332a 0%, #14291f 100%);
+    }
+    .reader-topbar { background: rgba(28,27,34,.9); }
+    .search-bar input { background:#232029; }
+    .lesson-chip { background:#232029; }
+}
+:root[data-theme="dark"] {
+    --paper: #1c1b22; --ink: #e8e6ef; --muted: #a8a4b8; --line: rgba(255,255,255,.10);
+    --purple: #c084fc; --blue: #7dd3fc; --green: #4ade80; --gold: #fbbf24; --pink: #f9a8d4;
+    --g-page:      linear-gradient(135deg, #14131a 0%, #221f2e 100%);
+    --g-verse:     linear-gradient(135deg, #2a2440 0%, #3a2436 100%);
+    --g-highlight: linear-gradient(135deg, #1e2c44 0%, #262244 100%);
+    --g-quote:     linear-gradient(135deg, #3a2f16 0%, #4a3a18 100%);
+    --g-story:     linear-gradient(135deg, #16332a 0%, #14291f 100%);
+}
+:root[data-theme="light"] {
+    --purple: #7e22ce;  --blue: #2563eb;   --green: #059669;
+    --gold:   #f59e0b;  --pink: #ec4899;   --ink:   #1f2937;
+    --paper:  #ffffff;  --muted: #6b7280;  --line:  rgba(0,0,0,.08);
+    --g-page:      linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.home-btn-float {
+    position:fixed; bottom: 24px; right: 24px; z-index: 60;
+    background: var(--g-title); color:#fff; border:none; border-radius: 30px;
+    padding: 12px 22px; font-size: 1em; font-weight:bold; cursor:pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,.3); display:flex; align-items:center; gap:8px;
+}
+[dir="rtl"] .home-btn-float { right:auto; left:24px; }
+
+.toc-fab {
+    position:fixed; top: 14px; left: 14px; z-index: 60;
+    background: var(--paper); color: var(--purple); border:2px solid var(--purple); border-radius: 50%;
+    width:44px; height:44px; font-size:1.3em; cursor:pointer; box-shadow: 0 4px 14px rgba(0,0,0,.2);
+}
+[dir="rtl"] .toc-fab { left:auto; right:14px; }
+</style>
+</head>
+<body>
+
+<div id="homeScreen">
+    <div class="hero">
+        <h1 class="main-title">ספר דיגיטלי מתחלף</h1>
+        <div class="subtitle">קול תודה — כל שיעורי הרב יהודה טאוב, פרשה אחר פרשה</div>
+        <div class="author">מאת: הרב יהודה טאוב</div>
+        <p class="desc">דפדפו בספר כמו בספר אמיתי — עמוד אחד לכל פרשה, עם תקציר הנושאים החוזרים בשיעורי הפרשה וקישורים ישירים לכל שיעור ושיעור. אפשר גם לחפש שיעור או פרשה ולקפוץ ישר לעמוד המתאים.</p>
+    </div>
+
+    <div class="search-wrap">
+        <div class="search-bar">
+            <input type="search" id="searchInput" placeholder="חיפוש שיעור או פרשה..." aria-label="חיפוש שיעור או פרשה">
+            <span id="resultCount"></span>
+        </div>
+    </div>
+    <div class="lesson-chips" id="lessonChips"></div>
+
+    <div class="card-grid" id="cardGrid"></div>
+    <div class="no-results" id="noResults">לא נמצאו תוצאות התואמות לחיפוש.</div>
+</div>
+
+<div id="readerScreen" aria-hidden="true">
+    <button class="toc-fab" id="tocBtn" title="תוכן עניינים" aria-label="תוכן עניינים">☰</button>
+    <div class="reader-topbar">
+        <button class="reader-btn" id="homeBtnTop">🏠 ראשי</button>
+        <button class="reader-btn" id="prevBtnTop">◀ הקודם</button>
+        <button class="reader-btn" id="nextBtnTop">הבא ▶</button>
+        <div class="reader-progress-wrap">
+            <div class="reader-progress-bar"><div class="reader-progress-fill" id="progressFill"></div></div>
+        </div>
+        <div class="reader-pagenum" id="pageNum"></div>
+    </div>
+    <div class="reader-stage" id="readerStage"></div>
+    <button class="nav-arrow prev" id="prevArrow" aria-label="הפרשה הקודמת">◀</button>
+    <button class="nav-arrow next" id="nextArrow" aria-label="הפרשה הבאה">▶</button>
+    <button class="home-btn-float" id="homeBtnFloat">🏠 חזרה לראשי</button>
+</div>
+
+<div id="tocOverlay"></div>
+<nav id="tocPanel" aria-label="תוכן עניינים">
+    <button class="toc-close" id="tocClose" aria-label="סגירה">✕</button>
+    <h3>תוכן עניינים</h3>
+    <div id="tocList"></div>
+</nav>
+
+<script type="application/json" id="parashaData">[{"order":1,"id":"p-001-בראשית","name":"בראשית","count":10,"summary":"השיעורים על פרשת בראשית סובבים סביב שורש הבריאה עצמה: חז\"ל מלמדים שהעולם נברא בזכות מצוות ביכורים ו\"ראשית\", ומכאן יסוד ההודיה שעליו עומד הכול. הרב טאוב עוסק בחטאו של אדם הראשון ככפיית טובה, בשאלת \"למה אין לי\" ובדרך להפוך אותה לשמחה ולהודיה, וכן בשמחת הירח כביטוי לענווה ולנתינת כבוד לבורא. יש גם שיעורים על כוחה של השירה ועל הרצון האלוקי להיות מהולל בפי בריותיו. מסר מרכזי החוזר שוב ושוב: הכרת הטוב היא לא תוצאה של הבנה שכלית בלבד אלא תיקון לחטא הקדמון של כפיות הטובה.","lessons":[{"title":"בשביל ביכורים שנקראו ראשית","href":"001 בראשית/בשביל ביכורים שנקראו ראשית.html"},{"title":"הודאת אדם הראשון","href":"001 בראשית/הודאת אדם הראשון.html"},{"title":"הכרת החסד","href":"001 בראשית/הכרת החסד.html"},{"title":"העולם צועק יש בורא — יסודות האמונה","href":"001 בראשית/העולם צועק יש בורא.html"},{"title":"חטא אדם הראשון וטעם תקנת שבע ברכות","href":"001 בראשית/האישה אשר נתתה עמדי - חטא אדם הראשון ושבע ברכות.html"},{"title":"כיצד להיות שמח ולהודות","href":"001 בראשית/כיצד להיות שמח ולהודות.html"},{"title":"כפיית טובה","href":"001 בראשית/כפיית טובה.html"},{"title":"למה אין לי","href":"001 בראשית/למה אין לי.html"},{"title":"שיר תאב — הקדוש ברוך הוא מתאווה לשירים","href":"001 בראשית/שיר תאב.html"},{"title":"שמחת הירח — להקטין את עצמך ולתת כבוד לשמו","href":"001 בראשית/שמחת הירח.html"}]},{"order":2,"id":"p-002-נח","name":"נח","count":7,"summary":"השיעורים על פרשת נח מתמקדים בנח היוצא מן התיבה ומיד מקריב קרבנות תודה — פעולה שגורמת נחת רוח לבורא ומביאה לכך שה' לא יוסיף לקלל את האדמה. נלמד כאן על הבינה להבחין בטוב שנשאר אחרי חורבן ולהודות עליו דווקא, ועל הצורך להודות גם על החסרונות. שיעור נוסף דן בשמות בניו של נח — שם, חם ויפת — כרמז לאופן הראוי לעשיית מצוות: לשם שמים, בהתלהבות ובהידור. הפרשה מוצגת כאבן יסוד לרעיון שהודיה על מה שנשאר, ולא בכי על מה שאבד, היא המפתח לישועה.","lessons":[{"title":"אוצר מתנת חינם — כוחה של הכרת הטוב","href":"002 נח/אוצר מתנת חינם.html"},{"title":"ברוך ה' אלוקי שם","href":"002 נח/ברוך ה' אלוקי שם.html"},{"title":"הבינה לדעת להודות","href":"002 נח/הבינה לדעת להודות.html"},{"title":"להודות על החסרונות","href":"002 נח/להודות על החסרונות.html"},{"title":"סולם יראת שמים","href":"002 נח/סולם יראת שמים.html"},{"title":"קורבן התודה של נח — פרשת נח","href":"002 נח/קורבן_התודה_של_נח.html"},{"title":"שם, חם ויפת — הודיה כראוי","href":"002 נח/שם חם ויפת.html"}]},{"order":3,"id":"p-003-לך-לך","name":"לך לך","count":11,"summary":"שיעורי פרשת לך לך סובבים סביב אברהם אבינו כמי שקירב את העולם לבורא באמצעות הודיה ופרסום חסדי ה' (\"ויקרא בשם ה'\" נדרש כ\"ויקריא\"). נדונות סגולות מעשיות הנלמדות ממנו: איך זוכים לשידוך, מהו סוד העושר והאושר, ומשמעות הביטוי \"למען ייטב לי בעבורך\" כמפתח לפרנסה. יש גם עיון בגימטריה \"לך לך\" = מאה, כרמז למאה הברכות היומיות, ובניסיונות אברהם כהזדמנות להודיה על הייסורים. הקו המנחה הוא שהחסד וההודיה של אברהם הם המודל להליכה בעקבותיו.","lessons":[{"title":"ההודיה של אברהם אבינו","href":"003 לך לך/ההודיה של אברהם אבינו.html"},{"title":"הייסורים הם רכוש גדול","href":"003 לך לך/הייסורים הם רכוש גדול.html"},{"title":"המודה להשם מוסיף ומהדר","href":"003 לך לך/המודה להשם מוסיף ומהדר.html"},{"title":"כיצד נשיג שידוך","href":"003 לך לך/כיצד נשיג שידוך.html"},{"title":"להודות על הניסיונות","href":"003 לך לך/להודות על הניסיונות.html"},{"title":"לך לך — בגימטריא מאה","href":"003 לך לך/לך לך - בגימטריא מאה.html"},{"title":"למען ייטב לי בעבורך — מפתח לפרנסה ולישועה","href":"003 לך לך/למען ייטב לי בעבורך - מפתח לפרנסה ולישועה.html"},{"title":"סוד האושר","href":"003 לך לך/סוד האושר.html"},{"title":"עד הנה עזרונו רחמיך","href":"003 לך לך/עד הנה עזרונו רחמיך.html"},{"title":"עשיית חסד כהכרת הטוב לבורא","href":"003 לך לך/עשיית חסד כהכרת הטוב לבורא.html"},{"title":"שרוכי נעליים והודיה להשם","href":"003 לך לך/שרוכי נעליים והודיה להשם.html"}]},{"order":4,"id":"p-004-וירא","name":"וירא","count":13,"summary":"פרשת וירא עשירה בשיעורים על מידת החסד וההודיה בפועל: הכנסת האורחים של אברהם, סעודת ההודיה שערך ביום הגמל את יצחק, והשאלה מדוע דווקא סעודה כזו. נדונים גם ניסיון העקידה כניסיון \"שלא לערער\", תפילות לוט מול תפילת אברהם על סדום, וזכרון החסדים כדרך חיים. כמה שיעורים עוסקים במי שאינו מודה ומשבח על טובה, ובקשר בין הכנסת אורחים לגילוי אליהו בברית מילה. הפרשה מצטיירת כאוסף של דגמים מעשיים כיצד להפוך חסד לידי הודיה גלויה.","lessons":[{"title":"האדם מתעורר בכח דברי פיו","href":"004 וירא/האדם מתעורר בכח דברי פיו.html"},{"title":"הניסיון שלא לערער","href":"004 וירא/הניסיון שלא לערער.html"},{"title":"והסר שטן מלפנינו ומאחרינו","href":"004 וירא/והסר שטן מלפנינו ומאחרינו.html"},{"title":"זכרון חסדיו","href":"004 וירא/זכרון חסדיו.html"},{"title":"להודות זה לתת","href":"004 וירא/להודות זה לתת.html"},{"title":"לְהוֹדוֹת עַל הַכְנָסַת אוֹרְחִים","href":"004 וירא/להודות על הכנסת אורחים.html"},{"title":"למה אליהו הנביא מגיע לברית מילה","href":"004 וירא/למה אליהו הנביא מגיע לברית מילה.html"},{"title":"מי שלא מודה ומשבח על טובה","href":"004 וירא/מי שלא מודה ומשבח על טובה.html"},{"title":"סעודת הודיה","href":"004 וירא/סעודת הודיה.html"},{"title":"עולם חסד יבנה","href":"004 וירא/עולם חסד יבנה.html"},{"title":"עקידת יצחק — הלכה למעשה","href":"004 וירא/עקידת יצחק - הלכה למעשה.html"},{"title":"קל וחומר מדור הפלגה","href":"004 וירא/קל וחומר מדור הפלגה.html"},{"title":"תפילת לוט","href":"004 וירא/תפילת לוט.html"}]},{"order":5,"id":"p-005-חיי-שרה","name":"חיי שרה","count":7,"summary":"פרשת חיי שרה מוצגת כ\"פרשת ההודיה מן התורה\": שיעור מרכזי דן במקור ההודאה מדברי הרמב\"ן שתכלית המצוות היא שנודה לבורא, ובכך שאליעזר עבד אברהם הוא הדוגמה המובהקת בתורה לאדם שמודה על מציאת שידוך טוב. נדונים גם חובת הודיה של חתן וכלה, הודיה על \"חצי טובה\" (נס חלקי) שמושכת נס שלם, וברכת \"שהחיינו\" כהודיה על הרגע החדש. הפרשה משמשת בסיס הלכתי-מחשבתי לכל נושא ההודיה שמלווה את שאר השיעורים בסדרה.","lessons":[{"title":"בהודיה צריך להאריך","href":"005 חיי שרה/בהודיה צריך להאריך.html"},{"title":"המברך יתברך","href":"005 חיי שרה/המברך יתברך.html"},{"title":"המודה בנס חלקי מושך על עצמו נס מושלם","href":"005 חיי שרה/המודה בנס חלקי מושך על עצמו נס מושלם.html"},{"title":"יפה שיחתן של עבדי אבות","href":"005 חיי שרה/יפה שיחתן של עבדי אבות.html"},{"title":"מדוע אברהם אבינו משתחווה לאנשים","href":"005 חיי שרה/מדוע אברהם אבינו משתחווה לאנשים.html"},{"title":"מכאן שמודים על בשורה טובה","href":"005 חיי שרה/מכאן שמודים על בשורה טובה.html"},{"title":"שהחיינו לזמן הזה","href":"005 חיי שרה/שהחיינו לזמן הזה.html"}]},{"order":6,"id":"p-006-תולדות","name":"תולדות","count":7,"summary":"שיעורי תולדות עוסקים בעיקר ביצחק ורבקה ובתפילותיהם על הבנים, וכיצד ההודיה דווקא מושכת שפע וברכה (\"מאה שערים\" שיצחק מצא בשנה קשה מתפרש כרמז למאה הברכות). יש דיון במקור מצוות קידוש מן התורה הנלמד מהפרשה, בשאלה \"למה יש צרות\", ובסוד ההולדה של יצחק לאחר העקידה. שיעורים נוספים מקשרים בין אכילה לאהבת ה' ובין נשמת כל חי לכוחה בעת צרה ולסגולת ההודיה על מציאת הזיווג.","lessons":[{"title":"אכילה — אהבת ה'","href":"006 תולדות/אכילה - אהבת ה'.html"},{"title":"הודיה מושכת שפע","href":"006 תולדות/הודיה מושכת שפע.html"},{"title":"ואלה תולדות יצחק בן אברהם","href":"006 תולדות/ואלה תולדות יצחק בן אברהם.html"},{"title":"למה יש צרות","href":"006 תולדות/למה יש צרות.html"},{"title":"מאה שערים — מאה ברכות","href":"006 תולדות/מאה שערים - מאה ברכות.html"},{"title":"נשמת כל חי — כוחה בעת צרה, וסגולת ההודיה על הזיווג","href":"006 תולדות/נשמת כל חי - כוחה בעת צרה.html"},{"title":"קידוש מן התורה","href":"006 תולדות/קידוש מן התורה.html"}]},{"order":7,"id":"p-007-ויצא","name":"ויצא","count":6,"summary":"פרשת ויצא מוקדשת ברובה ליעקב אבינו כ\"עמוד ההודיה\" וללאה אמנו כמי שהייתה הראשונה בעולם שהודתה לה' באמת (\"הפעם אודה את ה'\"), על שם זה נקרא שבט יהודה ועם ישראל נקראים יהודים. יש עיון בהבדל בין דרך מציאת השידוך של אליעזר לזו של יעקב, בסגולה למציאת זיווג הנלמדת מהפרשה, ובמעלת הצניעות שהייתה ברחל. שיעורים נוספים עוסקים בניגון בתפילה ובכוח השירה. הפרשה נותנת את הבסיס הרעיוני לכל מושג ה\"הודיה\" בשמו הפרטי.","lessons":[{"title":"בִּשְׂכַר צְנִיעוּת שֶׁהָיְתָה בְּרָחֵל","href":"007 ויצא/בשכר צניעות שהיתה ברחל.html"},{"title":"הַנִּגּוּן בַּתְּפִלָּה","href":"007 ויצא/הניגון בתפילה.html"},{"title":"הפעם אודה את ה׳","href":"007 ויצא/הפעם אודה את ה'.html"},{"title":"יעקב אבינו עמוד ההודיה","href":"007 ויצא/יעקב אבינו עמוד ההודיה.html"},{"title":"כִּי אִשְּׁרוּנִי בָּנוֹת","href":"007 ויצא/כי אשרוני בנות.html"},{"title":"סְגֻלָּה נִפְלָאָה לִמְצִיאַת הַזִּוּוּג","href":"007 ויצא/סגולה נפלאה למציאת הזיווג.html"}]},{"order":8,"id":"p-008-וישלח","name":"וישלח","count":8,"summary":"בפרשת וישלח מודגשת תפילת יעקב לפני המפגש עם עשו — \"קטונתי מכל החסדים ומכל האמת\" — כמודל להכרת הטוב ולענווה למרות ההצלחה. נדון גם הרעיון \"לא מקבלים לפני שמודים\", מתוך ציווי ה' ליעקב לקיים את נדרו ולהודות לפני שממשיכים הלאה, וכן ניגודי ההשקפה בין \"יש לי רב\" של עשו ל\"יש לי כל\" של יעקב. הפרשה משמשת ללימוד שהכרת הטוב על העבר היא תנאי מקדים לכל ישועה עתידית.","lessons":[{"title":"הַנִּסָּיוֹן שֶׁיֵּשׁ בַּשְּׂמָחוֹת","href":"008 וישלח/הניסיון שיש בשמחות.html"},{"title":"וְאַתָּה אָמַרְתָּ הֵיטֵב אֵיטִיב עִמָּךְ","href":"008 וישלח/ואתה אמרת היטב איטיב עמך.html"},{"title":"וַיִּוָּתֵר יַעֲקֹב לְבַדּוֹ","href":"008 וישלח/ויותר יעקב לבדו.html"},{"title":"מִדַּת הָרַחֲמִים","href":"008 וישלח/מדת הרחמים.html"},{"title":"מְקוֹר לִסְגֻלַּת נִשְׁמַת כֹּל חַי","href":"008 וישלח/מקור לסגולת נשמת כל חי.html"},{"title":"נֵס פַּךְ הַשֶּׁמֶן בִּזְכוּת פַּךְ קָטָן שֶׁל יַעֲקֹב","href":"008 וישלח/נס פך השמן בזכות פך קטן של יעקב.html"},{"title":"קָטֹנְתִּי מִכָּל הַחֲסָדִים","href":"008 וישלח/קטונתי מכל החסדים.html"},{"title":"שֶׁעָשָׂה לִי כָּל צָרְכִּי","href":"008 וישלח/שעשה לי כל צרכי.html"}]},{"order":9,"id":"p-009-וישב","name":"וישב","count":3,"summary":"שיעורי וישב (מעטים יחסית) עוסקים בעיקר בסיפור יעקב המתאבל על יוסף וכיצד ה' דורש מהאדם להודות אף בתוך הצרה ולגלות בה טובה גנוזה, בניסיון יוסף הצדיק מול אשת פוטיפר כדוגמת עמידה באמונה, ובשלוש ההודיות הראשונות המופיעות בתורה בהקשר של נישואין. גם כאן חוזר המוטיב שגם בתוך ירידה או צרה יש להתאמץ ולמצוא את הטוב שבתוכה ולהודות עליו.","lessons":[{"title":"הַטּוֹבָה הַגְּנוּזָה בְּתוֹךְ הַצָּרָה","href":"009 וישב/הטובה הגנוזה בתוך הצרה.html"},{"title":"הַנִּסָּיוֹן שֶׁל יוֹסֵף הַצַּדִּיק","href":"009 וישב/הניסיון של יוסף הצדיק.html"},{"title":"שלוש הודיות בנישואין בתורה","href":"009 וישב/שלוש הודיות בנישואין בתורה.html"}]},{"order":10,"id":"p-010-מקץ","name":"מקץ","count":1,"summary":"השיעור היחיד ששרד מפרשת מקץ עוסק בחלום פרעה על הפרות השמנות והרזות כמשל לחיי האדם, הכולל שבע שנות טובה ולאחריהן שנות קושי, ומלמד כיצד יש לשמור ולהודות על הטוב מבעוד מועד ולהיערך נפשית גם לתקופות פחות פשוטות מתוך אמונה.","lessons":[{"title":"לשמור את הפרות השמנות לשני הרעב","href":"010 מקץ/לשמור את הפרות השמנות לשני הרעב.html"}]},{"order":11,"id":"p-011-ויגש","name":"ויגש","count":6,"summary":"פרשת ויגש עוסקת בהתמקדות בטוב מתוך המפגש הדרמטי בין יעקב ליוסף ובין יעקב לפרעה: יעקב בונה מזבח ומודה לפני שהוא יורד למצרים, וזוכה מיד לגילוי שכינה — לימוד שהודיה מקדימה גילוי. נדון גם עומק דבריו של יהודה אל יוסף כ\"הודיה\" בעצם החזרת הסיפור, וכיצד יוסף מגלה עצמו לאחיו לאחר שראה שהם מתייסרים ומתחרטים. השיעורים מלמדים שגם המצבים שנראים קשים מתגלים לבסוף כחסד.","lessons":[{"title":"אוֹי לָנוּ מִיּוֹם הַדִּין","href":"011 ויגש/אוי לנו מיום הדין.html"},{"title":"וַיִּגַּשׁ אֵלָיו יְהוּדָה","href":"011 ויגש/ויגש אליו יהודה.html"},{"title":"לֹא לְהִתְלוֹנֵן","href":"011 ויגש/לא להתלונן.html"},{"title":"לָגֶשֶׁת בְּהוֹדָיָה","href":"011 ויגש/לגשת בהודיה.html"},{"title":"לְהִתְרַכֵּז בַּטּוֹב","href":"011 ויגש/להתרכז בטוב.html"},{"title":"כֵּיצַד מְקַבְּלִים בְּשׂוֹרָה טוֹבָה — לִימּוּד מִיַּעֲקֹב אָבִינוּ","href":"011 ויגש/כיצד לקבל דברים טובים - לימוד מיעקב אבינו.html"}]},{"order":12,"id":"p-012-ויחי","name":"ויחי","count":7,"summary":"שיעורי ויחי סובבים בעיקר סביב ברכת יעקב ליהודה \"יהודה אתה יודוך אחיך\" כמקור לשם \"יהודים\" — עם שתפקידו להודות תמיד, בטוב וברע. נדון גם הביטוי \"בחרבי ובקשתי\" כתפילה ובקשה, סוד האות ד' הקשורה להודיה, וסיפורים אישיים על מעלת ההודיה במילים שלך. יש גם עיון בבקשת יעקב לגלות את הקץ ומדוע נבצר ממנו.","lessons":[{"title":"גִּלּוּי הַקֵּץ","href":"012 ויחי/גילוי הקץ.html"},{"title":"הַנֹּתֵן אִמְרֵי שָׁפֶר","href":"012 ויחי/הנותן אמרי שפר.html"},{"title":"הַשִּׁיר וְהַשֶּׁבַח לַה' הוּא הַבְּרָכָה","href":"012 ויחי/השיר והשבח להשם הוא הברכה.html"},{"title":"יְהוּדָה אַתָּה יוֹדוּךָ אַחֶיךָ","href":"012 ויחי/יהודה אתה יודוך אחיך.html"},{"title":"לְהוֹדוֹת בַּמִּלִּים שֶׁלְּךָ","href":"012 ויחי/להודות במילים שלך.html"},{"title":"לָשִׂים אֶת אֶפְרַיִם לִפְנֵי מְנַשֶּׁה","href":"012 ויחי/לשים את אפרים לפני מנשה.html"},{"title":"הַנְּשָׁמָה רוֹצָה לוֹמַר בָּרוּךְ שֵׁם","href":"012 ויחי/ויחי - הנשמה רוצה לומר ברוך שם - סוד הלחישה בקריאת שמע.html"}]},{"order":13,"id":"p-013-שמות","name":"שמות","count":6,"summary":"פרשת שמות עוסקת בתחילת השעבוד במצרים לאחר מות יוסף ואחיו, ובשאלה מדוע נגזר על עם ישראל להשתעבד. שיעורים דנים בגדר מצוות בין אדם לחברו, בזכרון חסדי ה' כערך יסודי, ובכך שההודיה — ולא רק הזעקה — היא שמורידה שפע וישועה. יש גם עיון בציווי \"תעבדון את האלוקים על ההר הזה\" כמטרת הגלות: להכיר את חסדי ה' מתוך ענווה.","lessons":[{"title":"אֲשֶׁר לֹא יָדַע אֶת יוֹסֵף","href":"013 שמות/אשר לא ידע את יוסף.html"},{"title":"הַחֶסֶד שֶׁבַּיִּסּוּרִים","href":"013 שמות/החסד שבייסורים.html"},{"title":"לַעֲשׂוֹת זֵכֶר לְחַסְדֵי הַשֵּׁם","href":"013 שמות/לעשות זכרון לחסדי השם.html"},{"title":"מַחֲצִית הַשֶּׁקֶל","href":"013 שמות/מחצית השקל.html"},{"title":"סִבַּת גָּלוּת מִצְרַיִם","href":"013 שמות/סיבת גלות מצרים.html"},{"title":"שַׁל נְעָלֶיךָ מֵעַל רַגְלֶיךָ","href":"013 שמות/של נעליך מעל רגליך.html"}]},{"order":14,"id":"p-014-וארא","name":"וארא","count":6,"summary":"שיעורי וארא עוסקים בשאלה מדוע צריך להכיר טובה ומהי מהות מידת הכרת הטוב, ובקשר בין ארבע לשונות הגאולה לארבע כוסות של ליל הסדר ולמושג ההודיה (מספר ארבע כמסמל תודה). נדונות ארבע סיבות להודות ולהלל בזמן הפרשה, וכן עומק המילים \"אני ה'\" כגילוי מידת הרחמים. הפרשה נדרשת גם ביחס למכות מצרים כמכות שיש בהן חסד נסתר.","lessons":[{"title":"אַרְבַּע כּוֹסוֹת","href":"014 וארא/ארבע כוסות.html"},{"title":"דִּין וְרַחֲמִים","href":"014 וארא/דין ורחמים.html"},{"title":"הוֹדָיָה שֶׁל רֶגֶשׁ, לֹא רַק שֶׁל שֵׂכֶל","href":"014 וארא/הודיה של רגש לא רק של שכל.html"},{"title":"לִזְכּוֹת בַּנֵּס בִּזְכוּת פִּרְסוּם","href":"014 וארא/לזכות בנס בזכות פרסום.html"},{"title":"מִי חָכָם וְיִשְׁמָר אֵלֶּה","href":"014 וארא/מי חכם וישמר אלה.html"},{"title":"שְׁבִירַת הַגַּאֲוָה — יְסוֹד הַכָּרַת הַטּוֹב","href":"014 וארא/שבירת הגאווה - יסוד הכרת הטוב.html"}]},{"order":15,"id":"p-015-בא","name":"בא","count":2,"summary":"פרשת בא עוסקת במצוות סיפור יציאת מצרים כביטוי עליון לחובת ההודיה — \"למען תספר\": כל הניסים במצרים נועדו כדי שנספר עליהם לדורות. נדונה השמחה שבחגיגת הגאולה, וכן הרעיון שעיקר התשובה הוא התבוננות בחסדי ה', הנלמד מהאופן שבו המכות מנקות ומכפרות. הפרשה מדגישה שהמטרה הסופית של הניסים היא שבח והודיה, לא רק ההצלה עצמה.","lessons":[{"title":"הַתְבּוֹנְנוּת בַּחֲסָדִים — שֹׁרֶשׁ הָעֲבוֹדָה וְהַתְּשׁוּבָה","href":"015 בא/התבוננות בחסדים - שורש העבודה והתשובה.html"},{"title":"לְמַעַן תְּסַפֵּר","href":"015 בא/למען תספר.html"}]},{"order":16,"id":"p-016-בשלח","name":"בשלח","count":10,"summary":"פרשת בשלח, פרשת \"שבת שירה\", עוסקת בהרחבה בכוחה ומעלתה של השירה: מי שאומר שירה על נס שנעשה לו נחשב כבריאה חדשה ונמחלים לו עוונותיו. יש שיעורים רבים על שירת הים כמעלה עליונה מכל שירה, על מדוע דווקא בשבת זו משתנה שם השבת, ועל הקשר בין שירת הים לשירת כל שבת ושבת. נדונים גם סיפורים אישיים על גילוי מקורות חז\"ליים למעלת השירה ומחילת העוונות שבה.","lessons":[{"title":"וַיֹּאמְרוּ לֵאמֹר","href":"016 בשלח/ויאמרו לאמור.html"},{"title":"טוּ בִּשְׁבָט וְשַׁבָּת שִׁירָה","href":"016 בשלח/טו בשבט ושבת שירה.html"},{"title":"כֹּחָהּ שֶׁל שִׁירָה לִמְחִילַת עֲוֹנוֹת","href":"016 בשלח/כוחה של שירה למחילת עוונות.html"},{"title":"לְהָכִין אֶת הַפֶּה לָעוֹלָם הַבָּא","href":"016 בשלח/להכין את הפה לעולם הבא.html"},{"title":"מַהִי שִׁירָה","href":"016 בשלח/מהי שירה.html"},{"title":"קָשֶׁה זִוּוּגוֹ שֶׁל אָדָם כִּקְרִיעַת יַם סוּף","href":"016 בשלח/קשה זיווגו של אדם כקריעת ים סוף.html"},{"title":"שַׁבָּת שִׁירָה","href":"016 בשלח/שבת שירה.html"},{"title":"שְׁמוֹנֶה רְאָיוֹת שֶׁהַהוֹדָיָה מוֹשֶׁכֶת שֶׁפַע","href":"016 בשלח/שמונה ראיות שההודיה מושכת שפע.html"},{"title":"תּוֹרָה לַגְּבָרִים, תּוֹדָה לַנָּשִׁים","href":"016 בשלח/תורה לגברים תודה לנשים.html"},{"title":"תְּנַאי הַהוֹדָיָה","href":"016 בשלח/תנאי ההודיה - התבדלות וקבלת עול.html"}]},{"order":17,"id":"p-017-יתרו","name":"יתרו","count":9,"summary":"פרשת יתרו עוסקת בתגובת יתרו למשמע הניסים והחסדים שעשה ה' לישראל — \"ויחד יתרו\" — ובשאלה כיצד יודעים להודות גם כשכואב, מתוך התבוננות ביתרו שידע לשמוח בישועת ישראל חרף הכאב האישי שבדבר. נדונים גם קשר ההודיה לשבת ולעשרת הדיברות, ומצוות \"אנוכי ה' אלוקיך\" כיסוד להכרת חסדי ה' באמונה. יש גם עיון בחיבור בין ההודיה לשמחה ולאחדות העם.","lessons":[{"title":"הַנִּסָּיוֹן שֶׁבַּטּוֹבָה","href":"017 יתרו/הַנִּסָּיוֹן שֶׁבַּטּוֹבָה.html"},{"title":"וַיִּחַדְּ יִתְרוֹ","href":"017 יתרו/וַיִּחַדְּ יִתְרוֹ.html"},{"title":"וַיִּשְׁמַע יִתְרוֹ","href":"017 יתרו/וַיִּשְׁמַע יִתְרוֹ.html"},{"title":"טוֹבִים הַשְּׁנַיִם מִן הָאֶחָד","href":"017 יתרו/טוֹבִים הַשְּׁנַיִם מִן הָאֶחָד.html"},{"title":"לְהִתְמַקֵּד","href":"017 יתרו/לְהִתְמַקֵּד.html"},{"title":"מַעֲלַת הַהוֹדָאָה שֶׁל יִתְרוֹ","href":"017 יתרו/מַעֲלַת הַהוֹדָאָה שֶׁל יִתְרוֹ.html"},{"title":"סִפּוּרֵי נִפְלְאוֹתָיו שֶׁל הַשֵּׁם","href":"017 יתרו/סִפּוּרֵי נִפְלְאוֹתָיו שֶׁל הַשֵּׁם.html"},{"title":"עֻזִּי וְזִמְרָת יָהּ","href":"017 יתרו/עֻזִּי וְזִמְרָת יָהּ.html"},{"title":"שַׁבָּת וְשִׁירָה","href":"017 יתרו/שַׁבָּת וְשִׁירָה.html"}]},{"order":18,"id":"p-018-משפטים","name":"משפטים","count":4,"summary":"שיעורי משפטים דנים בכך שההודיה היא מצוות רגש ולא רק שכל, נלמד מכך שהתורה פותחת בעבד עברי ומהמהר\"ל על שירת הלב. נדון גם רעיון ההתאחדות עם הבורא דרך לימוד תורה בלשון הקודש, הלכות הודאה מעשיות, וסוגיית הכלב כדוגמה למוסר השכל מכל פרט בתורה. שיעור נוסף מזהה בפרשה יסודות למצוות ביכורים ולהודיה שבהם.","lessons":[{"title":"בִּכּוּרִים — הוֹדָיָה מֵרֵאשִׁית","href":"018 משפטים/בִּכּוּרִים — הוֹדָיָה מֵרֵאשִׁית.html"},{"title":"בִּשְׁבִיל לְהִתְרַגֵּשׁ צָרִיךְ לְהַרְגִּישׁ","href":"018 משפטים/בִּשְׁבִיל לְהִתְרַגֵּשׁ צָרִיךְ לְהַרְגִּישׁ.html"},{"title":"לַכֶּלֶב תַּשְׁלִכוּן אֹתוֹ","href":"018 משפטים/לַכֶּלֶב תַּשְׁלִכוּן אֹתוֹ.html"},{"title":"לִלְמֹד הִלְכוֹת הוֹדָאָה לְהַשֵּׁם","href":"018 משפטים/לִלְמֹד הִלְכוֹת הוֹדָאָה לְהַשֵּׁם.html"}]},{"order":19,"id":"p-019-תרומה","name":"תרומה","count":3,"summary":"פרשת תרומה עוסקת בתרומת המשכן כביטוי לעושר רוחני, ובשאלה כיצד זוכים להיות עשירים באמת מתוך שמחה ונתינה. שיעור מרכזי דן במידות החצר (מאה על חמישים אמה) כרמז למאה ברכות הנאמרות מתוך כוונת הלב. יש גם עיון במדרש על \"מקח טוב\" של התורה שניתנה לעם ישראל, ובשאלה מדוע לא מוזכרת הודיה מפורשת על מתן תורה בהלל הגדול, ותשובתה.","lessons":[{"title":"הוֹדָיָה עַל הַתּוֹרָה","href":"019 תרומה/הוֹדָיָה עַל הַתּוֹרָה.html"},{"title":"כֵּיצַד נִזְכֶּה לִהְיוֹת עֲשִׁירִים","href":"019 תרומה/כֵּיצַד נִזְכֶּה לִהְיוֹת עֲשִׁירִים.html"},{"title":"מַעְיַן הַשִּׂמְחָה — מֵאָה בְּרָכוֹת בְּכַוָּנָה","href":"019 תרומה/מַעְיַן הַשִּׂמְחָה — מֵאָה בְּרָכוֹת בְּכַוָּנָה.html"}]},{"order":20,"id":"p-020-תצוה","name":"תצוה","count":2,"summary":"שיעורי תצוה מרוכזים סביב הקטורת: מדוע היא מופיעה רק בסוף פרשת בגדי הכהונה, ומהו כוחה המיוחד להציל מכל רע ולשמח את הבורא. נדון גם הקשר שבין הקטורת לתפילה ומיקומה בסוף סדר התפילה, וכן בגדי אהרן ה\"לכבוד ולתפארת\" כדוגמה ליסוד שיש להודות ולברך גם על הרע כשם שמברכים על הטוב.","lessons":[{"title":"חָמֵשׁ דַּקּוֹת שֶׁל קְטֹרֶת","href":"020 תצוה/חָמֵשׁ דַּקּוֹת שֶׁל קְטֹרֶת.html"},{"title":"כָּתִית לַמָּאוֹר","href":"020 תצוה/כָּתִית לַמָּאוֹר.html"}]},{"order":21,"id":"p-021-כי-תשא","name":"כי תשא","count":4,"summary":"פרשת כי תשא (המשולבת עם פורים) עוסקת באמונה שכל הנהגת ה' בעולם — גם מה שנראה קשה — היא לרחמים ולטובה, כפי שמתגלה רק בדיעבד. נדון גם כיצד יודעים אם ה' אוהב אותנו, וקשר ההודיה לפרנסה ברווח. שיעור לפורים מדגיש שהיום מסוגל להתבוננות בחסדי ה' ולראות כיצד כל ההשתלשלות, גם המורכבת, הייתה לטובה.","lessons":[{"title":"בַּסּוֹף יִתְגַּלֶּה שֶׁהַכֹּל לְטוֹבָה","href":"021 כי תשא/בַּסּוֹף יִתְגַּלֶּה שֶׁהַכֹּל לְטוֹבָה.html"},{"title":"הוֹדָיָה לַה' — סְגֻלָּה לְפַרְנָסָה בְּרֶוַח","href":"021 כי תשא/הוֹדָיָה לְהַשֵּׁם — סְגֻלָּה לְפַרְנָסָה בְּרֶוַח.html"},{"title":"כֹּחַ הַנֶּאֱמָנוּת שֶׁבַּבַּיִת","href":"021 כי תשא/כֹּחַ הַנֶּאֱמָנוּת שֶׁבַּבַּיִת.html"},{"title":"כֵּיצַד אֵדַע שֶׁהַשֵּׁם אוֹהֵב אוֹתִי","href":"021 כי תשא/כֵּיצַד אֵדַע שֶׁהַשֵּׁם אוֹהֵב אוֹתִי.html"}]},{"order":22,"id":"p-022-ויקהל","name":"ויקהל","count":2,"summary":"שיעורי ויקהל (הכוללים גם עניינים משיקי פקודי) עוסקים בכיור שנעשה ממראות הנשים הצדקניות שהיו משבחות ומודות לבעליהן במצרים, וכן ברמז שבמאה אדני המשכן למאה הברכות היומיות. נדון גם החזרה 18 פעמים על \"כאשר ציווה ה' את משה\" כרמז ל-18 חוליות השדרה שבהן משתחווים במודים, ולקשר בין אמונה להכרת הטוב.","lessons":[{"title":"מֵאָה אֲדָנִים","href":"022 ויקהל/מֵאָה אֲדָנִים.html"},{"title":"נְשׁוֹת הַהוֹדָיָה שֶׁבָּנוּ אֶת הַכִּיּוֹר","href":"022 ויקהל/נְשׁוֹת הַהוֹדָיָה שֶׁבָּנוּ אֶת הַכִּיּוֹר.html"}]},{"order":23,"id":"p-024-ויקרא","name":"ויקרא","count":1,"summary":"השיעורים ששרדו מפרשת ויקרא (שחלקם חופפים ראש חודש ניסן) עוסקים בקשר בין עבודת הקורבנות לבין ההודיה, בפתיחת הפה לספר בחסדי ה' בחודש ניסן על פי האר\"י, ובפסוק \"עם זו יצרתי לי תהילתי יספרו\" כמטרת בריאת עם ישראל — לספר את שבחו של הבורא.","lessons":[{"title":"קי\"א פְּסוּקִים כְּנֶגֶד קי\"א בְּרָכוֹת","href":"024 ויקרא/קי-א פְּסוּקִים כְּנֶגֶד קי-א בְּרָכוֹת.html"}]},{"order":24,"id":"p-025-צו","name":"צו","count":5,"summary":"פרשת צו עוסקת בהרחבה בקרבן התודה: שני סוגי קרבנות תודה שבפרשה (של הניצול מסכנה, ושל הכהנים בימי המילואים), ייחודו ההלכתי (איסור חמץ, לחם מרובה, זמן אכילה מצומצם), ומדרש חז\"ל שלעתיד לבוא כל הקורבנות בטלים חוץ מקרבן התודה — שכן ההודיה לעולם אינה בטלה. יש גם עיון בדברי הצדיקים על מזמור לתודה.","lessons":[{"title":"הֶחָמֵץ שֶׁבְּקָרְבַּן הַתּוֹדָה","href":"025 צו/הֶחָמֵץ שֶׁבְּקָרְבַּן הַתּוֹדָה.html"},{"title":"צַדִּיקִים מוֹדִים לַה'","href":"025 צו/צַדִּיקִים מוֹדִים לַה.html"},{"title":"קָרְבַּן תּוֹדָה וְאִסּוּר הַקִּנְאָה","href":"025 צו/קָרְבַּן תּוֹדָה וְאִסּוּר הַקִּנְאָה.html"},{"title":"שְׁנֵי קָרְבְּנוֹת תּוֹדָה","href":"025 צו/שְׁנֵי קָרְבְּנוֹת תּוֹדָה.html"},{"title":"אַרְבָּעִים לְחָמִים בִּסְעוּדַת הוֹדָיָה","href":"025 צו/צו - ארבעים לחמים בסעודת הודיה - לפרסם את הנס ולשמר אותו.html"}]},{"order":25,"id":"p-026-שמיני","name":"שמיני","count":3,"summary":"שיעורי שמיני עוסקים בקשר בין הענווה להודיה, נלמד מתגובת משה שהודה ולא התבייש להודות שלא שמע הלכה מפי אהרן. נדון גם האסון שאירע ביום חנוכת המשכן ומה ניתן ללמוד ממנו, וכן הרעיון של \"אותו יצר הרע\" ואיחוד הלבבות בעבודת ה'. יש עיון בקשר בין קריאת המגילה ביום ובלילה לפרשת השבוע.","lessons":[{"title":"אוֹתוֹ יֵצֶר הָרָע","href":"026 שמיני/אוֹתוֹ יֵצֶר הָרָע.html"},{"title":"הָעֲנָוָה וְהַהוֹדָיָה","href":"026 שמיני/הָעֲנָוָה וְהַהוֹדָיָה.html"},{"title":"לֹא לְהַפְסִיק לָשִׁיר","href":"026 שמיני/לֹא לְהַפְסִיק לָשִׁיר.html"}]},{"order":26,"id":"p-028-מצורע","name":"מצורע","count":4,"summary":"פרשת מצורע (המחליפה גם את תזריע) עוסקת בדיני הצרעת כתמרור אזהרה נגד לשון הרע וכפיות טובה, ובתהליך הטהרה של המצורע. שיעור מעניין דן בכך שהבדידות הכפויה על המצורע נועדה לאפשר לו התבוננות ועשיית חשבון נפש על חסדי ה', ושיעור נוסף מקביל בין דיני נגעי הבתים לבין אתגרי הבידוד בתקופת הקורונה.","lessons":[{"title":"הַמַּסֵּכָה שֶׁעַל הַפֶּה","href":"028 מצורע/המסכה שעל הפה.html"},{"title":"הַמְּצֹרָע","href":"028 מצורע/הַמְּצֹרָע.html"},{"title":"לְטוֹבָתִי לֹא נִשְׁמְעָה תְּפִלָּתִי","href":"028 מצורע/לְטוֹבָתִי לֹא נִשְׁמְעָה תְּפִלָּתִי.html"},{"title":"צָרַעַת וּרְפוּאָתָהּ","href":"028 מצורע/צָרַעַת וּרְפוּאָתָהּ.html"}]},{"order":27,"id":"p-030-קדושים","name":"קדושים","count":6,"summary":"פרשת קדושים (המשולבת עם אחרי מות) עוסקת במצוות רבות שבין אדם לחברו ובין אדם למקום: מפני שיבה תקום, מצוות פאות הראש, ואיסור לשון הרע מתוך גישה אופטימית (\"לא תהיה פסימי\"). נדון גם מיעוט ה\"אני ה'\" החוזר בפרשיות אלה, סיפורו של ספר \"ונטעתם\" כדוגמה למצוות עצית עצי מאכל מתוך הודיה, ומעלת ראיית מעלת החברים.","lessons":[{"title":"הוֹדָיָה עַל הַזְּכוּת לַעֲבֹד אֶת ה'","href":"030 קדושים/הודיה על הזכות לעבוד את השם.html"},{"title":"טַעַם מִצְוַת פֵּאוֹת הָרֹאשׁ","href":"030 קדושים/טעם מצות פאות הראש.html"},{"title":"לֹא תִּהְיֶה פֶּסִימִי","href":"030 קדושים/לא תהיה פסימי.html"},{"title":"לראות את מעלת חברנו","href":"030 קדושים/מאמר_לראות_את_מעלת_חברנו_הרב_יהודה_טאוב.html"},{"title":"מִפְּנֵי שֵׂיבָה תָּקוּם","href":"030 קדושים/מפני שיבה תקום.html"},{"title":"סִפּוּרוֹ שֶׁל \"וּנְטַעְתֶּם\"","href":"030 קדושים/סיפורו של ונטעתם.html"}]},{"order":28,"id":"p-031-אמור","name":"אמור","count":4,"summary":"פרשת אמור עוסקת במצוות קידוש השם כערך העליון ביהדות, בקרבן התודה הנלמד ממנה (\"וכי תזבחו זבח תודה לה' לרצונכם תזבחוהו\"), ובקשר בין ספירת העומר (בפרט שבוע \"הוד\" מלשון הודיה) לימי ההכנה למתן תורה. נדונה גם החובה להגיד תודה מרצון ובשמחה ולא מתוך אילוץ.","lessons":[{"title":"הוֹדָיָה עַל הַהוֹדָיָה","href":"031 אמור/הוֹדָיָה עַל הַהוֹדָיָה.html"},{"title":"הַכָּרַת הַטּוֹב — הֲכָנָה גְּדוֹלָה לְמַתַּן תּוֹרָה","href":"031 אמור/הַכָּרַת הַטּוֹב — הֲכָנָה גְּדוֹלָה לְמַתַּן תּוֹרָה.html"},{"title":"לִרְצוֹנְכֶם תִּזְבָּחֻהוּ","href":"031 אמור/לִרְצוֹנְכֶם תִּזְבָּחֻהוּ.html"},{"title":"קִדּוּשׁ הַשֵּׁם עַל יְדֵי הוֹדָיָה","href":"031 אמור/קִדּוּשׁ הַשֵּׁם עַל יְדֵי הוֹדָיָה.html"}]},{"order":29,"id":"p-032-בהר","name":"בהר","count":2,"summary":"שיעורי בהר עוסקים במצוות שמיטה ויובל כביטוי לכך שהכול שייך לבורא ושהאדם רק \"גר ותושב\" בעולם הזה. נדון הקשר בין שמירת השמיטה לגלות מארץ ישראל, וההבנה שהיסוד לכל התורה — שנאמרה כולה בהר סיני — הוא לדעת שהאדם אינו בעל הבית האמיתי על רכושו, אלא שותף לחסדי הבורא.","lessons":[{"title":"כִּי גֵרִים וְתוֹשָׁבִים אַתֶּם עִמָּדִי","href":"032 בהר/כִּי גֵרִים וְתוֹשָׁבִים אַתֶּם עִמָּדִי.html"},{"title":"שְׁמִטָּה — לְהַכִּיר שֶׁהַכֹּל מַגִּיעַ מֵהַשֵּׁם","href":"032 בהר/שְׁמִטָּה — לְהַכִּיר שֶׁהַכֹּל מַגִּיעַ מֵהַשֵּׁם.html"}]},{"order":30,"id":"p-034-במדבר","name":"במדבר","count":5,"summary":"שיעורי במדבר עוסקים במניין עם ישראל \"במספר שמות\" כביטוי ליחס האישי והאוהב שיש לכל יהודי אצל הבורא, לצד עיונים בפרשות הסמוכות (מטות-מסעי, פנחס) על כך שהמסעות הרבים במדבר נכתבו כדי שעם ישראל יזכור את הניסים שנעשו לו, וכן על שורש חורבן בית המקדש באי הכרת חסדי ה' בחטא המרגלים.","lessons":[{"title":"בין המצרים — האור שבתוך החושך","href":"034 במדבר/בין המצרים - האור שבתוך החושך.html"},{"title":"השפע של הבריאה","href":"034 במדבר/השפע של הבריאה.html"},{"title":"ואתה קדוש יושב תהילות ישראל","href":"034 במדבר/ואתה קדוש יושב תהילות ישראל.html"},{"title":"וזכרת את כל המסע","href":"034 במדבר/וזכרת את כל המסע.html"},{"title":"חורבן בית המקדש — אי הכרת חסד ה'","href":"034 במדבר/חורבן בית המקדש - אי הכרת חסד ה'.html"}]},{"order":31,"id":"p-035-נשא","name":"נשא","count":2,"summary":"שיעורי נשא עוסקים בברכת כהנים \"כה תברכו את בני ישראל\" ובסוד ההשפעה שבברכה זו, וכן בפסוק על תרומת הביכורים לכהן כסגולה לעשירות אמיתית — מי שנותן לכהן ביד רחבה זוכה שלא יחסר לו דבר, לעומת הקמצן שנשאר עם המעט.","lessons":[{"title":"כה תברכו את בני ישראל","href":"035 נשא/כה תברכו את בני ישראל.html"},{"title":"סגולה לעשירות","href":"035 נשא/סגולה לעשירות.html"}]},{"order":32,"id":"p-036-בהעלותך","name":"בהעלותך","count":3,"summary":"פרשת בהעלותך עוסקת בחלישות דעתו של אהרן שלא השתתף בחנוכת המזבח ובתשובת ה' לו \"חייך שלך גדולה משלהם\", וכן בחטא המתאוננים שבא מתוך אי-הכרת חסדי ה' (המן שנחשב לחיסרון על ידי מי שלא התבונן בו כראוי). נדון גם עניין שבעים הזקנים שנועדו ללמד את העם להכיר טובה, ומצוות זכירת מעשה מרים כסגולה לזכור את מעלת ההודיה.","lessons":[{"title":"וירע באזני ה' — חטא המתאוננים ותיקונו","href":"036 בהעלותך/וירע באזני ה' - חטא המתאוננים ותיקונו.html"},{"title":"חייך שלך גדולה משלהם","href":"036 בהעלותך/חייך שלך גדולה משלהם.html"},{"title":"מצוות זכירת מעשה מרים","href":"036 בהעלותך/מצוות זכירת מעשה מרים.html"}]},{"order":33,"id":"p-037-שלח","name":"שלח","count":6,"summary":"פרשת שלח עוסקת בחטא המרגלים כחטא של כפיות טובה על ארץ ישראל, ובתיקון הנדרש — להודות דווקא על הארץ ולראות בה טוב. יש דיון בכוח הלשון לחיים ולמוות, ובקשר בין חטא המרגלים לחורבן בית המקדש ולבכיית תשעה באב. הפרשה מוצגת כלקח מתמשך על חשיבות ראיית הטוב.","lessons":[{"title":"אֶרֶץ חֶמְדָּה","href":"037 שלח/אֶרֶץ חֶמְדָּה.html"},{"title":"בְּכִיַּת חִנָּם — שֹׁרֶשׁ חֵטְא הַמְּרַגְּלִים","href":"037 שלח/בְּכִיַּת חִנָּם — שֹׁרֶשׁ חֵטְא הַמְּרַגְּלִים.html"},{"title":"הַחַיִּים וְהַמָּוֶת בְּיַד הַלָּשׁוֹן","href":"037 שלח/הַחַיִּים וְהַמָּוֶת בְּיַד הַלָּשׁוֹן.html"},{"title":"הַמַּפְתֵּחַ לַחַיִּים הַטּוֹבִים","href":"037 שלח/הַמַּפְתֵּחַ לַחַיִּים הַטּוֹבִים.html"},{"title":"לִרְאוֹת טוֹב","href":"037 שלח/לראות טוב.html"},{"title":"נַרְגְּנוּת מוּל עַיִן טוֹבָה","href":"037 שלח/נַרְגְּנוּת מוּל עַיִן טוֹבָה.html"}]},{"order":34,"id":"p-038-קרח","name":"קרח","count":5,"summary":"פרשת קרח עוסקת בדמותו של קורח כאדם עשיר ומכובד ביותר שלמרות זאת היה מלא עצבות מפני שלא הכיר בחסדי ה' ורדף אחר מה שנמנע ממנו. נדונה גם ענוותו של משה מול טענות קורח, ומעלת \"עין טובה\" שמגלה את הטוב שיש כבר בהישג יד, בניגוד לתשוקה הבלתי פוסקת של קורח למה שאין לו.","lessons":[{"title":"בִּזְכוּת הַשֶּׁבַח וְהַהוֹדָיָה זָכָה דָּוִד לְכָל הַמַּעֲלוֹת","href":"038 קרח/בִּזְכוּת הַשֶּׁבַח וְהַהוֹדָיָה זָכָה דָּוִד לְכָל הַמַּעֲלוֹת.html"},{"title":"גַּאֲוָה וּכְפִיּוּת טוֹבָה","href":"038 קרח/גַּאֲוָה וּכְפִיּוּת טוֹבָה.html"},{"title":"הַמְעַט מִכֶּם","href":"038 קרח/הַמְעַט מִכֶּם.html"},{"title":"לִרְאוֹת טוֹב","href":"038 קרח/לִרְאוֹת טוֹב.html"},{"title":"עַיִן טוֹבָה מְגַלָּה אֶת הַטּוֹב","href":"038 קרח/עַיִן טוֹבָה מְגַלָּה אֶת הַטּוֹב.html"}]},{"order":35,"id":"p-039-חוקת","name":"חוקת","count":3,"summary":"שיעורי חוקת עוסקים בחטא מי מריבה כרמז לכך שכאשר חסר לאדם משהו בחייו זהו סימן שלא הודה מספיק על מה שיש לו, בשירת הבאר כהודיה נפלאה על התורה, ובבאר מרים כאחת משלוש המתנות הניתנות לעם ישראל במדבר בזכות צדיקים. יש גם עיון ביסוד ש\"יהודי מאמין הוא יהודי שמח\".","lessons":[{"title":"חֵטְא דַּק מִן הַדַּק","href":"039 חוקת/חטא דק מן הדק.html"},{"title":"לְדַבֵּר אֶל הַסֶּלַע","href":"039 חוקת/לדבר אל הסלע.html"},{"title":"שִׁירַת הַבְּאֵר — שִׁירַת הַתּוֹרָה","href":"039 חוקת/שירת הבאר - שירת התורה.html"}]},{"order":36,"id":"p-040-בלק","name":"בלק","count":3,"summary":"פרשת בלק, המוקדשת כולה לניסיונות בלק ובלעם לקלל את עם ישראל שהתהפכו לברכה, מלמדת שגם רצונות רעים כלפי עם ישראל מתהפכים בסופו של דבר לטובה מתוך אהבת ה' אליהם (\"כי אהבך ה' אלוקיך\"). נדון גם הציווי לזכור מדי יום את מעשה בלק ובלעם כדי להכיר בצדקות ה', וכיצד לזכות שברכותינו האישיות יתקיימו.","lessons":[{"title":"כִּי אֲהֵבְךָ ה' אֱלֹקֶיךָ","href":"040 בלק/כי אהבך השם.html"},{"title":"עַיִן טוֹבָה","href":"040 בלק/עין טובה.html"},{"title":"עַמִּי זְכָר נָא","href":"040 בלק/עמי זכר נא.html"}]},{"order":37,"id":"p-041-פנחס","name":"פנחס","count":1,"summary":"השיעור היחיד ששרד מפרשת פנחס עוסק בכך שפנחס לא זכה לכהונה יחד עם שאר בני משפחתו במשך שנים רבות, ובדרך שבה דווקא זה אפשר לו להרוג את זמרי ללא ניגוד עניינים — לימוד על כך שמה שנראה כחיסרון או עיכוב הוא לעיתים חסד נסתר שמתגלה בבוא העת.","lessons":[{"title":"מִי שֶׁאֵינוֹ דּוֹחֵק אֶת הַשָּׁעָה","href":"041 פנחס/מי שאינו דוחק את השעה.html"}]},{"order":38,"id":"p-043-מסעי","name":"מסעי","count":2,"summary":"שיעורי מסעי (המשולבים עם מטות) עוסקים ב-42 המסעות שנכתבו בפירוט כדי שעם ישראל יזכור את הניסים שנעשו לו במדבר, במשל למלך המזכיר לבנו החולה את כל תחנות המסע כדי שיזכור את הדרך שעבר. נדון גם הרעיון שאין טוב כמו הטוב המגיע לאחר חורבן וקושי, בהקשר לחודש אב.","lessons":[{"title":"אֵין טוֹב כְּמוֹ הַטּוֹב שֶׁמַּגִּיעַ לְאַחַר חֻרְבָּן","href":"043 מסעי/אין טוב כמו הטוב שמגיע לאחר חורבן.html"},{"title":"לִכְתֹּב אֶת מַסְעוֹת הַחַיִּים","href":"043 מסעי/לכתוב את מסעות החיים.html"}]},{"order":39,"id":"p-044-דברים","name":"דברים","count":4,"summary":"שיעורי דברים עוסקים ביסוד מידת הביטחון ובשאלה כיצד קונים אותה, ובזיהוי שורש חטאי חורבן בית שני (שנאת חינם וחוסר שמחה) כביטויים לאי-הכרת הטוב. נדון גם עומק הביטוי \"עגל הזהב\" כתיקון לחטא הכרת הטוב למקום, וחיוב מדאורייתא לנצל רגעי התרגשות והתעוררות לאהבת ה' ולהודיה.","lessons":[{"title":"די זהב — כפיות טובה ותיקונה בברכת המזון","href":"044 דברים/די זהב - כפיות טובה ותיקונה בברכת המזון.html"},{"title":"ולמכיר נתתי את הגלעד","href":"044 דברים/ולמכיר נתתי את הגלעד.html"},{"title":"כיצד קונים את מידת הביטחון","href":"044 דברים/כיצד קונים את מידת הביטחון.html"},{"title":"לנצל את רגע השמחה","href":"044 דברים/לנצל את רגע השמחה.html"}]},{"order":40,"id":"p-045-ואתחנן","name":"ואתחנן","count":7,"summary":"פרשת ואתחנן עוסקת בחשיבות ההתחזקות המתמדת בהודיה, בציווי \"ואהבת את ה' אלוקיך\" כפסגת הקשר עם הבורא, ובתפילת משה שכללה קודם שירה ושבח ורק אחר כך תחנונים — סדר המלמד שיש להקדים הודיה לבקשה. נדון גם רמז גימטרי בין \"ואתחנן\" ל\"שירה\", ופרק \"שמע אלוקים רינתי\" כמקור לכך שיש להשמיע שבח לפני תפילה.","lessons":[{"title":"בונה ירושלים בתודה","href":"045 ואתחנן/בונה ירושלים בתודה.html"},{"title":"ואתחנן אל השם — כח התפילה","href":"045 ואתחנן/ואתחנן אל השם - כח התפילה.html"},{"title":"והתחנן בגימטריא שירה","href":"045 ואתחנן/והתחנן בגימטריא שירה.html"},{"title":"מה לא כתוב בשולחן ערוך","href":"045 ואתחנן/מה לא כתוב בשולחן ערוך.html"},{"title":"קטן שבאוהבים","href":"045 ואתחנן/קטן שבאוהבים.html"},{"title":"שירת התורה","href":"045 ואתחנן/שירת התורה.html"},{"title":"כֵּיצַד זוֹכוֹת בְּנוֹת יִשְׂרָאֵל לְאַהֲבַת הַשֵּׁם","href":"045 ואתחנן/כיצד זוכות בנות ישראל לאהבת השם.html"}]},{"order":41,"id":"p-046-עקב","name":"עקב","count":4,"summary":"שיעורי עקב עוסקים בפסוק \"ואתה ישראל מה ה' אלוקיך שואל מעימך\" ובחמישה יסודות עבודת ה' הגלומים בו, בחיוב לזכור את כל הדרך שעברו במדבר כמצוות עשה להכיר חסדי ה', ובסגולת מאה הברכות ביום. נדונה גם סגולת הארבעים יום להודיה, הנלמדת מארבעים היום שהתפלל משה, כדרך מובנית להתחזקות בהכרת הטוב.","lessons":[{"title":"וזכרת את כל הדרך","href":"046 עקב/וזכרת את כל הדרך.html"},{"title":"מאה ברכות בכוונה","href":"046 עקב/מאה ברכות בכוונה.html"},{"title":"מרומם על כל ברכה ותהילה","href":"046 עקב/מרומם על כל ברכה ותהילה.html"},{"title":"סגולת הארבעים","href":"046 עקב/סגולת הארבעים.html"}]},{"order":42,"id":"p-047-ראה","name":"ראה","count":5,"summary":"פרשת ראה עוסקת בדרך לאהבת ה' מתוך שמחה, במצוות הצדקה ובתנאי שהיא תינתן בלב שמח ולא מתוך כפייה, ובקשר בין חודש אלול (הרמוז במילה \"ראה\") לתשובה מתוך ברכה בכוונה. נדון גם הביטוי \"בנים אתם לה' אלוקיכם\" והצנעה בעבודת ה', כביטויים ליחס אוהב ואישי בין האדם לבוראו.","lessons":[{"title":"בנים אתם להשם","href":"047 ראה/מאמר_בנים_אתם_להשם_הרב_יהודה_טאוב.html"},{"title":"הדרך לאהבת השם","href":"047 ראה/מאמר_הדרך_לאהבת_השם_הרב_יהודה_טאוב.html"},{"title":"לשכנו תדרשו","href":"047 ראה/מאמר_לשכנו_תדרשו_הרב_יהודה_טאוב.html"},{"title":"נתינה בשמחה ובענווה","href":"047 ראה/מאמר_נתינה_בשמחה_ובענווה_הרב_יהודה_טאוב.html"},{"title":"ראה — ראשי תיבות אלול","href":"047 ראה/מאמר_ראה_ראשי_תיבות_אלול_הרב_יהודה_טאוב.html"}]},{"order":43,"id":"p-048-שופטים","name":"שופטים","count":3,"summary":"שיעורי שופטים עוסקים בברכת השיר \"נשמת כל חי\" ובקשר שלה לפרשה, בחובת המלך לכתוב שני ספרי תורה כביטוי לכך שמי שמקבל טובה גדולה יותר מחויב בעבודה גדולה יותר, ובמצוות השמחה וההודיה על קניית בית — נושא שהמחבר הרחיב בו בספר נפרד.","lessons":[{"title":"מִצְוַת הַשִּׂמְחָה וְהַהוֹדָיָה בִּקְנִיַּת בַּיִת","href":"048 שופטים/מצות השמחה וההודיה בקניית בית.html"},{"title":"נִשְׁמַת כָּל חַי","href":"048 שופטים/נשמת כל חי.html"},{"title":"שְׁנֵי סִפְרֵי הַתּוֹרָה שֶׁל הַמֶּלֶךְ","href":"048 שופטים/שני ספרי התורה של המלך.html"}]},{"order":44,"id":"p-049-כי-תצא","name":"כי תצא","count":4,"summary":"פרשת כי תצא עוסקת בשאלה כמה זמן צריך לזכור חסדי ה' (ומדוע עמון ומואב נענשו על אי-הכרת טובה בדרך), במלחמת היצר הטוב כנגד היצר הרע הרמוזה בפתיחת הפרשה, ובחיוב לקיים מצוות מתוך שמחה. נדון גם רמז האר\"י שהאותיות של \"קללה\" הן אותיות \"הלל\", ושעל ידי מאה ברכות ניתן להפוך קללה לברכה.","lessons":[{"title":"זכור את אשר עשה לך עמלק — שכחת חסדי השם ותיקונה | הרב יהודה טאוב","href":"049 כי תצא/מאמר_זכור_את_אשר_עשה_לך_עמלק_הרב_יהודה_טאוב.html"},{"title":"יצר טוב — הרב יהודה טאוב","href":"049 כי תצא/מאמר_יצר_טוב_הרב_יהודה_טאוב.html"},{"title":"כמה זמן צריך לזכור את חסדי השם","href":"049 כי תצא/מאמר_כמה_זמן_צריך_לזכור_את_חסדי_השם_הרב_יהודה_טאוב.html"},{"title":"רבה להם תורה ומצוות — קיום המצוות מתוך שמחה","href":"049 כי תצא/מאמר_קיום_המצוות_בשמחה_הרב_יהודה_טאוב.html"}]},{"order":45,"id":"p-050-כי-תבוא","name":"כי תבוא","count":8,"summary":"פרשת כי תבוא עוסקת במצוות הביכורים כמעשה הודיה מוחשי (הבאת פרי ראשון לירושלים מתוך שמחה), ובקללות החמורות שבפרשה כתוצאה מכך ש\"לא עבדת את ה' אלוקיך בשמחה ובטוב לבב\". נדון גם עומק הפסוק \"חי חי הוא יודך\" — הקושר בין חיים אמיתיים להודיה — וסקירה כיצד מזמור לתודה פועל בפועל בחיי המאזינים.","lessons":[{"title":"הדרך לזכות לנועם ה' וברכתו","href":"050 כי תבוא/מאמר_הדרך_לזכות_לנועם_השם_וברכתו_הרב_יהודה_טאוב.html"},{"title":"הוֹדָיָה מִכָּל הַלֵּב — סוֹד הַבִּכּוּרִים","href":"050 כי תבוא/הודיה מכל הלב - סוד הביכורים.html"},{"title":"השמחה, ההודיה והשירה מן התורה","href":"050 כי תבוא/מאמר_השמחה_ההודיה_והשירה_מן_התורה_הרב_יהודה_טאוב.html"},{"title":"וְשָׂמַחְתָּ בְּכָל הַטּוֹב — הרב יהודה טאוב","href":"050 כי תבוא/ההודיה_מביאה_שמחה_בכל_הטוב_פרשת_כי_תבוא.html"},{"title":"להודות בלב שלם — הרב יהודה טאוב","href":"050 כי תבוא/להודות_בלב_שלם_הרב_יהודה_טאוב.html"},{"title":"עֲבוֹדַת ה' מִתּוֹךְ שִׂמְחָה — סוֹד הַתּוֹכֵחָה","href":"050 כי תבוא/עבודת השם מתוך שמחה - סוד התוכחה.html"},{"title":"הַשִּׂמְחָה בְּחֶלְקוֹ","href":"050 כי תבוא/כי תבא - מצוות השמחה בחלקו.html"},{"title":"הַשִּׂמְחָה וְהַהוֹדָיָה — מִן הַקְּלָלָה אֶל הַבְּרָכָה","href":"050 כי תבוא/השמחה וההודיה - מן הקללה אל הברכה.html"}]},{"order":46,"id":"p-051-נצבים","name":"נצבים","count":3,"summary":"שיעורי נצבים, הנקראים סמוך לראש השנה, עוסקים בתפקיד הדור להודות לה' מתוך סיכום שנה שלמה, בפסוק \"ובחרת בחיים\" כביטוי לבחירה החופשית שהיא מטרת הבריאה, ובגאולה הגלומה בפרשה כמקור מפורש בתורה להבטחת אחרית הימים.","lessons":[{"title":"הַגְּאֻלָּה שֶׁבְּפָרָשַׁת נִצָּבִים — הרב יהודה טאוב","href":"051 נצבים/הגאולה_שבפרשת_ניצבים.html"},{"title":"וּבָחַרְתָּ בַּחַיִּים — הרב יהודה טאוב","href":"051 נצבים/ובחרת_בחיים_פרשת_נצבים.html"},{"title":"תַּפְקִיד דּוֹרֵנוּ — לְהוֹדוֹת לַה' — הרב יהודה טאוב","href":"051 נצבים/תפקיד_דורנו_להודות_לה_פרשת_נצבים.html"}]},{"order":47,"id":"p-052-וילך","name":"וילך","count":1,"summary":"השיעור היחיד ששרד מפרשת וילך עוסק במצוות הקהל — כינוס העם כולו כולל טף לשמיעת דברי תורה — ומטרתה להנחיל יראת שמים גם לילדים הקטנים ביותר, מתוך רצון ה' לזכות את כל ישראל בשווה.","lessons":[{"title":"רָצָה הַשֵּׁם לְזַכּוֹת אֶת יִשְׂרָאֵל","href":"052 וילך/רצה השם לזכות את ישראל.html"}]},{"order":48,"id":"p-053-האזינו","name":"האזינו","count":2,"summary":"שיעורי האזינו עוסקים בהפטרת שירת דוד \"מהולל אקרא ה'\" כמקור לכך שגם התפילה עצמה צריכה להיפתח בהילול ובהודיה, ובתוכחת משה לעם ישראל על שכחת הטובות שעשה עמם ה' (\"עם נבל ולא חכם\"). נדון גם ההבחנה בין אדם הלוקה במידה רעה לבין כפוי טובה, שנחשב כמי שאינו בגדר \"אדם\" כלל.","lessons":[{"title":"מְהֻלָּל אֶקְרָא ה' — הרב יהודה טאוב","href":"053 האזינו/מהולל_אקרא_ה_הפטרת_האזינו.html"},{"title":"עַם נָבָל וְלֹא חָכָם","href":"053 האזינו/עם נבל ולא חכם.html"}]}]</script>
+<script>
+(function(){
+    "use strict";
+    var DATA = JSON.parse(document.getElementById('parashaData').textContent);
+    var TOTAL = DATA.length;
+    var currentIndex = -1;
+
+    var accentPalette = ['#7e22ce','#2563eb','#059669','#f59e0b','#ec4899','#0891b2','#dc2626','#65a30d','#9333ea','#0d9488'];
+    function accentFor(i){ return accentPalette[i % accentPalette.length]; }
+
+    var homeScreen = document.getElementById('homeScreen');
+    var readerScreen = document.getElementById('readerScreen');
+    var cardGrid = document.getElementById('cardGrid');
+    var lessonChips = document.getElementById('lessonChips');
+    var searchInput = document.getElementById('searchInput');
+    var resultCount = document.getElementById('resultCount');
+    var noResults = document.getElementById('noResults');
+    var readerStage = document.getElementById('readerStage');
+    var progressFill = document.getElementById('progressFill');
+    var pageNum = document.getElementById('pageNum');
+    var tocList = document.getElementById('tocList');
+    var tocPanel = document.getElementById('tocPanel');
+    var tocOverlay = document.getElementById('tocOverlay');
+
+    function stripNiqqud(s){ return (s||'').normalize('NFC').replace(/[֑-ׇ]/g,''); }
+
+    // ---------- Build home cards ----------
+    DATA.forEach(function(p, i){
+        var card = document.createElement('div');
+        card.className = 'parasha-card';
+        card.style.setProperty('--accent', accentFor(i));
+        card.setAttribute('data-search', stripNiqqud(p.name + ' ' + p.lessons.map(function(l){return l.title;}).join(' ')).toLowerCase());
+        card.setAttribute('tabindex','0');
+        card.setAttribute('role','button');
+        card.innerHTML =
+            '<div class="pnum">' + p.order + '</div>' +
+            '<div class="pname"></div>' +
+            '<div class="pcount">' + p.count + ' שיעורים</div>';
+        card.querySelector('.pname').textContent = p.name;
+        card.addEventListener('click', function(){ openReader(i); });
+        card.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openReader(i); } });
+        cardGrid.appendChild(card);
+    });
+
+    // ---------- Build TOC ----------
+    DATA.forEach(function(p, i){
+        var item = document.createElement('div');
+        item.className = 'toc-item';
+        item.innerHTML = '<span></span><span class="tn">' + p.count + '</span>';
+        item.querySelector('span').textContent = (i+1) + '. ' + p.name;
+        item.addEventListener('click', function(){ closeToc(); openReader(i); });
+        tocList.appendChild(item);
+    });
+
+    // ---------- Build reader pages (built lazily but all up-front here since dataset is modest) ----------
+    var pageEls = [];
+    DATA.forEach(function(p, i){
+        var page = document.createElement('div');
+        page.className = 'book-page';
+        page.dataset.index = i;
+        var lessonsHtml = p.lessons.map(function(l){
+            var a = document.createElement('a');
+            a.href = encodeURI(l.href);
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = l.title;
+            var li = document.createElement('li');
+            li.appendChild(a);
+            return li.outerHTML;
+        }).join('');
+        page.innerHTML =
+            '<div class="page-inner">' +
+                '<h2></h2>' +
+                '<div class="page-summary"></div>' +
+                '<div class="page-lessons-title">📖 השיעורים בפרשה זו</div>' +
+                '<ul class="lesson-list">' + lessonsHtml + '</ul>' +
+            '</div>';
+        var h2 = page.querySelector('h2');
+        var nameSpan = document.createElement('span');
+        nameSpan.textContent = p.name;
+        var countSpan = document.createElement('span');
+        countSpan.className = 'page-count';
+        countSpan.textContent = ' (' + (i+1) + ' / ' + TOTAL + ')';
+        h2.appendChild(nameSpan);
+        h2.appendChild(countSpan);
+        page.querySelector('.page-summary').textContent = p.summary;
+        readerStage.appendChild(page);
+        pageEls.push(page);
+    });
+
+    // ---------- Navigation logic ----------
+    function openReader(index, direction){
+        var prevIndex = currentIndex;
+        currentIndex = Math.max(0, Math.min(TOTAL-1, index));
+        homeScreen.style.display = 'none';
+        readerScreen.classList.add('active');
+        readerScreen.setAttribute('aria-hidden','false');
+        renderPage(prevIndex, direction);
+        history.replaceState(null,'', '#' + DATA[currentIndex].id);
+    }
+    function renderPage(prevIndex, direction){
+        pageEls.forEach(function(pg, i){
+            pg.classList.remove('current','enter-from-right','enter-from-left');
+            if (i === currentIndex) {
+                if (direction === 'next') pg.classList.add('enter-from-left');
+                else if (direction === 'prev') pg.classList.add('enter-from-right');
+            }
+        });
+        // force reflow then activate for transition
+        void readerStage.offsetWidth;
+        pageEls[currentIndex].classList.add('current');
+        pageEls[currentIndex].classList.remove('enter-from-right','enter-from-left');
+        pageEls[currentIndex].scrollTop = 0;
+        pageNum.textContent = (currentIndex+1) + ' / ' + TOTAL;
+        progressFill.style.width = (((currentIndex+1)/TOTAL)*100) + '%';
+        document.getElementById('prevArrow').disabled = false;
+        document.getElementById('nextArrow').disabled = false;
+        document.getElementById('prevBtnTop').disabled = false;
+        document.getElementById('nextBtnTop').disabled = false;
+    }
+    function goHome(){
+        readerScreen.classList.remove('active');
+        readerScreen.setAttribute('aria-hidden','true');
+        homeScreen.style.display = '';
+        history.replaceState(null,'', location.pathname);
+    }
+    function nextPage(){ if(currentIndex < TOTAL-1) openReader(currentIndex+1, 'next'); }
+    function prevPage(){ if(currentIndex > 0) openReader(currentIndex-1, 'prev'); }
+
+    document.getElementById('homeBtnTop').addEventListener('click', goHome);
+    document.getElementById('homeBtnFloat').addEventListener('click', goHome);
+    document.getElementById('nextArrow').addEventListener('click', nextPage);
+    document.getElementById('prevArrow').addEventListener('click', prevPage);
+    document.getElementById('nextBtnTop').addEventListener('click', nextPage);
+    document.getElementById('prevBtnTop').addEventListener('click', prevPage);
+
+    // keyboard nav
+    document.addEventListener('keydown', function(e){
+        if (!readerScreen.classList.contains('active')) return;
+        if (tocPanel.classList.contains('open')) {
+            if (e.key === 'Escape') closeToc();
+            return;
+        }
+        // RTL book: ArrowRight = previous (visually "back"), ArrowLeft = next
+        if (e.key === 'ArrowRight') prevPage();
+        else if (e.key === 'ArrowLeft') nextPage();
+        else if (e.key === 'Home') openReader(0);
+        else if (e.key === 'End') openReader(TOTAL-1);
+        else if (e.key === 'Escape') goHome();
+    });
+
+    // swipe support
+    var touchStartX = null, touchStartY = null;
+    readerStage.addEventListener('touchstart', function(e){
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+    }, {passive:true});
+    readerStage.addEventListener('touchend', function(e){
+        if (touchStartX === null) return;
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        var dy = e.changedTouches[0].clientY - touchStartY;
+        touchStartX = null;
+        if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+        // RTL: swipe right (dx>0) => previous, swipe left (dx<0) => next
+        if (dx > 0) prevPage(); else nextPage();
+    }, {passive:true});
+
+    // TOC panel
+    function openToc(){ tocPanel.classList.add('open'); tocOverlay.classList.add('open'); }
+    function closeToc(){ tocPanel.classList.remove('open'); tocOverlay.classList.remove('open'); }
+    document.getElementById('tocBtn').addEventListener('click', openToc);
+    document.getElementById('tocClose').addEventListener('click', closeToc);
+    tocOverlay.addEventListener('click', closeToc);
+
+    // ---------- Search ----------
+    // strip Hebrew niqqud/cantillation (U+0591-U+05C7) so vocalized titles still match plain search
+    function norm(s){ return (s||'').normalize('NFC').replace(/[֑-ׇ]/g,'').toLowerCase(); }
+    function runSearch(){
+        var q = norm(searchInput.value.trim());
+        var cards = cardGrid.querySelectorAll('.parasha-card');
+        var visibleCount = 0;
+        cards.forEach(function(card){
+            var match = !q || card.getAttribute('data-search').indexOf(q) !== -1;
+            card.classList.toggle('hidden', !match);
+            if (match) visibleCount++;
+        });
+        noResults.classList.toggle('visible', visibleCount === 0 && !!q);
+        resultCount.textContent = q ? (visibleCount + ' פרשות תואמות') : '';
+        // lesson chips: show matching individual lessons (limit for readability)
+        lessonChips.innerHTML = '';
+        if (q && q.length >= 2) {
+            var matches = [];
+            DATA.forEach(function(p, i){
+                p.lessons.forEach(function(l){
+                    if (norm(l.title).indexOf(q) !== -1) matches.push({title:l.title, parashaIndex:i, parashaName:p.name});
+                });
+            });
+            matches.slice(0, 24).forEach(function(m){
+                var chip = document.createElement('span');
+                chip.className = 'lesson-chip';
+                chip.textContent = m.title + ' (' + m.parashaName + ')';
+                chip.addEventListener('click', function(){ openReader(m.parashaIndex); });
+                lessonChips.appendChild(chip);
+            });
+        }
+    }
+    searchInput.addEventListener('input', runSearch);
+
+    // ---------- deep link on load ----------
+    function initFromHash(){
+        var hash = location.hash.replace('#','');
+        if (!hash) return;
+        var idx = DATA.findIndex(function(p){ return p.id === hash; });
+        if (idx >= 0) openReader(idx);
+    }
+    initFromHash();
+    window.addEventListener('hashchange', initFromHash);
+})();
+</script>
+</body>
+</html>
