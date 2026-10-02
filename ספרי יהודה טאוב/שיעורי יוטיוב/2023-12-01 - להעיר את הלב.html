@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 להעיר את הלב</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 להעיר את הלב</h1>
+  <p>עניינה של תורת החסידות וי״ט בכסלו — על פי שיעור הרב ירון אוזן</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ להעיר את הלב" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/0vycSOTQdZk?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/0vycSOTQdZk/hqdefault.jpg" alt="להעיר את הלב" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=0vycSOTQdZk" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · קריאה להתעורר</div>
+      <h3 class="story-title">🌅 לקרוא לאדם בשמו</h3>
+      <p>יש שעות שבהן האדם ממשיך לעשות את הדברים הנכונים, אך משהו בתוכו נרדם. הספר פתוח, המילים נאמרות, והלב מחפש את האש שהייתה בו פעם. סביב י״ט בכסלו מציע הרב ירון אוזן להביט בתורת החסידות כמענה לבקשה הזאת: להשיב לעבודת ה׳ את חיותה, לעורר אהבה, ולהרגיש שהתורה מדברת גם אל החדרים הפנימיים של הנפש.</p>
+      <p>לשם כך הוא מביא את הביאור החסידי לשמו של רבי ישראל בעל שם טוב. אחרי גזירות ת״ח ות״ט עבר עם ישראל שבר עמוק. גדולי תורה המשיכו ללמוד וללמד, ובכל זאת היו לבבות שזקקו להתעוררות חדשה. כשאדם שקוע בשינה עמוקה, קוראים לו בשמו. השם מגיע אליו במקום שהסברים ארוכים אינם מגיעים אליו. הבעל שם טוב נקרא ישראל; בשמו ובתורתו הוא כאילו קרא לישראל כולו: התעורר.</p>
+      <p>זהו משל, ובכוחו להסביר מה חיפשה החסידות. היא ביקשה שהידיעה על ה׳ תגיע אל החיים: אל תפילה שנאמרת בקול עייף, אל מצווה שנעשתה שנים רבות, אל אדם ששואל אם עדיין יש לו מקום. הקריאה אינה מוחקת את התורה שכבר נלמדה. היא מעוררת את הנשמה החיה בתוכה, ומזמינה את הלומד להיכנס שוב, באהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · קריאה להתעורר</div>
+      <h3 class="story-title">🌿 מוסר, חסידות ונדיבות הלב</h3>
+      <p>בשיעור מובאת אמירה המיוחסת לרבי ישראל מסלנט: החסידות חוללה שינוי בעם ישראל, ותורת המוסר יכולה לחולל שינוי רחב אף יותר. הרב משתמש בה כדי להבחין בין שתי עבודות הקרובות זו לזו. תיקון המידות, היושר והאחריות נוגעים ליסודות החיים האנושיים; החסידות מבקשת גם להעמיק את הקשר הפנימי שבין יהודי לעבודת קונו.</p>
+      <p>מה פירושה של המילה חסיד? רבי אברהם בן הרמב״ם, בספר המספיק לעובדי ה׳, קושר אותה לחסד ולנדיבות. אדם מתנדב לעשות יותר ממה שנתחייב בו במפורש. במסילת ישרים, בפרק יח, מוסבר שהחסידות דורשת חכמה ועיון: הרחבת קיום המצוות בכל הצדדים שאפשר וראוי להשלים. היא מתחילה בשאלה אוהבת: מה ישמח את מי שאני עובד אותו?</p>
+      <p>לכן אין די בסימון מעשה מיוחד או בבקשה ארוכה כדי להבין מהי חסידות. צריך לבחון מה מניע את המעשה, מה הוא מוסיף לקיום המצווה, ואיך הוא מבטא קשב לרצון ה׳. בתוך החובה יש מקום לנדיבות, ובתוך ההרגל יש מקום ללב. מי שכבר מקיים יכול לשאול כיצד לקיים בחיות רבה יותר; מי שמתקשה יכול להתחיל בצעד קטן שמביע רצון אמיתי להתקרב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · קריאה להתעורר</div>
+      <h3 class="story-title">🕯️ המעיל שהחליף כתפיים</h3>
+      <p>כדי לספר כיצד עברה הנהגת החסידות מן הבעל שם טוב למגיד ממזריטש, מביא הרב מסורת על רבי צבי, בנו של הבעל שם טוב. אחרי פטירת אביו התחיל רבי צבי לעמוד בראש החבורה. הזיכרון של אביו היה חי מאוד, והמעיל שלבש נשא עמו את כובד הירושה. התלמידים המשיכו לחפש את הדרך שהאיר להם רבם.</p>
+      <p>לפי הסיפור, רבי צבי ראה את אביו בחלום, ושמע ממנו שהשכינה עברה למזריטש. הוא הבין שהמשך ההנהגה נמסר לרבי דוב בער, המגיד ממזריטש. רבי צבי הסיר את המעיל, הלביש בו את המגיד, והתיישב לפניו כתלמיד. המעיל נשאר בתוך החבורה, אך עבר אל כתפיו של מי שיוליך אותה הלאה.</p>
+      <p>הרגע הזה, כפי שהוא מסופר במסורת החסידית, מגלה גדולה מיוחדת: אדם יכול לכבד מאוד את אביו ואת מקומו שלו, ובכל זאת להקשיב למקום שאליו מוליך אותו האור. רבי צבי אינו נעלם מן הסיפור; הוא מופיע בו דווקא בכוח נכונותו ללמוד. ההנהגה עוברת, והתורה ממשיכה לחיות. אחר כך יסתופפו אצל המגיד תלמידים גדולים, שכל אחד מהם יהיה מקור אור בפני עצמו, והמעיל האחד יהפוך בדורות הבאים לריבוי דרכים בעבודת ה׳.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · קריאה להתעורר</div>
+      <h3 class="story-title">📖 שני אורות בשם אחד</h3>
+      <p>בין תלמידיו של המגיד היה רבי שניאור זלמן מלאדי, בעל התניא. הרב מזכיר את הדרשה על שמו: שני אור, שני אורות, אור התורה הנגלית ואור התורה הנסתרת. שני התחומים מופיעים ביצירתו בעוצמה. מי שמכיר את התניא יכול לשכוח לרגע את עבודתו הגדולה בהלכה; מי שנפגש עם שולחן ערוך הרב יכול לגלות מאחוריו עולם פנימי רחב.</p>
+      <p>המגיד הטיל עליו, בעודו צעיר, מלאכה כבדה: לסדר את ההלכות שהתחדשו אחרי חיבור השולחן ערוך. זו הייתה משימה של בירור, דיוק והכרעה, והחלק הראשון ראה אור עוד בחיי רבו. במשך הדורות נעשה החיבור מקור חשוב לפוסקים מחוגים שונים. הרב מזכיר בהקשר זה את המשנה ברורה, כף החיים, הבן איש חי ואת פסיקת הרב עובדיה יוסף.</p>
+      <p>הדיוק ההלכתי והעמקת הלב שייכים אפוא לאותו אדם ולאותה עבודת חיים. ההלכה נותנת למעשה צורה, והפנימיות מבקשת שהאדם יעמוד בתוך המעשה עם נשמתו. כשאומרים ברכה, יש לברר איך לאומרה כראוי; יש גם להקשיב למי שפונים אליו. השם שניאור נעשה בשיעור פתח להבנת החיבור הזה: אור שמאיר את הפרטים, ואור שמאיר את האדם המקיים אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · קריאה להתעורר</div>
+      <h3 class="story-title">💎 התניא על השולחן</h3>
+      <p>הספר ליקוטי אמרים, המוכר בשם תניא, הגיע לעולם עם הסכמותיהם של רבי יהודה לייב הכהן ורבי זושא מאניפולי. הרב מספר על חיבתו הגדולה של רבי זושא לספר: הוא החזיק אותו על שולחנו, וראה בו תורה עליונה שמאירה בתוך החיים. בשיעור מובאת גם התפעלותו, כיצד תהיה עוד התחדשות אחרי האור שכבר נתגלה בתניא. זו לשון של השתאות בפני עומקו של ספר.</p>
+      <p>התניא נעשה יסוד למערכת רחבה של לימוד והתבוננות. תורה אור, ליקוטי תורה, מאמרי אדמו״ר הזקן, תורת האדמו״ר האמצעי ותורת הרש״ב ממשיכים לברר את יסודות עבודת ה׳ בשפה העוסקת בדעת, בנפש ובקשר שבין האדם לבוראו. מאחורי שמות הספרים עומדת עבודה ארוכה: לנסות להבין באופן מסודר דברים שהלב זקוק להם מאוד.</p>
+      <p>הרב אינו מסתפק בהצגת ספר חשוב. הוא מבקש שהלומד ירגיש מדוע צדיק חפץ להשאיר ספר כזה קרוב אליו. יש ספרים שאליהם חוזרים כדי לזכור פרט, ויש ספרים שאליהם חוזרים גם כדי להיזכר בעצמנו: בכוחות שיש בנו, במאבק שאנו נושאים ובאפשרות לעבוד את ה׳ בתוך המאבק. הנוכחות על השולחן אומרת שהפגישה הזאת יכולה להתחיל בכל יום מחדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · קריאה להתעורר</div>
+      <h3 class="story-title">🏡 חבורה של גדולי תורה</h3>
+      <p>מי היו האנשים שנמשכו אל הבעל שם טוב ואל המגיד? הרב מונה תלמידי חכמים גדולים, ומבקש שהקורא יבין את משקלה של השאלה: מה חיפשו אנשים שכבר היו בקיאים בתורה? רבי יעקב יוסף, בעל תולדות יעקב יוסף, הביא פעמים רבות את מה ששמע ממורו. לצד ספרו נזכרים בן פורת יוסף וכתונת פסים. התורה שקיבל נעשתה מקור לדורות של לומדים.</p>
+      <p>עוד נזכרים רבי מנחם נחום מצ׳רנוביל, בעל מאור עיניים; רבי מנחם מנדל מוויטבסק, בעל פרי הארץ; רבי יחיאל מיכל מזלוטשוב; רבי זושא ורבי אלימלך מליז׳נסק. רבי זושא הביא את אחיו רבי אלימלך אל המגיד, ומתורתו צמח הספר נועם אלימלך. הרב מזכיר גם את רבי שמעלקה מניקלשבורג ואת רבי פנחס הורוביץ, בעל ההפלאה והמקנה, שגדולתם בלימוד הייתה ידועה.</p>
+      <p>הרשימה הזאת מציירת בית מדרש עשיר. איש לא הגיע בידיים ריקות; כל אחד הביא את עמל התורה שכבר עמל, את שכלו ואת שאלותיו. החידוש שחיפשו היה חיותה הפנימית של העבודה. ספריהם נותנים לקורא לפגוש מגוון קולות, ובכל הקולות נשמעת אותה בקשה: שהתורה לא תישאר רחוקה מן הלב, ושהלב לא ייפרד מן התורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נשמה בתוך התורה</div>
+      <h3 class="story-title">🌊 נהר אחד, דרכים רבות</h3>
+      <p>על הפסוק ״ונהר יוצא מעדן להשקות את הגן, ומשם ייפרד והיה לארבעה ראשים״ (בראשית ב, י), מובא בשיעור ביאור המיוחס לרבי זושא. עדן רומז לבעל שם טוב, הנהר למגיד ממזריטש, והגן לרבי אלימלך מליז׳נסק. מן הגן מסתעפות ארבע דרכים, הנקשרות לחוזה מלובלין, לעבודת ישראל מקוז׳ניץ, לאוהב ישראל מאפטא ולרבי מנחם מנדל מרימנוב.</p>
+      <p>זהו ציור חסידי של השתלשלות והשפעה. הרב אינו משתמש בו כדי למנות את כל החסידויות, אלא כדי להראות כיצד מקור אחד יכול להזין דרכים שונות. הנהר מגיע אל הגן, ואחר כך המים הולכים לכל צד. כל תלמיד מקבל, ובכוח האישיות והעבודה שלו נעשה גם משפיע.</p>
+      <p>כשהקורא רואה את שמות החיבורים יחד, הוא יכול לשמוע את התנועה: תורה עוברת ממורה לתלמיד, מתלבשת בלשון חדשה, ומגיעה לאדם שלא היה מסוגל לקבל אותה בדרך אחרת. המים נשארים מים, אך צורת הזרימה משתנה. משום כך יש טעם להכיר את ספרי היסוד של החסידות גם מעבר לבית המדרש שבו גדלנו. ספר נוסף עשוי להשקות מקום בנפש שעוד לא נענה, בלי לבטל את הנהר שכבר נותן לנו חיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נשמה בתוך התורה</div>
+      <h3 class="story-title">🪽 מה לומדים אצל מלאך</h3>
+      <p>בנו של המגיד, רבי אברהם, נודע בשם רבי אברהם המלאך. בשיעור מובאת שאלה של רבי ישראל מרוז׳ין: מדוע הכינוי הוא מלאך, בשעה שנשמת ישראל עומדת במעלה גבוהה? התשובה המסופרת מפנה את המבט אל הגוף. הכינוי אינו בא למעט במעלת נשמתו; הוא מבטא את טהרת חייו הגופניים, עד שהגוף עצמו תואר כמי שנעשה כלי זך מאוד.</p>
+      <p>המגיד קבע לבנו ולרבי שניאור זלמן סדר לימוד משותף. רבי שניאור זלמן לימד את רבי אברהם תורה נגלית, ורבי אברהם לימד אותו בענייני הפנימיות. כל אחד היה תלמיד במקום שבו חברו האיר יותר. בתוך הקרבה הזאת אפשר לראות כיצד נבנית שלמות: אדם אינו חייב להעמיד פנים שאין לו צורך ללמוד מאחרים.</p>
+      <p>הרב מזכיר גם את בית רוז׳ין בהמשך לשושלת המגיד, דרך רבי אברהם ורבי שלום שכנא. המשפחה והלימוד משתלבים בסיפור אחד, אבל עיקרו של הרגע הוא שני לומדים היושבים יחד. לכל אחד אור משלו, ולכל אחד מקום לקבל. כשנגלית ונסתרת נפגשות כך, מתברר שהענווה היא חלק מן הדעת. היא מאפשרת למי שכבר יודע הרבה לפתוח שוב את הספר ולהקשיב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נשמה בתוך התורה</div>
+      <h3 class="story-title">🔥 הפירוש היה נכון, הנשמה חסרה</h3>
+      <p>לפני שהתקרב המגיד לבעל שם טוב, כבר היה תלמיד חכם בעל ידיעה רחבה. הרב מזכיר את הקרבה לבית מדרשו של בעל פני יהושע, ואת ההערכה שזכה לה בלימוד. כששמע על הבעל שם טוב, הגיע אליו כדי לברר מה יש בתורתו. במסורת המסופרת בשיעור, הבעל שם טוב שאל אותו אם הוא יודע ללמוד, ואחר כך אם הוא יודע גם בחכמת הקבלה.</p>
+      <p>המגיד השיב בחיוב. הבעל שם טוב נתן לו קטע מעץ חיים וביקש שיפרש אותו. המגיד הסביר את הדברים היטב, בסדר ובהבנה. הבעל שם טוב אמר לו שהפירוש נכון, אך חסרה בו הנשמה. השאלה הזאת הייתה חריפה מאוד: מה עוד חסר, אם כבר הבין את הדברים ופירש אותם כראוי?</p>
+      <p>לפי הסיפור, הבעל שם טוב לקח את הקטע וקרא אותו. המסורת מתארת אור גדול, אש והתגלות של מלאכים; המגיד לא עמד בעוצמת החוויה, והתעלף ושב להכרתו. הסיפור מציג את פגישתו עם רובד אחר של לימוד: אותה תורה עצמה יכולה להיאמר מתוך קשר חי עמוק מאוד. הביאור המדויק נשאר חשוב, אך התברר שיש גם נשמה לביאור. מכאן מובן מה חיפש אצל הבעל שם טוב אדם שכבר ידע כל כך הרבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נשמה בתוך התורה</div>
+      <h3 class="story-title">💡 פעם אחת עם האחד</h3>
+      <p>הגמרא בחגיגה ט ע״ב מבחינה בין מי ששונה את פרקו מאה פעמים למי ששונה אותו מאה ואחת. בשיעור מובאת דרשה חסידית המדגישה את המילה ״אחד״: יש להוסיף אל הלימוד את התודעה של האחד, את הקשר עם ה׳ שנותן את התורה. הדרשה אינה מחליפה את מעלת החזרה והעמל; היא שואלת מה נכנס אל החזרה, ואיך לומד האדם כשהוא זוכר לפני מי הוא עומד.</p>
+      <p>אדם יכול לחזור על דף פעמים רבות, והחזרה תבנה את זיכרונו ואת הבנתו. בתוך כל זה אפשר לשאת גם תפילה שקטה: זכני להיות קרוב אליך דרך מה שאני לומד. המילים אינן רק חומר שהמוח מסדר. הן נמסרו לנו כדי להיכנס באמצעותן אל ברית ואל עבודה.</p>
+      <p>הרב קושר לכך את ברכות התורה ואת הכוונה לקבל מן התורה את אורה. הברכה לפני הלימוד מסמנת את הפנייה הזאת: אנו מבקשים תורה שהיא חלק מחיינו, ומודים על הזכות ללמוד אותה. מן הסיפור על המגיד עוברים אפוא אל פעולה קטנה שכל לומד מכיר. עוד חזרה היא מאמץ; זכירת נותן התורה יכולה למלא את המאמץ בנשמה. מאה פעמים בונות כלי, והאחד מזמין אותנו להקשיב לאור שבתוכו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נשמה בתוך התורה</div>
+      <h3 class="story-title">✍️ אותיות שיש בהן חיים</h3>
+      <p>בספר בעל שם טוב על התורה, בחלק העוסק בתפילה, מובא הרעיון שבתוך האותיות יש עולמות, נשמות ואלוקות. הרב מבקש להסביר בעזרתו את הדבקות בדיבורי התורה והתפילה. האדם אומר מילה, אך אינו צריך לראות בה קליפה ריקה. הוא יכול לתת בה קשב, לזכור את מי שאליו היא פונה ולבקש שלא ייפרד ממנה בלבו.</p>
+      <p>הגמרא בשבת קה ע״א דורשת את ״אנכי״ בלשון ״אנא נפשי כתבית יהבית״. בשיעור הדרשה משמשת כדי להמחיש כמה עמוק הקשר שבין נותן התורה ובין התורה שניתנה. הלומד אינו עוסק במידע שנשלח אליו מרחוק בלבד. הוא נפגש עם מתנה שנושאת קשר, ועליו לפתוח את עצמו לקשר הזה.</p>
+      <p>העבודה יכולה להתחיל באות אחת, בפסוק אחד, בברכה אחת שנאמרת בקשב. אין צורך להעמיס על הלב תחושות שאין בו. די שלא למהר להרחיק את הדיבור מן הנשמה. הרב מזכיר בהקשר הזה גם מסורות על לימוד הבעל שם טוב שנחווה באש ובקולות, כזיכרון של מעמד סיני. ״קול גדול ולא יסף״ (דברים ה, יט) מקבל כאן משמעות של קול שממשיך להגיע: בכל פגישה מחודשת עם התורה אפשר לבקש לשמוע משהו מן החיות שהייתה בתחילתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נשמה בתוך התורה</div>
+      <h3 class="story-title">🪔 לנקות את הזכוכית</h3>
+      <p>מדוע אדם אינו מרגיש תמיד את אור התורה? בשיעור מופיע משל למנורה שזכוכיתה התלכלכה. האור קיים, אך הלכלוך מצמצם את מה שעובר דרכה. אם ינסה האדם רק להתווכח עם האור, יחמיץ את העבודה המונחת לידיו: לנקות את הכלי. זהו ציור פשוט, ובאמצעותו הרב מסביר את הצורך לשמור על דרכי הכניסה של הנפש.</p>
+      <p>הוא מזכיר את דברי רבי נחמן על שבעת פתחי הפנים, ואת הקשר למנורה. העיניים, הדיבור ושאר הפתחים נעשים חלק מעבודת הטהרה. במה אנו מתבוננים, מה אנו מכניסים אל המחשבה, ואיך אנו משתמשים בפה? אלו שאלות שנוגעות ליכולת להקשיב. הפסוק ״נר ה׳ נשמת אדם״ (משלי כ, כז) מצייר את הנשמה כנר, והאדם מתבקש לדאוג שהנר יוכל להאיר.</p>
+      <p>הרב משתמש גם בדימוי עבודת הכהן במנורה: הכנתה וניקיונה הם עבודה אנושית, והאש מזכירה את המתנה שמגיעה מלמעלה. האדם עושה את חלקו, ובכך מכין מקום. שמירת העיניים והדיבור, יחד עם עמל התורה, אינם סעיפים צדדיים לחיפוש רוחני. הם חלק מן האפשרות שהאור שכבר ניתן יגיע אל הלב, ושהלב לא יהיה מכוסה בשכבה עבה של רעש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אור בתוך המאסר</div>
+      <h3 class="story-title">🪣 דליים של קדושה</h3>
+      <p>הרב מספר על בעל עבודת ישראל מקוז׳ניץ, שהיה בקיא בספרי קבלה רבים עוד לפני התקרבותו למגיד. כאשר הגיע אליו, הרגיש שעכשיו התחיל ללמוד באמת. הידיעות שצבר לא נעלמו, אך הפגישה פתחה לפניו דרך לחיות אותן. מי ששומע את הסיפור יכול להבין מחדש מדוע תלמידי חכמים גדולים נסעו אל רב: הם חיפשו את מה שהלימוד לבדו עדיין לא נתן בלבם.</p>
+      <p>בשם בעל התניא מובאת בשיעור אמירה שבבית המגיד היו שואבים דליים של קדושה ויראת שמים. לצד זה מופיעה לשון ציורית על המופתים: הם היו מונחים כביכול על הרצפה, ולא היה זמן להתכופף ולהרים אותם. זהו תיאור שמעמיד את סדר העדיפויות. ההתרחשות המפליאה אינה המוקד; המוקד הוא עבודת ה׳ של האדם הבא ללמוד.</p>
+      <p>הדימוי של דליים מתאים למסע הזה. אדם בא צמא, והוא מבקש לקחת מים שיוכל לשאת לביתו. יראת שמים, דבקות ורצון ללמוד יכולים להמשיך עמו גם אחרי שיצא מן החדר. ספרי המגיד ותלמידיו משמרים משהו מן השאיבה: אור תורה, מגיד דבריו ליעקב וליקוטים יקרים מעבירים את הדברים לדורות. המגיד לא חיבר בעצמו ספר מסודר, ותלמידיו קיבצו את מה שקיבלו, כדי שאפשר יהיה לשוב אל המעיין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אור בתוך המאסר</div>
+      <h3 class="story-title">🚪 כשהמחלוקת סוגרת דלת</h3>
+      <p>תולדות החסידות כוללות גם התנגדות ומחלוקת. הרב מזכיר את המסורת על נסיעתם של בעל התניא ורבי מנחם מנדל מוויטבסק אל הגאון מווילנה. הם ביקשו לשוחח עמו, להסביר את דרכם ולברר את הטענות נגדם. לפי הסיפור, האנשים שסביבו מנעו את הפגישה, והדלת נשארה סגורה.</p>
+      <p>הכאב בסיפור הוא כאב של שיחה שלא התקיימה. במסורת החסידית מובעת התחושה שאילו היו נפגשים ומשוחחים פנים אל פנים, אפשר היה להבין הרבה יותר ולהקטין את המחלוקת. אין בידינו לדעת כיצד הייתה מתפתחת פגישה כזאת, אך עצם הבקשה להיפגש מלמדת על רצון לברר את הדברים במקום לתת לחשדות לבדם לדבר.</p>
+      <p>הרב ממשיך מתוך כך אל מאסרו של בעל התניא. הוא מתאר הלשנות והאשמות שהגיעו אל השלטון, ואת הכלא שאליו נלקח. בתוך העימות הציבורי עומד פתאום אדם יחיד, מנותק מביתו ומתלמידיו, ונדרש לשאת חקירות ותנאים קשים. השיעור מבקש לעבור מן הפולמוס אל האדם: כיצד נשארה עבודתו חיה בתוך המאסר, ומה למדו חסידיו מן הדרך שבה עמד בו. הדלת הסגורה בבית המדרש והדלת הסגורה בכלא נעשות תחנות כואבות בסיפור שבו עדיין מחפשים פתח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אור בתוך המאסר</div>
+      <h3 class="story-title">🤍 גם בתוך גיא צלמוות</h3>
+      <p>כדי להסביר את כאב המאסר, מביא הרב סיפור על רבי ישראל מרוז׳ין. הוא קרא את הפסוק ״גם כי אלך בגיא צלמוות לא אירא רע כי אתה עמדי״ (תהילים כג, ד), ונתן למילים כיוון פנימי מיוחד. האדם יכול להחזיק מעמד מפני שה׳ עמו; אבל אם השכינה כביכול מצטערת עמו, מדוע יישא גם היא את כאבו?</p>
+      <p>בסיפור המיוחס לו, השאלה אינה מביעה ריחוק אלא קרבה. הוא אינו עסוק רק בחירותו שלו. בתוך המצוקה עולה בו גם צער על גלות השכינה. כך מופיעה אהבה לה׳ דווקא במקום שבו קל יותר לשאול רק על עצמי. הפסוק אינו מבטל את גיא הצלמוות; הוא נותן לאדם לשאת את תחושת הליווי בתוך הגיא.</p>
+      <p>הרב מחבר את הדברים לבעל התניא בכלא. החסידות שהאיר לרבים עומדת עתה למבחן בחדר צר, בשעה שגופו נחלש והשאלות סביבו קשות. הקרבה לה׳ אינה מחייבת שהדלת תיפתח מיד. היא מתגלה גם ביכולת להמשיך לפנות אליו, ולראות שהמאסר אינו סוגר את כל מרחבי הנשמה. סיפורי הצדיקים מובאים כדי לתת מילים לעמידה הזאת: כאב ממשי, אהבה ממשית, ותפילה שעדיין יכולה להישמע ביניהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אור בתוך המאסר</div>
+      <h3 class="story-title">🔎 שפה שאפשר להסתיר, אור שמתגלה</h3>
+      <p>בשיעור מסופר ששני חוקרים הגיעו אל בעל התניא ודיברו אליו ברוסית. הוא ענה ביידיש. כששאלו מדוע אינו משיב בשפתם, אמר שלרוסים הוא משיב ברוסית, וליהודים ביידיש. הם הכחישו שהם יהודים, משום שפרט זה הוסתר ולא היה ידוע בסביבתם.</p>
+      <p>הסיפור מתאר כיצד הכיר בהם, וכיצד השתנה יחסם אליו כאשר נוכחו שהוא יודע את מה שלא מסרו. הרב קושר את הזיהוי לזכות הראייה של הצדיק וליכולתו להבחין באור הנשמה. בהמשך, לפי המסורת, החלו להתייחס אליו ביראת כבוד. החוקרים שבאו לבדוק אדם מצאו את עצמם עומדים בפני שאלה חדשה: מי הוא האיש היושב לפניהם?</p>
+      <p>עוד מסופר שביקש מן הנוכחים לצאת כשהתפלל עם תפילין. רובם יצאו, אך אחד נשאר. לאחר התפילה נמצא האיש מעולף, ובעל התניא אמר שיביאו דברים להשיב את הכרתו. המסורת החסידית מפרשת זאת כעוצמת האור ששרתה בשעת תפילתו. שני הסיפורים נשמרים כאן כפי שהרב מוסר אותם, כסיפורי מופת על דמותו. בתוך רצף המאסר הם מציירים שינוי הדרגתי: מן החשד והלעג אל כבוד, ומן חדר חקירות קר אל חדר שבו מתייחסים ברצינות גם לתפילתו של האסיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אור בתוך המאסר</div>
+      <h3 class="story-title">🍯 צנצנת ריבה וחסד פשוט</h3>
+      <p>בעל התניא התקשה לאכול את המזון שהוגש בבית הכלא בגלל חששות כשרות. ככל שחלף הזמן נחלש גופו מאוד. הרב מספר שמפקד הכלא, המתואר כאדם ישר ונאמן, ראה את מצבו ופנה אליו בכבוד. הוא הבין שאי אפשר להמשיך כך: האסיר צריך מזון שיוכל לקבל.</p>
+      <p>בעל התניא הסביר שאינו יכול לאכול דבר שיש בו בעיית כשרות. המפקד לא הסתפק בטענה שעליו לאכול בכל זאת. הוא הציע דרך מעשית: יהודי מן הכפר הסמוך ידע להכין ריבה טובה, והוא יוכל להכינה עבורו בהידור. בעל התניא הסכים, ובסיפור נאמר שראה שהדבר ראוי. מאז הובאה אליו הריבה, והיא החייתה מעט את נפשו בתוך חולשתו.</p>
+      <p>אחרי הסיפורים על אור והתגלויות, מופיע פתאום פרט שאפשר כמעט להחזיק ביד: צנצנת ריבה. החסד אינו נעשה קטן משום שהוא פשוט. אדם הבחין באדם אחר שנחלש, הקשיב למה שמונע ממנו לאכול וחיפש פתרון שמתחשב בו. כך התרחב מעט המקום הצר. בהמשך הגיעו קצינים לשבת ולשמוע דברי חכמה ותורה. שאלותיהם אפשרו שיחה, והכבוד האנושי נתן לה מקום. המסורת מספרת שהם שאלו גם על ״איכה״ שבבראשית; בתמלול לא נמסרת התשובה לשאלה הזאת, ולכן היא נשארת כאן שאלה שעלתה בשיחתם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מן המצר אל המעיין</div>
+      <h3 class="story-title">🗝️ להמשיך לפתוח את המעיין</h3>
+      <p>המסורת שהרב מביא מתארת התגלות של הבעל שם טוב והמגיד אל בעל התניא במאסרו. הוא שאל מדוע נגזר עליו לשבת שם. לפי הסיפור, נאמר לו שהתעורר קטרוג על כך שהוא מגלה סודות תורה ברבים. מכאן עולה שאלה מעשית מאוד: אם הגילוי הוא שהביא אותו לכאן, האם עליו להפסיק ללמד כך?</p>
+      <p>בעל התניא השיב שאם זו הסיבה, כשיצא ימסור את הדברים בחדרי חדרים. אבל התשובה שקיבל, כפי שהיא מסופרת במסורת, הייתה אחרת. המאסר והיציאה ממנו נתפסו כתהליך של שבירת המחיצה המעכבת את גילוי הפנימיות. לכן עליו להמשיך בהפצת התורה הזאת, ביתר כוח. הסיפור מעניק ליציאה מן הכלא משמעות החורגת מחירותו של אדם אחד.</p>
+      <p>הרב מזכיר את חמישים ושלושה ימי המאסר, ומקשר אותם לחמישים ושלושה פרקי ליקוטי אמרים. ההתאמה מובאת כביאור חסידי לתהליך שעבר בעל התניא. מי שקורא את הספר אחרי הסיפור יכול לראות בו גם פרי של מסירות: תורה שעברה דרך קושי, חשד וסכנה, ונמסרה בכל זאת. המענה לשאלה אינו להסתיר את המעיין שנפתח. המענה, בתוך המסורת הזאת, הוא למצוא כוח להמשיך להשקות, מתוך אחריות עמוקה לאור שניתן להעביר הלאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מן המצר אל המעיין</div>
+      <h3 class="story-title">📜 למה הספר מתחיל בתניא</h3>
+      <p>ליקוטי אמרים נפתח במאמר על השבועה שמשביעים את הנשמה: להיות צדיק ולא להיות רשע. המקור מובא במסכת נידה ל ע״ב. הרב שואל על מילת הפתיחה ״תניא״: בדרך כלל היא משמשת להבאת ברייתא, ואילו כאן נמסר מאמרו של רבי שמלאי. השאלה מעוררת כמה ביאורים, ובשיעור נבחרים שני כיוונים פנימיים.</p>
+      <p>האחד, המיוחס למסורת חב״ד ולביאור בכתבי האר״י, רואה במילה רמז למחיצה המתנגדת לפנימיות התורה. פתיחת התניא ופתיחת תיקוני הזוהר נקשרות לגילוי שיש בכוחו לפרוץ את המחיצה. הרב מזכיר בהקשר הזה את ״ולמה תניאון את לב בני ישראל״ (במדבר לב, ז). זהו ביאור דרשני לאופן שבו שם הספר מבטא את עניינו.</p>
+      <p>הכיוון השני מפנה אל ״איתן״ שבנשמה. הספר בא לגלות לאדם כוח שהוא מתקשה להכיר בו. הוא עשוי לראות רק את חולשתו, את אתמול ואת הכישלון שחזר; התורה מבקשת להראות לו שיש בעומק גם נקודת חוזק. כך השאלה הלשונית פותחת שאלה אישית: מה אני יודע על נשמתי? הספר אינו מתחיל בהבטחה שהכול קל. הוא מתחיל בהזמנה לגלות את מי שנושא את המאבק, ואת הכוח שעמו אפשר להיכנס לעבודת החיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מן המצר אל המעיין</div>
+      <h3 class="story-title">🎉 פדה בשלום נפשי</h3>
+      <p>לפי המסופר בשיעור, כשבישרו לבעל התניא על זיכויו ועל יציאתו מן המאסר, היה קורא תהילים. באותה שעה הגיע לפסוק ״פדה בשלום נפשי״ (תהילים נה, יט). הפסוק נעשה מוקד למאמרים ולזיכרון היום. את י״ט בכסלו מציינים בחב״ד כיום הגאולה, ובשיעור הוא מוצג גם כיום בעל משמעות לכל מי שמבקש להכיר את פנימיות התורה.</p>
+      <p>ביום הזה נזכרת גם פטירתו של המגיד ממזריטש. הזיכרון של הרב והגאולה של התלמיד נפגשים באותו תאריך. הנקודה שחיברה ביניהם בחייהם ממשיכה להאיר: הרצון שהתורה תיכנס לעומק האדם ותעורר בו עבודת ה׳ חיה. מתוך כך אפשר להבין את השמחה כסוג של קבלת אחריות, לצד ההודאה על ההצלה.</p>
+      <p>מה פירוש להשתתף בשמחה? הרב מביא לשונות חסידיות המיוחסות לבעל התניא על מעבר מן המצר אל המרחב, מן הגשמיות אל הרוחניות ועל נחת מן הצאצאים. אלו דברי עידוד השמורים במסורת היום. הקורא יכול להשתתף בהם מתוך בקשה: לצאת מעט מן הצרות הפנימית שלו, לפתוח ספר, ללמוד דבר שייתן מקום לנשמה ולשמח אדם אחר. כך זיכרון השחרור יכול להגיע גם אל בית שמעולם לא עמד מול שערי הכלא ההוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מן המצר אל המעיין</div>
+      <h3 class="story-title">🌱 כמה שורות מתוך מצוקה</h3>
+      <p>בשיעור מובאת מסורת על פתק המיוחס לבעל התניא, שנמצא לאחר פטירתו. לפי המסורת, מי שקשור בתניא ונמצא בצרה יקרא כמה שורות מן הספר, או יאמר אותן אם הוא יודע אותן בעל פה, ואחר כך יאמר מעומק הלב שלוש פעמים ״רבי הושיעני״. הרב קורא גם את לשון ההבטחה לישועה המיוחסת לפתק.</p>
+      <p>אין בתמלול בירור על מקור הפתק או על זיהוי כתב היד, ולכן המסורת נשמרת כאן כמסורת שהרב מביא. הקריאה והפנייה מבטאות קשר לצדיק ולתורתו; הישועה מתבקשת מה׳. לשון הסגולה אינה נותנת בידינו לקבוע מתי וכיצד תיפתר מצוקתו של אדם מסוים, ואינה מודדת את אמונתו לפי מה שאירע לו.</p>
+      <p>לצד הדיוק הזה, אפשר להקשיב למעשה הפשוט שהסיפור מציע: בשעת צרה לפתוח ספר שיש בינינו ובינו קשר. כמה שורות אינן דורשות כוח של יום שלם. האדם קורא, נושם ומבקש. מה שנשאר בידו הוא רגע שבו הוא מצליח לפנות מתוך המצוקה במקום להישאר לבדו בתוכה. במסורת החסידית הספר נעשה מקום של קרבה גם ביום שאי אפשר ללמוד בו הרבה. הפתח הקטן הזה מתאים מאוד לספר המבקש לגלות את האיתן שבנשמה, גם כשהאדם מרגיש רק את חולשתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מן המצר אל המעיין</div>
+      <h3 class="story-title">🌠 מתי יבוא המשיח</h3>
+      <p>בסוף בן פורת יוסף נדפס מכתב הבעל שם טוב לגיסו, רבי גרשון מקיטוב. הרב קורא מתוך התיאור של עליית הנשמה שכתב שם הבעל שם טוב. הוא מתאר עלייה ממדרגה למדרגה, עד היכל המשיח, שבו הוא רואה לימוד תורה ושמחה גדולה מאוד. בתחילה הוא תוהה אם השמחה קשורה להסתלקותו שלו מן העולם, ואחר כך נמסר לו שלא הגיע זמנו.</p>
+      <p>השמחה, כפי שנכתב במכתב, קשורה לשעשוע ולנחת הנעשים למעלה מן הייחודים שהוא מייחד. מתוך הפגישה הוא שואל את המשיח מתי יבוא. התשובה המוכרת היא ״יפוצו מעיינותיך חוצה״. הרב מתעכב על המשך המכתב: לא די שתורתו תיוודע לאחרים; גם הלומדים יוכלו, כלשון המכתב, לעשות ייחודים ועליות כמוהו.</p>
+      <p>כך השאלה הגדולה על הגאולה נוגעת לאופן שבו תורה נמסרת. המעיין צריך להגיע החוצה, אל מקום שעוד לא שתה ממנו, אבל גם להישאר מעיין. אין מדובר רק בהפצת מילים או בשמות ספרים. יש רצון שהתורה תוליד עבודת ה׳ ממשית, שתעורר את הלומד לקשר ותעמיק את דבקותו. זהו תיאור רוחני שנמסר במכתב, והרב קורא בו קריאה המופנית אל הלומדים: לקבל משהו מן החיים שבתורה, ואז לתת להם מקום בתוך חייהם שלהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מן המצר אל המעיין</div>
+      <h3 class="story-title">🔗 שמע ישראל בתוך כל התורה</h3>
+      <p>הרב מביא ביאור חסידי למילים ״ובתורתך כתוב לאמור, שמע ישראל״. לכאורה אין כאן חידוש: כבר ילד קטן יודע ששמע ישראל הוא פסוק בתורה. הגמרא בסוכה מביאה את חינוך הילד לפסוקי התורה הראשונים. אם כך, מה מבקשים להדגיש במילים האלה בשעת התפילה?</p>
+      <p>הביאור המובא מרחיב את ״בתורתך״ אל כל התורה. גם כשהאדם לומד שור שנגח את הפרה, הלכות ריבית או דיני שכנים, הוא מוזמן לבקש את הקשר עם ה׳. בתוך הדינים המעשיים נמצא גם רצונו, ובתוך המפגש עם הרצון הזה אפשר לשמוע את האחדות שמבטא שמע ישראל. החיפוש הפנימי אינו מוציא את האדם מן הסוגיה; הוא מבקש שהסוגיה תהיה חלק מעבודתו.</p>
+      <p>הרב קושר לכך את דברי רבי נחמן בתחילת ליקוטי מוהר״ן על השכל שבכל דבר. צריך להתבונן ולא להסתפק במעטפת. כך עוברת תורת הייחודים אל היום יום: אכילה, שתייה, עסק ולימוד נעשים מקומות שבהם אפשר לכוון את החיים. האדם שואל מה הוא עושה, לשם מה הוא עושה, ואיך הדבר יכול לשאת קשר. הפשט נשאר יסוד, ומעליו מתעוררת האפשרות לשמוע בכל חלק של התורה גם את פנייתה של הנשמה אל האחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חכמה המבקשת חיים</div>
+      <h3 class="story-title">🌳 העץ, הפרי והייחוד</h3>
+      <p>השיעור מבחין בין לימוד היסודות בעץ חיים ובין עבודת הכוונות. העץ מצמיח פרי: מן המבנה והידיעה מגיעים אל כוונת התפילה והמצווה, ומתוך הכוונה אל דבקות ממושכת. הרב מתאר את הייחוד כעבודה שבה האדם אינו מחלק את יומו למקום של תורה ולמקום שאין בו קשר. הוא מבקש לגלות כיצד המעשה היומיומי יכול להתחבר לשורשו.</p>
+      <p>בספרי קומארנא, ובייחוד בהיכל הברכה, הרב מצביע על ייחודים מפורטים רבים. הוא מזכיר גם מסורת המובאת על הבעל שם טוב והאר״י, שבה מודגש הרצון להביא את הפנימיות אל דרך העבודה ואל החיים. המסורת מתארת פגישה רוחנית, ובתוכה מתגלה שאיפה משותפת: שהדברים הנשגבים יאירו את העולם שבו אדם אוכל, מדבר ומתפלל.</p>
+      <p>לצד זה הרב מביא את דברי נפש החיים על עומק כוונות אנשי כנסת הגדולה בתיקון התפילה. מה שנודע למקובלים אינו ממצה את העומק כולו. מכאן נולדת ענווה כלפי נוסח התפילה: גם המילה שכבר אמרנו פעמים רבות יכולה לשאת משמעות רבה מכפי שהשגנו. הייחודים נמסרים מתוך לימוד ומסורת; הקורא מוזמן קודם כול להבין את כיוון התנועה, מן הידיעה אל עבודת הלב, ומן העבודה אל חיים שיש בהם פנייה מתמשכת לה׳.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חכמה המבקשת חיים</div>
+      <h3 class="story-title">📚 סידור שהוכן באהבה</h3>
+      <p>כדי להמחיש את רוחב ההשגה שהמסורת מייחסת למקובלים, מספר הרב על סידור שהוכן עבור רבי יעקב אבוחצירא. מי שטרח להכינו ביקש לשמח אותו ולהעמיד לפניו את הכוונות בסדר ברור. אבל כשראה שהרב אינו מתפלל בסידור הזה, התקשה להבין. עבודתו היקרה הונחה לפניו, והוא ציפה לראותה משמשת בתפילה.</p>
+      <p>בסיפור נמסרת תשובה מפליאה: כבר בעת הרחת הטבק הוא מכוון את הכוונות הנכללות בסידור. הרב מביא זאת כדי להציג את הפער שבין מה שאפשר להדפיס ולסדר ובין עומק ההשגה המתואר אצל הצדיק. הסידור נשאר חשוב עבור מי שלומד ממנו, אבל הוא אינו מקיף את כל מה שהצדיק משיג.</p>
+      <p>אותו רעיון מופיע בשיעור גם ביחס לאר״י ולרש״ש: הדברים שמסרו לתלמידים היו מה שאפשר היה להעביר אליהם, ואילו השגתם שלהם מתוארת כעולה ומתחדשת. כך הסיפור על הסידור חוזר אל הלומד הפשוט. הספר שמולו הוא מתנה גדולה, והוא יכול ללמוד אותו לאט ובדיוק. אולם יש גם שמחה בידיעה שהדרך אינה נגמרת בשורה האחרונה של הדף. כל הבנה אמיתית עשויה לפתוח פתח נוסף, וכל פתח יכול להעמיק את היראה ואת האהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חכמה המבקשת חיים</div>
+      <h3 class="story-title">🌄 הפנימיות והגאולה</h3>
+      <p>הרב שואל מה הוסיפה החסידות על חכמת הקבלה. הוא מפנה לביאור במאמרי ים החכמה, העוסק הן בתוספת הזאת והן במהותה של החסידות. בין הרעיונות עולה ראייתה כהארה מתורת העתיד לבוא. בתוך פשט, רמז, דרש וסוד, מבקשים גם את הנשמה הפנימית, את העומק שמחיה את כל הרבדים.</p>
+      <p>הוא מביא גם מאבן שלמה, הליקוט מדברי הגאון מווילנה, את חשיבות לימוד הסוד ואת הקשר שנאמר בו לגאולה. בכך הוא מבקש להראות שהכרת ערך הפנימיות קיימת מעבר לגבולות חוג מסוים. אור החיים הקדוש מובא בהקשר לערכה של התורה בגאולה, ומתוך הלימוד הכללי מגיעים גם אל המקום המיוחד של תורת הסוד.</p>
+      <p>הפסוק ״ציון במשפט תיפדה ושביה בצדקה״ (ישעיהו א, כז) נקשר בשיעור לרמז על תלמוד ירושלמי ותלמוד בבלי, המובא בשם רבי יוסף חיים זוננפלד. יחד עם הרמז מדגיש הרב את הרחמים שיש בהכנסת דעת באדם אחר. מי שמלמד את חברו נותן לו כלי לחיים. התמונה הנבנית כאן אינה של ספר יחיד המחליף הכול. תורה נגלית, פנימיות, צדקה והוראה נושאות יחד את הרצון לתקן, להרחיב את הדעת ולהאיר את העולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חכמה המבקשת חיים</div>
+      <h3 class="story-title">🧵 מה אפשר לדעת על חדר סגור</h3>
+      <p>בשיעור עולה הטענה שלעתים אומרים שאין ממי לקבל את תורת הסוד. הרב משיב בהצבעה על ספרים ועל צדיקים, ומזכיר עדויות על ספרי קבלה שנמצאו בבית החזון איש, ובהם תלמוד עשר הספירות. עוד מובאת עדות של נהג שהיה מסיעו לביקורים אצל הסנדלר ביפו, ושבמהלכם היו יושבים יחד שעות רבות.</p>
+      <p>התוכן המדויק של השיחות אינו נמסר בתמלול. לכן אפשר לשמור את העדות על הביקורים ועל הספרים, בלי לקבוע מה נלמד בכל פגישה. השיעור משתמש בהם כדי לעורר זהירות מן ההנחה שמראה חיצוני או שייכות לחוג מסוים מגלים את כל עולמו של תלמיד חכם. יש דברים הנלמדים בשקט, ויש קשרים שאינם נעשים סיסמה ציבורית.</p>
+      <p>הרב מזכיר את המסורת על חנוך שהיה מייחד ייחודים בכל תפירה, ובכך מחבר את דמות הסנדלר אל עבודת ה׳ בתוך מלאכה. התפירה היא מעשה קטן, חוזר, כמעט בלתי נראה. אם הלב נמצא בו, גם הוא יכול להיות מקום של קשר. מתוך הסיפור עולה הזמנה כפולה: להכיר את המקורות שנמסרו לנו, ולכבד את החדרים שאיננו יודעים מה יש בהם. בענווה הזאת יש מקום ללימוד, ויש מקום לאדם השונה מאתנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חכמה המבקשת חיים</div>
+      <h3 class="story-title">💧 עמל שמכין מקום למתנה</h3>
+      <p>כיצד זכו המקובלים להשגותיהם? הרב מביא בשם רבי חיים ויטאל שאלה ששאל את האר״י: איך זכה ליותר מאחרים? התשובה מדגישה את העמל הרב. במסורת המתוארת בשיעור ראה רבי חיים ויטאל את האר״י לומד הלכה ומתייגע מאוד, עד זיעה. כששאל על כך, הוסבר שהעמל מסיר את המחיצה המונעת מן המוח להשיג.</p>
+      <p>עם זאת, העמל אינו הופך את הסודות למוצר שאפשר להמציא באמצעות סברה בלבד. הרב מזכיר את אזהרת הרמב״ן בהקדמתו לתורה, שלא לפרש דברי קבלה מתוך השערה אנושית ללא קבלה ראויה. צריך להתאמץ, לשאול, ללמוד ולקבל. מסילת ישרים, בפרק כו, מתאר את הקדושה כעבודה שתחילתה עמל וסופה מתנה. האדם מכין כלי, והמתנה אינה מתבטלת מפני שהכנתו הייתה קשה.</p>
+      <p>לצד היגיעה נזכרות שמירת הפה וזהירות בברכות הנהנין. הרב מביא אותן מתוך דברי הספרים על הכנת האדם להשגה. השפה כאן מכוונת את החיפוש הרוחני אל הפרטים: ללמוד היטב, לצמצם דיבור ריק ולברך בקשב. אלה אינם קיצורי דרך אל חוויה. הם מציירים אדם שנעשה כלי ישר ונקי יותר, ושמבקש לקבל את התורה בענווה. העמל פותח את הידיים, והלב לומד שגם אחרי העמל יש לו על מה להודות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+          <a href="#story-29">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-29" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חכמה המבקשת חיים</div>
+      <h3 class="story-title">❤️ לשם מה אני מבקש לדעת</h3>
+      <p>בברכות יז ע״א נאמר שתכלית חכמה היא תשובה ומעשים טובים. הרב חוזר על היסוד הזה דווקא בשעת העיסוק בפנימיות. אפשר ללמוד דברים נשגבים ולשכוח לשאול מה יעשו בי. לכן הוא מזכיר את ספר סור מרע ועשה טוב, המתבונן בתנאים ובכוונה הנדרשים ללימוד החכמה הזאת.</p>
+      <p>בשם אמרי יוסף מספינקא מובא ביאור לפסוק ״כבוד אלוקים הסתר דבר וכבוד מלכים חקור דבר״ (משלי כה, ב). בתוך הדרשה נבחן מניעו של הלומד. אם הוא מבקש ידיעות מרשימות כדי שיכירו בו כמקובל, יש מקום להסתיר ממנו. אם הוא מבקש לקבל עול מלכות שמים, להיכנע לפני ה׳ ולהעמיק את יראת הרוממות, יש מקום לחקור וללמוד.</p>
+      <p>הרב מזכיר שהרעיון נשמר גם אצל הרב״ש אשלג כתזכורת למטרת הלימוד. הידיעה יכולה להיות עמוקה מאוד, אבל תכליתה צריכה להגיע אל האדם. האם נעשה קשוב יותר? האם נולדה בו תשובה? האם הלב קיבל אהבה ויראה? השאלות אינן מקטינות את החכמה. הן נותנות לה כיוון. בשעה שאדם מבקש להעמיק, טוב שיהיה לידו גם המשפט הפשוט הזה: אני רוצה שהלימוד יקרב אותי, וישאיר אחריו מעשים טובים בעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-28">⟶ הקודם</a>
+          <a href="#story-30">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(29, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-30" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">⛰️ תורה שממשיכה להתגלות</h3>
+      <p>השיעור מציג ביאור חסידי להשתלשלות גילוי התורה. משה רבנו, רבי שמעון בר יוחאי, האר״י והבעל שם טוב נזכרים כתחנות מרכזיות שבהן התגלתה תורה לעולם. הרב קושר לכך את לשון התיקונים על התפשטות משה בכל דור, ואת הביאור על נשמת משה המאירה בצדיקים. זו דרך לתאר את הרצף הפנימי שבין הדורות.</p>
+      <p>רבי שמעון בר יוחאי מגלה סודות, והאר״י פותח דרך להבנת הזוהר. הבעל שם טוב מביא את הדברים אל עבודת החיים. כל תחנה נקשרת למה שלפניה ומוסיפה גילוי. בשיעור מוזכרת דרשת דגל מחנה אפרים על ״ובני ישראל יוצאים ביד רמה״ (שמות יד, ח), שבה נרמזים שמותיהם של רבי שמעון ושל הבעל שם טוב. הרמז נושא את התקווה שגילוי התורה יתן כוח לישראל.</p>
+      <p>הרב מוסיף שהחסידות עוסקת גם ב״נשמה״ של התורה, ובסוד שבתוך הסוד. זהו ביאור על מדרגות רוחניות, ולא תחליף ללימוד הפשט וההלכה. המילים מציירות עומק שעוד אפשר להיכנס אליו. הדורות אינם רק מתרחקים מן ההתחלה; בתוך ההמשכיות יש גם פגישות חדשות עם אור. האדם הפותח היום ספר מקבל תורה שעברה דרך נשמות רבות, ומוזמן להמשיך את חייה בלימודו שלו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-29">⟶ הקודם</a>
+          <a href="#story-31">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(30, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-31" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">🍃 דף אחד בעת משבר</h3>
+      <p>בעל התניא תיאר את ספרו כספר של בינונים, ובשיעור מובאת ההבחנה בינו ובין נועם אלימלך, המתואר כספר לצדיקים. עומקו של נועם אלימלך מודגש באמצעות מסורות על יראת הלומדים לפניו, ועל ההכנה הנדרשת להבנתו. ובכל זאת, מן הספר העמוק הזה מביא הרב סיפור הנוגע לאדם בשעת חולשה.</p>
+      <p>צעיר שהיה בירידה הגיע לבקש עצה מן הצדיק. נאמר לו שילמד נועם אלימלך, מתוך מסורת על כוחו לעורר יראת שמים. הצעיר השיב שאין לו חשק לפתוח שום ספר. הוא אינו מתווכח על קדושת הספר; הוא פשוט אינו מצליח להיכנס ללימוד. התשובה שהרב מביא בשמו של רבי חונה מקולשיץ היא שאפילו לדפדף בדפיו יש בו סגולה לעורר.</p>
+      <p>הסיפור משאיר בידו צעד קטן שאפשר לעשות. אדם שאין בו כוח לדף שלם יכול לפתוח, להחזיק, להיות קרוב. המסורת אינה נמסרת כאן כהתחייבות לתוצאה מסוימת, אלא כעידוד שמאפשר להתחיל. בהמשך מזכיר הרב גם מסורות על מעלת לימוד ליקוטי מוהר״ן ועל הרצון לדעתו היטב. הספרים הקדושים נעשים בני לוויה: יש יום של הבנה עמוקה, ויש יום שבו עצם הפתיחה היא הדבר שהלב מסוגל לתת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-30">⟶ הקודם</a>
+          <a href="#story-32">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(31, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-32" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">🤝 למצוא את רבנו גם בספר אחר</h3>
+      <p>האם הדבקות בדרכו של רבי נחמן מחייבת להתרחק מספרי צדיקים אחרים? הרב מביא מכתב של רבי גדליה קניג משערי צדיק, העוסק בשאלה הזאת. תחילתו בבירור נאמנותו של רבי נחמן מטולטשין לדברי רבי נתן. הוא היה נזהר, לפי העדות המובאת, שלא להוסיף ולא לגרוע מן השיחות שקיבל. פשטותו ואמינותו מתוארות כדרך שבה זכה לחכמה.</p>
+      <p>רבי נתן עצמו חיפש תורה אצל צדיקים עוד לפני התקרבותו לרבי נחמן. לאחר פטירת רבו ביקש למצוא בצדיקי דורו משהו מן האור שקיבל. במכתב מתואר כיצד חזר מן החיפוש והכיר שהוא נושא בעצמו את התורה שנמסרה לו, ועליו ללמדה ולהעמידה לבאים אחריו. מכאן מובנת דבקותו המיוחדת בדרך רבו.</p>
+      <p>אבל המכתב מוסיף במפורש שאין בכך שלילה של קדושת הצדיקים האחרים ושל הטוב שבספריהם. יש להכיר וללמוד את הספרים שנכתבו בידי צדיקים כשרים. מי שקבוע בתורת רבי נחמן, בליקוטי תפילות ובשיחה בינו לבין קונו, יכול דווקא להתחזק באמצעות המפגש הזה. הוא ימצא בספר אחר הד לדברים שכבר קיבל. אהבת הדרך שלו נעשית בסיס לפגישה, והנאמנות מאפשרת להקשיב גם לקול נוסף בלי להיבהל ממנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-31">⟶ הקודם</a>
+          <a href="#story-33">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(32, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-33" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">🧡 כדי שלא יישכח הבעל שם טוב</h3>
+      <p>הרב מזכיר את רבי נחמן מטשרין ואת ספרו לשון חסידים, שאסף בו מתורת תלמידי הבעל שם טוב. לפי העדות המובאת בשיעור, אמר לנכדו רבי אברהם שטרנהרץ שהספר חובר במיוחד לתועלת חסידי ברסלב, כדי שלא תישכח מהם תורת הבעל שם טוב. המשפחה הרוחנית אינה מתחילה בספר שהאדם למד ראשון; יש לה שורשים שראוי להכיר.</p>
+      <p>גם מנהגי לימוד באומן נזכרים: לימוד ספרי הבעל שם טוב ותלמידיו בליל שבת, אחרי חצות. רבי לוי יצחק בנדר מובא כמי שלמד בכל יום שישי ספרי חסידות על פרשת השבוע. הרב מבקש להראות שזו הייתה דרך של הרחבה בתוך מסורת ברסלב, ולא יציאה ממנה.</p>
+      <p>רבי נחמן גדל בבית הקשור לבעל שם טוב, ושמע מימרות ומעשיות מתלמידיו. בשיעור מתואר כיצד הדברים עוררו בו יראת שמים בנערותו. כך אפשר להבין מדוע הכרת תורת הבעל שם טוב חשובה גם למי שעיקר לימודו בספרי רבי נחמן. סיפורים, יסודות ודרכי עבודה עוברים מדור לדור. כשהשורש מוכר, הענף מקבל עומק. הספרים אינם נעשים רשימת חובה קרה; הם מציעים לקורא לפגוש את הבית שממנו יצאה התורה שהוא אוהב, ולהכיר עוד חדרים בתוכו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-32">⟶ הקודם</a>
+          <a href="#story-34">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(33, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-34" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">⭕ כל הקווים אל מחול אחד</h3>
+      <p>בסוף תענית מתואר המחול שיעשה ה׳ לצדיקים. בשיעור מובא בשם רבי עקיבא איגר, מתוך חוט המשולש, ביאור ציורי: בעולם הזה לכל צדיק קו משלו, ולעתיד מתגלה כיצד הקווים נפגשים. מה שנראה לעתים רחוק נעשה חלק ממחול אחד, שבמרכזו ה׳.</p>
+      <p>הרב משתמש בתמונה הזאת כדי לעבור אל ההבדל בין מסורת המונה את בעל התניא כגילוי החמישי בהשתלשלות התורה, ובין מסורת ברסלב המעמידה במקום הזה את רבי נחמן. לכאורה יש כאן התנגשות. הביאור שהוא מביא, מספר נשמתין חדתין, מבקש למצוא קשר: רבי נחמן כינה את בעל התניא ״שר האלף״, והתואר נקשר לחכמה; החיבור בין חכמה לכתר משמש משל לקשר בין שתי הדרכים.</p>
+      <p>יש כאן ניסיון פרשני לחבר מסורות שונות, והרב מציג אותו מתוך אהבת שני הצדיקים. הוא מזכיר גם לשון המובאת בבית רבי על אחדותם. מתוך כך הוא מתאר את ההתבוננות בתורת חב״ד ואת כוח השיחה והדיבור אצל רבי נחמן כשני אופני עבודה שיכולים להאיר זה לזה. המחול אינו דורש שכולם ידברו באותו סגנון. הוא מציע להביט אל המרכז שאליו מבקשים להגיע, ולזכור שהאהבה לה׳ יכולה לקבל יותר מלשון אחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-33">⟶ הקודם</a>
+          <a href="#story-35">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(34, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-35" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">👑 רופא לבת המלך</h3>
+      <p>בשיעור מובא תיאור רוחני משערי צדיק על רבי נחמן בארץ ישראל, בקשר למערת רבי שמעון בר יוחאי. הרב קורא מן הלשון הארמית ומבאר אותה. בתוך התיאור נשאל מי נכנס למקום, ורבי נחמן מזדהה בשמו ובקשרו לזרע הבעל שם טוב. אחר כך הוא מתואר כמי שעוסק בנחמת השכינה וכרופא לבת המלך.</p>
+      <p>בת המלך היא כנסת ישראל, והסיפור מוליך אל נשמות הזקוקות לרפואה. לפי הלשון המובאת, הוא מקבל עליו ערבות לדורות האחרונים: לעורר תשובה, להכניס שכל ובינה ושמחה, ולתת כוח גם למי שקשה לו לשוב. הרב מחבר את הדברים לאנשים שבורים שמוצאים חיות בתורותיו ובעצותיו של רבי נחמן.</p>
+      <p>זהו תיאור מתוך מקור רוחני המובא בשיעור, ומתוכו עולה דמות של רב המבקש להגיע דווקא למקום העייף. מי שעבר ניסיונות ונשבר אינו צריך להיעלם מן הספר. יש עבורו שיחה, תפילה ועצה שאפשר להתחיל בה. הרב מדגיש את כוח העידוד: אדם מוצא מילים לנפשו, ובאמצעותן מתחיל לשוב. דימוי הרופא אינו אומר שאין כאב. הוא מצייר נכונות להיכנס אל הכאב כדי לבקש חיים, ולהביא אל בת המלך משהו מן הנחמה שהיא מחכה לה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-34">⟶ הקודם</a>
+          <a href="#story-36">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(35, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-36" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">🌺 ללמוד כדי לקבל חשק</h3>
+      <p>מה יעשה אדם שאין בו חשק ללמוד? הרב מספר בשם הרב אשלג על עצה שניתנה לילד: ללמוד מוסר. הילד הקשה שגם מוסר הוא לימוד; אם אין לו חשק, כיצד יפתור עוד ספר את הבעיה? התשובה מפנה אל מטרת המפגש. בספר מוסר ויראת שמים אפשר לקבל משהו מן החשק ומן הקדושה של הצדיק שכתב אותו.</p>
+      <p>הלומד אינו מבקש רק ידיעה חדשה. הוא מבקש שיקרה בו דבר, שהרצון יתעורר. בשיעור נקשרת לכך גם המסורת במאור עיניים ובליקוטי מוהר״ן על החיות שהצדיק משאיר בתורתו. לימוד הספר מתואר כדבקות רוח ברוח, ואף כדומה מבחינה פנימית להשתטחות על קברו. הדברים שמסר הם מקום של פגישה עם עבודתו.</p>
+      <p>לכן אדם יכול לפתוח ספר ולומר לעצמו: איני חייב להספיק הרבה עכשיו; אני מבקש לקבל לב. כשהספר מדבר על תפילה, אולי יוכל להתפלל משפט. כשהוא מדבר על אמונה, אולי ימצא כוח לצעד שהיה קשה לו. הרב מזכיר שגם ספרי קבלה נקראו לעתים ספרי מוסר, משום שיראת שמים היא תכליתם. המפגש עם דעתו של הצדיק אמור להשאיר חיים. אדם שיצא מן הקריאה עם רצון קטן לעבוד את ה׳ קיבל דבר יקר מאוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-35">⟶ הקודם</a>
+          <a href="#story-37">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(36, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-37" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">🌼 אמונה שיש בה חיים</h3>
+      <p>בשם אוהב ישראל מאפטא, המביא מרבי יחיאל מיכל מזלוטשוב, קושר הרב אמונה להמשכה. האמון מאפשר לאדם לקבל, והסגירות עלולה לחסום את הפגישה. הוא מביא גם את דברי נועם אלימלך בפרשת בהר, בשם רבי זושא, על השאלה ״מה נאכל״ ועל ״וציוויתי את ברכתי״ (ויקרא כה, כ–כא). בתוך הביאור החסידי נבחן מה עושה הדאגה לקשרו של האדם עם מקור הברכה.</p>
+      <p>הרב מבקש להאמין בקדושת התורה ובאפשרות לקבל מן הצדיקים חיים. זו עבודה שקשה במיוחד כשהלב רגיל לחשד ולעייפות. בשיחות הר״ן הוא מזכיר את התיאור של קושי האמונה בדורות האחרונים, ואת החידוש הגדול שבאדם המחזיק באמונה פשוטה. רבי יעקב צמח מובא בשיעור כמי שמדגיש, בתוך תיאור התגברות החושך, את מעלת הקריאה בחכמה הזאת.</p>
+      <p>הקריאה, ההבנה והעמל נעשים כלי להתחזקות. אין כאן הסבר לכל צרה של אדם, אלא בקשה לתת לו משען בשעת צרתו. האמונה החיה מופיעה בדרך שבה הוא פונה, חוזר ולומד, ומנסה לקיים דבר אחד שקיבל. האמירה המיוחסת לבעל שם טוב, שאמונה יכולה להעביר אדם גם במקום שנראה בלתי עביר, נמסרת בשיעור כהמחשה לעוצמת הלב המאמין: הוא מצליח להתחיל ללכת, גם כשעדיין אינו רואה את כל הדרך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-36">⟶ הקודם</a>
+          <a href="#story-38">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(37, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-38" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · דרכים רבות ולב אחד</div>
+      <h3 class="story-title">🕊️ מי שרוצה להיות צדיק</h3>
+      <p>בסיום מביא הרב ביאור המיוחס לבעל התניא למשנה שבסוף פאה. המשנה מתארת אדם המתחזה לבעל מום כדי לקבל מתנות שאינן מגיעות לו, ואומרת שלא ימות מן הזקנה עד שיבוא לידי כך. בעל התניא מפנה את המחשבה אל הצד הטוב, מתוך היסוד שמידה טובה מרובה ממידת פורענות.</p>
+      <p>מה עם אדם שמנסה כל חייו להיות צדיק? הוא רואה את מעשי הצדיקים, לומד את ספריהם, מבקש ללכת בעקבותיהם, ולא תמיד מצליח. הוא אינו מציג הצגה כדי לזכות בכבוד. הוא רוצה באמת, אך המרחק בין רצונו ובין חייו מכאיב לו. הביאור החסידי נותן מקום גם לרצון הזה: מי שמתחקה בכנות אחר הטוב יכול לקוות שהטוב ייעשה בסופו של דבר חלק ממנו.</p>
+      <p>זהו הסיום שהרב בוחר לשיעורו על החסידות. אחרי הגדלות, הספרים, המאסר, ההתגלויות והגילויים, הוא חוזר לאדם שמנסה. התורה מבקשת ממנו לא לעזוב את בקשתו. אפשר ללמוד עוד מעט, להתפלל שוב, להתקרב אל מעשה של חסד ולקבל עידוד מספר. לקראת אור החנוכה מזכיר הרב את ״כי אתה תאיר נרי״ (תהילים יח, כט). הנר הקטן של הרצון זקוק לשמירה, והאהבה לה׳ יכולה לתת לו עוד שמן. גם מן המקום שבו אנו עומדים עכשיו אפשר להתחיל להאיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-37">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(38, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור הרב ירון אוזן בערוץ הרב יהודה טאוב https://youtu.be/0vycSOTQdZk · 2023-12-01 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"קריאה להתעורר","icon":"🌅","color":"#c62b6b","stories":[{"id":1,"title":"לקרוא לאדם בשמו","icon":"🌅"},{"id":2,"title":"מוסר, חסידות ונדיבות הלב","icon":"🌿"},{"id":3,"title":"המעיל שהחליף כתפיים","icon":"🕯️"},{"id":4,"title":"שני אורות בשם אחד","icon":"📖"},{"id":5,"title":"התניא על השולחן","icon":"💎"},{"id":6,"title":"חבורה של גדולי תורה","icon":"🏡"}]},{"id":2,"name":"נשמה בתוך התורה","icon":"🔥","color":"#6d28d9","stories":[{"id":7,"title":"נהר אחד, דרכים רבות","icon":"🌊"},{"id":8,"title":"מה לומדים אצל מלאך","icon":"🪽"},{"id":9,"title":"הפירוש היה נכון, הנשמה חסרה","icon":"🔥"},{"id":10,"title":"פעם אחת עם האחד","icon":"💡"},{"id":11,"title":"אותיות שיש בהן חיים","icon":"✍️"},{"id":12,"title":"לנקות את הזכוכית","icon":"🪔"}]},{"id":3,"name":"אור בתוך המאסר","icon":"🕯️","color":"#e08e00","stories":[{"id":13,"title":"דליים של קדושה","icon":"🪣"},{"id":14,"title":"כשהמחלוקת סוגרת דלת","icon":"🚪"},{"id":15,"title":"גם בתוך גיא צלמוות","icon":"🤍"},{"id":16,"title":"שפה שאפשר להסתיר, אור שמתגלה","icon":"🔎"},{"id":17,"title":"צנצנת ריבה וחסד פשוט","icon":"🍯"}]},{"id":4,"name":"מן המצר אל המעיין","icon":"🌊","color":"#1e88b8","stories":[{"id":18,"title":"להמשיך לפתוח את המעיין","icon":"🗝️"},{"id":19,"title":"למה הספר מתחיל בתניא","icon":"📜"},{"id":20,"title":"פדה בשלום נפשי","icon":"🎉"},{"id":21,"title":"כמה שורות מתוך מצוקה","icon":"🌱"},{"id":22,"title":"מתי יבוא המשיח","icon":"🌠"},{"id":23,"title":"שמע ישראל בתוך כל התורה","icon":"🔗"}]},{"id":5,"name":"חכמה המבקשת חיים","icon":"🌳","color":"#c62b6b","stories":[{"id":24,"title":"העץ, הפרי והייחוד","icon":"🌳"},{"id":25,"title":"סידור שהוכן באהבה","icon":"📚"},{"id":26,"title":"הפנימיות והגאולה","icon":"🌄"},{"id":27,"title":"מה אפשר לדעת על חדר סגור","icon":"🧵"},{"id":28,"title":"עמל שמכין מקום למתנה","icon":"💧"},{"id":29,"title":"לשם מה אני מבקש לדעת","icon":"❤️"}]},{"id":6,"name":"דרכים רבות ולב אחד","icon":"🤍","color":"#6d28d9","stories":[{"id":30,"title":"תורה שממשיכה להתגלות","icon":"⛰️"},{"id":31,"title":"דף אחד בעת משבר","icon":"🍃"},{"id":32,"title":"למצוא את רבנו גם בספר אחר","icon":"🤝"},{"id":33,"title":"כדי שלא יישכח הבעל שם טוב","icon":"🧡"},{"id":34,"title":"כל הקווים אל מחול אחד","icon":"⭕"},{"id":35,"title":"רופא לבת המלך","icon":"👑"},{"id":36,"title":"ללמוד כדי לקבל חשק","icon":"🌺"},{"id":37,"title":"אמונה שיש בה חיים","icon":"🌼"},{"id":38,"title":"מי שרוצה להיות צדיק","icon":"🕊️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
