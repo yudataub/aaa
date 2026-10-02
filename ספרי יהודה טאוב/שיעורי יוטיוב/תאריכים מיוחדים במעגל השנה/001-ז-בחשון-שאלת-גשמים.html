@@ -3,307 +3,385 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ארץ שמבקשת גשם</title>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700&amp;family=Heebo:wght@400;700&amp;display=swap" rel="stylesheet">
+<title>🌧️ ארץ שמבקשת גשם</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&amp;family=Fredoka+One&amp;family=Varela+Round&amp;display=swap" rel="stylesheet">
 <style>
-/* ═══ INK & PAPER ════════════════════════════════════════════════════════
-   The adult skin. Loaded INSTEAD OF book.css, never alongside it — same class
-   names throughout, so book.js and the builder are untouched by the choice.
 
-   The whole argument of this stylesheet is restraint: one accent, paper and
-   ink, a serif that can hold 2,000 words without tiring, and a measure that
-   stops around 34em because a line of Hebrew wider than that loses the reader
-   on the way back to the start of the next one. */
+/* ═══ CANDY POP BASE ═════════════════════════════════════════════════════
+   Soft, not saturated: a near-white page with two pale blooms behind it,
+   white elevated cards for every block of content, one gradient reserved
+   for the hero. The earlier version painted the whole viewport in flat
+   solid color and filled every chapter bar solid — cheerful up close, but
+   nothing to rest the eye on across a long book. This is the same palette,
+   used as an accent instead of a fill. */
 :root {
-  --paper:  #f7f4ee;
-  --paper2: #fffdf8;
-  --ink:    #23201c;
-  --ink2:   #55504a;
-  --rule:   #ddd6c9;
-  --accent: #8a4b3c;   /* one accent, used for links, marks and the rule under a title */
-  --accent-soft: #f0e4df;
-  /* Aliases so anything written against the Candy Pop variables still resolves
-     to something sane instead of falling back to black on white. */
-  --pink: var(--accent); --blue: var(--ink2); --yellow: var(--accent-soft);
-  --red: var(--accent); --green: var(--ink2); --purple: var(--accent);
+  --pink-1:   #ff6b9d;
+  --pink-2:   #c62b6b;
+  --purple-1: #a78bfa;
+  --purple-2: #6d28d9;
+  --blue-1:   #60d3ff;
+  --blue-2:   #1e88b8;
+  --amber-1:  #ffd166;
+  --amber-2:  #e08e00;
+  --bg:       #fff7fb;
+  --card-bg:  #ffffff;
+  --ink:      #3a2545;
+  --ink-soft: #6b5a76;
+  --shadow:   0 10px 30px rgba(198,43,107,.14);
+  /* legacy aliases: nothing outside this file should need renaming */
+  --pink: var(--pink-1); --blue: var(--blue-1); --yellow: var(--amber-1);
+  --red: var(--pink-2); --green: #7bed9f; --purple: var(--purple-1);
   --dark: var(--ink);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Frank Ruhl Libre', 'Noto Serif Hebrew', 'David Libre', Georgia, serif;
-  background: var(--paper);
+  font-family: 'Varela Round', 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+  background:
+    radial-gradient(circle at 8% 0%, #ffe3ef 0, transparent 45%),
+    radial-gradient(circle at 100% 10%, #e3f4ff 0, transparent 40%),
+    var(--bg);
+  min-height: 100vh;
   color: var(--ink);
   direction: rtl;
-  font-size: 18px;
-  line-height: 1.9;
-  min-height: 100vh;
+}
+.emoji-icon { font-size: 1em; }
+.toc-icon { display: inline-flex; font-size: 1em; }
+
+/* ═══ בלוק המקור בראש הסיפור ═══════════════════════════════════════════ */
+.source-box {
+  background: #fffaf0;
+  border: 2px dashed var(--amber-1);
+  border-radius: 16px;
+  padding: .9rem 1.1rem;
+  margin: 0 0 1.2rem;
+}
+.source-ref {
+  font-weight: 800; color: #a8730a; font-size: .98rem;
+  margin-bottom: .45rem; line-height: 1.5;
+}
+.source-quote {
+  font-size: 1rem; line-height: 1.9; color: #4a3300;
+  border-inline-start: 4px solid var(--amber-1); padding-inline-start: .8rem; margin: 0;
+}
+.source-link { margin-top: .5rem; font-size: .85rem; }
+.source-link a { color: #a8730a; font-weight: 700; }
+@media print { .source-box { break-inside: avoid; } .source-link { display: none; } }
+
+/* ═══ CONFETTI ═══════════════════════════════════════════════════════════ */
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(0deg); opacity: .8; }
+  50%     { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+}
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.confetti span { position: absolute; font-size: 1.4rem; animation: float 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .confetti span { animation: none; }
+  html { scroll-behavior: auto; }
 }
 
-/* No confetti. It is the single loudest childish signal a page can carry, and
-   the builder omits it for adults — this rule is here so that a book converted
-   from a kids spec does not keep raining candy. */
-.confetti { display: none !important; }
-
-/* ═══ ICONS ══════════════════════════════════════════════════════════════
-   Inline Lucide sprite; stroke inherits the text color, so an icon is never
-   a second color decision. */
-.icon { width: 1.05em; height: 1.05em; flex: none; vertical-align: -.15em;
-        fill: none; stroke: currentColor; stroke-width: 1.75;
-        stroke-linecap: round; stroke-linejoin: round; }
-.icon-sprite { display: none; }
-
-/* ═══ HERO ═══════════════════════════════════════════════════════════════ */
+/* ═══ HERO ═══════════════════════════════════════════════════════════════
+   The one place a full gradient earns its keep — it is seen once, at the
+   top, not repeated behind every block of text underneath it. */
 .hero {
-  padding: 4.5rem 1.5rem 3rem; text-align: center;
-  border-bottom: 1px solid var(--rule); background: var(--paper2);
+  position: relative; z-index: 1; overflow: hidden;
+  background: linear-gradient(135deg, var(--pink-1), var(--purple-1) 55%, var(--blue-1));
+  padding: 2.5rem 1.4rem 2.9rem; text-align: center;
+  box-shadow: var(--shadow);
 }
-.hero-title { font-size: clamp(2rem, 5vw, 3.1rem); font-weight: 700; letter-spacing: -.01em; }
-.hero-subtitle { margin-top: .9rem; color: var(--ink2); font-size: 1.05rem; font-style: italic; }
-.hero-stats { display: flex; gap: 1.6rem; justify-content: center; flex-wrap: wrap;
-              margin-top: 1.8rem; color: var(--ink2); font-size: .85rem; }
-.stat-bubble { display: inline-flex; align-items: center; gap: .4rem;
-               letter-spacing: .04em; text-transform: none; }
-.stat-bubble + .stat-bubble::before { content: '·'; margin-inline-end: 1.6rem; opacity: .5; }
+.hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(135deg, rgba(255,255,255,.08) 0 18px, transparent 18px 36px);
+}
+.hero-title {
+  position: relative; margin: 0 0 .5rem;
+  font-family: 'Varela Round', 'Heebo', sans-serif; font-weight: 800;
+  font-size: clamp(1.7rem, 4.5vw, 2.6rem);
+  color: #fff; text-shadow: 0 3px 12px rgba(0,0,0,.18);
+  line-height: 1.3; text-wrap: balance;
+}
+.hero-subtitle { position: relative; font-size: 1.05rem; color: rgba(255,255,255,.95); font-weight: 500; }
+.hero-stats { position: relative; display: flex; gap: .8rem; justify-content: center; flex-wrap: wrap; margin-top: 1.3rem; }
+.stat-bubble {
+  background: rgba(255,255,255,.22); backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255,255,255,.45); border-radius: 50px;
+  padding: .45rem 1.1rem; color: #fff; font-weight: 700; font-size: .88rem;
+}
 
 /* ═══ LAYOUT ═════════════════════════════════════════════════════════════ */
-.layout { display: flex; max-width: 1360px; margin: 0 auto; }
+.layout {
+  display: flex; gap: 1.4rem; max-width: 1220px; margin: 0 auto;
+  padding: 1.6rem 1.1rem 4.4rem; align-items: flex-start;
+  position: relative; z-index: 1;
+}
+
+/* ═══ SIDEBAR — a plain white card, not a colored panel ═══════════════════ */
 .sidebar {
-  width: 330px; flex: none; position: sticky; top: 0; height: 100vh; overflow-y: auto;
-  padding: 1.6rem 1.2rem; background: var(--paper2);
-  border-inline-start: 1px solid var(--rule);
-  font-family: 'Heebo', system-ui, sans-serif; font-size: .9rem; line-height: 1.6;
+  width: 300px; flex-shrink: 0;
+  position: sticky; top: 1.1rem; max-height: calc(100vh - 2.2rem); overflow-y: auto;
+  background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow);
+  padding: 1.1rem 1rem;
 }
-.sidebar-title { font-family: inherit; font-size: .78rem; letter-spacing: .14em;
-                 text-transform: uppercase; color: var(--ink2); margin-bottom: 1rem; }
-
-/* ═══ SEARCH ═════════════════════════════════════════════════════════════ */
-.search-wrap { position: relative; margin-bottom: 1.4rem; }
+.sidebar-title {
+  font-size: .92rem; font-weight: 800; color: var(--pink-2);
+  letter-spacing: .02em; margin: 0 .2rem 1rem;
+}
+.search-wrap { position: relative; margin-bottom: 1rem; }
 #searchBox {
-  width: 100%; padding: .6rem 2.2rem .6rem .8rem; font: inherit;
-  background: var(--paper); color: var(--ink);
-  border: 1px solid var(--rule); border-radius: 3px;
+  width: 100%; padding: .62rem 2.3rem .62rem .95rem;
+  border: 2px solid #ffd7e6; border-radius: 999px;
+  font: inherit; font-size: .92rem; background: #fff8fb; color: var(--ink);
+  outline: none; direction: rtl;
 }
-#searchBox:focus { outline: none; border-color: var(--accent); }
-.search-icon { position: absolute; right: .7rem; top: 50%; transform: translateY(-50%);
-               pointer-events: none; color: var(--ink2); }
+#searchBox:focus { border-color: var(--pink-1); }
+.search-icon { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--ink-soft); }
 #searchResults {
-  display: none; position: absolute; inset-inline: 0; top: calc(100% + 4px); z-index: 60;
-  max-height: 60vh; overflow-y: auto; background: var(--paper2);
-  border: 1px solid var(--rule); border-radius: 3px; box-shadow: 0 8px 26px rgba(0,0,0,.09);
+  position: absolute; inset-inline: 0; top: calc(100% + 6px); z-index: 60;
+  max-height: 60vh; overflow-y: auto;
+  background: var(--card-bg); border-radius: 14px; box-shadow: var(--shadow);
+  display: none;
 }
-.sr-item { padding: .6rem .8rem; cursor: pointer; border-bottom: 1px solid var(--rule); }
-.sr-item:last-child { border-bottom: none; }
-.sr-item:hover { background: var(--accent-soft); }
-.sr-item small { color: var(--ink2); }
-mark { background: var(--accent-soft); color: inherit; padding: 0 .1em; }
+#searchResults .sr-item { padding: .55rem .8rem; cursor: pointer; font-size: .88rem; border-bottom: 1px solid #f7ecf1; }
+#searchResults .sr-item:last-child { border-bottom: none; }
+#searchResults .sr-item:hover { background: #fff2f8; }
+#searchResults .sr-chapter { background: #fffaf0; }
+#searchResults .sr-chapter:hover { background: #fff3d6; }
+#searchResults .sr-chapter small { color: #8a6d00; }
+#searchResults mark { background: var(--amber-1); border-radius: 3px; padding: 0 .1em; }
 
-/* ═══ CONTENTS ═══════════════════════════════════════════════════════════ */
-.era-jump { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.2rem; }
-.era-jump a { color: var(--ink2); text-decoration: none; font-size: .8rem;
-              border-bottom: 1px solid var(--rule); padding-bottom: .1rem; }
-.era-jump a:hover { color: var(--accent); border-color: var(--accent); }
-.toc-era { margin: 1.4rem 0 .5rem; display: flex; justify-content: space-between;
-           align-items: baseline; font-size: .74rem; letter-spacing: .12em;
-           text-transform: uppercase; color: var(--ink2);
-           border-bottom: 1px solid var(--rule); padding-bottom: .3rem; }
-.toc-era-count { opacity: .7; }
-.toc-chapter { margin-bottom: .1rem; border: none; border-radius: 0; }
+.era-jump { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: 1rem; }
+.era-jump a { color: #fff; text-decoration: none; font-size: .74rem; font-weight: 700; padding: .3rem .7rem; border-radius: 50px; }
+.era-jump a:hover { filter: brightness(1.1); }
+
+.toc-era {
+  display: flex; align-items: center; justify-content: space-between;
+  margin: 1rem 0 .45rem; padding: .4rem .55rem;
+  font-weight: 800; font-size: .82rem; color: var(--ink);
+  background: rgba(58,37,69,.06); border-radius: 8px;
+}
+.toc-era-count { font-size: .72rem; font-weight: 700; color: var(--ink-soft); }
+
+/* No filled bar, no colored border — the chapter's color survives as a
+   small dot and lives fully on the story card itself. */
+.toc-chapter { margin-bottom: .15rem; }
 .toc-chapter-title {
-  display: flex; align-items: center; gap: .5rem; cursor: pointer;
-  padding: .45rem .2rem; color: var(--ink); background: none !important;
-  border-bottom: 1px solid transparent;
+  display: flex; align-items: center; gap: .5rem;
+  padding: .5rem .5rem; cursor: pointer; border-radius: 12px;
+  font-weight: 700; font-size: .86rem; color: var(--ink); user-select: none;
 }
-.toc-chapter-title:hover { border-bottom-color: var(--rule); }
-.toc-sage-link { color: inherit; text-decoration: none; flex: 1; font-weight: 600; }
-.toc-count { color: var(--ink2); font-size: .75rem; white-space: nowrap;
-             background: none; padding: 0; }
-.toc-arrow { transition: transform .2s; color: var(--ink2); font-size: .7rem; }
+.toc-chapter-title:hover { background: #fff2f8; }
+.toc-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.toc-sage-link { color: inherit; text-decoration: none; flex: 1; }
+.toc-count { font-size: .7rem; color: var(--ink-soft); background: rgba(58,37,69,.06); border-radius: 50px; padding: .1rem .5rem; white-space: nowrap; }
+.toc-arrow { transition: transform .2s; color: var(--ink-soft); font-size: .72rem; }
 .toc-chapter.open .toc-arrow { transform: rotate(180deg); }
-.toc-stories { list-style: none; counter-reset: tocline; max-height: 0; overflow: hidden;
-               transition: max-height .3s ease; background: none; }
-.toc-chapter.open .toc-stories { max-height: 2200px; padding: .2rem 0 .6rem; }
-.toc-stories li { display: flex; align-items: center; gap: .3rem;
-                  padding: .28rem .2rem .28rem 0; }
-/* The numeral is the adult book's navigation handle, in place of an emoji. */
-.toc-stories li { counter-increment: tocline; }
-.toc-stories a { color: var(--ink2); text-decoration: none; flex: 1; }
-.toc-stories a::before { content: counter(tocline) '.'; color: var(--rule);
-                         margin-inline-end: .45rem; font-variant-numeric: tabular-nums; }
-.toc-stories a:hover { color: var(--accent); }
-.toc-copy-link { border: none; background: none; cursor: pointer; opacity: .35;
-                 padding: 0 .2rem; color: inherit; font-size: .8rem; }
+.toc-stories { list-style: none; max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+.toc-chapter.open .toc-stories { max-height: 3000px; padding: .15rem 0 .5rem; }
+.toc-chapter.flash .toc-chapter-title { animation: toc-flash 1s ease 2; }
+@keyframes toc-flash {
+  0%,100% { background: transparent; }
+  50%     { background: #ffeef5; }
+}
+.toc-stories li {
+  display: flex; align-items: center; justify-content: space-between; gap: .3rem;
+  padding: .42rem .6rem .42rem 1.6rem; border-radius: 10px;
+  font-size: .8rem; line-height: 1.4;
+}
+.toc-stories li:hover { background: #ffeef5; }
+.toc-stories a { color: var(--ink-soft); text-decoration: none; flex: 1; }
+.toc-stories li:hover a { color: var(--pink-2); font-weight: 700; }
+.toc-copy-link { border: none; background: transparent; cursor: pointer; font-size: .82rem; opacity: .35; padding: 0 .2rem; flex-shrink: 0; }
 .toc-copy-link:hover { opacity: 1; }
-.toc-chapter.flash .toc-chapter-title { background: var(--accent-soft) !important; }
 
-/* ═══ THE PAGE ═══════════════════════════════════════════════════════════ */
-.main { flex: 1; min-width: 0; padding: 3rem 2rem 4rem; }
-.era-block { margin-bottom: 4rem; scroll-margin-top: 1rem; }
+/* ═══ MAIN ═══════════════════════════════════════════════════════════════ */
+.main { flex: 1; min-width: 0; }
+
+.era-block { margin-bottom: 2.6rem; scroll-margin-top: 1rem; }
 .era-banner {
-  background: none !important; display: flex; align-items: baseline; gap: .8rem;
-  border-bottom: 2px solid var(--ink); padding-bottom: .6rem; margin-bottom: 2.4rem;
-  max-width: 34em; margin-inline: auto;
+  display: flex; align-items: center; gap: 1rem;
+  background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow);
+  padding: 1.2rem 1.5rem; margin-bottom: 1.5rem;
+  border-inline-start: 8px solid var(--band, var(--pink-1));
 }
-.era-banner-icon { font-size: 1.2rem; color: var(--accent); }
-.era-banner-title { font-size: 1.5rem; font-weight: 700; color: var(--ink); }
-.era-banner-sub { color: var(--ink2); font-size: .82rem; }
-.chapter-section { margin-bottom: 3rem; scroll-margin-top: 1rem; }
+.era-banner-icon { font-size: 2.1rem; line-height: 1; }
+.era-banner-title {
+  font-family: 'Varela Round', 'Heebo', sans-serif; font-weight: 800;
+  font-size: clamp(1.15rem, 2.6vw, 1.55rem); color: var(--ink);
+}
+.era-banner-sub { color: var(--ink-soft); font-size: .88rem; font-weight: 600; }
+
+.chapter-section { margin-bottom: 1.8rem; scroll-margin-top: 1rem; }
+.legacy-anchor { display: block; height: 0; scroll-margin-top: 1rem; }
+/* A colored stripe on a white card, not a solid gradient block — the same
+   accent, carried at a tenth of the visual weight. */
 .chapter-header {
-  background: none !important; display: flex; align-items: baseline; gap: .7rem;
-  max-width: 34em; margin: 0 auto 1.6rem; padding-bottom: .4rem;
-  border-bottom: 1px solid var(--rule);
+  display: flex; align-items: center; gap: .8rem;
+  background: var(--card-bg); border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(198,43,107,.08);
+  padding: .85rem 1.2rem; margin-bottom: 1rem;
+  border-inline-start: 6px solid var(--band, var(--pink-1));
 }
-.chapter-icon { color: var(--accent); font-size: 1rem; }
-.chapter-title { font-size: 1.22rem; font-weight: 700; color: var(--ink); }
-.chapter-subtitle { color: var(--ink2); font-size: .8rem; }
+.chapter-icon { font-size: 1.5rem; line-height: 1; }
+.chapter-title {
+  font-family: 'Varela Round', 'Heebo', sans-serif; font-weight: 800;
+  font-size: clamp(1.02rem, 2.1vw, 1.3rem); color: var(--ink);
+}
+.chapter-subtitle { color: var(--ink-soft); font-size: .8rem; font-weight: 600; }
 
-/* One column, never a card grid: a 2,000-word story in a 330px tile is
-   unreadable, and two of them side by side is a newspaper, not a book. */
-.card-grid { display: block; }
-
-/* ═══ A STORY ════════════════════════════════════════════════════════════ */
+/* ═══ STORY CARDS — white, elevated, one colored border to say whose it is ═ */
 .story-card {
-  background: var(--paper2); border: none; border-top: 1px solid var(--rule) !important;
-  border-radius: 0; box-shadow: none; max-width: 34em; margin: 0 auto 3.5rem;
-  padding: 2.4rem 0 0; scroll-margin-top: 1rem;
+  background: var(--card-bg); border-radius: 22px; box-shadow: var(--shadow);
+  padding: 1.5rem 1.6rem 1.3rem; margin-bottom: 1.5rem;
+  scroll-margin-top: 1rem; transition: box-shadow .2s;
+  border-top: 8px solid var(--accent, var(--pink-1));
 }
-.story-card:hover { transform: none; box-shadow: none; }
-.story-header {
-  background: none !important; display: flex; align-items: baseline;
-  gap: .7rem; flex-wrap: wrap; padding: 0 0 .2rem;
+.story-card:hover { box-shadow: 0 14px 40px rgba(198,43,107,.2); }
+
+.story-kicker {
+  font-size: .76rem; font-weight: 800; letter-spacing: .03em; text-transform: uppercase;
+  color: var(--kicker, var(--pink-2)); margin-bottom: .3rem;
 }
-.story-num {
-  background: none !important; color: var(--ink2); padding: 0; font-size: .78rem;
-  font-weight: 400; font-variant-numeric: tabular-nums; letter-spacing: .06em;
+.story-header { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; }
+.story-num { color: var(--ink-soft); font-weight: 800; font-size: .78rem; white-space: nowrap; }
+.story-title {
+  font-family: 'Varela Round', 'Heebo', sans-serif; font-size: 1.28rem; font-weight: 800;
+  color: var(--ink); flex: 1; margin: 0; text-wrap: balance;
 }
-.story-title { font-size: 1.6rem; font-weight: 700; line-height: 1.45;
-               color: var(--ink); flex-basis: 100%; margin: .2rem 0 .3rem; }
-.story-subtitle { color: var(--ink2); font-style: italic; font-size: .98rem;
-                  padding: 0 0 .8rem; }
-.story-meta { display: flex; gap: 1rem; color: var(--ink2); font-size: .78rem;
-              font-family: 'Heebo', system-ui, sans-serif;
-              border-bottom: 1px solid var(--rule); padding-bottom: .9rem;
-              margin-bottom: 1.6rem; }
-.story-meta .icon { stroke-width: 1.5; }
 .copy-story-link {
-  margin-inline-start: auto; background: none; border: 1px solid var(--rule);
-  border-radius: 3px; color: var(--ink2); cursor: pointer;
-  font: inherit; font-size: .75rem; padding: .15rem .55rem;
-  font-family: 'Heebo', system-ui, sans-serif;
+  border: none; cursor: pointer; font-family: inherit; white-space: nowrap;
+  background: linear-gradient(135deg, var(--pink-1), var(--purple-1)); color: #fff;
+  border-radius: 999px; padding: .42rem 1.05rem; font-size: .78rem; font-weight: 700;
+  box-shadow: 0 4px 12px rgba(198,43,107,.25);
 }
-.copy-story-link:hover { border-color: var(--accent); color: var(--accent); }
-.story-body { padding: 0; display: block; }
-.story-body p { margin-bottom: 1.15rem; text-align: justify; text-justify: inter-word; }
-.story-body p.lede { font-size: 1.12rem; color: var(--ink); }
-.story-body p.lede::first-letter { float: right; font-size: 3.1rem; line-height: .82;
-                                   margin: .18rem 0 0 .35rem; color: var(--accent); }
-.bold-para { font-weight: 700; }
-.section-heading { font-size: 1.05rem; font-weight: 700; color: var(--ink);
-                   margin: 2.2rem 0 .9rem; letter-spacing: .01em; }
-/* A scene break with no heading: three centred asterisks, the way print does it. */
-.scene-break { text-align: center; color: var(--ink2); margin: 2rem 0; letter-spacing: .8em; }
-.scene-break::before { content: '***'; }
-.story-list { margin: 0 1.2rem 1.15rem 0; }
-.story-list li { margin-bottom: .5rem; }
-.pull-quote {
-  margin: 1.8rem 0; padding-inline-start: 1.1rem;
-  border-inline-start: 2px solid var(--accent);
-  font-size: 1.15rem; font-style: italic; color: var(--ink2); line-height: 1.7;
+.copy-story-link:active { transform: translateY(1px); }
+.story-subtitle { margin: -.2rem 0 .4rem; font-size: .92rem; font-weight: 700; color: var(--ink-soft); }
+.story-meta { display: flex; gap: .6rem; align-items: center; font-size: .8rem; color: var(--ink-soft); margin: .3rem 0 .2rem; }
+
+/* ═══ STORY BODY ═════════════════════════════════════════════════════════ */
+.story-body { padding-top: 1rem; font-size: 1.02rem; line-height: 1.85; color: var(--ink); }
+.story-body p { margin: 0 0 .8rem; }
+.story-body h3.section-heading, .story-body h3.sec-h {
+  font-size: 1.05rem; font-weight: 800; color: var(--pink-2);
+  margin: 1.3rem 0 .5rem; padding-inline-end: .7rem; border-inline-end: 4px solid var(--pink-1);
 }
-.source-box { background: none; border: none; border-top: 1px solid var(--rule);
-              border-radius: 0; padding: 1rem 0 0; margin: 1.8rem 0 0; }
-.source-ref { color: var(--ink2); font-size: .82rem; font-weight: 700; }
-.source-quote { color: var(--ink2); font-size: .95rem; margin-top: .4rem; }
-.source-link a { color: var(--accent); }
-.source-note { color: var(--ink2); font-size: .82rem; font-style: italic;
-               margin-top: 1.6rem; padding-top: .8rem; border-top: 1px solid var(--rule); }
-.story-navigation { display: flex; justify-content: space-between; gap: .6rem;
-                    padding: 1.6rem 0 0; font-size: .82rem;
-                    font-family: 'Heebo', system-ui, sans-serif; }
-.story-navigation a { color: var(--ink2); text-decoration: none; background: none;
-                      padding: 0; border-bottom: 1px solid var(--rule); }
-.story-navigation a:hover { color: var(--accent); border-color: var(--accent); }
+.story-body h4.sub-heading, .story-body h4.sub-h {
+  font-size: .98rem; font-weight: 700; color: var(--purple-2); margin: .9rem 0 .3rem;
+}
+.story-body p.bold-para, .story-body p.bold-p {
+  font-weight: 800; font-size: 1.05rem; color: var(--ink);
+  background: #fff2f8; border-radius: 14px; padding: .7rem 1rem; margin: .7rem 0;
+  border-inline-start: 5px solid var(--pink-1);
+}
+.story-body strong { color: var(--pink-2); }
+.story-body em { color: var(--purple-2); font-style: normal; font-weight: 600; }
+.story-body ul.story-list, .story-body ul.slist { margin: .4rem 1.4rem .7rem; padding: 0; }
+.story-body ul.story-list li, .story-body ul.slist li {
+  margin-bottom: .35rem; padding-inline-end: .3rem; list-style: none; position: relative;
+}
+.story-body ul.story-list li::before, .story-body ul.slist li::before {
+  content: '🍭'; position: absolute; inset-inline-end: -1.4rem; font-size: .75rem;
+}
+.story-body hr.story-sep, .story-body hr.sep {
+  border: none; height: 3px; border-radius: 3px; margin: 1.3rem 0;
+  background: linear-gradient(90deg, var(--pink-1), var(--amber-1), var(--blue-1));
+}
+.story-body blockquote {
+  border-inline-start: 4px solid var(--purple-1); background: #f6f3ff;
+  border-radius: 10px; padding: .55rem .95rem; margin: .7rem 0;
+}
+.story-body table { width: 100%; border-collapse: collapse; margin: .7rem 0; }
+.story-body th, .story-body td { border: 1px solid #ecdde4; padding: .4rem .6rem; text-align: right; }
+.story-body-scroll, .story-body > table { display: block; overflow-x: auto; }
+
+.story-navigation {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: .6rem; flex-wrap: wrap;
+  padding-top: .9rem; margin-top: .9rem; border-top: 1px dashed #f0d7e4;
+}
+.story-navigation a {
+  color: var(--ink-soft); text-decoration: none; font-weight: 700; font-size: .82rem;
+  padding: .32rem .75rem; border-radius: 999px; background: rgba(58,37,69,.05);
+}
+.story-navigation a:hover { background: #ffeef5; color: var(--pink-2); }
 .back-to-toc-nav { order: 2; }
-/* A shared link lands here — say so without flashing the page. */
-.highlight-story { animation: ink-settle 2.4s ease forwards; }
-@keyframes ink-settle {
-  0%, 60% { background: var(--accent-soft); }
-  100%    { background: var(--paper2); }
+
+/* ═══ HIGHLIGHT ══════════════════════════════════════════════════════════ */
+.highlight-story { animation: pulse-border 1.4s ease 2; }
+@keyframes pulse-border {
+  0%,100% { box-shadow: var(--shadow); }
+  50%     { box-shadow: 0 0 0 5px var(--amber-1), var(--shadow); }
 }
 
-/* ═══ NIGHT READING ══════════════════════════════════════════════════════
-   Adults read long-form at night. Follows the system setting; the builder can
-   also stamp data-theme when the reader picks one. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #16151a; --paper2: #1c1b21; --ink: #e8e3da; --ink2: #a49d92;
-    --rule: #34313a; --accent: #d9a08c; --accent-soft: #33272a;
-  }
-}
-:root[data-theme="dark"] {
-  --paper: #16151a; --paper2: #1c1b21; --ink: #e8e3da; --ink2: #a49d92;
-  --rule: #34313a; --accent: #d9a08c; --accent-soft: #33272a;
-}
-
+/* ═══ MISC ═══════════════════════════════════════════════════════════════ */
+:focus-visible { outline: 3px solid var(--purple-1); outline-offset: 2px; }
 #backTop {
-  position: fixed; bottom: 2rem; left: 2rem; z-index: 100; display: none;
-  align-items: center; justify-content: center; width: 42px; height: 42px;
-  border-radius: 50%; border: 1px solid var(--rule); cursor: pointer;
-  background: var(--paper2); color: var(--ink2);
+  position: fixed; bottom: 1.6rem; left: 1.6rem; z-index: 100; display: none;
+  align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--pink-1), var(--purple-1));
+  color: #fff; border: none; cursor: pointer;
+  border-radius: 50%; width: 46px; height: 46px; font-size: 1.25rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,.22);
 }
-.book-footer { text-align: center; padding: 2.5rem 1rem 4rem;
-               color: var(--ink2); font-size: .82rem; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-/* ═══ LONG BOOKS ═════════════════════════════════════════════════════════
-   Adult stories run several times longer than children's, so these are NOT
-   the Candy Pop numbers. Measure your own book and replace them — a value
-   below the real median makes the page grow under the reader and throws off
-   every #story-N landing. */
-.story-card { content-visibility: auto; contain-intrinsic-size: auto 14000px; }
-@media (max-width: 900px) { .story-card { contain-intrinsic-size: auto 26000px; } }
-@media print { .story-card { content-visibility: visible; } }
+.book-footer {
+  position: relative; z-index: 1; text-align: center;
+  padding: 1.6rem 1rem 2.6rem; color: var(--ink-soft); font-size: .82rem; font-weight: 600;
+}
 
 /* ═══ RESPONSIVE ═════════════════════════════════════════════════════════ */
 @media (max-width: 900px) {
-  body { font-size: 17px; }
   .layout { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; position: relative;
-             border-inline-start: none; border-bottom: 1px solid var(--rule); }
-  .main { padding: 1.6rem 1.1rem 3rem; }
-  .story-title { font-size: 1.35rem; }
+  .sidebar { width: 100%; position: relative; top: 0; max-height: none; }
+  .story-body { padding-top: .8rem; }
 }
-
-/* ═══ PRINT ══════════════════════════════════════════════════════════════
-   Adult books get printed far more often than children's ones. */
 @media print {
-  @page { size: A4; margin: 18mm 17mm; }
-  body { background: #fff; font-size: 11pt; line-height: 1.5; }
-  .sidebar, #backTop, .story-navigation, .copy-story-link, .search-wrap,
-  .hero-stats, .source-link { display: none !important; }
+  .sidebar, .confetti, #backTop, .story-navigation, .copy-story-link { display: none !important; }
   .main { padding: 0; }
-  .layout { display: block; }
-  .story-card { max-width: none; break-before: page; border-top: none !important; }
-  .story-card:first-of-type { break-before: auto; }
-  .section-heading, .story-title { break-after: avoid; }
-  .story-body p { orphans: 3; widows: 3; }
-  .pull-quote, .source-box, .story-list { break-inside: avoid; }
+  .story-card { break-inside: avoid; box-shadow: none; border: 1px solid #ccc; }
 }
 
-:root { --accent: #8a1538; --accent-soft: #f3dde2; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --accent: #8a1538; --accent-soft: #f3dde2; } }
-:root[data-theme="dark"] { --accent: #8a1538; --accent-soft: #f3dde2; }
+/* ═══ LONG BOOKS ═════════════════════════════════════════════════════════
+   Past a couple of hundred stories the cost is layout, not download: the
+   browser measures every card before the reader has seen a word. Measured on
+   a 318-story book, the document stood 3.3 million pixels tall on a phone.
+   Skipping what is off screen erased the whole penalty.
+   contain-intrinsic-size is the guess the browser uses for a skipped card, so
+   it has to be the MEASURED median height, not a round number -- a guess that
+   is too small makes the page grow under the reader and throws off #story-N
+   landings. Phone and desktop differ; set both. Re-measure for an adult book,
+   whose stories run several times longer. */
+.story-card { content-visibility: auto; contain-intrinsic-size: auto 5000px; }
+@media (max-width: 900px) { .story-card { contain-intrinsic-size: auto 10300px; } }
+/* On paper every card is off screen. Without this the book prints blank. */
+@media print { .story-card { content-visibility: visible; } }
 
 </style>
-</head>
+<style>
+/* Apple and honey palette, based on the supplied visual example. */
+:root{--pink-1:#dc2626;--pink-2:#991b1b;--purple-1:#f59e0b;--purple-2:#b45309;--blue-1:#16a34a;--blue-2:#15803d;--amber-1:#facc15;--amber-2:#b45309;--bg:#fffbeb;--ink:#422006;--ink-soft:#7c2d12;--shadow:0 10px 30px rgba(153,27,27,.14)}
+body{background:radial-gradient(circle at 10% 10%,rgba(250,204,21,.16),transparent 30%),radial-gradient(circle at 90% 25%,rgba(220,38,38,.10),transparent 34%),#fffbeb}
+.hero{background:linear-gradient(135deg,#991b1b,#dc2626 54%,#f59e0b)}
+.story-card:nth-of-type(4n+2){border-top-color:#f59e0b!important}.story-card:nth-of-type(4n+3){border-top-color:#16a34a!important}.story-card:nth-of-type(4n){border-top-color:#dc2626!important}
+/* Video card — mirrors the established YouTube-book layout */
+.video-card{max-width:920px;margin:0 auto 2rem;background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 12px 34px rgba(153,27,27,.16);border-top:8px solid #dc2626}
+.video-frame{position:relative;aspect-ratio:16/9;background:linear-gradient(135deg,#7f1d1d,#dc2626);overflow:hidden}
+.video-frame button{display:block;width:100%;height:100%;padding:0;border:0;background:none;cursor:pointer;position:relative}
+.video-frame img{width:100%;height:100%;object-fit:cover;display:block;opacity:.92;transition:transform .25s ease,opacity .25s ease}
+.video-frame button:hover img{transform:scale(1.025);opacity:1}
+.video-frame .play{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);width:84px;height:60px;border-radius:18px;background:#ff0033;box-shadow:0 8px 26px rgba(0,0,0,.32)}
+.video-frame .play:after{content:"";position:absolute;top:17px;left:34px;border-top:13px solid transparent;border-bottom:13px solid transparent;border-left:22px solid #fff}
+.video-link{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.3rem;background:linear-gradient(90deg,#fff7d6,#fffbeb);color:#7c2d12;font-weight:800}
+.video-link a,.video-inline a{display:inline-block;color:#991b1b;text-decoration:none;font-weight:900;border-bottom:2px solid #f59e0b}
+.video-link a:hover,.video-inline a:hover{color:#dc2626}
+@media(max-width:620px){.video-link{align-items:flex-start;flex-direction:column}.video-frame .play{width:68px;height:49px}.video-frame .play:after{top:13px;left:28px}}
+@media print{.video-frame{display:none}.video-card{box-shadow:none;border:2px solid #f59e0b}.video-link a{color:#991b1b}}
+</style></head>
 <body>
-<!-- Icons from Lucide (https://lucide.dev) - ISC License -->
-<svg class="icon-sprite" aria-hidden="true"><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol><symbol id="i-cloud-rain" viewBox="0 0 24 24"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></symbol></svg>
 
+<div class="confetti" aria-hidden="true"><span style="top:5%;left:7%;animation-delay:0.0s;animation-duration:3s">🍎</span><span style="top:7%;left:20%;animation-delay:0.4s;animation-duration:4s">🍯</span><span style="top:9%;left:33%;animation-delay:0.8s;animation-duration:3s">✨</span><span style="top:11%;left:46%;animation-delay:1.2s;animation-duration:4s">🍎</span><span style="top:13%;left:59%;animation-delay:1.6s;animation-duration:3s">🍯</span><span style="top:15%;left:72%;animation-delay:2.0s;animation-duration:4s">🌟</span><span style="top:17%;left:85%;animation-delay:2.4s;animation-duration:3s">🍎</span><span style="top:19%;left:6%;animation-delay:2.8s;animation-duration:4s">✨</span></div>
 <header class="hero">
-  <h1 class="hero-title">ארץ שמבקשת גשם</h1>
+  <h1 class="hero-title">🌧️ ארץ שמבקשת גשם</h1>
   <p class="hero-subtitle">ז׳ בחשוון, ותן טל ומטר, והסוד של ארץ שאינה רוצה להסתדר בלי תפילה</p>
-  <div class="hero-stats"><div class="stat-bubble">1 שיעורים</div><div class="stat-bubble">1 פרקים</div><div class="stat-bubble">קישור ישיר לכל שיעור</div></div>
+  <div class="hero-stats"><div class="stat-bubble">📚 10 שיעורים</div><div class="stat-bubble">👑 4 פרקים</div><div class="stat-bubble">🔗 קישור ישיר לכל שיעור</div></div>
 </header>
 
 <div class="layout">
@@ -315,26 +393,147 @@ mark { background: var(--accent-soft); color: inherit; padding: 0 .1em; }
       <div id="searchResults"></div>
     </div>
 <div class="toc-chapter">
-<div class="toc-chapter-title" onclick="toggleTocChapter(this)"><span class="toc-dot" style="background:#8a1538"></span><span class="toc-icon"><svg class="icon" aria-hidden="true"><use href="#i-cloud-rain"/></svg></span><a href="#chapter-ארץ-שמבקשת-גשם" class="toc-sage-link">ארץ שמבקשת גשם</a><span class="toc-count">שיעור אחד</span><span class="toc-arrow">▼</span></div>
+<div class="toc-chapter-title" onclick="toggleTocChapter(this)"><span class="toc-dot" style="background:#ff8a65"></span><span class="toc-icon"><span class="emoji-icon">🌧️</span></span><a href="#chapter-שני-לוחות-שנה-לענן-אחד" class="toc-sage-link">שני לוחות שנה לענן אחד</a><span class="toc-count">2 שיעורים</span><span class="toc-arrow">▼</span></div>
 <ul class="toc-stories">
-<li><a href="#story-1">ארץ שמבקשת גשם</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-1', this)" title="העתק קישור">🔗</button></li>
+<li><a href="#story-1">אותה תפילה — שני תאריכים</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-1', this)" title="העתק קישור">🔗</button></li>
+<li><a href="#story-2">שישים יום לתקופה</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-2', this)" title="העתק קישור">🔗</button></li>
+</ul></div>
+<div class="toc-chapter">
+<div class="toc-chapter-title" onclick="toggleTocChapter(this)"><span class="toc-dot" style="background:#ffc94a"></span><span class="toc-icon"><span class="emoji-icon">🏞️</span></span><a href="#chapter-הארץ-שאינה-דומה-למצרים" class="toc-sage-link">הארץ שאינה דומה למצרים</a><span class="toc-count">3 שיעורים</span><span class="toc-arrow">▼</span></div>
+<ul class="toc-stories">
+<li><a href="#story-3">מה היה נוח כל כך במצרים?</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-3', this)" title="העתק קישור">🔗</button></li>
+<li><a href="#story-4">ארץ שעיני השם בה</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-4', this)" title="העתק קישור">🔗</button></li>
+<li><a href="#story-5">האם תלות היא חיסרון?</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-5', this)" title="העתק קישור">🔗</button></li>
+</ul></div>
+<div class="toc-chapter">
+<div class="toc-chapter-title" onclick="toggleTocChapter(this)"><span class="toc-dot" style="background:#e0507a"></span><span class="toc-icon"><span class="emoji-icon">💧</span></span><a href="#chapter-מן-השאלה-ההלכתית-אל-עבודת-הלב" class="toc-sage-link">מן השאלה ההלכתית אל עבודת הלב</a><span class="toc-count">3 שיעורים</span><span class="toc-arrow">▼</span></div>
+<ul class="toc-stories">
+<li><a href="#story-6">ומה יעשה בן חוץ לארץ שלומד כאן?</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-6', this)" title="העתק קישור">🔗</button></li>
+<li><a href="#story-7">הקושי שאינו הוכחה לדחייה</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-7', this)" title="העתק קישור">🔗</button></li>
+<li><a href="#story-8">הזכות לבקש</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-8', this)" title="העתק קישור">🔗</button></li>
+</ul></div>
+<div class="toc-chapter">
+<div class="toc-chapter-title" onclick="toggleTocChapter(this)"><span class="toc-dot" style="background:#8bc34a"></span><span class="toc-icon"><span class="emoji-icon">🌱</span></span><a href="#chapter-להכניס-את-הגשם-אל-התפילה" class="toc-sage-link">להכניס את הגשם אל התפילה</a><span class="toc-count">2 שיעורים</span><span class="toc-arrow">▼</span></div>
+<ul class="toc-stories">
+<li><a href="#story-9">לא לעבור על המילים במהירות</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-9', this)" title="העתק קישור">🔗</button></li>
+<li><a href="#story-10">כשהטיפה הראשונה מגיעה</a><button class="toc-copy-link" onclick="event.preventDefault(); copyStoryLink('story-10', this)" title="העתק קישור">🔗</button></li>
 </ul></div>
   </aside>
-  <main class="main">
-<section class="chapter-section" id="chapter-ארץ-שמבקשת-גשם">
-<div class="chapter-header" style="--band:#8a1538"><div class="chapter-icon"><svg class="icon" aria-hidden="true"><use href="#i-cloud-rain"/></svg></div><div><h2 class="chapter-title">ארץ שמבקשת גשם</h2><div class="chapter-subtitle">שיעור אחד</div></div></div>
+  <main class="main"><section class="video-card" id="video" aria-label="השיעור המצולם"><div class="video-frame"><button type="button" aria-label="▶ 🌧️ ארץ שמבקשת גשם" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/IiJZEsruNVg?autoplay=1&amp;rel=0';f.title='🌧️ ארץ שמבקשת גשם';f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';f.allowFullscreen=true;this.replaceWith(f);"><img src="https://i.ytimg.com/vi/IiJZEsruNVg/hqdefault.jpg" alt="תמונת השיעור 🌧️ ארץ שמבקשת גשם" loading="lazy"><span class="play" aria-hidden="true"></span></button></div><div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=IiJZEsruNVg" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div></section>
+<section class="chapter-section" id="chapter-שני-לוחות-שנה-לענן-אחד">
+<div class="chapter-header" style="--band:#ff8a65"><div class="chapter-icon"><span class="emoji-icon">🌧️</span></div><div><h2 class="chapter-title">שני לוחות שנה לענן אחד</h2><div class="chapter-subtitle">2 שיעורים</div></div></div>
 <div class="card-grid">
-<article class="story-card" id="story-1" style="--accent:#8a1538;--kicker:#f3dde2">
-<div class="story-kicker">ארץ שמבקשת גשם</div>
+<article class="story-card" id="story-1" style="--accent:#ff8a65;--kicker:#d3491f">
+<div class="story-kicker">שני לוחות שנה לענן אחד</div>
 <div class="story-header">
-<span class="story-num">#1</span><h3 class="story-title">ארץ שמבקשת גשם</h3><button class="copy-story-link" onclick="copyStoryLink('story-1', this)">🔗 העתק קישור</button>
+<span class="story-num">#1</span><h3 class="story-title">אותה תפילה — שני תאריכים</h3><button class="copy-story-link" onclick="copyStoryLink('story-1', this)">🔗 העתק קישור</button>
 </div>
-<div class="story-subtitle">ז׳ בחשוון, ותן טל ומטר, והסוד של ארץ שאינה רוצה להסתדר בלי תפילה</div>
-<div class="story-meta"><span><svg class="icon" aria-hidden="true"><use href="#i-cloud-rain"/></svg></span><span><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg> 6 דקות קריאה</span></div>
-<div class="story-body"><h3 class="section-heading">אותה תפילה — שני תאריכים</h3><p>בערב ז׳ בחשוון משתנה בארץ ישראל משפט אחד בתפילת העמידה. במקום לומר רק את ברכת השנים אנו מתחילים לבקש במפורש: <strong>ותן טל ומטר לברכה</strong>. השינוי קטן כל כך, עד שאפשר לעבור עליו כמעט בלי להרגיש. אבל מאחוריו מסתתרת שאלה גדולה.</p><p>יהודי שעומד באותו ערב בבית כנסת בירושלים מבקש גשם. חברו שעומד בבית כנסת בלונדון או בניו יורק עדיין ממתין. בחוץ לארץ מתחילים את הבקשה שישים יום לאחר תקופת תשרי, לפי חשבון עונות השמש, בדרך כלל בתחילת דצמבר. בארץ ישראל הולכים לפי תאריך עברי: ז׳ בחשוון.</p><p>ענני הגשם אינם קוראים לוח עברי, וגם הרוח אינה מבחינה בין חשוון לדצמבר. אם מזג האוויר נקבע לפי עונות השנה, מדוע תפילת הגשם בארץ ישראל נקבעה בדרך אחרת? השאלה ההלכתית פותחת דלת אל שאלה עמוקה יותר: מהי בכלל ארץ ישראל, ומה היא מבקשת ללמד את מי שחי בה?</p><h3 class="section-heading">שישים יום לתקופה</h3><p>חז״ל קבעו שבבבל, וממנה נקבע המנהג לרוב קהילות חוץ לארץ, מתחילים לבקש גשם שישים יום לאחר תקופת תשרי. זהו חשבון שמשי. סופרים מן התקופה, כלומר מנקודת המעבר של עונת הסתיו, ומגיעים אל הלילה שבו הצורך בגשם נעשה ממשי לאותה ארץ.</p><p>יש בזה היגיון פשוט: בקשת הגשם איננה נוסחה מנותקת מן העולם. אין טעם לבקש גשם בעונה שבה הוא עלול להזיק לשדות, ואין טעם להתעלם מן האקלים שבו בני אדם חיים. התורה מלמדת אותנו להתפלל בתוך המציאות, לא מחוצה לה.</p><p>דווקא משום כך ההבדל בארץ ישראל נעשה מפתיע יותר. כאן מתחילים בז׳ בחשוון, אחרי שעולי הרגל הספיקו לחזור לבתיהם מן העלייה לרגל של סוכות. הארץ מתחשבת באדם ההולך בדרך, אבל התאריך שלה נשאר חלק מן הלוח העברי. הטבע והסיפור היהודי נשזרים זה בזה.</p><h3 class="section-heading">מה היה נוח כל כך במצרים?</h3><p>לפני הכניסה לארץ משה מציב לפני העם השוואה חריפה. מצרים, הארץ שממנה יצאו, מקבלת את מימיה מן הנילוס. אפשר להשקות את השדה בתעלות, לכוון את המים ברגל, ולבנות מערכת שנראית קבועה וצפויה. ארץ ישראל אחרת: <strong>למטר השמים תשתה מים</strong>.</p><p>במבט ראשון זו אינה מחמאה. מדוע לעזוב ארץ שבה הנהר זורם בקביעות ולהיכנס לארץ שבה כל החקלאות תלויה בעננים? מדוע ברכת הארץ מגיעה יחד עם חוסר ודאות?</p><p>השיעור מציע תשובה נועזת: חוסר הוודאות הוא חלק מן המתנה. בארץ ישראל האדם אינו יכול לשכוח לגמרי את מי שנותן את המים. הוא חורש וזורע, בונה מאגרים ומתכנן, אך אחרי כל הפעולות הללו הוא עדיין מרים עיניים לשמים. הארץ אינה מבטלת את המעשה האנושי; היא שומרת בתוכו חלון פתוח לתפילה.</p><h3 class="section-heading">ארץ שעיני השם בה</h3><p>התורה ממשיכה ומתארת את ארץ ישראל כ״ארץ אשר ה׳ אלוקיך דורש אותה, תמיד עיני ה׳ אלוקיך בה״. אפשר לקרוא את הפסוק כהבטחה של שמירה, ואפשר לשמוע בו גם תביעה של קשר. הארץ עומדת תחת מבט מתמיד, ולכן גם יושביה נקראים להביט בחזרה.</p><p>בארצות רבות הגשם יורד בשפע ובקביעות יחסית. אדם עלול לחיות שנים בלי לחשוב מי מצמיח את התבואה. בארץ ישראל גם עונה גשומה אינה מוחקת את הזיכרון של שנה שחונה. השמים יכולים להיפתח ויכולים להיעצר, והלב לומד שהשפע אינו רכוש קבוע.</p><p>אין הכוונה שכל ענן הוא תגובה פשוטה ומיידית למעשה מסוים. חשבונות שמים אינם בידינו. הנקודה עדינה יותר: צורת החיים בארץ מחנכת אותנו שלא לסגור את העולם בתוך הסברים טכניים בלבד. לצד התחזית, החקלאות והמדע נשאר מקום חי לבקשה, לאחריות ולהודיה.</p><h3 class="section-heading">האם תלות היא חיסרון?</h3><p>אנחנו רגילים לחשוב שעצמאות היא תמיד ברכה ותלות היא תמיד חולשה. ילד קטן תלוי בהוריו; אדם מבוגר רוצה לעמוד ברשות עצמו. אבל יש סוג של תלות שאינו מקטין את האדם אלא מחבר אותו.</p><p>כשאדם יודע שהחיים אינם מובטחים לו, הוא עשוי לפחד. הוא גם עשוי להתעורר. פתאום מים אינם רק משהו שיוצא מן הברז, לחם אינו רק מוצר על מדף, ויום חדש אינו רק המשך אוטומטי של אתמול. כל דבר מקבל שוב את טעמה של מתנה.</p><p>זו אחת המתנות הסמויות של ארץ ישראל: היא אינה נותנת לנו לשקוע לגמרי באשליה שהכול בידינו. היא מזמינה אותנו להיות שותפים מלאים — לעבוד, לבנות, לשמור על המים — ובאותה שעה לזכור שאנו מקבלים. תפילה אינה הודאה בכישלון; היא הכרה מפוכחת בגבול הכוח האנושי ובאפשרות של קשר שמעבר לו.</p><h3 class="section-heading">ומה יעשה בן חוץ לארץ שלומד כאן?</h3><p>השיעור מעלה שאלה מעשית: בחור ישיבה שבא מחוץ לארץ ולומד כעת בארץ ישראל — מתי יאמר ״ותן טל ומטר״? האם ילך אחר המקום שבו הוא נמצא, או אחר ביתו שאליו הוא עתיד לחזור?</p><p>זו שאלה הלכתית אמיתית, ויש בה פרטים התלויים במשך השהייה, בתוכניותיו של האדם ובמנהג הפסיקה שלו. השיעור אינו מכריע בה, ובצדק: לשאלה מעשית צריך לקבל הוראה מרב שמכיר את המקרה. אבל עצם השאלה יקרה. היא מגלה שהתפילה אינה טקסט פרטי בלבד. המתפלל עומד בתוך מקום, קהילה ועונה.</p><p>כאשר אנחנו אומרים ״ברך עלינו״ איננו מבקשים רק על הברז שבביתנו. אנחנו מבקשים על השדות, על החקלאים, על מאגרי המים ועל הארץ כולה. התפילה מלמדת את היחיד לצאת לרגע מעצמו ולהרגיש שהוא איבר בגוף גדול יותר.</p><h3 class="section-heading">הקושי שאינו הוכחה לדחייה</h3><p>מכאן השיעור עובר מן הגשם אל החיים. יש אדם שפוגש קושי ושואל מיד: למה השם עושה לי את זה? האם הקושי מוכיח שאני רחוק או דחוי? ארץ ישראל מציעה מבט אחר. דווקא הארץ שעליה נאמר שעיני השם בה היא ארץ שתלויה בגשם.</p><p>אין בכך תשובה מלאה לכל כאב, ואסור להשתמש ברעיון הזה כדי להקטין את סבלו של אדם. יש צרות שאין לנו הסבר להן, ויש רגעים שבהם נכון לשתוק ולעזור. ובכל זאת, בתוך חייו שלו אדם יכול לפעמים לגלות שהחסר פתח בו מקום שלא היה נפתח בשעת שפע.</p><p>בקשה שנאמרה מעומק הלב, שיחה כנה עם הבורא, רגישות חדשה לכאבם של אחרים — כל אלה עשויים לצמוח במקום שבו השליטה נסדקה. הקושי אינו נעשה טוב מפני שכאבנו; אבל גם בתוך הכאב יכולה להופיע קרבה.</p><h3 class="section-heading">הזכות לבקש</h3><p>אפשר לומר ״ותן טל ומטר״ כמי שמוסר רשימת צרכים. אפשר גם לשמוע בתוך המילים עצמן בשורה: מותר לנו לבקש. הקדוש ברוך הוא רוצה שנפנה אליו, שנדבר, שנודה על מה שיש ונבקש על מה שחסר.</p><p>התפילה אינה ניסיון לעדכן את השם במצב מאגרי המים. היא משנה את העמדה שלנו. לפני התפילה הגשם הוא צורך; בתוך התפילה הוא נעשה מפגש. אנו מגלים שהצמא אינו רק בעיה שיש לפתור, אלא גם קול שמחזיר את הלב אל מקור החיים.</p><p>זו הסיבה שהשיעור מדבר על הבקשה כעל זכות ושמחה. רק בארץ ישראל כבר מבקשים עכשיו, בעוד קהילות רבות בעולם עדיין ממתינות. התאריך אינו פרט טכני בלבד. הוא הרגע שבו הארץ כולה מתחילה לדבר בלשון של צמא, ואנחנו מוזמנים לתת לה את קולנו.</p><h3 class="section-heading">לא לעבור על המילים במהירות</h3><p>המילים ״ותן טל ומטר לברכה״ מוכרות כל כך, עד שקל לומר אותן בלי לראות דבר. אפשר לעצור לרגע אחד ולצייר בדמיון אדמה יבשה, שדה שממתין, עץ הזקוק למים וטיפה ראשונה שנבלעת באבק.</p><p>המילה החשובה בבקשה היא אולי ״לברכה״. אנחנו איננו מבקשים מים בלבד. יותר מדי גשם בזמן הלא נכון עלול להזיק, ומעט מדי גשם משאיר את הארץ צמאה. אנו מבקשים שפע מדויק, שיבוא בעתו ויהפוך חיים לברכה.</p><p>אפשר לצרף לבקשה גם את מי שתלוי בגשם באופן ישיר: חקלאים, משפחות שפרנסתן מן האדמה, וכל מי שמביט בתחזית בדאגה. משפט אחד בתפילה נעשה כך לבית רחב, שבתוכו עומדת ארץ שלמה.</p><h3 class="section-heading">כשהטיפה הראשונה מגיעה</h3><p>הבקשה אינה שלמה בלי הודיה. אנחנו יודעים היטב להתפלל כשאין גשם; קשה יותר לעצור כאשר הוא כבר יורד. אחרי שהצורך נענה, הברז ממשיך לזרום והשגרה בולעת במהירות את הפלא.</p><p>דווקא אז כדאי לעמוד ליד החלון, לשמוע את הטיפות ולומר תודה. לא נאום ארוך. משפט אחד שמכיר בכך שהאדמה מקבלת חיים, שהכנרת מתמלאת מעט, ושגם אנחנו איננו חיים מכוח עצמנו בלבד.</p><p>הגשם הוא המורה השקט של ארץ ישראל. הוא מלמד אותנו לבקש בלי להתבייש, לעבוד בלי לדמיין שהכול בידינו, ולהודות לפני שהמתנה נעשית שוב מובנת מאליה. בז׳ בחשוון איננו רק משנים נוסח. אנחנו מקבלים מחדש את הזכות לחיות בארץ שמרימה את עיניה לשמים.</p>
-<p class="source-note">נערך מתוך התמלול: 001-001- ז בחשןן שאלת גשמים.md</p>
+<div class="story-meta"><span><span class="emoji-icon">🗓️</span></span></div>
+<div class="story-body"><p>בערב ז׳ בחשוון משתנה בארץ ישראל משפט אחד בתפילת העמידה. במקום לומר רק את ברכת השנים אנו מתחילים לבקש במפורש: <strong>ותן טל ומטר לברכה</strong>. השינוי קטן כל כך, עד שאפשר לעבור עליו כמעט בלי להרגיש. אבל מאחוריו מסתתרת שאלה גדולה.</p><p>יהודי שעומד באותו ערב בבית כנסת בירושלים מבקש גשם. חברו שעומד בבית כנסת בלונדון או בניו יורק עדיין ממתין. בחוץ לארץ מתחילים את הבקשה שישים יום לאחר תקופת תשרי, לפי חשבון עונות השמש, בדרך כלל בתחילת דצמבר. בארץ ישראל הולכים לפי תאריך עברי: ז׳ בחשוון.</p><p>ענני הגשם אינם קוראים לוח עברי, וגם הרוח אינה מבחינה בין חשוון לדצמבר. אם מזג האוויר נקבע לפי עונות השנה, מדוע תפילת הגשם בארץ ישראל נקבעה בדרך אחרת? השאלה ההלכתית פותחת דלת אל שאלה עמוקה יותר: מהי בכלל ארץ ישראל, ומה היא מבקשת ללמד את מי שחי בה?</p>
 </div>
-<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a></nav>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-2">הבא →</a></nav>
+</article>
+<article class="story-card" id="story-2" style="--accent:#ff8a65;--kicker:#d3491f">
+<div class="story-kicker">שני לוחות שנה לענן אחד</div>
+<div class="story-header">
+<span class="story-num">#2</span><h3 class="story-title">שישים יום לתקופה</h3><button class="copy-story-link" onclick="copyStoryLink('story-2', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">☀️</span></span></div>
+<div class="story-body"><p>חז״ל קבעו שבבבל, וממנה נקבע המנהג לרוב קהילות חוץ לארץ, מתחילים לבקש גשם שישים יום לאחר תקופת תשרי. זהו חשבון שמשי. סופרים מן התקופה, כלומר מנקודת המעבר של עונת הסתיו, ומגיעים אל הלילה שבו הצורך בגשם נעשה ממשי לאותה ארץ.</p><p>יש בזה היגיון פשוט: בקשת הגשם איננה נוסחה מנותקת מן העולם. אין טעם לבקש גשם בעונה שבה הוא עלול להזיק לשדות, ואין טעם להתעלם מן האקלים שבו בני אדם חיים. התורה מלמדת אותנו להתפלל בתוך המציאות, לא מחוצה לה.</p><p>דווקא משום כך ההבדל בארץ ישראל נעשה מפתיע יותר. כאן מתחילים בז׳ בחשוון, אחרי שעולי הרגל הספיקו לחזור לבתיהם מן העלייה לרגל של סוכות. הארץ מתחשבת באדם ההולך בדרך, אבל התאריך שלה נשאר חלק מן הלוח העברי. הטבע והסיפור היהודי נשזרים זה בזה.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-1">← הקודם</a><a href="#story-3">הבא →</a></nav>
+</article>
+</div></section>
+<section class="chapter-section" id="chapter-הארץ-שאינה-דומה-למצרים">
+<div class="chapter-header" style="--band:#ffc94a"><div class="chapter-icon"><span class="emoji-icon">🏞️</span></div><div><h2 class="chapter-title">הארץ שאינה דומה למצרים</h2><div class="chapter-subtitle">3 שיעורים</div></div></div>
+<div class="card-grid">
+<article class="story-card" id="story-3" style="--accent:#ffc94a;--kicker:#c9860a">
+<div class="story-kicker">הארץ שאינה דומה למצרים</div>
+<div class="story-header">
+<span class="story-num">#3</span><h3 class="story-title">מה היה נוח כל כך במצרים?</h3><button class="copy-story-link" onclick="copyStoryLink('story-3', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">🌊</span></span></div>
+<div class="story-body"><p>לפני הכניסה לארץ משה מציב לפני העם השוואה חריפה. מצרים, הארץ שממנה יצאו, מקבלת את מימיה מן הנילוס. אפשר להשקות את השדה בתעלות, לכוון את המים ברגל, ולבנות מערכת שנראית קבועה וצפויה. ארץ ישראל אחרת: <strong>למטר השמים תשתה מים</strong>.</p><p>במבט ראשון זו אינה מחמאה. מדוע לעזוב ארץ שבה הנהר זורם בקביעות ולהיכנס לארץ שבה כל החקלאות תלויה בעננים? מדוע ברכת הארץ מגיעה יחד עם חוסר ודאות?</p><p>השיעור מציע תשובה נועזת: חוסר הוודאות הוא חלק מן המתנה. בארץ ישראל האדם אינו יכול לשכוח לגמרי את מי שנותן את המים. הוא חורש וזורע, בונה מאגרים ומתכנן, אך אחרי כל הפעולות הללו הוא עדיין מרים עיניים לשמים. הארץ אינה מבטלת את המעשה האנושי; היא שומרת בתוכו חלון פתוח לתפילה.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-2">← הקודם</a><a href="#story-4">הבא →</a></nav>
+</article>
+<article class="story-card" id="story-4" style="--accent:#ffc94a;--kicker:#c9860a">
+<div class="story-kicker">הארץ שאינה דומה למצרים</div>
+<div class="story-header">
+<span class="story-num">#4</span><h3 class="story-title">ארץ שעיני השם בה</h3><button class="copy-story-link" onclick="copyStoryLink('story-4', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">👁️</span></span></div>
+<div class="story-body"><p>התורה ממשיכה ומתארת את ארץ ישראל כ״ארץ אשר ה׳ אלוקיך דורש אותה, תמיד עיני ה׳ אלוקיך בה״. אפשר לקרוא את הפסוק כהבטחה של שמירה, ואפשר לשמוע בו גם תביעה של קשר. הארץ עומדת תחת מבט מתמיד, ולכן גם יושביה נקראים להביט בחזרה.</p><p>בארצות רבות הגשם יורד בשפע ובקביעות יחסית. אדם עלול לחיות שנים בלי לחשוב מי מצמיח את התבואה. בארץ ישראל גם עונה גשומה אינה מוחקת את הזיכרון של שנה שחונה. השמים יכולים להיפתח ויכולים להיעצר, והלב לומד שהשפע אינו רכוש קבוע.</p><p>אין הכוונה שכל ענן הוא תגובה פשוטה ומיידית למעשה מסוים. חשבונות שמים אינם בידינו. הנקודה עדינה יותר: צורת החיים בארץ מחנכת אותנו שלא לסגור את העולם בתוך הסברים טכניים בלבד. לצד התחזית, החקלאות והמדע נשאר מקום חי לבקשה, לאחריות ולהודיה.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-3">← הקודם</a><a href="#story-5">הבא →</a></nav>
+</article>
+<article class="story-card" id="story-5" style="--accent:#ffc94a;--kicker:#c9860a">
+<div class="story-kicker">הארץ שאינה דומה למצרים</div>
+<div class="story-header">
+<span class="story-num">#5</span><h3 class="story-title">האם תלות היא חיסרון?</h3><button class="copy-story-link" onclick="copyStoryLink('story-5', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">🤲</span></span></div>
+<div class="story-body"><p>אנחנו רגילים לחשוב שעצמאות היא תמיד ברכה ותלות היא תמיד חולשה. ילד קטן תלוי בהוריו; אדם מבוגר רוצה לעמוד ברשות עצמו. אבל יש סוג של תלות שאינו מקטין את האדם אלא מחבר אותו.</p><p>כשאדם יודע שהחיים אינם מובטחים לו, הוא עשוי לפחד. הוא גם עשוי להתעורר. פתאום מים אינם רק משהו שיוצא מן הברז, לחם אינו רק מוצר על מדף, ויום חדש אינו רק המשך אוטומטי של אתמול. כל דבר מקבל שוב את טעמה של מתנה.</p><p>זו אחת המתנות הסמויות של ארץ ישראל: היא אינה נותנת לנו לשקוע לגמרי באשליה שהכול בידינו. היא מזמינה אותנו להיות שותפים מלאים — לעבוד, לבנות, לשמור על המים — ובאותה שעה לזכור שאנו מקבלים. תפילה אינה הודאה בכישלון; היא הכרה מפוכחת בגבול הכוח האנושי ובאפשרות של קשר שמעבר לו.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-4">← הקודם</a><a href="#story-6">הבא →</a></nav>
+</article>
+</div></section>
+<section class="chapter-section" id="chapter-מן-השאלה-ההלכתית-אל-עבודת-הלב">
+<div class="chapter-header" style="--band:#e0507a"><div class="chapter-icon"><span class="emoji-icon">💧</span></div><div><h2 class="chapter-title">מן השאלה ההלכתית אל עבודת הלב</h2><div class="chapter-subtitle">3 שיעורים</div></div></div>
+<div class="card-grid">
+<article class="story-card" id="story-6" style="--accent:#e0507a;--kicker:#a01942">
+<div class="story-kicker">מן השאלה ההלכתית אל עבודת הלב</div>
+<div class="story-header">
+<span class="story-num">#6</span><h3 class="story-title">ומה יעשה בן חוץ לארץ שלומד כאן?</h3><button class="copy-story-link" onclick="copyStoryLink('story-6', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">🧳</span></span></div>
+<div class="story-body"><p>השיעור מעלה שאלה מעשית: בחור ישיבה שבא מחוץ לארץ ולומד כעת בארץ ישראל — מתי יאמר ״ותן טל ומטר״? האם ילך אחר המקום שבו הוא נמצא, או אחר ביתו שאליו הוא עתיד לחזור?</p><p>זו שאלה הלכתית אמיתית, ויש בה פרטים התלויים במשך השהייה, בתוכניותיו של האדם ובמנהג הפסיקה שלו. השיעור אינו מכריע בה, ובצדק: לשאלה מעשית צריך לקבל הוראה מרב שמכיר את המקרה. אבל עצם השאלה יקרה. היא מגלה שהתפילה אינה טקסט פרטי בלבד. המתפלל עומד בתוך מקום, קהילה ועונה.</p><p>כאשר אנחנו אומרים ״ברך עלינו״ איננו מבקשים רק על הברז שבביתנו. אנחנו מבקשים על השדות, על החקלאים, על מאגרי המים ועל הארץ כולה. התפילה מלמדת את היחיד לצאת לרגע מעצמו ולהרגיש שהוא איבר בגוף גדול יותר.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-5">← הקודם</a><a href="#story-7">הבא →</a></nav>
+</article>
+<article class="story-card" id="story-7" style="--accent:#e0507a;--kicker:#a01942">
+<div class="story-kicker">מן השאלה ההלכתית אל עבודת הלב</div>
+<div class="story-header">
+<span class="story-num">#7</span><h3 class="story-title">הקושי שאינו הוכחה לדחייה</h3><button class="copy-story-link" onclick="copyStoryLink('story-7', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">🌫️</span></span></div>
+<div class="story-body"><p>מכאן השיעור עובר מן הגשם אל החיים. יש אדם שפוגש קושי ושואל מיד: למה השם עושה לי את זה? האם הקושי מוכיח שאני רחוק או דחוי? ארץ ישראל מציעה מבט אחר. דווקא הארץ שעליה נאמר שעיני השם בה היא ארץ שתלויה בגשם.</p><p>אין בכך תשובה מלאה לכל כאב, ואסור להשתמש ברעיון הזה כדי להקטין את סבלו של אדם. יש צרות שאין לנו הסבר להן, ויש רגעים שבהם נכון לשתוק ולעזור. ובכל זאת, בתוך חייו שלו אדם יכול לפעמים לגלות שהחסר פתח בו מקום שלא היה נפתח בשעת שפע.</p><p>בקשה שנאמרה מעומק הלב, שיחה כנה עם הבורא, רגישות חדשה לכאבם של אחרים — כל אלה עשויים לצמוח במקום שבו השליטה נסדקה. הקושי אינו נעשה טוב מפני שכאבנו; אבל גם בתוך הכאב יכולה להופיע קרבה.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-6">← הקודם</a><a href="#story-8">הבא →</a></nav>
+</article>
+<article class="story-card" id="story-8" style="--accent:#e0507a;--kicker:#a01942">
+<div class="story-kicker">מן השאלה ההלכתית אל עבודת הלב</div>
+<div class="story-header">
+<span class="story-num">#8</span><h3 class="story-title">הזכות לבקש</h3><button class="copy-story-link" onclick="copyStoryLink('story-8', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">🕊️</span></span></div>
+<div class="story-body"><p>אפשר לומר ״ותן טל ומטר״ כמי שמוסר רשימת צרכים. אפשר גם לשמוע בתוך המילים עצמן בשורה: מותר לנו לבקש. הקדוש ברוך הוא רוצה שנפנה אליו, שנדבר, שנודה על מה שיש ונבקש על מה שחסר.</p><p>התפילה אינה ניסיון לעדכן את השם במצב מאגרי המים. היא משנה את העמדה שלנו. לפני התפילה הגשם הוא צורך; בתוך התפילה הוא נעשה מפגש. אנו מגלים שהצמא אינו רק בעיה שיש לפתור, אלא גם קול שמחזיר את הלב אל מקור החיים.</p><p>זו הסיבה שהשיעור מדבר על הבקשה כעל זכות ושמחה. רק בארץ ישראל כבר מבקשים עכשיו, בעוד קהילות רבות בעולם עדיין ממתינות. התאריך אינו פרט טכני בלבד. הוא הרגע שבו הארץ כולה מתחילה לדבר בלשון של צמא, ואנחנו מוזמנים לתת לה את קולנו.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-7">← הקודם</a><a href="#story-9">הבא →</a></nav>
+</article>
+</div></section>
+<section class="chapter-section" id="chapter-להכניס-את-הגשם-אל-התפילה">
+<div class="chapter-header" style="--band:#8bc34a"><div class="chapter-icon"><span class="emoji-icon">🌱</span></div><div><h2 class="chapter-title">להכניס את הגשם אל התפילה</h2><div class="chapter-subtitle">2 שיעורים</div></div></div>
+<div class="card-grid">
+<article class="story-card" id="story-9" style="--accent:#8bc34a;--kicker:#547a26">
+<div class="story-kicker">להכניס את הגשם אל התפילה</div>
+<div class="story-header">
+<span class="story-num">#9</span><h3 class="story-title">לא לעבור על המילים במהירות</h3><button class="copy-story-link" onclick="copyStoryLink('story-9', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">📖</span></span></div>
+<div class="story-body"><p>המילים ״ותן טל ומטר לברכה״ מוכרות כל כך, עד שקל לומר אותן בלי לראות דבר. אפשר לעצור לרגע אחד ולצייר בדמיון אדמה יבשה, שדה שממתין, עץ הזקוק למים וטיפה ראשונה שנבלעת באבק.</p><p>המילה החשובה בבקשה היא אולי ״לברכה״. אנחנו איננו מבקשים מים בלבד. יותר מדי גשם בזמן הלא נכון עלול להזיק, ומעט מדי גשם משאיר את הארץ צמאה. אנו מבקשים שפע מדויק, שיבוא בעתו ויהפוך חיים לברכה.</p><p>אפשר לצרף לבקשה גם את מי שתלוי בגשם באופן ישיר: חקלאים, משפחות שפרנסתן מן האדמה, וכל מי שמביט בתחזית בדאגה. משפט אחד בתפילה נעשה כך לבית רחב, שבתוכו עומדת ארץ שלמה.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-8">← הקודם</a><a href="#story-10">הבא →</a></nav>
+</article>
+<article class="story-card" id="story-10" style="--accent:#8bc34a;--kicker:#547a26">
+<div class="story-kicker">להכניס את הגשם אל התפילה</div>
+<div class="story-header">
+<span class="story-num">#10</span><h3 class="story-title">כשהטיפה הראשונה מגיעה</h3><button class="copy-story-link" onclick="copyStoryLink('story-10', this)">🔗 העתק קישור</button>
+</div>
+<div class="story-meta"><span><span class="emoji-icon">☔</span></span></div>
+<div class="story-body"><p>הבקשה אינה שלמה בלי הודיה. אנחנו יודעים היטב להתפלל כשאין גשם; קשה יותר לעצור כאשר הוא כבר יורד. אחרי שהצורך נענה, הברז ממשיך לזרום והשגרה בולעת במהירות את הפלא.</p><p>דווקא אז כדאי לעמוד ליד החלון, לשמוע את הטיפות ולומר תודה. לא נאום ארוך. משפט אחד שמכיר בכך שהאדמה מקבלת חיים, שהכנרת מתמלאת מעט, ושגם אנחנו איננו חיים מכוח עצמנו בלבד.</p><p>הגשם הוא המורה השקט של ארץ ישראל. הוא מלמד אותנו לבקש בלי להתבייש, לעבוד בלי לדמיין שהכול בידינו, ולהודות לפני שהמתנה נעשית שוב מובנת מאליה. בז׳ בחשוון איננו רק משנים נוסח. אנחנו מקבלים מחדש את הזכות לחיות בארץ שמרימה את עיניה לשמים.</p>
+</div>
+<nav class="story-navigation"><a class="back-to-toc-nav" href="#toc">☰ לתוכן</a><a href="#story-9">← הקודם</a></nav>
 </article>
 </div></section>
   </main>
@@ -343,7 +542,7 @@ mark { background: var(--accent-soft); color: inherit; padding: 0 .1em; }
 <footer class="book-footer"></footer>
 <script>
 
-const searchData = [{"id": "story-1", "title": "ארץ שמבקשת גשם", "body": "ארץ שמבקשת גשם — אותה תפילה — שני תאריכים בערב ז׳ בחשוון משתנה בארץ ישראל משפט אחד בתפילת העמידה. במקום לומר רק את ברכת השנים אנו מתחילים לבקש במפורש: ותן טל ומטר לברכה . השינוי קטן כל כך, עד שאפשר לעבור עליו כמעט בלי להרגיש. אבל מאחוריו מסתתרת שאלה גדולה. יהודי שעומד באותו ערב בבית כנסת בירושלים מבקש גשם. חברו שעומד בבית כנסת בלונדון או בניו יורק עדיין ממתין. בחוץ לארץ מתחילים את הבקשה שישים יום לאחר תקופת תשרי, לפי חשבון עונות השמש, בדרך כלל בתחילת דצמבר. בארץ ישראל הולכים לפי תאריך עברי: ז׳ בחשוון. ענני הגשם אינם קוראים לוח עברי, וגם הרוח אינה מבחינה בין חשוון לדצמבר. אם מזג האוויר נקבע לפי עונות השנה, מדוע תפילת הגשם בארץ ישראל נקבעה בדרך אחרת? השאלה ההלכתית פותחת דלת אל שאלה עמוקה יותר: מהי בכלל ארץ ישראל, ומה היא מבקשת ללמד את מי שחי בה? שישים יום לתקופה חז״ל קבעו שבבבל, וממנה נקבע המנהג לרוב קהילות חוץ לארץ, מתחילים לבקש גשם שישים יום לאחר תקופת תשרי. זהו חשבון שמשי. סופרים מן התקופה, כלומר מנקודת המעבר של עונת הסתיו, ומגיעים אל הלילה שבו הצורך בגשם נעשה ממשי לאותה ארץ. יש בזה היגיון פשוט: בקשת הגשם איננה נוסחה מנותקת מן העולם. אין טעם לבקש גשם בעונה שבה הוא עלול להזיק לשדות, ואין טעם להתעלם מן האקלים שבו בני אדם חיים. התורה מלמדת אותנו להתפלל בתוך המציאות, לא מחוצה לה. דווק"}];
+const searchData = [{"id": "story-1", "title": "אותה תפילה — שני תאריכים", "body": "שני לוחות שנה לענן אחד — בערב ז׳ בחשוון משתנה בארץ ישראל משפט אחד בתפילת העמידה. במקום לומר רק את ברכת השנים אנו מתחילים לבקש במפורש: ותן טל ומטר לברכה . השינוי קטן כל כך, עד שאפשר לעבור עליו כמעט בלי להרגיש. אבל מאחוריו מסתתרת שאלה גדולה. יהודי שעומד באותו ערב בבית כנסת בירושלים מבקש גשם. חברו שעומד בבית כנסת בלונדון או בניו יורק עדיין ממתין. בחוץ לארץ מתחילים את הבקשה שישים יום לאחר תקופת תשרי, לפי חשבון עונות השמש, בדרך כלל בתחילת דצמבר. בארץ ישראל הולכים לפי תאריך עברי: ז׳ בחשוון. ענני הגשם אינם קוראים לוח עברי, וגם הרוח אינה מבחינה בין חשוון לדצמבר. אם מזג האוויר נקבע לפי עונות השנה, מדוע תפילת הגשם בארץ ישראל נקבעה בדרך אחרת? השאלה ההלכתית פותחת דלת אל שאלה עמוקה יותר: מהי בכלל ארץ ישראל, ומה היא מבקשת ללמד את מי שחי בה?"}, {"id": "story-2", "title": "שישים יום לתקופה", "body": "שני לוחות שנה לענן אחד — חז״ל קבעו שבבבל, וממנה נקבע המנהג לרוב קהילות חוץ לארץ, מתחילים לבקש גשם שישים יום לאחר תקופת תשרי. זהו חשבון שמשי. סופרים מן התקופה, כלומר מנקודת המעבר של עונת הסתיו, ומגיעים אל הלילה שבו הצורך בגשם נעשה ממשי לאותה ארץ. יש בזה היגיון פשוט: בקשת הגשם איננה נוסחה מנותקת מן העולם. אין טעם לבקש גשם בעונה שבה הוא עלול להזיק לשדות, ואין טעם להתעלם מן האקלים שבו בני אדם חיים. התורה מלמדת אותנו להתפלל בתוך המציאות, לא מחוצה לה. דווקא משום כך ההבדל בארץ ישראל נעשה מפתיע יותר. כאן מתחילים בז׳ בחשוון, אחרי שעולי הרגל הספיקו לחזור לבתיהם מן העלייה לרגל של סוכות. הארץ מתחשבת באדם ההולך בדרך, אבל התאריך שלה נשאר חלק מן הלוח העברי. הטבע והסיפור היהודי נשזרים זה בזה."}, {"id": "story-3", "title": "מה היה נוח כל כך במצרים?", "body": "הארץ שאינה דומה למצרים — לפני הכניסה לארץ משה מציב לפני העם השוואה חריפה. מצרים, הארץ שממנה יצאו, מקבלת את מימיה מן הנילוס. אפשר להשקות את השדה בתעלות, לכוון את המים ברגל, ולבנות מערכת שנראית קבועה וצפויה. ארץ ישראל אחרת: למטר השמים תשתה מים . במבט ראשון זו אינה מחמאה. מדוע לעזוב ארץ שבה הנהר זורם בקביעות ולהיכנס לארץ שבה כל החקלאות תלויה בעננים? מדוע ברכת הארץ מגיעה יחד עם חוסר ודאות? השיעור מציע תשובה נועזת: חוסר הוודאות הוא חלק מן המתנה. בארץ ישראל האדם אינו יכול לשכוח לגמרי את מי שנותן את המים. הוא חורש וזורע, בונה מאגרים ומתכנן, אך אחרי כל הפעולות הללו הוא עדיין מרים עיניים לשמים. הארץ אינה מבטלת את המעשה האנושי; היא שומרת בתוכו חלון פתוח לתפילה."}, {"id": "story-4", "title": "ארץ שעיני השם בה", "body": "הארץ שאינה דומה למצרים — התורה ממשיכה ומתארת את ארץ ישראל כ״ארץ אשר ה׳ אלוקיך דורש אותה, תמיד עיני ה׳ אלוקיך בה״. אפשר לקרוא את הפסוק כהבטחה של שמירה, ואפשר לשמוע בו גם תביעה של קשר. הארץ עומדת תחת מבט מתמיד, ולכן גם יושביה נקראים להביט בחזרה. בארצות רבות הגשם יורד בשפע ובקביעות יחסית. אדם עלול לחיות שנים בלי לחשוב מי מצמיח את התבואה. בארץ ישראל גם עונה גשומה אינה מוחקת את הזיכרון של שנה שחונה. השמים יכולים להיפתח ויכולים להיעצר, והלב לומד שהשפע אינו רכוש קבוע. אין הכוונה שכל ענן הוא תגובה פשוטה ומיידית למעשה מסוים. חשבונות שמים אינם בידינו. הנקודה עדינה יותר: צורת החיים בארץ מחנכת אותנו שלא לסגור את העולם בתוך הסברים טכניים בלבד. לצד התחזית, החקלאות והמדע נשאר מקום חי לבקשה, לאחריות ולהודיה."}, {"id": "story-5", "title": "האם תלות היא חיסרון?", "body": "הארץ שאינה דומה למצרים — אנחנו רגילים לחשוב שעצמאות היא תמיד ברכה ותלות היא תמיד חולשה. ילד קטן תלוי בהוריו; אדם מבוגר רוצה לעמוד ברשות עצמו. אבל יש סוג של תלות שאינו מקטין את האדם אלא מחבר אותו. כשאדם יודע שהחיים אינם מובטחים לו, הוא עשוי לפחד. הוא גם עשוי להתעורר. פתאום מים אינם רק משהו שיוצא מן הברז, לחם אינו רק מוצר על מדף, ויום חדש אינו רק המשך אוטומטי של אתמול. כל דבר מקבל שוב את טעמה של מתנה. זו אחת המתנות הסמויות של ארץ ישראל: היא אינה נותנת לנו לשקוע לגמרי באשליה שהכול בידינו. היא מזמינה אותנו להיות שותפים מלאים — לעבוד, לבנות, לשמור על המים — ובאותה שעה לזכור שאנו מקבלים. תפילה אינה הודאה בכישלון; היא הכרה מפוכחת בגבול הכוח האנושי ובאפשרות של קשר שמעבר לו."}, {"id": "story-6", "title": "ומה יעשה בן חוץ לארץ שלומד כאן?", "body": "מן השאלה ההלכתית אל עבודת הלב — השיעור מעלה שאלה מעשית: בחור ישיבה שבא מחוץ לארץ ולומד כעת בארץ ישראל — מתי יאמר ״ותן טל ומטר״? האם ילך אחר המקום שבו הוא נמצא, או אחר ביתו שאליו הוא עתיד לחזור? זו שאלה הלכתית אמיתית, ויש בה פרטים התלויים במשך השהייה, בתוכניותיו של האדם ובמנהג הפסיקה שלו. השיעור אינו מכריע בה, ובצדק: לשאלה מעשית צריך לקבל הוראה מרב שמכיר את המקרה. אבל עצם השאלה יקרה. היא מגלה שהתפילה אינה טקסט פרטי בלבד. המתפלל עומד בתוך מקום, קהילה ועונה. כאשר אנחנו אומרים ״ברך עלינו״ איננו מבקשים רק על הברז שבביתנו. אנחנו מבקשים על השדות, על החקלאים, על מאגרי המים ועל הארץ כולה. התפילה מלמדת את היחיד לצאת לרגע מעצמו ולהרגיש שהוא איבר בגוף גדול יותר."}, {"id": "story-7", "title": "הקושי שאינו הוכחה לדחייה", "body": "מן השאלה ההלכתית אל עבודת הלב — מכאן השיעור עובר מן הגשם אל החיים. יש אדם שפוגש קושי ושואל מיד: למה השם עושה לי את זה? האם הקושי מוכיח שאני רחוק או דחוי? ארץ ישראל מציעה מבט אחר. דווקא הארץ שעליה נאמר שעיני השם בה היא ארץ שתלויה בגשם. אין בכך תשובה מלאה לכל כאב, ואסור להשתמש ברעיון הזה כדי להקטין את סבלו של אדם. יש צרות שאין לנו הסבר להן, ויש רגעים שבהם נכון לשתוק ולעזור. ובכל זאת, בתוך חייו שלו אדם יכול לפעמים לגלות שהחסר פתח בו מקום שלא היה נפתח בשעת שפע. בקשה שנאמרה מעומק הלב, שיחה כנה עם הבורא, רגישות חדשה לכאבם של אחרים — כל אלה עשויים לצמוח במקום שבו השליטה נסדקה. הקושי אינו נעשה טוב מפני שכאבנו; אבל גם בתוך הכאב יכולה להופיע קרבה."}, {"id": "story-8", "title": "הזכות לבקש", "body": "מן השאלה ההלכתית אל עבודת הלב — אפשר לומר ״ותן טל ומטר״ כמי שמוסר רשימת צרכים. אפשר גם לשמוע בתוך המילים עצמן בשורה: מותר לנו לבקש. הקדוש ברוך הוא רוצה שנפנה אליו, שנדבר, שנודה על מה שיש ונבקש על מה שחסר. התפילה אינה ניסיון לעדכן את השם במצב מאגרי המים. היא משנה את העמדה שלנו. לפני התפילה הגשם הוא צורך; בתוך התפילה הוא נעשה מפגש. אנו מגלים שהצמא אינו רק בעיה שיש לפתור, אלא גם קול שמחזיר את הלב אל מקור החיים. זו הסיבה שהשיעור מדבר על הבקשה כעל זכות ושמחה. רק בארץ ישראל כבר מבקשים עכשיו, בעוד קהילות רבות בעולם עדיין ממתינות. התאריך אינו פרט טכני בלבד. הוא הרגע שבו הארץ כולה מתחילה לדבר בלשון של צמא, ואנחנו מוזמנים לתת לה את קולנו."}, {"id": "story-9", "title": "לא לעבור על המילים במהירות", "body": "להכניס את הגשם אל התפילה — המילים ״ותן טל ומטר לברכה״ מוכרות כל כך, עד שקל לומר אותן בלי לראות דבר. אפשר לעצור לרגע אחד ולצייר בדמיון אדמה יבשה, שדה שממתין, עץ הזקוק למים וטיפה ראשונה שנבלעת באבק. המילה החשובה בבקשה היא אולי ״לברכה״. אנחנו איננו מבקשים מים בלבד. יותר מדי גשם בזמן הלא נכון עלול להזיק, ומעט מדי גשם משאיר את הארץ צמאה. אנו מבקשים שפע מדויק, שיבוא בעתו ויהפוך חיים לברכה. אפשר לצרף לבקשה גם את מי שתלוי בגשם באופן ישיר: חקלאים, משפחות שפרנסתן מן האדמה, וכל מי שמביט בתחזית בדאגה. משפט אחד בתפילה נעשה כך לבית רחב, שבתוכו עומדת ארץ שלמה."}, {"id": "story-10", "title": "כשהטיפה הראשונה מגיעה", "body": "להכניס את הגשם אל התפילה — הבקשה אינה שלמה בלי הודיה. אנחנו יודעים היטב להתפלל כשאין גשם; קשה יותר לעצור כאשר הוא כבר יורד. אחרי שהצורך נענה, הברז ממשיך לזרום והשגרה בולעת במהירות את הפלא. דווקא אז כדאי לעמוד ליד החלון, לשמוע את הטיפות ולומר תודה. לא נאום ארוך. משפט אחד שמכיר בכך שהאדמה מקבלת חיים, שהכנרת מתמלאת מעט, ושגם אנחנו איננו חיים מכוח עצמנו בלבד. הגשם הוא המורה השקט של ארץ ישראל. הוא מלמד אותנו לבקש בלי להתבייש, לעבוד בלי לדמיין שהכול בידינו, ולהודות לפני שהמתנה נעשית שוב מובנת מאליה. בז׳ בחשוון איננו רק משנים נוסח. אנחנו מקבלים מחדש את הזכות לחיות בארץ שמרימה את עיניה לשמים."}];
 const VOCAB = {"one": "שיעור אחד", "plural": "שיעורים", "openPrompt": "פתח את הרשימה שבצד ובחר שיעור"};
 
 // ── TOC toggle ──────────────────────────────────────────────────────────
@@ -692,4 +891,3 @@ window.addEventListener('hashchange', syncTocWithHash);
 </script>
 </body>
 </html>
-
