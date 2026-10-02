@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 קָטֹנְתִּי מִכָּל הַחֲסָדִים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>📖 קָטֹנְתִּי מִכָּל הַחֲסָדִים</h1>
+  <p>תשעה פנים בתפילת יעקב אבינו — היסוד הגדול שבתחושת "לא מגיע לי", ולא מקבלים לפני שמודים</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+        <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ קטונתי מכל החסדים (1156)" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/B3aB27ZWafQ?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/B3aB27ZWafQ/hqdefault.jpg" alt="קטונתי מכל החסדים (1156)" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 קטונתי מכל החסדים (1156)</span><a href="https://www.youtube.com/watch?v=B3aB27ZWafQ" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+    <div style="margin:-12px 6px 24px;color:var(--ink-soft)"><div style="font-weight:700;margin-bottom:4px">חלקים ושיעורים נוספים שהספר מבוסס עליהם:</div><div><a href="https://www.youtube.com/watch?v=3bAgcNWkpBI" target="_blank" rel="noopener" style="color:#c4002b;text-decoration:none;font-weight:700">קטונתי מכל החסדים (855) ↗</a></div><div><a href="https://www.youtube.com/watch?v=wY05VQtvZDE" target="_blank" rel="noopener" style="color:#c4002b;text-decoration:none;font-weight:700">קטונתי מכל החסדים (שיעור 7) ↗</a></div><div><a href="https://www.youtube.com/watch?v=vyClOuCDelU" target="_blank" rel="noopener" style="color:#c4002b;text-decoration:none;font-weight:700">קטונתי מכל החסדים ומכל האמת ↗</a></div></div>
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">הקדמה</div>
+      <h3 class="story-title">📖 הקדמה</h3>
+      <p>לפני המפגש הגורלי עם עשיו, מתפלל יעקב אבינו אל הקדוש ברוך הוא תפילה קצרה ועמוקה: "קָטֹנְתִּי מִכֹּל הַחֲסָדִים וּמִכָּל הָאֱמֶת אֲשֶׁר עָשִׂיתָ אֶת עַבְדֶּךָ, כִּי בְמַקְלִי עָבַרְתִּי אֶת הַיַּרְדֵּן הַזֶּה, וְעַתָּה הָיִיתִי לִשְׁנֵי מַחֲנוֹת". שני מילים קטנות בתפילה זו — "קטנתי" ו"אמת" — הולידו דורות של פרשנות, ומהן למדו גדולי ישראל את יסודות עבודת ההכרת הטוב.</p>
+      <p>בפרק זה נעבור בעקבות הרב יהודה טאוב על שישה פנים שונים בתפילה הקצרה הזו — מה פירוש "קטונתי", איך אפשר להרגיש קטן כל כך אחרי הישגים כה גדולים, מה משמעות לשון ההווה "כי במקלי עברתי", ומה בדיוק מוסיף "מכל האמת" על "מכל החסדים". שישה פנים, ותפילה אחת קטנה של יעקב אבינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אִם מַגִּיעַ לִי — אִי אֶפְשָׁר לְהוֹדוֹת</div>
+      <h3 class="story-title">🌿 שום דבר אינו מגיע</h3>
+      <p>מונח בתפילת יעקב אבינו יסוד גדול בכל עבודת ה'. אדם צריך לדעת שהוא קטן, ושלא מגיעים לו החסדים המרובים שהקדוש ברוך הוא תמיד משפיע עליו. אם אדם חושב שמגיע לו — נחסר לו כל יסוד עבודת ה', שהרי כל יסוד עבודת הקדוש ברוך הוא הוא להכיר חסד, להכיר טובה. ואם אדם חושב שמגיע לו, הוא אינו יכול להכיר טובה כלל. ולכן אומר יעקב: קטונתי. לא מגיעים לי החסדים.</p>
+      <p>לא מגיע לאדם לחיות ואפילו לא שנייה אחת. ואם הוא כבר חי — לא מגיע לו לחיות עם כל רמ"ח האיברים ושס"ה הגידים שלמים. לא מגיע לו אוכל, שתייה ובגדים. אם הוא נשוי — לא מגיעה לו אישה. אם יש לו ילדים — לא מגיעים לו ילדים. אם יש לו פרנסה — לא מגיעה לו פרנסה. ואם הוא בריא — לא מגיעה לו בריאות. אין לאדם שום תביעה כלפי הקדוש ברוך הוא. וכך מבאר חובת הלבבות: אילו הצטרפו כל המעשים הטובים של כל בני האדם שהיו מעולם, כולם יחד לא היו מספיקים לשלם עבור החסד הקטן ביותר שהקדוש ברוך הוא עושה עם אדם בודד. די להתבונן במילים האלה כדי להבין שאיננו מספיקים להודות אפילו על אחד מאלף מהחסדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a><a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אִם מַגִּיעַ לִי — אִי אֶפְשָׁר לְהוֹדוֹת</div>
+      <h3 class="story-title">🌿 מאה שערים מכוח מאה ברכות</h3>
+      <p class="bold-para">אדם שמרגיש "קטונתי", הודייתו היא הודיה אמיתית. כתוב שיצחק אבינו מצא באותה שנה "מֵאָה שְׁעָרִים" — מבארים המפרשים ש"מאה שערים" הם מכוח "מאה הברכות" שהיהודי מברך בכל יום. על ידי שאדם מברך מאה ברכות לקדוש ברוך הוא, הוא זוכה למאה שערים ברכה.</p>
+      <p>אך ברכה אינה רק אמירת מילים. היא צריכה להיאמר מתוך הרגשת החסד ממש — לומר "ברוך" מתוך הלב, מתוך המוח, מתוך רגש של תודה עמוקה לקדוש ברוך הוא. ואי אפשר להגיד ברכה כזו אם האדם מרגיש שהיא מגיעה לו. יסוד המאה שערים, אם כן, כולו נובע מהבחינה והנקודה הפשוטה: "קטונתי מכל החסדים" — שהאדם לא מגיע לו כלום. מתוך זה בלבד הוא יכול להודות לה' ברגש ובאמת, ולזכות למאה שערים ולכל השפע שמהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a><a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קָטֹנְתִּי לַמְרוֹת כָּל הַהֶישֵּׂגִים</div>
+      <h3 class="story-title">💛 שישים ושלוש שנות תורה</h3>
+      <p class="bold-para">קָטֹנְתִּי מִכֹּל הַחֲסָדִים וּמִכָּל הָאֱמֶת אֲשֶׁר עָשִׂיתָ אֶת עַבְדֶּךָ.</p>
+      <p class="bold-para">בראשית לב, יא</p>
+      <p>רש"י מבאר: "נתמעטו זכיותיי על ידי החסדים והאמת שעשית עמדי, ולכך אני ירא". אבל כאשר בוחנים את חייו של יעקב אבינו עד לאותו רגע, התמיהה גוברת ומתעצמת. יעקב למד תורה שישים ושלוש שנים בישיבת יצחק ורבקה, מתוך עושר — יושב אוהלים, אדם שלם. הקדוש ברוך הוא מדבר איתו, נגלה אליו בחלום הסולם ומבטיח לו את ארץ ישראל — זכות בלתי נתפסת. ולאחר מכן, בן שבעים ושבע, הוא הולך ללמוד עוד ארבע עשרה שנים נוספות בבית שם ועבר — הפעם מתוך עוני, כדי להשלים גם את בחינת התורה הנלמדת מתוך דוחק.</p>
+      <p>ולאחר מכן, בבית לבן: שבע שנים עובד בחינם עבור רחל — בלי תלונה, בלי מריבה, "הָיִיתִי בַיּוֹם אֲכָלַנִי חֹרֶב וְקֶרַח בַּלָּיְלָה" — ולא הביא ללבן בהמה גנובה או טרופה מעולם, עבד באמונה שלמה. וכשלבן החליף לו את רחל בלאה, המשיך יעקב לעבוד עוד שש שנים תחת רמאות מתמדת — לבן החליף את משכורתו עשרת מונים — ובכל זאת נשאר ישר בתכלית הישרות, בתכלית הדקדוק בהלכה. ואף מעיד יעקב לפני עשיו: "עִם לָבָן גַּרְתִּי וְתַרְיַ״ג מִצְווֹת שָׁמַרְתִּי, וְלֹא לָמַדְתִּי מִמַּעֲשָׂיו הָרָעִים" — כלומר, למרות שהותי הממושכת עם איש חומרני כלבן, לא נדבקתי בעולם הזה ולא נהייתי איש עסקים וכסף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a><a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קָטֹנְתִּי לַמְרוֹת כָּל הַהֶישֵּׂגִים</div>
+      <h3 class="story-title">💛 כלום לא נשאר</h3>
+      <p>ואף על פי כל זה — אחרי הישגים כאלה, שקשה לתאר אפילו את גודלם — בא יעקב אבינו ואומר: "קטונתי מכל החסדים ומכל האמת... לא נשאר לי כלום". מדוע? "כִּי בְמַקְלִי עָבַרְתִּי אֶת הַיַּרְדֵּן הַזֶּה וְעַתָּה הָיִיתִי לִשְׁנֵי מַחֲנוֹת" — נתת לי אישה וילדים. ומי, בעצם, אין לו אישה וילדים? מי מסוגל לומר "אין לי כלום, לא נשארה לי תורה"?</p>
+      <p>וזהו בדיוק המוסר הגדול: עד כמה צריכה להיות הכרת הטוב של האדם לקדוש ברוך הוא, שאפילו בעל הזכויות הגדולות ביותר, בעל ההישגים הרוחניים העצומים ביותר, מרגיש שהכול — כל דבר, כל בן, כל אישה, כל שנת תורה — הוא מתנת חינם גמורה. יעקב אבינו לא זוכר שום מעשה טוב שעשה, ואינו חושב שמגיע לו עוד משהו. "בזבזתי כבר את הכול בשביל אישה וילדים", ואין מה להוסיף על זה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a><a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · כִּי בְמַקְלִי — הֶחָסֶד כְּאִלּוּ עַכְשָׁו</div>
+      <h3 class="story-title">🕯️ מדוע לשון הווה</h3>
+      <p>שואל האדמו"ר מגור, בעל "שפת אמת" — ומביא זאת בשם החידושי הרי"ם — שאלה דקדוקית: "כי במקלי עברתי את הירדן הזה" — הרי כשיעקב עבר את הירדן בפעם הראשונה בדרכו לחרן, זה היה לפני עשרים שנה תמימות. מדוע אם כן אומר יעקב "הירדן הַזֶּה", כאילו הירדן עדיין עומד לפניו ממש עכשיו, וכאילו החציה קרתה זה עתה?</p>
+      <p class="bold-para">מבאר החידושי הרי"ם: יעקב אבינו ראה תמיד לנגד עיניו את חסדי הקדוש ברוך הוא, כאילו הם נעשים עכשיו ממש. החסדים שהיו לו לפני שנים רבות מעולם לא נשכחו ממנו — ולא רק שלא נשכחו, אלא הם היו בעיניו כאילו הם קורים כרגע. ולכן אמר "הירדן הזה" — לא "הירדן ההוא".</p>
+      <p>ועל ידי כך מבאר יסוד גדול: כאשר אדם זוכר בחיות את החסדים שה' עשה עמו בעבר, ומגיעה עליו חלילה צרה, זכירה זו מעוררת חסדים נוספים להושיעו מן הצרה. וזהו הפירוש בפסוק "בְּיוֹם טוֹבָה הֱיֵה בְטוֹב, וּבְיוֹם רָעָה רְאֵה" — שביום הטוב יש להתבונן ולזכור את החסדים כדי שביום הרעה יהיה מה "לראות" ולהיזכר בו. שעל ידי חיזוק זיכרון החסד הראשון מתעוררים אותם רחמים שהיו בשעת עשיית החסד הראשון, וזה מביא ישועה גם לצרה הנוכחית. וכיוון שחסדי ה' היו בעיני יעקב תמיד כאילו הם קורים עכשיו, ממילא הרגיש קטן ביותר — שכן ככל שאדם זוכר בחיות את החסד כאילו הוא קורה כעת, כך הוא מרגיש יותר עד כמה הוא קטן וכמה הוא אינו ראוי לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a><a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · כִּי בְמַקְלִי — הֶחָסֶד כְּאִלּוּ עַכְשָׁו</div>
+      <h3 class="story-title">🕯️ לפרוע קודם את החוב לשם</h3>
+      <p><strong>🕯️ החוב שקודם לכל החובות</strong></p>
+      <p>מסופר על יהודי שנכנס אל החידושי הרי"ם וסיפר שיש לו חובות כספיים רבים לאנשים שונים, ושאל מה עליו לעשות. אמר לו החידושי הרי"ם: קודם כל, שיפרע את החוב שיש לו לקדוש ברוך הוא. הבין אותו יהודי שכוונת הרבי היא שיתחזק בתורה, בתפילה ובתשובה — כלומר, לשלם את "החוב" באמצעות מעשים טובים. אמר לו החידושי הרי"ם: זה נכון, אבל אין זו הכוונה. הכוונה היא, כפי שכתוב: "כִּי חוֹבַת כָּל הַיְצוּרִים לְהַלֵּל וּלְשַׁבֵּחַ וּלְפָאֵר וּלְרוֹמֵם אֶת הַקָּדוֹשׁ בָּרוּךְ הוּא" — זוהי החובה הראשונה מכולן: החוב להודות ולשבח את ה'. את זה קודם כל צריך לפרוע.</p>
+      <p>שעל ידי שאדם מבין וזוכר בחיות את החסדים ומודה עליהם לה', הוא מתחיל מיד להיפרע גם מכל שאר החובות שיש לו כלפי בני האדם — שחסד מעורר חסד, ועל ידי זכירת החסד הראשון נמשך עוד חסד ונושעים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a><a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="5" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">פרק ה · סוֹד שָׂרוֹ שֶׁל עֵשָׂו וּמֵאָה הַבְּרָכוֹת</div>
+      <h3 class="story-title">🎶 להתפלל לפני, להודות אחרי</h3>
+      <p>מוסיף רבנו בחיי על אותו פסוק עצמו יסוד נוסף: יעקב אבינו מזכיר את המקל שהיה בידו כשעבר את הירדן, כדי לרמוז שאדם חייב להסתכל תמיד במעשיו על הימים שהיו לו רעים — רק כך יבחין בטובה, ורק כך יוכל להודות לה' מתוך הבחנה אמיתית בין הרע לטוב. כך גם מפרש רבנו בחיי את הפסוק "בְּיוֹם טוֹבָה הֱיֵה בְטוֹב, וּבְיוֹם רָעָה רְאֵה" — ביום קבלת הטובה, התבונן במה שהיה קודם לכן, ורק אז תוכל להודות לה' מעומק הלב באמת. מכאן למדים דבר נוסף: תמיד, לפני שאדם בא לבקש ולהתפלל מבורא עולם, ראוי לו קודם כל להודות לה' — ורק אחר כך לבקש. ועל ידי כך תתקבל תפילתו ברצון.</p>
+      <p>ומעניין: מיד לאחר תפילת "קטונתי", מצווה הקדוש ברוך הוא את יעקב לבנות מזבח ולהקריב עליו קורבן: "לָאֵל הָעֹנֶה אֹתִי בְּיוֹם צָרָתִי". שואלים המפרשים: מדוע דווקא עכשיו מצווה ה' לבנות מזבח — הלא כבר בעבר, כשיעקב ברח מעשיו וזכה שה' יתגלה אליו בחלום הסולם, לא הקריב אז קורבן על כך, ולא הודה על כך? מתברר: כיוון שיעקב עדיין לא הודה על החסד הראשון, אי אפשר להתגלות אליו שוב באותו חסד ובאותה מידה. רק כשאדם מודה על החסדים שכבר קיבל, יכולים להתגלות אליו עוד חסדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a><a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="5" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">פרק ה · סוֹד שָׂרוֹ שֶׁל עֵשָׂו וּמֵאָה הַבְּרָכוֹת</div>
+      <h3 class="story-title">🎶 מאה ברכות בכוונה כחומת מגן</h3>
+      <p>ומכאן מגיע רעיון נוסף, עמוק במיוחד, המובא בשם החתם סופר. כשנאבק שרו של עשיו עם יעקב, נאמר "וַיִּגַּע בְּכַף יְרֵכוֹ" — ומבארים חז"ל שהצליח לפגוע דווקא בכף הירך, ש"כף" בגימטרייה מאה. שרו של עשיו רצה בכך לרמוז ליעקב על סוד "מנין הנפשות" בעם ישראל, שכאילו אמר לו: לא בכוחך תוכל להינצל מהקליפות אם רק תברח ממני; הדרך היחידה להינצל היא לברך מאה ברכות בכל יום, בכוונה שלמה. כל הברכות ביום — ברכות השחר, ברכת המזון, שמונה עשרה — צריכות להיאמר מילה במילה בכוונה. כפי שאמר החפץ חיים: צריך לעצור לפני כל ברכה ולחשוב על מה בדיוק אני מודה עכשיו — לא לברך בחיפזון.</p>
+      <p class="bold-para">מאה ברכות בכוונה שלמה בכל יום נחשבות כחומת מגן, מגינות מפני כל פורענות — ודווקא בזכות ההודיה, בזכות השירה לה', "אֵין הַיָּדַיִם יְדֵי עֵשָׂו" — שולטות בעם ישראל. וזהו סוד השם החדש שקיבל יעקב, "יִשְׂרָאֵל" — אותיות "שִׁיר לְאֵל": מהותו של עם ישראל היא לשיר ולהודות לה'.</p>
+      <p class="bold-para">בשם החתם סופר</p>
+      <p>ואי אפשר לספר את כל הניסים והישועות שאנשים חווים על ידי הרגל לומר "מזמור לתודה" בבקשם ישועה — עניין ההודיה הוא זה שפותח את כל השערים, וממתיק את כל הדינים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a><a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="6" style="--chap-color:#ff9f43;--chap-color-2:#c4620a;">
+      <div class="story-kicker">פרק ו · מִכָּל הָאֱמֶת — חֶסֶד קָבוּעַ וְחֶסֶד מְיֻחָד</div>
+      <h3 class="story-title">✨ תרגום אונקלוס: טוֹוָן</h3>
+      <p>יעקב אבינו לא אמר רק "קטונתי מכל החסדים", אלא הוסיף "וּמִכָּל הָאֱמֶת" — ולכאורה תמוה: הרי מתמעטות זכויותיו על ידי החסדים, אך מה עניין "האמת" לכאן? מתרגם אונקלוס: "אִזְעֲרִית מִכָּל חִסְדִּין וּמִכָּל טָוָן" — כלומר, אונקלוס מפרש "אמת" כאן במשמעות של "טובות". תמוהה בעיני המפרשים דרך התרגום הזו, שהרי לרוב "אמת" מתורגם על ידי אונקלוס במשמעות "קֹשְׁטָא".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a><a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="6" style="--chap-color:#ff9f43;--chap-color-2:#c4620a;">
+      <div class="story-kicker">פרק ו · מִכָּל הָאֱמֶת — חֶסֶד קָבוּעַ וְחֶסֶד מְיֻחָד</div>
+      <h3 class="story-title">✨ חוקי הטבע הם גם הם חסד</h3>
+      <p>מבארים בזה מפרשי התהלים, בהתבסס על פסוק: "עֹשֵׂה שָׁמַיִם וָאָרֶץ, אֶת הַיָּם וְאֶת כָּל אֲשֶׁר בָּם, הַשֹּׁמֵר אֱמֶת לְעוֹלָם". מה הקשר בין תחילת הפסוק, עשיית שמים וארץ, לסוף הפסוק, "השומר אמת לעולם"? מבואר: הקדוש ברוך הוא ברא בבריאה מנגנון קבוע — חוקי טבע שאינם משתנים לעולם: השמש מעלה אדים מן הים, מהם נוצר הגשם, וביחד עם השמש מצמיחים את היבול. כל מנגנון הבריאה הזה, שהוא כולו חסד — הוא בבחינת "אמת", שכן זהו מנגנון קבוע, החוזר על עצמו תמיד, "אמת לעולם".</p>
+      <p>נס גלוי, ישועה יוצאת דופן, מתנה בלתי צפויה — חסד שבולט מיד לעין וקל לזהות ולהודות עליו.</p>
+      <p>מערכת העיכול הפועלת בכל רגע, השמש הזורחת, חוקי הטבע הקבועים — חסד שקל להתרגל אליו עד שנשכח שגם הוא חסד.</p>
+      <p>נמצא שיש שני סוגי חסדים: חסדים מיוחדים, יוצאי דופן, וחסדים קבועים — אותם "חוקים" שהקדוש ברוך הוא קבע בבריאה שיחזרו על עצמם תמיד. וגם על אלה יש להודות ולהכיר שהם חסד מבורא עולם, ולא רק מנגנון טבעי המובן מאליו. וכך תיקנו לומר בנוסח ספרד לפני "ברוך שאמר": "הוֹשִׁיעֵנוּ ה' אֱלֹקֵינוּ וְקַבְּצֵנוּ מִן הַגּוֹיִם, לְהֹדוֹת לְשֵׁם קָדְשֶׁךָ" — שדווקא בהיותנו בגלות בין הגויים, הדוגלים בהשקפת עולם טבעית שאינה רואה יד ה' בבריאה, קיים חשש שנקבל השפעה מהם ולא נבחין עוד בבריאה הנפלאה. לכן מבקשים אנו להיגאל מהם, כדי שנזכה להודות לה' גם על החסדים הקבועים והשגרתיים, ולא רק על הניסים הגלויים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a><a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="7" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ז · מִכָּל הָאֱמֶת — הַזְּכוּת לַעֲבֹד הִיא עַצְמָהּ חֶסֶד</div>
+      <h3 class="story-title">🔍 גם המצוות שלי הן מתנה</h3>
+      <p>פירוש נוסף למילה "אמת" בפסוקנו: אמת פירושה גם המצוות שהאדם עושה כראוי, כמצוות ה' — שהוא הולך בדרך הישר, עושה את הדברים הנכונים "באמת". ולכאורה יש כאן דבר משלו של האדם עצמו — הרי הוא זה שהתאמץ, התגבר על יצרו, ועשה את המצווה בזכות עצמו! אך מסביר יעקב אבינו יסוד עמוק: גם הזכות הזאת עצמה — לשרת את מלך מלכי המלכים, להתגבר על היצר הרע — היא כולה חסד. הקדוש ברוך הוא הוא זה שנתן לאדם את הזכות להיות עבדו ולעשות את רצונו, ואף נותן לו שכר על כך בגן עדן לאחר מאה ועשרים שנה — שכר שאי אפשר לתארו. נמצא שגם ה"אמת", גם הצדקות של האדם, כולה חסד — הן בכך שניתנה לו הזכות לשרת את המלך, והן בכך שהוא זוכה גם לעולם הבא הנפלא בעבורה.</p>
+      <p>מכאן להבין את ערך העבודה, ערך עבודת ה': כמה צריכים אנו להיות שמחים שיש לנו בכלל את הזכות לעבוד את ה'! כותב האר"י הקדוש בשער הכוונות שכאשר אדם עושה מצווה או לומד תורה, צריך שהדבר יהיה מתוך יראה, אך גם מתוך שמחה גדולה — ועיקר שלמות והשגת רוח הקודש תלויה בגודל השמחה בעת קיום המצוות. הארי הקדוש מעיד על עצמו שכל מה שהשיג, כל שערי החכמה ורוח הקודש שנפתחו לו, זכה להם בזכות השמחה שהייתה לו בשעת קיום כל מצווה ומצווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a><a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="7" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ז · מִכָּל הָאֱמֶת — הַזְּכוּת לַעֲבֹד הִיא עַצְמָהּ חֶסֶד</div>
+      <h3 class="story-title">🔍 הזורעים בדמעה וקוצרים ברינה</h3>
+      <p class="bold-para">הָלוֹךְ יֵלֵךְ וּבָכֹה נֹשֵׂא מֶשֶׁךְ הַזָּרַע, בֹּא יָבוֹא בְרִנָּה נֹשֵׂא אֲלֻמֹּתָיו.</p>
+      <p class="bold-para">תהלים קכו, ו</p>
+      <p>מובא בשם רבי אריה לייב, הצדיק ר' זושא מאניפולי, שיש שני סוגי עובדי ה': יש עובדים בבכייה ובדמעה, המצטערים תמיד על גלות השכינה וחורבן בית המקדש; ויש עובדים ברינה ובשבח. שני סוגי העובדים האלה מרומזים בפסוק: "הָלוֹךְ יֵלֵךְ וּבָכֹה" — זה העובד בדמעה; "בֹּא יָבוֹא בְרִנָּה" — זה העובד בשמחה. שניהם, אומר הפסוק, סופם לזכות בשכר — אך יש הבדל גדול בין השכר. העובד מתוך בכי ודמעה "נֹשֵׂא מֶשֶׁךְ הַזָּרַע" — מקבל רק את מה שזרע, לא יותר. אך העובד ברינה ושבח "נֹשֵׂא אֲלֻמֹּתָיו" — נושא עלומות רבות, מקבל שכר מבורך ומתרבה על עבודתו.</p>
+      <p class="bold-para">אין הכוונה שאסור לבכות על חורבן בית המקדש — אלא שגם מי שבוכה על החורבן, צריך שיהיה לו בפנים שמחה גדולה על עצם הזכות שיש לו לבכות ולהתפלל על כך, על היותו קרוב לקדוש ברוך הוא עד כדי כך שהוא מצטער בצערו. בכל דבר שאדם עושה, עליו לחוש שמחה עמוקה על עצם הזכות שנפלה בחלקו לעבוד את ה' — כי הצדקות שלנו עצמה, כפי שלימד אותנו יעקב אבינו במילה "אמת", היא גם היא חסד גדול שניתן לנו במתנה.</p>
+      <p>יהי רצון שנזכה ללכת בדרכו של יעקב אבינו, ולהרגיש בכל רגע ורגע כמה קטנים אנו ביחס לחסדי ה' עלינו — הן החסדים הגלויים, הן החסדים הקבועים, והן עצם הזכות לעבוד אותו ולהודות לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a><a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="8" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ח · קָטָן מִכְּדֵי לִזְכּוֹת</div>
+      <h3 class="story-title">🌟 שני פירושים ל"קטונתי"</h3>
+      <p>בפרק א למדנו את פירוש רש"י ל"קָטֹנְתִּי מִכֹּל הַחֲסָדִים": "נתמעטו זכיותיי על ידי החסדים." אולם הרמב"ן, הספורנו ואבן עזרא מפרשים באופן שונה במקצת: כוונת יעקב אבינו איננה שזכויותיו נתמעטו בגלל שקיבל הרבה, אלא שהוא מדי קטן מכדי לזכות מלכתחילה לכל הטובות שנעשו עמו, לכל ההבטחות שהובטחו לו. ההבדל דק אך עמוק: לא "כבר קיבלתי הרבה, אז נשאר לי פחות", אלא "אינני ראוי כלל לכל מה שכבר קיבלתי". ומכאן ליסוד גדול: עלינו ללמוד מיעקב וללמוד מלאה אמנו לחיות בהרגשה שלא מגיע לנו כלום — ואז כל מה שאנו מקבלים הוא מתנת חינם גמורה, ועלינו להודות בלי סוף על הכל, מכל וכל. וממילא, גם כשמגיע לנו משהו שנראה בעינינו לא כל כך טוב, אם אדם מתרגל לחיות בהרגשה שבעצם לא מגיע לו כלום — הוא יודע להודות גם עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a><a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="8" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ח · קָטָן מִכְּדֵי לִזְכּוֹת</div>
+      <h3 class="story-title">🌟 אוי לי שראיתיך בכך</h3>
+      <p>איך בכלל מגיעים למדרגה הזו — הכרת הטוב גם על מה שנראה רע? התשובה הראשונה טמונה ברשב"י עצמו, שהעיד על עצמו שהיה דבוק בה' יתברך ולא הסיח דעתו מדבקותו בו אף רגע. רשב"י התחבא במערה שלוש עשרה שנה עם בנו רבי אלעזר, בצער גופני וגשמי, עד שכל בשרו היה חתכים חתכים מן החול. כשראה אותו חמיו, רבי פנחס בן יאיר, בכה ואמר: "אוֹי לִי שֶׁרְאִיתִיךָ בְּכָךְ." ענה לו רבי שמעון בר יוחאי: "אַשְׁרֶיךָ שֶׁרְאִיתַנִי בְּכָךְ, שֶׁאִלְמָלֵא רְאִיתַנִי בְּכָךְ לֹא מָצָאתָ בִּי כָּךְ" — דווקא צער המערה הוא שהביא אותו לכל המעלות הנשגבות שהשיג.</p>
+      <p><strong>🕯️ "חדל אישים, עני ורך במצוות"</strong></p>
+      <p>במוצאי שבת קודש, זכה הכותב להשתתף בלוויית אדם צדיק גדול ושר בישראל, תלמיד חכם עצום מנקיי הדעת — הרב יעקב טייב בן פרידה עליו השלום. הוא הקים עולה של תורה בעיר חילונית לפני עשרות שנים, כשלא היה שם מניין בבית כנסת, והפך אותה, בשקט ובעקביות, מתוך הרבה תפילות ואמונה, למקום של תורה — בית כנסת ענק, שיעורי תורה, תלמוד תורה, ובנים וחתנים שכולם תלמידי חכמים גדולי תורה. עם כל זכויותיו העצומות, ביקש שלא יספידו אותו, ולא יכתבו עליו מודעות. ובכל זאת השאיר צוואה שעל המצבה שלו ייכתב: "חֲדַל אִישִׁים, עָנִי וְרַךְ בַּמִּצְווֹת." יהודי שכולו עשיר במצוות, מלא זכויות, מלא תורה — הרגיש מרוב קרבתו לה' שהוא "חדל אישים ועני ורך במצוות" ממש. זהו סמל ודוגמה חיה למה שלימד אותנו יעקב אבינו: אדם שירגיש ויחיה שבעצם אין לו כלום ולא מגיע לו כלום — כל כולו יהיה מאושר, וכל כולו יודה לקדוש ברוך הוא כל הזמן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a><a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="9" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ט · לֹא מַגִּיעַ לִי כְּלוּם — וְאָז תּוֹדָה</div>
+      <h3 class="story-title">🧭 יעקב בודק את עצמו לפני שהוא מודה</h3>
+      <p>לפני המפגש הגורלי עם עשיו ועם ארבע מאות אנשיו, יעקב אבינו נכנס לחשש ולחרדה, ומה שהוא עושה — כמו כל יהודי בצרה — הוא פונה לקדוש ברוך הוא, זועק ומתחנן ואומר: "קָטֹנְתִּי מִכֹּל הַחֲסָדִים וּמִכָּל הָאֱמֶת אֲשֶׁר עָשִׂיתָ אֶת עַבְדֶּךָ, כִּי בְמַקְלִי עָבַרְתִּי אֶת הַיַּרְדֵּן הַזֶּה וְעַתָּה הָיִיתִי לִשְׁנֵי מַחֲנוֹת." יעקב אבינו בעצם מודה לקדוש ברוך הוא — "ריבונו של עולם, תראה מה נתת לי". אך אם נתבונן, יעקב אבינו אינו מסתפק באמירת תודה גרידא. הוא מקדים ואומר "קטונתי מכל החסדים ומכל האמת" — למה?</p>
+      <p>יעקב אבינו מלמד אותנו כאן יסוד נפלא: אם רוצים באמת הודיה שלמה, הודיה מעומק הלב, לא די להתבונן על כל הטוב ולהגיד תודה — צריך לבדוק קודם אם בכלל זה מגיע. לפעמים, חלילה, יכול אדם לחשוב שהוא צדיק, שעשה הרבה דברים טובים, ואולי באמת זה מגיע לו — ואז, אף אם הוא אומר תודה, זו הודיה חלשה יותר. יעקב אבינו, מדת האמת, שעשה הרבה מאוד דברים טובים, מקדים ואומר: לא, לא — קטונתי מכל החסדים ומכל האמת, זה לא מגיע לי בכלל, ובכל זאת נתת לי. זה עומק לב בהודיה, וכך זכה יעקב שהקדוש ברוך הוא שומע לו, מציל אותו מיד עשו, וגם עשו עצמו חוזר בו מכל תוכניתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a><a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="9" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ט · לֹא מַגִּיעַ לִי כְּלוּם — וְאָז תּוֹדָה</div>
+      <h3 class="story-title">🧭 השיר שנשמע מבחוץ בציון במירון</h3>
+      <p><strong>🕯️ "לא מגיע לי כלום — ואז תודה"</strong></p>
+      <p>באחת הפעמים במירון, בין חזרות התפילה ליד ציון רבי שמעון בר יוחאי, עמד הכותב להתפלל מנחה, ותוך כדי כך שמע מבחוץ אנשים שרים ושרים. לא היה אפשר לשמוע ברור, אבל דבר אחד היה ברור: הם היו אומרים שוב ושוב, "תּוֹדָה, תּוֹדָה, תּוֹדָה לְהַשֵּׁם". אך היה עוד משפט אחד לפני כן, שלא הצלחתי לשמוע, ותהיתי: איך הם מגיעים לכזאת התלהבות, כזאת חיות בשיר הזה? יצאתי החוצה אחרי התפילה, ושמעתי אותם כבר ברור יותר: "לֹא מַגִּיעַ לִי כְּלוּם" — זהו השיר. "לא מגיע לי כלום, ואז תודה להשם על כל מה שנתת לי."</p>
+      <p>אז הבנתי את הכל. כשאתה מקדים ואומר "לא מגיע לי כלום" — אפילו אם אתה לא כל כך מרגיש את זה באמת בתחילה — זה כבר נכנס בך, ואז זה נותן לך את ההבנה ואת התחושה שבאמת, איפה המעשים שלי, איפה עבודת ה' שלי, מה בעצם אני עושה, כמה אני עובד את ה'? ובכל זאת, בכל זאת, הקדוש ברוך הוא נתן לי את כל מה שהוא נתן לי. ואין אדם שלא יכול להתבונן על דברים טובים ונפלאים שה' נתן לו — ולו הנשימה עצמה, שאותה אנו נושמים כל רגע ורגע.</p>
+      <p>כשאנחנו רוצים לזכות לרמה של הודיה אמיתית, שבאה מעומק הלב, זה לא מספיק רק להתבונן על כל הדברים הטובים שיש לנו ולהגיד תודה — כי באיזשהו מקום בלב אנו עלולים להרגיש שבסדר, אנו מקבלים את זה בסופו של דבר "בחינם", רגילים לזה. אבל כשאנו רואים לא רק מה הקדוש ברוך הוא נתן לנו, אלא גם את מעשינו שלנו — האם בכלל זה מגיע לנו — ובכל זאת אנו מקבלים את מה שאנו מקבלים, פורצת מיד ממעמקי הלב תחושה אחרת לגמרי של הודיה: הודיה של "קטונתי מכל החסדים, מכל האמת... ועל זה אני אומר תודה."</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a><a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="10" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק י · לֹא מְקַבְּלִים לִפְנֵי שֶׁמּוֹדִים</div>
+      <h3 class="story-title">🍃 רש"י: נדרת ולא באת</h3>
+      <p>פרשת וישלח מלאה בהודיות ובמזבחות. מיד לאחר פרשת דינה, מקבל יעקב אבינו ציווי אלוקי: "וַיֹּאמֶר אֱלֹקִים אֶל יַעֲקֹב, קוּם עֲלֵה בֵית אֵל וְשֶׁב שָׁם, וַעֲשֵׂה שָׁם מִזְבֵּחַ לָאֵל הַנִּרְאֶה אֵלֶיךָ בְּבָרְחֲךָ מִפְּנֵי עֵשָׂו אָחִיךָ." שואלים המפרשים: מדוע צריך ציווי בכלל? האם אין זה מובן מאליו שעל יעקב לקיים את נדרו? מבאר רש"י דבר מבהיל: מכיוון שנדר יעקב והבטיח שיבוא להודות לקדוש ברוך הוא ולא בא, הגיעו אליו כל הצרות — צרת דינה נפלה בגלל שלא הודה כמו שהבטיח.</p>
+      <p>מיד לאחר מכן כתוב: "וַיֵּרָא אֱלֹקִים אֶל יַעֲקֹב עוֹד בְּבֹאוֹ מִפַּדַּן אֲרָם" — ומדגישה התורה את המילה "עוֹד". מבאר האלשיך דבר נפלא: זו הפעם הראשונה שיעקב נכנס לארץ ישראל, ורצה הקדוש ברוך הוא להיגלות אליו כאן — אבל אינו יכול. מדוע? "וְהִנֵּה זֶה דַּרְכּוֹ יִתְבָּרַךְ, כִּי הַבִּלְתִּי מַחֲזִיק לוֹ טוֹבָה עַל הַטּוֹבָה שֶׁהֵטִיב לוֹ, לֹא יַחֲזֹר לְהֵיטִיב לוֹ אוֹתָהּ הַטּוֹבָה." כך היא דרכו של בורא עולם: מי שאינו מודה על מה שכבר קיבל, אינו יכול לקבל עוד. כיוון שיעקב אבינו טרם הודה לקדוש ברוך הוא על מה שנגלה אליו בהר המוריה, לא יכול היה ה' להיגלות אליו שוב. לכן ציווהו: לך, עשה מזבח, תודה לקדוש ברוך הוא — ומיד לאחר מכן: "וַיֵּרָא אֱלֹקִים אֶל יַעֲקֹב עוֹד."</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a><a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="10" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק י · לֹא מְקַבְּלִים לִפְנֵי שֶׁמּוֹדִים</div>
+      <h3 class="story-title">🍃 האלשיך: "עוד" — רק לאחר ההודיה</h3>
+      <p class="bold-para">מוסיף הספורנו: "קוּם עֲלֵה... וְשֶׁב שָׁם" — לפני שמודים לקדוש ברוך הוא על כל מה שעבר, צריך לשבת ולהתבונן, לראות את הניסים שה' עשה. בלי זה אין מכירים טובה כראוי. וכשמגיע יעקב לאותו מקום ממש שבו נראה עליו ה' בפעם הקודמת, הוא חי מחדש את הצרה שעברה, נזכר איך היה פעם — וכך ההודיה הרבה יותר שלמה. הזוהר הקדוש מדייק שכתוב "וְנָקוּמָה וְנַעֲלֶה" בלשון רבים, ו"וְאֶעֱשֶׂה שָּׁם" בלשון יחיד — כי רק יעקב עצמו עבר את הצרות, ולכן רק הוא מחויב במזבח הזה, ולא בניו שלא חוו אותן צרות בעצמם.</p>
+      <p>ומכאן למדנו חיוב מן התורה להודות לקדוש ברוך הוא על הניסים שעשה עמנו — ועוד יסוד עמוק: כמה הקדוש ברוך הוא מחכה להודיה שלנו. אנו, כביכול, עושים חסד עם בורא עולם כשאנו מודים לו — כי הוא רוצה לתת לנו עוד, אך אם איננו מודים על העבר, אי אפשר לקבל את העתיד. יזכנו יתברך להודות לו תמיד, בכל ליבנו ומאודנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a><a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="11" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">מקורות</div>
+      <h3 class="story-title">📖 מקורות ומראי מקומות</h3>
+      <ol><li>בראשית לב, יא — "קטונתי מכל החסדים ומכל האמת"; רש"י שם</li><li>חובת הלבבות, שער הבחינה</li><li>בראשית לג, י — "כי חנני אלוקים וכי יש לי כל"</li><li>בראשית לא, לט — "היתי ביום אכלני חורב וקרח בלילה"</li><li>בראשית לג, ה — "הילדים אשר חנן אלוקים את עבדך"</li><li>שם משמואל / חידושי הרי"ם, פרשת וישלח — "כי במקלי עברתי את הירדן הזה"</li><li>קהלת ז, יד — "ביום טובה היה בטוב וביום רעה ראה"; פירוש רבנו בחיי, פרשת וישלח</li><li>בראשית לב, לג — "ויגע בכף ירכו"; ביאור החתם סופר</li><li>תהלים קמה — מזמור "אשרי" ומאה הברכות</li><li>תרגום אונקלוס, בראשית לב, יא</li><li>תהלים קמו, ו — "עושה שמים וארץ... השומר אמת לעולם"</li><li>שער הכוונות לאר"י הקדוש; ספר החרדים</li><li>תהלים קכו, ו — "הלוך ילך ובכה... בא יבוא ברינה"; בשם רבי זושא מאניפולי</li><li>בראשית לב, יא; רמב"ן, ספורנו ואבן עזרא שם — "קטונתי" כאי-ראייה מלכתחילה</li><li>מסכת שבת לג ע"ב — רבי שמעון בר יוחאי במערה; "אוי לי שראיתיך בכך"</li><li>בראשית לה, א — "קום עלה בית אל ושב שם ועשה שם מזבח"; רש"י שם</li><li>בראשית לה, ג — "לאל העונה אתי ביום צרתי"; ספורנו, רד"ק ואלשיך שם</li><li>בראשית לה, ז — "וירא אלקים אל יעקב עוד"; אלשיך שם</li><li>זוהר חלק א, קעג ע"ב — "ונקומה ונעלה" לשון רבים, "ואעשה שם" לשון יחיד</li></ol>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">שיעורו של הרב יהודה טאוב · <a href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%A9%D7%91%D7%95%D7%A2%20%D7%95%D7%97%D7%92%D7%99%D7%9D/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%A7%D7%95%D7%9C%20%D7%AA%D7%95%D7%93%D7%94%20-%20%20%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%94%D7%A9%D7%91%D7%95%D7%A2/008%20%D7%95%D7%99%D7%A9%D7%9C%D7%97/%D7%A7%D7%98%D7%95%D7%A0%D7%AA%D7%99%20%D7%9E%D7%9B%D7%9C%20%D7%94%D7%97%D7%A1%D7%93%D7%99%D7%9D.html" target="_blank" rel="noopener">הספר המלא עם הקראה</a></div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id": 1, "name": "הקדמה", "icon": "📖", "color": "#c62b6b", "stories": [{"id": 1, "title": "הקדמה", "icon": "📖"}]}, {"id": 2, "name": "אִם מַגִּיעַ לִי — אִי אֶפְשָׁר לְהוֹדוֹת", "icon": "🌿", "color": "#6d28d9", "stories": [{"id": 2, "title": "שום דבר אינו מגיע", "icon": "🌿"}, {"id": 3, "title": "מאה שערים מכוח מאה ברכות", "icon": "🌿"}]}, {"id": 3, "name": "קָטֹנְתִּי לַמְרוֹת כָּל הַהֶישֵּׂגִים", "icon": "💛", "color": "#e08e00", "stories": [{"id": 4, "title": "שישים ושלוש שנות תורה", "icon": "💛"}, {"id": 5, "title": "כלום לא נשאר", "icon": "💛"}]}, {"id": 4, "name": "כִּי בְמַקְלִי — הֶחָסֶד כְּאִלּוּ עַכְשָׁו", "icon": "🕯️", "color": "#0f8f87", "stories": [{"id": 6, "title": "מדוע לשון הווה", "icon": "🕯️"}, {"id": 7, "title": "לפרוע קודם את החוב לשם", "icon": "🕯️"}]}, {"id": 5, "name": "סוֹד שָׂרוֹ שֶׁל עֵשָׂו וּמֵאָה הַבְּרָכוֹת", "icon": "🎶", "color": "#1e63c9", "stories": [{"id": 8, "title": "להתפלל לפני, להודות אחרי", "icon": "🎶"}, {"id": 9, "title": "מאה ברכות בכוונה כחומת מגן", "icon": "🎶"}]}, {"id": 6, "name": "מִכָּל הָאֱמֶת — חֶסֶד קָבוּעַ וְחֶסֶד מְיֻחָד", "icon": "✨", "color": "#c4620a", "stories": [{"id": 10, "title": "תרגום אונקלוס: טוֹוָן", "icon": "✨"}, {"id": 11, "title": "חוקי הטבע הם גם הם חסד", "icon": "✨"}]}, {"id": 7, "name": "מִכָּל הָאֱמֶת — הַזְּכוּת לַעֲבֹד הִיא עַצְמָהּ חֶסֶד", "icon": "🔍", "color": "#c62b6b", "stories": [{"id": 12, "title": "גם המצוות שלי הן מתנה", "icon": "🔍"}, {"id": 13, "title": "הזורעים בדמעה וקוצרים ברינה", "icon": "🔍"}]}, {"id": 8, "name": "קָטָן מִכְּדֵי לִזְכּוֹת", "icon": "🌟", "color": "#6d28d9", "stories": [{"id": 14, "title": "שני פירושים ל\"קטונתי\"", "icon": "🌟"}, {"id": 15, "title": "אוי לי שראיתיך בכך", "icon": "🌟"}]}, {"id": 9, "name": "לֹא מַגִּיעַ לִי כְּלוּם — וְאָז תּוֹדָה", "icon": "🧭", "color": "#e08e00", "stories": [{"id": 16, "title": "יעקב בודק את עצמו לפני שהוא מודה", "icon": "🧭"}, {"id": 17, "title": "השיר שנשמע מבחוץ בציון במירון", "icon": "🧭"}]}, {"id": 10, "name": "לֹא מְקַבְּלִים לִפְנֵי שֶׁמּוֹדִים", "icon": "🍃", "color": "#0f8f87", "stories": [{"id": 18, "title": "רש\"י: נדרת ולא באת", "icon": "🍃"}, {"id": 19, "title": "האלשיך: \"עוד\" — רק לאחר ההודיה", "icon": "🍃"}]}, {"id": 11, "name": "מקורות", "icon": "📖", "color": "#1e63c9", "stories": [{"id": 20, "title": "מקורות ומראי מקומות", "icon": "📖"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+
