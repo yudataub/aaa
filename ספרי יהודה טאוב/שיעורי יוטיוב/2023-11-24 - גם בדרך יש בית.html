@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 גם בדרך יש בית</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 גם בדרך יש בית</h1>
+  <p>מתוך שיעורו של הרב ירון אוזן לפרשת ויצא: למצוא את ה׳ בכל מקום, לשמור על התורה בדרך ולגלות את האור שבתוכנו</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ גם בדרך יש בית" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/6DfDLmWODno?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/6DfDLmWODno/hqdefault.jpg" alt="גם בדרך יש בית" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=6DfDLmWODno" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להכין לב לדרך חדשה</div>
+      <h3 class="story-title">📚 לפני הדרך, עוד ארבע עשרה שנים</h3>
+      <p>יעקב אבינו יוצא במצוות הוריו כדי לשאת אישה. הוא כבר אדם מבוגר, צדיק שגדל בבית יצחק ולמד תורה מילדותו. לכאורה, הגיע הזמן ללכת ולעשות.</p>
+      <p>אבל רש״י (בראשית כח, ט) מגלה שבדרך הוא טמן את עצמו ארבע עשרה שנים בבית מדרשם של שם ועבר. לא ימים אחדים של הכנה, אלא שנים ארוכות. מה עוד היה עליו ללמוד? וכי התורה שלמד בבית אביו לא הספיקה?</p>
+      <p>השאלה הזאת פותחת את שיעורו של הרב ירון אוזן לפרשת ויצא. היא אינה רק שאלה על לוח הזמנים של יעקב. היא שאלה על הדרך שבה אדם נושא את התורה אל מקום חדש.</p>
+      <p>עד עכשיו חי יעקב בתוך בית קדוש. עכשיו הוא הולך אל לבן, אל סביבה אחרת מאוד, ועתיד לבנות שם בית. הוא אינו רוצה שהשליחות הטובה תיעשה על חשבון כל מה שכבר נבנה בתוכו.</p>
+      <p>לכן הוא מתכונן. לא מפני שהוא בורח מן המעשה, אלא מפני שהוא רוצה לעשותו ביושר. יש ציווי, ויש צורך לדעת איך לחיות את הציווי בתוך הנסיבות.</p>
+      <p>כאן מתחיל יסוד קרוב לחיינו: המעבר אל מקום חדש דורש דעת. עבודה, בית, לימודים או מסגרת חדשה יכולים לפתוח אפשרויות, וגם ניסיונות. אנחנו רוצים ללכת עם התורה, ולברר מראש מה יעזור לנו לשמור אותה חיה. יעקב מלמד שההכנה עצמה יכולה להיות חלק מן הנאמנות לשליחות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להכין לב לדרך חדשה</div>
+      <h3 class="story-title">🌱 התורה של שם ועבר</h3>
+      <p>ב״אמת ליעקב״ לרבי יעקב קמינצקי, ב״אמרי יוסף״ מספינקא ובדברי רבי מאיר יחיאל מאוסטרובצה הובא, כל אחד בדרכו, ביאור להכנתו של יעקב.</p>
+      <p>יצחק אבינו היה עולה תמימה. חייו מתוארים כקדושה מיוחדת, והוא לא יצא אל ההתמודדות שבה יעקב עתיד לעמוד בבית לבן. התורה שלמד יעקב בבית הייתה עצומה, אבל עתה היה צורך ללמוד גם דרך מסוימת של עמידה בתוך סביבה מקולקלת.</p>
+      <p>שם ועבר חיו בדורות קשים. המבול והפלגה מציינים עולמות שבהם רבים התרחקו מן הטוב. בתוך אותם דורות נשמרה אצלם דרך של אמונה.</p>
+      <p>יעקב הלך ללמוד מהם איך לא לאבד את עצמו. לא רק לדעת את האמת כשהכול תומך בה, אלא לדעת איך להחזיק בה כשסביבתו הולכת לכיוון אחר.</p>
+      <p>ההבחנה אינה מעמידה תחרות בין הצדיקים. היא מלמדת שלכל עבודה יש כלים מתאימים. אדם גדול יכול להכיר את מעלת התורה שקיבל, ובכל זאת להבין שעליו לקבל עוד הכנה למצב חדש.</p>
+      <p>זהו גם שיעור בענווה. ״כבר למדתי״ אינו תמיד תשובה מספקת ל״מה נדרש עכשיו״. אם המשימה משתנה, נרצה לשאול מחדש. מי יכול ללמד אותי? מה צריך לשמור? איזה ניסיון עוד לא הכרתי?</p>
+      <p>מתוך כך ארבע עשרה השנים אינן עיכוב חסר מטרה. הן נעשות בניין של יכולת: ללכת אל חרן, להקים בית ולעמוד שם עם לב שאינו מאבד את התורה שקיבל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להכין לב לדרך חדשה</div>
+      <h3 class="story-title">🧡 להעביר ליוסף את הדרך</h3>
+      <p>אחר כך יעקב מוסר ליוסף את מה שלמד בבית שם ועבר. רש״י (בראשית לז, ג) מתאר את הקשר המיוחד הזה בתוך ביאורו ל״בן זקנים״ (בראשית לז, ג): בן חכם שקיבל מתורת אביו.</p>
+      <p>למה דווקא התורה הזאת? הרב קושר את הדבר לעתידו של יוסף. גם הוא יגיע למקום שאין בו חממה רוחנית. מצרים תעמיד אותו מול ניסיונות קשים, והוא יצטרך להחזיק את הקשר עם ה׳ בתוך בית זר ובתוך מציאות שאינו בוחר בה.</p>
+      <p>הידיעה שיוסף יקבל מאביו אינה רק אוסף מידע. היא דרך להיות אדם של תורה בתוך עולם שאינו נותן לו את כל התמיכה. מה שיעקב למד לקראת חרן יכול להיעשות כוח ליוסף במצרים.</p>
+      <p>כך התורה עוברת בין הדורות גם לפי הצורך. הורה או מורה רוצים לתת לילד כלים לחיים, לא רק מילים שיחזור עליהן. הם יודעים שיבוא יום שבו לא יעמדו לידו בכל רגע.</p>
+      <p>המסירה צריכה אפוא לכלול שייכות פנימית: למה אני שומר? אל מי אני פונה כשקשה? איך אני בוחר כשאין מי שמביט?</p>
+      <p>יוסף לא יכול היה לקחת עמו את בית אביו כפי שהוא. אבל הוא יכול היה לקחת את התורה שנכנסה לתוכו. היא נעשתה חלק מן האדם, ולא רק חלק מן המקום שבו גדל. זהו הכוח שאנחנו מבקשים לבנות בחינוך: שהאור יוכל ללכת עם הילד גם כשהדרך תרחיק אותו מן הבית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להכין לב לדרך חדשה</div>
+      <h3 class="story-title">🔢 למה דווקא ארבע עשרה</h3>
+      <p>ארבע עשרה השנים מזמינות גם ביאור של מספר. ב״אמרי יוסף״ הובא קשר אל שבע המידות ואל תיקונן מול מה שעומד כנגדן.</p>
+      <p>חסד, גבורה, תפארת והמידות הנוספות אינן רק שמות למושגים רחוקים. הן קשורות גם לאופן שבו אדם חי: איך הוא נותן, איך הוא מציב גבול, ואיך הכוחות שבתוכו מצטרפים לעבודת ה׳.</p>
+      <p>בספרי המקובלים, ובהם דברי רבי צבי אלימלך מדינוב שהזכיר הרב, הובא הקשר בין שבע המידות לבין שבעת העמים. הביאור של ארבע עשרה השנים מצרף שבע של בניין הקדושה ושבע של ההתמודדות עם מה שמולה.</p>
+      <p>הרב אינו מבקש להפוך את המספר לנוסחה שכל אדם צריך להעתיק. הוא מלמד שההכנה של יעקב הייתה מקיפה. לא די בידיעה אחת או בהתרגשות קצרה. נבנה בו סדר שיכול לעמוד במבחן.</p>
+      <p>גם אצלנו השאלה יכולה להיות על רוחב ההכנה. אדם רוצה לצאת לשליחות טובה, אבל צריך לשמור על כמה דברים יחד: המחשבה, הדיבור, השימוש בכסף, היחס לאחרים והגבולות.</p>
+      <p>אם נתכונן רק לנקודה אחת, אולי נופתע במקום אחר. התורה מלמדת לבנות אדם שלם. יעקב הולך לשאת אישה ולהקים את בית ישראל, ולכן ההכנה אינה פרט צדדי. היא חלק מן היסוד שעליו יעמוד הבית. המספר מזכיר כמה עמוקה ורצינית יכולה להיות העבודה שקודמת לרגע היציאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להכין לב לדרך חדשה</div>
+      <h3 class="story-title">📜 חיים שנעשו תורה</h3>
+      <p>ב״אוהב ישראל״ מאפטא הובא מבט על פרשיות יעקב: הוא זכה להפוך את חייו לתורה. מסעותיו, דיבוריו, היחס לרחל וההתנהלות בבית לבן נעשו חלק מספר התורה שלנו.</p>
+      <p>התורה יכולה הייתה לסכם בקיצור: הלך, נשא אישה, הקים משפחה וחזר. אבל היא מאריכה בפרטים. מה אמר, איך נהג ומה עשה בתוך מפגש מסוים. אות מן הסיפור הזה חסרה, וספר התורה אינו שלם.</p>
+      <p>הדבר מלמד על קשר עמוק בין הליכה להלכה. לא רק השעה שבה אדם יושב ללמוד, אלא גם הדרך שבה הוא חי יכולה להיות מוארת בתורה.</p>
+      <p>אין הכוונה שכל מעשה שלנו נעשה אוטומטית קדוש. יעקב מלמד על עבודה: לתת לדעת התורה לכוון את החיים. לשאול לא רק מה מותר, אלא גם מה אמיתי ומה ראוי בתוך האחריות שנמסרה לנו.</p>
+      <p>״בכל דרכיך דעהו״ (משלי ג, ו) נותן כיוון. אפשר לזכור את ה׳ בתוך שיחה, בתוך עבודה ובתוך בחירה בבית. האדם אינו מחלק את היום לשעה שבה יש בורא ולשעות שבהן הוא מסתדר בלעדיו.</p>
+      <p>כך נרצה לקרוא את הפרשה. לא רק לחפש רעיון יפה, אלא לראות איך הרעיון נכנס אל המעשה. יעקב לומד שנים, ואחר כך הולך. אם הלימוד חי בתוכו, גם ההליכה יכולה לגלות אותו. התורה אינה נשארת על המדף; היא לומדת לדבר מתוך החיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להכין לב לדרך חדשה</div>
+      <h3 class="story-title">🕊️ אליפז והכוח שלא להרוג</h3>
+      <p>עשו שלח את אליפז להרוג את יעקב. אבל אליפז גדל, כפי שהביא רש״י (בראשית כט, יא), בחיקו של יצחק, וקיבל ממנו תורה. בתוך השליחות הקשה הזאת נשאר בו דבר שהניח לו להימנע מן הרציחה.</p>
+      <p>הוא שאל את יעקב איך יוכל לחזור בלי לקיים את בקשת אביו. יעקב נתן לו את רכושו, על פי מאמר חז״ל שעני חשוב כמת. אליפז לקח, ויעקב נשאר בלי מה שנשלח עמו לדרך.</p>
+      <p>הרב התעכב על הכוח של תורה בילדות. שנים אחרי הלימוד, בתוך רגע של סכנה, נשאר רושם שמנע מעשה נורא. אין צורך לטעון שהאדם כבר צדיק בכל דרכיו כדי להכיר בטוב שפעל בו כאן.</p>
+      <p>המעשה גם מסביר את מצבו של יעקב בהמשך. הוא מגיע לבית לבן בידיים ריקות. לבן מחפש את הרכוש שאולי הביא, ויעקב מספר מה עבר עליו. מאחורי הדלות עומד מסע של הצלה.</p>
+      <p>בתוך האובדן נשמרו החיים. התורה שנלמדה אצל יצחק השפיעה גם על מי שנשלח נגד יעקב. זהו שיעור בתקווה: הטוב שאדם קיבל אינו תמיד נראה מיד, ולעיתים הוא מתעורר דווקא ברגע שבו דרושה בחירה אחת מכרעת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לפגוש את המקום בלילה</div>
+      <h3 class="story-title">🌿 שכר שאינו הולך לאיבוד</h3>
+      <p>חז״ל מלמדים שהקדוש ברוך הוא אינו מקפח שכר של בריה. הרב קשר את היסוד למעשהו של אליפז, שנמנע מהריגת יעקב למרות השליחות שקיבל.</p>
+      <p>הוא הזכיר את דברי רש״י על אליפז התימני שבספר איוב, ואת הרוח שנשרה עליו מכוח התורה שלמד אצל יצחק. לצד זאת הביא מן הרמ״ע מפאנו מסורת של גלגולו באונקלוס.</p>
+      <p>אונקלוס רצה להתגייר. בגמרא בגיטין מתואר בירור שעשה עם דמויות מן העבר, ובתוך המסורת שהביא הרב נקשר המפגש עם טיטוס גם לשורשו של עשו. למרות העצה שהייתה אמורה להרחיקו, אונקלוס בחר להתקרב.</p>
+      <p>הוא זכה לתרגם את התורה, ובמסכת מגילה נקשר תרגומו למסירה שקיבל מרבי אליעזר ומרבי יהושע. בתוך הביאור של גלגולי הנשמות מופיע כאן תיקון: מי שפגע ברכושו של יעקב, אך שמר את חייו, נעשה שותף במסירת התורה.</p>
+      <p>הדברים נמסרים כבירור שהרב הביא מספרי חז״ל ומספרי המקובלים. אין לנו דרך לקרוא כך בעצמנו את כל מפגשי החיים.</p>
+      <p>העיקר הקרוב הוא ששום בחירה טובה אינה חסרת ערך. גם אדם שיש בו צדדים קשים יכול לעשות דבר שהבורא רואה. אנחנו רוצים להבחין בטוב ולהגדיל אותו, לא לומר שכיוון שיש קלקול במקום אחר, ממילא הכול נמחק. התקווה לתיקון יכולה להתחיל במעשה אחד שנשמר בתוך שעה קשה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לפגוש את המקום בלילה</div>
+      <h3 class="story-title">🌙 תפילה כשהיום מחשיך</h3>
+      <p>״ויפגע במקום וילן שם כי בא השמש״ (בראשית כח, יא). במסכת ברכות נאמר שיעקב תיקן תפילת ערבית, וחז״ל לומדים שפגיעה היא לשון תפילה.</p>
+      <p>יעקב יצא מן הבית, איבד את רכושו, ועכשיו נמצא בדרך כשהשמש שוקעת. במקום הזה נפתחת תפילה שלא תלויה באור היום.</p>
+      <p>רבי צדוק הכהן, בשם החוזה מלובלין, קשר את ערבית גם לגלות. הלילה נעשה זמן שבו צריך להחזיק אמונה בתוך הסתרה. ״ואמונתך בלילות״ (תהילים צב, ג) אינה רק אמירה על החושך שבחוץ, אלא על לב שממשיך לפנות אל ה׳ כשאינו רואה הכול.</p>
+      <p>זו אינה תפילה של ויתור. היא דרך להיות מחובר בתוך מצב שאינו ברור. אם האדם מחכה שרק אז יוכל לעבוד, ייתכן שהלילה יעבור בלי מפגש. יעקב מלמד לפנות עכשיו.</p>
+      <p>הרב קשר לכך את הצורך להיות בקי גם בעלייה וגם בירידה, כפי שמתבאר בליקוטי מוהר״ן. לא אותה עבודה בכל מצב, אבל אותו קשר שצריך להישמר.</p>
+      <p>נרצה ללמוד מערבית את האפשרות לתת מילים גם לשעה חלשה. לומר מה חסר, לבקש שמירה ולהודות על מה שעוד נמצא. התפילה אינה דורשת שכבר נדע איך ייראה הבוקר.</p>
+      <p>יעקב פוגש מקום בדרך, ובתוכו פוגש את הבורא. הלילה אינו מוכרח להיות זמן שאין בו תורה. הוא יכול להיות המקום שבו האמונה לומדת להישאר חיה גם כשהעיניים עדיין אינן רואות את התשובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לפגוש את המקום בלילה</div>
+      <h3 class="story-title">💍 מה עושה הבורא אחרי הבריאה</h3>
+      <p>מטרוניתא שאלה את רבי יוסי בן חלפתא בכמה ימים נברא העולם. הוא השיב: בשישה. ואז שאלה מה הקדוש ברוך הוא עושה מאז ועד עתה.</p>
+      <p>במדרש שהביא הרב נאמר שהוא מזווג זיווגים. המטרוניתא חשבה שהדבר פשוט. גם היא יכולה, לכאורה, לחבר אנשים. היא לקחה עבדים ושפחות וקבעה להם בני זוג.</p>
+      <p>אבל למחרת התברר שנוצרו מריבות ופגיעות. החיבורים שעשתה בלי לדעת את הלב ואת ההתאמה לא נעשו בתים של שלום. היא הודתה שאין הדבר קל כפי שחשבה.</p>
+      <p>הסיפור נותן כבוד לעומק השידוך. לא מספיק להציב שני אנשים זה לצד זה. צריך התאמה, יכולת וקשר שיכול לחיות בתוך המציאות.</p>
+      <p>ובכל זאת, הרב שואל שאלה נוספת. האם מאז הבריאה עוסק הבורא רק בזיווג בין איש לאישה? הרי יש בריאות, פרנסה, תורה וצרכים רבים. מה פירוש התיאור הרחב הזה של הנהגת העולם?</p>
+      <p>נשאיר את השאלה פתוחה לזמן קצר. בהמשך נלמד מן הבעל שם טוב שהזיווג אינו רק משרד שידוכים. הוא יכול לתאר את כל המפגש בין אדם לבין מה שנצרך לתיקונו.</p>
+      <p>כך המדרש אינו מצמצם את הבורא לעיסוק אחד. הוא פותח אפשרות לראות את החיים כמארג של התאמות, שרק מי שמכיר את כל הנשמות ואת כל הכוחות יכול להנהיג בשלמות. קודם נלמד מה פירוש המקום שבו כל המפגשים האלה מתרחשים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לפגוש את המקום בלילה</div>
+      <h3 class="story-title">🚶 חצי הדרך של יעקב יצחק</h3>
+      <p>במדרש הובאה ההבחנה בין אדם שזיווגו בא אליו, כמו יצחק שקיבל את רבקה, לבין אדם שהולך לקראת זיווגו, כמו יעקב.</p>
+      <p>הרב סיפר על החוזה מלובלין, רבי יעקב יצחק. במסירה על זיווגו השני נקבע תחילה שהאישה תבוא אליו, ולבסוף הוחלט שכל אחד ילך חצי מן הדרך, והם ייפגשו באמצע.</p>
+      <p>בדחן אמר לו דבר הקשור לשמו: אצל יצחק בא הזיווג אליו, ואצל יעקב הוא הולך לקראתו. כיוון שכבודו נקרא גם יעקב וגם יצחק, מתאימה לו דרך שיש בה חצי מזה וחצי מזה.</p>
+      <p>הסיפור הובא בחיוך, אבל הוא גם מזכיר שאין צורה אחת לכל מסע. יש מי שמקבל דבר במקומו, ויש מי שנדרש לצאת ולטרוח. ההשגחה אינה נמדדת רק בשאלה כמה קצרה הייתה הדרך.</p>
+      <p>לפעמים אנחנו מסתכלים על אדם אחר וחושבים: לו הכול הגיע בקלות, ולי צריך לעבוד. אבל אולי עצם ההליכה היא חלק מן העבודה שלנו. איננו יודעים את כל הנתיבים.</p>
+      <p>יעקב הולך לחרן, יצחק נשאר בארץ, והחוזה פוגש את זיווגו באמצע הדרך כפי שסופר. השוני אינו מבטל את האמונה. הוא מלמד להפסיק לדרוש שכל החיים ייראו כמו סיפור אחד שכבר הכרנו. אפשר לעבוד בתוך הדרך שנפתחת, ולבקש שההליכה תהיה נאמנה ונכונה גם אם אינה קצרה כפי שקיווינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לפגוש את המקום בלילה</div>
+      <h3 class="story-title">🌍 מקומו של עולם</h3>
+      <p>מדוע הקדוש ברוך הוא נקרא ״המקום״? המדרש על ״ויפגע במקום״ (בראשית כח, יא) אומר שהוא מקומו של עולם, ואין העולם מקומו.</p>
+      <p>אדם נמצא במקום מסוים. הוא צריך חדר, רחוב ועיר, ויכול לעבור מהם למקום אחר. הבורא אינו נברא שנמצא בתוך העולם באותה צורה. העולם מתקיים מכוחו, ולא הוא מכוח העולם.</p>
+      <p>״הנה מקום אתי״ (שמות לג, כא) שנאמר למשה מלמד, לפי המדרש שהביא הרב, שהמקום שייך אל הנהגתו. אין העולם כלי שסוגר את מי שברא אותו.</p>
+      <p>השם מופיע גם בהגדה: ״ברוך המקום״. ובנוסח ניחום אבלים נאמר ״המקום ינחם״. המילים מזכירות שיש מקור לקיום, וגם כאשר אנחנו פוגשים חסרון גדול, הקשר אינו תלוי רק במה שנראה לעיניים.</p>
+      <p>המהר״ל, כפי שהביא הרב, קשר מקום לקיום. דבר שיש לו מקום קבוע מקבל יציבות. הבורא נותן קיום לכל מה שיש, ולכן הוא נקרא מקומו של עולם.</p>
+      <p>זהו יסוד שאפשר לשאת אל החיים. לא רק אני בתוך מקום, אלא המקום וכל מה שבתוכו קיימים מכוח ה׳. שום דרך אינה מוציאה אותנו אל מציאות שיש לה בורא אחר.</p>
+      <p>המחשבה אינה פותרת כל שאלה, אבל היא פותחת קשר. יעקב יכול לצאת מביתו, ועדיין לא לצאת מן ההשגחה. מה שנדרש הוא למצוא איך לעבוד את ה׳ גם במקום החדש, ולא להניח שהקשר נשאר רק בבית שממנו בא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לפגוש את המקום בלילה</div>
+      <h3 class="story-title">🔎 הצמצום אינו סיפור על חדר ריק</h3>
+      <p>ב״עץ חיים״ מתוארת ראשית ההשתלשלות בלשון אור עליון פשוט, ולאחריה צמצום וחלל שבו נבראים העולמות. הרב ביקש להסביר את הדברים במידה הנצרכת לעבודה.</p>
+      <p>בין המקובלים יש בירורים עמוקים על הצמצום. הרב ציין שרבים מן המקורות שהוא הולך לאורם מבארים שאינו כפשוטו. אין לצייר כאילו דבר גשמי זז לצד והשאיר חדר שהבורא אינו נמצא בו.</p>
+      <p>רבי יוסף אירגאס ב״שומר אמונים״ הקדמון הובא בתוך הבירור. ההסתרה אינה כמות של חומר שנע ממקום למקום. היא קשורה לדרך שבה הנבראים מקבלים גילוי ולכוח שהם יכולים לשאת.</p>
+      <p>גם כאן יש גבול לדיבור. איננו מדברים בעצמותו של הבורא, אלא במה שגילה לנו מן הנהגתו. השפה של אור, קו וצמצום אינה צילום של דבר שנוכל לראות בעיניים.</p>
+      <p>הבירור הזה חשוב כדי שלא נטעה בעבודת ה׳. אם אדם חושב שיש מקום שהבורא הסתלק ממנו לגמרי, הוא עלול לחשוב שגם חייו יכולים להתרחש מחוץ לקשר. ההסתרה מלמדת משהו אחר: יש קיום שניתן, אבל אינו גלוי לנו בכל עוצמתו.</p>
+      <p>מכאן אפשר להבין מדוע האדם מרגיש שיש לו מרחב לפעול ולבחור. המרחב אינו עצמאות מוחלטת מן הבורא. הוא חלק מן הדרך שבה נוצר עולם של אחריות. בתוך ההסתרה אנחנו לומדים לחפש את המקור של החיים, ולתת לו מקום במעשינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העולם מתקיים, והלב בוחר</div>
+      <h3 class="story-title">☀️ אור במידה שהכלי יכול לקבל</h3>
+      <p>אדם אינו יכול להביט בשמש בלי הגנה. אור גדול מדי אינו נעשה מועיל רק מפני שהוא גדול. כדי לראות ולקבל, צריך מידה המתאימה לכלי.</p>
+      <p>בעל התניא, בשער הייחוד והאמונה, משתמש במבט על השמש והמגן כדי לבאר גילוי והסתרה. הרב הוסיף משל מן החשמל: מכשיר שאינו מתאים למתח גבוה צריך שנאי, שיוציא עבורו את המידה שהוא יכול לקבל.</p>
+      <p>המשלים אינם הגדרה של האלוקות. הם דרך להבין את הצורך בהגבלה מצד הנברא. מה שיכול להתקיים במידה אחת עלול להתבטל מול עוצמה שאינה מתאימה לו.</p>
+      <p>כך מתבאר הכוח של גבול בתוך הבריאה. העולם מלא נבראים חסרים ומוגבלים, וההנהגה נותנת להם קיום לפי מידתם. ״בורא נפשות רבות וחסרונן״ מזכיר לנו גם את החסרון הזה.</p>
+      <p>אדם עלול לחשוב שגבול הוא תמיד עונש. אבל לפעמים דווקא הגבול מאפשר חיים. ילד מקבל לימוד לפי יכולתו, גוף צריך סדר, וגם הלב אינו יכול לשאת כל דבר בבת אחת.</p>
+      <p>נרצה ללמוד מכאן ענווה כלפי המידה שניתנה לנו. לא להתייאש מפני שאיננו יכולים הכול, ולא לדרוש מעצמנו אור שאין לנו עדיין כלי עבורו. יש מקום לגדול, ויש דרך לבנות כלי. ההשגחה אינה רק נותנת אור; היא גם מאפשרת לקבל אותו כך שיוכל להיות חיים בתוך עולם מוגבל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העולם מתקיים, והלב בוחר</div>
+      <h3 class="story-title">🕯️ כוח הגבול אינו חסרון בבורא</h3>
+      <p>רבנו עזריאל, רבו של הרמב״ן, הובא בתוך הבירור על כוח הגבול. אם נייחס לבורא רק כוח שאינו מוגבל ונשלול ממנו כל כוח של הגבלה, ניצור חסרון שאינו שייך בו.</p>
+      <p>הרב מסביר מתוך הדברים שגם האפשרות של גבול נובעת ממנו. לפני גילוי הצמצום, בלשון הלימוד, כוח הגבול אינו ניכר בתוך האור הבלתי מוגבל. כמו אור נר שאינו נראה בבירור בתוך שמש חזקה.</p>
+      <p>כשההסתרה מאפשרת את גילוי הגבול, נוצרת דרך לנבראים להתקיים. הקו והצינור המתוארים בספרי הקבלה מבטאים המשכה במידה, לא ניתוק מן המקור.</p>
+      <p>המשל של הנר עוזר להבחין בין דבר שאינו קיים לבין דבר שאינו ניכר. יכול להיות כוח ממשי שאיננו רואים עכשיו את צורתו. ההנהגה מגלה אותו באופן שבו יוכל לבנות עולם.</p>
+      <p>לצורך העבודה, אנחנו לומדים שאין צורך לבחור בין בורא גדול לבין עולם של פרטים. אותה הנהגה נותנת חיים גם למידה הקטנה. גבולות, זמנים וצרכים אינם מחוץ לבריאה.</p>
+      <p>כך אפשר לפגוש את ה׳ גם בתוך יום מוגבל מאוד. איננו צריכים לחכות שתהיה בידינו יכולת אינסופית. יש לנו זמן מסוים, גוף מסוים ותפקיד מסוים. העבודה היא לתת להם תוכן נכון. בתוך המידה הזאת יכול להופיע אור גדול, דווקא מפני שהוא קיבל כלי שבו אפשר לחיות ולעשות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העולם מתקיים, והלב בוחר</div>
+      <h3 class="story-title">🌿 אני ה׳ לא שניתי</h3>
+      <p>״אני ה׳ לא שניתי״ (מלאכי ג, ו). השינויים שאנחנו פוגשים אינם שינוי בעצמות הבורא. אנחנו חיים בתוך זמנים, גילויים והסתרות, אבל אין לנו רשות לחשוב שכל תנועה בחוויה שלנו משנה את מי שנותן לה קיום.</p>
+      <p>הרב הביא את הבירור על מה שנקרא ״מצידנו״. בלשונו של רבי מאיר פאפירש, הדיבור מותאם לערכנו: הדרך שבה אנחנו משיגים את ההנהגה.</p>
+      <p>יש שעה שבה הקשר מאיר לנו יותר, ויש שעה שבה הוא נסתר. יש תחושה של קרבה, ויש תחושה של מרחק. התחושות האלה חשובות, אבל אינן המדד היחיד לשאלה אם ה׳ נמצא.</p>
+      <p>בעל התניא מדבר על ממלא כל עלמין וסובב כל עלמין, ועל דרכי ייחוד שונות. הרב קשר את הדברים גם לבירורים בנפש החיים של רבי חיים מוולוז׳ין. אלה סוגיות עמוקות, אבל היסוד המשותף שנצרך כאן הוא שאין מרחב שמתקיים מעצמו.</p>
+      <p>בקריאת שמע אנחנו מכוונים לאחדות הבורא. אחר כך חוזרים אל החיים שיש בהם מצוות, אחריות ובחירה. ההכרה באחדות אינה היתר לומר שכל מעשה שווה ושאין גבולות.</p>
+      <p>זהו חיבור חיוני: מקור החיים אחד, והדרך שבה אנו נדרשים לחיות התגלתה בתורה. אם נפריד בין הדברים, אפשר שהרעיון הגבוה ישמש תירוץ. אנחנו רוצים שהוא יהיה כוח לעבוד. לא לומר ״הכול מן ה׳״ ולהפסיק לבחור, אלא לבחור נכון מתוך הידיעה שאין מקום שהקשר אינו אפשרי בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העולם מתקיים, והלב בוחר</div>
+      <h3 class="story-title">🚪 בוא אל פרעה</h3>
+      <p>הקדוש ברוך הוא אומר למשה ״בא אל פרעה״ (שמות י, א). לכאורה, אם הוא שולח אותו, היה אפשר לומר ״לך״. הרב קושר את הלשון אל היסוד שאין מקום פנוי מן הבורא.</p>
+      <p>אדם אומר לחברו ללכת למקום שבו הוא עצמו אינו נמצא. אבל משה אינו יכול ללכת אל מציאות שמחוץ להנהגת ה׳. גם מול פרעה, גם בתוך קושי וקליפה, הוא אינו יוצא מן הקשר.</p>
+      <p>זו אינה הכחשה של הרע. פרעה אכן מעמיד שעבוד, ומשה נדרש לפעול נגדו. הנוכחות של הבורא אינה אומרת להסכים עם כל מה שיש בעולם.</p>
+      <p>היא אומרת שהעבודה נגד הרע יכולה להיעשות לפניו. אין צורך לחשוב שה׳ נמצא רק במקומות נעימים ורק בבית המדרש שבו הכול מסודר.</p>
+      <p>יעקב עומד לצאת אל לבן. כמו משה שעתיד לעמוד מול פרעה, הוא צריך לזכור שגם שם יש דרך לפגוש את המקום. הוא לומד, מתפלל ומכין את עצמו לכך.</p>
+      <p>אפשר לשאת את המחשבה גם אל מפגש קשה בחיינו. שיחה שאנו חוששים ממנה, אחריות חדשה או מקום שאיננו מרגישים בו בבית. לא נלך בלי דעת ובלי גבולות, אבל נוכל לבקש: ה׳, תן לי למצוא את הדרך לעבוד אותך גם כאן.</p>
+      <p>״בוא״ נעשה אפוא מילה של ליווי. האדם יוצא אל המשימה, אבל אינו צריך לדמיין שהוא ננטש בשעה שבה הוא הולך לעשות את המוטל עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העולם מתקיים, והלב בוחר</div>
+      <h3 class="story-title">🙏 המקום שבו אפשר לבקש רחמים</h3>
+      <p>בפרקי אבות נאמר שלא לעשות את התפילה קבע, אלא רחמים ותחנונים לפני המקום. המילה שקיבלנו מן המדרש חוזרת עכשיו אל העבודה הפשוטה ביותר: תפילה.</p>
+      <p>אפשר לקבוע מקום לתפילה, כפי שאמרו חז״ל, ודווקא בתוך הקביעות לשמור על לב שאינו נעשה מכני. המקום החיצוני נותן סדר, והפנייה אל המקום מלמדת מי מקיים את הסדר ואת האדם.</p>
+      <p>הרב הזכיר גם רמזי אותיות ומספרים שמקשרים את המילה מקום לשם הקדוש, מתוך סדרי הכוונות בסידור הרש״ש. לא כל פרטי הצירוף נדרשים לקורא כדי להבין את היסוד: גם מה שנראה מוגבל ונקרא בשם מסוים נשען על מקור של קדושה.</p>
+      <p>התפילה מבקשת להחזיר אותנו אל המקור הזה. לומר: אני כאן, בתוך המציאות הזאת, ואני מבקש רחמים. אינני חייב לדעת קודם את כל סיבות המקום כדי לפנות בו אל ה׳.</p>
+      <p>אדם יכול להתפלל בבית, בדרך, בעיר שאינו מכיר או בתוך יום שיצא מתכניתו. המילים אינן צריכות לחכות למצב מושלם.</p>
+      <p>קביעות נותנת עוגן, אבל הקשר גדול מן העוגן החיצוני. יעקב תיקן ערבית בדרך, וכך לימד שלא רק הבית שממנו יצא הוא מקום של תפילה. גם האבן שעליה יניח את ראשו יכולה להיות חלק מן המפגש. אנחנו מבקשים שהלב יידע למצוא את המקום, ולא להישאר בחוץ רק מפני שהנוף השתנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העולם מתקיים, והלב בוחר</div>
+      <h3 class="story-title">🧭 כשהלב חולק על המקום</h3>
+      <p>ב״בית אהרן״ מקרלין, בשם רבי שלמה מקרלין, הובאה הדרכה שלא יהיה לבנו חלוק על המקום. הרב קורא אותה גם ביחס למקום שבו אדם נמצא עכשיו.</p>
+      <p>יש מי שאומר: אילו גרתי בעיר אחרת, אילו היה לי הרב ההוא, אילו התנאים היו שונים, הייתי עובד את ה׳. כאן אי אפשר. המחשבה הזאת יכולה להיות אמת על קושי, אבל גם להפוך לתירוץ שסוגר כל עבודה.</p>
+      <p>ה״בית אהרן״ מזמין לבדוק מה אפשר לעשות במקום הזה. אם אנחנו נמצאים בו, יש כאן אחריות שאינה נעלמת מפני שאיננו אוהבים כל פרט.</p>
+      <p>אין הכוונה להישאר בכל מקום בלי הבחנה. הרב עצמו הזכיר את הצורך לשנות סביבה שמכשילה, ואת דברי הרמב״ם על התרחקות מחברה רעה. יש מקרים שבהם ההליכה למקום אחר היא העבודה הנכונה.</p>
+      <p>אבל גם לפני שהכול ישתנה, נרצה למצוא את הצעד האפשרי. תפילה, לימוד, שמירה על הדיבור או בקשת עזרה אינם מוכרחים להיות תלויים בעיר אחרת.</p>
+      <p>כך מתחברת ההדרכה להכנתו של יעקב. הוא אינו אומר שבבית לבן אי אפשר להיות נאמן. הוא לומד איך להיות נאמן שם.</p>
+      <p>אנחנו רוצים לב שאינו מוותר על ה׳ בגלל הקושי של המקום, וגם אינו מתעלם מן הקושי. מתוך שני הדברים נבנית עבודה אחראית: להבחין מה צריך לשנות, ולעבוד ביושר במה שנמסר לידינו עכשיו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אמונה שאפשר לשאת לכל מקום</div>
+      <h3 class="story-title">🔺 עם סגולה, גם כשהופכים את הדרך</h3>
+      <p>רבי דוד מלעלוב דרש את המילה סגולה על ניקוד הסגול. שלוש הנקודות שומרות על צורתן גם כשמסובבים אותן. כך מבקש הרב לתאר יהודי ששומר על שייכותו גם כשהמציאות מתהפכת.</p>
+      <p>יש מי שיכול להיות אדם של אמונה רק כשהכול נמצא במקומו. בבית הוא יודע מה לעשות, אבל בדרך הוא מרגיש שהזהות נעלמה. במקום נעים הוא נותן, אבל כשהתנאים משתנים הוא מוותר על כל מידה טובה.</p>
+      <p>המשל של הסגול אינו דורש אותה תגובה בכל מצב. לפעמים העבודה משתנה מאוד. הוא מבקש לשמור על יסוד: גם כאן אני יהודי, וגם כאן אני רוצה לעבוד את ה׳.</p>
+      <p>אדם יכול לעבור עיר, מקצוע או תקופה בחיים. התפקידים יתחדשו, והקשר יכול לקבל צורה חדשה. מה שאינו צריך להתבטל הוא הרצון להיות נאמן.</p>
+      <p>הרב קושר את הדברים לערבית ולגלות. יש מקום של גאולה, ויש מציאות של הסתרה. גם בגלות נבנו בתי מדרש והופיעו צדיקים גדולים. הקושי לא מחק את האפשרות של תורה.</p>
+      <p>מכאן אנחנו מקבלים שאלה מעשית: מהו היסוד שאני נושא איתי? אולי קביעות קטנה, תפילה אישית או גבול שאני שומר. אם הדרך מתהפכת, אפשר להתחיל ממנו ולבנות סביבו שוב. הסגול מזכיר שהשינוי אינו מוכרח להפוך את הלב למשהו זר. גם בתוך התנועה יכולה להישאר צורה של שייכות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אמונה שאפשר לשאת לכל מקום</div>
+      <h3 class="story-title">👨‍👦 לברך כמו אפרים ומנשה</h3>
+      <p>״בך יברך ישראל״ (בראשית מח, כ). יעקב קבע את הברכה באפרים ובמנשה (בראשית מח, כ), והרב שואל מדוע דווקא בהם. מדוע לא באחד השבטים שגדלו בבית יעקב עצמו?</p>
+      <p>הביאור שהביא, בין השאר מתוך ״לקח טוב״, מתבונן במקום שבו גדלו. אפרים ומנשה גדלו במצרים, בתוך סביבה שלא הייתה ביתו של יעקב. ובכל זאת נעשו חלק מבניין הקדושה של ישראל.</p>
+      <p>יוסף נתן להם בית. התורה שקיבל מאביו, ובה גם הדרך של שם ועבר, לא נשארה סיפור מן העבר. היא עברה אל ילדיו ונעשתה כוח לחיות במקום שבו לא כל מה שמסביב מסייע.</p>
+      <p>יעקב ידע שלא בכל דור יחיו כל בני ישראל בתוך סביבה מוגנת. יהיו גלויות, מדינות וערים שונות. לכן הוא נותן לילדים סמל של אפשרות: אפשר לגדול בטוב גם במקום שאינו נראה כמו הבית הראשון.</p>
+      <p>הברכה אינה פוטרת מהכנה. אפרים ומנשה לא גדלו בלי חינוך. להפך, הבית היה יסוד חזק בתוך הסביבה. רצון טוב צריך שפה, מעשים ודמויות שיתנו לו קיום.</p>
+      <p>כשאנחנו מברכים ילד, נרצה לא רק לומר מילים יפות על עתידו. נשאל מה אנחנו נותנים לו עכשיו כדי שהברכה תוכל להיכנס לחייו. הבית, התפילה והדוגמה האישית יכולים להיעשות מקום של קדושה שהוא יישא גם אחר כך. כך הברכה של יעקב נשארת חיה בתוך דורות רבים של ילדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אמונה שאפשר לשאת לכל מקום</div>
+      <h3 class="story-title">📖 תהילים וסיפורי צדיקים</h3>
+      <p>הרב יצחק זאב מבריסק נשאל, כפי שסיפר הרב, כיצד זכה שבניו יהיו אנשים גדולים. בתשובה שהובאה הזכיר שני דברים: תהילים וסיפורי צדיקים.</p>
+      <p>התמונה חזקה ופשוטה. ילד מקבל מן האב חינוך, ובצד החינוך האב מתפלל עליו. הוא נותן לו סיפורים שפותחים דמיון של קדושה, ומביא את עתידו אל ה׳ במילים של בקשה.</p>
+      <p>אין הכוונה ששני הדברים מחליפים את כל האחריות החינוכית. הם מגלים משהו מן הלב שמאחוריה. ההורה אינו אומר שהכול ייבנה רק מכוח יכולתו, ואינו מסתפק בדיבור על אידאלים בלי להראות איך הם נראים בחיים.</p>
+      <p>סיפור של צדיק נותן לילד דמות. הוא רואה שיש אנשים שחיים ביושר, לומדים, מתפללים ונותנים. הדברים אינם רק דרישות שאין להם פנים.</p>
+      <p>תהילים נותנים להורה מקום שבו הוא יכול לומר את הדאגה ואת התקווה. גם אחרי שבנה מסגרת ועשה כל מה שיכול, הוא יודע שהנשמה של הילד אינה פרויקט שנמצא בשליטתו המלאה.</p>
+      <p>כך החינוך נעשה שילוב של מעשה ושל תפילה. הילד צריך אהבה, הקשבה וסדר. ההורה צריך דעת וגם ענווה. אם הוא מתפלל, הוא זוכר לבקש, ולא רק לדרוש.</p>
+      <p>בדרך הזאת אפשר לראות שוב את שם ועבר ואת בית יוסף. התורה נמסרת, והלב מתכונן. אנחנו רוצים לתת לילדים כלים, ובאותו זמן מבקשים שה׳ יאיר את דרכם ויעזור להם להשתמש בכלים האלה בטוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אמונה שאפשר לשאת לכל מקום</div>
+      <h3 class="story-title">🙏 עד היום אני מתפלל על בני</h3>
+      <p>הסטייפלר נשאל כיצד זכה לבן כרבי חיים קניבסקי. הרב הביא את הסיפור מתוך הגדה שבה נמסר המעשה. התשובה לא תיארה הישג שהסתיים לפני שנים: עד היום אני מתפלל עליו.</p>
+      <p>רבי חיים כבר היה אדם מבוגר, תלמיד חכם גדול ומתמיד עצום. ובכל זאת אביו לא ראה את התפילה כדבר ששייך רק לילדות.</p>
+      <p>אנחנו נוטים לחשוב ששלב מסוים סוגר את האחריות. הילד התחתן, הסתדר או מצא את דרכו, ומכאן אפשר להפסיק לדאוג ולהתפלל. הסיפור מזכיר שהקשר אינו מסתיים בתאריך.</p>
+      <p>גם אדם גדול זקוק לעזרה. יש עוד תורה להבין, עוד מידות לבנות ועוד אחריות לשאת. הורה יכול לשמוח מאוד בהצלחת בנו, ובכל זאת להמשיך לבקש שיהיה טוב וישר.</p>
+      <p>התפילה הזאת אינה ניסיון לשלוט בילד הבוגר. היא אהבה שמכירה בגבולותיה. אינני יכול להחליט את כל בחירותיו, אבל אני יכול לבקש עליו רחמים.</p>
+      <p>זהו גם שיעור במה שנקרא הצלחה. לא רגע שבו כבר אין צורך בבורא, אלא דרך שבה הקשר אליו ממשיך. ככל שהאדם עולה, האחריות שלו עשויה לגדול, וגם הבקשה יכולה להתחדש.</p>
+      <p>נרצה לקחת מן הסיפור את ההתמדה הזאת. לשמוח בטוב של ילדינו ותלמידינו, לא להחזיק אותם בפחד תמידי, ולהמשיך להתפלל מתוך אמון ואהבה. הברכה אינה נסגרת מפני שכבר ראינו פירות; היא מבקשת שהעץ יוסיף לחיות ולהצמיח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אמונה שאפשר לשאת לכל מקום</div>
+      <h3 class="story-title">🌤️ ה׳ צלך — לב שפוגש השגחה</h3>
+      <p>רבי אהרן ראטה בספרו ״שומר אמונים״, במאמר ההשגחה הפרטית, הביא את היסוד מן הבעל שם טוב על ״ה׳ צלך״ (תהילים קכא, ה). הצל נע עם האדם, והפסוק נעשה משל ליחס שבין פנייתנו לבין מה שאנחנו מסוגלים לפגוש.</p>
+      <p>כאן חשוב להבחין בין הספר הזה לבין ״שומר אמונים״ הקדמון של רבי יוסף אירגאס, שכבר נזכר בבירור הצמצום. שני מקורות שונים נכנסים לשיחה, כל אחד בעניינו.</p>
+      <p>רבי אהרן ראטה מבקש שהאדם יתרגל לתת דעתו להשגחה. לא לראות את כל החיים כשרשרת מקרית שאין בה מקום לבקשה, אלא לחפש את יד ה׳ גם בדברים קטנים.</p>
+      <p>הרב קושר לכך את דברי הרמב״ן בסוף פרשת בא, ואת ההכרה שהטבע אינו מקור חיים עצמאי. חוקיות יכולה להתקיים, אבל היא עצמה נשענת על הנהגת הבורא.</p>
+      <p>המבט הזה משנה את העבודה. אם קורה דבר שלא תכננתי, אני יכול לעצור ולשאול מה נכון לעשות עכשיו. במקום להישאר רק עם כעס על שיבוש, אפשר לבקש דעת בתוך המצב.</p>
+      <p>אין לנו יכולת להסיק מן המבט הזה חשבון על סבלם של אחרים. העבודה מתרחשת בלב שלנו: להודות, לבקש ולפעול. האדם המאמין אינו יודע הכול, אבל הוא מנסה לא לאבד את הקשר בתוך מה שאינו יודע. ה׳ צלך נעשה הזמנה לשאת את ההשגחה במחשבה, ולא להיזכר בה רק כשהדרך כבר הסתדרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אמונה שאפשר לשאת לכל מקום</div>
+      <h3 class="story-title">🍃 עלה קטן ותולעת</h3>
+      <p>הבעל שם טוב הלך עם תלמידיו, והם ראו עלה יורד. לפי הסיפור שהביא הרב, הוא התבונן בו והראה את הקשר אל תולעת שהייתה זקוקה למחסה ולמזון.</p>
+      <p>אדם שעובר בדרך רואה עלה ונמשך הלאה. אין בסיפור אירוע מפואר, ואין שם דבר שקורא בכותרת. אבל במבט של הצדיק, גם התנועה הקטנה הזאת יכולה להיות חלק מן ההשגחה.</p>
+      <p>חז״ל מתארים את הבורא כמי שזן מביצי כינים ועד קרני ראמים. גודל הבריאה אינו גורם לפרט הקטן להיעלם. החיים אינם רק עניינם של אנשים חשובים או של אירועים ששמעו עליהם רבים.</p>
+      <p>הרב הזכיר גם את המסירה על רבי שמעון בר יוחאי ששמע, בצאתו מן המערה, את ההכרזה על ציפור אם תיפול במצודה. הסיפור מלמד על דיוק שאינו נמצא בידינו.</p>
+      <p>אנחנו לא נדרשים לזהות בכל עלה את כל החשבון. אפשר ללמוד תחילה את הענווה: יש דברים שחשיבותם אינה גלויה לי. מה שנראה במקרה שלי יכול להיות צורך חיוני של בריה אחרת.</p>
+      <p>כך המבט על השגחה יכול להוליד גם חסד. אם הבורא נותן מקום לבריה קטנה, אני רוצה להיזהר שלא לבטל אדם קטן בעיניי. אולי הוא נושא צורך שלא ראיתי.</p>
+      <p>העלה והתולעת מזכירים שהעולם אינו נמדד רק בקצב של תכניותינו. יש בו חיים רבים, והלב יכול ללמוד להאט, להתבונן ולהודות על טוב שהוא לא המציא ולא תמיד מבין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לתת משמעות לפרטי החיים</div>
+      <h3 class="story-title">✨ ניצוץ שמחיה את הדבר</h3>
+      <p>באור החיים לפרשת ויחי, על ״ויקרבו ימי ישראל למות״ (בראשית מז, כט), הובא מבט של המקובלים על ניצוצות ועל תיקון הנשמה. הרב מחבר אותו ליסוד שאין דבר בעולם בלי חיות הבאה מן הקדושה.</p>
+      <p>הדיבור על ניצוץ אינו ניסיון לתאר חלקיק פיזיקלי. הוא שפה של משמעות ושל מקור קיום. מאכל, חפץ ואדם אינם עומדים בלי חיות שהבורא נותן.</p>
+      <p>הרב הזכיר מתוך האור החיים גם את הביאורים לפרשת בא ול״סר צלם מעליהם״ (במדבר יד, ט) בפרשת שלח. כשמדברים על הסתלקות החיות, מדברים על אובדן הקיום, לא על חומר גשמי שמוסיפים לדבר מבחוץ.</p>
+      <p>בתוך השיעור הובאו סיפורים ודברי חז״ל על כוח הקדושה, ובהם המבט של רבי שמעון בר יוחאי. הם שייכים למדרגות שאיננו יודעים לנהל, אבל נותנים לנו להבין עד כמה עמוק הקשר בין חיות לבין קדושה.</p>
+      <p>בעבודה שלנו אפשר להתחיל מן הדבר הקרוב: מה שאני משתמש בו אינו חסר משמעות. יש בי אחריות איך אשתמש בכוח, במזון ובזמן שניתנו לי.</p>
+      <p>אם אוכל מתוך ברכה ואשתמש בכוח כדי לעשות טוב, המפגש עם המאכל מקבל כיוון. אם אקבל כלי ואעשה בו מעשה ישר, הוא נעשה חלק מן החיים שאני בונה לפני ה׳.</p>
+      <p>היסוד הזה אינו מבקש שנפסיק לראות את העולם המוחשי. הוא מבקש לראות בו עוד עומק. העולם מלא פרטים, ומתוך הפרטים האלה אפשר לבנות דרך של תורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לתת משמעות לפרטי החיים</div>
+      <h3 class="story-title">🗓️ יום אחד, עבודה שלא תחזור באותה צורה</h3>
+      <p>האור החיים מתאר, מתוך דברי המקובלים, את ימי האדם בקשר לניצוצות שעליו לתקן. יום אינו רק מספר נוסף בלוח. יש בו עבודה מסוימת שאפשר להכניס אליה תוכן.</p>
+      <p>הרב הביא את התיאור שלפיו בכל יום עולה ניצוץ מן העבודה הזאת. השינה, שנקראה בגמרא אחד משישים במיתה, קשורה בביאורו גם לתנועה של הסתלקות ועלייה.</p>
+      <p>כך אפשר להבין את הביטוי ״מדת ימי״ (תהילים לט, ה): החיים נמסרו במידה, ויש משמעות למה שעושים בתוך המידה הזאת. לא הכול נדחה אל זמן בלתי מוגבל שבו סוף סוף נהיה מוכנים.</p>
+      <p>בשיעור נקשר הרעיון גם להבדל שבין החיות של הילדות לבין ההתבגרות. אנחנו שומעים זאת כביאור רוחני של האור החיים, ולא כתחליף להסבר רפואי של הגוף. השאלה שהביאור מפנה אלינו היא מה אנחנו ממלאים בתוך ימינו.</p>
+      <p>אדם יכול להתעצב מפני שאינו מצליח הכול. אבל יום אחד יכול לקבל תוכן גם ממעשה קטן: מצווה, לימוד, מילה טובה או הימנעות מפגיעה.</p>
+      <p>נרצה להכיר בערך היום בלי להיכנס ללחץ שמוחק את השמחה. אין לנו ידיעה של כל הניצוצות, ויש לנו ידיעה של חלק מן המצוות והאחריות. אפשר לעשות אותן בלב חי.</p>
+      <p>כשהערב מגיע, נשאל לא רק כמה הספקתי, אלא איך חייתי. מה מן הזמן נעשה טוב? ומה אבקש לתקן מחר? כך המידה של הימים נעשית קריאה לנוכחות ולא רק פחד מן החלוף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לתת משמעות לפרטי החיים</div>
+      <h3 class="story-title">🍎 רעבים גם צמאים</h3>
+      <p>למה ברא ה׳ אדם שצריך לאכול ולשתות? הרי כוחו אינו מוגבל לצורה הזאת. הרב שואל את השאלה כדי להבין את הרעב גם מתוך עבודת הבירור.</p>
+      <p>בשם הבעל שם טוב הובאה הדרשה על ״רעבים גם צמאים נפשם בהם תתעטף״ (תהילים קז, ה). יש ניצוצות בתוך המאכלים, והמפגש עם האדם יכול להעלות אותם מתוך שימוש נכון וברכה.</p>
+      <p>הרעב מפגיש אותנו עם העולם. האדם ניגש למזון, מקבל ממנו חיות, ויכול לתת לחיות הזאת כיוון של תורה ומעשה טוב. כך אכילה אינה חייבת להיות שעה שאין בה עבודת ה׳.</p>
+      <p>הביאור אינו מבקש להפסיק לדאוג לצרכי הגוף. להפך, הגוף צריך מזון. השאלה היא מה אנחנו עושים בתוך המפגש: האם יש הודיה, האם נשמרת ההלכה, והאם הכוח שקיבלנו יופנה לטוב.</p>
+      <p>הרב נתן דוגמה של תפוחים. נקטפו כמויות גדולות, אבל דווקא המאכלים האלה הגיעו אל שולחננו. במבט של ההשגחה, גם המפגש המסוים יכול להיות חלק מן העבודה שלנו.</p>
+      <p>אין לנו דרך לפענח כל תפוח ולדעת את שורש ניצוצו. יש לנו דרך לברך, להימנע מגזל ולהשתמש במזון מתוך דעת. הביאור הגבוה נעשה כאן פעולה פשוטה.</p>
+      <p>כך השולחן יכול להיות מקום של קרבה. לא מפני שכל תאווה נעשית טובה, אלא מפני שהאדם לומד לקבל מתנה ולהשתמש בה ביושר. הרעב מזכיר חסרון, והברכה מזכירה מי נותן לו מענה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לתת משמעות לפרטי החיים</div>
+      <h3 class="story-title">🌾 מלאכת היום והשבת</h3>
+      <p>בשער המצוות לפרשת בהר הובאה עבודת הבירור בתוך מלאכות הקרקע והשמיטה. הרב קושר את הדברים גם להבדל בין ימות החול לשבת.</p>
+      <p>בחול עובדים, מכינים ומתקנים. סדר המלאכות הקשור ללחם נותן דוגמה לדרך ארוכה שבה דבר מן האדמה מגיע אל השולחן. בתוך הסדר הזה יכולה להימצא עבודת האדם.</p>
+      <p>בשבת נעשית העבודה באופן אחר. קדושת היום משנה את דרך המעשה. יש מלאכות שנמנעים מהן, ויש קבלה של השפע מתוך מנוחה, תפילה ועונג של מצווה.</p>
+      <p>ההבחנה אינה אומרת שבחול אין קדושה. היא אומרת שיש דרכים שונות שבהן הקדושה מופיעה. גם עבודת הקרקע יכולה להיות מכוונת, וגם ההימנעות ממנה בזמן הנכון יכולה להיות עבודה.</p>
+      <p>הרב הזכיר את בירור הניצוצות בתוך אכילה, שתייה, שינה, תפילה ומצוות. הדבר מתחבר אל יעקב שהפך את חייו לתורה. לא רק הלימוד הישיר, אלא גם מלאכת החיים יכולה לקבל הלכה ומשמעות.</p>
+      <p>אנחנו רוצים להיזהר מן החלוקה שבה המעשה הוא רק טרחה והקדושה מתחילה כשהוא מסתיים. אם המעשה נעשה ביושר ובכוונה נכונה, הוא עצמו יכול להיות חלק מן התיקון.</p>
+      <p>ואז השבת נותנת לנו לראות את הדברים מחדש. לא הכול נבנה בעוד פעולה. יש גם זמן לקבל, להודות ולהפסיק. נאמנות לרצון ה׳ נמצאת לפעמים ביד שעושה, ולפעמים ביד שנחה מפני שהגיע זמנה של המנוחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+          <a href="#story-29">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-29" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לתת משמעות לפרטי החיים</div>
+      <h3 class="story-title">🫙 פכים קטנים אינם דבר קטן</h3>
+      <p>יעקב חזר על פכים קטנים. חז״ל מתארים את הממון של הצדיקים כחביב עליהם מפני שאינם פושטים ידיהם בגזל. מה שיש להם הושג ביושר, ולכן אינם מבטלים אותו בקלות.</p>
+      <p>הרב מוסיף מתוך ספרי החסידות את הקשר שבין חפצי האדם לבין חלקי נפשו. במבט של בירור ניצוצות, הדבר שהגיע אליו יכול להיות קשור לעבודתו.</p>
+      <p>כך חפץ אינו מקבל ערך רק לפי מחירו. אפשר שיש בו צורך, אחריות או הזדמנות לעשות טוב. הפך הקטן מזכיר שהיושר נמצא גם בפרטים שאין להם תהילה.</p>
+      <p>ב״כתר שם טוב״ ובצוואת הריב״ש הובא שהאדם נהנה מן החיות שבדבר שהוא אוכל, לובש או משתמש בו. מתוך הדברים האלה הרב מסביר גם את ההבדלים בין העדפותיהם של בני אדם: מה שמושך אחד אינו בהכרח מה שמושך אחר.</p>
+      <p>אחד אוהב מוזיקה, ואחר מבקש שקט. אחד נמשך למאכל מסוים, ואחר אינו רוצה בו. במבט שהובא, גם השוני יכול להיות קשור לשורש ולדרך העבודה.</p>
+      <p>איננו נדרשים להכריע את שורשנו מתוך כל העדפה. אנחנו רוצים בעיקר ללמוד לכבד את מה שנמסר לידינו ואת השוני שבין אנשים. לא להפוך את החפץ למרכז החיים, אבל גם לא לבזבז מתוך חוסר דעת.</p>
+      <p>פכים קטנים יכולים להיות שיעור גדול: קבל את הטוב ביושר, שמור עליו במידה, ותן לו לשרת את עבודתך. לא הכול צריך להיות גדול כדי להיות חלק מן התיקון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-28">⟶ הקודם</a>
+          <a href="#story-30">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(29, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-30" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לתת משמעות לפרטי החיים</div>
+      <h3 class="story-title">❓ בין איוב לאויב</h3>
+      <p>איוב שאל מתוך סבל גדול, ובגמרא הובא חששו שמא התחלף שמו באויב. הרב מספר את תשובת הבורא כפי שנדרשה בחז״ל: מי שמדייק בפרטים קטנים אינו מתבלבל בזהות האדם.</p>
+      <p>הדברים עוברים דרך שערות הראש, שכל אחת מקבלת מקום משלה, ודרך רגעים מדויקים בבריאה. הרב הזכיר גם את תיאור לידת האיילה והעזרה שבאה בזמנה.</p>
+      <p>אלה אינם הסברים רפואיים שנועדו לנהל לפיהם את הטיפול. הם דברי אגדה המכוונים אל מחשבת ההשגחה. מה שנראה לנו עולם עמוס פרטים אינו גורם לבורא לאבד את האדם שבתוכו.</p>
+      <p>איוב אינו אדם ששאל שאלה קלה מתוך יום נעים. הוא נושא צער, ולכן גם התשובה נוגעת במקומו העמוק: האם נשכחתי? האם מה שקורה לי שייך בכלל אליי?</p>
+      <p>האגדה משיבה על החשש של טעות. היא אינה נותנת לנו לדעת את כל סיבות הסבל. גם אחרי שמאמינים שהבורא אינו מתבלבל, יכולים להישאר כאב ושאלה.</p>
+      <p>כאן אנחנו נרצה לשמור על ענווה. לא להסביר לאחרים במהירות למה בא להם קושי, אלא לעזור להם להחזיק את הקשר. אפשר להתפלל ולבקש רחמים מתוך מה שאיננו מבינים.</p>
+      <p>הרב משתמש בסיפור כדי לחזק אמון בפרט. האדם אינו מספר שנבלע בתוך המון. הוא מוכר לפני ה׳. הידיעה הזאת יכולה לתת מקום לבקשה אישית, גם כשהתשובה המלאה עדיין אינה בידינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-29">⟶ הקודם</a>
+          <a href="#story-31">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(30, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-31" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לתת משמעות לפרטי החיים</div>
+      <h3 class="story-title">🧩 כל החיים כמפגש של התאמות</h3>
+      <p>עכשיו אפשר לחזור אל המטרוניתא ששאלה מה עושה הקדוש ברוך הוא. התשובה ״מזווג זיווגים״ מקבלת, בדרך הבעל שם טוב שהביא הרב, משמעות רחבה יותר.</p>
+      <p>לא רק איש ואישה. אדם פוגש ילדים, מקום, מזון, חפצים ואנשים. בתוך המפגשים האלה יש עבודות שונות, וההנהגה מצרפת אותם אל החיים שלו.</p>
+      <p>המשל הוא של פאזל שרק הבורא מכיר את כל חלקיו. אנחנו רואים את הדבר שהגיע עכשיו, אבל לא את כל השורשים ואת כל הקשרים. לפעמים נחשוב שהוא היה יכול להגיע לכל אדם אחר. במבט של התיקון, יש חשיבות גם למפגש המסוים.</p>
+      <p>מי יכול לדעת מה שייך לכל נשמה, ובאיזה זמן? רק מי שנותן קיום לכל העולם. כך היסוד של המקום והיסוד של הזיווג מתחברים: הבורא מקיים, נותן מקום ומנהיג את המפגש בתוכו.</p>
+      <p>הרב הזכיר גם את יונה, שביקש ללכת בדרך אחרת ולבסוף עשה את השליחות. הכוונות שלו לא ביטלו את הצורך לשמוע את רצון ה׳. המסע הקשה החזיר אותו אל האחריות.</p>
+      <p>אנחנו איננו יודעים לקרוא כך כל גלגול וכל מאורע. אבל נוכל לשאול מה מתבקש מאיתנו במפגש הנוכחי. אולי חסד, אולי גבול, אולי תפילה ואולי לימוד.</p>
+      <p>כך היום אינו רק שרשרת הפרעות. הוא יכול להיות מקום שבו דברים נפגשים עם האדם, והאדם בוחר איך לענות להם. מתוך הבחירה, ההשגחה נעשית גם עבודה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-30">⟶ הקודם</a>
+          <a href="#story-32">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(31, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-32" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">💬 תפילה בתוך צער שלא מבינים</h3>
+      <p>רבי אהרן ראטה הביא נוסח של קבלת אמונה בתוך צער. הוא מבקש מן האדם לזכור את ההשגחה, לקבל את מה שאינו יכול לשנות ולפנות בתפילה למיתוק הדין.</p>
+      <p>הרב התעכב במיוחד על ההודאה שאין לנו ידיעה מלאה. אנחנו לא יודעים על איזה מעשה לשים את האצבע, ולא תמיד יודעים למה בא הדבר. לכן הבקשה יכולה להיות כללית וכנה: עזור לי לתקן את מה שצריך תיקון, ורחם עלינו ועל כל ישראל.</p>
+      <p>הנוסח המקורי מדבר גם על קבלת ייסורים ועל כפרה. אנחנו שומעים אותו כעבודה אישית של מבקש, לא כזכות להטיל אשמה על אדם אחר שסובל.</p>
+      <p>בשם רבי יצחק אייזיק מקומרנא ב״נתיב מצוותיך״ הובאה מעלת האמונה בשעת מעשה, שהצער אינו מחוץ להנהגת הבורא. החיזוק פונה אל הלב: אל תישאר לבד מול הדבר, הבא אותו אל מי שמכיר אותך.</p>
+      <p>אפשר לומר במילים פשוטות: ה׳, כואב לי, ואני לא יודע הכול. תן לי כוח לפעול נכון, עזור לי לתקן מה שבידי, והפוך את הקושי לטובה. שלח רחמים גם לכל מי שנושא צער.</p>
+      <p>תפילה כזאת אינה מחייבת אותנו להעמיד פנים שהכאב נעים. היא נותנת לו כתובת. המחשבה על המקום חוזרת כאן במלואה: גם בתוך הצער אפשר לעמוד לפני הבורא, לבקש ולהישאר קשורים. אנחנו רוצים שהלב יוכל לומר אמת, ולא להתרחק דווקא בשעה שבה הוא זקוק לרחמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-31">⟶ הקודם</a>
+          <a href="#story-33">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(32, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-33" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">🕯️ סיפורי הצלה בתוך השבר</h3>
+      <p>השיעור נאמר בזמן מלחמה, והרב הזכיר סיפורי הצלה מן האסון בשמחת תורה. אנשים נשארו חיים בתוך מצבים שלא הבינו איך יוכלו לצאת מהם.</p>
+      <p>בסיפור אחד תוארו אנשים שנשארו במרחב מוגן זמן ממושך, כאשר מבחוץ ניסו להגיע אליהם. בסיפור אחר תוארה אישה מבוגרת שיצאה דרך חלון, מצאה קלנועית ופגשה חיילים. הרב הזכיר את התפילה ואת האמונה שהחזיקו אנשים בתוך השעות האלה.</p>
+      <p>המסירות נשמעות בתוך כאב גדול על כל מי שלא ניצל. אין לנו חשבון שמפריד בין נשמה לנשמה, ואין הסיפור נותן הבטחת חסינות למאמין. אנחנו שומעים את ההודיה של מי שפגש הצלה בלתי צפויה ואת הבקשה על כולם.</p>
+      <p>הרב ביקש לעורר את הלב לראות חסדים גם בתוך מציאות קשה, ולא להפסיק להתפלל. בתחילת השיעור התפלל גם להשבת החטופים בשלום ולשמירת ישראל בכל מקום.</p>
+      <p>אפשר להחזיק את ההודיה ואת הכאב יחד. מי שניצל מודה, ומי שנושא אובדן אינו נדרש לשתוק. הציבור כולו צריך להמשיך לבקש רחמים ולעזור זה לזה.</p>
+      <p>האמונה אינה רק סיפור של סוף טוב. היא גם קשר שנשמר כשהסוף עדיין אינו ידוע. בתוך הדרך הזאת אנחנו רוצים לתת מקום לתפילה, לאחריות מעשית ולחסד. סיפורי ההצלה מזכירים לנו שתקווה יכולה להופיע גם בשעה קשה, ושהבקשה לשלום כל אדם אינה נפסקת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-32">⟶ הקודם</a>
+          <a href="#story-34">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(33, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-34" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">🪜 אכן יש ה׳ במקום הזה</h3>
+      <p>יעקב מתעורר ואומר ״אכן יש ה׳ במקום הזה ואנכי לא ידעתי״ (בראשית כח, טז). הרב מביא בשם רבי שמשון מאוסטרופולי דרשה על המילים ועל המרכבה.</p>
+      <p>אכן נדרש כרמז לאריה, כרוב ונשר. אנכי מצרף גם את יעקב, שדמותו חקוקה בכיסא הכבוד. כך נעשית האמירה גילוי של חלקו של האדם בתוך מה שראה.</p>
+      <p>עד עכשיו יעקב קיבל מאביו ומשם ועבר. היו לו דמויות של צדיקים שעמדו מולו. עכשיו הוא בדרך, וצריך לגלות שגם בתוכו יש נקודה שיכולה לשאת את התורה שקיבל.</p>
+      <p>הביאור אינו אומר שיעקב נעשה המקור של עצמו. להפך, הוא מגלה שייכות אל מקור גבוה. מה שלמד לא נשאר רק זיכרון חיצוני; הוא נעשה חלק מן הנפש.</p>
+      <p>מלאכי אלוקים עולים ויורדים בו, כפי שמתואר בחלום. הרב קושר את המראה לשאלה על הדמות שלמעלה ועל האדם שלמטה, ועל הדרך שבה הם מתחברים.</p>
+      <p>אצלנו אפשר להתחיל מן הנגיעה הפשוטה. יש ימים שבהם אין מורה לידנו, אבל מה שקיבלנו ממורה אמיתי יכול לדבר בתוכנו. נרצה להיזכר בדרך, להבין ולבחור מתוך מה שנבנה בלב.</p>
+      <p>״ואנכי לא ידעתי״ יכולה להיות הודאה שאפשר ללמוד ממנה. לא הכרתי עד עכשיו את השייכות שלי. אולי גם בתוכי יש יותר תורה, יותר אמונה ויותר יכולת ממה שאני מרגיש. הדרך מלמדת אותי למצוא אותן, ולא להשאיר את כל האור בבית שממנו יצאתי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-33">⟶ הקודם</a>
+          <a href="#story-35">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(34, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-35" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">💛 לא מצאתי אלא בתוכי</h3>
+      <p>בספר ״שערי צדיק״ לרבי גדליה קניג הובאה מסורת על רבי נתן לאחר הסתלקות רבי נחמן. הוא הלך אל צדיקים כדי לבקש דרך ולחפש בחינה ממה שקיבל מרבו.</p>
+      <p>לפי המסירה שהביא הרב, כשחזר אמר שלא מצא את רבו אלא בעצמו. אין הכוונה שהוא העמיד את עצמו במקום הרב או הכריז שאין צדיקים בעולם. הוא גילה את הנקודה שרבו בנה בתוך נשמתו.</p>
+      <p>הרב הדגיש את הדיוק במסירת תלמידים. רבי נחמן מטולטשין, תלמידו של רבי נתן, תואר כמי שנזהר שלא להוסיף ולא לגרוע בשיחות שקיבל. האחריות היא לא רק להתרגש מן הדיבור, אלא לשמור על אמתו.</p>
+      <p>מתוך הדברים האלה נפתחת שאלה על התקשרות. אדם יכול להיות רחוק בגופו מן הצדיק, או לחיות אחרי הסתלקותו. כיצד ימשיך לקבל את הדרך? הספרים, התלמידים והעבודה הפנימית יכולים להיות מקומות שבהם התורה נשארת חיה.</p>
+      <p>הנקודה שבתוכי אינה רשות להחליט שכל מה שעולה במחשבתי הוא דבר הרב. צריך ללמוד, לברר ולקבל הדרכה. אבל היא כן מזכירה שהתלמיד אינו כלי סגור מבחוץ. הדברים שהוא קיבל צריכים להיעשות חלק מן הבחירה שלו.</p>
+      <p>כך מתחברת המסירה אל יעקב בדרך. הוא אינו יכול להישאר ליד אביו בכל רגע. מה שקיבל צריך ללכת עמו. זהו חלק מן הבגרות של עובד ה׳: להמשיך לקבל, וללמוד לתת לתורה מקום אמיתי בפנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-34">⟶ הקודם</a>
+          <a href="#story-36">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(35, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-36" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">📚 דרך אחת אינה מוחקת את האחרות</h3>
+      <p>רבי גדליה קניג מדגיש במסירה שהביא הרב שאין בדברים על רבי נחמן פחיתות כבוד לשאר הצדיקים. יש ללמוד בספרי הקודש ולהכיר את הטוב שבתורה שנמסרה בכל הדרכים הכשרות.</p>
+      <p>הרב מתאר את כוחו של ליקוטי מוהר״ן לתת לאדם עצות ודרך בעבודת ה׳. עבור מי שמוצא בו רפואה לנפשו, הלימוד יכול להיות מפגש עמוק מאוד. אבל אהבה לספר אינה צריכה להפוך לשנאה לספר אחר.</p>
+      <p>הובאה גם המסורת של רבי אברהם בן רבי נחמן על יחידי דורות שבהם נמסרו שכבות של תורה: משה, רבי שמעון בר יוחאי, האר״י, הבעל שם טוב ורבי נחמן. הרב דיבר גם על מקומו של בעל התניא בתוך הבירור הזה.</p>
+      <p>אלה דברים השייכים להשקפה ולמסורת שהביא, ולא טבלה שעל פיה אנחנו מדרגים כל אדם. העיקר שביקש ללמד הוא שהתורה יכולה להתגלות בכמה רבדים: נגלות, סודות ודרך עבודה.</p>
+      <p>כל רובד צריך להגיע אל חיים של אמת. אם ידע גדול אינו משנה את הלב ואת המעשה, חסר לו חלק מן תכליתו.</p>
+      <p>נרצה אפוא למצוא את הספרים שמסייעים לנו, ולהישאר אנשים שמכבדים תורה גם כשהיא מגיעה מבית מדרש אחר. אין צורך להרגיש שהצלחתו של הזולת גורעת מאיתנו. אם הוא מתקרב אל ה׳ ולומד לעשות טוב, יש כאן שמחה שיכולה להיות משותפת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-35">⟶ הקודם</a>
+          <a href="#story-37">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(36, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-37" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">🌱 לב בשר במקום לב אבן</h3>
+      <p>״והסרתי את לב האבן מבשרכם ונתתי לכם לב בשר״ (יחזקאל לו, כו). הרב קשר את הפסוק לדברי רבי נחמן על ברסלב ועל לב שרוצה לעבוד באמת.</p>
+      <p>לב אבן אינו מרגיש בקלות. הוא יכול לשמוע הרבה ולהישאר סגור. לב בשר יכול להיפגע, אבל גם להיפתח, לבקש ולאהוב. העבודה הרוחנית אינה רק צבירת ידע; היא גם שינוי של הלב שמקבל את הידע.</p>
+      <p>הרב מתאר אנשים מכל מיני קהילות שמצאו נחמה ורפואה בתורות רבי נחמן. מי שהיה רחוק יכול להתחיל לשוב, ומי שכבר עבד שנים יכול למצוא עוד עומק של בקשה.</p>
+      <p>בתוך הדברים הובאה בשורת ההתחזקות לאנשים שנפלו רחוק, והערבות שקיבל רבי נחמן על תיקון נשמות, כפי שנמסר בספרי תלמידיו. הרעיון פונה במיוחד אל מי שכבר חושב שאין לו דרך.</p>
+      <p>אין צורך להפוך את ההתקרבות לשינוי תווית חיצוני בלבד. הרב הדגיש את ההבדל בין חיפוש רציני לבין התלהבות שמחליפה צורה לפי אופנה. המבחן נמצא בעבודה: האם האדם נעשה ישר יותר, נאמן יותר וקרוב יותר?</p>
+      <p>כך הלב החדש מקבל חיים. הוא לומד תורה, מתפלל ומנסה לתקן את המידות. הוא אינו מחכה להיות מושלם כדי לפנות אל ה׳.</p>
+      <p>נרצה לשמוח בכל דרך שמביאה אדם לעבודה אמיתית, ולא להפוך את השם של הקהילה לעיקר. התכלית היא לב חי, שיכול לתת לתורה להיכנס ולהוליד מעשים טובים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-36">⟶ הקודם</a>
+          <a href="#story-38">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(37, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-38" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">🤝 אל תרגזו בדרך</h3>
+      <p>בשם רבי יחזקאל מקוזמיר, מתוך ״דברי ישראל״, הובאה דרשה על ״אל תרגזו בדרך״ (בראשית מה, כד): אל תכעסו על מי שהולך בדרך אחרת משלכם.</p>
+      <p>הרב מדגיש שאין לנו רשות להפוך מחלוקות של גדולי תורה למלחמה פרטית של אנשים קטנים. מה שהיה בין צדיקים גדולים אינו נעשה היתר להשפיל, לחרף ולשרוף קשרים.</p>
+      <p>הוא הביא מסירה על רבי ברוך ממז׳יבוז׳ ורבי לוי יצחק מברדיצ׳ב. למרות דברים קשים שנאמרו, בהסתלקותו של רבי לוי יצחק בכה רבי ברוך, והסביר את יחסו מתוך חשבונות שאינם גלויים לכל אדם.</p>
+      <p>הסיפור עצמו נשמר כמסירה על צדיקים. איננו יכולים להשתמש בו כדי להצדיק כל עלבון שאנחנו אומרים. להפך, הוא מזכיר שאין בידינו ידיעה של כל מה שנמצא מאחורי הדברים.</p>
+      <p>הרב הזכיר גם את אזהרות האדמו״ר מצאנז קלויזנבורג בענייני מחלוקת ואת הצורך להיזהר בכבודם של צדיקים מכל החוגים.</p>
+      <p>עבורנו הכיוון פשוט יותר: לראות אדם שבאמת מתקרב ולשמוח בטוב שלו. אם דרכו אינה הדרך שלי, אפשר לבדוק ביושר מה טוב ומה נכון בלי לבנות מיד אויב.</p>
+      <p>התורה גדולה מן הצורך של כל קבוצה להרגיש שהיא היחידה. אדם של אמת רוצה שהזולת יעבוד את ה׳, לא רק שיישאר לידו. כך אל תרגזו בדרך נעשה הדרכה למסע משותף: לכבד, ללמוד ולהיזהר שלא לאבד אהבת ישראל בשם האהבה לדרך שלנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-37">⟶ הקודם</a>
+          <a href="#story-39">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(38, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-39" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">😊 אל תפחד שיבואו ללמוד</h3>
+      <p>הרב סיפר על שיחה אצל אדמו״ר שבה הוזכר מושג מעץ חיים. הוא הכיר את העניין והעיר עליו, והאדמו״ר ביקש ממנו להסביר לנוכחים.</p>
+      <p>הרב היסס. לא נעים לו להיכנס לדיבור בפני הרב ובפני הציבור, ואולי גם היה חשש איך יתקבל הדבר. אבל האדמו״ר חייך והזמין אותו לדבר, ואמר שלא יחשוש שאנשים יעזבו אותו ויבואו אל התורות שהוא לומד.</p>
+      <p>הסיפור הקטן נותן דמות של מנהיג שאינו רואה את לימודו של האחר כאיום. אם יש דבר תורה שיכול להועיל, הוא רוצה שיישמע.</p>
+      <p>הרב קושר את הדברים לחשש של מורים ומנהיגים לאבד אנשים. לפעמים החשש הזה מתלבש בטענה עקרונית, ובפנים נמצאת דאגה לכבוד או למעמד. לכן צריך יושר גדול בבירור.</p>
+      <p>מי שעובד לשם שמיים יכול לשמוח שתלמיד מוצא עזרה, גם אם לא כל העזרה באה דרכו. אין הכוונה לוותר על אחריותו החינוכית. הוא עדיין צריך לבדוק, לכוון ולהזהיר כשצריך. אבל הבדיקה צריכה להיות על הטוב של האדם, ולא על מספר האנשים שבאים אליו.</p>
+      <p>נרצה לקבל מן הסיפור את הנדיבות הזאת. לתת לתורה לעבור, לא להחזיק בה כאילו היא רכוש פרטי. אם דבר אמיתי מאיר לאחר, אפשר לשמוח באור. כך בית מדרש נעשה מקום שבו לא רק מלמדים, אלא גם נותנים מקום לעוד תורה להישמע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-38">⟶ הקודם</a>
+          <a href="#story-40">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(39, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-40" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למצוא את הנקודה הפנימית</div>
+      <h3 class="story-title">🪜 למצוא את ה׳ בדרך שלי</h3>
+      <p>יעקב יוצא מבית של צדיקים אל מקום שבו יצטרך לעבוד אחרת. הוא לומד אצל שם ועבר, מתפלל בערב ומגלה שהמקום החדש אינו ריק מן הבורא.</p>
+      <p>מן המסע הזה למדנו כמה יסודות הקשורים יחד. צריך הכנה, אבל לא להישאר לנצח בהכנה. צריך מקום טוב, אבל לא לוותר על כל עבודה מפני שהתנאים אינם מושלמים. צריך מורה, וגם צריך שהתורה שקיבלנו תיעשה חלק מן הלב.</p>
+      <p>הרב מסיים בהדרכה שהתקשרות אל הצדיק אינה רק קשר אל ספר על המדף. יש גם תלמידים חיים שמוסרים דרך, ויש נקודה פנימית שהתלמיד צריך לגלות ולבנות.</p>
+      <p>כך האדם אינו נשאר לבדו מול דמיון של עצמו. הוא לומד, שואל ומקבל, ואז מנסה לעשות את הדברים באמת בתוך חייו.</p>
+      <p>ההשגחה מזמנת מפגשים, והבחירה שלנו נותנת להם תשובה. מזון, חפץ, ילד או אדם שפגשנו בדרך יכולים להפוך למקום של מצווה ושל חסד. אין צורך לדעת את כל החשבונות כדי לעשות את הטוב שנמצא לפנינו.</p>
+      <p>ויהי רצון שנזכה לפגוע במקום: למצוא את ה׳ בכל דרך שנלך בה, לא לאבד את הקשר בלילה, ולבנות בתוכנו דעת ואהבה שיוכלו לעמוד בניסיון. שנדע ללמוד מן הצדיקים, לכבד דרכים של תורה ולתת לחיים עצמם להיעשות מקום של קדושה. ושישלח ה׳ שמירה, ישועה ורחמים לכל ישראל, וישיב בשלום את כל מי שמצפים לשובו הביתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-39">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(40, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור הרב ירון אוזן בערוץ הרב יהודה טאוב https://youtu.be/6DfDLmWODno · 2023-11-24 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"להכין לב לדרך חדשה","icon":"📚","color":"#c62b6b","stories":[{"id":1,"title":"לפני הדרך, עוד ארבע עשרה שנים","icon":"📚"},{"id":2,"title":"התורה של שם ועבר","icon":"🌱"},{"id":3,"title":"להעביר ליוסף את הדרך","icon":"🧡"},{"id":4,"title":"למה דווקא ארבע עשרה","icon":"🔢"},{"id":5,"title":"חיים שנעשו תורה","icon":"📜"},{"id":6,"title":"אליפז והכוח שלא להרוג","icon":"🕊️"}]},{"id":2,"name":"לפגוש את המקום בלילה","icon":"🌙","color":"#6d28d9","stories":[{"id":7,"title":"שכר שאינו הולך לאיבוד","icon":"🌿"},{"id":8,"title":"תפילה כשהיום מחשיך","icon":"🌙"},{"id":9,"title":"מה עושה הבורא אחרי הבריאה","icon":"💍"},{"id":10,"title":"חצי הדרך של יעקב יצחק","icon":"🚶"},{"id":11,"title":"מקומו של עולם","icon":"🌍"},{"id":12,"title":"הצמצום אינו סיפור על חדר ריק","icon":"🔎"}]},{"id":3,"name":"העולם מתקיים, והלב בוחר","icon":"🌍","color":"#e08e00","stories":[{"id":13,"title":"אור במידה שהכלי יכול לקבל","icon":"☀️"},{"id":14,"title":"כוח הגבול אינו חסרון בבורא","icon":"🕯️"},{"id":15,"title":"אני ה׳ לא שניתי","icon":"🌿"},{"id":16,"title":"בוא אל פרעה","icon":"🚪"},{"id":17,"title":"המקום שבו אפשר לבקש רחמים","icon":"🙏"},{"id":18,"title":"כשהלב חולק על המקום","icon":"🧭"}]},{"id":4,"name":"אמונה שאפשר לשאת לכל מקום","icon":"🌱","color":"#1e88b8","stories":[{"id":19,"title":"עם סגולה, גם כשהופכים את הדרך","icon":"🔺"},{"id":20,"title":"לברך כמו אפרים ומנשה","icon":"👨‍👦"},{"id":21,"title":"תהילים וסיפורי צדיקים","icon":"📖"},{"id":22,"title":"עד היום אני מתפלל על בני","icon":"🙏"},{"id":23,"title":"ה׳ צלך — לב שפוגש השגחה","icon":"🌤️"},{"id":24,"title":"עלה קטן ותולעת","icon":"🍃"}]},{"id":5,"name":"לתת משמעות לפרטי החיים","icon":"✨","color":"#c62b6b","stories":[{"id":25,"title":"ניצוץ שמחיה את הדבר","icon":"✨"},{"id":26,"title":"יום אחד, עבודה שלא תחזור באותה צורה","icon":"🗓️"},{"id":27,"title":"רעבים גם צמאים","icon":"🍎"},{"id":28,"title":"מלאכת היום והשבת","icon":"🌾"},{"id":29,"title":"פכים קטנים אינם דבר קטן","icon":"🫙"},{"id":30,"title":"בין איוב לאויב","icon":"❓"},{"id":31,"title":"כל החיים כמפגש של התאמות","icon":"🧩"}]},{"id":6,"name":"למצוא את הנקודה הפנימית","icon":"💛","color":"#6d28d9","stories":[{"id":32,"title":"תפילה בתוך צער שלא מבינים","icon":"💬"},{"id":33,"title":"סיפורי הצלה בתוך השבר","icon":"🕯️"},{"id":34,"title":"אכן יש ה׳ במקום הזה","icon":"🪜"},{"id":35,"title":"לא מצאתי אלא בתוכי","icon":"💛"},{"id":36,"title":"דרך אחת אינה מוחקת את האחרות","icon":"📚"},{"id":37,"title":"לב בשר במקום לב אבן","icon":"🌱"},{"id":38,"title":"אל תרגזו בדרך","icon":"🤝"},{"id":39,"title":"אל תפחד שיבואו ללמוד","icon":"😊"},{"id":40,"title":"למצוא את ה׳ בדרך שלי","icon":"🪜"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
