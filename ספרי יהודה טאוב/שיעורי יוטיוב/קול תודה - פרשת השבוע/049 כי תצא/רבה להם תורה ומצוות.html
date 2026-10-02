@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 רבה להם תורה ומצוות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>📖 רבה להם תורה ומצוות</h1>
+  <p>קיום המצוות מתוך שמחה — על פי משנה בסוף מסכת מכות ודברי היערות דבש</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+        <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ השיעור המלא בווידאו" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/HrNMfkaKuLw?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/HrNMfkaKuLw/hqdefault.jpg" alt="השיעור המלא בווידאו" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=HrNMfkaKuLw" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">הקדמה</div>
+      <h3 class="story-title">📖 הקדמה</h3>
+      <p>פרשת כי תצא היא הפרשה שבה מצוי מניין המצוות הגדול ביותר בכל התורה כולה: עשרים ושבע מצוות עשה, וארבעים ושבע מצוות לא תעשה. עובדה זו, שכמעט חולפת על פנינו מדי שנה בלי שנעצור לחשוב עליה, מזמנת לנו הזדמנות להתבונן ביסוד עמוק ומיוסד: מדוע, בעצם, הרבה לנו הקדוש ברוך הוא כל כך הרבה מצוות? האם הן עול כבד שהוטל עלינו, או שמא מתנה יקרה שניתנה לנו מתוך אהבה?</p>
+      <p>בשלושת הפרקים הבאים נלך בעקבות תשובת חז״ל לשאלה הזאת: נתחיל ממשנה מפורסמת בסוף מסכת מכות, נמשיך אל דברי רבי יונתן איבשיץ בספרו ״יערות דבש״ על טהרת הלב וקול השופר, ונסיים ביסוד שאותו הוא עצמו קורא לנו להפנים — שכל המצוות ניתנו לנו רק לטובתנו, ולפיכך יש לקיימן מתוך שמחה אמיתית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רצונו של הקדוש ברוך הוא לזכות את ישראל</div>
+      <h3 class="story-title">🌿 משנה בסוף מסכת מכות</h3>
+      <p>לפני כשבועיים קראנו בפרשת ראה פסוק הנוגע לאיסור אכילת דם: ״רַק חֲזַק לְבִלְתִּי אֲכֹל הַדָּם, כִּי הַדָּם הוּא הַנָּפֶשׁ״. על פסוק זה, ועל דברים דומים לו, בונה המשנה בסוף מסכת מכות יסוד גדול. המשנה מתבוננת באדם שנפשו קצה מאליה מדברים מסוימים — כגון שקצים, רמשים ונבלות, שממילא כל בר דעת מרגיש בהם מיאוס טבעי — ומלמדת שגם הפרישה מהם, אף שהיא לכאורה טבעית ואינה דורשת מאמץ מיוחד, מזכה את הפורש בשכר של קיום מצווה. קל וחומר, ממשיכה המשנה, ביחס לדברים שנפשו של האדם דווקא מתאווה להם ומחמדת אותם — כגון גזל ועריות — שהפורש מהם, מתוך התגברות אמיתית על יצרו, זוכה לשכר גדול הרבה יותר, לו ולדורותיו, עד סוף כל הדורות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a><a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רצונו של הקדוש ברוך הוא לזכות את ישראל</div>
+      <h3 class="story-title">🌿 מדוע לצוות על מה שממילא מאוס עלינו?</h3>
+      <p><strong>קושיה:</strong> אם דבר כמו אכילת שקצים ורמשים ממילא מאוס על כל בן אדם, ואין לו שום נטייה טבעית לאוכלם — מדוע היה צריך הקדוש ברוך הוא לצוות עליו איסור מפורש בתורה? הלא ממילא לא היינו נכשלים בו!</p>
+      <p><strong>ביאור רש״י:</strong> מבאר רש״י שם, שלמרות שבאמת מצד עצם המיאוס הטבעי לא היה צורך לצוות על כך, בכל זאת ציוותה התורה עלינו איסור מפורש — וזאת כדי שנוכל לקבל שכר. אדם שנמנע מדבר רק מפני שהוא מרגיש בו מיאוס טבעי, אינו נחשב כמקיים מצווה, שהרי אין כאן שום בחירה או מאמץ. אבל כאשר הקדוש ברוך הוא הופך את הפרישה מדבר מאוס לציווי, לחלק מרצון ה׳ ומדבר תורה — כל פרישה כזו הופכת להיות קיום מצווה של ממש, ומזכה בשכר.</p>
+      <p>נמצא, אם כן, שהקדוש ברוך הוא לא הסתפק בכך שבני האדם ירחיקו את עצמם ממעשים מגונים מכוח שכלם וטבעם בלבד. הוא ביקש לתת לנו הזדמנות לקבל שכר גם על הדברים שממילא לא היינו עושים — וזה מלמד עד כמה גדול חפצו של הקדוש ברוך הוא לזכות אותנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a><a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רצונו של הקדוש ברוך הוא לזכות את ישראל</div>
+      <h3 class="story-title">🌿 רבה להם תורה ומצוות</h3>
+      <p>מכאן ממשיכה המשנה למימרא המפורסמת, שאותה נהגו חכמים להוסיף בסוף כל פרק במשניות, כדי לסיים כל לימוד בדברי עידוד ותקווה:</p>
+      <p class="bold-para">״רַבִּי חֲנַנְיָא בֶּן עֲקַשְׁיָא אוֹמֵר: רָצָה הַקָּדוֹשׁ בָּרוּךְ הוּא לְזַכּוֹת אֶת יִשְׂרָאֵל, לְפִיכָךְ הִרְבָּה לָהֶם תּוֹרָה וּמִצְוֹת, שֶׁנֶּאֱמַר: ה׳ חָפֵץ לְמַעַן צִדְקוֹ, יַגְדִּיל תּוֹרָה וְיַאְדִּיר.״</p>
+      <p>משנה, סוף מסכת מכות · הפסוק: ישעיהו מב, כא</p>
+      <p>המימרא הזאת, המוכרת לכל לומד, טומנת בתוכה אמירה עמוקה ומשנה תפיסה. הריבוי העצום של המצוות בתורה — תרי״ג מצוות על כל פרטיהן ודקדוקיהן — אינו עדות לדרישה כבדה או למעמסה. הוא, אדרבה, עדות לאהבה. ״רצה הקדוש ברוך הוא לזכות את ישראל״ — מתוך רצון עמוק לתת לעם ישראל כמה שיותר הזדמנויות לזכות, לקבל שכר, ולהתקרב אליו, הרבה לנו תורה ומצוות. כל מצווה נוספת היא עוד פתח לזכות, עוד דרך להתקרב, עוד הזדמנות שהקדוש ברוך הוא פותח לפנינו מתוך חמלה וחיבה.</p>
+      <p>וכאן עולה שאלה שראוי שכל אחד ישאל את עצמו: אם אכן כל מצווה היא מתנה ולא נטל — האם כך אנחנו מרגישים בעת קיומה? האם קיום המצוות אצלנו מלווה בתחושת זכייה ושמחה, או שמא הוא נעשה מתוך הרגל יבש, ולעיתים אף מתוך תחושת עומס? זוהי בדיוק הנקודה שאליה מוביל אותנו רבי יונתן איבשיץ בהמשך הדברים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a><a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · טהרת הלב וקול השופר</div>
+      <h3 class="story-title">💛 טהרת הלב וקול השופר</h3>
+      <p class="bold-para">הדברים שלפנינו מבוססים על דרשותיו של רבי יונתן איבשיץ, מגדולי הפוסקים והדרשנים באשכנז במאה השמונה עשרה, בעל ״אורים ותומים״ ו״כרתי ופלתי״ על חלקי השולחן ערוך, ובעל ״יערות דבש״ — קובץ דרשות עמוקות ביראת שמים, במוסר ובעבודת הלב. בחלק ב׳, בדרוש החמישי, מקדיש רבי יונתן איבשיץ את דבריו למוסר ולהתחזקות לקראת חודש אלול וימי הדין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a><a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · טהרת הלב וקול השופר</div>
+      <h3 class="story-title">💛 ראש השנה כנגד הלב</h3>
+      <p>פותח רבי יונתן איבשיץ ואומר, שראש השנה נחשב כנגד הלב. הוא מסביר זאת באמצעות דוגמה מגוף האדם: הלב הוא העיקר והמרכז של כל הגוף. ממנו זורם הדם אל כל האיברים, והוא הנותן חיות וקיום לכל חלקי הגוף כולו. אם הלב בריא וטהור — כל הגוף נהנה מכך; ואם חלילה נפגם הלב — כל הגוף סובל. באותה מידה, מבאר רבי יונתן איבשיץ, בעבודת האדם את בוראו: העיקר וההתחלה של הכל הוא טהרת הלב מכל המידות הרעות — מקנאה, משנאה, מתחרות ומכל תאווה זרה. שהרי מהלב הטהור נובעות כל שאר עבודות האדם.</p>
+      <p>מכאן הוא ממשיך ומבאר את הכתוב בספר יצירה, שהלב בגוף הוא כמלך במדינה. הלב מולך על כל האיברים, ומכוחו הם פועלים. וכשם שבגוף הלב הוא המלך, כך גם בראש השנה, כאשר אנו ממליכים את הקדוש ברוך הוא עלינו — כביכול הקדוש ברוך הוא עצמו הוא כמו אותו הלב, המרכז והעיקר של הכל, שממנו נשפעת החיות לכל הבריאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a><a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · טהרת הלב וקול השופר</div>
+      <h3 class="story-title">💛 הלב כמלך — מהגוף אל עם ישראל</h3>
+      <p>אותו רעיון עצמו, ממשיך רבי יונתן איבשיץ, שייך גם אצל עם ישראל כלפי הקדוש ברוך הוא. הוא מביא לכך רמז מן הפסוק הידוע:</p>
+      <p class="bold-para">״אֲנִי יְשֵׁנָה וְלִבִּי עֵר״</p>
+      <p>שיר השירים ה, ב</p>
+      <p>פסוק זה, המורה על ניקיון הלב וייחודו אל הדוד, נדרש גם על ראש השנה — כרמז לכך שגם כשעם ישראל שרוי כביכול ב״שינה״, בהתרשלות ובנפילה, הלב שבתוכו נשאר ער וזך, מיוחד אל הקדוש ברוך הוא בלבד. ובראש השנה בפרט מתעורר אותו הלב, מתנקה ומתייחד אל בוראו מחדש. עם ישראל מנקים את הלב, ומייחדים אותו אל הקדוש ברוך הוא בלבד — וזוהי בעצם עבודת ראש השנה בשורשה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a><a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · טהרת הלב וקול השופר</div>
+      <h3 class="story-title">💛 קול השופר — הקול היוצא מן הלב</h3>
+      <p>ומכאן ממשיך רבי יונתן איבשיץ לבאר יסוד נפלא בעניינה של תקיעת שופר בראש השנה, שגם היא, לדבריו, כנגד עניינו של הלב. כאשר אדם מדבר דיבור רגיל, כל מה שיוצא מפיו נשמע ומתעצב על ידי איברי הדיבור — הלשון, השיניים, השפתיים. כל מילה עוברת עיבוד של איברים גשמיים, חיצוניים, לפני שהיא יוצאת החוצה כקול.</p>
+      <p>קול השופר לעומת זאת שונה לגמרי. הוא יוצא מנשיכת הרוח שבוקעת מן הלב, בלי שום סיוע מאיברי הדיבור שיש לנו. אין בו לא לשון, לא שיניים ולא שפתיים — רק רוח היוצאת ישר מן הלב פנימה. ולכן, מסביר רבי יונתן איבשיץ, קול השופר הוא הקול הנבחר והחביב ביותר לפני הקדוש ברוך הוא מכל שאר הקולות: מפני שהוא מגיע ישר מן הלב, בלי שום תיווך, בלי שום עיבוד חיצוני. זהו קול שמבטא בטהרתו את מה שבפנים.</p>
+      <p>ואם קול השופר החביב הוא דווקא הקול הבא מן הלב בלי תיווך — הרי שיש כאן מסר ברור לגבינו: גם עבודתנו את הקדוש ברוך הוא צריכה לבוא מן הלב, לא כמעשה חיצוני יבש. ומכאן עובר רבי יונתן איבשיץ ליסוד המרכזי שהוא מבקש להשריש בליבנו: מהו הדבר שיכול לטהר את הלב ולזככו יותר מכל? התשובה, לדבריו, היא התורה — ובמיוחד, שמחה של מצווה. וזהו הנושא שאליו נפנה עתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a><a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · שמחת המצווה — מתנה, לא עול</div>
+      <h3 class="story-title">🕯️ משל השרים ופקודת המלך</h3>
+      <p>ממשיך רבי יונתן איבשיץ באותו דרוש, ומתאר תופעה מצערת שהוא רואה בדורו — ולמרבה הצער, נכונה גם לדורנו. לדבריו, בעוונותינו הרבים, מצב הדברים הפוך ממה שהיה ראוי: אדם המקיים מצווה, פעמים רבות אינו עושה זאת מתוך חפץ לב אמיתי, אלא כמעט בעל כורחו, כמי שנכפה עליו הדבר. ואילו היה מישהו אומר לו ״פטור אתה ממנה״ — היה שמח ומתמלא הקלה. וזהו, לדבריו, היפוך גמור מהראוי: הרי דווקא בקיום המצווה עצמה היה לו לשמוח, ולא בפטור ממנה.</p>
+      <p>ולביסוס דבריו הוא מביא משל פשוט אך נוקב: כאשר מלך בשר ודם חולק כבוד לאחד השרים הנכבדים, ומטיל עליו לבצע שליחות מטעמו — כל שר כזה שמח ומתגאה בכך שמחה גדולה. הוא רואה בכך זכות וכבוד, לא נטל. ואם כך שר בשר ודם שמח בשליחות ממלך בשר ודם — קל וחומר בן אדם, שהוא, כלשונו של רבי יונתן איבשיץ, ״נבזה, חדל אישים״, ובכל זאת זוכה לכך שמלך מלכי המלכים הקדוש ברוך הוא בעצמו מטיל עליו שליחות ומצווה אותו לעשות דבר שיהיה לנחת ולרצון לפניו תמיד — כמה וכמה יש לו לשמוח בכך!</p>
+      <p>ואין הכוונה רק למצוות הגדולות והמורכבות. גם על מצווה הנראית קטנה בעינינו — כגון תקיעה בשופר, שנמשכת רגעים ספורים ואינה כרוכה במאמץ מיוחד — אין לזלזל ולומר ״עשיתי דבר קטן, ומה בכך שתקעתי בשופר?״. שכן בכל מקום שיש בו רצון ונחת לפני הקדוש ברוך הוא, יש חדווה ושמחה גדולה לפניו מכך — ועל האדם להרבות שמחה כמוצא שלל רב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a><a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · שמחת המצווה — מתנה, לא עול</div>
+      <h3 class="story-title">🕯️ לא כדרך הגויים</h3>
+      <p>וכאן מוסיף רבי יונתן איבשיץ נקודה מחדדת, המבארת עד כמה שונה אופייה של עבודת ה׳ מדרכי עבודה זרה שהמציאו להם הגויים. אצל הגויים, כדי להראות מסירות לאליליהם, המציאו להם בני האדם עינויים וסיגופים קשים מדעת עצמם — ללכת יחפים על השלג, להכות את עצמם בשוטים עד שיזוב מהם דם, לשרוט את בשרם, ועוד מיני עינויים משונים שהם עצמם המציאו. זוהי עבודה שכל יסודה הוא צער וסבל, מתוך מחשבה שכך יפייסו את האל.</p>
+      <p>עינויים וסיגופים שהמציאו לעצמם מדעתם: הליכה יחפה על השלג, הכאה בשוטים, שריטת הבשר — מתוך תפיסה שהצער עצמו הוא העבודה.</p>
+      <p>מצוות שניתנו לנו לא לשם עינוי וצער, אלא רק לטובתנו ולנחת רוחנו — עד כדי כך שהמצטער בקיומן, פטור מהן.</p>
+      <p>רצון ה׳, מדגיש רבי יונתן איבשיץ, אינו כך כלל. התורה לא ביקשה מאיתנו עינויים או צער לשם צער.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a><a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · שמחת המצווה — מתנה, לא עול</div>
+      <h3 class="story-title">🕯️ ״המצטער פטור מן הסוכה״</h3>
+      <p>ולראיה לכך מביא רבי יונתן איבשיץ דוגמה מוחשית מהלכות מצוות סוכה. הלכה ידועה קובעת שמי שמצטער בישיבתו בסוכה — פטור מן הסוכה. הלכה זו לכאורה תמוהה: הרי אם המצווה היא לשבת בסוכה, מדוע שהצער יפטור ממנה? אלא שהיא מלמדת יסוד עמוק: המצוות לא ניתנו לנו כדי לצער אותנו, אלא רק לטובתנו ולנחת רוחנו. ברגע שקיום המצווה גורם צער של ממש, במקום להיות תוספת של קדושה ושמחה, ההלכה עצמה פוטרת מקיומה — כי זה כל יסוד נתינתה מלכתחילה.</p>
+      <p class="bold-para">מצטער פטור מן הסוכה.</p>
+      <p>משנה וגמרא, מסכת סוכה כה ע״ב – כו ע״א</p>
+      <p>ואם כן, יש לאדם לשמוח מאוד מאוד בכל מצווה ומצווה. אולם בעוונותינו הרבים, לעיתים קרובות המצב הפוך: אנו נוטים לראות במצוות עול ומשא, במקום לראות בהן מקור לשמחה. ורבי יונתן איבשיץ מזכיר לנו נס נוסף שראוי לשמוח בו: הנס הנפלא שאנו נמצאים בין האומות, וה׳ נתן לנו חן בעיניהם, עד שהם מניחים לנו לשמור את מצוותינו בשקט ובשלווה. ולא זו בלבד, אלא שכל מי ששומר את מצוותיו כראוי, נחשב בעיניהם לאדם נכבד ויקר. ואם כן, יש לנו על מה לשמוח — על החסד הגדול שמעניק לנו הקדוש ברוך הוא, להחיות בו את נשמותינו ולזכותנו בכל עת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a><a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · שמחת המצווה — מתנה, לא עול</div>
+      <h3 class="story-title">🕯️ להתעורר לשמוח בקיום המצוות</h3>
+      <p>ומכל האמור לעיל אנו לומדים עד כמה עלינו להתעורר ולשמוח בקיום המצוות. כל רצונו של הקדוש ברוך הוא במה שציווה אותנו את מצוותיו הוא רק כדי לקדשנו, לטהרנו ולקרבנו אליו. חס וחלילה שיהיה בכך עול או משא. אדרבה: עלינו להתעורר בשמחה לקראת קיום כל מצווה ומצווה, מתוך ידיעה ברורה שכל המצוות הן רק לטובתנו, ושה׳ חפץ בטובתנו האמיתית בעולם הזה ובעולם הבא.</p>
+      <p>נמצא שהחוט המקשר בין שלושת חלקי היסוד שראינו הוא אחד: הקדוש ברוך הוא, מתוך אהבתו לעם ישראל, הרבה לנו תורה ומצוות כדי לזכותנו (פרק א). כדי שנוכל לקיימן כראוי, עלינו לטהר את ליבנו ולייחד אותו כלפיו, כפי שמלמדת אותנו עבודת ראש השנה וקול השופר הבוקע מן הלב (פרק ב). ומתוך אותו לב טהור, נדרשת מאיתנו תגובה טבעית אחת בלבד: שמחה של ממש בכל מצווה ומצווה, מתוך ידיעה שהיא מתנה ולא נטל (פרק ג). יהי רצון שנזכה, בעזרת ה׳, לעבוד את ה׳ ולקיים את מצוותיו מתוך שמחה אמיתית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a><a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">מקורות</div>
+      <h3 class="story-title">🎶 מקורות ומראי מקומות</h3>
+      <ol><li>דברים יב, כג — ״רַק חֲזַק לְבִלְתִּי אֲכֹל הַדָּם, כִּי הַדָּם הוּא הַנָּפֶשׁ״ (פרשת ראה)</li><li>משנה, סוף מסכת מכות — יסוד הפרישה ממה שנפש האדם קצה בו, ומה שהיא מתאווה לו</li><li>רש״י, מסכת מכות, שם — ביאור מדוע ציוותה התורה גם על דברים שממילא מאוסים על האדם</li><li>משנה, סוף מסכת מכות — ״רבי חנניה בן עקשיא אומר, רצה הקדוש ברוך הוא לזכות את ישראל...״</li><li>ישעיהו מב, כא — ״ה׳ חָפֵץ לְמַעַן צִדְקוֹ יַגְדִּיל תּוֹרָה וְיַאְדִּיר״</li><li>רבי יונתן איבשיץ, ״יערות דבש״, חלק ב׳, דרוש ה׳</li><li>שיר השירים ה, ב — ״אֲנִי יְשֵׁנָה וְלִבִּי עֵר״</li><li>ספר יצירה — הלב בגוף כמלך במדינה (כפי שמובא בדרוש הנ״ל)</li><li>משנה וגמרא, מסכת סוכה כה ע״ב – כו ע״א — ״מצטער פטור מן הסוכה״</li></ol>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">שיעורו של הרב יהודה טאוב · <a href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%A9%D7%91%D7%95%D7%A2%20%D7%95%D7%97%D7%92%D7%99%D7%9D/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%A7%D7%95%D7%9C%20%D7%AA%D7%95%D7%93%D7%94%20-%20%20%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%94%D7%A9%D7%91%D7%95%D7%A2/049%20%D7%9B%D7%99%20%D7%AA%D7%A6%D7%90/%D7%9E%D7%90%D7%9E%D7%A8_%D7%A7%D7%99%D7%95%D7%9D_%D7%94%D7%9E%D7%A6%D7%95%D7%95%D7%AA_%D7%91%D7%A9%D7%9E%D7%97%D7%94_%D7%94%D7%A8%D7%91_%D7%99%D7%94%D7%95%D7%93%D7%94_%D7%98%D7%90%D7%95%D7%91.html" target="_blank" rel="noopener">הספר המלא עם הקראה</a></div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id": 1, "name": "הקדמה", "icon": "📖", "color": "#c62b6b", "stories": [{"id": 1, "title": "הקדמה", "icon": "📖"}]}, {"id": 2, "name": "רצונו של הקדוש ברוך הוא לזכות את ישראל", "icon": "🌿", "color": "#6d28d9", "stories": [{"id": 2, "title": "משנה בסוף מסכת מכות", "icon": "🌿"}, {"id": 3, "title": "מדוע לצוות על מה שממילא מאוס עלינו?", "icon": "🌿"}, {"id": 4, "title": "רבה להם תורה ומצוות", "icon": "🌿"}]}, {"id": 3, "name": "טהרת הלב וקול השופר", "icon": "💛", "color": "#e08e00", "stories": [{"id": 5, "title": "טהרת הלב וקול השופר", "icon": "💛"}, {"id": 6, "title": "ראש השנה כנגד הלב", "icon": "💛"}, {"id": 7, "title": "הלב כמלך — מהגוף אל עם ישראל", "icon": "💛"}, {"id": 8, "title": "קול השופר — הקול היוצא מן הלב", "icon": "💛"}]}, {"id": 4, "name": "שמחת המצווה — מתנה, לא עול", "icon": "🕯️", "color": "#0f8f87", "stories": [{"id": 9, "title": "משל השרים ופקודת המלך", "icon": "🕯️"}, {"id": 10, "title": "לא כדרך הגויים", "icon": "🕯️"}, {"id": 11, "title": "״המצטער פטור מן הסוכה״", "icon": "🕯️"}, {"id": 12, "title": "להתעורר לשמוח בקיום המצוות", "icon": "🕯️"}]}, {"id": 5, "name": "מקורות", "icon": "🎶", "color": "#1e63c9", "stories": [{"id": 13, "title": "מקורות ומראי מקומות", "icon": "🎶"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+

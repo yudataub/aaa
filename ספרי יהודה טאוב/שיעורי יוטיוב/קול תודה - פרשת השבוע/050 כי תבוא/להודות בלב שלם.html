@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 להודות בלב שלם</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>📖 להודות בלב שלם</h1>
+  <p>הכרת הטוב, הודיה ושמחה — ארבעה עיונים בפרשת כי תבוא</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+        <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ השיעור המלא בווידאו" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/NDuH0h5EQKY?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/NDuH0h5EQKY/hqdefault.jpg" alt="השיעור המלא בווידאו" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=NDuH0h5EQKY" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+    <div style="margin:-12px 6px 24px;color:var(--ink-soft)"><div style="font-weight:700;margin-bottom:4px">סרטונים נוספים הקשורים לשיעור:</div><div><a href="https://www.youtube.com/watch?v=EYii8yJ5qqQ" target="_blank" rel="noopener" style="color:#c4002b;text-decoration:none;font-weight:700">הודיה צריכה להיות צבעונית ↗</a></div><div><a href="https://www.youtube.com/watch?v=QOjTbOhw1EQ" target="_blank" rel="noopener" style="color:#c4002b;text-decoration:none;font-weight:700">כיצד נראית הכרת הטוב אמיתית ↗</a></div></div>
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהי הכרת הטוב האמיתית?</div>
+      <h3 class="story-title">📖 מהי הכרת הטוב האמיתית?</h3>
+      <p class="bold-para">נהוג לקרוא את פרשת "כי תבוא" תמיד סמוך לראש השנה, כדי "שתכלה שנה וקללותיה". אין הכוונה שעצם הקריאה, כשלעצמה, מוחקת את הקללות ומזכה בשנה טובה. הכוונה היא, שאם נתבונן היטב בפרשה ונבין את הכתוב בה, נזכה שהקללות יתמו ותבוא עלינו שנה טובה ומתוקה. וכדאי אפוא לעצור ולשאול: מה בדיוק מבקשת הפרשה הזאת ללמד אותנו?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהי הכרת הטוב האמיתית?</div>
+      <h3 class="story-title">📖 למה מספרים את סיפור מצרים על סל פירות?</h3>
+      <p>פרשת השבוע פותחת במצוות הביכורים. אדם לוקח מהפרי הראשון שגדל בשדהו, ומביא אותו לירושלים, אל הכהן. יחד עם הפרי הוא נדרש לומר נוסח מיוחד, שפותח במילים: "הִגַּדְתִּי הַיּוֹם לַה' אֱלֹקֶיךָ, כִּי בָאתִי אֶל הָאָרֶץ אֲשֶׁר נִשְׁבַּע ה' לַאֲבֹתֵינוּ לָתֶת לָנוּ". עד כאן הדברים מובנים היטב. הוא מודה על הארץ, ועל הפרי שגדל בה.</p>
+      <p>אבל מיד לאחר מכן, בלי שום הקדמה נוספת, מתחיל אותו אדם לספר סיפור שלם: "אֲרַמִּי אֹבֵד אָבִי וַיֵּרֶד מִצְרַיְמָה". הוא מספר על יעקב אבינו ולבן הארמי, על הירידה למצרים, על השעבוד הקשה, ועל היציאה ממנו: "וַנִּצְעַק אֶל ה' אֱלֹקֵי אֲבֹתֵינוּ, וַיִּשְׁמַע ה' אֶת קֹלֵנוּ, וַיַּרְא אֶת עָנְיֵנוּ וְאֶת עֲמָלֵנוּ וְאֶת לַחֲצֵנוּ". מי שמכיר את ההגדה של פסח, מכיר את הפסוקים האלה היטב. הם הבסיס שעליו בנוי כל חלק "מגיד" בליל הסדר.</p>
+      <p>וכאן עולה השאלה מאליה. אותו אדם בא להביא סל תאנים וענבים, ולהודות על כך בלבד. מה הקשר בין הפרי שבידיו, לבין יעקב אבינו ולבן הארמי? מה הקשר לירידה למצרים, לשעבוד, ולעשר המכות? לכאורה היה מספיק לומר: "תודה רבה על הפרי הזה, ריבונו של עולם", ולסיים בכך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a><a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהי הכרת הטוב האמיתית?</div>
+      <h3 class="story-title">📖 ההגדרה: להקיף את כל הטוב</h3>
+      <p>מכאן לומדים יסוד נפלא מאוד בדבר עצם ההודיה. וזו ההגדרה: הכרת הטוב פירושה להכיר בטוּב ליבו של הנותן. לא רק לקבל את המתנה ולומר "תודה" עליה כמעשה שבשגרה, אלא להגיע להכרה של ממש, שמי שנתן אותה הוא באמת טוב ומטיב. ובשביל להגיע להכרה כזאת, אין די בהודיה על דבר אחד בלבד. צריך להקיף את כל הטוב.</p>
+      <p class="bold-para">הודיה אחת ובודדת, לא תגרום לך להכיר באמת בטוּב ליבו של הנותן. עדיין לא תהיה זו הכרת הטוב האמיתית. רק כשמודים על עוד דבר, ועוד דבר, פרט אחרי פרט — רק אז מתחיל הלב להכיר שמי שעומד מאחורי כל זה הוא באמת טוב ומטיב.</p>
+      <p>זו בדיוק הסיבה שמביא הביכורים אינו מסתפק בפרי שבידיו. הוא נדרש "להקיף" את כל הטוב שעשה עמו הקדוש ברוך הוא, מתחילת הדרך ועד הרגע הזה ממש: מיעקב אבינו, דרך הירידה למצרים והשעבוד, ועד היציאה ממנו והכניסה לארץ ישראל. רק סיפור כזה, המקיף את כל שרשרת החסדים, יוצר בלב הכרת טוב אמיתית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a><a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהי הכרת הטוב האמיתית?</div>
+      <h3 class="story-title">📖 מברכת המזון ועד חנוכה</h3>
+      <p>אותו יסוד בדיוק חוזר במקומות רבים נוספים בתורה ובהלכה. וכשמכירים אותו, אי אפשר שלא להבחין בו כמעט בכל מקום.</p>
+      <p>לכאורה, ברכת המזון היא הודיה על האוכל שאכלנו זה עתה. אך תשמעו כמה נושאים היא מזכירה: ארץ חמדה, יציאת מצרים, ברית מילה, תורה, חוקים, חיים, חן וחסד. מה כל זה קשור לפת שבירכנו עליה? התשובה היא אותו יסוד עצמו: כשמודים — מודים על הכל.</p>
+      <p>אחרי הדלקת הנרות איננו מודים רק על נס פך השמן. אנו מזכירים את יציאת מצרים, את טביעת פרעה בים, את שיבת ציון ובניין בית שני, את נס ההצלה מן המן הרשע, ואת נצחון החשמונאים על היוונים. הרגש שמתעורר בהודיה אחת מתרחב מאליו על כל שאר הדברים.</p>
+      <p class="bold-para">מובאת בעניין זה הלכה למעשה נאה, בגיליון "פנינים נחמדים": אדם המכניס את בנו לחופה, צריך להודות לה' לא רק על שזכה להכניס אותו לחופה. עליו להודות גם על שזכה שנולד לו בן כזה, על שזכה לגדלו, ועל שהוא עצמו זכה בשעתו להיכנס לחופה. ואף מעבר לכך: להודות על יעקב אבינו, על סבו שניצל מישועה מסוימת, על שזכה לארץ ישראל, על שזכה לשמור מצוות, ועל שזכה להתחתן. הודיה כזאת, שמתחילה ומקיפה את כל השרשרת, היא הלב שמתמלא באמת בהכרת טוב.</p>
+      <p>גיליון "פנינים נחמדים"</p>
+      <p>ואפילו ב"חד גדיא", השיר שאיתו מסיימים את ליל הסדר, מופיע אותו רעיון: אחד מי יודע, שלושה אבות, ארבע אמהות, חמישה חומשי תורה... מה הקשר של כל אלה לסיפור יציאת מצרים? התשובה היא, שוב, אותו יסוד עצמו. ברגע שמתעורר הלב להודות, מרחיבים אותו על כל שאר הדברים.</p>
+      <p>ואפילו בהלכות ברכת "הגומל" יש לכך ביטוי מפורש. נאמר בשולחן ערוך, אורח חיים, סימן רח: אדם שאירעו לו כמה ניסים, כאשר הוא בא לברך ולהודות, צריך להזכיר נס במקום זה ונס במקום אחר, ולא להסתפק בהזכרת נס אחד בלבד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a><a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהי הכרת הטוב האמיתית?</div>
+      <h3 class="story-title">📖 פנקס ההודיה</h3>
+      <p>מתוך היסוד הזה אפשר להבין גם למה כלי מעשי כמו "פנקס הודיה" הוא כלי כה חשוב. הודיה על דבר אחד, ברגע אחד, עדיין לא תיצור בלב הכרת טוב אמיתית. אבל מי שמחזיק פנקס, וכותב בו מדי פעם דבר טוב שקרה לו — ואחרי שבוע, שבועיים, חודש, חודשיים — חוזר ומעיין ברשימה שהצטברה, הוא זה שבאמת מגיע להכיר בטוב. הוא רואה לנגד עיניו לא חסד אחד, אלא שרשרת ארוכה של חסדים. ומתוך כך מתמלא ליבו הכרת טוב אמיתית כלפי מי שעשה עמו את כל זה.</p>
+      <p class="bold-para">מוזכר בשיעור המקורי שמי שמעוניין בפנקס הודיה מעשי משלו, יכול לפנות לקו הטלפון של ארגון "לעולם מודה". פרטי המספר המדויקים כפי שנמסרו בהקלטה: 079-5439, שלוחה 2.</p>
+      <p>ולמאזינים שמעוניינים להעמיק בנושא הכרת הטוב, צוין בשיעור עצמו שהנושא הורחב במקומות נוספים — בהם שיעור נפרד העוסק בשאלה "מהו שמו של הקדוש ברוך הוא", ולמה חייבים להכיר בכל טוב ליבו של הנותן. תוכנם המלא של אותם שיעורים לא הובא כאן, אך מי שמעוניין, יוכל לאתרם בסדרת השיעורים המלאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a><a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הודיה צריכה להיות צבעונית</div>
+      <h3 class="story-title">🌿 פנקס שחור־לבן בחינם, או צבעוני בתשלום?</h3>
+      <p><strong>פנקס שחור־לבן בחינם, או צבעוני בתשלום?</strong></p>
+      <p>ביום שישי אחד, התקשר הרב לאחת התחנות שמוכרות פנקסי הודיה. יהודי מאותו אזור ביקש ממנו שישיג לו פנקס, והרב רצה לוודא שיש במלאי. "לא," ענו לו בתחנה, "עדיין לא הגיעו אלינו הפנקסים החדשים." ואז הוסיפו: "אבל יש אצלנו באזור גם פנקסים אחרים. פנקס הודיה, אמנם לא צבעוני, שחור־לבן, אבל גם הוא פנקס הודיה. אם תרצה, תוכל לקבל אותו בחינם."</p>
+      <p>"אני רוצה את הפנקס הצבעוני," השיב הרב מיד. "אני מעוניין דווקא בו."</p>
+      <p>למה בעצם זה משנה? הרי גם פנקס שחור־לבן משמש לאותה מטרה בדיוק: לכתוב בו דברים טובים שקרו, ולהודות עליהם. אז למה להתעקש דווקא על הצבעוני?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a><a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הודיה צריכה להיות צבעונית</div>
+      <h3 class="story-title">🌿 קרניים מצופות זהב</h3>
+      <p>התשובה מסתתרת בהלכות הקרבת הקורבנות בבית המקדש. את כל הקורבנות היו מביאים כמות שהם. איש מעולם לא שמע שקישטו את קורבן העולה, או צבעו את קורבן השלמים. קורבן אחד, לעומת זאת, יוצא דופן. מצאנו במפורש שהיה מצווה לקשט אותו. וכך שנינו במשנה, מסכת ביכורים, פרק ג: "וְהַשּׁוֹר הוֹלֵךְ לִפְנֵיהֶם, וְקַרְנָיו מְצֻפּוֹת זָהָב, וַעֲטֶרֶת שֶׁל זַיִת בְּרֹאשׁוֹ". השור שהובל בראש התהלוכה, לקראת שיהיה קורבן שלמים, קושט בזהב ובעטרת זית.</p>
+      <p class="bold-para">"וְהַשּׁוֹר הוֹלֵךְ לִפְנֵיהֶם, וְקַרְנָיו מְצֻפּוֹת זָהָב, וַעֲטֶרֶת שֶׁל זַיִת בְּרֹאשׁוֹ"</p>
+      <p>משנה, ביכורים ג</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a><a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הודיה צריכה להיות צבעונית</div>
+      <h3 class="story-title">🌿 עיטור הביכורים</h3>
+      <p>וזה לא מסתיים בשור בלבד. גם הביכורים עצמם היו מקושטים. מונה המשנה כמה חלקים בהבאתם: הביכורים עצמם, תוספת הביכורים, ועיטור הביכורים. "עיטור הביכורים" הוא ממש מה שהיום היינו קוראים לו "עיצוב אירועים". היה מי שתפקידו לסדר את הפירות בסל בצורה נאה: את הזית כאן, את התאנה שם, את הגפן לצדה, עוד כמה אפרסקים, פירות יפים, ענפי עץ ועלים. הביכורים לא הובאו סתם כערמת פירות, אלא הובאו בצורה מיוחדת ומרהיבה.</p>
+      <p class="bold-para">מה למדים מכאן? שיש מצוות שמביאים אותן "ישר וחלק", כמות שהן. אבל ההודיה לקדוש ברוך הוא אינה כזאת. היא מצווה שצריכה לבוא צבעונית, יפה, מיוחדת — משהו שמעורר את רגש הלב. הודיה אינה כשאר המצוות. היא מצווה שכל כולה עניינה רגש, ולכן היא צריכה לבוא מלאה רגש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a><a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הודיה צריכה להיות צבעונית</div>
+      <h3 class="story-title">🌿 למה עוטפים מתנה בנייר צלופן?</h3>
+      <p>לאותו כיוון בדיוק מצטרף רעיון נוסף, מתוך ספר "שערי אהבה" על אהבת ה'. מדוע, כשנותנים מתנה, נוהגים לעטוף אותה? הרי אפשר פשוט למסור אותה כמות שהיא. אבל אנשים טורחים לעטוף אותה בנייר יפה, בסרט, בקישוט. מדוע?</p>
+      <p class="bold-para">"הנוהג לעטוף מתנה בצורה יפה ומהודרת — הדאגה לתוספת הזו מגלה על הכוונות שמאחורי המתנה עוד יותר מהמתנה עצמה. שהרי כשאדם נותן מתנה לחברו, כוונותיו נסתרות ואינן ידועות למקבל: האם באמת המניע היה רגש של אהבה והערכה, או שמא הרגיש מחויב מאיזו סיבה לתת את המתנה? אולם כאשר הנותן טורח להוסיף למתנה דברים קטנים שהם מיותרים לגמרי לעצם המתנה — דברים שהמקבל כלל אינו צריך להם — הרי זה סימן שהוא באמת מעוניין בהנאתו של המקבל, ושמח להוסיף לו שמחה. ככל שההוספה מיותרת יותר ובלתי־מחויבת, כך היא מעידה יותר על רגשות האהבה והנדיבות שמאחורי הנתינה."</p>
+      <p>ספר "שערי אהבה" על אהבת ה' (מובא בשיעור; הניסוח הוגה מתוך תמלול)</p>
+      <p>איזה רעיון נפלא. כשנותנים לשני דבר שאינו הכרחי, מראים לו שאוהבים אותו. ולכן, כשאנחנו רוצים להודות לבורא עולם, לא די בעצם המילים "תודה רבה". כדאי גם לנו להוסיף "נייר צלופן": משהו שלא חייבים, תוספת קטנה, זריזות למצווה, מעשה של עבודת ה' שאיננו מחויבים בו. זו הדרך להראות לקדוש ברוך הוא כמה אוהבים אותו. זו הודיה אמיתית.</p>
+      <p>ויש בכך משמעות מיוחדת דווקא בימים הסמוכים לראש השנה, הימים שבהם קוראים על הביכורים. שכן, סמוך לראש השנה, ראוי לכל יהודי להקריב "ביכורים" משלו: להתבונן בכל החסדים שעשה עמו הקדוש ברוך הוא בשנה שחלפה. וכפי שמבטאות הסליחות הנאמרות בימים אלו: "לְכוּ נְרַנְּנָה לַה', נָרִיעָה לְצוּר יִשְׁעֵנוּ. נְקַדְּמָה פָנָיו בְּתוֹדָה, בִּזְמִרוֹת נָרִיעַ לוֹ".</p>
+      <p class="bold-para">"לְכוּ נְרַנְּנָה לַה', נָרִיעָה לְצוּר יִשְׁעֵנוּ. נְקַדְּמָה פָנָיו בְּתוֹדָה, בִּזְמִרוֹת נָרִיעַ לוֹ"</p>
+      <p>תהלים צה, א־ב</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a><a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כיצד "מזמור לתודה" פועל</div>
+      <h3 class="story-title">💛 השאלה הקשה</h3>
+      <p>פרשת "כי תבוא" ידועה בעיקר בגלל התוכחה הארוכה שבסופה: תשעים ושמונה קללות קשות, העלולות לבוא על מי שאינו שומע בקול ה'. באמצע אותה תוכחה מופיע פסוק אחד, מרעיש בפשטותו:</p>
+      <p class="bold-para">"תַּחַת אֲשֶׁר לֹא עָבַדְתָּ אֶת ה' אֱלֹקֶיךָ בְּשִׂמְחָה וּבְטוּב לֵבָב מֵרֹב כֹּל"</p>
+      <p>דברים כח, מז</p>
+      <p>התורה כביכול אומרת: את כל הקללות הנוראות האלה קיבלת, מפני שלא עבדת את ה' בשמחה. וכאן עולה שאלה קשה מאוד. אותן הקללות שבפרשת השבוע — לא עלינו — התקיימו במלואן בדור שלנו. בערב שבת קודש פרשת "כי תבוא", י"ז באלול תרצ"ט, פרצה מלחמת העולם השנייה. וכל הקללות שכתובות בפרשה, עד לפרטי הפרטים, התקיימו לנגד עינינו ממש.</p>
+      <p>האם באמת אפשר לומר שהשואה, רחמנא ליצלן, קרתה מפני שבני ישראל לא עבדו את ה' "בשמחה"? מי שעיין ולו במעט בספרים שנכתבו על השואה, לא ימצא בהם ולו ספר אחד שכותב שהיא קרתה בגלל שבני ישראל קיימו את המצוות "יפה מדי", רק בלי שמחה. איש לא כתב כזה דבר, ובוודאי שלא יעלה על הדעת לומר כך. אם כן, מה בכל זאת פשר הפסוק?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a><a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כיצד "מזמור לתודה" פועל</div>
+      <h3 class="story-title">💛 החיוך של אלי שבע</h3>
+      <p class="bold-para">תירוץ נפלא לשאלה זו מובא בשם בעל התניא, ומלמד יסוד עצום, הנוגע לחיים היהודיים כולם.</p>
+      <p><strong>למה אי אפשר לשאוג על ילדה עם חיוך?</strong></p>
+      <p>אמא אחת ניסתה להשכיב את ילדיה לישון. השכיבה אותם, והם קפצו מהמיטה. השכיבה אותם שוב, וקפצו שוב. השעה כבר תשע בערב, ואזל סבלה. היא צעקה: "מספיק! זה לא משחק! נגמרו המשחקים, כולם למיטה, עכשיו!" והילדים, אחד אחרי השני, נבהלו ונכנסו למיטותיהם.</p>
+      <p>ואז היא רואה את אלי שבע: שיער צהוב, צמות יפות, וחיוך מתוק על השפתיים. הילדה מסתכלת על אמא בעיניים תמימות וחמודות. ואמא, במקום לצעוק, אומרת לה ברכות: "אלי שבע, כבר מאוחר. בואי נשכב ביחד, אספר לך סיפור, ותלכי לישון." היא לוקחת אותה, שוכבת איתה, מספרת לה סיפור, והילדה נרדמת בנחת.</p>
+      <p>בבוקר שאלו את האמא: "למה על כולם צעקת, ורק לאלי שבע סיפרת סיפור וחיבקת אותה למיטה? מה ההבדל?" ענתה האמא: "אתם צודקים, אין הבדל. אבל מה אעשה, מול החיוך של אלי שבע פשוט אי אפשר לשאוג. זה לא הולך עם חיוך כזה."</p>
+      <p>אומר בעל התניא: כן, ודאי שהצרות והקללות באות בגלל שעם ישראל לא שומרים תורה ומצוות, "תַּחַת אֲשֶׁר לֹא שָׁמַעְתָּ". זה כתוב בפרשה במפורש. אבל מה עוד אומרת לנו התורה? היא אומרת: יהודי יקר, דע לך. אילו היית עובד את ה' בשמחה, אילו היית עובד אותו עם חיוך, מתוך הודיה — אז גם אם היה מגיע לך עונש, גם אם הגיעו לך קללות, הן לא היו יכולות לבוא. כי אי אפשר להעניש מי שמחייך אליך כמו אלי שבע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a><a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כיצד "מזמור לתודה" פועל</div>
+      <h3 class="story-title">💛 מאה ברכות ביום</h3>
+      <p>ואפשר אולי להבין על פי זה גם מעשה נוסף, המסופר בטור, אורח חיים, בתחילת סימן מו. מסופר שם, שבימי דוד המלך היו מתים מאה איש בכל יום, ולא ידעו מדוע. תיקן דוד המלך שיברכו מאה ברכות ביום, ופסקו מלמות. אין לדעת בוודאות אם הייתה כאן דווקא כפרה מדויקת לעוון שבו נענשו, אך אפשר להבין את העיקרון: כאשר יהודי מודה, כאשר הוא משבח את בורא עולם, כאשר הוא מחייך אל הקדוש ברוך הוא — פשוט אי אפשר להעניש אותו. וכך פסקו הקללות.</p>
+      <p>ומכאן אפשר להבין גם איך פועל "מזמור לתודה". כשאדם לא רק אומר את המילים כלאחר יד, אלא באמת שר לבורא עולם, מסתכל על כל החסדים שיש לו, ומצליח להתגבר בשעת השירה על מה שחסר לו — הוא כביכול מחייך אל הקדוש ברוך הוא. וברגע הזה, גם אם מגיע לו עונש, גם אם עברו עליו עבירות, אי אפשר לצעוק על מי שמחייך כזה חיוך מתוק. תודה רבה להשם, זה פשוט לא מסתדר עם עונש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a><a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כיצד "מזמור לתודה" פועל</div>
+      <h3 class="story-title">💛 ראוי להיפרע ממנו</h3>
+      <p>ומכאן מתחוור גם מדוע כותב הרמב"ם, בהלכות לולב, לשון חריפה כל כך:</p>
+      <p class="bold-para">"הַשִּׂמְחָה שֶׁיִּשְׂמַח אָדָם בַּעֲשִׂיַּת הַמִּצְוָה וּבְאַהֲבַת הָאֵל שֶׁצִּוָּה בָּהֶן, עֲבוֹדָה גְּדוֹלָה הִיא. וְכָל הַמּוֹנֵעַ עַצְמוֹ מִשִּׂמְחָה זוֹ, רָאוּי לְהִפָּרַע מִמֶּנּוּ, שֶׁנֶּאֱמַר: תַּחַת אֲשֶׁר לֹא עָבַדְתָּ אֶת ה' אֱלֹקֶיךָ בְּשִׂמְחָה וּבְטוּב לֵבָב."</p>
+      <p>רמב"ם, הלכות לולב, פרק ח, הלכה טו</p>
+      <p>"ראוי להיפרע ממנו" — לשון תמוהה במבט ראשון. הרי הרמב"ם היה יכול לכתוב פשוט "עונשים אותו". אבל לפי היסוד שלמדנו, הניסוח מדויק להפליא. הרמב"ם אינו אומר שמי שאינו שמח בקיום המצוות בהכרח נענש. הוא אומר שהוא "ראוי" לכך, כלומר: הוא כבר אינו מוגן. מי שעושה מצוות בשמחה, גם אם היה "ראוי" לעונש על עבירות אחרות, אינו נפרע ממנו, בדיוק כמו אלי שבע. אבל מי שאינו שמח, מסיר מעליו את אותה הגנה, וחוזר להיות "ראוי" להיפרע ממנו על כל שאר העבירות.</p>
+      <p>ומעניין להבחין: מנין באה השמחה הזאת? מתחילת הפרשה עצמה. התורה פותחת במצוות הביכורים, שבה אדם מודה לקדוש ברוך הוא מתחילת הדרך ועד סופה, ומסיימת: "וְשָׂמַחְתָּ בְכָל הַטּוֹב אֲשֶׁר נָתַן לְךָ ה' אֱלֹקֶיךָ". הביכורים הם המפתח לשמחה. כשמודים, ממילא באה השמחה. וממילא זוכים לעבוד את ה' "בשמחה ובטוב לבב" — היפוכו המדויק של הפסוק שבתוכחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a><a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כיצד "מזמור לתודה" פועל</div>
+      <h3 class="story-title">💛 שישה עשר ארגזים ושבת אחת</h3>
+      <p><strong>שישה עשר ארגזים, שמונה מזוודות, ושבת אחת</strong></p>
+      <p>רבי יעקב יוסף הרמן, מחבר הספר הידוע "הכל לאדון הכל", עלה מארצות הברית לארץ ישראל. הוא הגיע לנמל חיפה ביום שישי, בשעה ארבע אחר הצהריים, בדיוק כאשר פרצה מלחמת העולם השנייה. הבריטים החליטו לפנות את הנמל בבהילות, ולפרק את כל המטענים במהירות האפשרית.</p>
+      <p>ר' יעקב יוסף ניגש לקצין הבריטי הממונה. "אני רוצה להשתחרר עכשיו," אמר לו. השיב לו הקצין: "זה לוקח זמן. צריך לפרוק את כל הציוד מהאונייה." "אין לי כלום," אמר ר' יעקב יוסף. "אני רוצה להגיע לשבת." שאל אותו הקצין: "כמה יש לך פה?" "שישה עשר ארגזים, ושמונה מזוודות," ענה. "ואת כל זה אתה מוכן להשאיר כאן?" תמה הקצין. "שבת קודש," ענה ר' יעקב יוסף, "יותר חביבה עליי מכל זה."</p>
+      <p>הקצין הביט בו כמי שמביט באדם משונה, אך חתם לו על השחרור. ר' יעקב יוסף הגיע לביתו בחיפה בדיוק לזמן הדלקת נרות. אשתו הייתה שקועה בעצב עמוק. היא עזבה מאחוריה את ילדיה, ועכשיו איבדה גם את כל רכושם. אבל ר' יעקב יוסף עצמו היה שמח כל אותה שבת, שמח ומאושר.</p>
+      <p>"ריבונו של עולם," אמר, "כל כך הרבה נתת לי, כל החיים שלי, כל כך הרבה טובות. מתי אני אוכל לתת לך בחזרה? הנה, סוף סוף הגיעה לי הזדמנות. הקרבתי את כל רכושי בשבילך, בורא עולם, בשביל לשמור את השבת. ואהבת את ה' אלוקיך בכל מאודך, הנה זמנה של המצווה הזו."</p>
+      <p>במוצאי שבת חזרו לנמל. שם עמד שוטר ערבי, שחיכה להם כבר שעה שלמה. "איפה הייתם?" שאל. "שמעתי שאתם שומרי שבת. הקצין הבריטי אמר לי שאם לא אשמור על כל הארגזים עד שיבוא הרב הרמן, הראש שלי לא יישאר על הכתפיים." כל הרכוש נמצא שלם. ארגז אחד לא חסר.</p>
+      <p class="bold-para">וזהו בדיוק פירוש הפסוק "רַגְלֵי חֲסִידָיו יִשְׁמֹר". אך היסוד העמוק שלמדים מן הסיפור הוא אחר: הודיה אמיתית היא כאשר אדם מגיע למצב שבו הוא מרגיש — "מה אני יכול לתת לבורא עולם?" לא רק לקבל ולהודות, אלא לחפש הזדמנות להשיב. מי שמגיע למדרגה כזאת, זוכה לשמחה אמיתית. ואי אפשר להעניש מי שמחייך כזה חיוך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a><a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · לשמוח גם בהר הקללות</div>
+      <h3 class="story-title">🕯️ מדוע לא נאמר החטא?</h3>
+      <p>עוד תמיהה עולה מפרשת השבוע. בתחילת התוכחה, לפני שמתחילות תשעים ושמונה הקללות, לא נאמר במפורש איזה חטא גרם להן. כתוב רק: "וְהָיָה אִם לֹא תִשְׁמַע בְּקוֹל ה' אֱלֹקֶיךָ, לִשְׁמֹר לַעֲשׂוֹת אֶת כָּל מִצְוֹתָיו וְחֻקֹּתָיו אֲשֶׁר אָנֹכִי מְצַוְּךָ הַיּוֹם". גם בסוף התוכחה, בפסוקים המסכמים, לא נאמר במפורש מה היה החטא.</p>
+      <p>זה שונה לגמרי מהתוכחה המקבילה, שבפרשת "בחוקותי" בספר ויקרא. שם, בסוף רשימת הקללות, נאמר במפורש מה גרם להן: "אָז תִּרְצֶה הָאָרֶץ אֶת שַׁבְּתֹתֶיהָ... אֵת אֲשֶׁר לֹא שָׁבְתָה בְּשַׁבְּתֹתֵיכֶם". שם החטא ברור: אי־שמירת שמיטה. אבל בפרשת השבוע — אין ולו רמז אחד למה בדיוק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a><a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · לשמוח גם בהר הקללות</div>
+      <h3 class="story-title">🕯️ האמצע, לא ההתחלה ולא הסוף</h3>
+      <p>ויש עוד תופעה מוזרה. הפסוק "תַּחַת אֲשֶׁר לֹא עָבַדְתָּ אֶת ה' אֱלֹקֶיךָ בְּשִׂמְחָה וּבְטוּב לֵבָב", הפסוק שכן מסביר משהו על סיבת הקללות, אינו נמצא לא בתחילת התוכחה, ולא בסופה. הוא מופיע ממש באמצע, בתוך רצף הקללות עצמו. למה דווקא שם?</p>
+      <p class="bold-para">ההסבר הוא, שבזה בא הפסוק ללמד אותנו יסוד עצום: יהודי יודע לשמוח כשטוב לו, זה קל, כמעט מובן מאליו. וכן, לאחר שהצרה חולפת, בדיעבד, גם אז אפשר למצוא כוח לשמוח. אבל מה שהקדוש ברוך הוא באמת שואל מאיתנו הוא הרבה יותר: שגם בשעה שאדם עובר ניסיון קשה, ממש באמצע הצרה, עוד לפני שהיא הסתיימה, יאמין שהכל לטובה, שאבינו שבשמים דורש טובתו בכל עת, ולא ייפול לעצבות חלילה. דווקא שמחה כזאת, שמחה של אמצע הדרך, היא זו שמגדילה את האהבה והחיבה כלפי הקדוש ברוך הוא.</p>
+      <p>ומתוך כך אפשר להבין גם למה הפסוק "תַּחַת אֲשֶׁר לֹא עָבַדְתָּ" מופיע דווקא באמצע הקללות. הוא לא בא לתאר עונש שכבר עבר, ולא איום על עתיד רחוק. הוא בא ללמד: יש לשמוח מתוך אמונה, גם כשעדיין נמצאים באמצע הדרך הקשה.</p>
+      <p>וכאן שוב עולה הקשר לפתיחת הפרשה. פרשת השבוע פותחת במצוות הביכורים, ומסתיימת: "וְשָׂמַחְתָּ בְכָל הַטּוֹב אֲשֶׁר נָתַן לְךָ ה' אֱלֹקֶיךָ". זהו כמעט אותו ניסוח בדיוק כמו הפסוק שבקללות, רק בהיפוך. הביכורים הם הדרך להשיג עבודת ה' מתוך שמחה. אדם המכיר טובה על מה שכבר קיבל, לומד להאמין שגם מה שיבוא לקראתו יהיה לטובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a><a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · לשמוח גם בהר הקללות</div>
+      <h3 class="story-title">🕯️ עצה לשלום בית</h3>
+      <p>יש בכך גם הדרכה מעשית לחיי היום־יום. גם מי שגר בארץ ישראל שנים רבות, וכבר "רגיל" לזה, יכול וצריך לחדש בכל יום מחדש את ההכרה: עדיין אני זוכר שהקדוש ברוך הוא נתן לי את ארץ ישראל במתנה. המתנה לא נשכחה.</p>
+      <p class="bold-para">כך גם בענייני שלום בית. שבע הברכות שמברכים תחת החופה אינן נאמרות פעם אחת ונשכחות. הן צריכות ללוות את בני הזוג לאורך כל חיי הנישואים, כשמדי יום מחדש חוזרים ומרגישים את החסד שבבחירת בן הזוג או בת הזוג. מי שנוהג כך, זוכה שהשכינה לא תזוז מביתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a><a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · לשמוח גם בהר הקללות</div>
+      <h3 class="story-title">🕯️ שמחה בהר הקללות</h3>
+      <p>עניין דומה מופיע בהמשך הפרשה. הקדוש ברוך הוא מצווה: "וְהָיָה בְּעָבְרְכֶם אֶת הַיַּרְדֵּן, תָּקִימוּ אֶת הָאֲבָנִים הָאֵלֶּה... וְכָתַבְתָּ עֲלֵיהֶן אֶת כָּל דִּבְרֵי הַתּוֹרָה הַזֹּאת". שתים עשרה אבנים, שעליהן נכתבת כל התורה כולה. ומיד לאחר מכן: "וְזָבַחְתָּ שְׁלָמִים וְאָכַלְתָּ שָּׁם וְשָׂמַחְתָּ לִפְנֵי ה' אֱלֹקֶיךָ".</p>
+      <p class="bold-para">"וְזָבַחְתָּ שְׁלָמִים וְאָכַלְתָּ שָּׁם וְשָׂמַחְתָּ לִפְנֵי ה' אֱלֹקֶיךָ"</p>
+      <p>דברים כז, ז</p>
+      <p>יש כאן, אם כן, מצווה של קורבנות שלמים ושמחה גדולה, לרגל הברית שנכרתה עם בורא עולם. ומיד אחר כך: "וְאֵלֶּה יַעַמְדוּ לְבָרֵךְ אֶת הָעָם... עַל הַר גְּרִזִים... וְאֵלֶּה יַעַמְדוּ עַל הַקְּלָלָה בְּהַר עֵיבָל".</p>
+      <p><strong>קושיה:</strong> מדוע ציוותה התורה לשמוח בברית עם בורא עולם דווקא בהר עיבל, הר הקללות? הרי הר הברכות, הר גריזים, היה נראה מתאים הרבה יותר לחגוג בו את הברית ולשמוח בה.</p>
+      <p><strong>תירוץ:</strong> ביקש הקדוש ברוך הוא ללמד את ישראל, מיד עם כניסתם לארץ, יסוד עמוק. אמנם ישנן ברכות והטבה להולך בדרך טובה, ויש קללות וצרות למי שבוחר בדרך רעה. אבל יהודי צריך לדעת, שהקדוש ברוך הוא אוהבו בכל עת, וגם בסבל ובצרות יש לשמוח, משום שמסתתרת בהם טובה. לכן: לחגוג ולשמוח בהר הברכות אינה גדולה מיוחדת ליהודי, זה טבעי וקל. אבל לחגוג ולשמוח דווקא בהר הקללות, בזה מתבטאת האמונה השלמה של היהודי, שיודע שגם שם הקדוש ברוך הוא עושה הכל לטובתו.</p>
+      <p>לשמוח שם זו שמחה טבעית, מובנת מאליה. כל אחד שמח כשהדברים טובים.</p>
+      <p>לשמוח דווקא שם, זו מדרגת אמונה עליונה: שמחה מתוך ידיעה שגם מה שנראה קשה, בא מאהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a><a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · לשמוח גם בהר הקללות</div>
+      <h3 class="story-title">🕯️ אות שמתפצלת לשתיים</h3>
+      <p>יש בעניין הזה גם רמז יפה, הטמון בצורתה של האות ג'. כולנו מכירים את ההסבר הידוע, שהאות ג' בנויה כמו אדם ההולך עם שתי רגליים, לרמז על מי שהולך לתת, החסד וגמילות החסדים. אך יש בה עוד רמז: מדוע האות בנויה עם ראש אחד, המתפצל לשתי רגליים?</p>
+      <p class="bold-para">הרמז הוא לגומל החסד הגדול מכל, הקדוש ברוך הוא בעצמו. השפע יורד מלמעלה דרך "צינור" אחד, שכולו טוב בלבד. אבל כשהוא מגיע לארץ, הוא מתפצל לשניים: לחסד ולגבורה. לפעמים ההנהגה נראית מכאן, מלמטה, כטוב גלוי. ולפעמים היא נראית כדין וכצרה. אבל למעשה, הכל, ממש הכל, יורד מאותו צינור אחד של טוב, וממש הכל הוא לטובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a><a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#4ecdc4;--chap-color-2:#0f8f87;">
+      <div class="story-kicker">פרק ד · לשמוח גם בהר הקללות</div>
+      <h3 class="story-title">🕯️ הכבש שלא הבין את הרועה</h3>
+      <p>וכך גם דוד המלך, בברחו משאול, אומר: "ה' רֹעִי לֹא אֶחְסָר... גַּם כִּי אֵלֵךְ בְּגֵיא צַלְמָוֶת לֹא אִירָא רָע כִּי אַתָּה עִמָּדִי, שִׁבְטְךָ וּמִשְׁעַנְתֶּךָ הֵמָּה יְנַחֲמֻנִי". גם השבט, המכה עצמה, מנחם אותו. כי הוא יודע: הכל בא מיד אותו רועה.</p>
+      <p class="bold-para">"ה' רֹעִי לֹא אֶחְסָר... גַּם כִּי אֵלֵךְ בְּגֵיא צַלְמָוֶת לֹא אִירָא רָע, כִּי אַתָּה עִמָּדִי, שִׁבְטְךָ וּמִשְׁעַנְתֶּךָ הֵמָּה יְנַחֲמֻנִי"</p>
+      <p>תהלים כג, א, ד</p>
+      <p><strong>מדוע היכה הרועה את הכבש שרק רצה לאכול?</strong></p>
+      <p>לא בכדי דימה דוד המלך את עצמו לצאן הנרעה. תארו לעצמכם עדר כבשים, צועד בדרך עפר, בין אבני חצץ. לפתע רואה אחד הכבשים, מימין לדרך, יער ירוק ומלא דשא. הכבש, שנמאס לו החצץ היבש, פורש מהעדר, ופונה אל היער, כדי להשביע שם את רעבונו.</p>
+      <p>הרועה, שעיניו רואות מרחוק, יודע דבר שהכבש אינו יודע: ביער הזה אורב זאב. מיד הוא מכה בכבש במקלו, ומחזירו בכוח אל העדר. הכבש, מרוב כאב, פועה בתלונה על ההכאה, ובלית ברירה שב אל חבריו.</p>
+      <p>אילו הייתה לכבש דעת, היה יכול לחשוב לעצמו: "הרועה הזה לא בסדר. אני רק רציתי לאכול דשא, למה הוא מכה אותי?" והוא כלל אינו יודע שאותה מכה הצילה את חייו.</p>
+      <p class="bold-para">זוהי המדרגה שכל יהודי צריך לשאוף אליה. ודאי שמותר, ואף חובה, להשתדל בכל תחום. אבל צריך לדעת: כל מה שעושה הקדוש ברוך הוא, גם כשהוא נראה קשה, בא לרומם את האדם, לנקות אותו מעוונות, ולפעמים אף להביא לו שפע גדול הרבה יותר ממה שהיה מקבל בלעדיו. יהודי שחי מתוך ידיעה שבורא עולם רק רוצה להיטיב עמו, מסוגל לשמוח גם בהר הקללות, מתוך הכרה שהכל לטובה, והכל לתודה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a><a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#74b9ff;--chap-color-2:#1e63c9;">
+      <div class="story-kicker">מקורות</div>
+      <h3 class="story-title">🎶 מקורות ומראי מקומות</h3>
+      <ol><li>דברים, פרק כו — פרשת הביכורים (פסוקים ג, ה, ז, יא).</li><li>דברים, פרק כז — הקמת האבנים והברית בהר עיבל (פסוק ז ואילך).</li><li>דברים כח, מז — "תחת אשר לא עבדת את ה' אלוקיך בשמחה ובטוב לבב מרוב כל".</li><li>משנה, מסכת ביכורים, פרק ג.</li><li>שולחן ערוך, אורח חיים, סימן רח.</li><li>גיליון "פנינים נחמדים".</li><li>ספר "שערי אהבה" על אהבת ה'.</li><li>תהלים, פרק צה, א־ב.</li><li>תהלים, פרק כג.</li><li>שמואל א, פרק ב, פסוק ט — "רגלי חסידיו ישמור".</li><li>טור, אורח חיים, סימן מו.</li><li>רמב"ם, הלכות לולב, פרק ח, הלכה טו.</li><li>תירוץ מובא בשם בעל התניא (המקור המדויק בכתביו לא אומת בוודאות בעריכה זו).</li><li>ר' יעקב יוסף הרמן, מחבר הספר "הכל לאדון הכל" — מעשה שהובא בשיעור.</li></ol>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">שיעורו של הרב יהודה טאוב · <a href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%A9%D7%91%D7%95%D7%A2%20%D7%95%D7%97%D7%92%D7%99%D7%9D/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%A7%D7%95%D7%9C%20%D7%AA%D7%95%D7%93%D7%94%20-%20%20%D7%A4%D7%A8%D7%A9%D7%AA%20%D7%94%D7%A9%D7%91%D7%95%D7%A2/050%20%D7%9B%D7%99%20%D7%AA%D7%91%D7%95%D7%90/%D7%9C%D7%94%D7%95%D7%93%D7%95%D7%AA_%D7%91%D7%9C%D7%91_%D7%A9%D7%9C%D7%9D_%D7%94%D7%A8%D7%91_%D7%99%D7%94%D7%95%D7%93%D7%94_%D7%98%D7%90%D7%95%D7%91.html" target="_blank" rel="noopener">הספר המלא עם הקראה</a></div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id": 1, "name": "מהי הכרת הטוב האמיתית?", "icon": "📖", "color": "#c62b6b", "stories": [{"id": 1, "title": "מהי הכרת הטוב האמיתית?", "icon": "📖"}, {"id": 2, "title": "למה מספרים את סיפור מצרים על סל פירות?", "icon": "📖"}, {"id": 3, "title": "ההגדרה: להקיף את כל הטוב", "icon": "📖"}, {"id": 4, "title": "מברכת המזון ועד חנוכה", "icon": "📖"}, {"id": 5, "title": "פנקס ההודיה", "icon": "📖"}]}, {"id": 2, "name": "הודיה צריכה להיות צבעונית", "icon": "🌿", "color": "#6d28d9", "stories": [{"id": 6, "title": "פנקס שחור־לבן בחינם, או צבעוני בתשלום?", "icon": "🌿"}, {"id": 7, "title": "קרניים מצופות זהב", "icon": "🌿"}, {"id": 8, "title": "עיטור הביכורים", "icon": "🌿"}, {"id": 9, "title": "למה עוטפים מתנה בנייר צלופן?", "icon": "🌿"}]}, {"id": 3, "name": "כיצד \"מזמור לתודה\" פועל", "icon": "💛", "color": "#e08e00", "stories": [{"id": 10, "title": "השאלה הקשה", "icon": "💛"}, {"id": 11, "title": "החיוך של אלי שבע", "icon": "💛"}, {"id": 12, "title": "מאה ברכות ביום", "icon": "💛"}, {"id": 13, "title": "ראוי להיפרע ממנו", "icon": "💛"}, {"id": 14, "title": "שישה עשר ארגזים ושבת אחת", "icon": "💛"}]}, {"id": 4, "name": "לשמוח גם בהר הקללות", "icon": "🕯️", "color": "#0f8f87", "stories": [{"id": 15, "title": "מדוע לא נאמר החטא?", "icon": "🕯️"}, {"id": 16, "title": "האמצע, לא ההתחלה ולא הסוף", "icon": "🕯️"}, {"id": 17, "title": "עצה לשלום בית", "icon": "🕯️"}, {"id": 18, "title": "שמחה בהר הקללות", "icon": "🕯️"}, {"id": 19, "title": "אות שמתפצלת לשתיים", "icon": "🕯️"}, {"id": 20, "title": "הכבש שלא הבין את הרועה", "icon": "🕯️"}]}, {"id": 5, "name": "מקורות", "icon": "🎶", "color": "#1e63c9", "stories": [{"id": 21, "title": "מקורות ומראי מקומות", "icon": "🎶"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+
