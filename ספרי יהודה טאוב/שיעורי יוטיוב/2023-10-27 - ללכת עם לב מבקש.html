@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ללכת עם לב מבקש</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ללכת עם לב מבקש</h1>
+  <p>מתוך שיעורו של הרב ירון אוזן לפרשת לך לך: מסכת האבות, ירושת הרצון והדרך לאמונה חיה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ללכת עם לב מבקש" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/8CbMSBH9rEs?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/8CbMSBH9rEs/hqdefault.jpg" alt="ללכת עם לב מבקש" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=8CbMSBH9rEs" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · האור של אברהם</div>
+      <h3 class="story-title">🌅 כשהאור מתחיל</h3>
+      <p>יש רגע שבו הסיפור המקראי נעשה קרוב מאוד. איננו קוראים עוד רק על עולם שנברא ועל דורות שחלפו; אנחנו פוגשים אדם שהחל לבקש את בוראו בתוך עולם שלא לימד אותו לעשות זאת. זהו אברהם אבינו, ומכאן מתחילה מסכת האבות שלנו.</p>
+      <p>החוזה מלובלין תיאר את המעבר אל פרשת לך לך כמעבר מבחינת ״וחשך על פני תהום״ (בראשית א, ב) אל ״ויאמר אלוקים יהי אור״ (בראשית א, ג). אין הכוונה למחוק את התורה שקראנו בבראשית ובנח. הכוונה להקשיב לאור המיוחד שמתגלה כאשר אדם אחד מעמיד את חייו על אמונה.</p>
+      <p>הרמב״ם, בראש הלכות עבודת כוכבים, מתאר את אברהם כעמודו של עולם. העולם היה שקוע בעבודת אלילים, ואברהם החל לחפש, להכיר ולהודיע שיש בורא אחד. במדרש על ״בהבראם״ (בראשית ב, ד) נשמעת הדרשה ״באברהם״: דמותו איננה פרט קטן בסיפור העולם, אלא מפתח להבנת תכליתו.</p>
+      <p>מן האור הזה אנחנו מבקשים ללמוד. לא די להתפעל מן האבות מרחוק. נרצה להבין איזה לב היה להם, מה הניע אותם, ואיך אפשר שתהיה גם לנו נגיעה באותה אהבה. פרשת לך לך מזמינה אותנו ללכת. היא פותחת דרך שאפשר להתחיל בה גם היום, מתוך המקום שבו אנחנו עומדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · האור של אברהם</div>
+      <h3 class="story-title">📚 למה קוראים לה מסכת אבות</h3>
+      <p>כשאומרים ״מסכת אבות״, חושבים בדרך כלל על המשניות המוכרות: מידות, דרך ארץ ועצות לחיים. אבל פרשיות האבות שבתורה הן בעצמן מסכת אבות חיה. כאן רואים את הדברים בתוך מסע, ניסיון, בית ומשפחה.</p>
+      <p>בביאורו של רבי צבי אלימלך מדינוב למסכת אבות הובא הקשר שבין יסודות המסכת לבין מעשי האבות. ״והעמידו תלמידים הרבה״ איננו רעיון תלוש: אברהם קירב אנשים אל האמונה. על ״את הנפש אשר עשו בחרן״ (בראשית יב, ה) תיארו חז״ל את פעולת הקירוב הזאת. ועל קריאתו בשם ה׳ הובאה הדרשה שלא רק קרא בעצמו, אלא גם הביא אחרים לקרוא.</p>
+      <p>כך מתברר שהאמונה אינה נשמרת בקופסה פרטית. מי שפגש אור רוצה שגם אחרים יוכלו לראות. אברהם פתח את הדרך, לימד וקירב, ובתוך כך בנה יסודות לדורות.</p>
+      <p>כשאנחנו לומדים את פרשיותיו, אנחנו לומדים יותר מתולדות חייו של אדם גדול. אנחנו נכנסים לבית המדרש שבו המידות מקבלות פנים. השאלה תהיה תמיד כפולה: מה עשה אברהם, ומה הדבר מבקש מאיתנו? אם נישאר רק בידיעת הסיפור, נפסיד חלק מן המתנה. אם ניתן לסיפור להגיע אל הלב, תורה שאנחנו מכירים מילדות תוכל להתחיל לעבוד בתוכנו מחדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · האור של אברהם</div>
+      <h3 class="story-title">🌍 למי שייכת הארץ</h3>
+      <p>רש״י פותח את פירוש התורה בשאלה מפורסמת: מדוע מתחילה התורה בבריאת העולם, ולא במצווה הראשונה שניתנה לישראל? בתשובתו מופיע הפסוק ״כח מעשיו הגיד לעמו לתת להם נחלת גוים״ (תהילים קיא, ו). העולם שייך לבוראו, והוא נותן את הארץ למי שברצונו לתת.</p>
+      <p>זהו יסוד אמוני עמוק. לפני הוויכוח על מי מחזיק במה, התורה מעמידה אותנו מול מי שברא הכול. הארץ אינה מתחילה בבעלות של אדם, והשייכות שלנו אליה איננה מנותקת מן הברית עם ה׳.</p>
+      <p>הרב ירון אוזן קשר את דברי רש״י גם למחלוקות של זמננו. דווקא כשנשמעות טענות קשות על זכותו של עם ישראל בארצו, חשוב לדעת מה התורה עצמה אומרת ומהי נקודת המוצא של האמונה שלנו. הבירור הזה מבקש דעת והיכרות עם המקורות.</p>
+      <p>ובכל זאת, נשארת שאלה: אם כל מה שנדרש הוא להודיע שיש בורא לעולם ושהארץ שלו, לכאורה די בסיפור הבריאה. מדוע התורה מוסיפה בהרחבה את נח, אברהם, יצחק ויעקב? מדוע כל המסעות, הניסיונות והמפגשים עד קבלת התורה?</p>
+      <p>השאלה הזאת מובילה אל תפקיד נוסף של ספר בראשית. לא רק זכויות ומקור הסמכות מתבררים בו. כאן נבנה האדם שעתיד לקבל תורה. כאן לומדים איך צריך להיראות הלב שמחזיק בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · האור של אברהם</div>
+      <h3 class="story-title">🔎 אמונה מבקשת בירור</h3>
+      <p>האמונה אינה דורשת מאיתנו להסכים לכל טענה מפני שמישהו אומר אותה בביטחון. כשאדם תובע מאחרים לשנות את חייהם בשם התגלות, יש מקום לשאול: מהו יסוד העדות? איך יודעים שהדבר אכן נאמר מאת הבורא?</p>
+      <p>בפולמוס על הדתות שסביבנו הדגיש הרב את ההבדל שבין טענה פרטית לבין מעמד הר סיני. הרמב״ם בהלכות יסודי התורה מבאר שאמונת ישראל במשה אינה נשענת רק על אותות ומופתים. יסודה במעמד שבו העם שמע וראה, ומתוך כך נאמר ״וגם בך יאמינו לעולם״ (שמות יט, ט).</p>
+      <p>לכן אין צורך להתחיל כל דיון כאילו כל הנחותיו של הצד השני כבר הוכחו. אפשר לחזור אל השאלה הראשונה: מניין באה הידיעה? מי העיד עליה? איך היא נמסרה? מסורת האמונה שלנו כוללת את זיכרון סיני, הנמסר מאבות לבנים ונוכח בחיי העם.</p>
+      <p>התביעה לבירור אינה היתר ללעוג לאנשים. היא דרך לשמור על רצינותה של האמונה. דווקא מפני שאנחנו מאמינים, איננו רוצים להחליף אמת בהתרשמות חולפת או בהבטחה נלהבת. אנחנו מבקשים לדעת על מה אנחנו עומדים.</p>
+      <p>כאן מתגלה גם אחריותנו שלנו: להכיר את התורה שאנחנו מאמינים בה, ללמוד את יסודותיה ולא לחיות מבורות. לב מאמין זקוק לדעת שתוכל להאיר אותו ולהגן עליו מבלבול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · האור של אברהם</div>
+      <h3 class="story-title">🕯️ גם ההיסטוריה פונה אל תיקון</h3>
+      <p>אפשר לראות את המחלוקות שבין הדתות ולהרגיש שהעולם רק מתרחק מן האמת. אבל במבט האמוני שהביא הרב, גם מהלכים שאינם האמת השלמה יכולים להשתלב במהלך רחב יותר של תיקון.</p>
+      <p>הוזכרו דברי הרמב״ם על תפקידן של הנצרות והאסלאם בהכנת העולם לקראת ימות המשיח. אין זו הסכמה עם כל טענה שלהן, ואין זו מחיקה של ההבדלים. הכוונה שהן הפיצו בעולם מושגים של אמונה, תורה, מצוות וציפייה למשיח, וכך נוצרה שפה שעמה אפשר יהיה לעמוד מול גילוי האמת.</p>
+      <p>עולם שמכיר רק עצים, אבנים, שמש וירח רחוק מן הידיעה שיש בורא ושיש תכלית. כשהמושגים כבר נכנסו לתודעת בני אדם, חלק מן הדרך הוכשרה, אף שיש עוד צורך בבירור גדול.</p>
+      <p>המחשבה הזאת מלמדת אותנו להיזהר ממבט צר. איננו יודעים לפענח את כל חשבונות ההיסטוריה. אדם רואה פרק, והבורא מנהיג עולם שלם. גם כאשר אנחנו מבחינים בשקר ובכאב, איננו צריכים להסיק שאין כיוון לבריאה.</p>
+      <p>האמונה בתיקון עולם במלכות שדי נותנת לנו תקווה פעילה. היא מזמינה אותנו להחזיק באמת, לתקן את מעשינו ולבקש שהעולם יגיע אל ייעודו. אברהם התחיל לבדו, אבל האור שחיפש לא נועד להישאר אצל אדם אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · האור של אברהם</div>
+      <h3 class="story-title">🌱 דרך ארץ לפני תורה</h3>
+      <p>ב״נתיבות שלום״ הוסבר מדוע פרשיות בראשית הן חלק חיוני מן ההכנה לתורה. הן מגלות את הדרך שבה עולם ואדם יכולים להישאר בתוהו, ואת הדרך שבה מתחיל תיקון.</p>
+      <p>כשאומרים ״דרך ארץ קדמה לתורה״, אין הכוונה רק לכללי נימוס. נימוס חשוב, אבל כאן אנחנו עוסקים בעומק המידות: האם האדם נמשך אחרי תאוותו בלי גבול, או לומד להיטיב? האם הוא מתמסר לכוח ולפגיעה, או נעשה כלי לאמונה ולחסד?</p>
+      <p>הדורות הראשונים מלמדים לאן יכולה להוביל השחתה. האבות מלמדים עד לאן יכולה להגיע קדושה. כך נבנית הבחנה בין עולם שאינו מתקיים לבין עולם של תיקון. בפרשת לך לך האור הזה נעשה ברור: אברהם הולך בדרך שבה רצון, אמונה ומעשה מתחברים.</p>
+      <p>לפני שנקבל מצוות מפורטות, אנחנו זקוקים ללב שיוכל לקבל אותן. אחרת אפשר להחזיק מילים של תורה בלי להשתנות. ספר בראשית נותן לנו דמויות, מעשים וניסיונות שמהם לומדים איך תורה נראית בחיים.</p>
+      <p>זה גם סדר הלימוד שלנו. נרצה לדעת, אבל לא נסתפק בידיעה. כל פרשה צריכה להעמיד מולנו שאלה על המידות. מה מן הדרך הזאת נכנס אל יחסנו לאדם אחר? מה היא עושה לכעס, לגאווה ולרצון שלנו? כך נעשים סיפורי האבות יסודות של עבודת ה׳.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הירושה של האבות</div>
+      <h3 class="story-title">🤲 חסד הוא עמוד העולם</h3>
+      <p>האבות מכונים במדרש מרכבה לשכינה. כל אחד מהם מגלה בעבודתו מידה מיוחדת: אברהם חסד, יצחק גבורה ויעקב תפארת. אין הכוונה שאברהם עסק רק בחסד ולא בשאר עבודת ה׳. הכוונה שיש נקודה מרכזית שבאמצעותה נעשה גילוי מיוחד בעולם.</p>
+      <p>הגמרא בשבת שואלת על מצווה שאדם זהיר בה במיוחד. המילה ״במיוחד״ חשובה: היא אינה מבטלת את המחויבות לשאר המצוות. כך גם אצל האבות. הם אינם דמויות חד ממדיות; בתוך שלמות עבודתם מתגלה הכיוון המיוחד של כל אחד.</p>
+      <p>ב״באר משה״ הובא ביאור לכינויו של אברהם ״עמודו של עולם״. אחת התכליות המובאות בתחילת ״עץ חיים״ היא להיטיב לנבראים. אברהם הכיר את הבורא, ומתוך ההכרה ביקש גם הוא להיטיב. הוא הבין שחסד הוא יסוד הבריאה, והעמיד את חייו על היסוד הזה.</p>
+      <p>כך הופכת האמונה למעשה. אם הבורא מיטיב, גם אנחנו מבקשים להיטיב. אם העולם נבנה בחסד, איננו רוצים לבנות בתוכו קירות של אדישות.</p>
+      <p>החסד של אברהם איננו נספח יפה לאמונתו. הוא הדרך שבה האמונה מתגלה. אדם אחר פוגש בו, ומקבל לא רק דיבור על הבורא אלא גם טעם מן ההטבה שעליה העולם עומד. זאת הזמנה עמוקה גם לנו: להכיר את ה׳ דרך ההטבה שאנחנו לומדים לעשות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הירושה של האבות</div>
+      <h3 class="story-title">🌳 שלושה אבות, ירושה לדורות</h3>
+      <p>במסכת ברכות נאמר שאין קוראים אבות אלא לשלושה. היו צדיקים רבים, אבל אברהם, יצחק ויעקב עומדים במקום מיוחד בבניינו של עם ישראל.</p>
+      <p>ב״אור גנוז״, שהביא הרב בשם רבי יהודה ליב מפולנאה, הוסבר שעבודתם הייתה עבודה לדורות. הם לא בנו רק את קומתם הפרטית. מה שנפתח בעבודתם נעשה יסוד בנשמות ישראל. אנחנו ענפים שצמחו מן השורשים האלה.</p>
+      <p>המחשבה על ירושה רוחנית יכולה לעורר שמחה ואחריות יחד. אין פירושה שכל דבר כבר נעשה בשבילנו ושאין צורך להתאמץ. ירושה צריכה קבלה. יש דבר שמונח בתוכנו, ואנחנו צריכים לתת לו מקום בחיים.</p>
+      <p>על אברהם נאמר ״את הנפש אשר עשו בחרן״ (בראשית יב, ה). הוא פעל בנפשות, עורר רצון וקירב אנשים. ההמשך של הדרך הזאת אינו רק סיפור עתיק. גם בדור שלנו אדם יכול להיזכר שיש בו שייכות לאמונה, אף שכיסויים רבים מעלימים אותה.</p>
+      <p>לכן השאלה ״מתי יגיעו מעשיי למעשי אבותיי״ איננה געגוע חסר תקווה. אנחנו מבקשים להתקרב אל שורשים ששייכים לנו. אין צורך להעמיד פנים שכבר הגענו לגובה שלהם. אפשר להתחיל מן הידיעה שאנחנו בני בית בדרך הזאת, ושבתוכנו יש יכולת להיענות לה. האבות נותנים כיוון; ההליכה שלנו צריכה לתת לו גוף ומעשה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הירושה של האבות</div>
+      <h3 class="story-title">💛 מה מסתתר במילה אבות</h3>
+      <p>בתחילת פרשת וארא נאמר ״וארא אל אברהם אל יצחק ואל יעקב״ (שמות ו, ג), ורש״י מפרש: ״אל האבות״. לכאורה, מה הוסיף? הרי הפסוק כבר אמר את שמותיהם.</p>
+      <p>השאלה הזאת מזמינה להבין מה פירוש המילה אבות מעבר לציון המשפחה. בספר ״אור לשמים״ לרבי מאיר מאפטא הובא ביאור הקושר את לשון אבות ללשון רצון. אנחנו מכירים בתורה את הפועל ״אבה״: ״לא אבה״ פירושו לא רצה. מתוך הקשר הזה נפתח מבט על האבות כאנשים של רצון.</p>
+      <p>הם רצו את ה׳. הם לא הסתפקו במעשים חיצוניים, ולא חיכו שדחיפה מן החוץ תכריח אותם להתקרב. הייתה בתוכם תנועה אל הבורא, והיא הניעה את חייהם.</p>
+      <p>אין זו הצעה להחליף מעשה ברגש. להפך: הרצון הוא הכוח שנותן למעשה חיים. אפשר לעשות דבר מתוך הרגל, ואפשר לעשות אותו מתוך לב מבקש. אותן תנועות נראות לעיניים, אבל תוכנן הפנימי שונה.</p>
+      <p>כך נקרא שוב את דברי רש״י. ״אל האבות״ מזמין אותנו לפגוש את המהות, את הלב של אברהם, יצחק ויעקב. אם נלמד רק מה עשו בלי לשאול מה רצו, נפסיד מפתח גדול. ואם נבקש את הרצון שלהם, נוכל להתחיל להבין איך מעשים רבים נעשים דרך אחת של אהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הירושה של האבות</div>
+      <h3 class="story-title">🔥 לפני הציווי היה רצון</h3>
+      <p>רבי נתן מבאר בליקוטי הלכות, בהלכות ברכות השחר, שישראל קיבלו ירושה טובה מן האבות והאמהות: רצון חזק לעבודת ה׳. הם חיו לפני מתן תורה, והתקרבותם הייתה מתוך נדיבות הלב.</p>
+      <p>הם עשו, התאמצו וניסו לעמוד בניסיונות. אבל הכוח המניע היה רצון טוב. לא מערכת של כפייה חיצונית העמידה את חייהם על האמונה, אלא לב שביקש את הבורא והיה מוכן ללכת אחריו.</p>
+      <p>בכך הם המשיכו בעולם את הידיעה שהכול מתנהג ברצונו יתברך. הם נאבקו בעבודת אלילים ובמחשבה שסוגרת את המציאות בתוך טבע שאין בו מנהיג. הרצון שלהם פגש עולם שיש לו רצון ותכלית.</p>
+      <p>אנחנו חיים אחרי מתן תורה, ויש לנו חיוב ומצוות. דווקא לכן חשוב ללמוד מן האבות איך החיוב מקבל לב. אין צורך לבחור בין מחויבות לאהבה. נרצה שמחויבותנו תהיה מלאה אהבה, ושאהבתנו תגיע למעשים שה׳ מבקש.</p>
+      <p>אפשר לשאול שאלה פשוטה לפני תפילה או לימוד: מה אני רוצה עכשיו? האם אני רק מנסה לסיים, או מבקש לפגוש את ה׳ בתוך המעשה? לפעמים התשובה כואבת, אבל עצם השאלה פותחת דרך. הרצון אינו תמיד בוער באותה עוצמה. הוא יכול לגדול. זאת אחת הירושות הגדולות שהאבות השאירו לנו: לדעת שהלב יכול לרצות יותר, ולתת לעבודה מקום בתוכו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הירושה של האבות</div>
+      <h3 class="story-title">🏛️ לבקש את ירושלים</h3>
+      <p>הירושה של הרצון מתגלה גם בעבודת המקדש. רבי נתן קושר בליקוטי הלכות בין בית המקדש לבין בקשה ורצון. ירושלים אינה רק מקום שאפשר להזכיר את שמו; היא מקום שצריך לדרוש.</p>
+      <p>הגמרא בסוכה לומדת שיש צורך בדרישה לציון. גם ״כי רצו עבדיך את אבניה״ (תהילים קב, טו) מגלה קשר של חפץ ואהבה. האבנים אינן נעשות יקרות רק מפני יופיין. הן קשורות לבית שהלב מבקש ולקרבה שאנחנו חסרים.</p>
+      <p>כך גם בקורבנות: התורה מדברת על ״לרצונו״ ועל ״לרצונכם״. בפירושו ל״ריח ניחוח״ רש״י מביא את הנחת שב״אמרתי ונעשה רצוני״. המעשה מכוון אל רצון הבורא, ולא רק אל מילוי חוב טכני.</p>
+      <p>אנחנו יכולים לומר מילים על בניין המקדש בלי להרגיש שחסר לנו דבר. העבודה היא לתת למילים לפגוש את הלב. מה אנחנו מבקשים שיהיה בעולם? איזה גילוי של קדושה, תפילה וקרבה אנחנו רוצים שייפתח?</p>
+      <p>הרצון אינו בונה את הבית במקום המצוות והמעשים, אבל הוא שומר שהבית לא ייעלם מתוך תודעתנו. כשאדם מבקש, הוא זוכר שיש יעד. כשעם מבקש, הוא אינו מסכים שהחיסרון ייהפך לדבר מובן מאליו. דרישת ירושלים מלמדת אותנו להישאר אנשים של כיסופים: לחיות בהווה, ולעשות בתוכו מקום למה שאנחנו עוד מבקשים שייבנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הירושה של האבות</div>
+      <h3 class="story-title">🕰️ לא כל הרצונות שווים</h3>
+      <p>בשיחות הר״ן נאמר שהעיקר הוא הרצון. אבל מיד מתברר שאין כל הרצונות שווים. אדם יכול לומר שהוא רוצה לעבוד את ה׳, ובתוך חייו עצמו יהיו שעות של רצון חזק ושעות של רצון חלש.</p>
+      <p>הרצון אינו קישוט שניתן פעם אחת ונשאר תמיד באותה עוצמה. צריך לטפח אותו. כמו כוח חי, הוא מושפע ממה שאנחנו לומדים, ממה שאנחנו שומעים, ממי שאנחנו פוגשים וממה שאנחנו עושים שוב ושוב.</p>
+      <p>אין צורך להיבהל מן השינוי. אם היום הלב אינו בוער כפי שבער אתמול, איננו מוכרחים להסיק שהכול אבד. אבל גם אין צורך להתרגל לקור כאילו הוא מצב שאין מה לעשות בו.</p>
+      <p>נרצה למצוא דברים שמזינים את הרצון: לימוד שמאיר, תפילה כנה, התבוננות באבות ובצדיקים, ומעשה טוב שמביא את הרצון מן הפנים אל החיים. מתוך הכיסופים לומדים, מתפללים ועושים מצוות.</p>
+      <p>הדגש ״העיקר הוא הרצון״ אינו אומר להסתפק באמירה ״אני רוצה״ כשהמעשה אפשרי. הוא אומר לזכור מה צריך להיות בתוך המעשה. אם נזניח את הרצון, אפשר שהעבודה תתרוקן. אם נבנה אותו, גם המעשה יוכל לקבל כוח חדש. כך נעשית כל שעה הזדמנות קטנה לבדוק את הכיוון ולקרב את הלב אל מה שהוא באמת מבקש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הירושה של האבות</div>
+      <h3 class="story-title">👑 להמליך את ה׳ בתוך הרצון</h3>
+      <p>בקדיש אנחנו אומרים ״בעלמא די ברא כרעותיה וימליך מלכותיה״. העולם נברא ברצונו של הבורא. בליקוטי מוהר״ן, תורה קע״ז, נקשר הרצון אל גילוי המלכות והכבוד.</p>
+      <p>הובאה לשון הירושלמי: רצונו של אדם הוא כבודו. כשאנחנו מתחשבים במה שאדם רוצה, אנחנו נותנים מקום לעצמיותו. ובדרך עבודת ה׳, אנחנו מבקשים לתת מקום לרצונו של הבורא בתוך חיינו.</p>
+      <p>אפשר לרצות הרבה דברים, ואפשר שכל רצון ימשוך לכיוון אחר. העבודה היא שלא לבנות מלכות נפרדת של רצון שמעמיד את עצמו מול רצון ה׳. ״לעשות רצונך אלוקי חפצתי״ (תהילים מ, ט) מבטא לב שרוצה לחבר את רצונו אל התורה.</p>
+      <p>אין הכוונה למחוק את האדם. הרי האדם הוא המבקש, הבוחר והפועל. הכוונה שהרצון שלו ילמד להכיר את הטוב, ויחפוץ בו באמת. המחויבות אינה אמורה להישאר אויבת של החשק; אנחנו מתפללים שייעשו קרובים.</p>
+      <p>גם קושי יכול להיכנס אל התפילה הזאת. אם מה שה׳ מבקש ממני קשה לי, אני יכול לומר זאת ביושר ולבקש לב אחר. לא תמיד אוכל לשנות הכול ברגע אחד, אבל אוכל לבחור לאן לפנות. המלכת ה׳ נעשית גם בנקודות הקטנות האלה: כאשר אני עוצר, מקשיב ומבקש שרצוני יידע ללכת עם רצונו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רצון שלא הולך לאיבוד</div>
+      <h3 class="story-title">📖 כשאין ספר ביד</h3>
+      <p>מה קורה לאדם שרוצה מאוד ללמוד, אבל אינו יכול? לפעמים אין בידו ספר, לפעמים הוא רחוק ממקום תורה, ולפעמים מצבו אינו מאפשר לו ללמוד כפי שהיה רוצה.</p>
+      <p>בליקוטי מוהר״ן, תורה קמ״ב, מתואר אדם שליבו בוער ונכסף ללמוד ולעבוד את ה׳. הרצון הזה אינו דבר ריק. הלב החומד את התורה קשור בעצמו לבחינת לימוד.</p>
+      <p>הרב הביא את התיאור של שני צדיקים הנמצאים רחוקים זה מזה: האחד מקשה קושיה, והאחר אומר במקומו דבר שיש בו תשובה לה. הם אינם מנהלים שיחה רגילה, ובכל זאת הדברים מצטרפים. הפסוק ״אז נדברו יראי ה׳ איש אל רעהו״ (מלאכי ג, טז) פותח כאן מבט על קשר שאינו מוגבל רק לקרבה חיצונית.</p>
+      <p>אין זו רשות לאדם שיכול ללמוד להחליף את הלימוד בדמיון. הדברים עוסקים במניעה אמיתית ובלב שאינו מוותר על הכיסופים. יש ערך למה שהאדם מבקש גם כאשר ידיו אינן יכולות להחזיק עכשיו בספר.</p>
+      <p>המחשבה הזאת נותנת חיזוק במצבים של חולשה. במקום לומר ״אין לי עכשיו כלום״, אפשר לשמור על קשר פנימי. לבקש, להתגעגע ולחכות להזדמנות. וכשהאפשרות נפתחת, הרצון ששמרנו יכול להפוך ללימוד ממש. גם בתוך מרחק ומניעה, הלב אינו מוכרח להיות מנותק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רצון שלא הולך לאיבוד</div>
+      <h3 class="story-title">👶 המוהל שוויתר ושמח</h3>
+      <p>רבי צדקה חוצין הוזמן למול תינוק בשבת. כשהגיע, התברר שגם מוהל אחר הוזמן. נוצרה אי הבנה, והמצווה שעליה התכונן לא נעשתה בידו.</p>
+      <p>הוא לא הקפיד. כדי שלא לעכב את הברית, הסכים שהמוהל האחר יעשה אותה. ואף נתן לו את כלי המילה שלו, כשהתברר שהאחר לא הביא את כל הדרוש. במקום להפוך את חוסר התיאום למריבה, העמיד את המצווה במרכז.</p>
+      <p>בדרך חזרה ראה המלווה שהוא שמח במיוחד. הדבר היה מפתיע: אחרי אי נעימות כזאת, מדוע הפנים מאירות? רבי צדקה השיב מתוך דברי הגמרא בקידושין: חשב אדם לעשות מצווה, ונאנס ולא עשה, מעלה עליו הכתוב כאילו עשאה.</p>
+      <p>המלווה עדיין שאל. הרי גם כשאתה מוהל בפועל, אינך שמח כך. רבי צדקה הסביר שאדם אינו יודע אם עשה אי פעם מצווה בכל שלמות מחשבתה, דיבורה ומעשיה. אבל כשמעלה עליו הכתוב כאילו עשאה, הוא נשען על המתנה שהבורא נותן לרצונו.</p>
+      <p>הסיפור מאיר שתי עבודות יחד. יש בו ענווה: לוותר על התפקיד בלי להקפיד. ויש בו אמונה בכוח הרצון. הוא רצה במצווה, ובמקום לאבד את השמחה כשנמנע ממנו לעשותה, גילה דרך לשמוח בטוב שנשאר בידו. אפילו הוויתור עצמו נעשה מעשה של קדושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רצון שלא הולך לאיבוד</div>
+      <h3 class="story-title">🎯 לא להחטיא את הטוב</h3>
+      <p>בפסוק נאמר שאין אדם צדיק בארץ אשר יעשה טוב ולא יחטא. בשם ה״אוהב ישראל״ מאפטא הובא ביאור המתבונן גם בתוך הטוב עצמו: אדם עלול להחטיא משהו מן הכוונה השלמה אפילו במעשה טוב.</p>
+      <p>אין פירוש הדבר לזלזל במצוות שלנו. להפך, הן יקרות. אבל ההכרה במגבלותינו שומרת על ענווה. עשיתי דבר טוב, ועדיין אינני יודע אם כל מחשבתי הייתה נקייה, אם כל מילה הייתה במקומה ואם עשיתי בדיוק כפי שהיה ראוי.</p>
+      <p>הדבר מסביר את שמחתו של רבי צדקה חוצין. הוא לא העדיף להימנע מן המצווה; הרי הלך לעשותה וטרח בשבילה. כשנוצר אונס, הוא גילה את גודל המתנה שב״כאילו עשאה״. לא רק את מה שהיה אולי מצליח לעשות, אלא את ההכרה ברצונו האמיתי.</p>
+      <p>כאן צריך להחזיק את שני הצדדים. כאשר אפשר לפעול, פועלים. כאשר נמנעה האפשרות באמת, אין מבטלים את הרצון כאילו הוא חסר ערך. הבורא רואה גם את מה שבני אדם אינם יכולים למדוד.</p>
+      <p>אדם שמכיר בכך יכול להינצל משני קצוות: גאווה על שלמות שאינה בידו, וייאוש מפני שכל מעשה שלו אינו מושלם. הוא עושה ככל יכולתו, מבקש סיוע ונשאר שמח במצווה. הרצון והמעשה צריכים זה את זה, והענווה שומרת על שניהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רצון שלא הולך לאיבוד</div>
+      <h3 class="story-title">🪨 הלב הראשון שחיפש</h3>
+      <p>אברהם אבינו לא גדל בתוך עולם מלא מורים לאמונה. סביבו היו אנשים שנמשכו אחר עבודת אלילים. כיצד התחיל, כשלא היה לו בית מדרש מן הסוג שאנחנו מכירים?</p>
+      <p>בליקוטי מוהר״ן הובא שהלב שלו חשק בעבודת הבורא. מן הלב המבקש הזה נפתחה הדרך. לכן הפסוק ״הביטו אל צור חצבתם״ (ישעיהו נא, א) מוביל אל ״הביטו אל אברהם אביכם״ (ישעיהו נא, ב). יש בו בחינת צור, יסוד יציב של לב המכוון אל ה׳.</p>
+      <p>אנחנו רגילים לחשוב שהכול מתחיל מן החוץ: אם יהיה לי המורה המתאים, הספר המתאים והמסגרת המתאימה, אוכל להתקדם. כל אלה חשובים מאוד. ובכל זאת, אברהם מלמד שיש גם ראשית פנימית. אדם צריך לרצות אמת, ומתוך הרצון להתחיל לחפש.</p>
+      <p>זוהי גם משמעות היותו אב לגרים. מי שמצטרף אל האמונה קשור אל מי שפתח את הדרך של בקשה והתקרבות. אברהם לא שמר את החיפוש לעצמו, אלא נעשה אב לעוד אנשים שביקשו ללכת בה.</p>
+      <p>אם אנחנו מרגישים שחסר לנו דבר מן התנאים הנחוצים, לא נמהר לומר שהדרך חסומה. אפשר להתחיל מן הלב, ולבקש כלים ומורים מתוך רצון אמיתי. החיפוש אינו מבטיח שכל השאלות ייפתרו מיד. הוא מבטיח שלא נישאר במקום שבו אין אפילו בקשה. כך התחיל אור גדול בעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רצון שלא הולך לאיבוד</div>
+      <h3 class="story-title">🍞 רצון שמכוסה אינו רצון שאבד</h3>
+      <p>הרמב״ם בהלכות גירושין, פרק ב הלכה כ, מסביר את הדין שבו אדם אומר ״רוצה אני״ לאחר כפייה המותרת לפי ההלכה. בתוך דבריו נמצא יסוד: יהודי רוצה להיות מישראל ולעשות את המצוות, והיצר הוא שמונע ממנו.</p>
+      <p>לא כל מי שאינו עושה את הטוב גילה שהטוב אינו רצונו. לפעמים רצון עמוק מכוסה בהרגל, בפחד, בתאווה או בעקשנות. הדברים האלה חזקים, אבל אין הכרח שהם כל מה שיש באדם.</p>
+      <p>כך אמר רבי אלכסנדרי בתפילתו, המובאת בברכות: גלוי וידוע לפניך שרצוננו לעשות רצונך, ומי מעכב? שאור שבעיסה ושעבוד מלכויות. רש״י מפרש את השאור שבעיסה כיצר הרע שבלב.</p>
+      <p>המבט הזה אינו פוטר אותנו מאחריות. יש מה להסיר ויש על מה להתגבר. הוא משנה את הדרך שבה אנחנו ניגשים לעבודה. במקום לומר ״אני כולי התנגדות״, אפשר לחפש את הרצון הטוב שקיים ונחסם.</p>
+      <p>הרב קשר לכך גם את לשון נפש כרצון. אברהם שעשה נפשות עורר באנשים את הרצון הזה. גם אדם שחוזר אל עצמו יכול להיות זקוק לאותה התעוררות: לזכור שהוא מסוגל לרצות את ה׳, ושמה שמכסה את הרצון אינו מוכרח לשלוט בו תמיד. אנחנו מתפללים לא רק לשינוי חיצוני, אלא לגילוי הלב שמתחת לכיסוי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רצון שלא הולך לאיבוד</div>
+      <h3 class="story-title">🤏 נגיעה במעשי האבות</h3>
+      <p>״מתי יגיעו מעשיי למעשי אבותיי״ היא תביעה גדולה. מול אברהם, יצחק ויעקב, אדם עלול לחשוב שאין כל קשר בין גובהם לבין יומו הפשוט.</p>
+      <p>בשם הבעל שם טוב הובא ביאור של ״יגיעו״ מלשון נגיעה. אין צורך לטעון שכבר נעשינו כאבות. אנחנו מבקשים שתהיה לנו נגיעה בדרך שלהם. שהרצון שלנו ייגע ברצונם, ושהמעשה שלנו יקבל משהו מן הכיוון שלהם.</p>
+      <p>אדם אינו בהכרח מסוגל לחיות כל היום בכיסופים גלויים אל ה׳. יש לו אוכל, עבודה, עייפות ודאגות. ובכל זאת, אפשר להכניס לתוך היום רגעים שבהם נזכרים במה אנחנו מבקשים. אפשר לעצור לפני מעשה ולכוון אותו. אפשר לתת לחסד קטן להיות חסד של לב.</p>
+      <p>הובא גם הפירוש החסידי ל״צדיק ה׳ בכל דרכיו״ (תהילים קמה, יז): צדיק הוא מי שה׳ נמצא בכל דרכיו. הדברים מתארים גובה גדול, אבל הם גם נותנים כיוון. לא להשאיר את הבורא רק בפינה אחת של החיים, אלא ללמוד להכיר את נוכחותו בעוד דרך ועוד מעשה.</p>
+      <p>הנגיעה איננה ויתור על גדלות. היא ראשית הדרך אליה. דווקא כשהיעד גבוה מאוד, חשוב לדעת מה הצעד שאפשר לעשות היום. כך מפסיקים להתפעל מרחוק בלבד, ומתחילים לחיות מתוך שייכות אל האבות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רצון שלא הולך לאיבוד</div>
+      <h3 class="story-title">🕯️ תשובה של שבת ותשובה של חול</h3>
+      <p>בליקוטי מוהר״ן הובאה ההבחנה בין תשובה בבחינת שבת לבין תשובה בבחינת ימי החול. שבת היא בחינה של קביעות; החול כולל חילופים, עליות וירידות.</p>
+      <p>ששת סדרי המשנה עוסקים בין השאר בכשר ופסול, אסור ומותר, טמא וטהור. במבט שהביא הרב, גם בעבודת האדם יש מצבים משתנים. פעם הלב בהיר יותר, ופעם העבודה מסובכת ומעורבת. יש תשובה שמתקיימת בתוך התנועה הזאת, עוד לפני שהאדם זוכה לקביעות עמוקה.</p>
+      <p>לכן מי שלא הגיע לתשובה של שבת אינו צריך לוותר על תשובה של חול. גם התקדמות שיש בה התמודדות היא התקדמות. גם רגע טוב בתוך יום לא פשוט הוא רגע יקר.</p>
+      <p>הגמרא בעירובין מתארת את העולם כהזדמנות שבה צריך לחטוף ולאכול. הרב קשר לכך את הרצון לתפוס עוד מן הטוב שאפשר לעשות. אין הכוונה לריצה חסרת דעת. הכוונה לא לאבד הזדמנות רק מפני שאיננה השלמות הסופית.</p>
+      <p>אם נחכה ליום שבו נהיה יציבים לגמרי כדי לעשות דבר טוב, נאבד הרבה ימים שבהם אפשר היה להתקרב. נרצה קביעות, אבל בדרך נלמד לשמוח גם במאמץ שיש בו תנודות. הרצון יכול להישאר חי גם כשצורת העבודה משתנה. ותוך כדי העבודה, עוד דבר קטן מצטרף, עוד מצווה נעשית ועוד מקום בלב נפתח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רצון שלא הולך לאיבוד</div>
+      <h3 class="story-title">🌊 לטבוע בלי לקבוע שם בית</h3>
+      <p>״טבעתי ביון מצולה ואין מעמד״ (תהילים סט, ג) מתאר מצב קשה. בקריאה הפשוטה אין מקום יציב לעמוד בו. בשם חסידים מן הדורות הקודמים הביא הרב גם חיזוק: אף שטבעתי, לפחות אין לי שם מעמד. לא הפכתי את הנפילה לבית קבוע.</p>
+      <p>אדם יכול להיכשל בלשון הרע, להצטער, להתחרט ולנסות להישמר. הכישלון דורש תיקון, אבל הוא אינו זהה לבניית חיים סביב לשון הרע. יש הבדל בין מי שנאבק לבין מי שמקבל את הרע כדרך קבועה.</p>
+      <p>ההבדל אינו תירוץ להמשיך להיכשל. הוא סיבה לא להתייאש. כל עוד הדבר כואב לי, וכל עוד אני מבקש לצאת, יש בי רצון שאינו מסכים עם המקום שאליו נפלתי.</p>
+      <p>כך אפשר לומר: עכשיו קשה לי, אבל אינני רוצה להישאר כאן. אני מבקש עזרה, מתוודה ומשתדל לשנות. אינני קונה שביתה בנפילה, ואינני נותן לה להגדיר את כל חיי.</p>
+      <p>הרב הדגיש שאפשר להתחזק גם מעצם העובדה שאין מעמד. נשארה התנגדות פנימית לרע, ונשאר געגוע לטוב. צריך לשמור עליהם ולהפוך אותם לצעדים ממשיים. ייתכן שהיציאה תהיה הדרגתית, אבל היא מתחילה באי ההסכמה לעשות מן הבוץ כתובת. הרצון המבקש את ה׳ מזכיר לאדם שיש דרך אחרת ושעוד אפשר ללכת אליה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמור על לב חי</div>
+      <h3 class="story-title">🐑 לשמוע את קול הרועה</h3>
+      <p>אדם שתעה בדרך יכול להיות במצבים שונים. יש מי שכבר אינו שומע מאין קוראים לו, ויש מי שעוד שומע הד רחוק. גם אם הוא אינו יודע את כל הדרך חזרה, עצם שמיעת הקול נותנת כיוון.</p>
+      <p>הרב קשר לכך את הפסוק ״תעיתי כשה אבד בקש עבדך״ (תהילים קיט, קעו). אין צורך להעמיד פנים שלא תעינו. אפשר לומר את האמת, ולבקש שלא נישאר אבודים. כל עוד הלב שומע את קול הרועה, אפשר להתחיל לחזור.</p>
+      <p>מתוך כך הובא גם החיזוק שלא להישאר בנפילה. בדרשה על איסור הלנת המת נשמע רעיון רוחני: אל תלין את המצב המת שבתוכך. אם נפל כוח החיים בעבודת ה׳, בקש להחיותו. ״שבע יפול צדיק וקם״ (משלי כד, טז) מדגיש שהנפילה אינה המילה האחרונה.</p>
+      <p>בשם ״תפארת שלמה״ מרדומסק הובא החיזוק הנקשר ל״אפילו נחש כרוך על עקבו לא יפסיק״. אדם עלול להרגיש שהרע כבר נאחז בו, ובכל זאת אינו צריך להפסיק את הבקשה ואת המאמץ להתקרב.</p>
+      <p>אין אנחנו פותרים את הקושי באמירה יפה בלבד. נדרשת עבודה. אבל העבודה צריכה תקווה. כשאדם משוכנע שאין לו דרך, הוא מפסיק לחפש. כשנשארת בו שמיעת הקול, הוא יכול להפנות את צעדו. הלב אומר: טעיתי, אבל אני עדיין מבקש אותך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמור על לב חי</div>
+      <h3 class="story-title">💪 הגדלות ניכרת בהתחזקות</h3>
+      <p>קל יותר להיראות חזק כשהכול מאיר. כשהלימוד מתוק, התפילה זורמת והחיים מסודרים, נדמה שהכוח הרוחני נמצא בידינו. אבל מה מתגלה כאשר יורדים מן הגובה הזה?</p>
+      <p>רבי נתן הובא כמי שמעמיד את ההתחזקות בתוך ירידות כמפתח למדרגת האדם. לא רק מה שהוא מרגיש בגדלות, אלא כמה הוא ממשיך לבקש במצב קשה. שם נבנית קומה שאינה תלויה רק בהרגשה נוחה.</p>
+      <p>״בקשו פניו תמיד״ (דברי הימים א טז, יא). הדגש הוא על תמיד. אין הכוונה שבכל רגע נרגיש אותו דבר. הכוונה שלא נוותר על הכיוון. אפשר להיות עייפים, מבולבלים או כואבים, ובכל זאת לבקש את פני ה׳.</p>
+      <p>ברוחניות אין רגע שבו אפשר לומר: מצאתי, ולכן החיפוש נגמר. בחפץ גשמי, אדם מוצא את הדבר שחיפש ומפסיק לחפש אותו. בקשר עם הבורא, ההכרה עצמה פותחת עוד עומק. ככל שמכירים, מבקשים יותר.</p>
+      <p>זאת עבודה שאין לה סוף קטן ומוגדר. היא עלולה להפחיד אם חושבים רק על מה שעוד חסר. אבל היא יכולה לשמח כשמבינים שהקשר חי. תמיד יש עוד מקום להתקרב, עוד דעת לקבל ועוד אמת לגלות.</p>
+      <p>לכן גם היום החלש אינו מחוץ לדרך. אם נמשיך בו לבקש, הוא יכול להיות מקום שבו נבנה כוח חדש. ההתחזקות אינה מסתירה את הירידה; היא מלמדת איך לא לתת לה לסגור את העתיד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמור על לב חי</div>
+      <h3 class="story-title">🧵 לבוש שנוצר מן הכיסופים</h3>
+      <p>המעשים שלנו בעולם הזה אינם נשארים רק בחוץ. בשם הזוהר והמקובלים הוזכר שהם בונים לבוש לנשמה בעולם האמת, בחינת חלוקא דרבנן.</p>
+      <p>בתוך הדברים הובאה גם מעלת הלבוש שנוצר מרצונות טובים ומכיסופים. הרצון שייך לעומק האדם. הוא אינו רק כלי נוסף, אלא כוח שמגלה לאן כל חייו פונים.</p>
+      <p>הרב אשלג הוזכר כמי שמרבה לבאר את מרכזיות הרצון. השכל והדעת חשובים, אבל הם משרתים גם את מה שהאדם רוצה. יש הבדל גדול בין ידיעה שנועדה לשלוט ולהתפאר לבין ידיעה שנועדה להבין, להיטיב ולעבוד את ה׳.</p>
+      <p>לכן אנחנו רוצים לברר את הרצון שבתוך העבודה. לא רק לשאול כמה עשיתי, אלא גם לאן כיוונתי את לבי. האם אני מבקש קרבה? האם אני מנסה לתת נחת רוח? האם המעשה שלי נעשה חלק מאהבה?</p>
+      <p>המחשבה על לבושי הנשמה אינה נועדה להסיח את הדעת מן החיים כאן. היא מזכירה שיש להם עומק. גם בקשה שאיש לא שמע, וגם געגוע שלא הופיע בתמונה, יכולים להיות יקרים לפני הבורא.</p>
+      <p>אדם אינו מוכרח להיות בעל משרה או מעמד כדי להחזיק רצון טוב. בתוך יום פשוט הוא יכול לבקש את ה׳, ולתת לבקשה הזאת ללוות את מעשיו. מה שנראה קטן לעיניים יכול להיות חלק מן הלבוש שהוא אורג לנשמתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמור על לב חי</div>
+      <h3 class="story-title">📘 כשאין חשק ללמוד</h3>
+      <p>הרב הביא סיפור על הרב״ש בילדותו. אביו ראה שאינו לומד ושאל מדוע. הילד השיב ביושר: אין לי חשק ללמוד.</p>
+      <p>אביו, בעל הסולם, הציע לקחת ספר מוסר של צדיק, כגון ״ראשית חכמה״, כדי לקבל חשק. הילד שאל שאלה ישרה: אם אין לי חשק ללמוד, הרי גם ספר המוסר הוא לימוד. מדוע שאמצא בו חשק?</p>
+      <p>התשובה הייתה שהקריאה בספר כזה אינה נועדה רק לקבל מידע. היא מאפשרת להיפגש עם יראת השמיים ועם אהבת ה׳ של המחבר. האדם לומד, ומתוך המילים יכול לקבל משהו מן הלב שממנו נכתבו.</p>
+      <p>הרב סיפר שבעל הסולם היה לעיתים קורא מאמר זוהר בתוך ״ראשית חכמה״ או ״יסוד ושורש העבודה״, כשיכול היה למצוא אותו שם בלי טרחה מיוחדת. כך, לדבריו, פגש את קדושת רבי שמעון יחד עם קדושת הצדיק שהביא את הדברים.</p>
+      <p>זהו מבט אחר על לימוד. ספר אינו רק מחסן ידיעות. הוא יכול להיות מפגש שמחמם את הרצון. אם אנחנו רוצים להתקרב, יש ערך לבחור גם מילים שיכולות להעיר בנו את האהבה ואת היראה.</p>
+      <p>אין הבטחה שכל יובש ייעלם מיד. אבל יש דרך להתחיל. במקום להתבייש בלבד בכך שאין חשק, אפשר להניח לפני הלב דבר שמסוגל להזין אותו ולבקש שייפתח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמור על לב חי</div>
+      <h3 class="story-title">🙏 לבקש רצון חדש</h3>
+      <p>מה עושה אדם שאינו יכול לומר בכנות שהוא רוצה מספיק? לפעמים הוא יודע מה נכון, אבל הלב אינו הולך לשם. אפילו עצה טובה נשמעת לו רחוקה.</p>
+      <p>ב״נועם אלימלך״ הובא ביאור ל״רצון יראיו יעשה״ (תהילים קמה, יט): אפשר לבקש מן הבורא שייעשה לנו רצון. לא רק שייתן לנו את מה שאנחנו כבר רוצים, אלא שיעזור ללב לרצות את הטוב.</p>
+      <p>יש בזה יושר גדול. אדם יכול לומר: אני רוצה ללמוד אותך, אבל אין לי חשק. אני רוצה להתפלל באמת, אבל המילים רחוקות ממני. תן לי רצון. עזור לי להסיר את הכיסוי שעל הלב.</p>
+      <p>הרב הביא גם את ההדרכה להתחיל מ״לרצות לרצות״. זו אינה משחק מילים. לפעמים האדם אינו עומד עדיין ברצון בוער, אבל הוא רוצה להגיע אליו. הוא מבין שמשהו חסר, ואינו רוצה להשלים עם החיסרון.</p>
+      <p>גם הדבר הזה יקר. מי שרוצה לרצות כבר פונה אל הטוב. יש לו כלי ראשוני, ועליו אפשר להתפלל ולבנות. אם אין לו אפילו רצון כזה, הוא יכול לבקש שיתעורר להבין את החיסרון.</p>
+      <p>העבודה מתחילה מן המקום האמיתי, לא מן המקום שהיינו רוצים להציג לאחרים. לפני ה׳ איננו צריכים לזייף. אפשר להביא את הלב כפי שהוא, ודווקא כך לבקש לב חדש. הבקשה עצמה נעשית ראשית של קשר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמור על לב חי</div>
+      <h3 class="story-title">💌 מה עוד אפשר לעשות לרצונו</h3>
+      <p>רבי נחמן נשאל על ידי אמו, הרבנית פייגא, מדוע הבעל שם טוב העריך כל כך את בתו אדל. אדל הייתה אמה של פייגא, ונמצא שהשאלה נגעה לסבתו של רבי נחמן.</p>
+      <p>התשובה שהביא הרב הייתה שהלב שלה היה מלא געגועים לה׳. היא לא הפסיקה לחשוב מה עוד תוכל לעשות שיהיה לרצונו. מה יביא נחת רוח, ומה יקרב אותה אל הבורא.</p>
+      <p>הסיפור אינו נשען על משרה ציבורית גדולה או על תיאור של הישג חיצוני. הוא מאיר לב שמכוון תמיד אל השאלה הזאת. כשהרצון חי, כל מעשה יכול להפוך להזדמנות.</p>
+      <p>אנחנו שומעים על מדרגה גבוהה, ואיננו צריכים לטעון שהיא כבר בידינו. אבל נוכל לתת לשאלה להיכנס אל היום שלנו: מה עוד אפשר לעשות לרצונו? אולי להקשיב טוב יותר, ללמוד עוד מעט או להימנע ממילה שאינה טובה.</p>
+      <p>רבי לוי יצחק בנדר, שאת דבריו הביא הרב, מדגיש שגם מי שרחוק מן המדרגות האלה יכול להשתוקק שיהיו לו רצונות טובים. לדעת שיש חיים כאלה, לבקש עליהם ולהתפלל שלא נהיה מנותקים.</p>
+      <p>הידיעה עצמה פותחת אופק. יש דברים שאין צורך לדעת מסקרנות סתמית, אבל את האפשרות של אהבת ה׳ חשוב להכיר. כשאדם יודע שהלב יכול לחיות כך, הוא יכול להתחיל לבקש נגיעה באותם חיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לגדול מתוך הדרך</div>
+      <h3 class="story-title">🌱 קטנות היא חלק מן הסדר</h3>
+      <p>אדם נכנס לעיתים לתקופה שבה הכול נראה קטן. ההבנה אינה חדה, ההתלהבות חלשה והעבודה דורשת כוח שאין לו בשפע. בתוך ישיבה קוראים לזה לפעמים משבר, אבל החוויה מוכרת גם מחוץ לה.</p>
+      <p>ב״מאור עיניים״ הובא יסוד מן הסדר המתואר בכוונות: קודם קטנות ואחר כך גדלות. יש עיבור, יניקה וצמיחה. גם אדם מחונן אינו מתחיל את חייו בגובה של אדם בוגר.</p>
+      <p>הידיעה הזאת יכולה למנוע טעות קשה. קטנות אינה בהכרח הודעה שהבורא אינו רוצה בנו, ואינה בהכרח סוף הדרך. לעיתים היא שלב של בניין. יש דברים שאפשר לקבל רק אחרי שהכלי נבנה בהדרגה.</p>
+      <p>לכן אין צורך להיבהל מן הקושי ולתת לו פירוש של דחייה מוחלטת. נרצה לבדוק מה אפשר לעשות עכשיו, מהי העבודה המתאימה לשלב הזה, ואיך ממשיכים בלי לקבוע שם בית של ייאוש.</p>
+      <p>לא תמיד נדע למה דווקא עכשיו באה הקטנות. אבל נוכל לדעת שהדרך הרוחנית אינה קו ישר של הרגשה טובה. יש בה סדרים ותנועות, והן יכולות להכין קומה חדשה.</p>
+      <p>אם נבין זאת, נוכל לשמור גם בזמן כזה על בקשה. לא להציג גדלות שאינה קיימת, ולא לשכוח שהיא אפשרית. לעבוד מתוך המקום הקטן, ולבקש מן ה׳ שיסייע לנו לגדול בו ולהמשיך ממנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+          <a href="#story-29">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-29" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לגדול מתוך הדרך</div>
+      <h3 class="story-title">🌬️ אחרי עבודה גדולה מתחילים מחדש</h3>
+      <p>הרב הביא מדברי רבי יצחק מאיר מורגנשטרן ב״ים החכמה״ הסתכלות נוספת על הקטנות. היא יכולה להופיע לא רק לפני גדלות, אלא גם אחרי שסדר עבודה כבר הושלם.</p>
+      <p>סדר התפילה, כפי שמתואר בכוונות, כולל עליות מעולם לעולם ובניין של בחינות שונות. שיאים של קרבה אינם אומרים שמכאן כל עבודה עתידית תתחיל באותה הרגשה. אחרי סדר אחד חוזרים אל ראשית של סדר נוסף.</p>
+      <p>במבט הזה, אדם שנמצא עכשיו בקטנות אינו מוכרח להסיק שכל מה שעשה קודם נמחק. ייתכן שסיים שלב, והוא עומד לפני עבודה חדשה. אותה הרגשה עצמה יכולה לקבל משמעות אחרת לגמרי.</p>
+      <p>הרב בן ציון הובא במשל הנשימה. אי אפשר רק לנשום פנימה בלי נשיפה ובלי לקחת אוויר מחדש. הגוף חי מתוך תנועה. גם בעבודה יש מקום להתחדשות הכוח לפני ההמשך.</p>
+      <p>המשל אינו פוטר מעבודה ואינו נותן הסבר לכל מצב. הוא עוזר לא להחליף קושי זמני במסקנה על כל החיים. נוכל לומר: אולי אינני בסוף, אלא בתחילת שלב חדש. אולי עליי לקחת אוויר, לשמור על קשר ולבנות מחדש.</p>
+      <p>כך הדעת משנה את החוויה. המציאות אינה נעשית קלה מיד, אבל יש לה אופק. במקום לחשוב שהדרך נגמרה, האדם יכול להחזיק בתקווה שה׳ מכין לו עוד עבודה ועוד קומה של קרבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-28">⟶ הקודם</a>
+          <a href="#story-30">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(29, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-30" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לגדול מתוך הדרך</div>
+      <h3 class="story-title">🕊️ בלי חוכמות שמרחיקות את הלב</h3>
+      <p>על אברהם נאמר ״והאמין בה׳״ (בראשית טו, ו). בשם רבי צבי אלימלך מדינוב הובאה דרשה על הכתיב ״האמין״ בלי יו״ד, והיו״ד נדרשת כבחינת חוכמה: אמונה בלי החוכמות שמסבכות ומרחיקות.</p>
+      <p>אין זו התנגדות לדעת או ללימוד. כל הספר שלנו נבנה מדעת וממקורות. ההבחנה היא בין דעת שמסייעת לעבודת ה׳ לבין תחכום שמשמש תירוץ לא ללכת בתמימות.</p>
+      <p>רבי נחמן מדגיש את התמימות והפשיטות כיסוד ביהדות. ״התהלך לפני והיה תמים״ (בראשית יז, א) הוא ציווי שנאמר לאברהם בתוך כריתת הברית. האדם מבקש להיות שלם בכיוונו אל הבורא, ולא לחשב בכל צעד איך יוכל להתחמק.</p>
+      <p>בתוך הדברים קשר הרב גם בין שמירת הברית לבין שמירת הדעת. הפגם יכול להכניס בלבול ורוח שטות; עבודת הקדושה מבקשת להחזיר צלילות. לכן השכל והרצון אינם מופרדים מן החיים המעשיים.</p>
+      <p>כשאנחנו אומרים תמימות, איננו מבקשים תמימות שמאמינה לכל אדם. בירור האמונה כבר לימד אותנו לשאול. אנחנו מבקשים תמימות כלפי ה׳: להיות אמיתיים, לא להסתתר מאחורי חוכמות ולהסכים לעשות את מה שאנחנו יודעים שנכון.</p>
+      <p>אברהם נותן כאן דוגמה של לב שהאמין והלך. הידיעה לא עצרה אותו במקומו. היא הולידה הליכה, וזו הפשיטות שאנחנו מבקשים ללמוד ממנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-29">⟶ הקודם</a>
+          <a href="#story-31">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(30, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-31" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לגדול מתוך הדרך</div>
+      <h3 class="story-title">🪑 מה עשו האבות שה׳ חפץ בהם</h3>
+      <p>הרמח״ל ב״דרך עץ חיים״ מציע עצה גדולה נגד היצר: לשבת מעת לעת ולהתבונן. לא בתוך רעש, ולא רק כשאחרים מביטים. לשאול את עצמו מה עשו האבות והראשונים, שהקדוש ברוך הוא חפץ בהם כל כך.</p>
+      <p>זו שאלה אחרת מן השאלה מה אחרים חושבים עליי. היא גם שונה מן השאלה אם כבר הצלחתי להשיג את כל מבוקשי. היא שואלת על הקשר: איזה חיים נעשו רצויים לפני ה׳?</p>
+      <p>התורה מגלה אהבה וחפץ באבות. אנחנו רוצים ללמוד מן המעשים שלהם, אבל גם מן האופן שבו הלב שלהם עמד לפני הבורא. החסד, האמונה, הענווה והנכונות ללכת אינם פרטים נפרדים. יחד הם בונים חיים של קרבה.</p>
+      <p>העצירה הזאת יכולה להיות תרופה, מפני שהיא מנתקת לרגע את המירוץ. במקום להיגרר אחרי מה שנוח עכשיו, האדם שואל לאן הוא רוצה להגיע. לא בעיני הקהל, אלא לפני ה׳.</p>
+      <p>אין צורך לעשות את החשבון הזה מתוך אכזריות כלפי עצמנו. אנחנו מחפשים דרך מפני שהקרבה יקרה לנו. אפשר לראות חיסרון ולהתחיל לתקן, ואפשר לראות מעשה טוב ולהמשיך לבנות עליו.</p>
+      <p>כך נעשית מסכת האבות מראה לחיים שלנו. היא אינה אומרת רק ״תראו כמה גדולים היו״. היא שואלת בעדינות ובתביעה: מה מן הדרך הזאת אתם רוצים להביא היום אל הלב ואל המעשה?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-30">⟶ הקודם</a>
+          <a href="#story-32">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(31, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-32" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לגדול מתוך הדרך</div>
+      <h3 class="story-title">✨ לבקש שה׳ יחפוץ בנו</h3>
+      <p>בתפילה אנחנו אומרים ״ואתה ברחמיך הרבים תחפוץ בנו״. קל לעבור על המילים, אבל רבנו יונה בשערי תשובה, שער א אות מ״ב, מעמיד את החפץ הזה במרכז שאיפת הצדיקים.</p>
+      <p>הוא מבחין בין מחילת עוון וביטול גזירה לבין מצב שבו האדם רצוי לפני ה׳. אפשר שהעוון נמחל, ועדיין נדרשת עבודה של קרבה וריצוי. הצדיק אינו מבקש רק שלא ייענש. הוא מבקש שהבורא יחפוץ בו.</p>
+      <p>המחשבה הזאת יכולה לעורר אותנו לשאול מה אנחנו מכנים הצלחה. אדם שהיה חולה והבריא שמח מאוד, ובצדק. מי שניצל מצרה צריך להודות. אבל החיים הרוחניים אינם מסתיימים בשאלה אם עכשיו הכול הסתדר מבחוץ.</p>
+      <p>״האר פניך אלינו ונושעה״ (תהילים פ, ד) מבטא בקשה עמוקה יותר. אנחנו רוצים לחיות באור פניו של הבורא. אנחנו מבקשים שהקשר יגדל, ושמעשינו יהיו לרצונו.</p>
+      <p>אין הכוונה להסיק מתוך סבל שה׳ אינו חפץ באדם. איננו יודעים חשבונות שמיים. הדברים מכוונים אל שאיפת הלב, לא אל שיפוט של אחרים. האם אני רוצה רק חיים נוחים, או גם חיים קרובים?</p>
+      <p>הבקשה הזאת מלאה אהבה. היא אינה רק פחד מן העונש, אלא רצון להיות בני בית לפני ה׳. מתוך כך נוכל לעבוד לא רק להסרת הרע, אלא גם להוספת אמת, חסד וקדושה בחיינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-31">⟶ הקודם</a>
+          <a href="#story-33">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(32, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-33" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לגדול מתוך הדרך</div>
+      <h3 class="story-title">📏 למדוד הצלחה מן הצד הנכון</h3>
+      <p>בחור עלול להישבר מפני שאינו לומד כמו חברו, שאינו מוערך כפי שהיה רוצה, או שעדיין לא הגיע אל המדרגה שדמיין. בדברי הסטייפלר שהביא הרב, הבעיה יכולה להיות גם במדידה עצמה.</p>
+      <p>כל דף שנלמד וכל שעה של מאמץ ליד הספר הם הצלחה. אם אדם מסתכל רק על מה שלא השיג, הוא עלול למחוק מן העיניים את הטוב שכבר נעשה.</p>
+      <p>בשם רבי חיים מוולוז׳ין הובא ביאור ל״לב חכם לימינו ולב כסיל לשמאלו״ (קהלת י, ב). בספר הפתוח, הצד הימני הוא החלק שכבר נלמד, והצד השמאלי הוא מה שעוד מחכה. מי שמסתכל רק על השמאל יכול להרגיש שהדרך אינסופית. מי שרואה גם את הימין יכול לשמוח במה שזכה לו.</p>
+      <p>כך גם בסידור. אפשר למדוד כל הזמן כמה עוד נשאר להתפלל, ואפשר להרגיש כמה תפילה כבר ניתנה לנו. אותה מציאות נראית אחרת לפי הכיוון שבו מסתכלים.</p>
+      <p>אין זו רשות להפסיק ללמוד מפני שכבר למדנו. השמחה במה שנעשה נותנת כוח להמשך. היא אינה מתחרה עם השאיפה לגדול.</p>
+      <p>נרצה ללמוד מן האחר ולקבל ממנו כוח, אבל לא להפוך את ההשוואה למקל שמכה בנו. קנאת סופרים אמורה להרבות חוכמה, לא להרבות עצבות. העבודה שלנו יקרה גם כשהיא אינה דומה בדיוק לעבודתו של החבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-32">⟶ הקודם</a>
+          <a href="#story-34">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(33, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-34" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · אחד היה אברהם — ועם אחד אנחנו</div>
+      <h3 class="story-title">🚶 אחד היה אברהם</h3>
+      <p>״אחד היה אברהם״ (יחזקאל לג, כד). בתחילת החלק השני של ליקוטי מוהר״ן מופיע היסוד שאברהם עבד את ה׳ מתוך בחינת אחד: לא נתן לכל העולם שמסביב לקבוע לו אם אפשר ללכת בדרך הזאת.</p>
+      <p>אברהם העברי עמד מעבר אחד, והעולם מן העבר השני. זו אינה בדידות של התנשאות, אלא יכולת להחזיק באמת גם כשהסביבה אינה תומכת בה.</p>
+      <p>כל אדם פוגש מניעות אחרות. לפעמים לעג של שכנים, לפעמים אווירה במקום העבודה, ולפעמים אנשים קרובים שאינם מבינים את השינוי שהוא מבקש לעשות. הרב הדגיש שאין הכוונה לריב עם בני המשפחה או להסתכסך איתם. הכוונה לא לתת להתנגדות לשבור את הרצון.</p>
+      <p>״לך לך מארצך וממולדתך ומבית אביך״ (בראשית יב, א) נדרש גם על יציאה מהרגלים וממידות שקיבלנו מן המקום שבו גדלנו. יש טבע מולד ויש טבע נרכש, ולפעמים העבודה דורשת שלא להישאר כבולים אליהם.</p>
+      <p>בספר הבעל שם טוב על התורה, בשם מקורות שהביא, ובדברי הנועם אלימלך והגר״א, הודגש תיקון המידות כתכלית מרכזית בחיי האדם. איננו חייבים לקבל כל תכונה שלנו כגזירה שאין מה לעשות בה.</p>
+      <p>כאן אברהם נותן כוח: אפשר ללכת. אפשר לשמור על כבודם של אחרים, ובכל זאת לא לוותר על העבודה שהלב יודע שהיא דרושה לו לפני ה׳.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-33">⟶ הקודם</a>
+          <a href="#story-35">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(34, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-35" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · אחד היה אברהם — ועם אחד אנחנו</div>
+      <h3 class="story-title">🪞 ללמוד בלי להפוך לחקיין</h3>
+      <p>״והיו עיניך רואות את מוריך״ (ישעיהו ל, כ). יש מצווה ומעלה ללמוד מן הצדיקים, לראות את עבודתם ולקבל מהם דרך. ובכל זאת, הרב הזהיר מפני חיקוי חיצוני שמאבד את העצמיות.</p>
+      <p>רבי חיים ממיר הובא כמי שהדגיש את הגבול הזה. אדם רואה את רבו מתפלל בתנועה מסוימת, ומתנועע בדיוק כך. הוא רואה לבוש מסוים, ומעתיק אותו. אבל ייתכן שאין לו שום קשר פנימי לעבודה שמתוכה נולדה הצורה הזאת.</p>
+      <p>הבעיה אינה בעצם הלמידה מן האחר. להפך, צריך ללמוד. השאלה היא אם למדנו את התוכן, או רק העתקנו תמונה. חיקוי יכול להיראות מרשים מבחוץ ולהשאיר את הלב בלי עבודה משלו.</p>
+      <p>״אחד היה אברהם״ (יחזקאל לג, כד) מזכיר שיש ערך לאדם האמיתי שעומד לפני ה׳. הוא אינו צריך להציג דמות שאינה שלו כדי להיות שייך לקדושה. הוא צריך לקבל דרך, לברר ולבנות אותה ביושר בתוך חייו.</p>
+      <p>אפשר לשאול: מה ראיתי אצל מורי שראוי ללמוד? אולי סבלנות, ריכוז, ענווה או רצון טוב. אם אעתיק רק את התנועה בלי לבקש את המידה, לא קיבלתי את העיקר.</p>
+      <p>העצמיות אינה תירוץ לעשות רק מה שמתחשק. היא אחריות לעבוד באמת. לקבל מן הגדולים, ולהפוך את מה שקיבלנו לחיים. כך הלימוד בונה אדם, במקום להסתפק בייצור דמות שמזכירה אדם אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-34">⟶ הקודם</a>
+          <a href="#story-36">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(35, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-36" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · אחד היה אברהם — ועם אחד אנחנו</div>
+      <h3 class="story-title">💔 אמונה כשהלב נשבר</h3>
+      <p>השיעור נאמר אחרי האסון בשמחת תורה תשפ״ד. הכאב נוכח בו: יום של שמחה נעשה יום של שבר, ואנשים נזקקו לחיזוק באמונה. הדברים על האבות ועל הרצון קיבלו בתוך התקופה הזאת משמעות חיה מאוד.</p>
+      <p>הגמרא בברכות אומרת שדברים מסוימים צריכים חיזוק, ובהם תורה ותפילה. חיזוק אינו מיועד רק למי שנמצא רחוק. כל אדם צריך אותו, ובמיוחד כשהמציאות מזעזעת את הלב.</p>
+      <p>הרב הזכיר שיחה שבה נשמעה התחושה שהתפילות לא התקבלו. הוא הביא גם את העיסוק בחן התפילה בתחילת ליקוטי מוהר״ן, אבל לא ביקש לקבוע חשבון שמיים. הדגש היה שלא להשתמש בכאב כדי להחליש את התפילה. איננו יודעים כמה רע נמנע בזכותה.</p>
+      <p>מתוך השבר עלתה גם הקריאה להיזהר מ״כחי ועצם ידי״. אמצעים, צבא וטכנולוגיה נחוצים בעולם המעשה, אבל אינם רשות לשכוח את הבורא. האמונה מבקשת ענווה בתוך ההשתדלות, וידיעה שהחיים עצמם נשענים על שמירת ה׳.</p>
+      <p>אין כאן הסבר פשוט לכל אובדן. יש כאן בקשה: שלא נישאר רק עם זחיחות שנשברה, אלא נבנה לב אמיתי יותר. לב שמתפלל, עושה ומבקש רחמים. דווקא כשהלב נשבר, הוא צריך לשמוע שיש עוד קשר, ושלא נדרש ממנו לוותר על האמונה כדי לומר את כאבו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-35">⟶ הקודם</a>
+          <a href="#story-37">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(36, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-37" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · אחד היה אברהם — ועם אחד אנחנו</div>
+      <h3 class="story-title">🕯️ אור שנשאר אצל מי שהתרחק</h3>
+      <p>הרב הביא סיפור שסופר על ידי הרב בניהו שמואלי, על אב שלא ידע מה עלה בגורל בנו אחרי האסון. הבן התרחק מן הדרך ומן הקשר המשפחתי, והאב חי בתוך אי הידיעה.</p>
+      <p>בסיפור החלום שסיפר האב, הבן הופיע מאיר וזוהר וביקש שלא יבכה עליו. הוא הודה על השנים היפות ועל החינוך בתלמוד התורה. בידיו נראו מסכתות מזהב, ובהן ברכות ושבת, והוא הסביר שהן קשורות לתורה שזכה ללמוד בשנותיו בישיבה.</p>
+      <p>עוד סיפר האב שבחלום אמר הבן שהוא ואחרים שהיו עמו שבו אל ה׳ ואמרו שמע ישראל לפני מותם. את הדברים אנחנו קוראים כסיפור שנמסר, לא כדרך להוכיח את גורלם של כל האנשים או לדעת מה שלא נודע לנו.</p>
+      <p>הנחמה שהרב ביקש להאיר היא שהתורה והחינוך אינם נמחקים בקלות. מה שניתן לאדם יכול להישאר עמוק בתוכו גם כשהחיים החיצוניים השתנו. בליקוטי מוהר״ן, תורה י״ז, הובאה התפארותו של הבורא בכל יהודי כל זמן ששם ישראל נקרא עליו.</p>
+      <p>הסיפור קורא לנו להביט באהבה גם במי שהתרחק. לא לוותר על הטוב שבו, ולא להחליט שהקשר שלו עם ה׳ כבר איננו. אנחנו איננו רואים את כל הלב. אפשר להמשיך להתפלל, לאהוב ולתת מקום לאור שעוד יכול להתגלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-36">⟶ הקודם</a>
+          <a href="#story-38">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(37, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-38" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · אחד היה אברהם — ועם אחד אנחנו</div>
+      <h3 class="story-title">🧩 לבנות את האדם, לחבר את העולם</h3>
+      <p>איך הופכים דמעות לדבר שמצמיח? הרב ביקש שהכאב לא יישאר רגע חולף של זעזוע, ושלא נחזור אחריו לאותה מחלוקת ולאותה שכחה. נרצה שהדמעות יביאו פירות: אהבת ישראל, תשובה ומעשים טובים.</p>
+      <p>״לך כנוס את כל היהודים״ (אסתר ד, טז) מזכיר את האחדות שהביאה לתפנית בפורים. אבל איננו רוצים לזכור שאנחנו עם אחד רק כשבאות צרות. השייכות קיימת גם ביום שקט. כל יהודי יקר, גם כשהלבוש, ההשקפה והדרך אינם בדיוק כשלנו.</p>
+      <p>לימוד מסכת האבות צריך להגיע אל תיקון המידות. החסד, הגבורה והתפארת אינם שמות שנועדו רק לידע. הם מזמינים אותנו לשאול מה אנחנו מתקנים בתוך עצמנו ואיך אנחנו נוהגים באחרים.</p>
+      <p>הרב סיים במשל על אב שנתן לילדו פאזל מסובך של העולם. הילד הרכיב אותו במהירות, והאב התפלא. הילד הסביר שבצדו השני הייתה תמונת אדם. הוא בנה את האדם, וממילא התחברה גם תמונת העולם.</p>
+      <p>זהו הנמשל שמלווה אותנו: כשאדם מתקן את עצמו, הוא פועל בתוך תיקון העולם. לא כל העולם בידינו, אבל יש אדם אחד שאחריותנו עליו קרובה מאוד. נבקש לתקן אותו באמונה, בענווה ובחסד.</p>
+      <p>ויהי רצון שיהיו הענפים דומים לשורשים, כדברי השל״ה שהביא הרב. שזכות אבותינו תעמוד לנו, שה׳ יאמר לצרותינו די, ושנזכה לבשורות טובות, לישועות ולנחמות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-37">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(38, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור הרב ירון אוזן בערוץ הרב יהודה טאוב https://youtu.be/8CbMSBH9rEs · 2023-10-27 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"האור של אברהם","icon":"🌅","color":"#c62b6b","stories":[{"id":1,"title":"כשהאור מתחיל","icon":"🌅"},{"id":2,"title":"למה קוראים לה מסכת אבות","icon":"📚"},{"id":3,"title":"למי שייכת הארץ","icon":"🌍"},{"id":4,"title":"אמונה מבקשת בירור","icon":"🔎"},{"id":5,"title":"גם ההיסטוריה פונה אל תיקון","icon":"🕯️"},{"id":6,"title":"דרך ארץ לפני תורה","icon":"🌱"}]},{"id":2,"name":"הירושה של האבות","icon":"🌳","color":"#6d28d9","stories":[{"id":7,"title":"חסד הוא עמוד העולם","icon":"🤲"},{"id":8,"title":"שלושה אבות, ירושה לדורות","icon":"🌳"},{"id":9,"title":"מה מסתתר במילה אבות","icon":"💛"},{"id":10,"title":"לפני הציווי היה רצון","icon":"🔥"},{"id":11,"title":"לבקש את ירושלים","icon":"🏛️"},{"id":12,"title":"לא כל הרצונות שווים","icon":"🕰️"},{"id":13,"title":"להמליך את ה׳ בתוך הרצון","icon":"👑"}]},{"id":3,"name":"רצון שלא הולך לאיבוד","icon":"🔥","color":"#e08e00","stories":[{"id":14,"title":"כשאין ספר ביד","icon":"📖"},{"id":15,"title":"המוהל שוויתר ושמח","icon":"👶"},{"id":16,"title":"לא להחטיא את הטוב","icon":"🎯"},{"id":17,"title":"הלב הראשון שחיפש","icon":"🪨"},{"id":18,"title":"רצון שמכוסה אינו רצון שאבד","icon":"🍞"},{"id":19,"title":"נגיעה במעשי האבות","icon":"🤏"},{"id":20,"title":"תשובה של שבת ותשובה של חול","icon":"🕯️"},{"id":21,"title":"לטבוע בלי לקבוע שם בית","icon":"🌊"}]},{"id":4,"name":"לשמור על לב חי","icon":"💛","color":"#1e88b8","stories":[{"id":22,"title":"לשמוע את קול הרועה","icon":"🐑"},{"id":23,"title":"הגדלות ניכרת בהתחזקות","icon":"💪"},{"id":24,"title":"לבוש שנוצר מן הכיסופים","icon":"🧵"},{"id":25,"title":"כשאין חשק ללמוד","icon":"📘"},{"id":26,"title":"לבקש רצון חדש","icon":"🙏"},{"id":27,"title":"מה עוד אפשר לעשות לרצונו","icon":"💌"}]},{"id":5,"name":"לגדול מתוך הדרך","icon":"🌱","color":"#c62b6b","stories":[{"id":28,"title":"קטנות היא חלק מן הסדר","icon":"🌱"},{"id":29,"title":"אחרי עבודה גדולה מתחילים מחדש","icon":"🌬️"},{"id":30,"title":"בלי חוכמות שמרחיקות את הלב","icon":"🕊️"},{"id":31,"title":"מה עשו האבות שה׳ חפץ בהם","icon":"🪑"},{"id":32,"title":"לבקש שה׳ יחפוץ בנו","icon":"✨"},{"id":33,"title":"למדוד הצלחה מן הצד הנכון","icon":"📏"}]},{"id":6,"name":"אחד היה אברהם — ועם אחד אנחנו","icon":"🤝","color":"#6d28d9","stories":[{"id":34,"title":"אחד היה אברהם","icon":"🚶"},{"id":35,"title":"ללמוד בלי להפוך לחקיין","icon":"🪞"},{"id":36,"title":"אמונה כשהלב נשבר","icon":"💔"},{"id":37,"title":"אור שנשאר אצל מי שהתרחק","icon":"🕯️"},{"id":38,"title":"לבנות את האדם, לחבר את העולם","icon":"🧩"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
