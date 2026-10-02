@@ -92,7 +92,7 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
       }).join("");
     } catch(e){ return ""; }
   }
-  function greg(d){ try { return new Intl.DateTimeFormat("he-IL",{day:"numeric",month:"long",year:"numeric"}).format(d); } catch(e){ return d.toISOString().slice(0,10); } }
+  function greg(d){ try { return new Intl.DateTimeFormat("he-IL",{day:"numeric",month:"long",year:"numeric"}).format(d); } catch(e){ try { return d.toISOString().slice(0,10); } catch(e2){ return ""; } } }
   function isNew(d){ return Date.now() - d.getTime() < 7 * 864e5; }
   function href(l){ return encodeURIComponent(l.file); }
   function text(l){ return [l.title, l.subtitle, l.category].concat(l.tags || [], l.cards || []).join(" ").toLowerCase(); }
@@ -126,10 +126,11 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
   function render(){
     var list = all.filter(function(l){ return (!cat || (l.category || "אחר") === cat) && (!q || text(l).indexOf(q) !== -1); });
     var showFeatured = !cat && !q && all.length > 1;
-    document.getElementById("featuredBox").innerHTML = showFeatured ? featured(all[0]) : "";
+    var fb = ""; if (showFeatured) { try { fb = featured(all[0]); } catch(e){ fb = ""; } }
+    document.getElementById("featuredBox").innerHTML = fb;
     var rest = showFeatured ? list.slice(1) : list;
     document.getElementById("gridTitle").textContent = showFeatured ? "📚 שאר השיעורים" : (list.length ? list.length + " שיעורים" : "");
-    document.getElementById("grid").innerHTML = rest.map(card).join("");
+    document.getElementById("grid").innerHTML = rest.map(function(l){ try { return card(l); } catch(e){ return ""; } }).join("");
     var msg = document.getElementById("msg");
     msg.style.display = list.length ? "none" : "block";
     msg.textContent = all.length ? "לא נמצאו שיעורים 🔍" : "עוד אין כאן שיעורים — הראשון בדרך 🍭";
@@ -141,7 +142,7 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
   });
   document.getElementById("search").addEventListener("input", function(e){ q = e.target.value.trim().toLowerCase(); render(); });
   fetch("lessons.json?t=" + Date.now(), {cache:"no-store"}).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
-    all = (d.lessons || []).slice().sort(function(a,b){ var x = a.series_order, y = b.series_order; if (x != null && y != null) return x - y; if (x != null) return -1; if (y != null) return 1; return new Date(b.date) - new Date(a.date); });
+    all = (d.lessons || []).slice().sort(function(a,b){ var x = a.series_order, y = b.series_order; if (x != null && y != null) return x - y; if (x != null) return -1; if (y != null) return 1; var tb = Date.parse(b.date), ta = Date.parse(a.date); return (isNaN(tb) ? 0 : tb) - (isNaN(ta) ? 0 : ta); });
     var cats = {}; all.forEach(function(l){ cats[l.category] = 1; });
     document.getElementById("stats").innerHTML = '<span class="stat">📖 ' + all.length + " שיעורים</span>" +
       '<span class="stat">🗂️ ' + Object.keys(cats).length + " נושאים</span>" +
