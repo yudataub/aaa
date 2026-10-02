@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 איסור נקמה ונטירה</title>
+<style>
+:root{--pink-1:#f4b942;--pink-2:#8a4b08;--purple-1:#e7a72f;--purple-2:#704214;--blue-1:#d89b2b;--blue-2:#9a6500;--amber-1:#ffd978;--amber-2:#a86600;--bg:#fff8e8;--card-bg:#fffdf6;--ink:#4a2d12;--ink-soft:#765b3b;--shadow:0 10px 30px rgba(154,101,0,.16);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#fff0c7 0,transparent 45%),radial-gradient(circle at 100% 10%,#fff7df 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #f5d58a;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fffaf0;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#fff2cf;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#fff7e4;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff4d6;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/%D7%A2%D7%95%D7%9C%D7%9D%20%D7%94%D7%A8%D7%92%D7%A9%20%D7%94%D7%99%D7%94%D7%95%D7%93%D7%99/">📚 כל השיעורים</a>
+  <h1>🍭 איסור נקמה ונטירה</h1>
+  <p>מה מלמדת התורה על זיכרון הפגיעה ועל בחירה בטוב</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ איסור נקמה ונטירה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/7CJF65-lotA?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/7CJF65-lotA/hqdefault.jpg" alt="איסור נקמה ונטירה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=7CJF65-lotA" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · איסור נקמה ונטירה — חלק 1</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 1</h3>
+      <p><b>איסור נקמה ונטירה טוב אנחנו נדבר קצת עכשיו קצת גם הלכות גם דברים מעשים קת זה על איסור נקימה ונטירה קראנו פרשת השבוע לא תיקום ולא תתור את בני עמיך ואהבת לרעך כמוך אני השם יש לנו מצווה לא תיקום ולא תתור בני עמיך אנחנו ננסה כש ללמוד מתי הנקמה ונטירה אסורה מתי מצווה וגם בקשר לא רק ליהודים אלא גם בקשר לגויים לאחר השואה זה היה אחד נדונים מעניינים האם צריך לנקום ב גרמנים היו קבוצה שרצתה ללכת להתחיל איזה קבוצה קטנה שהתחילה לעשות נקמה בזה ההוראה בדרך כלל הייתה באותה תקופה הייתה שנקמה הטובה ביותר זה מה לבוא לארץ ישראל לבנות את ארץ ישראל וכל ילד יהודי שנוולד זה נקמה הכי טובה בגרמנים וזה תמונה מהשנה שעשתה דינה אוביץ כך קוראים לה אישה בת 104 שעברה את השואה וביום השואה היא ביקשה מכל צאצאיה לבוא לכותל ולעשות תמונה כל המשפחה ביחד וזה התוצאה מה כן יודע נכון הה לא לא כן כן חל אופים זה תמונה משהו משהו אה אין מה לומר תמונה יפה ומשהו מדהים אה תמונה יפה משהו משהו וואי ו וואי מאישה אחת כן</b></p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · איסור נקמה ונטירה — חלק 1</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 2</h3>
+      <p>מאישה אחת שעברה את השואה תראה מה זה ו ברוך השם זה השנה השנה תמונה מהשנה זה היה השנה זה היה תמונה הזאת היייתה השנה בכותל ביום השואה זה היה התמונה הזאתי ברחבה למעלה אתה רואה אותה טוב אנחנו בוא ננסה קצת לראות אמת על לאק התחיל ביהודים וכמה שנספיק גם נעבור לגויים כן זה בדיוק הפוך כמובן זה ו תורה מפורש לא תיקרו ו בני עמך טוב אני מתחיל לראות זה קודם כל בוא ננסה להבין בדיוק מה זה בדיוק לא תתור אני צ להבין קצת מה מה זה לא תתור א זה מה מה בדיוק אז כולם מכירים את המדרש שרשי מביא על אדם שביקש מגל מהשני אמרלו לא אביא לך אין לי אפשרות לא מביא לך הנה מחרת בא לבקש אמר לו תביא לי מגל אמר לו לא אביא לך אתה לא הבאת אני גם אני לא מביא לך זה הי נקימה ואם הוא השאיל לו ואמר לו אבל אני לא כמוך זוהי נטירה כך מביא רשי על התורה ו שאלה א' צריך להבין יש דין להגיד איני כמוך דין לומר או עצם זה שאתה זוכר בלב</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · איסור נקמה ונטירה — חלק 1</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 3</h3>
+      <p>את מה שהו עשה לך ואתה זוכר את ה כואב לך כל מה שהוא עשה לך זה עדיין איסור נטירה שאלה פשוטה איך לומדים את האיסור מה האיסור זה שאני אומר לו או זה שאני זוכר א טוב בוא נראה אז יש לנו מפורש בוא נראה ראשונים שאומרים מפורש אומר הרמבן הוא אומר אה אדרבה לא לא ברש באמ כן תור אומ דבר נפקוד אצלו את המצ הטוב תיד יפה אז הרמבן מסביר תראו מעוד יפה הרמבן מסביר איך הסדר של המצוות אומר הרמבן ציווה לא תשנה יזיר ש אחרי כן ציווה תשנ יזהיר מה לא רק שלא תשנא אלא מה שלא תנקו ממנו ולא תתור בלבבך מה שעשה לך כי יתכן שלא ישנ אותו אבל יזכו החת בליבו ולפר יזיר שמך פשע אחיו וחו מלבו ואחרי כן יצווה שיאהב אותו לא תשנא לא רק שלא תשנא גם לא תיקום לא ר שקום גם לא תתור אלא ואהבת לרעך כמוך כתוב רמבן מפורש שמח פשע אחי חטו מליבו הרמבן זה אולי מאוד נחמד אלי נקרא אתזה גם בעוד מקום שאומר את זה זה גם החינוך אומר ככה שלא ננתק לומר</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · איסור נקמה ונטירה — חלק 2</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 4</h3>
+      <p>שנור בלבנו מה שרנו אחד מישראל וף פי שנסכים נו שלא גמול על מעשיו אפילו בזכירת חטאו בלבד נמנענו אז הרמבן החינוך גם אומר ככה שהמצווה היא מה לא לזכור החטא אני מתאה עצמי שכל אחד פה חווה מדי פעם פעם בחיים לפחות שמישהו העליב אותו ברמת על לא משהו קטן בכל אפ ני זה קרה א פעם אחת אני זוכר זה היה בדיוק לפני שנה בדיוק בפרשת הזאתי לא פחות ולא יותר קרו פרשת קדושים אספר לכם סיפור מעניין איך זה היה אז הייתי אחראי על ישרים יעלוז שם בחנקין אנק ו זה ו הם שמה כאילו הם עושים ש בשבתות אפשר להזכיר את זה לבר מצוות וכדומה יש שמה איזה שישה חדרים יש שמה זה טוב הגיע המשפחה ח בקיצור מישהו שם אמר שהוא רוצה להגיע בסדר בסדר גמור 33000 שק בך משהו כזה אמרתי לו תשמע משלמים בכניסה אתה מגיע לשבת אתה משלם לא אחר כך היה לי כבר חוויות עם זה משמים לפני תשלום מראש כמו זה טוב אמרתי לו פעמיים שלא ישכח מגיע יום שישי הוא מגיע לשם א זה לשם מפת ח אמרתי בדח</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · איסור נקמה ונטירה — חלק 2</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 5</h3>
+      <p>שאפשר ך לשלם אתה מביא לי כסף אומר לי אין לי אפשרות למה אצלנו המשפחה נהוג שכל אחד שמגיע משלם על לעצמו אוספים את זה בכל המשפחה ואז יש כסף איזשהו קהילה לא לא סטנדרטי לא לא מהכל תרגילו שלנו אנחנו לא מכירים ככה את זה אבל ככה אצם ב בעדה הזאת נוהגים ש כל אחד מביא אתו סכום מסוים וככה יש בסוף הזה כסף לשלם אל סיכמנו אמרתי לך מראש ש לא אין לי אפשרות אין לי אז אין מפתח טוב הלכתי אחרי כמה זמן הם מגעים לאיפה שאני נמצא הם יודעו איפה אני נמצא הגיעו כל החמולה איזה צעקות וא תש צווחות עליי משהו לא נורמלי זה אני לא הסכמתי מה בסוף חיפשנו פשרה בסוף ארת יש פתרון יש למישהו פה ביט אמרו כן יופי אמרתי תשמעו תעבירו בביט אני לא אישר מי שיודע מבין מהמה הכוונה אני לא יאשר את זה וגמרנו לי יש הבטחה על הכסף מוצאי שבת תביאו את הכסף אני יעשה ביטול וגמרנו בסדר גמור הסכימו על הרעיון בסוף זה הכסף עבר זה אבל אל ת לא שזה ה כנסו עליי כל הזמן לא</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · איסור נקמה ונטירה — חלק 2</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 6</h3>
+      <p>שעבר זה ברוך השם נגמר הסיפור זה מה עבר לא בו לא הברתי רצ ש הביאו את הכסף מזומן הכל הזה אבל צ הכד קיבלתי אל תשאל שכנים והכל תגיד איך בדיוק מוחקים את זה מהלב יש לי כפתור דלת שמוחקים אתה יודע מה זה כ מישה מליב אותך לעני כל צועק עליך ואתה לא אשם כלום אני סיכמתי אתכם מראש אמרתי לכם תשלום מראש בכניסה מה לא מה לא נורמלי בזה זה איך מוחקים מה מה בדיוק עושים מה בדיוק המצווה איך מה טוב מה נראה בת השם מה מה בדיוק מה התורה התכוונה כאם במצוה הזאתי גם הרמבם אומר כן ותה לאחד מישראל זה לא זה עובר בלב אלא אמחה הדבר מליבו ולא תרנו עד שימחה האוון מליבו ולא הזכרנו כלל כך אומר גם הרמבן א הרמבם גם אותו דבר זה וכאן אני רוצה להבין מה שאמרנו כאן גם החפת חוזר על זה זה ואני רוצה להבין אם באמת עוברים בלב למה הגמרא סיפרה שהוא אמר לו איני כמוך גם בלי שיאמר לו עצם זה שהוא זוכר בלב זה כבר לו דאורייתא וב איך עושים את זה איך</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איסור נקמה ונטירה — חלק 3</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 7</h3>
+      <p>אדם יכול לשלוט על המחשבות מה מה מה בדיוק עושים איך לא נותרים מה מה מה בדיוק אדם עושה הן עדיין לא המציאו כפתור דילט ל לבן אדם אז בשביל להבין את זה בואו נבין התורה לא אמרה לא תזכור מה התורה אמרה לא תתור מה זה המילה נותר יש פסוק בשיר השירים שמוני אל תהו ני שאני שחר חורף אתה יודע למה אני שחורה לא מה קרה מה קרה שמו אותי לשמור על הקרם היה שמש של יום שישי של חמישי שעבר היה שמש מה שלמה נהייתי שחורה בשמש נהיים שחורים מה אתם רוצים סמוי נותרה את הכורמים לכן הייתי שחורה מה זה נותרה שומר אז מה זה לא תתור לא תשמור אתם שומעים לא לא תזכור אלא לא תשמור מה הכוונה מה זה את יודעים מה פירוש לשמור יש כאלה שיש להם לצערנו הרב מה שנקרא עברו טראומה והם יש להם מה התניה א התניה לא מה בפוסטר מה כה הוא כל הזמן חוזר על זה כל הזמן כמו על הזה וכמובן בכזה אי אפשר לחיות ככה צריך דחו פסיכולוג יש כל מיני שיטות איך משחררים את זה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איסור נקמה ונטירה — חלק 3</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 8</h3>
+      <p>למה הבן אדם חוזר על זה נון סטופ זה איזשהו מנגנון הבן אדם ש משתבש ואז הוא מתחיל לחזור זה זה יש בדם שפגעו בו אבל הוא לא גמר את הפגיעה אלא מה כל הו למה הוא עשה לי את זה ולמה הוא עשה לי את זה וכל רגע הוא חוזר עוד פעם ועוד פעם ו הוא מלבה את השנאה בלי סוף הוא מלבה את אומרת התורה אל תשמור אל תעשה פעולה של שמירה שאתה כל הזמן עזוב תרגיע לא צריכים לשמור כל הזמן את כל הכעס והקפדה אל תעשה לזה שמירה קונטרול s תן לזה לאט לאט להימחק זה ה קודם כל עכשיו הבה יותר מובן לא המצווה זה למצווה עם מה לאדם להרגיע לא לא לשמור את זה בצורה כל כך חזקה זה א זה כן לתת פעולה לאט לאט לשכוח זה כמו ש בקטע למטה רשי במה שכתוב לדברי הבריתה זונת אומר שהדבר שמור בליבו אומר רשי ולא הסיחו מדעתו הוא לא מפסיק לחשוב על זה זה האיסור ולא תתור ש הרבה יותר מובן אדם יכול ב להרגיע אבל אל תעשה כל הם פעולת שמירה על הדבר</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איסור נקמה ונטירה — חלק 3</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 9</h3>
+      <p>זה כשר להבין טוב מאוד למה הגמרה אמרה שמה המקרה שמה שאדם עובר על לא תיטור כאשר מה הוא אומר לו אני כמוך למה הגמרא אמרה ככה כי קשה מאוד לדעת מתי זה נקרא שאדם זוכר מתי זה לא זה דבר לא מוגדר אינני יודע להגיד לך בדיוק כשאדם אומר האן לא כמוך מה הוא עושה באותו רגע הוא מעורר את כל ה רגשות עוד פעם והכל אומרת הגמרא שהוא אומר הוא ודאי עובר עלות איתו כי אז הוא מעורר עוד פעם את כל הזה גם כשהוא לא אומר אם הוא עושה פעולת שמירה הוא עובר אבל ל זה קשה להגדיר בדיוק מתי לכן הגמרא אמרה כאשר האדם אומר לו אני כמוך אז הוא עובר אבל עצם זה שאדם שומר על הדבר ולא מפסיק לחשוב על זה כבר הוא עובר וגם אם הוא ספר את זה לאחרים לא בשביל להרגע אלא בשביל עוד פעם מתעצבן והכל וכל זה הוא עובר אל לא תתור את בני עמך ז היה נידון לאחר ההתנתקות היום משפט הזה הוא בעייתי זוכרים אותו זה היה פעמיים דרך אגב המשפט הזה פעם אחת הוא היה אסור</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איסור נקמה ונטירה — חלק 4</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 10</h3>
+      <p>לפני כן אם אתה זוכר הוא היה הם המשפט הזה הוא בעייתי או לא נכתבו עז יודע מתי מי כתב את זה מה לא נשכח לא נסלח אתה לא זוכר לאחר היה כזה פתגם מפורסם זה זה היה גם לפני כן אסור לפני כן היה כתבו על זה כמה וכמה תשובות התשובה הייתה תלוי מאוד למה אתה מעוניין לא לסלוח אם אתה מעוניין שאלוקים יעניש את כל אלה שעשו את זה כי אתה שונא אותם מה שבאמת קרה כן כל אלה שעשו את ההתנתקות כולנו סובלים עכשיו מההתנתקות כן ו משהו אחר אבל לא דבר ע זה אלה שעשו את ההתנתקות עברו הרבה מאוד צרות מראש הממשלה ושר הביטחון באמת ככה היה במת שהקדוש ברוך הוא נקם בהם במיוחד בראש נקם בו חצי שנה לאחר מכן משר ראו שמונה שנים הבדיחה אמרה שלא רצו אותו לא למעלה ולא למטה טוב הבדיחה אזה טוב בכל אופן אם אתה רוצה לשן נקמה אז זה נושא אז באמת בעייתי אבל אם המטרה שלך לא בשביל העבר אלא בשביל העתיד שאתה מעוניין שמה שזה לא יקרה עוד פעם אז זה בסדר גמור כל האיסור</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איסור נקמה ונטירה — חלק 4</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 11</h3>
+      <p>ותר סתם אתה שומר עלי אם אתה מעוניין שזה לא יקרה עוד פעם אין בזה שום בעיה וכמו שכולנו יודעים עכשיו זה אותה שאלה עוד פעם הולכת לקרות עוד פעם ום בבדים אחרים האם יעזבו לא יעזבו איך יעשו נו אזה והרעיה הנרו מפורש דוד המלך מבקש משלמה המלך שייעשה מה ינקום ב שמי בן גרה הוא מבין ש תועלת להמית את המלוכה שיראו כולם אין בזה בעיה שלא תיקום למה כי כאשר אתה עושה דבר לתועלת בשביל להעמיד את המלוכה להעניש דבר להעמיד דבר על עומדו אין בזה איסור של לא תתור זה ולכן גם אם אדם שומר את מה שהיה בשביל לטבוע אותו וכדומה גם אין בזה איסור של לא תתור א או מגי לגוים כבר אנחנו רוצים להגיע לגויים את ההבדל בין זה לכ אנחנו מגיעים לזה אדרבה ש שם זה מצווה כבר נגיע לזה לפני שאנחנו עוברים לגוים אנחנו רוצים למוד עם היהודים איך אדם מקיים את המצווה הזאתי איך הוא מוריד את זה מהלב אני עושה ממש בקיצור אין לנו עכשיו הרבה זמן נאמרו בזה שישה שש שיטות נאמרו בזה שישה דרכים נאמרו בזה ו</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איסור נקמה ונטירה — חלק 4</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 12</h3>
+      <p>שש דרכים שש דרכים זה נאמרו שמה גם מאוד קל לזכור אותם זה הולך ככה אחד הראשונים ירושלמי רמבם וחינוך יש שלוש ראשונים ולאחר מכן יש שמה קבלה חסידות ומוסר ונגיד בקצרה הירושלמי אומר איך אדם לא נוק ב הירושלמי משל לאדם אומר הירושלמי שהיה לקח פטיש ודפק ב בקיר והופ לא הצליח והפטיש פגע ביד שמאל איזה מכה אל תשאלו וואו איזה כאבים זה אולי היד שמאל עכשיו תקח את הפטיש נקום ביד ימין מה פירוש תראה מה עשית לי אדם לא עושה כ למה זה אותו אחד פעמים מה העניין אומר ירושל לא תיקום ד למה והבת ך כמוך אם תרגיש שכולנו יהודים כולנו עם אחד אז מה אתה עושה עכשיו דופק כל פעם יד ימין לכן לא תיקום ו ור כך אומר הירשמי אין לך אמקום זה דבר אחד יפ הרמבם פירוש אחר אומר הרמבם בעצמו אומר למה לא תיקום ולא תתור אומר הרמ משל לילד כמו ילד שבנה ארגז חול וילד אחר בא ו שבר לו את הגז חולה אפילו מזינו הוא מגיע לאבא שלו אבא תעניש אותו תראה לו מה זה תשבור לו את העצמות</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איסור נקמה ונטירה — חלק 5</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 13</h3>
+      <p>אתה מלך אתה יכול להרוג אותו טוב המלך כומ ללא מגיב לו זה אומר זה לא לא זה מה יש טוב המלך מבין שהר גז כל אחרי הכל זה שום דבר ואין על מה ולא סיבה לנקום זה אז אותו דבר אומר הרמבם אדם מבוגר מבין שמה הבלי עולם הזה יותר פחות מה נשם בעולם הזה חבל להרוס את כל החיים של האדם בשביל ארגז חוזה א מעניין הסיפור דוגמה לזה גר הצדק אברהם בן אברהם שהוא היה מש את הסיפ סיפור מה מנין שמה בזמן הגרא הסיפור על גר הצדק שתפסו אותו והכל ועמדו אה עמדו לשרוף אותו שאלו אותו מה תעשה בשמיים לאלה ש גילו אותך וזה אז הוא סיפר להם שהוא היה הבן של הגרף גפטו צקי היה זה ה הסיפור שפעם ש היה ילד היה לו זה ו אחד שבר לו את הזה אבא שלו שניש אותו הכל אבא שלו אמר שתגדל תבין שזה לא לעניין זה הוא אומר להם שאני אגיע לשמיים אני אראה כמה זה אבלי עולם הזה מה שעשיתם לי והכל שלא יה לי שום עניין לנקום בכם ככה הוא אמר להם טוב</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איסור נקמה ונטירה — חלק 5</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 14</h3>
+      <p>דרגה מאוד גבוהה זה אניב לשיטה הבאה שיטת החינוך אומר החינוך אומר זה שיטה מאוד מפורסמת החינוך אומר שאדם צריך להאמין שאחרי שקרה כזה דבר אם הקדוש ברוך הוא נתן לדבר הזה להתקיים אז כמו שאמר דוד המלך השם אמר לו כלל אם הקדוש ברוך הוא דאג גרם שתקיים כזה דבר אז סימן שמה שיש בזה איזשהו תועלת ולכן אל תנקום בו כי מה כי הוא סך הכל שליח משמיים להעניש אותך קח שת חינוך אלמנו ירושלמי רמבם וחינוך אני עובר עכשיו ל לשלושה הבאים זה המקובלים אומרים למה אדם לא ינקום כי צריך לדעת מה שאדם מתנהג למטה ככה גם מתנהגים איתו למעלה אם אתה תמך לו תותר לו גם למעלה בשמיים ככה התנהגו איתך ו החילו לך וכדאי לך במחילה אחת אתה זוכה שמ אוכלים לך אינסוף בחסידות מדברים הרבה מאוד על ביטול היש כמה חשוב שאדם יבטל את היש ולא יפגע באחרים זה מאוד חשוב זה שלא יעשה מעצמו פגעו בך מה כל כך תעשה מעצמך כבזה ובספרי מוסר מדברים הרבה שאחת מהדרכים הטובות ביותר לא לנקום זה פשוט לשבת ללמוד הלכות ללמוד הלכות נקימה ונטירה ועל</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איסור נקמה ונטירה — חלק 5</div>
+      <h3 class="story-title">💛 איסור נקמה ונטירה — 15</h3>
+      <p>ידי זה האדם רגל לא ננקום ולא נתור א זה עד כאן ההלכות לגבי יהודי שעושה את הזה ביהודי</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור ביוטיוב https://youtu.be/7CJF65-lotA · 2025-09-10 · נערך לספר: Codex</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"איסור נקמה ונטירה — חלק 1","icon":"🌿","color":"#c62b6b","stories":[{"id":1,"title":"איסור נקמה ונטירה — 1","icon":"💛"},{"id":2,"title":"איסור נקמה ונטירה — 2","icon":"💛"},{"id":3,"title":"איסור נקמה ונטירה — 3","icon":"💛"}]},{"id":2,"name":"איסור נקמה ונטירה — חלק 2","icon":"💛","color":"#6d28d9","stories":[{"id":4,"title":"איסור נקמה ונטירה — 4","icon":"💛"},{"id":5,"title":"איסור נקמה ונטירה — 5","icon":"💛"},{"id":6,"title":"איסור נקמה ונטירה — 6","icon":"💛"}]},{"id":3,"name":"איסור נקמה ונטירה — חלק 3","icon":"🧭","color":"#e08e00","stories":[{"id":7,"title":"איסור נקמה ונטירה — 7","icon":"💛"},{"id":8,"title":"איסור נקמה ונטירה — 8","icon":"💛"},{"id":9,"title":"איסור נקמה ונטירה — 9","icon":"💛"}]},{"id":4,"name":"איסור נקמה ונטירה — חלק 4","icon":"🌅","color":"#1e88b8","stories":[{"id":10,"title":"איסור נקמה ונטירה — 10","icon":"💛"},{"id":11,"title":"איסור נקמה ונטירה — 11","icon":"💛"},{"id":12,"title":"איסור נקמה ונטירה — 12","icon":"💛"}]},{"id":5,"name":"איסור נקמה ונטירה — חלק 5","icon":"🌿","color":"#c62b6b","stories":[{"id":13,"title":"איסור נקמה ונטירה — 13","icon":"💛"},{"id":14,"title":"איסור נקמה ונטירה — 14","icon":"💛"},{"id":15,"title":"איסור נקמה ונטירה — 15","icon":"💛"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+
