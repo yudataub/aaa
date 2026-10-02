@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 לצבוע את החיים בוורד</title>
+<style>
+:root{--pink-1:#f4b942;--pink-2:#8a4b08;--purple-1:#e7a72f;--purple-2:#704214;--blue-1:#d89b2b;--blue-2:#9a6500;--amber-1:#ffd978;--amber-2:#a86600;--bg:#fff8e8;--card-bg:#fffdf6;--ink:#4a2d12;--ink-soft:#765b3b;--shadow:0 10px 30px rgba(154,101,0,.16);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#fff0c7 0,transparent 45%),radial-gradient(circle at 100% 10%,#fff7df 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #f5d58a;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fffaf0;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#fff2cf;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#fff7e4;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff4d6;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/%D7%A2%D7%95%D7%9C%D7%9D%20%D7%94%D7%A8%D7%92%D7%A9%20%D7%94%D7%99%D7%94%D7%95%D7%93%D7%99/">📚 כל השיעורים</a>
+  <h1>🍭 לצבוע את החיים בוורד</h1>
+  <p>שויתי ה׳ לנגדי תמיד ככלי מעשי לחיי היום־יום</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ לצבוע את החיים בוורד" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/yn6YCTLQ7Z0?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/yn6YCTLQ7Z0/hqdefault.jpg" alt="לצבוע את החיים בוורד" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=yn6YCTLQ7Z0" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לצבוע את החיים בוורד — חלק 1</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 1</h3>
+      <p><b>לצבוע את החיים בוורד - מצוות שויתי ה' לנגדי תמיד בצורה מעשית לבן דורנו. טוב אז שלום וברכה לכולם אנחנו בעזרת השם בחלק הזה כמה שנספיק כמה שהזמן יאפשר לנו אנחנו נראה עכשיו לפי מה שלמדנו ב לגבי הכוח של בן אדם לחוות חוויות בלי שקרה כלום לוחץ על הכפתור היינו וא אסוציאציה אדם מקשר דבר וחוה חוויה בלי ש בלי שלא צריך חוויה המוח מקשר בין דברים וחווה את החווייה בגלל שרשו אצלו בעבר שכך היה כן ילד שכמו ש מבוגר כן מבוגר שאצל ההורים שלו שבת היייתה נפלאה אוטומטית בדרך כלל אצלו שבת בלי שיעבוד על זה יהיה חוויה אם היה הפוך הם יכונה עבוד אבל עקרונית כך אדם בנוי הוא לא שינוי איך שהחוויה היייתה שהוא היה ילד יכול להמשיך הלאה כל החיים אותה חווייה אז היום אנחנו נראה קצת איך אדם יכול דבר על מצווה מסויימת איך הוא עשתה כל החיים כמעט המון המון חוויות חיוביות נתחיל הרמה בשולחן ערוך בסעיף הראשון בסימן א' סעיף א' כך מתחיל הרמה את ה את השולחן ערוך וא אומר ככה שיויתי השם לנגדי תמיד וכלל גדול בתורה אמונות</b></p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לצבוע את החיים בוורד — חלק 1</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 2</h3>
+      <p>הצדיקים אשר הולכים לפני האלוקים כך אומר שמה השולחן הרמה והגאון מבינ שם אומר שמה מאיפה זה כתוב שכתוב בתורה איש צדיק תמים היה על נח את האלוקים התהלך נוח שלך כל הזמן עם עם בורא בעולם וכן כתוב אשר התהלכו אבותיי לפני ומסיים הגאון מבילה אל תגיד כמו שאמר הרמ שזה כלל גדול הוא הולך ומפליג ואומר לא זה לא רק כלל גדול זה כל מעלת הצדיקים מה זה צדיק אחד שהולך מים שיויתי השם נגדי אתמיד כלל פני מוזר שבית שדים דבר נחמד אין שהום מעלה אבל איך הה איך אתה יכול לומר שבזה נמנע צדיק זה כל הצדיק צדיק זה המון המון דברים איך אתה יכול לומר אין שום מעלה מסמת שיש מזה זה כל מעלת צדיקים השולחן ערוך פותח בזה בכלל זה ובכלל תגידו אם תרגם את זה למעשה לימינו זה נראה לי כמעט בלתי מעשים מי יכול כל היום לחשוב מה יש לאדם המון דברים בראש חוץ מזה כל היום לחשוב מה ישד המון דברים מי יכול זה דבר דברים אם לא הוא לומד הרבה דברים טוב כן הרבה דברים גם טוב בכל אופן אתם</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לצבוע את החיים בוורד — חלק 1</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 3</h3>
+      <p>מכירים בגלל הסעיף הזה כולם יש בהמון המון מקומות שויתי הש תמיד תים בצורה כזאתי בצורה כזאתי יש בהמון המון מקומות עם חנוכייה ובלי חנוכיה זה נמצא הרבה מוד במקומות בגלל הרמה המפורסם הזה א חובת הלבבות מוצא לאיזה מקור איפה זה כתוב בתורה בכלל המצווה כתוב בתהילים שיבתי השם ידי תמיד א חובת הלבבות שמה חובת הלבבות אומר שזה כתוב בקריאת שמ כתוב בקריאת ש אומר ככה היא כבנה תורה ע מה שכתב ב ש והיו הדברים ה ש כים מצבך היום על לבבך איך הוא ראה את זה מקריאת שמע אז תראו הוא קרא את קריאת שמע בצורה מאוד מעניינת הוא קרא חילק את קריאת שמע לשתי חלקים חלק א' וחלק ב' חלק א' זה המצוות זה התפקיד של הבן אדם אמונה ואהבת השם לאחר מכן התורה לא אומרת עוד מצוות לא נגמר כל הדברים אחר כך זה רק מה איך מפנימים את זה איך אתה חי את זה איך אני חי את את האמונה ואהבת השם אז אומרת התורה תעשה שימו לבזה מאוד יפה החלוקה הזאתי מי שעשה את זה מאוד מאוד מענין זה התורה אומרת עשה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לצבוע את החיים בוורד — חלק 2</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 4</h3>
+      <p>את זה בשלושה פעולות במחשבה בשלוש פעולות במחשבה בדיבור ובמעשה אלו הם הדברים שפועלים על הבן אדם כן cbt נכון ותה מחשבה דיבור ומעשה בערך א זה פעולה זה כן אז איך אדם מפנים דברים על ידי שהוא חושב עליהם ויו הדברים שים צך עלי אבך ומדבר עליהם איתו עם הילדים וכולם ועושה מעשים קושר אתקריאת שמע על הידיים על הידיים ועל היד ועל הראש אז ה אומר ח לבות הנ אתה רואה התורה אומרת שהדברים האלה צריכים להיות על לבבך סימן שיש לאדם מצווה לחשוב על האמונה ואהבת השם כ כמה שהוא יכול הרשב גם כותב שזה קשור והיו פות בין עיניך חוץ מתפילין הוא אומר שהתורה התכוונה לרמוז פה והיו פות בין עיניך שהדברים האלה הבת השם תהיה כמו תכשיט על הראש שלך שזה יעמוד לזיכרון תמיד בין עיניך תמיד תזכורת האמונה בבורא עולם א וכאן אנחנו מגיעים למשהו מעניין המשנה בורה למקום מביא את הארי ומי שיודע בעבר חסידים עשו מזה הרבה מאוד עסק מהזה ומביא דבר מאוד מפורסם בשם הארי שאמר שראו לי איך אדם עושה שביתי השם די תמיד אמר הארי שאדם יכוון יצייר שם</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לצבוע את החיים בוורד — חלק 2</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 5</h3>
+      <p>יקוק מול העיניים שלו ועל ידי זה הוא יזכור את בורא עולם תמיד לא סתם יכוון זה יכוון את האותיות האלה בעבר זה היה מאוד נפוץ אצל חסידים שהיו עובדים על זה הרבה לראות את האותיות האלה מול העיניים והנה אם תנסו היום כמעט ולא תמצאו משום מה אנשים כאלה שמצליחים באמת להחזיק מעמד וגם אם תנסו תראו בסידור יש אבל מול העיניים מי שינסה כאלו תנסו ותראו במי שיכול ל ות גם בפועל משום מה אדם שיצייר את זה יראה שאחרי כמה דקות בדרך כלל זה יברח לו מהעיניים לא יחזיק מעמד יותר מאשר דקה היו הרואים הרבה היו רואים את זה הרבה ממסים לעמוד מול העיניים והיום מי שינסה את זה משום מה יראה שזה לא הולך ואפילו אני לא ראיתי הם מקומות שפלו כבר מכלא מנסים כבר מו שתעשו מה קרה מה השתנה שהיום קשה מאוד להצליח וכאן אנחנו מגיעים לנושא שדיברנו עליו מקודם א זה ואמרנו מקודם לקים מה שדיברנו מקודם על ההתניה השאלה הגדולה היא תמיד שאתה רוצה לדעת מה פועל אצל בן אדם אתה צריך לשים לב תמיד מה זה גורם לבן אדם הרמה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לצבוע את החיים בוורד — חלק 2</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 6</h3>
+      <p>אמר או האריזל אמר שאדם יכוון יראה כמה מה יראה מול בורא עולם אותיות עירה יצור עירה פחד מול עיניו אדם אינו מסוגל בדרך כלל לשים אותיות יראה מול העיניים בוא נקרא אתזה כמו שכותב בספר הברית ספר מזמן הגאון מווינה הוא כותב ככה שיוויתי השם די תמיד שיצייר האדם תמיד שם הוייה ברוך הו דניו מתוך רגשי מט הפחד לא זה הדרך שש שי אדם טוב חשו טו בו מפני תקשה אליו מאוד לתמיד בה בוא נחזור בחזרה למה שלמדנו מקודם יש כלל של התניה אם אתה חושב תמיד אתה שם בורא עולם א שתה חושב מה שהוא הולך שהוא משגיח עליי כמו משגיח שיש הו מנהל עליי והכל אז הגוף של האדם לא אוהב להרגיש פחד ועצות אליהם משדרות פחד ומה קורה לבן אדם אוטומטית הוא דואג לזרוק את המחשבות האלה יש לו סלידה מד אוטומטית והוא אין שום סיבה שהוא ירצה להחזיק עלי מחשבות בצורה כזאתי וכאן אנחנו מציגים לעצה שהוא בספר הברית בעצמו כאילו ספר מזמן הגאול מוינה מציע אצה לעשות משהו חדש לא בדיוק מה שהרמה אמר או מד שיש אזה מקורות אם נספיק נראה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לצבוע את החיים בוורד — חלק 3</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 7</h3>
+      <p>קצת מקורות לזה לעשות משהו אחר בכלל לא מתוך עירה ופחד אלא אם אדם יצייר את השם בתור מה אחד שמביא לו המון דברים עוזר לו בחיים הרבה מאוד הביא לו המון מתנות נתה לו המון חיים טובים נתה לו הרבה פרנסה טובה נתה לו ילדים נתה ללא נכדים ברגע שהוא יצייר מה בצורה כזאתי זה יתן לו המון חשק בוא נקרא את זה בלשון ספר הברית איפה שמודגש זה אומנם שיצייר אהבת השם וכי הוא בוחר בלהיות לו למרכבה ולקס קל לשם טלה ו לתפארת ויודע שזה לה הצלחה שן אחרי ההצלחה וטובה שן אחרי הטובה וזה הדבר מרוצה לה וחפצה בה אל תתפנה לה באהבה זה תכסו זימת תתן לה מחשבתו לדבקה בו תגיל בזכרון שמו יתברך ותשמח להרר בו תתפשט כוחותיה ותתרחב מרוב החשק והשמחה שלב בתענוגים אם אדם יצייר את שם השם בתור אחד שמה שאוהב אותו ושמח בו והכל כמו שהוא ממשיך הלאה אז אדרבה האדם ירצה זה גורם לו המון שמחה אזה יפה וכאן אנחנו עוברים לעצה בת זמננו שכתב אותה בספר שערי אהבה והוא רוצה לתת לבן אדם רעיון ו שהוא כתב את</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לצבוע את החיים בוורד — חלק 3</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 8</h3>
+      <p>זה עדיין לא נראה לי אפפ נראה לית אולי בקושי היה בהתחלה מאוד היה לא את כל מה שאמר לכם בכל אופ מקודם על אוגנים זה נקרא כן שאדם יול לחבר דבר וקו לחבר לא יודע אם הוא הכיר את זה אבל הוא כתב את זה הוא הבין שככה המשנה הבורה התכוון היום יה אזה שפה פסיכולוגית מאוד מאוד יפה הוא מציע אתה מאוד מעניינת אומר כל פעם שקורה לבן אדם איזשהו חוויה נפלא חווייה חיובית מאוד משמחת נולד נכד א ברוך השם די הצ ול טיול נחמד איזשהו מאכל מיוחד כל מיני בשורה טובה חידוש יפה כל דבר מאוד מאוד יפה והוא רוצה מה להודות לבורא עולם י ישים מול העיניים שלו את ה אותיות י כוכ ישים מול העיניים שלו ככה לאט לאט מה שייקרה עוד פעם ועוד פעם מה יקרה לאט לאט האותיות האלה יזכירו לו אטומטי את כל מלא מלא מלא דברים חיוביים נחזור ח מה שהיה כן הפעמון וכל הדברים האלה אם אדם כל פעם דבר חיובי יציר את האותיות המול העיניים שלו ויזכור בורא עולם יאי סתם בורא עולם יכוון אתמול העיניים שלו האותיות</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לצבוע את החיים בוורד — חלק 3</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 9</h3>
+      <p>האלה יגרמו לו המון המון אהבה ושמחה וכל פעם שהוא יראה באותם אותיות זה יחזור שוב פעם אותם חוויות חיוביות שלא בעבר יחזרו עוד פעם מה שנקרא בשפה של היום עוגנים זה נקרא כ זה נקרא לפי זה הזה שהוא קבע את הרגש הזה ביחד עם דבר מסוים כל פעם שדמיין את הדבר הזה יחווה עוד פעם את אותם חוויות א וכמו שאמר האריזל לא רק סתם לפקיד זה שיפקיד זה באותיות כמו שאמרנו אז הוא ירגיש נעימות אהבה ושמחה גדולה עם בורא עולם זה וב מי שייעשה ככה ירגיש הנאה עצומה אותם אותיות כי הוא ירגיש אה הרבה מאוד שמחה ואהבה זה הזכיר לו את כל הרעיונות הנפלאים שהיה לו בעבר ואפשר גם כן אמרנו אפשר להפקיד בבנק ואפשר גם למשוך בבנק בשפה של היום זה נקרא שאפשר על ידי הוגנים להוציא המון בעיות שליליות בן על פי מי שלומד איזה זה יודע גם שאפשר על ידי רגשות חיוביים לבטל המון א זה לא ניכנס אש אנחנו לא לומדים פה עכשיו קורס בלפ אבל בוא נקר ביהדות איך זה עובד זה אם אדם מה חווה אותיות חיוביות ביכו כ</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לצבוע את החיים בוורד — חלק 4</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 10</h3>
+      <p>לאט לאת הוא הפקיד שמה הוא עשה מזה הרבה אוגן קרה לו איזשהו דבר שלילי צרה וכדומה עצוב לא ישהו דבר זה והוא רוצה להשתחרר אמרתי לכם יש צוד להשתחרר מה הוא יכול איך הוא יכול להשתחרר יחשוב על אותם האותיות עוד פעם ואוטומטית מה שיקרה בלב שלו ברגע שלו לו הוא התחיל להחוות חוויות חיוביות אוטומטית כי האותיות האלה מזכירות לו חוויות חיוביות שבורא עולם אוהב אותו כמה עשה לו בהכל ופתאום הוא ירגיש לאט לאט הוא ירגיש לאט לאט שחרור לא רק זה זה יותר לצעירים צעירים ש הרבה פעמים עומדים בניסיונות כן ציירים היצר הרע בוער לא קל להם הרבה פעמים אחד מהאצות שיכול להות ק למטה לדוגמה כשר מצב של ניסיון ויתרו בליבו מחשבות שנה מצד הקדושה יוכל לעורר לפני עיניו אותיות שלשם הוויה ברוך הוא ואז אחרי שהשקיע והפקיד בהם יוגש נועם הקדושה הבר שם באותיות אלו ו יוקר שיש בהם אמצעי חזק ביותר קדושה וזה יעזור לו הרבה פעמים להינצל מכל מיני בעיות ועבירות בוא נגיע עוד דבר מאוד מאוד שמשתמשים בו ב הפסיכולוגיה החיובית תסביר אדם ברוך השם קוראה לו הרבה דברים נחמדים</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לצבוע את החיים בוורד — חלק 4</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 11</h3>
+      <p>במשך היום אם אתה שואל הרבה פעמים בן אדם בסוף היום תגיד מה היה טוב היום תראו שעל פי רוב הוא לא יצליח תנסו מה הבעייה תנסו בסוף היום להיזכר תראו כמה זה קשה להיזכר איזה דברים מעניינים חיובים היהה במשך היום זה עבודה קשה אם היה שלילי זה היה בסדר גמור זה תוך רגע יזכר אבל אם היה חיובי זה יהיה קשה תנסו פעם אפילו כן דבר ידוע אומרים לזוג שבו ביום חמישי או סוף שבוע תנסו להיזכר איזה חבויות חיוביות היה במשך השבוע תראו כמה זה קל תנסו תראו כמה אדם מה שנקרא יש לו בתיח אורים שם יש לו טפלון יש לו הוא מאוד אוהב לקלוט את הדברים השליליים ואת החיובים הרבה פעמים הוא זה לא תמיד אפום זה זה איך אדם יכול לחוות שהחוויה חיובית תהיה זה שלה פסיכולוגיה חיובית איך עושים את זה זה אז אחד מהעצות מאוד פשוטות שקיימות זה תעשה איזשהו חגיגה איזשהו אירוע איזשהו דבר מסביל הדבר הטוב שקרה כן למשל דוגמה נקרא מהיהדות קנית דבר חדש אומרת התורה אומרת ההלכה תברך שהחיינו שימו לב זה רעיון אדיר לחווייה חיובית אתה לוקח</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לצבוע את החיים בוורד — חלק 4</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 12</h3>
+      <p>את דבר מברך שחינו קורא לכולם אולי אמן והכל וזה נהיה חווייה שאן נכנס לתוך הלב שלך חזק היה היום חווייה חיובית והלב שלך נהיה רענן למשך הרבה מאוד שעות א זה יש פ עוד כל מיני רעיונות אותו רעיון בדיוק יכול לה אדם לעשות בצורה כזאתי שקורה לו חווייה חיובית ומשהו נחמד הוא מדמיין את שם יקוק אומר וואו בורא עולם כמה נתת לי והוא מצייר את זה ומעלה את הרגש ומתפעל והכל ושם מול עיניו את האותיות האלה ואז החווייה נהיית הרבה יותר חזקה ו העוגן נהיה הרבה יותר חזק והוא בעצמו ירוויח מזה כי לאחר מכן גם החבה ב הרבה יותר וגם זה יגרום לו שאחר כך כל פעם שהוא יצייר אז הוא יחווה הרבה יותר חווייה הרבה יותר נפלא זה כן קוראים ליגד א רוצה זה זה נקרא מודעות ליש כן ומם פסיכולוגיה חיובית לומדים את זה איך אדם שם לב לדברים לשים לב כן לשים לב הכוונה היא כי פשוטם לים לשים את הלב לב לא לא לשים את הלב תשים את הלב לב שלך בחווייה זה תשיר את החווייה תתעמק בה תשים לב כמה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לצבוע את החיים בוורד — חלק 5</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 13</h3>
+      <p>אזה מה היה שמה מה כל כך יפה שמה איזה צבע היה לה תתבונן בת זה לאחר מכן סתכל בעיניים חדשות כי מי שלא היה מעולם לא ראה את זה אף פעם תספוג את החווייה תשף אותה לתוך ה לתוכך ודמיין מה היה קורה אם לא היה לי את זה זה כן זה כללים שלומדים למי שרוצה פסיכולוגיה חיובית איך אדם עושה חיים שמחים אם אתה עושה את הפעולות האלה החוויות עצלך ביום למרות שלא היו מי יודע מה יהיו הרבה עירות ומעניינות למרות שלא קרה מי יודע מה בגלל שאתה השרת אותם מאוד מאוד את הפעולות זה וכאן אנחנו מגיעים לא איך עושים את זה בצורה מעשיית את השבתי השניי תמיד איך אדם שאלנו איך אדם יכול מי יכול לחשוב כל היום האדם יכול לחשוב כל היום ה צריך אדם להתעסק הרבה מאוד ולכאורה כך הוא מציע בספר שערי אהבה חידוש עצום וא רוצה לומר שהתורה שאמרה שההלכה אמרה שויתי השי תמיד אין הכוונה דווקא שאדם יחשוב כל היום לא דווקא זה מה הכוונה שיהיה לאדם משקפיים ורודים מה הכוונה שאדם התרגל לראות את העולם בצורה כזאתי שהוא רואה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לצבוע את החיים בוורד — חלק 5</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 14</h3>
+      <p>את האלוקים בצורה חיובית בוא נקרא אתזה בלשון שאומר כאשר רואים את את העולם מתוך הכרה של ריבונו של עולם שהוא טוב ומטיב ושכל מה שקיים ו שקורה בעולם מגיע אמנו רואים את העולם מוהר מלא ביטחון ושמחה מתוך הידיעה שכל ב בעולם צא בד יתברך ושכל מה שהוא יתברך החליט לעשות ות דולה להסתכל על העולם בצורה של עיניים דות מש פיים ורודות זה שיוויתי השן תמיד שהוא רואה תמיד בורא עולם הטוב והמטיב מול העיניים שלו ולפי זה תמיד זה קן יכול כפשוטו שאדם רואה את העולם בצורה כזאתי בצורה שהעולם מלא שמחה מלא אהבה שאלוקים ברא עולם מלא טוב ברא את העולם באמת יצריך להיות שהוא בפני עצמו לאכ השאלה הזאתי זה באמת היה צריך להיות ז לא מספיק א זה האם יש מצווה ליהודי להיות אופטימי ומת האם יש מצווה לאדם היום יש מושג של אופטימי ופסימי יש ביהדות איזשהו מצווה מישהו מכיר מצווה להיות אופטימי מה איפה כתוב מתלל בשמחה אמת בכל הוב זה נאמר או לפי הכוזרי יש כזה פירוש מה אתה אומר איפה מחזק את האמונה ואת הביטחון בקדוש ברוך הוא אז תמיד</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לצבוע את החיים בוורד — חלק 5</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 15</h3>
+      <p>לא רואה את הדברים בופ או לכאורה יפה לכאורה נכון זה יפה או זה או בכלל יש פה יש פה שימה שאלות האם יש מצווה יש שני דברים שונים כן האם יש מצה לזכור בעיקר דברים חיוביים האם מצווה לש לראות היש א זה דרך אגב זה שיעור בפני עצמו ניכ לעשות מזה זה יש מחקר מאוד מעניין א זה שבדק וראה שזקנים על פי רוב יותר מאושרים מאשר צעירים אח הוא הלך ובדק והיה די מופתע מה יכול להיות לא דבר מי שיצא הרגע בך אפילו הגל הרבה יותר מבוגר 75 וכדומה הם הרבה פעמים יותר מאושרים מאשר צעירים אה גם אם חשבו ככה אבל הם בדקו וראו שאותם בני אדם שהיו בעבר מדוכאים שו ו זקנים יהו מאושרים זה מוכן אבל שיעור בפני עצמו אני אשלח את זה בשיעור הבא נעשה אלי לשיעור אני מת ששי אתזה זה איך זה יכול להיות יש תכניות תמוגר כבר עשה היכולות שמחה הוא ושה מה שההוא רוצה זה בהתחלה ברגע הראשון אחר כך מה בשל אתה החמש שנים הראשונות את יודע את מתלהב הכוש מה שאתה רוצה אחר כך מה אז</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לצבוע את החיים בוורד — חלק 6</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 16</h3>
+      <p>המחקר מאוד מעניין אולי פעם בפני עצמו הנושא הזה מה שהמחקר טוען מאמריקה זה הם בדקו וראו שמשום מה מאוד מנסים להבין למה בדיוק אבל משום מה אנשים מבוגרים מאוד אוהבים לזכור את הדברים החיוביים בעוד שהצירים הרבה פעמים לדברים השליליים דהיינו הם בדקו כמה מחשבות שליליות חושב בן אדם צעיר יש לאדם אולי 10,000 מחשבות ביום ידכם משהו כזה כמה מחשבות שליליות יש לבן אדם מתוכם בן אדם רגיל תנחש כמה אחוזים איזה נחוש נו כמה אה 80% 80% כן 80% המחשבות שבן אדם רגיל שלא עבל עצמו הם שליליות 80% מה יש לבן אדם מי אמר של מבוגר יש לו מסים בחיים הוא ראה שמד מו המון אתגרים שה יכול ות לא מוצרים בסך הכל הסתדרו אז עכשיו זה הסתדר הצעיר הוא אדין לא יודע מה פ כל דבר יכול להתקלקל בחשש איפה הולך איפה כשדבר הולך לו טוב אומר רגע רגע אבל אפה איפה תקלקל עוד מעט ככה כן וד אחד אתה מזכיר לי אתזה היה סיפור אנילא יכ לזכר מיחד זכי סיפור אני זוכר שהיא פרצה מחט לבנון השנייה וזרקו טילים כאן לאזור כאן ולא היה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לצבוע את החיים בוורד — חלק 6</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 17</h3>
+      <p>זה לא כיפת מגן ולא שום דבר זה ואנחנו נורא ניבנו אתה יודע פעם ראשונה עד מחד המפרט עברו שנים כן אבל הרבה שנים עברו פתאום זורקים טילים תה שומע פצצים ואין אפילו מקלט לינו בבית זה טוב אני שואל את סבא שלי אני רואה אותו במדרגות שואו סבא מה עושים ממשיכים הלאה אתה לא מפחד מהטילים אומר תשמע אתה יודע אני עברתי כבר מול הול מול הבריטים שרצו להרוג אותי שעליתי לארץ ישראל לאחר מכן הייתי בכל המלחמות כן מלחמת השחרור בהגנה בשחור אתה יודע זרקו זרקו פצצות אני כל העו נשרף כל הבגדים שלי רק אני אתה יודע להורים מכמה זה הכל ה באש הכל זה ממלחמות הזה ואלוקים שמר עליי יכל לקחת אי ומ מזמן שם זורקים טילים זורקים טילים מה קרה מזכי לי שאתה אומר כלום אבר כל כך הרבה לא ע לא אדם חושש לא מודע כי הוא לא יודע מה זה הוא חושש אדם חושש מ כן השלה נו מבוגר מה לא ר מסוכן למוד למהי ואציע מה שהוא אמר זה יפה אתה יודע אני אמרתי דרך אב הפסוק אומר ב60 חוכמה כך אומר</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לצבוע את החיים בוורד — חלק 6</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 18</h3>
+      <p>הזה הפסוק בולי א זה הפסוק אומר בשים חוכמה כך אומר תורה זקן זה קנה חוכמה אתה יודע כו דרך עבור לא זה חכם זה ראשי תיבות מה ראשי תיבות חצי כוס מלאה חצי כוס מלאה החכם בטבו מה זה יודע לראות את החלק החיובי של החיים החלק הטומי של החיים אודה גם החוכמה ש בזקנה זה גמה מה שרואים את החלק החיובי שיש בחיים זה ויום מח קגו ממש מופת לו ש יוצא שהאדם החיים שלו מאושרים הרבה יותר דווקא בגיל המבוגר שהוא לא כל כך בול והכל דווקא אז אז זה הסיבה העיקרית מה שטוענים כרגע מה שתנו שאדם מבוגר הרבה יותר נוטה לראות את הדברים החיובים שיש בחיים ולא רק זה לפי זה גם סתם זה הזדמנות טובה לבן אדם הרי אדם צריך בסופו של דבר להגיע למצב זה התפקיד של בן אדם בחיים להגיע למצב ש כאשר הוא נזכר באלוקים ורואה את אלוקים יראה את כל הדברים הטובים שהיו הרי אדם עובר בחיים מלא חוויות חלקם חיות חלקם שליליות וזה שאלה מאוד גדולה תדע בסופו של אדם מה אלוקים יזכיר לו איזה רגש שלא כלפי אלוקים</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="7" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ז · לצבוע את החיים בוורד — חלק 7</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 19</h3>
+      <p>רגש של אהבה או רגש של שנאה כ לא נעים להגיד כן אל יודע גם אם אדם שומע תורה או מצוות עדיין לא מחייב שאלוקים לא מזכיר לו המון רגשות שליליים כי לא פ מה איזה חוויות שמעתם מקודם לא כל אלה שירדו מהדרך ל מה שהוא סיפר למה ירדו מהדרך לצערנו הרב התורה והמצות הזכירו לו דברים שלנים אז האדם צריך בסופש להגיע ואהבת את השם לכך שיהיה לו חוויה חיובית שיראה את אלוקים את י כו כ יראה את אלוקים יזכיר לו המון אהבה ושמחה איך הוא יגיע לזה אז הפוך הגיל המבוגר הוא ההזדמנות פלאה להגיע לזה כיות ואדם בטבעו כבר בגיל הזה מה רואה את החיובי ככ המצב הנורמלי שאדם מבוגר ה בטבעו רואה הרבה יר דברים חיוביים אז הפוך בגיל הזה הוא יכול הרבה יר לנצל את זה לראות את ה כל היש שיש בחיים זהם צוש להוסף עוד דבר מאוד יפה זה זה קשור א בקשו ש נחזור על השיעור הזה אולי בזות אחר נחזור לשיעור הזה בקשו זה דיברנו שיעור שעבר אולי נחזור עזה פעם שזה שדיברנו על זה שיש שלושה חלקים בנפש</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="7" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ז · לצבוע את החיים בוורד — חלק 7</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 20</h3>
+      <p>אדם אולי נחזור על זה בעת השם פעם שיש באדם נפש רוח ונשמה וזה מחולק לשלבי הבן אדם בגיל הצעיר אדם בעיקר בנפש זה החלק הדומיננטי בחלק האמצעי של החיים הרוח זה החלק הדומיננטי ובאדם מגיע לגיל 60 ומעלה החלק ה גבוה מנין של אדם זה החלק הנשמה זה החלק שפועל בו הכי הרבה א י בזה גם צריך ה זה להעריך א זה הנפש זה החלק ששייך למטה והנשמה זה החלק ששייך הרבה יותר למעלה אז אולי גם יש פה עוד דבר א זה האדם הצעיר הנפש הבהמית שמושכת אותו כל הזמן מה להסתכל מה למטה על מה שאין על מה שחסר עלמה על כל הרע וה הזה לעומת זאת האדם ה המבוגר רואה כלפי מעלה כלפי הנשמה והכול שהיא רוצה הרבה יותר לראות את כל הדברים החיובים את כל הדברים היפים כל הדברים הטובים שאלוקים ברא בעולם ואדרבה הוא מסתכל הרבה יותר לכיוון החיובי לכיוון למעלה הוא רואה את הכל יפה ונסיים בדבר אחד רוצ לדון למדנו ע עכשיו עשיו שיש לאדם מצווה שביתי הש תמיד פירושו הוא שאדם תדל השתדל כמה שיכול לזכור את החוויות החיוביות שיש</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="7" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ז · לצבוע את החיים בוורד — חלק 7</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 21</h3>
+      <p>לו בחיים להשים את השם מול עיניו ובעיקר שזה יהיה החלק החי של החיים ולכן אדם צריך להתרכז בנושאים החיוביים כדי שיראה את בורא עולם בצורה חיובית ואני רוצה לשאול זה שאלה כלו שהיא לא בדיוק הלכה אין אסור לא שר פה אסור ומותר אבל האם מותר לאדם האם ראוי לאו אסור מותר א אסור לא שר זה לא איסור האם ראוי לאדם לספר דברים רעים האם ראוי לאדם אסור איש לומר פה לא פה לשון הרע ו משהו פה פה לשון הרע אבל האם ראוי לאדם לספר כל מיני דברים שליליים כן מה שעושים בצערנו הרב בימינו בשפע כן משום מה אוהבים ש ספר דברים שלי ולמה אתה יודע למה למה מה ידליק את הבן אדם יותר מהר בצורה דבר שלילי או דבר חיובי מה מעורר את ה מהר ברור שדבר שלילי מה אתה לא רואה כתה רואה שומע הזקה רץ נבה כולך לא יודע מי שזה שאדם שמח הוא לא הוא לא בכזה פחד והיסטריה והכל ברור כן ריך לכן יפה לכן הם אוהבים לספר הרבה דברים שלי עם טוב עשיו למה האם רוי לאדם זה לכאורה זה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="8" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ח · לצבוע את החיים בוורד — חלק 8</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 22</h3>
+      <p>לא איסור אבל לכאורה שאתה מספר דבר שלילי לבן אדם אתה יוצר לו מה שבורא עולם כביכול לא כזה דבר חיובי כי הרי מה עכשיו קורה לו מו רואה שהרבה דברים שליליים וכדומה זה לא פשוט בסדר יכול להגיד הכל לטובה והכל השאלה היא כמה זה כ מה קורה לבן אדם בתוכו כמה הוא מצ להחזיק בזה מה א כן למשל בוא נראה דוגמה נביא שתי דוגמות וזה נסיים זה מסופר בזוהר תראו דוגמה והיה עמו רבי אלעזר אבא רב חיא רבי יוסי רבי יהודה הגיעו לנחל מים רבי יוסי מעד נפל לתוך המים בגדיו כן לא נעים החליק לתוך המעיין אמר רבי יוסי הלוואי שנחל המים זה לא היה קיים אמר לו רבי שמעון בר יוחי כן אסור לומר כך שכן הנחל משמש את העולם ואסור לבזות משמשו של הקדוש ברוך הוא וי אלוקים את כל אשר עשה והנה טוב מאוד כל אשר עשה בלי חילוקים אזה רואים מכאן שראו לאדם לראות את העולם בצורה חיובית וגם יש כמו שאמרנו ק זוכרים ם הגשם אדם צריך לחפש איך הוא רואה את החיים בצורה חיובי ולא להתלונן על כאן ועל</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="8" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ח · לצבוע את החיים בוורד — חלק 8</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 23</h3>
+      <p>שם ועל זה ולסיום אחרון אחרון משנה מאוד מאוד יפה המשנה המשנה אומר אני לא לקח את הכל זה רק על חלק אחד אני רוצה לעמוד כן מ בקטע האחרון אני עומד על הזה כן אפילוס אני רואה בוא נראה כאן זה יש כאן רואים המשנה כאן המשנה מס ברכות אומרת על הגשמים ועל בשרות טובות אומר ברוך הטוב ומתיו ועל שמועות רעות אומר ברוך דיין האמת ל החלוקה המשנה שמה התחילה מה על בשרות טובות אומר ברוך ומטיב ועל שמועות רעות למה כאן אמרה בורות כאן שמועות גם זה דבר לא דבר אמית לא חיב יפה לכאורה על פני המשנה באה לומר ל דבר נפלא כן המפרשים כ אומרים זה קורה דבר טוב חוץ תבס ד קרה דבר טוב תתקשר תספר בשורה טובה איש טוב אתה אומר דוד המלך וטוב תבשר דבר רע קרה מה לעשות אל תחפש לספר אז איך אדם יודע דברים רעים איך הוא יודע שמוע שמע באיזשהו צורה בשורות לחפש שמות מה לעשות שמה זה שנזכה ם ביד השם לחפש כמה שיותר לספר בשורות טובות שנראה את העולם בצורה חיובית דרבה בגיל הזה שנזכר חכמים</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="8" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ח · לצבוע את החיים בוורד — חלק 8</div>
+      <h3 class="story-title">💛 לצבוע את החיים בוורד — 24</h3>
+      <p>לראות תמיד את החצי הכוס המלאה ולראות כמה הקדוש ברוך הוא ברא עולם טובו מתי אתה עושה כל ערב שבת דים שלך בליל שבת יושבים בשולחן שואלים מה היה טוב דים ש מה הה לך תספר מה היה טוב זה בעיה שתם זוכר תמיד הזה</p>
+      <p class="bold-para">רעיון מרכזי מן התמלול, בניסוח בהיר לקריאה עצמאית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור ביוטיוב https://youtu.be/yn6YCTLQ7Z0 · 2025-09-10 · נערך לספר: Codex</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"לצבוע את החיים בוורד — חלק 1","icon":"🌿","color":"#c62b6b","stories":[{"id":1,"title":"לצבוע את החיים בוורד — 1","icon":"💛"},{"id":2,"title":"לצבוע את החיים בוורד — 2","icon":"💛"},{"id":3,"title":"לצבוע את החיים בוורד — 3","icon":"💛"}]},{"id":2,"name":"לצבוע את החיים בוורד — חלק 2","icon":"💛","color":"#6d28d9","stories":[{"id":4,"title":"לצבוע את החיים בוורד — 4","icon":"💛"},{"id":5,"title":"לצבוע את החיים בוורד — 5","icon":"💛"},{"id":6,"title":"לצבוע את החיים בוורד — 6","icon":"💛"}]},{"id":3,"name":"לצבוע את החיים בוורד — חלק 3","icon":"🧭","color":"#e08e00","stories":[{"id":7,"title":"לצבוע את החיים בוורד — 7","icon":"💛"},{"id":8,"title":"לצבוע את החיים בוורד — 8","icon":"💛"},{"id":9,"title":"לצבוע את החיים בוורד — 9","icon":"💛"}]},{"id":4,"name":"לצבוע את החיים בוורד — חלק 4","icon":"🌅","color":"#1e88b8","stories":[{"id":10,"title":"לצבוע את החיים בוורד — 10","icon":"💛"},{"id":11,"title":"לצבוע את החיים בוורד — 11","icon":"💛"},{"id":12,"title":"לצבוע את החיים בוורד — 12","icon":"💛"}]},{"id":5,"name":"לצבוע את החיים בוורד — חלק 5","icon":"🌿","color":"#c62b6b","stories":[{"id":13,"title":"לצבוע את החיים בוורד — 13","icon":"💛"},{"id":14,"title":"לצבוע את החיים בוורד — 14","icon":"💛"},{"id":15,"title":"לצבוע את החיים בוורד — 15","icon":"💛"}]},{"id":6,"name":"לצבוע את החיים בוורד — חלק 6","icon":"💛","color":"#6d28d9","stories":[{"id":16,"title":"לצבוע את החיים בוורד — 16","icon":"💛"},{"id":17,"title":"לצבוע את החיים בוורד — 17","icon":"💛"},{"id":18,"title":"לצבוע את החיים בוורד — 18","icon":"💛"}]},{"id":7,"name":"לצבוע את החיים בוורד — חלק 7","icon":"🧭","color":"#e08e00","stories":[{"id":19,"title":"לצבוע את החיים בוורד — 19","icon":"💛"},{"id":20,"title":"לצבוע את החיים בוורד — 20","icon":"💛"},{"id":21,"title":"לצבוע את החיים בוורד — 21","icon":"💛"}]},{"id":8,"name":"לצבוע את החיים בוורד — חלק 8","icon":"🌅","color":"#1e88b8","stories":[{"id":22,"title":"לצבוע את החיים בוורד — 22","icon":"💛"},{"id":23,"title":"לצבוע את החיים בוורד — 23","icon":"💛"},{"id":24,"title":"לצבוע את החיים בוורד — 24","icon":"💛"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+
