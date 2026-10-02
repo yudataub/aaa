@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 שמחה שהיא מצווה</title>
+<style>
+:root{--pink-1:#f4b942;--pink-2:#8a4b08;--purple-1:#e7a72f;--purple-2:#704214;--blue-1:#d89b2b;--blue-2:#9a6500;--amber-1:#ffd978;--amber-2:#a86600;--bg:#fff8e8;--card-bg:#fffdf6;--ink:#4a2d12;--ink-soft:#765b3b;--shadow:0 10px 30px rgba(154,101,0,.16);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#fff0c7 0,transparent 45%),radial-gradient(circle at 100% 10%,#fff7df 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #f5d58a;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fffaf0;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#fff2cf;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#fff7e4;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff4d6;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/%D7%A9%D7%9E%D7%97%D7%94%20%D7%95%D7%90%D7%94%D7%91%D7%94/">📚 כל השיעורים</a>
+  <h1>🍭 שמחה שהיא מצווה</h1>
+  <p>שמחה בעבודת השם אינה קישוט רגשי אלא דרך לחיות את הקשר, את ההודיה ואת השליחות</p>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ שמחה שהיא מצווה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/rEtXe83HOJ4?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/rEtXe83HOJ4/hqdefault.jpg" alt="שמחה שהיא מצווה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=rEtXe83HOJ4" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מה מבקשת התורה</div>
+      <h3 class="story-title">❓ הפסוק שמעמיד שאלה</h3>
+      <p>פרשת התוכחה מזכירה את הצרות שבאות תחת אשר לא עבדנו את ה' בשמחה ובטוב לבב מרוב כול. הפסוק מעורר שאלה: האם אפשר לצוות על רגש? הרי יש ימים של עייפות, עצב ודאגה, ובהם האדם אינו יכול להדליק התלהבות לפי פקודה.</p>
+      <p>השיעור מציע לקרוא את הפסוק אחרת. השמחה אינה קישוט שמוסיפים למעשה שכבר הושלם, אלא סימן ליחס הפנימי שלנו אליו. כאשר המצווה נתפסת כקשר, כזכות וכמתנה, הלב מגיב. כאשר היא נתפסת רק כעול, משהו במטרה נשכח. אין כאן דרישה להעמיד פנים; יש הזמנה לגלות מה חסר בין הפעולה לבין הלב.</p>
+      <p class="bold-para">התורה אינה מבקשת חיוך חיצוני אלא לב שמכיר בערך של עבודת השם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מה מבקשת התורה</div>
+      <h3 class="story-title">✨ שמחה היא סיפוק</h3>
+      <p>המילה שמחה מעלה תמונה של חיוך רחב, מוזיקה וריקודים. אבל בחיי היום־יום יש שמחה שקטה יותר. אדם עוזר למישהו, מסיים משימה חשובה או עומד במילה שנתן, ומרגיש בפנים: עשיתי משהו טוב. זו תחושת סיפוק, והיא יכולה להיות אמיתית גם בלי קהל.</p>
+      <p>ההגדרה הזאת משחררת מהשוואות. מי שאינו שר בקול אינו פחות שמח ממי שרוקד, ומי שמרגיש ניצוץ קטן אינו נכשל. אפשר לעצור אחרי מצווה ולשאול: מה טוב במה שעשיתי? למי זה הועיל? מה זה מגלה על הקשר שלי עם הבורא? משפט אחד כזה מחזיר למעשה את הערך שההרגל הסתיר.</p>
+      <p class="bold-para">אפשר לשמוח בשקט: לדעת שעשיתי דבר נכון וטוב, גם בלי ריקוד או התלהבות גדולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מה מבקשת התורה</div>
+      <h3 class="story-title">🛠️ המצווה אינה שירות</h3>
+      <p>נגר שבנה ארון היטב יקבל את אותו שכר אם עבד בשמחה ואם היה עייף. מדוע בעבודת השם היחס הפנימי נעשה יסוד? מפני שמצווה אינה שירות שמוסרים ללקוח. היא מעשה של אדם מול מי שנתן לו את חייו.</p>
+      <p>שתי פעולות חיצוניות יכולות לשאת שתי אמירות שונות. האחת אומרת רק סיימתי, והשנייה אומרת רציתי להתקרב. כל מעשה טוב יקר גם כאשר הלב עדיין סגור, אך התורה מזמינה אותנו להכניס אליו משמעות. השמחה מגלה שאנו לא רק מצייתים; אנו רואים ערך ומבקשים קשר.</p>
+      <p class="bold-para">בפעולה רגילה מודדים תוצאה; במצווה גם היחס הפנימי מבטא למי אנו שייכים ומה אנו מבקשים להיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השורש הוא אהבה</div>
+      <h3 class="story-title">💛 השורש הוא אהבת ה'</h3>
+      <p>התורה אומרת ואהבת את ה' אלוקיך בכל לבבך ובכל נפשך ובכל מאודך. אדם שאוהב מישהו שמח לעזור לו; הוא אינו זקוק בכל פעם לפקודה חדשה כדי לרצות בטובתו. לפי זה, החסרון שמתואר בתוכחה אינו רק שלא חייכנו, אלא שהמעשים לא הגיעו אל המקום שאליו נועדו — אהבה.</p>
+      <p>הדברים אינם באים להאשים מי שאין בו רגש. הם מציעים כיוון עבודה: לזכור חסדים, ללמוד על טובו של הבורא, לדבר אליו ולחפש איך לשמח אותו במעשה. כאשר האהבה גדלה אפילו מעט, השמחה מתחילה להופיע כתוצאה טבעית ולא כמטלה נוספת.</p>
+      <p class="bold-para">במקום לדרוש מעצמנו שמחה ישירות, אפשר לטפח אהבה — והשמחה תצמח ממנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השורש הוא אהבה</div>
+      <h3 class="story-title">🕯️ אהבה שנכנסת לשגרה</h3>
+      <p>אהבת ה' אינה רעיון שמופיע פעם אחת ונשכח. אנו קוראים את הפסוק בבוקר ובערב, מניחים אותו על היד ועל הראש בתפילין וקובעים אותו בפתח הבית במזוזה. בכל פעם שאדם מתחיל את היום או עובר בפתח, הוא מקבל תזכורת למה שמניע את חייו.</p>
+      <p>אפשר להפוך את התזכורת להרגל חי. לפני תפילה לעצור ולזכור למי פונים. לפני מעשה חסד לשאול אם אנו עושים אותו מתוך רצון לשמח. גם אם הלב אינו משתנה מיד, המילים מכוונות את התודעה. עם הזמן, הזכות נעשית אמינה יותר מן ההרגל והשמחה מקבלת שורש.</p>
+      <p class="bold-para">קריאת שמע, תפילין ומזוזה מזכירות שהקשר עם הבורא אמור ללוות את כל היום ולא להישאר ברגעים מיוחדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · להחזיר את השמחה לחיים</div>
+      <h3 class="story-title">🎁 הזכות שאנו מקבלים כמובן מאליו</h3>
+      <p>יש אנשים שמוכנים לנסוע רחוק, לשלם מחיר כבד ולהתאמץ מאוד כדי לקיים מצווה שנמנעה מהם. אנחנו מקבלים תפילה, לימוד, שבת וחסד ליד הדלת, ולכן דווקא השפע עלול להקהות את ההתרגשות.</p>
+      <p>אפשר לשאול לרגע: מה הייתי מרגיש אילו נאסר עליי לעשות את הדבר הזה? השאלה אינה נועדה להפחיד אלא להחזיר ערך. המצווה נמצאת בידינו בלי מסע מפרך — וזו עצמה מתנה. כאשר זוכרים זאת, פעולה יומיומית יכולה להאיר את היום ולתת לנפש תחושת סיפוק.</p>
+      <p class="bold-para">הערכת האפשרות לקיים מצווה מחזירה אליה חום ומונעת מן השגרה להסתיר את המתנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · להחזיר את השמחה לחיים</div>
+      <h3 class="story-title">🌧️ כשהלב עייף</h3>
+      <p>יש ימים שבהם התפילה קצרה, הלימוד קשה והאדם רק רוצה לסיים. אין צורך להעמיד פנים שהכול מרומם. אפשר להכיר בעייפות ובכל זאת לבחור נקודת חיבור אחת: להבין משפט, לומר תודה, להניח תפילין בתשומת לב או לעשות חסד קטן.</p>
+      <p>השמחה אינה בריחה מן הקושי. היא היכולת להבחין שגם בתוך קושי יש אפשרות של נאמנות. כאשר אנו מפסיקים למדוד את עצמנו לפי התלהבות רגעית, אנו יכולים לבנות קשר עמוק יותר — קשר שמחזיק גם כשהרגש משתנה.</p>
+      <p class="bold-para">יום חלש אינו מבטל את הקשר; אפשר להתחיל בצעד קטן ולתת לו לפתוח את הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · להחזיר את השמחה לחיים</div>
+      <h3 class="story-title">🧭 שויתי — לחזור אל הנוכחות</h3>
+      <p>הרמ״א פותח את שולחן ערוך אורח חיים במילים שויתי ה' לנגדי תמיד. אין פירוש הדבר לחשוב על הבורא בכל שנייה בלי הפסקה, אלא לבחור כיוון שאליו חוזרים: לפני תפילה, לפני החלטה ובאמצע יום עמוס.</p>
+      <p>דוד המלך ממשיך: לכן שמח לבי. הנוכחות אינה מעלימה את הבעיות, אך היא נותנת לאדם בית פנימי. הוא יודע שיש למי לפנות ושחייו אינם הפקר. בכל פעם שאנו נזכרים וחוזרים, אפילו אחרי שכחה, אנו מחזקים את ההרגל ומכניסים עוד מעט אור לעבודת היום.</p>
+      <p class="bold-para">הזיכרון שהבורא נוכח נותן ליום כיוון ומאפשר ללב לחזור לשמחה שוב ושוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · להחזיר את השמחה לחיים</div>
+      <h3 class="story-title">🌅 שמחה שמתחילה היום</h3>
+      <p>אפשר לסכם את הדרך בארבעה צעדים. לזהות את הזכות: יש לי היום אפשרות לעשות טוב. לעורר אהבה: לזכור חסד אחד ולדבר אל הבורא. להיות נוכח במעשה עצמו, אפילו במשך דקה. לבסוף, להודות על ההתקדמות במקום למדוד את עצמנו לפי שלמות.</p>
+      <p>אם יום עבר בלי שמחה, אין צורך להחליט שהכול אבוד. חוזרים אל המצווה הבאה ואל הכיוון שבחרנו. השמחה שהתורה מבקשת אינה מסכה. היא חיים שבהם המצוות נעשות שערים לקשר. לפעמים השער נפתח לרווחה ולפעמים רק נסדק; כל פתיחה קטנה יקרה.</p>
+      <p class="bold-para">הדרך המעשית עוברת בזכות, אהבה, נוכחות ומעשה קטן שחוזרים עליו עד שהוא נעשה חיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור ביוטיוב https://youtu.be/rEtXe83HOJ4 · 2025-09-10 · נערך לספר: Codex</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מה מבקשת התורה","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"הפסוק שמעמיד שאלה","icon":"❓"},{"id":2,"title":"שמחה היא סיפוק","icon":"✨"},{"id":3,"title":"המצווה אינה שירות","icon":"🛠️"}]},{"id":2,"name":"השורש הוא אהבה","icon":"💛","color":"#6d28d9","stories":[{"id":4,"title":"השורש הוא אהבת ה'","icon":"💛"},{"id":5,"title":"אהבה שנכנסת לשגרה","icon":"🕯️"}]},{"id":3,"name":"להחזיר את השמחה לחיים","icon":"🌅","color":"#e08e00","stories":[{"id":6,"title":"הזכות שאנו מקבלים כמובן מאליו","icon":"🎁"},{"id":7,"title":"כשהלב עייף","icon":"🌧️"},{"id":8,"title":"שויתי — לחזור אל הנוכחות","icon":"🧭"},{"id":9,"title":"שמחה שמתחילה היום","icon":"🌅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
+
