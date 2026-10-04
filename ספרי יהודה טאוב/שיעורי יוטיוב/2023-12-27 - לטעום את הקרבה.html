@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 לטעום את הקרבה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 לטעום את הקרבה</h1>
+  <p>תענוג, דבקות ואהבת ה׳ — על פי השיעור ״האדם נברא להתענג ולהנות״ בערוץ הרב יהודה טאוב</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ לטעום את הקרבה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/hIJgbYzdp0s?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/hIJgbYzdp0s/hqdefault.jpg" alt="לטעום את הקרבה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=hIJgbYzdp0s" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא רק לגמור, אלא לטעום</div>
+      <h3 class="story-title">🍨 הגלידה שנבלעה במהירות</h3>
+      <p>אדם נסע לעיר אחרת כדי להשתתף בחתונה. כשהגיע זמן ערבית, חיפש מקום להתפלל, והפנו אותו לבית כנסת שנמצא במרחק הליכה. שם ראה בחור צעיר שניגש להיות שליח ציבור. התפילה נאמרה במהירות רבה, ואחרי שסיים נשאר הבחור לדבר עם חבריו.</p>
+      <p>האורח סיים את תפילתו וניגש אליו בשאלה מפתיעה: האם אכלת פעם גלידה? הבחור השיב בחיוב. באיזו כפית אוכלים אותה? השיב שבכפית קטנה ודקה. שאל האורח: מדוע להתאמץ? קח כף גדולה, גמור מהר ותמשיך הלאה.</p>
+      <p>הבחור תמה. הרי גלידה לא אוכלים כדי לגמור. אוכלים כדי ליהנות. הכפית הקטנה מאפשרת לטעם להימשך. אז הסביר האורח: כשאני אומר בתפילה מילים של אמונה וגאולה, הן נותנות לי מרגוע. אני טועם כל מילה. בשבילי זו גלידה. מדוע אתה בולע את הכול כאילו המטרה היא רק לסיים?</p>
+      <p>הסיפור המובא בשיעור אינו עוסק בכפיות. הוא פותח שאלה על היחס שלנו לעבודת ה׳. האם אנו פוגשים בה רק חיובים שיש להשלים, או שיש בה גם דבר שאפשר לטעום? האורח מכיר בתפילה מקור של קרבה ושל מנוחה לנפש. הוא אינו מבקש עוד זמן בלי סיבה; הוא מבקש שלא נאבד את הדבר היקר המונח בתוך הזמן הזה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא רק לגמור, אלא לטעום</div>
+      <h3 class="story-title">🧭 למה מקיימים תורה ומצוות?</h3>
+      <p>השאלה על הגלידה מתרחבת מיד: מה תפקידן של התורה והמצוות? אפשר להשיב שהן דרך לזכות לעולם הבא. אפשר לומר שהן מקרבות אל ה׳, מלמדות אהבה או מכוונות את האדם להיות טוב. כל תשובה פותחת צד אמיתי של העבודה, אך השיעור מבקש לשמוע גם תשובה שאינה תמיד עולה ראשונה.</p>
+      <p>לשם כך הוא פותח את ״מסילת ישרים״. הספר אינו מתחיל ברשימה של פעולות, אלא בבירור מגמת החיים: מה חובת האדם בעולמו, ולאן יכוון את מבטו ואת עמלו? לפני שמסדרים את הפרטים צריך לדעת לשם מה הם קיימים. המצוות אינן סל של דברים שאספנו במקרה, בלי קשר ביניהם. הן מעשים הנושאים את האדם אל יעד.</p>
+      <p>הדבר דומה להבדל בין עגלה מלאה מוצרים לבין דרך שיש לה כיוון. אפשר לצבור פעולות רבות, ובכל זאת לא לראות מה מחבר ביניהן. הרמח״ל מבקש מן האדם לברר את החיבור. כשברור לו מה הוא מבקש, גם מעשה קטן מקבל מקום בתוך השלם.</p>
+      <p>מתוך ההקדמה הזאת עולה המילה המפתיעה: תענוג. לא רק חובה, לא רק שכר עתידי, אלא תענוג על ה׳. כעת צריך להבין מה פירושו, היכן הוא נמצא, וכיצד הוא מתיישב עם כל מה שאנחנו יודעים על עמל, על אחריות ועל קיום מצוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא רק לגמור, אלא לטעום</div>
+      <h3 class="story-title">📚 ספר שמדבר אל המבקש דרך</h3>
+      <p>״מסילת ישרים״ של הרמח״ל נעשה ספר יסוד בעבודת ה׳. בשיעור מודגשת בהירותו: הוא מדריך באופן מסודר, מציב מטרה ומבאר שלבים. גם אדם שאינו רגיל בלשון הקבלה יכול לפתוח אותו ולשמוע קריאה הנוגעת לחייו.</p>
+      <p>הרמח״ל היה גם בעל כתבים עמוקים בתורת הנסתר. על רקע הקשיים וההתנגדות שפגש, מתאר השיעור את הבחירה בלשון הגלויה של ״מסילת ישרים״ כהזדמנות שנפתחה מתוך דוחק. את עומק הדברים הוא מביא לפני הקורא בדרך שאינה מחייבת אותו להכיר תחילה את כל שפת הסוד. זהו ביאור המוצע בשיעור למקומו המיוחד של הספר, שהתקבל אצל לומדים רבים ושונים.</p>
+      <p>ההתבוננות אינה נעצרת בסיפורו של המחבר. היא מלמדת משהו על ההעברה של דברי תורה: כדי שאור יגיע אל אדם, צריך לתת לו גם דרך להיכנס. לפעמים ניסוח ברור אינו סימן לכך שהדבר פשוט מעיקרו, אלא פרי עבודה המביאה דבר עמוק אל שפה שאפשר ללמוד בה.</p>
+      <p>כך גם השאלה על התענוג. היא נראית בתחילה בלתי צפויה, אבל הרמח״ל אינו מניח אותה ככותרת בלבד. הוא מקשר אותה אל שלמות, דבקות ומצוות. הקורא מוזמן לקרוא לאט, כמו האורח בבית הכנסת: לא למהר לעבור את המילים המוכרות, אלא לתת להן לפתוח את מה שנמצא בתוכן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא רק לגמור, אלא לטעום</div>
+      <h3 class="story-title">🌅 ״לא נברא אלא להתענג על ה׳״</h3>
+      <p>בראש פרק א של ״מסילת ישרים״ כותב הרמח״ל שהאדם לא נברא אלא להתענג על ה׳ וליהנות מזיו שכינתו. הוא מוסיף שזהו התענוג האמיתי והעידון הגדול מכל העידונים. אחר כך הוא אומר שמקום העידון הזה באמת הוא העולם הבא, והדרך להגיע אליו עוברת בעולם הזה.</p>
+      <p>כאן נעצרת הקריאה בשיעור ונפתחת שאלת הבנה. האם התענוג כולו שמור לעולם הבא, והעולם הזה הוא רק מקום העבודה לקראתו? או שכבר כאן יש לאדם תפקיד לטעום קרבה, ואילו שלמות העידון תהיה בעולם הבא? שתי האפשרויות נבחנות, ואין מדלגים על המילים הנראות כמושכות לכיוונים שונים.</p>
+      <p>הקריאה המפותחת בשיעור מדגישה שהאדם יכול להכיר כבר עכשיו תענוג של עבודת ה׳. בעולם הבא נמצאת שלמותו, בלי מגבלות החיים שאנו מכירים כאן. אבל העונג אינו חייב להתחיל רק לאחר שהחיים בעולם הזה הסתיימו. הוא יכול להופיע גם בתוך תפילה, לימוד, חסד ושבת.</p>
+      <p>כך חוזר סיפור הגלידה אל הספר. האורח אינו טוען שהגיע לשלמות העידון. הוא מעיד שכבר עכשיו יש בתפילה דבר שנפשו רוצה לשהות בו. קריאה זו ב״מסילת ישרים״ מבקשת לתת מקום לדבר הזה, ולהבין אותו כחלק מן הדרך אל ה׳ ולא כהפרעה לדרך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא רק לגמור, אלא לטעום</div>
+      <h3 class="story-title">🪜 האם העונג שייך רק לגדולים?</h3>
+      <p>כאשר מדברים על אדם הנהנה מתורה, קל לחשוב מיד על גדולי תורה. אנשים שכל עולמם הוא לימוד, שאינם נמשכים לתענוגים אחרים ויכולים לשבת שעות בתוך הסוגיה. מול דמות כזאת עלול אדם מן השורה לומר: הדבר יפה, אך אינו שייך אליי.</p>
+      <p>בשיעור נשאלת השאלה הזאת במפורש. האם צריך להגיע למדרגה גבוהה מאוד כדי ליהנות מעבודת ה׳? התשובה מבקשת להתרחק מן הבחירה בין הכול לבין כלום. יש אנשים שחייהם מלאים בתענוג הזה, ויש מי שטועם ממנו מעט. בין שני הקצוות יש דרך, ולא נכון למחוק אותה מפני שאיננו בקצה העליון.</p>
+      <p>אדם יכול ליהנות מביאור שהבין, ממנגינה המלווה פסוק או מהרגשה שעשה טוב למישהו. ייתכן שההנאה חולפת ושהיא מעורבת בעייפות ובטרדות. עדיין יש בה נקודת התחלה. העובדה שהעונג יכול להתעדן ולהעמיק אינה אומרת שאין בו אמת כשהוא קטן.</p>
+      <p>מכאן נוצרת שאלה חדשה: לא ״האם אני כבר אדם המתענג תמיד?״, אלא ״איזו טעימה כבר מוכרת לי?״. במקום להעמיד מול העיניים רק דמות רחוקה, אפשר להתחיל ממפגש ממשי. לזהות אותו, לשמור עליו ולבקש שיגדל. אהבת ה׳ יכולה להתפתח מן המקום שבו הלב נמצא, גם אם המקום הזה עדיין אינו רחב כפי שהוא מבקש להיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא רק לגמור, אלא לטעום</div>
+      <h3 class="story-title">🎶 מה נעים לנפש, מעבר לטעם בפה</h3>
+      <p>כדי לברר מהו תענוג, השיעור מציע בחירה דמיונית: גלידה משובחת, או מופע מוזיקלי שהאדם אוהב מאוד. לא כולם יבחרו אותו דבר, אך עצם האפשרות לבחור במוזיקה מגלה שהטעם בפה אינו כל עולם ההנאה. יש גם רגש, יופי וחוויה שהנפש רוצה בהם.</p>
+      <p>דוגמה נוספת היא הרצאה מעניינת. אדם עשוי לוותר על מאכל בשביל לשמוע חכמה בנושא המסקרן אותו. הוא מבקש להבין, לראות קשר שלא ראה, לפגוש רעיון המתיישב במחשבתו. התענוג הזה שונה מן המתיקות של הגלידה, אך אינו פחות ממשי רק מפני שאין לו טעם על הלשון.</p>
+      <p>הדוגמאות אינן מבקשות לקבוע שכולם נהנים באותו אופן או ליצור סולם מחייב בין כל חוויה לחברתה. הן פותחות את המבט: בתוך האדם יש כוחות המסוגלים ליהנות מדברים שמעבר למאכל. לא צריך להוכיח את קיומם על ידי מדרגה נדירה. אפשר להכירם בחיים עצמם.</p>
+      <p>מכאן יהיה אפשר להתקרב לשאלת התענוג על ה׳. אם הנפש כבר יודעת ליהנות ממשמעות, מחכמה ומרגש, אפשר לשאול כיצד הכוחות האלה פוגשים תורה ומצוות. החיפוש אינו אחר משהו שאין לנו שום שפה עבורו. הוא מתחיל בכוח מוכר, ומבקש לתת לו כיוון עמוק יותר: מן החוויה הנעימה אל קרבה למי שנותן חיים וטוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התענוג שמחבר</div>
+      <h3 class="story-title">🤲 תענוג ודבקות: שתי מטרות או דרך אחת?</h3>
+      <p>בהמשך פרק א של ״מסילת ישרים״ כותב הרמח״ל שהשלמות האמיתית היא הדבקות בו יתברך. הוא מביא את דברי דוד: ״ואני קרבת אלוקים לי טוב״ (תהילים עג, כח), ואת הבקשה לשבת בבית ה׳ כל ימי החיים. מכאן עולה שאלה: בתחילה דיבר על תענוג, וכעת על דבקות. האם החליף את המטרה?</p>
+      <p>הדיון בשיעור מבקש לחבר בין שתי המילים. דבקות פירושה קשר, קרבה וחיבור. תענוג יכול להעמיק את הקשר מפני שהאדם אינו חווה את עבודתו רק כדבר שהוטל עליו מבחוץ. הוא פוגש בה טוב שנפשו רוצה בו, ומשום כך מבקש לשוב אליה.</p>
+      <p>המצוות הן המעשים המביאים את האדם אל הדרך הזאת. אין כאן הצעה להחליף אותן בחיפוש אחר תחושה נעימה. השאלה היא כיצד לקיים אותן באופן שהלב יכיר גם את קרבת ה׳ שבתוכן. כאשר הוא טועם זאת, התענוג והדבקות אינם שני מסעות נפרדים.</p>
+      <p>אדם שנהנה מן התפילה עשוי לרצות בה יותר. אדם שטעם את שמחת הלימוד מבקש לפתוח שוב את הספר. התענוג נעשה כוח של חיבור, והחיבור פותח עומק נוסף של תענוג. כך מתברר שהמשפטים של הרמח״ל משלימים זה את זה: הטוב הוא קרבה, והאדם לומד להכיר את טוב הקרבה גם דרך מה שנפשו טועמת בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התענוג שמחבר</div>
+      <h3 class="story-title">🪵 מהו הדבק?</h3>
+      <p>בשיעור מוצע משל פשוט: כדי לחבר שני חלקי עץ אפשר להשתמש בדבק. הדבק הוא מה שמאפשר לחלקים להחזיק יחד, ולא רק להיות מונחים זה לצד זה. כשאומרים שאדם מבקש דבקות בה׳, עולה השאלה מה יוצר את החיבור בתוך החיים.</p>
+      <p>אחת התשובות שנידונות היא שההנאה יוצרת קשר. אם אדם מרגיש שעבודת ה׳ נותנת חיים לנפשו, הוא לא פוגש אותה כאוסף מעשים זרים. הוא רוצה בה. כמו דבר שהוא אוהב לחזור אליו מפני שטעמו הטוב כבר מוכר לו, גם התורה והתפילה מקבלות מקום פנימי.</p>
+      <p>אבל בדיון עולה גם אפשרות הפוכה: אולי ההנאה היא תוצאה של קשר שכבר נבנה, ולא הדבר הבונה אותו? האדם מתאמץ, מתקשר, ובסוף מרגיש תענוג. השאלה אינה נדחית. היא מראה שהקשר אינו מנגנון חד־כיווני. יש עבודה המקדימה את ההנאה, ויש הנאה הנותנת כוח לעבודה נוספת.</p>
+      <p>משל הדבק מועיל כל עוד הוא נשאר משל. האדם אינו שני חלקי עץ, והקרבה אינה חומר שמורחים ביניהם. יש בה רצון, כוונה ופעולה. התענוג מצטרף אל אלה ככוח החי בלב. הוא אינו מבטל את האחריות, אלא מסייע לאדם להכיר מדוע הדרך יקרה לו. כך ההתחייבות אינה נשארת רק ברשימה; היא יכולה להפוך לקשר שהנפש מבקשת לשמור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התענוג שמחבר</div>
+      <h3 class="story-title">💞 משל מן הקשר שבין איש לאשתו</h3>
+      <p>כדי להסביר כיצד תענוג מעמיק חיבור, השיעור פונה אל הקשר שבין איש לאשתו. התורה נותנת מקום למצוות עונה, שבה הקרבה הגופנית שייכת לקשר הזוגי ולשמחתו. האדם אינו רק מחשבה, וגם הקשר אינו רק הסכמה שכלית. הגוף והנפש משתתפים יחד בבניינו.</p>
+      <p>בדיון מובאים דברי רש״י, ונלמד מהם הקשר שבין הנאה לבין דבקות בתוך הזוגיות. ההנאה אינה מוצגת כאן כעניין מנותק מן האדם שמולך, אלא כמציאות של קרבה בתוך קשר. כשיש שמחה ונתינה, נפתח גם כוח המחבר את בני הזוג.</p>
+      <p>כנגד זה נשמעת שאלה: האם אפשר לומר שההנאה לבדה היא הדבק? הרי יש הבדלים, צרכים ואהבה הנבנית הרבה לפני הרגע הזה. הטענה הנגדית מזכירה שהחיבור דורש גם רצון, היכרות ונתינה. קרבה גופנית אינה הופכת שני זרים מעצמה לשותפים בנפש.</p>
+      <p>שתי נקודות המבט נשמרות בתוך ההסבר. העונג יכול לחזק קשר, ובאותה שעה הקשר נותן לעונג את מקומו. מכאן חוזרים אל עבודת ה׳: גם שם מבקשים חיבור שיש בו עומק ורצון, ולא רק תחושה רגעית. המשל הזוגי מאיר את השתתפותם של הגוף והלב, אך עיקר השאלה נשאר כיצד יכיר האדם טוב בתוך הדרך שהוא הולך בה באמונה ובאהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התענוג שמחבר</div>
+      <h3 class="story-title">💬 כשהלב אומר: זו רק תוצאה</h3>
+      <p>הדיון אינו מסתפק בדוגמה הזוגית. נשמעת בו התנגדות לרעיון שההנאה היא אמצעי המחבר: כשיש אהבה ורצון לתת, נבנה קשר, ומתוכו יכולה להגיע הנאה. אם כך, אולי לא נכון להפוך את סדר הדברים ולומר שהתענוג הוא היוצר את הדבקות.</p>
+      <p>ההתנגדות חשובה מפני שהיא מגינה על עומק הקשר. אי אפשר לקחת פעולה נעימה, להניח אותה במקום אהבה ולצפות שתעשה את כל המלאכה. האדם רוצה להיות מוכר, רצוי ושותף. יש בו גם נפש, מחשבות ורגשות, וכל אלה אינם נעלמים מפני שקיימת חוויה של הנאה.</p>
+      <p>השיעור חוזר מן הטענה אל המוקד שלו: לא לבודד את ההנאה משאר הדברים, אלא להבין את כוחה בתוך החיבור. התורה והמצוות נותנות לאדם מעשים, לימוד והכוונה. כאשר הוא פוגש בתוכן תענוג אמיתי, התענוג עוזר לו להידבק. אין צורך לבחור אם כל ההנאה באה רק לפני הקשר או רק אחריו.</p>
+      <p>כך נעשית השאלה עצמה חלק מן הלימוד. הלומד אינו נדרש לקבל משל בלי לבחון אותו. הוא יכול לשאול מה חסר בו, ודרך השאלה לדייק את הנמשל. קרבת ה׳ אינה מתוארת כאן כתחושה מקרית. היא עבודת חיים, שיש בה מצוות, רצון ואהבה, ושבתוכה מותר וראוי גם לבקש שהנפש תכיר טוב ותשמח בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התענוג שמחבר</div>
+      <h3 class="story-title">🕯️ לגמור את החיוב או לפגוש את הטוב</h3>
+      <p>אדם מסיים תפילה ואומר לעצמו שעשה את המוטל עליו. יש ערך אמיתי בקיום החובה. אבל אפשר לשאול אם בתוך הקיום הזה היה גם מפגש: האם מילים נגעו בלב, האם נפתחה בקשה, האם נמצא רגע של אמונה או של תודה?</p>
+      <p>בשיעור מבחינים בין סיפוק על השלמת מטלה לבין טעימת התוכן שלה. הסיפוק יכול לומר: הספקתי. התענוג יכול לומר: היה כאן דבר טוב שאני רוצה בו. שני הדברים אינם מוכרחים להתנגש. אדם יכול לקיים חובה, ובאותה שעה להכיר שהחובה מביאה אותו למקום שנפשו זקוקה לו.</p>
+      <p>האורח שבסיפור הפתיחה טעם זאת במילות ערבית. דברי האמונה והגאולה נתנו לו מרגוע. הוא לא הקשיב רק לקצב שבו אפשר לסיים, אלא למשמעות שאפשר לקבל. לכן המהירות נראתה לו כמו בליעת גלידה: לא מפני שהגלידה לא נאכלה, אלא מפני שטעמה כמעט לא קיבל מקום.</p>
+      <p>המשל מזמין להוסיף הקשבה, בלי להפוך כל תפילה למבחן של תחושה גדולה. לפעמים מילה אחת מספיקה כדי להזכיר שיש כאן יותר מרשימת חובות. האדם מזהה שהוא יכול לפנות אל ה׳, להיות מובן בבקשתו ולשאת את חייו בתוך אמונה. זהו טוב שאפשר לחזור אליו. ככל שהוא מוכר יותר, נפתח גם הרצון לשמור על הקשר ולהעמיקו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התענוג שמחבר</div>
+      <h3 class="story-title">🌱 לטעום מעט, במקום לחכות להכול</h3>
+      <p>לא בכל יום יש לאדם אותה פנאי ואותה יכולת. לפעמים הוא ממהר, לפעמים נפשו טרודה ולפעמים התפילה אינה מאירה כפי שהיה רוצה. השיעור אינו מציע שכל אדם יאמר מעתה כל מילה באיטיות רבה בכל מצב. הוא מבקש לא לאבד את האפשרות לטעום מפני שאין בידינו לעשות זאת תמיד.</p>
+      <p>אפשר לתת מקום לרגע מסוים. שורה שמוכרת לנו יכולה להישמע אחרת כאשר מקשיבים לה. פסוק שאמרנו פעמים רבות יכול לפגוש שאלה העומדת היום בלב. גם אם שאר התפילה נאמרת בתוך סדר קבוע, אותו מפגש קטן אינו חסר ערך.</p>
+      <p>כך נענית גם המחשבה שהתענוג שייך רק לגדולי עולם. אם מציבים את הדרישה לחוויה שלמה כתנאי לכל טעימה, רוב בני האדם יעמדו מחוץ לדלת. אבל אם יודעים להתחיל מעט, אפשר לבנות היכרות. מי שכבר שמע פעם דבר שנתן לנפשו מרגוע יודע שיש לאן לשוב.</p>
+      <p>התפקיד הוא לרומם את הכוח הקיים, לא לבטל אותו מפני שהוא עדיין קטן. במילים של הרמח״ל יש יעד גבוה, אך הדרך עוברת בעולם הזה, בתוך אדם שיש לו ימים טובים ופחות טובים. אהבת ה׳ יכולה להיכנס גם למרווח הזה. לא כהכרזה שכבר הושלמה כל העבודה, אלא כרצון לשמור על טעימת הטוב ולאפשר לה להפוך לחלק מן החיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למצוא טעם בלימוד ובתפילה</div>
+      <h3 class="story-title">📖 האם מותר ליהנות מן הלימוד?</h3>
+      <p>השאלה על התענוג מגיעה גם ללימוד התורה. יש החוששים שאם הלימוד מהנה, אולי ההנאה מפחיתה מן הכוונה לשם שמים. הרי אדם נדרש ללמוד תורה מתוך נאמנות, ולא להשתמש בה רק כמקור להרגשה טובה. כיצד עומדת שמחת הלימוד בתוך הדרישה הזאת?</p>
+      <p>השיעור פונה אל האגלי טל ומדגיש את מעלת ההנאה בלימוד. האדם מעמיק, מבין וטועם את התורה. השמחה אינה מוכרחה להיות דבר זר המולבש עליה מבחוץ. היא יכולה להופיע מתוך עצם המפגש עם דבר תורה, ומתוך כך להביא את הלומד להיות קשור אליו יותר.</p>
+      <p>כשהלומד מוצא טעם, הוא רוצה לחזור. הוא מבקש ליישב קושי, לחבר פרטים ולראות את האמת שבסוגיה. הרצון הזה נותן לעמל כוח. אין צורך לומר שרק לימוד המרגיש כבד יכול להיות לשם שמים. גם אדם השמח במה שהבין יכול לפנות את שמחתו אל אהבת התורה ואל מי שנתן אותה.</p>
+      <p>כך נפתרת הסתירה שנשמעה בתחילה. לא ההנאה מן התורה היא הפסולה, אלא שימוש בתורה למטרה זרה. תענוג הבא מתוך הלימוד עצמו יכול להיות חלק מדבקותו. האדם אינו מחפש להתרחק מן התוכן אל תחושה נעימה; הוא שמח בתוכן, ומתוך השמחה מתקשר. כמו המילה שטעם האורח בתפילה, גם ביאור שנפתח בלימוד יכול לתת לנפש חיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למצוא טעם בלימוד ובתפילה</div>
+      <h3 class="story-title">📜 תהילים וסוגיה: היכן נפגשים עם ה׳?</h3>
+      <p>בשיעור מתואר ויכוח על דרכי הקרבה. היו מי שחשבו שאמירת תהילים היא הדרך הברורה לדבקות, ואילו העיון בסוגיה העוסקת בשור שנגח את הפרה נראה רחוק מן המילים המפורשות של בקשת ה׳. בתהילים פונים אליו ישירות. כיצד יכולה שאלת נזקי ממון להביא לאותו כיוון?</p>
+      <p>המענה אינו מקטין את ערך התהילים. הוא מבקש להראות שגם הבנה בתורה היא מפגש עם רצון ה׳. כשאדם לומד, מתייגע ושמח בפתרון, הוא אינו עסוק רק באתגר כללי. הוא מבקש להבין את התורה שניתנה לו, וההנאה יכולה לקשור אותו אליה.</p>
+      <p>לא כל אדם נמשך לאותה צורה. יש מי שנפשו נפתחת יותר דרך תפילה, ויש מי שטועם במיוחד את העיון ואת החידוש. אבל גם מי שאוהב תפילה אינו צריך לראות בלימוד דבר שאין בו קרבה, וגם מי שאוהב עיון אינו צריך לבטל את התמימות שבפנייה אל ה׳.</p>
+      <p>הדוגמאות מצביעות על אפשרות של חיבור, לא על תחרות. ספר תהילים וסוגיה בגמרא אינם שני עולמות שאין ביניהם גשר. שניהם יכולים להביא את האדם אל עבודת ה׳, והלומד מבקש שלא לאבד את הטעם המתאים לנפשו. מציאת הטעם אינה פוטרת אותו מלימוד; היא מסייעת לו לגלות בתוך הלימוד חיים שהיה עלול שלא לראות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למצוא טעם בלימוד ובתפילה</div>
+      <h3 class="story-title">💡 קושיה טובה פותחת תיאבון</h3>
+      <p>לפעמים שיעור מתחיל בשאלה שהתשובה לה נראית ברורה. אחרי שהשומעים משיבים, מובא מקור המציע משהו שלא ציפו לו. לפתע נוצר פער: איך לא חשבנו על האפשרות הזאת? מה הבנו קודם, ומה צריך לברר עכשיו? הפער מעורר את המחשבה ומכניס את הלומדים לתוך החיפוש.</p>
+      <p>כך פועל גם השיעור שלפנינו. נשאל מה תפקיד התורה והמצוות, ולאחר התשובות נפתחת לשון הרמח״ל על תענוג. המילה מפתיעה ומזמינה בירור. האם היא מדברת על העולם הזה, על העולם הבא, על מטרה או על אמצעי? כל שאלה פותחת עוד חלק של הדברים.</p>
+      <p>ההנאה אינה רק מן הרגע שבו יודעים את התשובה. היא יכולה להיות גם מן הדרך: מן הקושיה, מן ההבחנה ומן האפשרות לומר דבר ולבדוק אותו. הלומד אינו יושב כמי שממתין שהחומר יסתיים, אלא כמי שמשתתף בבניין ההבנה.</p>
+      <p>זהו טעם שיכול לקשור אדם ללימוד. הוא רואה שיש לו מקום לחשוב, ושמאמץ המחשבה אינו הולך לריק. גם אם עדיין לא הגיע לביאור שלם, הוא מכיר את השמחה שבגילוי. מכאן מובן מדוע השיעור מדגיש לימוד שיש בו אתגר. לא כדי ליצור עניין חיצוני לתורה, אלא כדי לאפשר לכוח ההבנה שבאדם לפגוש את הטוב שבתוכה, ולרצות לשוב אל המפגש הזה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למצוא טעם בלימוד ובתפילה</div>
+      <h3 class="story-title">🎻 לכו נרננה — לאן אנחנו ממהרים?</h3>
+      <p>התענוג שבמילים אינו רעיון שאי אפשר להכיר. בשיעור מובאת קבלת שבת כדוגמה. יש לילות שבהם רוצים למהר, ויש ערב שבת שבו אנשים מבקשים דווקא לתת מקום למנגינה, לפסוקים ולאווירה. ״לכו נרננה״ אינו רק קטע העומד לפני הסעודה; הוא חלק מן הכניסה לשבת.</p>
+      <p>אם שליח הציבור ירוץ בכל המזמורים, ייתכן שהשומעים יבקשו ממנו לעצור מעט. מדוע? הרי אפשר לסיים מוקדם. משום שהם יודעים שיש כאן טוב שהמהירות עלולה להעביר בלי לטעום: מנוחה, שירה, זיכרון של גאולה ותחושה שהשבוע מפנה מקום ליום אחר.</p>
+      <p>זו ראיה מתוך החיים לכוח שכבר קיים בנפש. אדם שלא היה מגדיר את עצמו כמי שמתענג על עבודת ה׳ יכול בכל זאת להרגיש שפסוק ומנגינה נותנים לו שמחה. אין צורך שיחיה כך בכל שעה כדי להכיר באמת שבאותו רגע.</p>
+      <p>הדוגמה חוזרת אל השאלה המעשית: אם כבר ידוע לנו רגע כזה, אפשר ללמוד ממנו. לא להעתיק את קצב קבלת השבת לכל דבר, אלא להבין שיש עבודות שהלב רוצה לשהות בהן. הטעימה מוכרת, ורק צריך לשים לב אליה. מתוך תשומת הלב אפשר לגלות עוד מקום שבו תפילה אינה רק דבר שאומרים, אלא מקום שבו הנפש נעשית שקטה ושמחה לפני ה׳.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">🌿 ״והתענג על ה׳״</h3>
+      <p>הרמח״ל אינו מציג את התענוג רק כהרגשה אישית. בשיעור מחפשים את שורשו בפסוקים, ומגיעים אל תהילים לז: ״בטח בה׳ ועשה טוב״, ובהמשך ״והתענג על ה׳״ (פסוקים ג–ד). המילים נמצאות בתוך קריאה לביטחון ולעשיית טוב, לא מחוץ לעבודת החיים.</p>
+      <p>כך מקבלת השאלה כיוון. האדם יכול לפנות אל ה׳, לסמוך עליו ולפעול בטוב, ובתוך כך גם להתענג על קרבתו. התענוג אינו תחליף למעשה. הפסוק מחבר את הפנייה אל ה׳ עם דרך שבה אדם חי ופועל. יש אמונה, יש טוב שהוא עושה ויש יחס של קרבה שהוא לומד להכיר.</p>
+      <p>בשיעור מובא גם הפסוק בישעיהו המחבר את עונג השבת עם ״אז תתענג על ה׳״ (ישעיהו נח, יג–יד). מכאן נפתחת דוגמה של יום שיש בו מנוחה וכבוד, והאדם פוגש באמצעותם טוב שאינו רק הפסקה מעבודה. הוא מקבל מרחב לחיים של קשר.</p>
+      <p>הפסוקים עוזרים לקרוא את תחילת ״מסילת ישרים״ מתוך שפה רחבה יותר של תורה. המילה תענוג אינה בהכרח דבר שצריך להסתיר כשמדברים על עבודת ה׳. אפשר לשאול לאן הוא פונה ומה הוא מעורר. כשהוא פונה אל ה׳, הוא יכול להצטרף לביטחון, לעשיית טוב ולשמירת השבת ככוח המחבר את הנפש אל חייה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">🌾 עולם הבא: המשכורת או פרי העבודה?</h3>
+      <p>קל לדמות את שכר המצוות למשכורת. אדם עובד, ואחרי העבודה מקבל תשלום. העבודה והתשלום קשורים מפני שזה תנאי הקבלה, אבל המטבע שקיבל לא נוצר מתוך המעשה עצמו. הוא מגיע אליו מאדם אחר אחרי שסיים.</p>
+      <p>השיעור מציע גם דגם נוסף: עבודה שהטוב שבה צומח מתוך הפעולה. אדם עוזר לאחר, מבין דבר תורה או בונה קשר, ומתוך העשייה נולדת בו שמחה. במקרה כזה, התוצאה אינה נפרדת לגמרי ממה שעשה. משהו בנפשו נפתח תוך כדי העבודה.</p>
+      <p>כך מבואר הקשר בין העולם הזה לבין העולם הבא. לא כשני עולמות שאין ביניהם שום המשך, אלא כדרך שבה האדם נבנה לקראת קרבה. מי שלומד לזהות טוב רוחני מכין בנפשו יכולת לקבל אותו. הוא אינו רק צובר מעשים ברשימה; הוא גם נעשה אדם שטועם משמעות, תורה וחסד.</p>
+      <p>הדימוי אינו מסכם את כל עניין השכר, אך הוא מאיר את השאלה שבשיעור. אם בעולם הבא מתואר תענוג של קרבת ה׳, אפשר להבין מדוע יש ערך לבניית הקשר כבר כאן. הטעימה בעולם הזה אינה שלמות העידון, אך היא חלק מן ההכנה. האדם עושה מצווה, ומתוך המעשה יכול לגלות גם מי הוא מבקש להיות ומהו הטוב שאליו הוא רוצה להתקרב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">👐 עבודה שרוצים בה גם מעבר לשכר</h3>
+      <p>כדי להבחין בין משכורת לבין שמחה הנולדת מן העבודה, השיעור מתאר אדם שעוזב עיסוק מסודר כדי לעסוק בעזרה לאנשים. ייתכן שבמקום הקודם היה שכר טוב יותר, ואילו הדרך החדשה דורשת לחפש עבודה ולשאת חוסר ודאות. מדוע בכל זאת לבחור בה?</p>
+      <p>מפני שהעובד רוצה להרגיש שעשה טוב. הוא רואה אדם שקיבל סיוע, שמישהו הצליח לקום או ששאלה מעיקה נענתה, ומרגיש שהמעשה עצמו נתן לו דבר. השמחה אינה תלויה רק בסכום שקיבל בסוף היום. היא קשורה למה שהתרחש בתוך היום.</p>
+      <p>הדוגמה אינה הוראה לעזוב מקצוע, אלא דרך להכיר שני סוגים של תוצאה. יש תמורה המגיעה מבחוץ, ויש סיפוק הצומח מן העשייה. בחיים יכולים שני הדברים להופיע יחד, אך הם אינם זהים. אדם יכול לדעת היטב איזה מהם הוא מבקש ברגע מסוים.</p>
+      <p>מכאן חוזרים למצוות. כשהאדם עושה חסד, הוא יכול להכיר את הטוב לא רק כציווי שעליו לבצע, אלא גם כמעשה שנפשו שמחה בו. השמחה יכולה לקשור אותו אל הדרך. הוא רואה שעבודת ה׳ אינה רק מחיר שהוא משלם לקראת עתיד רחוק; היא גם דרך שבה כבר עכשיו מתגלים טוב, משמעות וקרבה. כך נוצרת היכרות עם תענוג שאינו נמדד רק במה שהגיע לידיו, אלא גם במה שנתן ובמה שנבנה בלבו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">🧸 הילדה שאיש לא שיחק איתה</h3>
+      <p>בשיעור מובא סיפור של מחנך שרצה להסביר להורים כיצד ילדים יכולים להכיר הנאה רוחנית. בתו סיפרה לו על ילדה חדשה שבאה לשחק, ואף אחד לא הצטרף אליה. הילדה לא זכתה לקבלת פנים, ונשארה לבדה.</p>
+      <p>האב לא התחיל בדרשה. הוא שאל את בתו: איך לדעתך היא מרגישה? הבת השיבה שכנראה היא עצובה. ומה קורה כשהיא חוזרת הביתה? אולי היא מספרת לאמה שלא שיחקו איתה. איך היא מספרת? אולי בבכי. ואיך היא הולכת לישון? השאלות הביאו את הבת להתבונן בילדה לא מבחוץ, אלא דרך מה שעשוי לעבור על לבה.</p>
+      <p>אז שאל האב אם אפשר לעשות משהו. הבת הציעה לשחק איתה. הוא עודד אותה לצרף חברה נוספת, ולתת לילדה הבודדה זמן של משחק. כך לא תצטרך לעמוד שוב בצד ולחזור עם אותה עצבות.</p>
+      <p>למחרת עשתה הבת כפי שהציעה, והמשיכה גם בימים הבאים. הסיפור מראה איך חסד יכול להתחיל מתוך הקשבה. לא מפני שהילד למד קודם מושג מופשט על תענוג רוחני, אלא מפני שראה אדם אחר וביקש שיהיה לו טוב. הדרך אל שמחת הנתינה נפתחה דרך השאלה ״איך היא מרגישה?״, ולא דרך ניסיון לשכנע אותו שצריך להרגיש משהו גדול. מתוך המעשה עצמו תוכל הבת לגלות גם מה קורה בלבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">🍫 השוקולד שנמאס והחסד שלא נמאס</h3>
+      <p>לאחר זמן נתן האב לבתו שוקולד. למחרת נתן שוב, ואחר כך עוד. לבסוף אמרה לו שאינה רוצה עוד: כמה אפשר לאכול שוקולד? הטעם היה טוב, אבל חזרה על אותה מתיקות כבר לא יצרה בה אותו רצון.</p>
+      <p>אז שאל אותה על המשחק עם הילדה הבודדה. האם המשיכה? כן. האם גם ממנו נמאס לה? הרי זה מעשה שחוזר מדי יום. הבת הבחינה שאין זה אותו דבר. לשחק איתה ולעזור לה היו עבורה הנאה אחרת. קשה היה לה להסביר במילים מדויקות, אבל היא ידעה שהטוב הזה לא דומה לעוד קובייה של שוקולד.</p>
+      <p>האב ביקש לתת לה שם לחוויה שכבר הייתה שלה. היא גילתה שיש בה שמחה מעשיית טוב. לא רק מן המשחק עצמו, אלא מן הידיעה שאדם אחר כבר אינו לבדו. ההנאה לא הגיעה במקום הילדה, ולא הפכה אותה לכלי של סיפוק. היא נולדה מתוך הרצון לעזור לה.</p>
+      <p>כך קיבל הרעיון על תענוג רוחני צורה פשוטה. הוא לא נשאר מושג של גדולי עולם. ילדה יכולה להכירו מתוך חסד. ולמבוגר יש תפקיד לסייע לה לשים לב: קרה כאן דבר טוב, והוא נגע גם בנפשך. מתוך תשומת הלב היא יכולה להבין מדוע היא רוצה לחזור, ולגלות שהשמחה העמוקה יותר קשורה לפעמים דווקא במה שנתנה לאחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">🌼 כוח שנמצא בנפש ומבקש להתפתח</h3>
+      <p>הסיפור על הילדה אינו מלמד שכל עשיית חסד מלווה מיד באותה תחושה. הוא מלמד שיש באדם יכולת ליהנות מן הטוב שהוא עושה. לפעמים הוא פועל מהר, חוזר לעיסוקיו ואינו שם לב למה שהתרחש. כשמקשיבים, אפשר לגלות שגם מעשה מוכר נושא בתוכו שמחה עדינה.</p>
+      <p>בשיעור מודגש שהכוח הזה אינו מחייב קודם מדרגה נדירה. הוא מופיע בחיי אנשים וילדים, גם אם במידה קטנה. השאלה היא עד כמה הוא מפותח ועד כמה נותנים לו מקום. אדם עשוי להכיר בקלות רעב ומתיקות, ולהתקשות יותר לתת שם לטוב שמרגיש אחרי שעזר. הקושי לתת שם אינו מוכיח שאין שם דבר.</p>
+      <p>מכאן יש דרך לחינוך הלב. אפשר להבחין במעשה טוב ובשמחה שנלווית אליו, בלי לדרוש שמחה ובלי להפוך אותה לתנאי לנתינה. האדם ממשיך לעשות טוב מפני שהוא ראוי, ובתוך כך לומד להכיר גם את טעמו.</p>
+      <p>הכרה זו יכולה לעזור לו להבין את לשון הרמח״ל. ״להתענג״ אינו בהכרח לרדוף אחר חוויה חזקה. לפעמים זו ידיעה שקטה שהנפש פגשה דבר המתאים לה: חסד, תורה או תפילה. כך נבנית בתוכה שפה של קרבה. היא לומדת שהטוב אינו רק רעיון מבחוץ, אלא משהו שאפשר לפנות אליו באהבה ולהרגיש שהוא נותן חיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">🏡 שבת שצריך לפגוש</h3>
+      <p>אדם שאינו מכיר שבת עשוי לשמוע שהיא יום של עונג ולתמוה. בלי הטלפון ובלי ההרגלים המלווים אותו כל השבוע, איך ירגיש נעים? אם הוא מדמיין רק רשימת דברים שלא עושים, קשה לו לראות מה יש ביום הזה ולא רק מה חסר בו.</p>
+      <p>השיעור מציע מפגש: לבוא לשבת אצל משפחה, לשבת ליד השולחן, לשמוע שירה ולפגוש אנשים רגועים. אין מדובר רק בהסבר על מנוחה, אלא בהיכרות עם מנוחה. החוויה מאפשרת לראות איך נראה זמן שאין בו אותה משיכה מתמדת אל הדבר הבא.</p>
+      <p>לפעמים הסבר לבדו אינו מספיק כדי לתאר טעם. אפשר לדבר על מוזיקה, אבל כדי להבין מה אדם מוצא בה צריך גם לשמוע. אפשר להסביר ששבת נותנת לנפש טוב, אבל המילים נשארות רחוקות עד שפוגשים שולחן, תפילה ואווירה שבהם הטוב הזה מקבל צורה.</p>
+      <p>כך נשמע הפסוק ״אז תתענג על ה׳״ גם מתוך הבית. המנוחה, השירה והחיבור אינם רק הפסקה לשם התאוששות, אלא יכולים להפוך לזמן שבו האדם זוכר את נותן השבת. ההכרה אינה בהכרח מגיעה כולה בפעם אחת. די שנפתחת אפשרות: אולי יש כאן טוב שלא ידעתי לדמיין קודם. מכאן יכול להיבנות רצון לשוב, להכיר עוד ולתת לשבת מקום עמוק יותר בחיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">🌙 תענוג כאן, עידון שלם לעתיד</h3>
+      <p>בספר ״דעת תבונות״ מבאר הרמח״ל את תכלית הטוב ומביא את לשון הנביאים על קרבת ה׳ ועל התענוג בו. בשיעור מצטרפים הדברים לפתיחת ״מסילת ישרים״, וכן למאמר חז״ל על הצדיקים בעולם הבא, הנהנים מזיו השכינה.</p>
+      <p>העולם הבא מתואר כשלמות שאינה דומה לחיים המעורבים שאנו מכירים. כאן יש עייפות, טרדה וקושי; אדם טועם טוב ולא תמיד יכול להחזיק בו. אך אין פירוש הדבר שהטעימה חסרת קשר אל השלמות. היא יכולה להיות הכנה והיכרות, ניצן של מה שהנפש מבקשת לקבל באופן שלם.</p>
+      <p>בשיעור מובא ביאור מ״עלי שור״, המדייק בהבדל בין לשון התענוג בתחילת דברי הרמח״ל לבין לשון העידון שמקומו בעולם הבא. הביאור מצביע על אפשרות של תענוג כבר כאן, ועל שלמות העידון לעתיד. כך ניתנת קריאה המחברת את שני חלקי המשפט במקום להשאירם כסותרים.</p>
+      <p>המסקנה נוגעת לעבודת היום. אין צורך לחכות עד שיסתיימו החיים כדי לשאול אם יש בהם קרבה. אפשר לחפש אותה בתוך מה שניתן לנו לעשות. תפילה שיש בה מרגוע, לימוד שיש בו שמחה וחסד שיש בו טוב אינם כל העולם הבא; הם מקומות שבהם האדם לומד להכיר את הכיוון. מתוך הטעם הקטן הוא יכול לבקש עוד עומק, ולהמשיך את הדרך מתוך אהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">🎼 להקשיב גם לטעם העדין</h3>
+      <p>כשמדברים על תענוג, קל להכיר את החזק והמיידי. מאכל שטעמו בולט מושך את תשומת הלב במהירות. לעומתו, חכמה, מוזיקה ותפילה דורשות לעיתים הקשבה מסוג אחר. האדם צריך לתת להן מעט מרחב כדי שהטעם שלהן יתגלה.</p>
+      <p>בשיעור מובאת תמונה של אדם המקשיב למוזיקה טובה. ייתכן שדווקא באותו רגע לא ירצה מאכל כבד, אף שבדרך כלל הוא אוהב אותו. הוא מבקש להישאר עם הרגש שנפתח במוזיקה. הדוגמה אינה כלל על כל אנשים וכל מאכלים, אלא המחשה לכך שיש חוויות שונות, ולעיתים אחת מהן דורשת לפנות מקום לאחרת.</p>
+      <p>כך אפשר להבין גם את התפילה המהירה. אם כל תשומת הלב נתונה לסיום, אין למילים מרחב לפעול. לא מפני שאין בהן דבר, אלא מפני שהאדם עסוק בדבר אחר. כשהוא מקשיב, הוא עשוי לגלות משמעות שכבר הייתה מונחת לפניו.</p>
+      <p>הטעם העדין אינו מוכרח להתחרות בטעם החזק. הוא מבקש שיכירו בו. האדם לא נברא רק עם גוף המבקש מאכל, אלא גם עם נפש המבקשת טוב ומשמעות. לשון הרמח״ל מזמינה לתת מקום לבקשה הזאת. לא להתבייש בה ולא לראותה כרחוקה מן החיים, אלא להניח לה לפגוש תורה ומצוות ולגלות בתוכן קרבה אל ה׳.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לבנות בנפש מקום לטוב</div>
+      <h3 class="story-title">✨ לחזור אל התפילה עם כפית קטנה</h3>
+      <p>בסוף הדרך חוזרים לבית הכנסת ולגלידה. האורח לא ביקש ללמד את הבחור איך להיות גדול הדור ברגע אחד. הוא נתן לו דוגמה מדבר שהוא כבר יודע: כשיש טעם טוב, איננו רוצים רק לגמור. אנחנו רוצים גם לפגוש את הטעם.</p>
+      <p>כעת הדוגמה רחבה יותר. יש טעם של הבנה בתורה, טעם של אמונה בתפילה, טעם של נתינה וטעם של מנוחת שבת. אין אלה חוויות זהות, אך כולן מגלות שהנפש יכולה למצוא טוב מעבר לסיפוק מיידי. כשהטוב הזה פונה אל עבודת ה׳, הוא יכול לחזק את הקשר ואת הרצון לשוב.</p>
+      <p>תורה ומצוות נשארות דרך של אחריות ושל עמל. התענוג אינו מוחק את מה שקשה, וגם אינו תנאי לכך שהמעשה יהיה בעל ערך. הוא פותח צד נוסף של הדרך: לדעת שהקשר אל ה׳ יכול להיות גם טוב שהלב מכיר ורוצה בו.</p>
+      <p>אפשר להתחיל בטעימה שכבר מצויה בידינו. מילה שנותנת מרגוע, שאלה שהבנו, אדם שזכה מאיתנו לטוב או שעה שבה השבת שינתה את קצב החיים. כששמים לב, נפתחת הודיה. מי שנתן לנו תורה ומצוות נתן גם דרך להתקרב אליו. והנפש, שטעמה אפילו מעט מן הקרבה הזאת, יכולה לבקש שלא למהר לבלוע הכול, אלא להמשיך ללמוד את טעמה באהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/hIJgbYzdp0s · 2023-12-27 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"לא רק לגמור, אלא לטעום","icon":"🍨","color":"#c62b6b","stories":[{"id":1,"title":"הגלידה שנבלעה במהירות","icon":"🍨"},{"id":2,"title":"למה מקיימים תורה ומצוות?","icon":"🧭"},{"id":3,"title":"ספר שמדבר אל המבקש דרך","icon":"📚"},{"id":4,"title":"״לא נברא אלא להתענג על ה׳״","icon":"🌅"},{"id":5,"title":"האם העונג שייך רק לגדולים?","icon":"🪜"},{"id":6,"title":"מה נעים לנפש, מעבר לטעם בפה","icon":"🎶"}]},{"id":2,"name":"התענוג שמחבר","icon":"🤲","color":"#6d28d9","stories":[{"id":7,"title":"תענוג ודבקות: שתי מטרות או דרך אחת?","icon":"🤲"},{"id":8,"title":"מהו הדבק?","icon":"🪵"},{"id":9,"title":"משל מן הקשר שבין איש לאשתו","icon":"💞"},{"id":10,"title":"כשהלב אומר: זו רק תוצאה","icon":"💬"},{"id":11,"title":"לגמור את החיוב או לפגוש את הטוב","icon":"🕯️"},{"id":12,"title":"לטעום מעט, במקום לחכות להכול","icon":"🌱"}]},{"id":3,"name":"למצוא טעם בלימוד ובתפילה","icon":"📖","color":"#e08e00","stories":[{"id":13,"title":"האם מותר ליהנות מן הלימוד?","icon":"📖"},{"id":14,"title":"תהילים וסוגיה: היכן נפגשים עם ה׳?","icon":"📜"},{"id":15,"title":"קושיה טובה פותחת תיאבון","icon":"💡"},{"id":16,"title":"לכו נרננה — לאן אנחנו ממהרים?","icon":"🎻"}]},{"id":4,"name":"לבנות בנפש מקום לטוב","icon":"🌱","color":"#1e88b8","stories":[{"id":17,"title":"״והתענג על ה׳״","icon":"🌿"},{"id":18,"title":"עולם הבא: המשכורת או פרי העבודה?","icon":"🌾"},{"id":19,"title":"עבודה שרוצים בה גם מעבר לשכר","icon":"👐"},{"id":20,"title":"הילדה שאיש לא שיחק איתה","icon":"🧸"},{"id":21,"title":"השוקולד שנמאס והחסד שלא נמאס","icon":"🍫"},{"id":22,"title":"כוח שנמצא בנפש ומבקש להתפתח","icon":"🌼"},{"id":23,"title":"שבת שצריך לפגוש","icon":"🏡"},{"id":24,"title":"תענוג כאן, עידון שלם לעתיד","icon":"🌙"},{"id":25,"title":"להקשיב גם לטעם העדין","icon":"🎼"},{"id":26,"title":"לחזור אל התפילה עם כפית קטנה","icon":"✨"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
