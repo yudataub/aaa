@@ -1,0 +1,491 @@
+# -*- coding: utf-8 -*-
+CSS = r'''
+:root{
+  --sin1:#fa709a; --sin2:#fee140; --sin-ink:#b0124f;
+  --fix1:#11998e; --fix2:#38ef7d; --fix-ink:#0a7a6f;
+  --bless1:#667eea; --bless2:#764ba2; --bless-ink:#5a3fa5;
+  --ink:#2b2d42; --muted:#5b6070;
+  --card:rgba(255,255,255,.95);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#1e3c72;color:var(--ink);overflow:hidden;-webkit-text-size-adjust:100%}
+.presentation{position:fixed;inset:0;overflow:hidden}
+.slide{position:absolute;inset:0;overflow:hidden;
+  opacity:0;visibility:hidden;pointer-events:none;transform:translateX(-36px);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.4,0,.2,1),visibility 0s linear .55s}
+.slide.past{transform:translateX(36px)}
+.slide.active{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .55s ease,transform .55s cubic-bezier(.4,0,.2,1)}
+.scroll{position:absolute;top:62px;bottom:92px;left:0;right:0;overflow-y:auto;overflow-x:hidden;padding:12px 20px;display:flex}
+.inner{margin:auto;width:100%;max-width:1000px;display:flex;flex-direction:column;align-items:center}
+/* themes */
+.t-open{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);--title:#fff}
+.t-explain{background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);--title:#0b2f55}
+.t-gate{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);--title:#fff}
+.t-sin{background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);--title:#4a0f2a}
+.t-fix{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);--title:#052e29}
+.t-bless{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);--title:#fff}
+.t-q{background:linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);--title:#2b2d42}
+.t-end{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);--title:#fff}
+h1,h2,h3{line-height:1.25}
+.slide h2.title{font-size:clamp(1.7rem,4.2vw,2.6rem);color:var(--title);margin-bottom:26px;text-align:center}
+.t-open .title,.t-gate .title,.t-bless .title,.t-end .title{text-shadow:2px 2px 8px rgba(0,0,0,.28)}
+.kicker{display:inline-block;font-size:.95rem;font-weight:700;padding:5px 16px;border-radius:50px;background:rgba(255,255,255,.9);color:var(--ink);margin-bottom:16px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+/* cards */
+.card{background:var(--card);backdrop-filter:blur(10px);padding:clamp(20px,4vw,40px);border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,.2);width:100%}
+.card p{font-size:clamp(1.05rem,2.2vw,1.3rem);line-height:1.8;color:#333;margin-bottom:16px;text-align:right}
+.card p:last-child{margin-bottom:0}
+.center{text-align:center!important}
+.hl{background:linear-gradient(120deg,#ffd54f 0%,#ffeb3b 100%);padding:2px 8px;border-radius:6px;font-weight:700;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.em-sin{color:var(--sin-ink);font-weight:700}
+.em-fix{color:var(--fix-ink);font-weight:700}
+.em-bless{color:var(--bless-ink);font-weight:700}
+/* source / quote vs explanation */
+.src{position:relative;background:linear-gradient(135deg,#eef1ff 0%,#f7f0ff 100%);border-right:6px solid var(--bless2);border-radius:14px;padding:18px 22px 18px 18px;margin:18px 0;font-size:clamp(1.05rem,2.3vw,1.3rem);line-height:1.95;color:#2b2d42}
+.src .tag,.expl .tag{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.3px;padding:2px 10px;border-radius:50px;margin-left:8px;vertical-align:middle}
+.src .tag{background:#764ba2;color:#fff}
+.src .ref{display:block;margin-top:8px;font-size:.92rem;color:var(--muted)}
+.expl{background:#f4f9fb;border-right:6px solid #4facfe;border-radius:14px;padding:16px 20px;margin:18px 0;font-size:clamp(1rem,2.1vw,1.2rem);line-height:1.8}
+.expl .tag{background:#4facfe;color:#fff}
+.q-box{background:#fff8e1;border-right:6px solid #ffb300;border-radius:14px;padding:16px 20px;margin:18px 0;font-size:clamp(1.1rem,2.3vw,1.35rem);line-height:1.8;font-weight:600}
+/* flow diagrams */
+.flow{display:flex;flex-wrap:wrap;gap:12px;align-items:stretch;justify-content:center;width:100%;margin:10px 0}
+.node{flex:1 1 190px;max-width:260px;border-radius:16px;padding:16px 14px;text-align:center;font-size:clamp(1rem,2vw,1.15rem);line-height:1.5;background:#fff;border:3px solid #cfd8dc;box-shadow:0 6px 18px rgba(0,0,0,.12);font-weight:600}
+.node small{display:block;font-weight:400;color:var(--muted);margin-top:6px;font-size:.88em}
+.node.sin{background:linear-gradient(135deg,#fff0f5,#fff9d6);border-color:var(--sin1)}
+.node.fix{background:linear-gradient(135deg,#e6fbf6,#eafff1);border-color:var(--fix1)}
+.node.bless{background:linear-gradient(135deg,#eef0ff,#f6edff);border-color:var(--bless1)}
+.node.big{max-width:none;flex:1 1 100%}
+.arrow{align-self:center;font-size:1.8rem;color:#6b7280;flex:0 0 auto}
+/* tables */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,.18);margin:14px 0}
+.tbl th{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:14px 12px;font-size:clamp(1rem,2.1vw,1.25rem);text-align:center}
+.tbl td{background:#fff;padding:14px 12px;font-size:clamp(.98rem,2vw,1.15rem);border-bottom:2px solid #f0f0f0;text-align:center;line-height:1.6;vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td.c-sin{background:linear-gradient(135deg,#fff0f5,#fff9d6)}
+.tbl td.c-fix{background:linear-gradient(135deg,#e6fbf6,#eafff1)}
+.tbl td.c-bless{background:linear-gradient(135deg,#eef0ff,#f6edff)}
+/* equation */
+.eq{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;margin:14px 0}
+.eq .n{min-width:92px;padding:14px 10px;border-radius:16px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;text-align:center;font-weight:700;font-size:1.05rem;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+.eq .n b{display:block;font-size:2rem;line-height:1.1}
+.eq .op{font-size:1.8rem;font-weight:700;color:#6b7280}
+.eq .res{background:linear-gradient(135deg,#fa709a,#fee140);color:#4a0f2a}
+/* title */
+.s-title h1{font-size:clamp(2rem,6vw,3.6rem);color:#fff;text-shadow:3px 3px 10px rgba(0,0,0,.3);margin-bottom:22px;text-align:center}
+.s-title h2{font-size:clamp(1.2rem,3.2vw,2rem);color:rgba(255,255,255,.95);margin-bottom:34px;font-weight:600;text-align:center}
+.s-title .sub{font-size:clamp(1rem,2vw,1.25rem);color:rgba(255,255,255,.88);text-align:center;line-height:1.9}
+.s-title .credit{margin-top:22px;font-size:.95rem;color:rgba(255,255,255,.8)}
+.anim-down{animation:fadeInDown .9s ease both}.anim-up{animation:fadeInUp .9s ease .25s both}.anim-in{animation:fadeIn 1s ease .55s both}
+/* gate */
+.gate .big{font-size:clamp(2.2rem,7vw,4rem);text-align:center;color:#fff;text-shadow:2px 2px 10px rgba(0,0,0,.3)}
+.gate .sub{margin-top:18px;font-size:clamp(1.1rem,2.6vw,1.6rem);color:rgba(255,255,255,.95);text-align:center;text-shadow:1px 1px 6px rgba(0,0,0,.25)}
+/* quiz */
+.qbox h3{font-size:clamp(1.3rem,3vw,1.9rem);color:#2b2d42;margin-bottom:22px;text-align:center}
+.opt{display:block;width:100%;background:#fff;border:3px solid #e0e0e0;padding:16px 18px;margin:12px 0;border-radius:15px;font:inherit;font-size:clamp(1rem,2.1vw,1.2rem);cursor:pointer;transition:all .25s ease;text-align:right;color:#2b2d42;line-height:1.6}
+.opt:hover:not(:disabled){background:#f5f5f5;border-color:#667eea;transform:translateX(-4px)}
+.opt:disabled{cursor:default}
+.opt.correct{background:linear-gradient(135deg,#4ade80 0%,#22c55e 100%);border-color:#16a34a;color:#fff;animation:celebrate .6s ease}
+.opt.wrong{background:linear-gradient(135deg,#f87171 0%,#ef4444 100%);border-color:#dc2626;color:#fff;animation:shake .5s ease}
+.feedback{margin-top:16px;padding:16px 18px;border-radius:15px;font-size:1.05rem;line-height:1.7;display:none;text-align:center}
+.feedback.show{display:block;animation:fadeInUp .45s ease}
+.feedback.ok{background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46}
+.feedback.bad{background:linear-gradient(135deg,#fee2e2,#fecaca);color:#991b1b}
+.retry{display:none;margin:12px auto 0;background:#fff;border:2px solid #667eea;color:#4338ca;font:inherit;font-weight:700;padding:10px 24px;border-radius:50px;cursor:pointer}
+.retry.show{display:block}
+.retry:hover{background:#eef0ff}
+/* summary */
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;width:100%;margin:6px 0 4px}
+.sum{border-radius:16px;padding:18px;text-align:center;font-size:clamp(1rem,2vw,1.15rem);line-height:1.7;font-weight:600;box-shadow:0 6px 18px rgba(0,0,0,.14)}
+.sum b{display:block;font-size:1.3rem;margin-bottom:6px}
+.sum.sin{background:linear-gradient(135deg,#fa709a,#fee140);color:#4a0f2a}
+.sum.fix{background:linear-gradient(135deg,#11998e,#38ef7d);color:#052e29}
+.sum.bless{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+ul.pts{margin:6px 0 6px;padding-right:26px}
+ul.pts li{font-size:clamp(1.02rem,2.1vw,1.22rem);line-height:1.8;margin-bottom:10px;color:#333}
+/* nav */
+.navigation{position:fixed;bottom:22px;right:22px;left:22px;display:flex;justify-content:space-between;align-items:center;z-index:1000;pointer-events:none}
+.nav-btn{pointer-events:auto;background:rgba(255,255,255,.95);border:none;padding:13px 28px;border-radius:50px;font:inherit;font-size:1.05rem;font-weight:700;cursor:pointer;color:#2b2d42;box-shadow:0 5px 20px rgba(0,0,0,.22);transition:all .25s ease}
+.nav-btn:hover:not(:disabled){background:#fff;transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,0,0,.3)}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+.counter{position:fixed;top:22px;left:22px;background:rgba(255,255,255,.92);padding:8px 18px;border-radius:50px;font-weight:700;z-index:1000;box-shadow:0 5px 15px rgba(0,0,0,.2);font-size:1rem;color:#2b2d42}
+.progress{position:fixed;top:0;right:0;width:0;height:5px;background:linear-gradient(270deg,#667eea,#f5576c);transition:width .3s ease;z-index:1001}
+button:focus-visible,.opt:focus-visible{outline:4px solid #ffb300;outline-offset:3px}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-40px)}to{opacity:1;transform:none}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes celebrate{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+@media (max-width:640px){
+  .scroll{top:56px;bottom:84px;padding:10px 12px}
+  .navigation{bottom:14px;right:12px;left:12px}
+  .nav-btn{padding:11px 20px;font-size:1rem}
+  .counter{top:14px;left:12px;padding:6px 14px}
+  .arrow{transform:rotate(-90deg);flex:1 1 100%;text-align:center}
+  .tbl th,.tbl td{padding:10px 8px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .slide,.slide.past{transform:none}
+}
+'''
+
+def slide(theme, inner, label, extra=''):
+    return f'<section class="slide {theme} {extra}" aria-label="{label}"><div class="scroll"><div class="inner">{inner}</div></div></section>\n'
+
+def gate(num_txt, title, sub):
+    return slide('t-gate gate', f'<div class="big">{title}</div><div class="sub">{sub}</div>', title)
+
+S=[]
+# 1 title
+S.append(slide('t-open s-title', '''
+<h1 class="anim-down">🌿 הָאִשָּׁה אֲשֶׁר נָתַתָּה עִמָּדִי 🌿</h1>
+<h2 class="anim-up">מה היה חטאו האמיתי של אדם הראשון — ואיך מתקנים אותו</h2>
+<div class="sub anim-in">מסע בפרשת בראשית: מכפיית טובה אל שבע ברכות<br>
+<span style="font-size:.9em;opacity:.85">⌨️ חץ שמאלה — הבא &nbsp;·&nbsp; חץ ימינה — הקודם &nbsp;·&nbsp; בטלפון: החלקה</span></div>
+<div class="credit anim-in">מבוסס על שיעורי הרב יהודה טאוב — קול תודה</div>''','פתיחה'))
+# 2 gate
+S.append(gate('1','📜 חלק ראשון','הקושי: משפט אחד שחז״ל תלו בו את כל החטא'))
+# 3 verse
+S.append(slide('t-explain','''
+<h2 class="title">❓ ארבע מילים שליוו אותנו מאז</h2>
+<div class="card">
+<p>אדם הראשון אכל מעץ הדעת. כשהקדוש ברוך הוא שואל אותו, הוא עונה:</p>
+<div class="src"><span class="tag">ציטוט</span>״הָאִשָּׁה <span class="hl">אֲשֶׁר נָתַתָּה עִמָּדִי</span> הִוא נָתְנָה לִּי מִן הָעֵץ וָאֹכֵל״<span class="ref">בראשית ג, יב</span></div>
+<p>במבט ראשון זה נראה כמו תירוץ — ניסיון להצדיק את עצמו.</p>
+<div class="q-box">האם משפט אחד כזה יכול להיות עיקר החטא?</div>
+</div>''','הפסוק'))
+# 4 chazal
+S.append(slide('t-explain','''
+<h2 class="title">⚖️ מה קובעים חז״ל?</h2>
+<div class="card">
+<div class="src"><span class="tag">ציטוט</span>״מִפְּנֵי מָה נֶעֱנַשׁ אָדָם הָרִאשׁוֹן? מִפְּנֵי שֶׁהָיָה <span class="hl">כְּפוּי טוֹבָה</span>.״<span class="ref">פרקי דרבי אליעזר</span></div>
+<div class="src"><span class="tag">ציטוט</span>״כְּפוּיֵי טוֹבָה, בְּנֵי כְּפוּיֵי טוֹבָה״ — אמר משה לישראל במדבר<span class="ref">עבודה זרה ה, א — כשם שאביכם הראשון כפר בטובה כשאמר ״הָאִשָּׁה אֲשֶׁר נָתַתָּה עִמָּדִי״</span></div>
+<div class="q-box">והשאלה: הרי החטא היה האכילה מעץ הדעת! מדוע להעמיד את כל מהותו על המשפט הזה?</div>
+</div>''','חז״ל'))
+# 5 gate
+S.append(gate('2','🔑 חלק שני','מפתח ההבנה: מה אדם הראשון לא ראה'))
+# 6 commandment
+S.append(slide('t-explain','''
+<h2 class="title">🍎 מצווה לאכול — ולהודות</h2>
+<div class="card">
+<div class="src"><span class="tag">ציטוט</span>״מִכֹּל עֵץ הַגָּן <span class="hl">אָכֹל תֹּאכֵל</span>״<span class="ref">בראשית ב, טז</span></div>
+<div class="expl"><span class="tag">הסבר</span>לפי ספר ״שערי אהבה״ (בשם ״גן הדעת״), היתה לאדם מצווה של ממש לאכול מכל עצי הגן.</div>
+<p>כשהוא טועם כל פרי ונהנה, זו הזדמנות <span class="em-fix">להודות</span> ולהתבונן בטוב הבורא.</p>
+<p>ובאותה דרך — כשהגיעה אליו האישה, היה עליו להתבונן ולהכיר טובה.</p>
+</div>''','מצוות האכילה'))
+# 7 creation diagram
+S.append(slide('t-explain','''
+<h2 class="title">🌍 הכול ״טוב״ — חוץ מדבר אחד</h2>
+<div class="card">
+<div class="flow">
+<div class="node">כל הבריאה<small>״כִּי טוֹב״</small></div>
+<div class="arrow">←</div>
+<div class="node sin">האדם לבדו<small>״לֹא טוֹב הֱיוֹת הָאָדָם לְבַדּוֹ״ (ב, יח)</small></div>
+<div class="arrow">←</div>
+<div class="node fix">אישה — ״עֵזֶר כְּנֶגְדּוֹ״<small>״מָצָא אִשָּׁה מָצָא טוֹב״</small></div>
+</div>
+<div class="expl"><span class="tag">הסבר</span>היה עליו לשאול: למה בלי אישה אני לא ״טוב״? ולהכיר כמה טובה נפלאה עשה עמו בורא עולם.</div>
+</div>''','כי טוב'))
+# 8 snake gap
+S.append(slide('t-sin','''
+<h2 class="title">🕳️ החלל שבו נכנס הנחש</h2>
+<div class="card">
+<div class="flow">
+<div class="node sin">לא התבונן בטוב שבבריאת האישה</div>
+<div class="arrow">←</div>
+<div class="node sin">נותר ״חלל״: לא הרגיש עד כמה ה׳ מיטיב</div>
+<div class="arrow">←</div>
+<div class="node sin">הנחש: ״בורא עולם רוצה למשול עליך״</div>
+</div>
+<div class="expl"><span class="tag">הסבר</span>אילו היה חי בהכרת הטוב, היה עונה: ״מה אתה מדבר? הרי בורא עולם מחפש כל הזמן להיטיב לי!״</div>
+</div>''','הנחש'))
+# 9 reveal table
+S.append(slide('t-sin','''
+<h2 class="title">🔦 מה נחשף במשפט הזה?</h2>
+<div class="card">
+<table class="tbl">
+<thead><tr><th>מה שנראה</th><th>מה שנחשף</th></tr></thead>
+<tbody>
+<tr><td class="c-sin">תירוץ: ״האישה נתנה לי״</td><td class="c-sin"><b>לא ראה את הטוב שבמתנה</b></td></tr>
+<tr><td class="c-sin">הנחש שכנע אותו</td><td class="c-sin"><b>היה חלל בהכרת הטוב</b></td></tr>
+</tbody></table>
+<p>המשפט לא היה חטא בפני עצמו — הוא <span class="em-sin">חשף</span> שאדם הראשון בכלל לא ראה את טוב הבורא.</p>
+<p><span class="hl">וזה התיקון שלנו עד היום:</span> להתבונן בטוב ה׳, עד שנפנים שבורא עולם מחפש תמיד את טובתנו.</p>
+</div>''','מה נחשף'))
+# 10 gate
+S.append(gate('3','🌱 חלק שלישי','התיקון: מה שינה אדם הראשון'))
+# 11 preface
+S.append(slide('t-sin','''
+<h2 class="title">📌 ההקדמה שנראית מיותרת</h2>
+<div class="card">
+<table class="tbl">
+<thead><tr><th>כשהעונש מגיע לאישה</th><th>כשהעונש מגיע לאדם</th></tr></thead>
+<tbody><tr><td class="c-sin">אין הקדמה — הרי אכלה מעץ הדעת</td><td class="c-sin"><b>הקדמה:</b> ״כִּי שָׁמַעְתָּ לְקוֹל אִשְׁתֶּךָ״ — ורק אחר כך העונש</td></tr></tbody></table>
+<div class="src"><span class="tag">ציטוט</span>״<span class="hl">כִּי שָׁמַעְתָּ לְקוֹל אִשְׁתֶּךָ</span> וַתֹּאכַל מִן הָעֵץ אֲשֶׁר צִוִּיתִיךָ לֵאמֹר לֹא תֹאכַל מִמֶּנּוּ״<span class="ref">בראשית ג, יז</span></div>
+<div class="expl"><span class="tag">הסבר</span>הרב גמליאל רבינוביץ׳: לא היתה חובה לשמוע לה — יכול היה להימנע. והאשמת המתנה היא כפיית טובה, שהכעיסה יותר מעצם האכילה.</div>
+</div>''','ההקדמה'))
+# 12 Q1
+S.append(f'''<section class="slide t-q" aria-label="שאלה 1"><div class="scroll"><div class="inner"><div class="card qbox" data-correct="0" data-id="1">
+<h3>❓ שאלה 1: מה מלמדת ההקדמה ״כִּי שָׁמַעְתָּ לְקוֹל אִשְׁתֶּךָ״?</h3>
+<button class="opt" type="button">ה׳ הקפיד על כפיית הטובה, ולא רק על עצם האכילה</button>
+<button class="opt" type="button">אדם הראשון נענש משום שהאישה אכלה לפניו</button>
+<button class="opt" type="button">העונש היה קל יותר מפני שאשתו שכנעה אותו</button>
+<div class="feedback" role="status" aria-live="polite" data-ok="נכון מאוד! 🎉 אדם הראשון האשים את מתנת האישה, וזו היתה כפיית הטובה שהכעיסה." data-bad="לא מדויק. ההקדמה באה להראות שהאשמת האישה — כלומר כפיית הטובה — היא העיקר. נסו שוב."></div>
+<button class="retry" type="button">🔁 ניסיון חוזר</button>
+</div></div></div></section>
+''')
+# 13 chava
+S.append(slide('t-fix','''
+<h2 class="title">🌿 ״חַוָּה״ — שם שמתקן</h2>
+<div class="card">
+<div class="src"><span class="tag">ציטוט</span>״וַיִּקְרָא הָאָדָם שֵׁם אִשְׁתּוֹ <span class="hl">חַוָּה</span> כִּי הִוא הָיְתָה אֵם כָּל חָי״<span class="ref">בראשית ג, כ</span></div>
+<div class="expl"><span class="tag">הסבר</span>הרב רבינוביץ׳: הפסוק בא מיד אחרי העונש, כי אדם הראשון הכיר בטעותו. במקום להסתכל על החלק הרע, הוא חיפש מה כן יש להודות עליו.</div>
+<p>בכל פעם שיקרא לה ״חוה״ — יזכור להודות: <span class="em-fix">בזכותה יש חיים</span>, ובזכותה יש חיות בעולם.</p>
+</div>''','חוה'))
+# 14 garments
+S.append(slide('t-fix','''
+<h2 class="title">👘 וה׳ בעצמו מלביש</h2>
+<div class="card">
+<div class="src"><span class="tag">ציטוט</span>״וַיַּעַשׂ ה׳ אֱלֹקִים לְאָדָם וּלְאִשְׁתּוֹ <span class="hl">כָּתְנוֹת עוֹר</span> וַיַּלְבִּשֵׁם״<span class="ref">בראשית ג, כא</span></div>
+<div class="expl"><span class="tag">הסבר</span>רבנו בחיי: עצם ההלבשה מבטאת את אהבתו וחמלתו של ה׳ על יצוריו — אף על פי שחטאו, האהבה לא זזה מהם, והוא בעצמו השתדל בתיקונם.</div>
+<div class="expl"><span class="tag">מדרש</span>מובא שאלו ״כתנות אור״ — בגדי כהונה, שבהם הקריב אדם הראשון, בכור העולם, קרבנות.</div>
+</div>''','כותנות'))
+# 15 timeline
+S.append(slide('t-fix','''
+<h2 class="title">🧭 מהטעות אל כותנות האור</h2>
+<div class="card">
+<div class="flow">
+<div class="node sin">טעות<small>״האשה אשר נתתה עמדי״</small></div><div class="arrow">←</div>
+<div class="node fix">הכרה<small>הבין כמה טעה</small></div><div class="arrow">←</div>
+<div class="node fix">קריאת שם<small>״חוה״ — זיכרון קבוע להודיה</small></div><div class="arrow">←</div>
+<div class="node bless">אהבה<small>ה׳ מלביש אותו בכותנות אור</small></div>
+</div>
+<p class="center">כשאדם מכיר בטובה — בורא עולם מחבב אותו ומתקרב אליו.</p>
+</div>''','ציר זמן'))
+# 16 hokiru
+S.append(slide('t-fix','''
+<h2 class="title">💛 ״הוֹקִירוּ לִנְשַׁיְיכוּ״</h2>
+<div class="card">
+<div class="src"><span class="tag">ציטוט</span>״אמר רבא: <span class="hl">הוֹקִירוּ לִנְשַׁיְיכוּ כִּי הֵיכִי דְּתִתְעַתְּרוּ</span>״<span class="ref">בבא מציעא נט, א</span></div>
+<div class="expl"><span class="tag">הסבר</span>הרב רבינוביץ׳: מי שמודה לה׳ בכל יום על האישה שנתן לו, ומתבונן כמה היא נפלאה — תיקן את חטאו של אדם הראשון, ולא ראוי לו העונש שנגזר עליו. ולא זו בלבד — הוא יזכה להיות עשיר.</div>
+<p>כך מתחילים לתקן: לא מחכים שתהיה סיבה — <span class="em-fix">בוחרים להתבונן</span>.</p>
+</div>''','הוקירו'))
+# 17 gate
+S.append(gate('4','✡ חלק רביעי','שבע ברכות: התיקון שמקיפה אותנו כל חתונה'))
+# 18 seven days
+S.append(slide('t-bless','''
+<h2 class="title">🕯️ שבעה ימים של הודיה</h2>
+<div class="card">
+<p>חז״ל תיקנו לחתן וכלה שבעה ימי משתה, ובהם מברכים שבע ברכות. אין בהן ברכת מצוות — אלא <span class="em-bless">שבח והודיה</span> על הבריאה: יצירת האדם, יצירת האישה, השמחה.</p>
+<div class="src"><span class="tag">ציטוט</span>״שַׂמֵּחַ תְּשַׂמַּח רֵעִים הָאֲהוּבִים כְּשַׂמֵּחֲךָ יְצִירְךָ בְּגַן עֵדֶן מִקֶּדֶם״</div>
+<div class="expl"><span class="tag">הסבר</span>לא מצאנו מצווה אחרת שמודים עליה שבעה ימים רצופים. ההסבר: שורש החטא היה אי הכרת הטוב בבריאת האישה — והתיקון נעשה בדיוק באותה נקודה.</div>
+</div>''','שבעה ימים'))
+# 19 98
+S.append(slide('t-bless','''
+<h2 class="title">🔢 תשעים ושמונה ברכות</h2>
+<div class="card">
+<div class="eq">
+<div class="n"><b>7</b>ימים</div><div class="op">×</div>
+<div class="n"><b>2</b>בוקר וערב</div><div class="op">×</div>
+<div class="n"><b>7</b>ברכות</div><div class="op">=</div>
+<div class="n res"><b>98</b>ברכות</div>
+</div>
+<div class="expl"><span class="tag">הסבר</span>ספר ״שפת אמת״: תשעים ושמונה ברכות מתקנות את תשעים ושמונה הקללות שבפרשת כי תבוא, שבאו מאי הודיה לקדוש ברוך הוא.</div>
+<div class="src"><span class="tag">ציטוט</span>״וְהָפַךְ ה׳ אֱלֹקֶיךָ לְךָ אֶת הַקְּלָלָה לִבְרָכָה״</div>
+</div>''','98'))
+# 20 puzzle
+S.append(slide('t-bless','''
+<h2 class="title">🧩 את מי מברכים?</h2>
+<div class="card">
+<p>בגמרא (כתובות ח, א) שואלים: מנין לברכת חתנים מן התורה? ומביאים שני מקורות:</p>
+<table class="tbl">
+<thead><tr><th>המקור</th><th>מי בירך</th><th>את מי</th></tr></thead>
+<tbody>
+<tr><td>״וַיְבָרֶךְ אֹתָם אֱלֹקִים״</td><td>הקדוש ברוך הוא</td><td class="c-bless">אדם וחוה</td></tr>
+<tr><td>״וַיְבָרֲכוּ אֶת רִבְקָה״</td><td>לבן ובתואל</td><td class="c-bless">רבקה</td></tr>
+<tr><td>שבע הברכות שלנו</td><td>אנחנו</td><td class="c-sin"><b>את ה׳ — לא את הזוג!</b></td></tr>
+</tbody></table>
+<div class="q-box">אז איך שבע ברכות שמשבחות את ה׳ הן ״ברכת חתנים״?</div>
+</div>''','התעלומה'))
+# 21 resolution
+S.append(slide('t-bless','''
+<h2 class="title">💡 ההודיה מורידה שפע</h2>
+<div class="card">
+<div class="flow">
+<div class="node bless">מודים ומשבחים<small>על הבריאה</small></div><div class="arrow">←</div>
+<div class="node bless">ההודיה מורידה שפע<small>לעולם</small></div><div class="arrow">←</div>
+<div class="node fix">הברכה מגיעה לזוג<small>בעקיפין</small></div>
+</div>
+<div class="expl"><span class="tag">הסבר</span>ספר החינוך (במצוות ברכת המזון): ה׳ רוצה להוריד שפע, והשפע יורד על ידי הודיה. לכן, אחרי ברכת המזון, כשהשמיים ״פתוחים״, מוסיפים בקשות (״הָרַחֲמָן הוּא...״).</div>
+<div class="src"><span class="tag">ציטוט</span>״בְּכָל הַמָּקוֹם אֲשֶׁר אַזְכִּיר אֶת שְׁמִי <span class="hl">אָבוֹא אֵלֶיךָ וּבֵרַכְתִּיךָ</span>״</div>
+</div>''','פתרון'))
+# 22 Q2
+S.append('''<section class="slide t-q" aria-label="שאלה 2"><div class="scroll"><div class="inner"><div class="card qbox" data-correct="1" data-id="2">
+<h3>❓ שאלה 2: למה תיקנו שבעה ימים של הודיה בנישואין?</h3>
+<button class="opt" type="button">כדי שלכל קרוב יהיה זמן להגיע ולהשתתף במשתה</button>
+<button class="opt" type="button">כי שורש החטא היה אי הכרת הטוב בבריאת האישה, והתיקון בדיוק שם</button>
+<button class="opt" type="button">כדי שהמשתה יתחיל לפני החתונה ויימשך אחריה בלי הפסקה</button>
+<div class="feedback" role="status" aria-live="polite" data-ok="נכון! ✨ התיקון נעשה באותה נקודה בדיוק שבה נכשל אדם הראשון." data-bad="לא נכון. הרעיון: התיקון מתאים לשורש החטא — אי הכרת הטוב בבריאת האישה. נסו שוב."></div>
+<button class="retry" type="button">🔁 ניסיון חוזר</button>
+</div></div></div></section>
+''')
+# 23 Q3
+S.append('''<section class="slide t-q" aria-label="שאלה 3"><div class="scroll"><div class="inner"><div class="card qbox" data-correct="2" data-id="3">
+<h3>❓ שאלה 3: את מי מברכים בשבע הברכות — ואיך זה מביא ברכה לזוג?</h3>
+<button class="opt" type="button">את החתן והכלה ישירות, כמו בברכת רבקה ללא קשר לה׳</button>
+<button class="opt" type="button">אף אחד — זה רק מנהג עתיק של שמחה ושירה</button>
+<button class="opt" type="button">את ה׳, ומתוך ההודיה יורד שפע שמגיע גם לזוג</button>
+<div class="feedback" role="status" aria-live="polite" data-ok="מצוין! 🌟 ההודיה עצמה מורידה שפע, וכך הברכה מגיעה בעקיפין אל הזוג." data-bad="כמעט. בשבע הברכות משבחים את ה׳, וההודיה היא שמורידה שפע. נסו שוב."></div>
+<button class="retry" type="button">🔁 ניסיון חוזר</button>
+</div></div></div></section>
+''')
+# 24 practical
+S.append(slide('t-fix','''
+<h2 class="title">🏠 לפני שנכנסים הביתה</h2>
+<div class="card">
+<div class="expl"><span class="tag">עצה מעשית</span>מי שרוצה אהבה ואחווה בביתו — לפני שנכנס הביתה יעצור רגע ויאמר:</div>
+<div class="q-box center">״יוֹצְרִי, אני מודה לך שבראת לי עזר כנגדי״</div>
+<p>ויפרט כפי שליבו נותן את השבח שיש ביצירת בת הזוג.</p>
+<div class="expl"><span class="tag">הסבר</span>ספר ״ששון ושמחה״: הכוונה אינה רק לשבעת הימים — אלא שבני הזוג ירגישו כל חיי הנישואין את החסד שה׳ ברא עבורם.</div>
+</div>''','עצה'))
+# 25 not created at once
+S.append(slide('t-fix','''
+<h2 class="title">🌱 ולמה לא נבראה מיד?</h2>
+<div class="card">
+<p>כל הדברים נבראו במעשה בראשית — חוץ מדבר אחד: האישה.</p>
+<p>היא לא נבראה מיד, אלא רק אחרי שאדם הראשון ראה שלכל שאר הברואים יש בן זוג, ורק לו חסר.</p>
+<div class="expl"><span class="tag">הסבר</span>רק אחרי שהרגיש בעצמו את החיסרון, נתן לו ה׳ את המתנה — <span class="em-fix">כדי שידע להעריך ולהודות עליה</span>, ולא ייקח אותה כמובנת מאליה.</div>
+</div>''','לא נבראה'))
+# 26 aryeh
+S.append(slide('t-explain','''
+<h2 class="title">👁️ לראות את מעלת חברינו</h2>
+<div class="card">
+<p>המידה הזו אינה רק כלפי בני הבית — אלא כלפי כל אדם. כך מסופר על רב אריה לוין, שנהג לבקר בבית הכלא:</p>
+<div class="src"><span class="tag">סיפור</span>אסיר צעיר טען: ״אני רואה אותם אוכלים בגילוי ראש, ורק כשהם רואים אותך הם חובשים כיפה — הם צבועים!״ ענה לו רב אריה: ״אני לא מסתכל על מה שעל ראשם. <span class="hl">אני נותן את עיניי בליבם</span>, ואת ליבם אני רואה גלוי, והוא חם ויוקד.״</div>
+<div class="expl"><span class="tag">הסבר</span>לראות את המעלה שבכל אחד — וכך גם ה׳, מידה כנגד מידה, מסתכל על הטוב שבנו.</div>
+</div>''','רב אריה'))
+# 27 meod
+S.append(slide('t-explain','''
+<h2 class="title">🌅 ״וְהִנֵּה טוֹב מְאֹד״</h2>
+<div class="card">
+<div class="src"><span class="tag">ציטוט</span>״וַיַּרְא אֱלֹקִים אֶת כָּל אֲשֶׁר עָשָׂה <span class="hl">וְהִנֵּה טוֹב מְאֹד</span>״<span class="ref">בראשית א, לא</span></div>
+<div class="expl"><span class="tag">הסבר</span>גם אנחנו צריכים ללמוד מבורא עולם: לשים לב שהעולם טוב, להרגיש את העונג שבבריאה, ולהוציא זאת בפה — לומר שהכול אכן טוב מאוד.</div>
+<div class="src"><span class="tag">ציטוט</span>״מִזְמוֹר שִׁיר לְיוֹם הַשַּׁבָּת — <span class="hl">טוֹב לְהֹדוֹת לַה׳</span>״</div>
+<p class="center">וכך מגיעים אל שבת, שכל עניינה לשמוח ביופי שבבריאה.</p>
+</div>''','טוב מאוד'))
+# 28 summary
+S.append(slide('t-end','''
+<h2 class="title">📚 סיכום</h2>
+<div class="card">
+<div class="sum-grid">
+<div class="sum sin"><b>🔴 החטא</b>כפיית טובה: לא ראה את מתנת האישה, והנחש נכנס לחלל</div>
+<div class="sum fix"><b>🟢 התיקון</b>להתבונן ולהודות: ״חוה״ — וה׳ מלביש בכותנות אור</div>
+<div class="sum bless"><b>🟣 שבע ברכות</b>שבעה ימי הודיה שמתקנים בדיוק את הנקודה הזו</div>
+</div>
+<p class="center" style="margin-top:18px"><span class="hl">המסקנה:</span> מי שמכיר בטוב — מקבל עוד טוב.</p>
+</div>''','סיכום'))
+# 29 take home
+S.append(slide('t-end','''
+<h2 class="title">🙏 מה לוקחים מכאן?</h2>
+<div class="card">
+<ul class="pts">
+<li><span class="em-fix">היום:</span> לפני שנכנסים הביתה — עוצרים רגע ואומרים: ״יוצרי, אני מודה לך שבראת לי עזר כנגדי״.</li>
+<li><span class="em-fix">השבוע:</span> מחפשים מעלה אחת בכל אחד מבני הבית, ואומרים אותה בקול.</li>
+<li><span class="em-bless">בשמחה הבאה:</span> זוכרים שבשבע הברכות באים לשבח את בורא עולם — לא רק לחגוג.</li>
+</ul>
+<p class="center" style="margin-top:14px">✨ ״טוֹב לְהֹדוֹת לַה׳״ ✨</p>
+</div>''','מסקנות'))
+
+HTML = f'''<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>הָאִשָּׁה אֲשֶׁר נָתַתָּה עִמָּדִי — מצגת</title>
+<style>{CSS}</style>
+</head>
+<body>
+<div class="progress" id="progress" role="progressbar" aria-label="התקדמות במצגת" aria-valuemin="0" aria-valuemax="100"></div>
+<div class="counter" id="counter" aria-live="polite">1 / {len(S)}</div>
+<main class="presentation" id="deck">
+{''.join(S)}</main>
+<nav class="navigation" aria-label="ניווט במצגת">
+<button class="nav-btn" id="prevBtn" type="button">◄ הקודם</button>
+<button class="nav-btn" id="nextBtn" type="button">הבא ►</button>
+</nav>
+<script>
+(function(){{
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total=slides.length, cur=0;
+  var prevBtn=document.getElementById('prevBtn'), nextBtn=document.getElementById('nextBtn');
+  var counter=document.getElementById('counter'), progress=document.getElementById('progress');
+  function render(){{
+    slides.forEach(function(s,i){{
+      var active=i===cur;
+      s.classList.toggle('active',active);
+      s.classList.toggle('past',i<cur);
+      s.setAttribute('aria-hidden',active?'false':'true');
+      if('inert' in s) s.inert=!active;
+    }});
+    counter.textContent=(cur+1)+' / '+total;
+    var pct=((cur+1)/total)*100;
+    progress.style.width=pct+'%';
+    progress.setAttribute('aria-valuenow',Math.round(pct));
+    prevBtn.disabled=cur===0; nextBtn.disabled=cur===total-1;
+    var sc=slides[cur].querySelector('.scroll'); if(sc) sc.scrollTop=0;
+  }}
+  function go(d){{
+    var n=cur+d; if(n<0||n>=total) return;
+    cur=n; render();
+  }}
+  prevBtn.addEventListener('click',function(){{go(-1)}});
+  nextBtn.addEventListener('click',function(){{go(1)}});
+  document.addEventListener('keydown',function(e){{
+    if(e.altKey||e.ctrlKey||e.metaKey) return;
+    if(e.key==='ArrowLeft'||e.key==='PageDown'){{e.preventDefault();go(1)}}
+    else if(e.key==='ArrowRight'||e.key==='PageUp'){{e.preventDefault();go(-1)}}
+    else if(e.key==='Home'){{e.preventDefault();cur=0;render()}}
+    else if(e.key==='End'){{e.preventDefault();cur=total-1;render()}}
+  }});
+  /* swipe: only clear horizontal gestures, so vertical scrolling is untouched */
+  var sx=0, sy=0, tracking=false;
+  document.addEventListener('touchstart',function(e){{
+    if(e.touches.length!==1){{tracking=false;return}}
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; tracking=true;
+  }},{{passive:true}});
+  document.addEventListener('touchend',function(e){{
+    if(!tracking) return; tracking=false;
+    var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy;
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.6){{ go(dx<0?1:-1); }}
+  }},{{passive:true}});
+  /* quizzes */
+  Array.prototype.forEach.call(document.querySelectorAll('.qbox'),function(box){{
+    var correct=parseInt(box.getAttribute('data-correct'),10);
+    var opts=Array.prototype.slice.call(box.querySelectorAll('.opt'));
+    var fb=box.querySelector('.feedback'), retry=box.querySelector('.retry');
+    opts.forEach(function(btn,i){{
+      btn.addEventListener('click',function(){{
+        opts.forEach(function(b){{b.disabled=true}});
+        if(i===correct){{
+          btn.classList.add('correct'); fb.className='feedback ok show'; fb.textContent='✓ '+fb.getAttribute('data-ok');
+        }} else {{
+          btn.classList.add('wrong'); fb.className='feedback bad show'; fb.textContent='✗ '+fb.getAttribute('data-bad');
+          retry.classList.add('show'); retry.focus();
+        }}
+      }});
+    }});
+    retry.addEventListener('click',function(){{
+      opts.forEach(function(b){{b.disabled=false;b.classList.remove('correct','wrong')}});
+      fb.className='feedback'; fb.textContent=''; retry.classList.remove('show'); opts[0].focus();
+    }});
+  }});
+  render();
+}})();
+</script>
+</body>
+</html>
+'''
+out='/home/user/aaa/ספרי יהודה טאוב/פרשת שבוע וחגים/שיעורי קול תודה -  פרשת השבוע/001 בראשית/מצגת - האישה אשר נתתה עמדי.html'
+open(out,'w',encoding='utf8').write(HTML)
+print(len(S),'slides',len(HTML),'bytes')
