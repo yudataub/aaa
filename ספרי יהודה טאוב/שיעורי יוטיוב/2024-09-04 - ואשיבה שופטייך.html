@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ואשיבה שופטייך</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ואשיבה שופטייך</h1>
+  <p>חידוש הסנהדרין בימינו – חלק א: שיטת הרמב"ם, כוחו של בית דין סמוך, מסירות נפשו של רבי יהודה בן בבא, וההתכנסות הגדולה בצפת</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ואשיבה שופטייך" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/JYeT78Xk36o?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/JYeT78Xk36o/hqdefault.jpg" alt="ואשיבה שופטייך" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=JYeT78Xk36o" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שופטים ושוטרים</div>
+      <h3 class="story-title">📜 שופטים תיתן לך</h3>
+      <p>השיעור נמסר בראש חודש אלול, בשבוע של פרשת שופטים: "שֹׁפְטִים וְשֹׁטְרִים תִּתֶּן לְךָ בְּכָל שְׁעָרֶיךָ". מצוות התורה היא להעמיד שופטים, ומתוך המצווה הזאת הרב מבקש לעסוק בשאלה גדולה: האם יש אפשרות להקים סנהדרין בימינו, איך אפשר להקים אותה, ולמה זה חשוב.</p>
+      <p>הרב פותח בתיאור הקשיים שעם ישראל מתמודד איתם בימינו, ובשאלה מי צריך להכריע בשאלות הגדולות של העם – מלחמה, ביטחון ומוסר. הוא מבקש להראות שהתורה אינה נותנת לשאלות האלה מקום ריק. יש לה דרך משלה, ויש לה מוסד משלה: בית דין של תורה, והגדול שבהם – הסנהדרין.</p>
+      <p>המטרה של השיעור אינה רק לתאר בעיה, אלא להציע כיוון לפתרון. ולשם כך צריך ללמוד: מה אומרים הרמב"ם והגמרא על חידוש הסנהדרין? האם הדבר אפשרי לפני ביאת המשיח? ומה קרה בהיסטוריה כשחכמי ישראל ניסו לחדש את הסמיכה?</p>
+      <p>השיעור הוא החלק הראשון בסדרה. בחלק הזה נלמד את היסודות: שיטת הרמב"ם, כוחו של בית דין סמוך, הסיפור על רבי יהודה בן בבא, ותחילתו של הניסיון הגדול בצפת.</p>
+      <p class="bold-para">פרשת שופטים פותחת במצווה להעמיד שופטים, ומכאן השאלה: האם אפשר להקים סנהדרין בימינו?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שופטים ושוטרים</div>
+      <h3 class="story-title">💧 בורות נשברים</h3>
+      <p>הרב מביא את דברי ירמיהו הנביא: "כִּי שְׁתַּיִם רָעוֹת עָשָׂה עַמִּי: אֹתִי עָזְבוּ מְקוֹר מַיִם חַיִּים, לַחְצֹב לָהֶם בֹּארוֹת בֹּארֹת נִשְׁבָּרִים אֲשֶׁר לֹא יָכִלוּ הַמָּיִם".</p>
+      <p>והוא מסביר: יהודי, באופן טבעי, רוצה להיות מוסרי. הוא רוצה להיות בעל מידות טובות, לעשות צדק, לרחם. זה טבוע בנשמתו. השאלה היא רק מאיפה הוא שואב את המוסר הזה.</p>
+      <p>בדרך הטובה, הוא לוקח את התורה האלוקית ולומד בה איך צריך להתנהג. הוא לומד פרקי אבות, מסילת ישרים, אורחות צדיקים – ולומד איך נעשים יהודים טובים. התורה מלמדת חסד ורחמים, ומלמדת גם מתי ועם מי נוהגים בהם, ומתי צריך לעמוד בתוקף מול מי שבא להרוג.</p>
+      <p>אבל מי שרוצה להיות טוב, ואינו פותח את ספר התורה, נאלץ להמציא מוסר משלו. זה מה שהנביא קורא "בורות נשברים": בור שחצבו בידיים, ואינו מחזיק מים. מוסר שהאדם ממציא לעצמו עלול להגיע למקומות שלא שיער, ולהפוך את הרחמים לאכזריות כלפי מי שראוי להם. התחליף הנכון הוא לחזור אל המקור – לתורה, ולבית הדין שמפרש אותה.</p>
+      <p class="bold-para">יהודי רוצה להיות מוסרי; כשהוא שואב את המוסר מן התורה הוא שותה ממקור מים חיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שופטים ושוטרים</div>
+      <h3 class="story-title">🧭 שאלה של הלכה, לא של פוליטיקה</h3>
+      <p>הרב מבקש שהשאלה לא תישאר בגדר ויכוח של היום. השאלה מי מכריע בענייני העם, לפי איזה מוסר ולפי איזה ספר, אינה רק שאלה של ציבור זה או אחר. זו שאלה שהתורה עצמה עוסקת בה, ופרשת שופטים פותחת בה.</p>
+      <p>התורה אינה מסתפקת בציווי לעשות צדק. היא מצווה להעמיד מוסד: שופטים בכל עיר, ובית דין גדול במקום אשר יבחר ה', שאליו באים בכל דבר שנפלא ממך למשפט. התורה רוצה שתהיה כתובת אחת, ושההכרעה תבוא מתוך התורה.</p>
+      <p>לכן, כשהרב מדבר על "פתרון", הוא אינו מציע פתרון פוליטי. הוא מציע לחזור אל מה שהתורה עצמה מתארת, וללמוד את המקורות: האם יש דרך להחזיר את בית הדין הגדול? מי יכול לעשות זאת? ומה צריך לקרות בלבבות כדי שזה יקרה?</p>
+      <p>השאלות האלה עומדות במרכז השיעור. הן נוגעות להלכה, להיסטוריה ולאמונה בגאולה, וכל אחד מהן נלמד מתוך המקורות.</p>
+      <p class="bold-para">השאלה מי מכריע בענייני העם היא שאלה תורנית, ולתורה יש תשובה משלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שופטים ושוטרים</div>
+      <h3 class="story-title">🛡️ שומר ישראל</h3>
+      <p>באמצע הדברים הרב מספר על נס שאירע באותם ימים, בליל שבת. מחבלים הכינו שתי מכוניות תופת ותכננו להיכנס איתן לגוש עציון ולבצע פיגוע גדול.</p>
+      <p>והקדוש ברוך הוא עשה נס. אחת המכוניות נכנסה לתחנת דלק, ופתאום, מסיבה שאיש אינו יודע, התחילה להתפוצץ, עוד לפני שהגיעה ליעדה. הפיגוע שתוכנן לא יצא אל הפועל.</p>
+      <p>הרב אומר: מסיבה לא ידועה? יש לנו שם לסיבה הזאת. "הִנֵּה לֹא יָנוּם וְלֹא יִישָׁן שׁוֹמֵר יִשְׂרָאֵל". זה היה חסד ה' גלוי.</p>
+      <p>הסיפור מזכיר שגם בתוך כל הקשיים שעם ישראל עובר, הוא אינו לבד. מי ששומר עלינו בדרך נס, ראוי שנחזור אליו גם בדרך המשפט: שנבקש את התורה שלו כמקור להכרעה, ונתפלל שישיב את שופטינו כבראשונה.</p>
+      <p class="bold-para">גם בתוך הקשיים, הקדוש ברוך הוא שומר על עמו בניסים גלויים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הסנהדרין לפני המשיח</div>
+      <h3 class="story-title">❓ סנהדרין לפני המשיח?</h3>
+      <p>אנחנו רגילים לחשוב שכל הדברים הגדולים יקרו רק כשיבוא המשיח. כשיבוא – ייבנה בית המקדש, תחזור הסנהדרין, ויתוקן הכול. עד אז, נדמה, אין לנו מה לעשות.</p>
+      <p>אבל הרמב"ם מלמד שיש דבר שיקרה לפני ביאת המשיח. בפירוש המשניות למסכת סנהדרין, פרק ראשון, הוא כותב דברים מפורשים: אם תהיה הסכמה מכל החכמים והתלמידים למנות אדם בראש הישיבה, ובתנאי שיהיה הדבר בארץ ישראל, הרי אותו אדם יהיה סמוך, ויוכל לסמוך אחר כך את מי שירצה.</p>
+      <p>מה פירוש "סמוך"? מאז משה רבנו, שסמך את יהושע, עברה הסמיכה מרב לתלמיד, דור אחר דור. זקן סמוך יכול לדון דיני נפשות ודיני קנסות, ולהכריע בדברים רבים. אבל הסמיכה אפשרית רק בארץ ישראל, ובשלב מסוים, בגלל הגזירות והגלות, היא פסקה.</p>
+      <p>ומשפסקה, נשאלת השאלה: איך אפשר לחדש אותה? הרי כדי לסמוך צריך להיות סמוך, ואין עוד סמוכים. על השאלה הזאת עונה הרמב"ם בחידוש גדול.</p>
+      <p class="bold-para">בדרך כלל חושבים שהכול יקרה רק כשיבוא המשיח, אבל הרמב"ם מונה דבר שיקרה לפני כן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הסנהדרין לפני המשיח</div>
+      <h3 class="story-title">🤝 הסכמת כל החכמים</h3>
+      <p>הרמב"ם מוכיח את דבריו: אם לא תאמר כך, לא תהיה אפשרות לעולם שיחזור בית הדין הגדול, כי כל אחד מחבריו צריך להיות סמוך בלי ספק. והרי הקדוש ברוך הוא כבר הבטיח שבית הדין ישוב, שנאמר: "וְאָשִׁיבָה שֹׁפְטַיִךְ כְּבָרִאשֹׁנָה וְיֹעֲצַיִךְ כְּבַתְּחִלָּה, אַחֲרֵי כֵן יִקָּרֵא לָךְ עִיר הַצֶּדֶק קִרְיָה נֶאֱמָנָה".</p>
+      <p>ואם כן, מי יסמוך את החכם הראשון? אין מי שיסמוך אותו. מכאן לומד הרמב"ם חידוש: הסכמה של כל חכמי ישראל בארץ ישראל מועילה כמו סמיכה. משה רבנו קיבל את סמכותו מן הקדוש ברוך הוא. וכשכלל ישראל, כל החכמים יחד, מסכימים על אדם – כוח ההסכמה הזאת הוא כוחו של העם כולו, והוא נחשב כאילו נסמך.</p>
+      <p>לעם ישראל, כשהוא מאוחד, יש כוח לחדש את מה שפסק. אין צורך לחכות לנס או לגילוי מן השמים. מה שנדרש הוא הסכמה רחבה של חכמי התורה.</p>
+      <p>הרב מוסיף שהקושי האמיתי הוא דווקא ההסכמה. קל לכתוב שכל החכמים יסכימו; קשה מאוד שזה יקרה. ובכל זאת, הרמב"ם קבע שזו הדרך, ושיבוא יום והיא תתקיים.</p>
+      <p class="bold-para">לפי הרמב"ם, הסכמת כל חכמי ארץ ישראל פועלת כמו סמיכה מן הקדוש ברוך הוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הסנהדרין לפני המשיח</div>
+      <h3 class="story-title">📏 המשיח לא יחדש דינים</h3>
+      <p>הרמב"ם ממשיך ושואל: ושמא תאמר שהמשיח ימנה אותם, אף על פי שאינם סמוכים? ומשיב: זה אינו אפשרי. כבר ביאר בהקדמת ספרו שהמשיח לא יוסיף על התורה ולא יגרע ממנה, לא בתורה שבכתב ולא בתורה שבעל פה.</p>
+      <p>הרב מעיר שהרמב"ם נאמן כאן לשיטתו. בהלכות מלכים הוא כותב שבימות המשיח העולם אינו מתהפך – "עולם כמנהגו נוהג" – והתורה נשארת כפי שהיא. המשיח אינו בא לחדש דינים. אם בתורה יש דין שהדיינים צריכים להיות סמוכים, גם המשיח אינו יכול לבטל אותו.</p>
+      <p>ממילא, אם הסנהדרין צריכה לחזור, ואין דרך לחדש את הסמיכה אלא בהסכמת החכמים – הדרך הזאת חייבת להיות פתוחה לפני המשיח, בדרך הטבע ובכוחם של חכמי ישראל.</p>
+      <p>וכאן מגיע המשפט שהרב קורא לו "הפצצה" של הרמב"ם. הרמב"ם כותב שלדעתו הסנהדרין תשוב לפני התגלות המשיח, ושזה יהיה אחד מסימניו. מי שיראה שהסנהדרין חוזרת, ידע שהמשיח קרוב.</p>
+      <p class="bold-para">הרמב"ם דוחה את האפשרות שהמשיח ימנה דיינים שאינם סמוכים, כי המשיח אינו משנה את התורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הסנהדרין לפני המשיח</div>
+      <h3 class="story-title">🏙️ קודם שופטים, אחר כך עיר הצדק</h3>
+      <p>מניין לרמב"ם שהסנהדרין קודמת למשיח? מן הפסוק עצמו: "וְאָשִׁיבָה שֹׁפְטַיִךְ כְּבָרִאשֹׁנָה וְיֹעֲצַיִךְ כְּבַתְּחִלָּה", ורק "אַחֲרֵי כֵן יִקָּרֵא לָךְ עִיר הַצֶּדֶק קִרְיָה נֶאֱמָנָה". ובהמשך: "צִיּוֹן בְּמִשְׁפָּט תִּפָּדֶה וְשָׁבֶיהָ בִּצְדָקָה".</p>
+      <p>קודם חוזרים השופטים, ורק אחר כך ירושלים נקראת עיר הצדק. הגאולה של ציון באה דרך המשפט. זה לא דבר שקורה אחרי הגאולה; זו הדרך אל הגאולה.</p>
+      <p>והרמב"ם מוסיף שזה יקרה כאשר יכשיר ה' את לבבות בני האדם, ויוסיפו במעשים טובים, ותגדל תשוקתם לה' ולתורתו, ותרבה צדקתם – לפני בוא המשיח. כלומר, חידוש הסנהדרין יבוא מתוך התעוררות פנימית של העם, כשבני האדם יבקשו באמת את הצדק.</p>
+      <p>הרב מזכיר גם את הגמרא בסנהדרין, שאומרת שהגאולה תלויה בתשובה. ושואלת הגמרא: ואם לא יחזרו בתשובה? ומשיבה: הקדוש ברוך הוא יעמיד להם מלך שגזרותיו קשות כהמן, וישראל יחזרו בתשובה. לפעמים הקושי עצמו הוא שמביא את העם להבין שצריך לחזור אל המקור.</p>
+      <p class="bold-para">סדר הפסוק בישעיהו מלמד שחזרת השופטים קודמת לגאולה השלמה של ירושלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הסנהדרין לפני המשיח</div>
+      <h3 class="story-title">⏳ איך זה יקרה?</h3>
+      <p>תמיד שואלים את הרב: איך זה יקרה? מי יסכים? איך יגיעו כל החכמים להסכמה? והוא משיב בדרכו הקבועה: חזרו מאה שנה לאחור, והיכנסו לבית מדרש באחת מקהילות אירופה.</p>
+      <p>באותם ימים היו רבנים שנסעו לקהילות ישראל באירופה, ועוררו את היהודים לעלות לארץ ישראל. הם אמרו שהגאולה תבוא כשיהודים יעלו לארץ. ומה השיבו להם רבים? שהמשיח יבוא ויעלה אותם, ושאין שום סיכוי שיהודים יגיעו לכאן בכוחות עצמם ויקימו בה ישוב גדול. "אין סיכוי בעולם", אמרו.</p>
+      <p>והנה אנחנו כאן. בינתיים עברו על העם צרות נוראות, והשואה החריבה את הקהילות ההן, ובכל זאת קיבוץ הגלויות התרחש לנגד עינינו.</p>
+      <p>כך גם עם חידוש הסנהדרין. היום הוא נראה רחוק ובלתי אפשרי. אבל הרמב"ם כתב שכך יהיה, וההיסטוריה מלמדת שמה שנראה בלתי אפשרי בדור אחד, יכול להתרחש בדור הבא. השאלה איך בדיוק – אין לנו תשובה עליה, ואין צורך שתהיה. מה שצריך הוא לדעת את הדרך שהתורה מתווה, ולהתפלל שתתקיים.</p>
+      <p class="bold-para">גם על קיבוץ הגלויות אמרו פעם שאין סיכוי, ולכן אין לפסול מראש את חידוש הסנהדרין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של בית דין סמוך</div>
+      <h3 class="story-title">🏛️ מה יכול בית דין סמוך</h3>
+      <p>למה כל כך חשוב שיהיו דיינים סמוכים? הרב מונה את סמכויותיהם. בית דין סמוך יכול לדון דיני קנסות, שבלעדי סמיכה אין דנים בהם. הוא יכול לדון דיני נפשות. הוא יכול לקדש חודשים ולעבר שנים על פי ראייה וחשבון. והוא יכול לתקן תקנות חדשות, לגזור גזרות, ולבטל תקנות קודמות כשיש צורך.</p>
+      <p>אבל יותר מכל אלה, הרב מדגיש דבר אחד שאנחנו מחפשים יותר מכול: כשיש סנהדרין, סוף סוף אפשר להכריע בכל הספקות.</p>
+      <p>היום, כמעט על כל שאלה יש רב שמתיר ורב שאוסר. כל ציבור הולך אחרי רבותיו, וההלכה מתפצלת לדרכים רבות. כשיש בית דין גדול שכל ישראל מקבלים את הכרעתו, השאלות מוכרעות, וההלכה אחת.</p>
+      <p>יש ששואלים: אולי סנהדרין תהיה קשה מדי, תעניש ותמית? הרב מזכיר את דברי המשנה: סנהדרין שהורגת אחד לשבע שנים נקראת "חובלנית", ורבי אלעזר בן עזריה אומר: אחד לשבעים שנה. דיני נפשות היו נדירים ביותר. עצם קיומם בחוק מלמד את חומרת המעשים, אבל בפועל הם כמעט לא בוצעו.</p>
+      <p class="bold-para">בית דין של סמוכים יכול לדון דיני נפשות וקנסות, לקדש חודשים, ולתקן תקנות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של בית דין סמוך</div>
+      <h3 class="story-title">🕊️ לא הייתה מחלוקת בישראל</h3>
+      <p>הרמב"ם בהלכות ממרים כותב משפט שהרב קורא לו חלומי: "כְּשֶׁהָיָה בֵּית דִּין הַגָּדוֹל קַיָּם, לֹא הָיְתָה מַחֲלֹקֶת בְּיִשְׂרָאֵל".</p>
+      <p>איך זה עבד? הרמב"ם מתאר: כל דין שנולד בו ספק לאחד מישראל, שואל לבית הדין שבעירו. אם ידעו – אומרים לו. אם לא ידעו, הולכים לבית הדין שבירושלים שעל פתח הר הבית. אם ידעו – אומרים. ואם לא, באים לבית הדין שעל פתח העזרה. ואם גם הם לא ידעו, באים כולם ללשכת הגזית, לבית הדין הגדול.</p>
+      <p>שם, אם הדבר ידוע מפי הקבלה – אומרים אותו. ואם אינו ברור, דנים בו ונושאים ונותנים עד שיסכימו כולם, או שעומדים למניין והולכים אחר הרוב, ואומרים לכל השואלים: כך הלכה. וכך נסגרת השאלה לכל ישראל.</p>
+      <p>ומסיים הרמב"ם: משבטל בית דין הגדול, רבתה מחלוקת בישראל – זה מטמא וזה מטהר, זה אוסר וזה מתיר. זו המציאות שאנחנו חיים בה, והיא תוצאה ישירה של היעדר הסנהדרין.</p>
+      <p class="bold-para">כשבית הדין הגדול היה קיים, כל שאלה הוכרעה, ולא הייתה מחלוקת בהלכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של בית דין סמוך</div>
+      <h3 class="story-title">📚 מתי התחילו המחלוקות</h3>
+      <p>הרב מציע לבדוק: חפשו במשנה ובגמרא מחלוקת הלכתית אחת מימי בית ראשון. לדבריו, לא תמצאו. גם בספרי הנביאים לא קוראים על פנייה לסנהדרין בשאלות הלכה שנויות במחלוקת. היו מלחמות, היה פילוג בין ישראל ליהודה, הייתה עבודה זרה וצרות רבות – אבל לא מחלוקות בהלכה.</p>
+      <p>תלמידים שאלו: הרי היו אז רשעים ועובדי עבודה זרה, ובבית שני היו אנשים שלא נהגו כהלכה. הרב משיב: נכון, תמיד היו מי שלא קיימו את ההלכה. אבל השאלה אינה אם כולם קיימו, אלא אם ההלכה הייתה ברורה. גם מי שעבר עליה ידע שהוא אינו נוהג כראוי. כמו שהיום ברור לכולם שעל פי התורה אסור לחלל שבת, גם אם יש מי שאינו שומר אותה.</p>
+      <p>גם בימי בית שני, בימי אנשי כנסת הגדולה ושמעון הצדיק, היה מוסד אחד שהכריע. המחלוקות התחילו בסוף ימי הבית, כשהסנהדרין גלתה מלשכת הגזית ולא היה עוד מקום אחד שכולם מקבלים את הכרעתו.</p>
+      <p>מכאן מובן למה חידוש הסנהדרין הוא תיקון כל כך גדול: הוא מחזיר את האחדות לתורה.</p>
+      <p>אין זה אומר שהמחלוקות של חכמי המשנה והגמרא היו דבר רע. הן היו מחלוקות לשם שמים, ומהן נבנתה התורה שבעל פה. אבל בשאלה המעשית – מה עושים היום – עם ישראל זקוק להכרעה. ובלי בית דין גדול, כל ציבור מכריע לעצמו, והעם מתפצל. כשתחזור הסנהדרין, יוכלו כל הדעות להישמע בלשכת הגזית, וההכרעה תהיה אחת לכל ישראל.</p>
+      <p class="bold-para">לפי הרב, אין במשנה מחלוקות הלכתיות מימי בית ראשון; הן התחילו כשהסנהדרין גלתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של בית דין סמוך</div>
+      <h3 class="story-title">🙏 תפילה שאנו אומרים בכל יום</h3>
+      <p>הרב מזכיר שאנחנו מתפללים על כך שלוש פעמים ביום. בתפילת שמונה עשרה אנו אומרים: "הָשִׁיבָה שׁוֹפְטֵינוּ כְּבָרִאשׁוֹנָה וְיוֹעֲצֵינוּ כְּבַתְּחִלָּה" – מילים שלקוחות מן הפסוק בישעיהו שהרמב"ם הביא.</p>
+      <p>יש מי ששואלים: מה אתה רוצה, שתהיה סנהדרין שתעניש ותכפה? אבל הבקשה הזאת היא חלק מן התפילה של כל יהודי. אנחנו מבקשים שישובו השופטים כמו בהתחלה, שתהיה הוראה ברורה, שתיגמר המחלוקת, ושההלכה תהיה אחת.</p>
+      <p>ובאותה ברכה ממשיכים: "וְהָסֵר מִמֶּנּוּ יָגוֹן וַאֲנָחָה, וּמְלֹךְ עָלֵינוּ אַתָּה ה' לְבַדְּךָ בְּחֶסֶד וּבְרַחֲמִים, וְצַדְּקֵנוּ בַּמִּשְׁפָּט". המשפט התורני אינו עניין של קשיחות; הוא דרך שבה ה' מולך על עמו בחסד וברחמים.</p>
+      <p>כשמבינים זאת, התפילה מקבלת משמעות חדשה. מי שאומר "השיבה שופטינו" ואינו חושב על כך שזה יכול לקרות באמת, מפספס את עומק הבקשה. הרמב"ם מלמד שזה אפשרי, ושזה אחד מן השלבים של הגאולה.</p>
+      <p class="bold-para">בכל יום אנו מבקשים "השיבה שופטינו כבראשונה", וזו בקשה ממשית לחידוש הסנהדרין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בין שני הרים גדולים</div>
+      <h3 class="story-title">⛰️ רבי יהודה בן בבא</h3>
+      <p>איך פסקה הסמיכה, ומה עשו כדי לשמור עליה? הגמרא במסכת סנהדרין מספרת: "בְּרַם זָכוּר אוֹתוֹ הָאִישׁ לַטּוֹב, וְרַבִּי יְהוּדָה בֶּן בָּבָא שְׁמוֹ". אלמלא הוא, היו בטלים דיני קנסות מישראל.</p>
+      <p>מה היה? מלכות רומי גזרה גזרת שמד על ישראל. היא רצתה לבטל את כוחה של ההלכה, את השלשלת שמחברת את הדורות. וזו הייתה הגזירה: כל הסומך – ייהרג, וכל הנסמך – ייהרג, ועיר שסומכים בה – תיחרב, ותחומים שסומכים בהם – ייעקרו.</p>
+      <p>הרב מעיר שהגזירה הייתה עונש קולקטיבי. לא רק הסומך והנסמך, אלא העיר כולה, וכל השטח סביבה, עם העצים והשדות. מי שרצה לסמוך, סיכן את כל הסובבים אותו.</p>
+      <p>מה עשה רבי יהודה בן בבא? הוא מצא פתרון. הוא הלך וישב בין שני הרים גדולים, בין שתי עיירות גדולות ובין שני תחומי שבת – בין אושא לשפרעם. לא בתוך עיר ולא בתוך תחום של עיר, כדי שהגזירה לא תפגע באיש מלבדו. ושם סמך חמישה זקנים.</p>
+      <p class="bold-para">בזכות רבי יהודה בן בבא, שמסר נפשו על הסמיכה, לא נשתכחו דיני קנסות מישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בין שני הרים גדולים</div>
+      <h3 class="story-title">🗡️ כאבן שאין לה הופכין</h3>
+      <p>חמשת הזקנים שסמך היו רבי מאיר, רבי יהודה, רבי שמעון, רבי יוסי ורבי אלעזר בן שמוע – תלמידיו של רבי עקיבא, שמהם נמשכה התורה לכל הדורות.</p>
+      <p>כיוון שהכירו בהם האויבים, אמר להם רבי יהודה בן בבא: "בָּנַי, רוּצוּ!" אמרו לו: רבי, מה יהא עליך? אמר להם: "הֲרֵינִי מֻטָּל לִפְנֵיהֶם כְּאֶבֶן שֶׁאֵין לָהּ הוֹפְכִין". הוא היה זקן, ולא יכול היה לברוח, ולא רצה שיעכבו את עצמם בגללו.</p>
+      <p>אמרו: לא זזו משם עד שנעצו בו שלוש מאות לונביאות של ברזל, ועשאוהו ככברה. כך מסר את נפשו על הסמיכה, ובזכותו לא נשתכחה התורה ולא נקטעה השלשלת באותו דור.</p>
+      <p>הרב מעיר שלפי מה שהובא, הוא לא נקבר במקום שבו נהרג, אלא סמוך לשם, בשפרעם. קברו ידוע עד היום, והמקום שופץ: נבנו בו מקווה וכולל קטן, ולומדים שם תורה מדי יום. מי שזוכר את המערה הקטנה והחמה של פעם, יופתע לראות איך המקום התחדש.</p>
+      <p class="bold-para">רבי יהודה בן בבא שלח את תלמידיו לברוח, ונשאר לבדו מול האויבים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בין שני הרים גדולים</div>
+      <h3 class="story-title">🥾 טיול בעקבות הגמרא</h3>
+      <p>הרב ממליץ על טיול שמחיה את הגמרא, ומתאים גם למשפחות. מתחילים באושא, למעלה על ההר. יש שם עתיקות רבות, בורות מים ומקומות מעניינים. משם יורדים כעשר עד רבע שעה, ומגיעים לסלע שנקרא "אבן השבת".</p>
+      <p>על האבן חקוקה כתובת עתיקה, ובה המילה "שבת". הרב אומר שמאוד מסתבר, אם כי אין הדבר מוכרח, שזה היה סימון של תחום השבת של אושא. אם כך, המקום הזה הוא בדיוק הגבול שבין שני תחומי שבת, ובסביבתו, פחות או יותר, ישב רבי יהודה בן בבא וסמך את חמשת התלמידים.</p>
+      <p>משם ממשיכים, ועולים עוד כרבע שעה עד שפרעם. וכשהולכים ברגל, מבינים את לשון הגמרא בחוש. יורדים מהר גדול אחד – אושא, מגיעים לנקודה הנמוכה שבאמצע, ועולים להר גדול שני – שפרעם. "בין שני הרים גדולים" – זה בדיוק מה שרואים.</p>
+      <p>הרב מציע לעשות את הטיול הזה עם הילדים. אין דבר שמחבר את הלב לגמרא כמו לעמוד במקום שבו התרחש הסיפור, ולחשוב על אדם שמסר את נפשו כדי שהתורה תמשיך לעבור מדור לדור.</p>
+      <p class="bold-para">ההליכה בין אושא לשפרעם ממחישה את לשון הגמרא "בין שני הרים גדולים".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בין שני הרים גדולים</div>
+      <h3 class="story-title">💡 מה מלמד אותנו רבי יהודה בן בבא</h3>
+      <p>הרב מבקש להתעכב על המשמעות של הסיפור. מלכות רומי הבינה דבר שלפעמים אנחנו שוכחים: כוחו של עם ישראל טמון בשלשלת התורה, בהעברתה מרב לתלמיד, ובסמכות של חכמיו להורות. מי שרצה להחריב את העם, ניסה לקטוע את השלשלת הזאת.</p>
+      <p>ורבי יהודה בן בבא הבין את אותו דבר מן הצד השני. הוא ידע שאם לא יסמוך, ייתכן שהשלשלת תיקטע לגמרי, ודיני קנסות יישכחו מישראל. לכן היה מוכן למסור את חייו, ובלבד שחמשת התלמידים יקבלו את הסמיכה וימשיכו.</p>
+      <p>והוא דאג גם לאחרים. הוא בחר במקום שבין שתי ערים ובין שני תחומים, כדי שהגזירה לא תפגע בתושבים, ושלח את תלמידיו לברוח. את הסכנה לקח על עצמו בלבד.</p>
+      <p>בזכותו נמשכה התורה. רבי מאיר, רבי יהודה, רבי שמעון ורבי יוסי הם עמודי המשנה, ושמותיהם חוזרים בכל דף. כל מי שלומד משנה, לומד בזכות רבי יהודה בן בבא. ומכאן מובן כמה חשובה הסמיכה, ולמה חכמי ישראל ביקשו לחדש אותה בכל דור שהתאפשר.</p>
+      <p class="bold-para">שלשלת התורה נשמרה בזכות אדם אחד שמסר את נפשו כדי שלא תיקטע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בין שני הרים גדולים</div>
+      <h3 class="story-title">🗺️ דווקא בארץ ישראל</h3>
+      <p>הרמב"ם הדגיש שההסכמה צריכה להיות של החכמים שבארץ ישראל דווקא. למה? כי הסמיכה עצמה אפשרית רק בארץ ישראל. גם רבי יהודה בן בבא, שמסר את נפשו, לא יכול היה לברוח לחוץ לארץ ולסמוך שם בשקט; הסמיכה הייתה חייבת להתקיים כאן.</p>
+      <p>הרב מסביר שעיקר משפטי התורה והמצוות תלוי בארץ הקדושה. שם המקום שממנו יוצאת ההוראה לכל ישראל, כמו שנאמר "כִּי מִצִּיּוֹן תֵּצֵא תוֹרָה וּדְבַר ה' מִירוּשָׁלָיִם".</p>
+      <p>אחד התלמידים שאל: הרי משה רבנו הקים בית דין ומינה שופטים במדבר, מחוץ לארץ ישראל. הרב משיב שזה היה לפני הכניסה לארץ, בעת מתן תורה, והתורה עצמה ניתנה שם. אבל לדורות, כפי שנפסק להלכה, הסמיכה קשורה לארץ ישראל.</p>
+      <p>וזה מסביר למה דווקא בדורות שבהם התקבצו חכמים רבים בארץ ישראל, עלתה מחדש שאלת חידוש הסמיכה. כך קרה לפני כחמש מאות שנה בצפת.</p>
+      <p class="bold-para">הסמיכה וההסכמה לחידושה תלויות בחכמי ארץ ישראל, כי בה עיקר משפטי התורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ההתכנסות בצפת</div>
+      <h3 class="story-title">🕯️ חכמים מתקבצים בצפת</h3>
+      <p>לפני כחמש מאות שנה, בעקבות גירוש ספרד, הגיעו לארץ ישראל חכמים רבים, והתקבצו בעיר צפת. הייתה זו התקבצות של תלמידי חכמים שלא הייתה כדוגמתה, כמדומה, מאז החורבן. כשלושים חכמים ישבו שם יחד, ועל המסמך שנכתב חתמו עשרים ושישה מהם.</p>
+      <p>במושגים של היום אולי זה לא נשמע מספר גדול, אבל באותה תקופה זה היה דבר מיוחד מאוד. ולא היו אלה סתם חכמים, אלא גדולי הדור, שהתפרסמו בכל העולם היהודי. ביניהם היה רבי יוסף קארו, בעל הבית יוסף, שכתב את השולחן ערוך שעליו נשענת ההלכה עד היום.</p>
+      <p>גם אביו של הבית יוסף היה ממגורשי ספרד. המגורשים נדדו ממקום למקום, וחלקם הגיעו לארץ ישראל. וכאן מתחיל הסיפור שהביא את חכמי צפת לנסות לקיים את דברי הרמב"ם.</p>
+      <p>הרב מציין שהסיפור מתאים במיוחד לחודש אלול, חודש התשובה, כי כל עניינו הוא אנשים שביקשו לחזור בתשובה שלמה, ולא מצאו לכך דרך.</p>
+      <p class="bold-para">לפני כחמש מאות שנה התקבצו בצפת חכמים גדולים, ובהם הבית יוסף, וביקשו לקיים את דברי הרמב"ם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ההתכנסות בצפת</div>
+      <h3 class="story-title">💔 האנוסים שביקשו כפרה</h3>
+      <p>לא כל יהודי ספרד ברחו בזמן הגירוש. חלקם נשארו, ונאלצו להסתיר את יהדותם. במשך הזמן עברו, מתוך אונס ופחד, עבירות רבות וחמורות, ובהן כאלה שעונשן כרת. אחר כך, כשהצליחו לברוח, הגיעו לארץ ישראל וביקשו לחזור בתשובה שלמה.</p>
+      <p>אבל הם פחדו מאוד. נכון שעשו את הדברים מתוך אונס, אבל הם ידעו שעברו עבירות שחייבים עליהן כרת. וההלכה היא שמי שחייב כרת יכול להיפטר מעונשו על ידי מלקות בבית דין. אבל מלקות אפשר לתת רק בבית דין של סמוכים – ובית דין כזה לא היה.</p>
+      <p>הרב מסביר את הצד הנפשי. אדם שמרגיש שנגזר עליו כרת, ואין דרך לתקן, שואל את עצמו: בשביל מה לחזור בתשובה, אם בכל מקרה אני חייב כרת? כדי שהוא יחזור באמת, צריך לתת לו מנוחה לנפש – דרך ממשית לכפרה.</p>
+      <p>וכך כתבו חכמי צפת: כמה אנשים רצו לשוב אל ה', ולקבל מלקות על פי התורה כדי להיפטר מן הכרת. לשם כך היה צורך בחכם סמוך.</p>
+      <p class="bold-para">האנוסים שחזרו ליהדות רצו להיפטר מעונש כרת, ולשם כך היו צריכים בית דין סמוך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ההתכנסות בצפת</div>
+      <h3 class="story-title">🌱 תשובה צריכה תקווה</h3>
+      <p>הסיפור של האנוסים מלמד יסוד חשוב לחודש אלול. התשובה אינה רק חרטה על העבר. היא צריכה גם תקווה לעתיד. אדם שמרגיש שאין לו תקנה, שהדין כבר נגזר, מתקשה לחזור בתשובה. הוא שואל: בשביל מה?</p>
+      <p>חכמי צפת הבינו זאת. הם לא אמרו לאנוסים: עשיתם מה שעשיתם, ואין מה לעשות. הם חיפשו דרך הלכתית ממשית שתיתן להם כפרה, ונתנו לנפשם מנוחה. ובשביל זה היו מוכנים לעשות דבר שלא נעשה מאות שנים: לחדש את הסמיכה.</p>
+      <p>יש כאן לימוד לכל אחד. כשאנחנו רואים יהודי שרוצה לחזור, התפקיד שלנו הוא לפתוח לו דלת, לא לסגור אותה. וכשאנחנו עצמנו חוזרים בתשובה, עלינו לדעת שיש תמיד דרך לתקן, ושהקדוש ברוך הוא מחכה לנו.</p>
+      <p>כך התחבר באותו דור עניין הסמיכה, שנראה טכני והלכתי, אל לב התשובה עצמה.</p>
+      <p class="bold-para">אדם חוזר בתשובה באמת רק כשהוא מאמין שיש לו דרך לתקן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ההתכנסות בצפת</div>
+      <h3 class="story-title">✋ הסמיכה של מהר"י בירב</h3>
+      <p>וכך, כל חכמי צפת התכנסו, וכולם, ללא יוצא מן הכלל, הסכימו למנות את החכם הגדול רבי יעקב בירב, מהר"י בירב, שיהיה סמוך וראש ישיבה. הוא היה המוסמך הראשון אחרי מאות שנים.</p>
+      <p>מהר"י בירב סמך אחר כך חכמים נוספים, ובהם רבי יוסף קארו, בעל הבית יוסף. כך התחילה מחדש שלשלת הסמיכה, כפי שכתב הרמב"ם: הסכמת כל החכמים בארץ ישראל, ואחר כך הסמוך הראשון סומך אחרים.</p>
+      <p>לכאורה, נפלא מאוד. כל חכמי ארץ ישראל הסכימו, כמו שכתב הרמב"ם. היו מסמיכים את גדולי הדור, ומי יותר ראוי לכך מן הבית יוסף, שכתב את השולחן ערוך שכל ישראל קיבלו אותו? נראה היה שהנה מתחדשת הסנהדרין.</p>
+      <p>אבל כאן, אומר הרב, קרה "פנצ'ר". הסמיכה לא נמשכה, והסנהדרין לא קמה. למה? מה השתבש? על כך נלמד בחלק השני של השיעור, ונראה מה קרה לניסיון הגדול הזה ומה אפשר ללמוד ממנו לימינו.</p>
+      <p class="bold-para">חכמי צפת הסכימו פה אחד לסמוך את מהר"י בירב, והוא סמך את הבית יוסף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/JYeT78Xk36o · 2024-09-04 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שופטים ושוטרים","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"שופטים תיתן לך","icon":"📜"},{"id":2,"title":"בורות נשברים","icon":"💧"},{"id":3,"title":"שאלה של הלכה, לא של פוליטיקה","icon":"🧭"},{"id":4,"title":"שומר ישראל","icon":"🛡️"}]},{"id":2,"name":"הסנהדרין לפני המשיח","icon":"⚖️","color":"#6d28d9","stories":[{"id":5,"title":"סנהדרין לפני המשיח?","icon":"❓"},{"id":6,"title":"הסכמת כל החכמים","icon":"🤝"},{"id":7,"title":"המשיח לא יחדש דינים","icon":"📏"},{"id":8,"title":"קודם שופטים, אחר כך עיר הצדק","icon":"🏙️"},{"id":9,"title":"איך זה יקרה?","icon":"⏳"}]},{"id":3,"name":"כוחו של בית דין סמוך","icon":"🏛️","color":"#e08e00","stories":[{"id":10,"title":"מה יכול בית דין סמוך","icon":"🏛️"},{"id":11,"title":"לא הייתה מחלוקת בישראל","icon":"🕊️"},{"id":12,"title":"מתי התחילו המחלוקות","icon":"📚"},{"id":13,"title":"תפילה שאנו אומרים בכל יום","icon":"🙏"}]},{"id":4,"name":"בין שני הרים גדולים","icon":"⛰️","color":"#1e88b8","stories":[{"id":14,"title":"רבי יהודה בן בבא","icon":"⛰️"},{"id":15,"title":"כאבן שאין לה הופכין","icon":"🗡️"},{"id":16,"title":"טיול בעקבות הגמרא","icon":"🥾"},{"id":17,"title":"מה מלמד אותנו רבי יהודה בן בבא","icon":"💡"},{"id":18,"title":"דווקא בארץ ישראל","icon":"🗺️"}]},{"id":5,"name":"ההתכנסות בצפת","icon":"🕯️","color":"#c62b6b","stories":[{"id":19,"title":"חכמים מתקבצים בצפת","icon":"🕯️"},{"id":20,"title":"האנוסים שביקשו כפרה","icon":"💔"},{"id":21,"title":"תשובה צריכה תקווה","icon":"🌱"},{"id":22,"title":"הסמיכה של מהר\"י בירב","icon":"✋"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
