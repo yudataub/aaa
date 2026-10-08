@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 אל נקמות ה'</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 אל נקמות ה'</h1>
+  <p>מתי נקמה היא מידה גדולה ומתי היא נקמנות פסולה: נקמת מדין, "גדולה נקמה", שמחת הצדיק בדין, וההבדל בין נקמת ה' ליצר האישי</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ אל נקמות ה'" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/k6agOGAOl3I?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/k6agOGAOl3I/hqdefault.jpg" alt="אל נקמות ה'" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=k6agOGAOl3I" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שאלת הנקמה</div>
+      <h3 class="story-title">❓ האם נקמה היא דבר טוב?</h3>
+      <p>השיעור פתח בשאלה שנשמעת פשוטה, אבל היא עמוקה מאוד: האם נקמה היא דבר חיובי או דבר שלילי? מתי מותר לשמוח בה ומתי אסור? ובכלל, האם יש מקום ברגש הזה בעולמו של יהודי?</p>
+      <p>כדי להבין את חומרת השאלה הביא הרב תמונה ידועה מימי השואה. במקום שבו נרצחו יהודים נמצאה כתובת חרוטה, שכתב יהודי אחד רגע לפני מותו, ביידיש: "יידן, נקמה!" – יהודים, נקמה! הוא ידע שהוא הולך למות, וביקש מאחיו דבר אחד: שלא ישכחו, שינקמו את דמו.</p>
+      <p>הצעקה הזאת נוגעת בכל לב יהודי. ובכל זאת, בתרבות שסביבנו נקמה נחשבת כמעט תמיד למילה גסה. מחנכים אותנו שזה רגש נחות, ושאדם מתוקן אינו נוקם לעולם. מי צודק? היהודי שכתב על האבן, או התרבות שאומרת שהנקמה פסולה מעיקרה?</p>
+      <p>כדי להשיב על כך צריך ללכת אל המקורות: אל התורה, אל הגמרא ואל המפרשים. ונראה שהתשובה איננה "כן" פשוט ואיננה "לא" פשוט. יש נקמה שהיא מידה גדולה, ויש נקמה שהיא חטא. כל השיעור עוסק בשאלה איך מבחינים ביניהן.</p>
+      <p class="bold-para">השאלה איננה אם מותר לנקום, אלא אם הנקמה עצמה היא מידה פסולה או מידה שיש לה מקום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שאלת הנקמה</div>
+      <h3 class="story-title">📻 מקרה שהגיע לבירור</h3>
+      <p>כדי להפוך את השאלה למוחשית סיפר הרב על מקרה שנדון בצבא לפני כעשר שנים. במהלך לחימה נהרג קצין מירי של צלף, שירה מתוך מבנה. למחרת, בשעת ההלוויה, הורה מפקד הגדוד לחייליו לירות פגז לעבר אותו מבנה. ברשת הקשר הוא אמר שהירי הוא "מטח כבוד והצדעה" לחבר שנפל.</p>
+      <p>בחקירה שנעשתה אחר כך נמצא שמבחינה מבצעית לא היה בירי שום פגם. המבנה היה יעד לגיטימי, ולא נפגעו חפים מפשע. אף על פי כן נקבע שהדברים שאמר המפקד פסולים: מדבריו עולה שירי לשם "כבוד", כלומר לשם נקמה, הוא דבר לגיטימי. ומסר כזה, כך נקבע, אינו תואם את ערכי הצבא.</p>
+      <p>הרב שם לב לנקודה העדינה. אף אחד לא טען שהמעשה היה אסור. הבעיה הייתה רק בכוונה, במילים. אם כן, זו בדיוק השאלה: האם הכוונה לנקום היא עצמה פסולה? האם מעשה כשר נעשה פגום משום שנעשה מתוך רצון לנקום את דם החבר?</p>
+      <p>לפני שעונים, הרב הבהיר נקודה אחת. התורה אמרה "לֹא תִקֹּם וְלֹא תִטֹּר אֶת בְּנֵי עַמֶּךָ", והאיסור הזה נאמר על יחסים בין יהודי ליהודי. אבל אין כאן שאלה של איסור. השאלה היא אחרת: האם הנקמה, במהותה, היא דבר פסול או דבר שיש לו מקום ראוי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נקמת ה' במדין</div>
+      <h3 class="story-title">⚔️ "נקום נקמת בני ישראל"</h3>
+      <p>את התשובה הראשונה מוצאים בפרשת מטות. אומר הקדוש ברוך הוא למשה: "נְקֹם נִקְמַת בְּנֵי יִשְׂרָאֵל מֵאֵת הַמִּדְיָנִים, אַחַר תֵּאָסֵף אֶל עַמֶּיךָ". זה משפט נדיר מאוד בתורה. כמעט אין עוד מקום שבו התורה מצווה במפורש לצאת ולנקום.</p>
+      <p>מדין החטיאו את ישראל, ובעקבות החטא מתו רבים מישראל במגפה. ועל כך מצווה התורה לצאת ולנקום. הרב שם לב שאת מלחמת מדין מנהלים לא לפי דיני מלחמה רגילים, אלא לפי דיני נקמה. במלחמה רגילה נלחמים בלוחמים. אבל במדין, כשחזרו החיילים ולא עשו כפי שנצטוו, קצף עליהם משה: לא יצאתם למלחמה רגילה, יצאתם לנקום.</p>
+      <p>אם כן, כבר מכאן רואים שהתורה איננה רואה בנקמה רע מוחלט. יש מצב שבו הקדוש ברוך הוא בעצמו אומר: לך ונקום.</p>
+      <p>אבל כאן מתעוררת שאלה שהמפרשים עמדו עליה. משה רבנו, כשהוא מעביר את הציווי לעם, משנה את הלשון: "הֵחָלְצוּ מֵאִתְּכֶם אֲנָשִׁים לַצָּבָא וְיִהְיוּ עַל מִדְיָן לָתֵת נִקְמַת ה' בְּמִדְיָן". הקדוש ברוך הוא אמר "נקמת בני ישראל", ומשה אמר "נקמת ה'". איזו נקמה היא? נקמה על מה שעשו לישראל, או נקמה על כבוד שמיים?</p>
+      <p class="bold-para">במלחמת מדין ציוותה התורה במפורש לצאת לנקמה, וזה נדיר מאוד בתורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נקמת ה' במדין</div>
+      <h3 class="story-title">🤝 כל אחד דואג לכבוד חברו</h3>
+      <p>יש מפרשים שמסבירים כך: מדין עשו שני דברים. הם החטיאו את ישראל בעבודה זרה, ובזה פגעו בכבוד שמיים. והם גרמו למותם של עשרים וארבעה אלף מישראל במגפה. הקדוש ברוך הוא, כביכול, חס על נפשות ישראל יותר מאשר על כבודו, ולכן אמר "נקמת בני ישראל". ומשה רבנו הפך את הדברים, ועשה את הנקמה בשביל כבוד ה', שהוא העיקר בעיניו.</p>
+      <p>כל אחד דואג לכבודו של השני. הרב המחיש זאת בסיפור על אחד מגדולי ירושלים, שזכה עם הרבנית לחיות יחד שמונים שנה ויותר. לעת זקנתם, כשכבר היו חלשים מאוד, ביקש הרב ממי שעזר להם: הבא לי כוס מים. כשניגש העוזר, ראה שהרבנית מבקשת דבר מה. שאל אותה מה היא רוצה, ואמרה: הרב ביקש מים, לך תביא לו קודם.</p>
+      <p>הגמרא דנה במקרה שבו האב והאם מבקשים שניהם מן הבן להשקותם מים, ומי מהם קודם. אבל המקרה ההפוך, שבו כל אחד אומר "תן קודם לשני", לא מופיע בגמרא. זהו זוג שכל אחד מוותר על כבודו בשביל השני.</p>
+      <p>וכך גם בין הקדוש ברוך הוא לעם ישראל. חז"ל אומרים שבתפילין שלנו כתוב "שְׁמַע יִשְׂרָאֵל ה' אֱלֹקֵינוּ ה' אֶחָד", ובתפילין של הקדוש ברוך הוא, כביכול, כתוב "וּמִי כְּעַמְּךָ יִשְׂרָאֵל גּוֹי אֶחָד בָּאָרֶץ". כל אחד משתבח בשני.</p>
+      <p class="bold-para">הקדוש ברוך הוא מדבר על נקמת ישראל, ומשה מדבר על נקמת ה' – כל אחד מקדים את כבוד השני.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נקמת ה' במדין</div>
+      <h3 class="story-title">💞 אוהבים נאמנים</h3>
+      <p>את הרעיון הזה מביא גם בעל המשך חכמה. הוא מסביר שישראל והקדוש ברוך הוא הם כאוהבים נאמנים, שכל אחד מהם חושב על כבוד רעהו ולא על כבוד עצמו. לכן הקדוש ברוך הוא מדבר על נקמת ישראל, ומשה, שליחם של ישראל, מדבר על נקמת ה'.</p>
+      <p>הרב הדגיש שאין כאן שתי נקמות שונות. זו נקמה אחת. מה שנעשה לישראל נעשה כלפי שמיים, ומה שנעשה כלפי שמיים פוגע בישראל. יש מי שמסביר שזו בדיוק כוונת הפסוק: נקמת הקדוש ברוך הוא, שעם ישראל הוא המבצע שלה.</p>
+      <p>מכאן אפשר לעבור אל השאלה הכללית. ראינו בפרשה מפורשת שיש מקרים שבהם הנקמה היא מצווה. אם כן, איך מתיישב הדבר עם ההרגשה הרווחת שנקמה היא תמיד רגש שלילי? ומה מבדיל בין הנקמה שהתורה ציוותה עליה לבין זו שהיא פסולה?</p>
+      <p>לפני שנגיע לתשובה, צריך לראות מה אומרת הגמרא על מעלתה של הנקמה, ומה אומרים הראשונים על הסכנה הגדולה הטמונה בה. רק כשרואים את שני הצדדים יחד אפשר להבין היכן עובר הקו.</p>
+      <p class="bold-para">ישראל והקדוש ברוך הוא הם כאוהבים נאמנים, שכל אחד מהם חושב על כבוד רעהו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גדולה נקמה – וסכנותיה</div>
+      <h3 class="story-title">🕰️ לכל מידה יש מקום</h3>
+      <p>הרב הביא דברים שנכתבו בספר אחד העוסק בנושא. כתוב שם, ברוח דברי קהלת: יש אהבה במקומה, וכן השנאה. יש שלום במקומו, וכן המלחמה. יש רחמנות במקומה, וכן האכזריות. וכן הנקמה.</p>
+      <p>ביהדות כמעט אין רגש שהוא שלילי לחלוטין. לכל מידה יש את המקום שלה ואת הזמן שלה. אותה מידה עצמה יכולה להיות מצווה במקום אחד וחטא במקום אחר. הרחמנות היא מידה נפלאה, אבל רחמנות על אכזרים עלולה להביא לאכזריות כלפי רחמנים.</p>
+      <p>המחבר שם מתאר זיוף שנעשה במושג הנקמה, בהשפעת תרבות זרה, שהציגה את הנקמה כדבר שלילי ומכוער במהותו. כך מקובל היום בתרבות המערבית: אסור לנקום, ונקמה היא פסולה מעיקרה.</p>
+      <p>ביהדות, כך נאמר שם, אין הדבר כן. ולהפך: אין מידה מעולה וצודקת יותר ממידת הנקמה, כשהיא במקומה ובזמנה ובעתה. הכל תלוי במקום ובזמן. המידה עצמה איננה טובה ואיננה רעה; השימוש בה הוא שקובע.</p>
+      <p>והראיה הטובה ביותר לכך, אמר הרב, היא דבר שאנו אומרים בכל שבוע בשיר של יום רביעי: "אֵל נְקָמוֹת ה' אֵל נְקָמוֹת הוֹפִיעַ". הקדוש ברוך הוא עצמו נקרא "אל נקמות". ואת הפסוק הזה דורשת הגמרא.</p>
+      <p class="bold-para">ביהדות כמעט אין רגש שהוא שלילי לחלוטין – לכל מידה יש מקומה וזמנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גדולה נקמה – וסכנותיה</div>
+      <h3 class="story-title">📖 "גדולה נקמה שניתנה בין שתי אותיות"</h3>
+      <p>הגמרא במסכת ברכות דנה מדוע תיקנו לומר הבדלה בברכת "חונן הדעת". ושם אומרת הגמרא: גדולה דעה שניתנה בין שתי אותיות, שנאמר "כִּי אֵל דֵּעוֹת ה'". ה"אותיות" הן שני שמות של הקדוש ברוך הוא, והדעת כתובה ביניהם.</p>
+      <p>וכן אמרו: גדול מקדש שניתן בין שתי אותיות, שנאמר "פָּעַלְתָּ ה' מִקְּדָשׁ ה' כּוֹנְנוּ יָדֶיךָ". המקדש כתוב בין שני שמות.</p>
+      <p>ועל כך מקשה אחד האמוראים: אם כן, גם נקמה גדולה, שהרי היא ניתנה בין שתי אותיות, שנאמר "אֵל נְקָמוֹת ה'"! הקושיה מניחה שנקמה היא דבר שלילי, ולכן אי אפשר שתהיה בה מעלה. ומה עונה הגמרא? "אין, במילתה מיהא גדולה היא". כן, במקומה, הנקמה היא באמת דבר גדול.</p>
+      <p>והגמרא מוסיפה: למה כתובות בפסוק שתי נקמות? "אֵל נְקָמוֹת ה' אֵל נְקָמוֹת הוֹפִיעַ". אחת לטובה ואחת לרעה. לטובה, כמו שכתוב במתן תורה "הוֹפִיעַ מֵהַר פָּארָן", ולרעה, כמו שכתוב כאן. הקדוש ברוך הוא מופיע בעולם הן כשהוא נותן שכר טוב לצדיקים, הן כשהוא מעניש את הרשעים.</p>
+      <p>אם כן, הגמרא עצמה אומרת: הנקמה במקומה היא דבר גדול. כשנוקמים במי שעשה רע, באמת ובמקום הנכון, זו מידה שכתובה בין שני שמותיו של הקדוש ברוך הוא.</p>
+      <p class="bold-para">הגמרא אומרת שהנקמה במקומה היא דבר גדול – שהרי היא כתובה בין שני שמות של הקדוש ברוך הוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גדולה נקמה – וסכנותיה</div>
+      <h3 class="story-title">⚠️ הסכנות שבנקמה</h3>
+      <p>אבל אסור להתעלם מן הצד השני. למה בתי משפט ושיטות מוסר רבות מתנגדים לנקמה? הרב מנה שתי סכנות גדולות.</p>
+      <p>הסכנה הראשונה היא חוסר מידה. אדם שפועל מתוך רגש נקמה אינו יודע לאן יגיע. התגובה עלולה להיות גדולה פי כמה מן הפגיעה, ושלא כפי הגמול הצודק. ההרגשה מושכת אותו, והשכל כבר אינו מחשב.</p>
+      <p>הסכנה השנייה היא המעגל. נקמה מולידה נקמה. אתה נוקם, השני נוקם בחזרה, וחוזר חלילה. סכסוכים שהיו יכולים להסתיים נמשכים דורות, כל צד בטוח שהוא רק מחזיר על מה שנעשה לו.</p>
+      <p>הרב הביא מדברי אחד מגדולי הראשונים, שתיאר את מי שמבקש להשקיט את נפשו בנקמה. הוא מאבד את הפרופורציה. הוא מוסיף עצה אחר עצה ואינו מחשב את הנזקים הנלווים. ייתכן שלא יגיע כלל להרוג את האויב, ובדרך יפגע באלף אוהבים, או בעצמו.</p>
+      <p>ומצד שני, מי שמתעלם לגמרי מן הנקמה, ואומר שאין לה מקום כלל, גם הוא טועה. כי אז אין צדק בעולם, והרשע יכול לעשות ככל העולה על רוחו. צריך למצוא את האיזון: מתי הנקמה חיובית ומתי היא שלילית.</p>
+      <p class="bold-para">רגש הנקמה עלול לאבד כל פרופורציה ולהוביל למעגל של דם בלי סוף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גדולה נקמה – וסכנותיה</div>
+      <h3 class="story-title">🌪️ סערה פנימית</h3>
+      <p>כדי לסמן את הקו צריך להגדיר מהי הנקמה הבעייתית. בעל הכתב והקבלה מבאר שמשמעות המילה "נקם" בלשון הקודש קשורה בהסתערות הפנימית ובהתרגשות הלב, ברגע שהאדם מתמלא כעס וחמה.</p>
+      <p>כשמדברים על נקמה פסולה, מדברים על אדם שפועל מתוך סערה פנימית. הוא אינו עושה חשבון ואינו שוקל. הוא פועל מתוך חום הרגש, ואינו שואל מה יגרום המעשה בהמשך. זו הנקמה שגורמת לבני אדם להגיע לכל מיני מעשים שאחר כך הם מתחרטים עליהם.</p>
+      <p>בשיעור עלתה גם שאלה פילוסופית קרובה: לא פעם קשה לדעת האם פעולה מסוימת היא נקמה או הרתעה. יש הבדל בין מעשה שבא להעניש על מה שנעשה, לבין מעשה שבא כדי שאחרים לא יעשו כמותו. ההרתעה מבטה לעתיד, והנקמה מבטה לעבר.</p>
+      <p>אבל לפני שמסמנים את הקו, צריך להבין דבר יסודי: למה האדם אוהב כל כך לנקום? למה הנקמה מתוקה? מי שמבין את שורשי הרגש, יוכל להבין גם מה צריך לתקן בו ומה ראוי לקדש בו.</p>
+      <p class="bold-para">הנקמה הפסולה היא זו שבאה מתוך סערת הלב, בלי חשבון ובלי מידה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שמחת הצדיק בדין</div>
+      <h3 class="story-title">🍯 למה הנקמה מתוקה</h3>
+      <p>כשמישהו פוגע באדם, מלבד הנזק הגופני נגרמים לו שני פצעים בנפש. הראשון הוא הכבוד שהושפל. איך עשית לי דבר כזה? הראיה לכך: אם אותו נזק בדיוק נגרם בשוגג, האדם כועס הרבה פחות, אף שהתוצאה זהה. מה שכואב יותר מכל הוא הזלזול.</p>
+      <p>הפצע השני הוא העוול. לאדם כואב מאוד לראות שנעשה עוול בעולם, שהרשע עשה מה שעשה והכל ממשיך כרגיל. התחושה שאין צדק ויושר מכבידה על הלב.</p>
+      <p>על ידי הנקמה, שני הרגשות האלה מגיעים למנוחה. הכבוד חוזר: הנה, אני חזק ממנו, החזרתי לו. והצדק חוזר: הנה, יש דין בעולם, ומי שעשה רע קיבל את גמולו. זו הסיבה שהנקמה מתוקה כל כך.</p>
+      <p>הרב המחיש זאת במשפט אייכמן. במשפט העידו עדים רבים, הוצגו מסמכים רבים, ואלפים הקשיבו לעדויות. המשפט הזה עזר מאוד לניצולי השואה. אמנם נשפט שם אדם אחד, אבל הכבוד היהודי חזר: היהודים תפסו את הרשע בקצה העולם, הביאו אותו ודנו אותו. ויותר מזה: התברר שיש צדק בעולם. שני הדברים האלה, הכבוד והצדק, החזירו לאנשים הרבה ממה שנלקח מהם.</p>
+      <p>ואותם שני דברים בדיוק, הכבוד והצדק, נראה מיד גם בפסוקים. אבל שם הם מתעלים מכבודו של האדם אל כבוד שמיים.</p>
+      <p class="bold-para">הנקמה מרגיעה שני פצעים: הכבוד שהושפל, והתחושה שאין צדק בעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שמחת הצדיק בדין</div>
+      <h3 class="story-title">🌅 "ישמח צדיק כי חזה נקם"</h3>
+      <p>דוד המלך אומר בתהילים: "יִשְׂמַח צַדִּיק כִּי חָזָה נָקָם, פְּעָמָיו יִרְחַץ בְּדַם הָרָשָׁע. וְיֹאמַר אָדָם אַךְ פְּרִי לַצַּדִּיק, אַךְ יֵשׁ אֱלֹקִים שֹׁפְטִים בָּאָרֶץ". למה שמח הצדיק? מה מעלתה של שמחה כזאת?</p>
+      <p>התשובה נמצאת בסוף הפסוק עצמו: "אך יש אלוקים שופטים בארץ". כשהעולם מלא עוול, כשהרשעות שולטת והצדיק נרדף, טבעי לאדם לשאול: איפה הקדוש ברוך הוא? את השאלה הזאת שאלו רבים בימי השואה.</p>
+      <p>זו תקופת הסתר פנים, וכבר התורה תיארה אותה: "וְהִסְתַּרְתִּי פָנַי מֵהֶם וְהָיָה לֶאֱכֹל וּמְצָאֻהוּ רָעוֹת רַבּוֹת וְצָרוֹת, וְאָמַר בַּיּוֹם הַהוּא הֲלֹא עַל כִּי אֵין אֱלֹקַי בְּקִרְבִּי מְצָאוּנִי הָרָעוֹת הָאֵלֶּה". בזמן כזה צצים ספקות, וזה כואב מאוד.</p>
+      <p>ניצחונו של הרשע הוא, אם כן, חילול השם גדול. כי מן הניצחון שלו משתמע, חלילה, שאין דין ואין דיין.</p>
+      <p>ולכן, כשהקדוש ברוך הוא שם קץ להסתר, כמו שנאמר "וַיִּקַץ כְּיָשֵׁן ה' כְּגִבּוֹר מִתְרוֹנֵן מִיָּיִן, וַיַּךְ צָרָיו אָחוֹר", הצדיק רואה בחוש: יש אלוקים שופט בארץ. העוול איננו סוף הסיפור. זו השמחה של הצדיק. הוא אינו שמח בצערו של אדם; הוא שמח בגילוי השגחת ה' בעולם.</p>
+      <p class="bold-para">הצדיק שמח בנקמה משום שהיא מגלה שיש אלוקים שופט בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שמחת הצדיק בדין</div>
+      <h3 class="story-title">🙏 משה מתאווה לראות</h3>
+      <p>לכן אמרה הגמרא "גדולה נקמה". הנקמה במקומה מגלה את מציאות ה' בעולם, מוכיחה את השגחתו, ומשפילה את הרשעים, כדי שהצדיקים ישמחו ויכריזו שיש דין ויש דיין.</p>
+      <p>ובמדרש מובא שמשה רבנו התאווה לראות את נקמת המדיינים לפני מותו, ועל כך ביקש. עליו, אומר המדרש, נאמר "יִשְׂמַח צַדִּיק כִּי חָזָה נָקָם". משה לא רק רצה, אלא התאווה. למה? כי רצה לראות בעיניו שיש אלוקים שופט בארץ.</p>
+      <p>זה מתיישב גם עם הפסוק שראינו: "נְקֹם נִקְמַת בְּנֵי יִשְׂרָאֵל מֵאֵת הַמִּדְיָנִים, אַחַר תֵּאָסֵף אֶל עַמֶּיךָ". הנקמה היא סיום חייו של משה. רק אחריה הוא נאסף אל עמיו. זו השלמה של שליחותו.</p>
+      <p>אם כן, כשמטרת הנקמה היא להראות שיש אלוקים בעולם, כשהאדם שמח בה משום שהיא מגלה את השגחת ה', הרי זה דבר גדול מאוד. וזו גם הסיבה שהנקמה מופיעה בגמרא דווקא ליד הדעת וליד בית המקדש, כפי שנראה עתה.</p>
+      <p class="bold-para">משה רבנו ביקש לראות את נקמת מדין לפני מותו, כי רצה לראות שיש אלוקים שופט בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שמחת הצדיק בדין</div>
+      <h3 class="story-title">🏛️ דעה, מקדש ונקמה</h3>
+      <p>הגמרא הביאה שלושה דברים שכתובים בין שני שמות: דעה, בית המקדש ונקמה. מה הקשר ביניהם? הרב הסביר שזה יפה מאוד.</p>
+      <p>דעה – זו הכרת הבורא, "לָדַעַת אֶת ה'". בית המקדש – זה המקום שבו מרגישים את נוכחות השכינה בעולם. והנקמה – לא הוצאת כעס, אלא הרגע שבו האדם רואה בעיניו שיש אלוקים בעולם. שלושתם מגלים את ה'.</p>
+      <p>הרב הביא את דברי אחד המחברים, שכתב כך: הדעת ובית המקדש – פשוט שהם מביאים את דעת ה'. החידוש הוא בנקמה, שגם היא סוג של דעת. כי מדובר בנקמת ה'. לא כל אחד זוכה לראות את נקמת ה' ברשעים בעולם הזה. אבל מי שזוכה לכך, זוכה למעין קדושה של דעת ושל אמונה חושית: אמונה בהשגחת ה', בצדקתו, ובשכר ועונש מן השמיים.</p>
+      <p>זו המחשה נפלאה, ולכן הצדיק שמח כל כך. הוא מרגיש את נוכחות האלוקים. זו השמחה הגדולה של הצדיקים, כשהם רואים את נקמתו של בורא העולם.</p>
+      <p class="bold-para">שלושת הדברים שבין שני השמות מגלים כולם את נוכחות ה' בעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שמחת הצדיק בדין</div>
+      <h3 class="story-title">🛡️ השונא את ישראל</h3>
+      <p>עכשיו אפשר לחזור לשאלה שבה פתחנו: האם זו נקמת בני ישראל או נקמת ה'? רש"י בפרשה מבאר שאין כאן שתי נקמות. מי שעומד כנגד ישראל, כאילו עומד כנגד הקדוש ברוך הוא.</p>
+      <p>וכך דרשו חז"ל על הפסוק "קוּמָה ה' וְיָפֻצוּ אֹיְבֶיךָ וְיָנֻסוּ מְשַׂנְאֶיךָ מִפָּנֶיךָ": וכי יש שונאים לפני מי שאמר והיה העולם? אלא מגיד הכתוב שכל מי ששונא את ישראל, כאילו שונא את המקום.</p>
+      <p>למה פוגעים ביהודים? משום שהם המייצגים של בורא העולם בעולם. מי שפוגע בהם, פוגע במה שהם מייצגים. לכן מה שנעשה לישראל נעשה, כביכול, כלפי מעלה.</p>
+      <p>מכאן היסוד: כאשר מטרתו של האדם היא לנקום את נקמת ה', כלומר להחזיר את כבוד שמיים לעולם, זו נקמה חיובית. לא נקמה של אגו, לא נקמה של "איך עשית לי", אלא נקמה שבאה לגלות שיש דין ויש דיין.</p>
+      <p>אבל עדיין צריך להבין: אם כן, מה עם הציווי "לא תקום ולא תטור"? ואיך מבחינים בפועל בין נקמה לשם שמיים לבין נקמנות אישית? לזה מוקדש הפרק הבא.</p>
+      <p class="bold-para">מי שפוגע בישראל פוגע במי שאמר והיה העולם – ולכן נקמת ישראל היא נקמת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · נקמה ולא נקמנות</div>
+      <h3 class="story-title">🕊️ "לא תקום" – הנקמה האישית</h3>
+      <p>"לֹא תִקֹּם וְלֹא תִטֹּר" נאמר בעיקר על נקמה אישית: כשאדם רוצה לנקום על מה שפגע בו, על הכבוד שלו, על האגו שלו. על זה אמרה התורה "לא תקום".</p>
+      <p>ובמקרה כזה, להפך, חז"ל משבחים מאוד את מי שמוותר. "הַנֶּעֱלָבִין וְאֵינָן עוֹלְבִין, שׁוֹמְעִין חֶרְפָּתָן וְאֵינָן מְשִׁיבִין" – עליהם נאמר שהם כצאת השמש בגבורתו. וכן אמרו: כל המעביר על מידותיו, מעבירין לו על כל פשעיו. כשמדובר בפגיעה אישית, המצווה היא למחול ולוותר על היצר.</p>
+      <p>אבל כשמדובר במי ששונא את ישראל ומצר להם, הדבר שונה. כאן הפגיעה איננה אישית בלבד. עצם העובדה שמישהו חושב שאפשר לפגוע בישראל בלי דין, היא כביכול פגיעה בקדוש ברוך הוא. זה חילול השם. ובמקרה כזה, אומר הרב, הנקמה באה כדי להרבות כבוד שמיים.</p>
+      <p>ההבחנה הזאת היא לב השיעור. אותו רגש עצמו יכול להיות פסול כשהוא משרת את האגו, וקדוש כשהוא משרת את כבוד שמיים. ההבדל איננו במעשה עצמו, אלא במקור שממנו הוא בא ובמטרה שאליה הוא מכוון.</p>
+      <p class="bold-para">על הנקמה האישית, על האגו, נאמר "לא תקום" – ושם המצווה היא למחול ולוותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · נקמה ולא נקמנות</div>
+      <h3 class="story-title">⚖️ נקמה ונקמנות</h3>
+      <p>הרב הביא את דבריו של הרב אריאל, שסיכם את הנושא בהבחנה חדה. צריך להבחין, כתב, בין נקמנות לנקמה. נקמנות אנושית, שבאה לפרוק יצרים, היא פסולה. אבל נקמה טהורה, שמטרתה להביא צדק לעולם, היא חיובית ורצויה. לכך התכוון דוד באומרו "הָאֵל הַנּוֹתֵן נְקָמוֹת לִי".</p>
+      <p>הנקמה נחשבת חיובית כשהיא נקייה מכל פנייה אישית, וכל כולה מכוונת לביעור הרע מתוך שאיפה לתקן עולם במלכות שדי. נקמה כזאת דומה לנקמה האלוקית, שאין בה כעס ויחסים אישיים, אלא רק מידת הצדק והמשפט שבהן מנהיג ה' את העולם.</p>
+      <p>זו הגדרה קשה. לפיה, הנקמה החיובית היא רק כשהאדם נקי לגמרי, וכל מטרתו היא להצטרף לנקמה האלוקית: שירבה כבוד שמיים בעולם, ושיראו הכל שיש דין ויש דיין.</p>
+      <p>והרב מראה שאותם שני דברים שראינו בשורשי הנקמה חוזרים כאן, מזוככים. "אֵל נְקָמוֹת ה' אֵל נְקָמוֹת הוֹפִיעַ. הִנָּשֵׂא שֹׁפֵט הָאָרֶץ, הָשֵׁב גְּמוּל עַל גֵּאִים". "הנשא שופט הארץ" – זה הכבוד, אבל כבוד שמיים. "השב גמול על גאים" – זה הצדק והיושר בעולם. הכבוד והצדק נשארים, אבל עוברים מן האדם אל הקדוש ברוך הוא.</p>
+      <p class="bold-para">נקמה חיובית היא רק כשהאדם פועל כשותף לנקמה האלוקית, נקי מפניות אישיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · נקמה ולא נקמנות</div>
+      <h3 class="story-title">🤔 האם חייבים להיות נקיים לגמרי?</h3>
+      <p>כאן הוסיף הרב ספק משלו. אולי אין צורך שהאדם יהיה נקי לגמרי. אולי די בכך שהוא יודע שיש במעשה נקמת ה', גם אם הוא פועל בחלקו מתוך היצר שלו.</p>
+      <p>הוא הציע שגם בזה אפשר להבין את הפסוקים: הקדוש ברוך הוא אמר "נקמת בני ישראל", ומשה אמר "נקמת ה'". ייתכן שהכוונה היא שגם מי שפועל לנקום את נקמת ישראל, עצם זה שהוא יודע שיש כאן גם כבוד שמיים, ושהמעשה מרבה כבוד שמיים בעולם – זה כבר מספיק.</p>
+      <p>הרב הודה שיש בזה חשש. הרגש עלול לשחד. לכן ההחלטה אם לפעול צריכה להיעשות בשיקול דעת נקי: לעמוד, לברר, לשאול. אבל לאחר שהוחלט שהמעשה ראוי, ייתכן שמותר לאדם לצרף אליו גם את רגשות הנקמה, משום שהם נותנים לו כוח לפעול.</p>
+      <p>וראיה לכך מגואל הדם, שהתורה מזכירה בפרשת מסעי. התורה מכירה בגואל הדם, שהוא הממית את הרוצח, ויש מן הראשונים שאומרים שאף מצווה בדבר. והרי גואל הדם פועל מתוך כאבו האישי על קרובו שנרצח! מכאן שכאשר המעשה מביא צדק לעולם, מותר שיהיה מעורב בו גם הרגש.</p>
+      <p class="bold-para">הרב מסתפק אם די בכך שהאדם יודע שיש במעשהו נקמת ה', גם אם רגשותיו מעורבים בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · נקמה ולא נקמנות</div>
+      <h3 class="story-title">✨ "נקום לעינינו"</h3>
+      <p>הרב חזר אל המקרה שבו פתח השיעור, והעיר שבאופן מפתיע נדון הדבר בדיוק ביום השנה לאותו מעשה. המעשה עצמו היה כשר: הירי היה מוצדק מבחינה מבצעית. השאלה הייתה רק על המניע. לפי הגדרתו המחמירה של הרב אריאל, נקמה שבאה מתוך רגש אישי יש בה קושי, כי ספק אם מי שעומד בשעת מעשה כזה מכוון לכבוד שמיים בלבד.</p>
+      <p>אבל לפי הספק שהעלה הרב, כשהמעשה עצמו טוב ומוצדק, ייתכן שמותר לשתף בו גם את רגשות הנקמה. ולאחר מעשה ודאי אין לפסול מעשה כשר רק משום שנלווה אליו רגש. הרב הוסיף שכשדנים מראש, מה ראוי לומר ולהורות, יש מקום לבדוק את הדברים היטב.</p>
+      <p>והעיקר שעולה מן השיעור: הנקמה החיובית, שהתורה משבחת אותה, היא כשהאדם רוצה שירבה כבוד שמיים בעולם. היא איננה נקמנות, היא איננה פריקת כעס, והיא איננה שמחה בצערו של אדם. היא הרצון לראות שיש אלוקים שופט בארץ.</p>
+      <p>וכך אנו מבקשים בכל שנה בימים הנוראים: "אָבִינוּ מַלְכֵּנוּ נְקֹם לְעֵינֵינוּ נִקְמַת דַּם עֲבָדֶיךָ הַשָּׁפוּךְ". אנו מבקשים מן הקדוש ברוך הוא שהוא ינקום, ושאנחנו נזכה לראות זאת בעינינו, כדי שיתגלה לכל שיש דין ויש דיין, וישמח צדיק כי חזה נקם.</p>
+      <p class="bold-para">הנקמה הרצויה היא זו שמטרתה גילוי כבוד שמיים בעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/k6agOGAOl3I · 2024-07-31 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שאלת הנקמה","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"האם נקמה היא דבר טוב?","icon":"❓"},{"id":2,"title":"מקרה שהגיע לבירור","icon":"📻"}]},{"id":2,"name":"נקמת ה' במדין","icon":"⚔️","color":"#6d28d9","stories":[{"id":3,"title":"\"נקום נקמת בני ישראל\"","icon":"⚔️"},{"id":4,"title":"כל אחד דואג לכבוד חברו","icon":"🤝"},{"id":5,"title":"אוהבים נאמנים","icon":"💞"}]},{"id":3,"name":"גדולה נקמה – וסכנותיה","icon":"⚖️","color":"#e08e00","stories":[{"id":6,"title":"לכל מידה יש מקום","icon":"🕰️"},{"id":7,"title":"\"גדולה נקמה שניתנה בין שתי אותיות\"","icon":"📖"},{"id":8,"title":"הסכנות שבנקמה","icon":"⚠️"},{"id":9,"title":"סערה פנימית","icon":"🌪️"}]},{"id":4,"name":"שמחת הצדיק בדין","icon":"🌅","color":"#1e88b8","stories":[{"id":10,"title":"למה הנקמה מתוקה","icon":"🍯"},{"id":11,"title":"\"ישמח צדיק כי חזה נקם\"","icon":"🌅"},{"id":12,"title":"משה מתאווה לראות","icon":"🙏"},{"id":13,"title":"דעה, מקדש ונקמה","icon":"🏛️"},{"id":14,"title":"השונא את ישראל","icon":"🛡️"}]},{"id":5,"name":"נקמה ולא נקמנות","icon":"🧭","color":"#c62b6b","stories":[{"id":15,"title":"\"לא תקום\" – הנקמה האישית","icon":"🕊️"},{"id":16,"title":"נקמה ונקמנות","icon":"⚖️"},{"id":17,"title":"האם חייבים להיות נקיים לגמרי?","icon":"🤔"},{"id":18,"title":"\"נקום לעינינו\"","icon":"✨"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
