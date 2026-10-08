@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 בין תכלת ללבן</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 בין תכלת ללבן</h1>
+  <p>למה פרשת ציצית נבחרה לזכירת יציאת מצרים, מה מסמלים חוט התכלת והחוט הלבן, ולמה התכלת חוזרת דווקא בארץ ישראל</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ בין תכלת ללבן" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/9_mi-RDZ4jU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/9_mi-RDZ4jU/hqdefault.jpg" alt="בין תכלת ללבן" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=9_mi-RDZ4jU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ציצית וזכירת יציאת מצרים</div>
+      <h3 class="story-title">🎨 כחול ולבן</h3>
+      <p>השיעור עוסק בשני צבעים: כחול ולבן. לא רק בציצית, אלא גם בדגל. הרב שואל: מי בחר את הצבעים האלה, ולמה דווקא הם? מה הם רומזים? ומה הקשר שלהם לזמננו?</p>
+      <p>כחול ולבן משמשים בעולם כסמל לדברים רבים: שלווה ורוגע, טוהר וניקיון, תקווה ואמונה. אבל אצל עם ישראל יש להם שורש עמוק יותר.</p>
+      <p>הרב הביא דברים שנכתבו בימי משה מונטיפיורי, כשנערכה מסיבה לכבודו. נאמר שם שבאותה הזדמנות הוצגו לפניו הצבעים הלאומיים של עמנו, כי רבים לא ידעו שכחול ולבן הם צבעי העם היהודי. ומאיפה זה מגיע? מפרשת ציצית: חוט של תכלת בין חוטי הלבן.</p>
+      <p>ולכן, כשבחרו לימים סמל, נבחרה טלית עם פסי תכלת. הרב שואל: האם זה קרה במקרה? או שיש כאן משהו עמוק שמתגלה דווקא בדורנו? כדי לענות, צריך לחזור אל התורה, אל המשנה ואל הגמרא, ולהבין מה באמת מסמלים התכלת והלבן.</p>
+      <p class="bold-para">הצבעים כחול ולבן אינם מקריים: שורשם בפרשת ציצית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ציצית וזכירת יציאת מצרים</div>
+      <h3 class="story-title">🌙 "כל ימי חייך – להביא הלילות"</h3>
+      <p>בהגדה של פסח אנחנו קוראים את המשנה: "אָמַר רַבִּי אֶלְעָזָר בֶּן עֲזַרְיָה, הֲרֵי אֲנִי כְּבֶן שִׁבְעִים שָׁנָה, וְלֹא זָכִיתִי שֶׁתֵּאָמֵר יְצִיאַת מִצְרַיִם בַּלֵּילוֹת, עַד שֶׁדְּרָשָׁהּ בֶּן זוֹמָא". הוא דרש את הפסוק "לְמַעַן תִּזְכֹּר אֶת יוֹם צֵאתְךָ מֵאֶרֶץ מִצְרַיִם כֹּל יְמֵי חַיֶּיךָ": "ימי חייך" – הימים, "כל ימי חייך" – להביא את הלילות.</p>
+      <p>הרב הזכיר שיש בין המפרשים דיון מה בדיוק פירוש "לא זכיתי", אבל המסקנה למעשה ידועה: מזכירים יציאת מצרים ביום ובלילה.</p>
+      <p>ואיך עושים זאת? אנחנו מוסיפים לקריאת שמע, בבוקר ובערב, את הפרשה השלישית – פרשת ציצית. היא מסתיימת בפסוק "אֲנִי ה' אֱלֹקֵיכֶם אֲשֶׁר הוֹצֵאתִי אֶתְכֶם מֵאֶרֶץ מִצְרַיִם". בשביל הפסוק הזה, בשביל מצוות זכירת יציאת מצרים, אנחנו קוראים את כל הפרשה.</p>
+      <p>וכאן מתעוררת שאלה. אם כל המטרה היא הפסוק האחרון, למה לקרוא את כל פרשת הציצית? האם הציצית "התלבשה" כאן במקרה, רק כי הפסוק האחרון נמצא בסופה? או שיש קשר פנימי בין ציצית לבין יציאת מצרים?</p>
+      <p class="bold-para">פרשת ציצית נאמרת בכל יום כדי לקיים את מצוות זכירת יציאת מצרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ציצית וזכירת יציאת מצרים</div>
+      <h3 class="story-title">🌅 "משיכיר בין תכלת ללבן"</h3>
+      <p>המשנה בתחילת מסכת ברכות שואלת: "מֵאֵימָתַי קוֹרִין אֶת שְׁמַע בְּשַׁחֲרִית? מִשֶּׁיַּכִּיר בֵּין תְּכֵלֶת לְלָבָן". כלומר, זמן קריאת שמע של הבוקר מתחיל כשיש מספיק אור כדי להבחין בין צבע התכלת לצבע הלבן.</p>
+      <p>יש כאלה שזמן זה נוגע להם מאוד. אנשים שיוצאים לעבודה מוקדם בבוקר, בשעות שבהן הזריחה מאוחרת, מחפשים מניין שמתפלל מוקדם, ושם ממש מסתכלים בשעון: האם כבר הגיע הזמן של "משיכיר"?</p>
+      <p>אבל השאלה היא: למה דווקא כך? מה הקשר בין קריאת שמע לבין ההבחנה בין תכלת ללבן? אפשר היה לקבוע את הזמן לפי סימן אחר.</p>
+      <p>והרב מוסיף: ראו מה המנהג. כשיהודי קורא את שמע, הוא לוקח את הציציות בידו. בתפילת שחרית לובשים טלית, וכשמגיעים לקריאת שמע מחזיקים את הציציות. נראה שהציצית קשורה לקריאת שמע יותר מאשר רק בגלל הפרשה האחרונה. זו השאלה שהשיעור מבקש לענות עליה: מה הקשר בין ציצית ליציאת מצרים, ולמה דווקא היא נבחרה להיות הסמל שבו אנו זוכרים את היציאה מדי יום?</p>
+      <p class="bold-para">זמן קריאת שמע של שחרית נקבע לפי ההבחנה בין תכלת ללבן, וזה רמז לקשר עמוק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התכלת והים</div>
+      <h3 class="story-title">🌊 "מה נשתנה תכלת?"</h3>
+      <p>הגמרא במסכת מנחות מביאה: "הָיָה רַבִּי מֵאִיר אוֹמֵר: מָה נִשְׁתַּנָּה תְּכֵלֶת מִכָּל הַצִּבְעוֹנִין? מִפְּנֵי שֶׁהַתְּכֵלֶת דּוֹמָה לַיָּם, וְיָם דּוֹמֶה לָרָקִיעַ, וְרָקִיעַ דּוֹמֶה לְכִסֵּא הַכָּבוֹד".</p>
+      <p>הרב שואל: אם המטרה היא להזכיר את כיסא הכבוד, או את השמים, למה צריך את כל השרשרת? יאמר פשוט שהתכלת דומה לרקיע. הרי כל אחד יודע מה צבע השמים. למה להתחיל מן הים?</p>
+      <p>ולכן, כפי שהרב מביא, רש"י מפרש את הגמרא בדרך מחודשת: מה נשתנה תכלת, שייחד אותה הקדוש ברוך הוא למצווה הזאת? כי התכלת דומה לים – הים שנעשו בו ניסים לישראל. לפי זה יש כאן שני דברים נפרדים. האחד: התכלת מזכירה את קריעת ים סוף ואת כל הניסים שנעשו שם. השני: היא מזכירה את בורא עולם, היושב כביכול בשמים.</p>
+      <p>והרב מוסיף שהתכלת אינה רק זיכרון לניסים שהיו. היא גם קשורה לזמנים שבהם מתחוללים ניסים, ולמצב שבו אדם מרגיש את הניסים סביבו. על כך עוד נרחיב בהמשך.</p>
+      <p class="bold-para">רבי מאיר שואל למה נבחרה דווקא התכלת, ורש"י מבאר שהיא דומה לים שנעשו בו ניסים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התכלת והים</div>
+      <h3 class="story-title">🔍 למה לא לקצר?</h3>
+      <p>כדאי להתעכב רגע על החידוש של רש"י. בקריאה פשוטה של הגמרא נראה שהים הוא רק שלב בדרך: מן התכלת אל הים, מן הים אל הרקיע, ומן הרקיע אל כיסא הכבוד. כאילו כל העניין הוא לטפס בסולם של צבעים עד למעלה.</p>
+      <p>אבל אם כך, הים מיותר. ולכן מבין רש"י שהים אינו רק מדרגה בסולם. יש לו משמעות בפני עצמו. הים הוא המקום שבו ראו ישראל את יד ה' בגלוי, שבו "וַיַּרְא יִשְׂרָאֵל אֶת הַיָּד הַגְּדֹלָה", ושבו האמינו בה' ובמשה עבדו.</p>
+      <p>כך מתברר שבחוט התכלת יש שתי תזכורות: תזכורת לעבר – לניסים שנעשו בים, ותזכורת למעלה – לבורא עולם היושב על כיסא כבודו. מי שמסתכל בתכלת זוכר גם מה ה' עשה לנו, וגם מי הוא זה שעשה.</p>
+      <p class="bold-para">השרשרת "ים, רקיע, כיסא הכבוד" מלמדת שהתכלת מתחילה מן הים, ממקום הניסים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התכלת והים</div>
+      <h3 class="story-title">🔗 הקשר שנפתר</h3>
+      <p>לפי הפירוש הזה מובן היטב הקשר שחיפשנו. אם התכלת מזכירה את ים סוף, את הניסים של יציאת מצרים, אז מובן למה מצוות ציצית נמצאת יחד עם זכירת יציאת מצרים. הציצית עצמה, בחוט התכלת שבה, היא תזכורת ליציאה.</p>
+      <p>ולכן מיד אחרי מצוות הציצית מופיע הפסוק "אֲשֶׁר הוֹצֵאתִי אֶתְכֶם מֵאֶרֶץ מִצְרַיִם". הפרשה כולה מחוברת: מטרת התכלת היא להזכיר לנו את יציאת מצרים, ואת הפסוק הזה אנו אומרים כדי לזכור אותה.</p>
+      <p>ויש עוד דבר יפה. בזמנים קדומים כמעט לא היו דרכים להפיק צבעים. היום יש בכל חנות מאות גוונים, אבל אז היו רק מקורות מעטים. צבע כחול אפשר היה להפיק גם מצמח שנקרא בימינו אינדיגו, והגמרא מחמירה מאוד במי שמשתמש בצבע הצמחי הזה במקום התכלת.</p>
+      <p>התכלת הכשרה חייבת לבוא דווקא מן החילזון שגדל בים. ולפי מה שאמרנו, זה לא מקרי: אם כל מטרת התכלת היא להזכיר את הים ואת הניסים שבו, מובן למה היא צריכה לבוא דווקא מן הים עצמו.</p>
+      <p class="bold-para">התכלת מזכירה את קריעת ים סוף, ולכן פרשת ציצית מתאימה לזכירת יציאת מצרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התכלת והים</div>
+      <h3 class="story-title">🐚 החילזון והנשיא</h3>
+      <p>הרב סיפר סיפור מן הדור שלנו. כשהתחילו לחקור ולגלות מחדש את התכלת, היה צריך לצוד חילזון ימי שנקרא ארגמון קהה קוצים. אבל הייתה בעיה: מדובר ביצור ימי מוגן בחוק, שמי שצד אותו עלול להיענש.</p>
+      <p>מה עשו? פנו לנשיא המדינה באותה תקופה, חיים הרצוג. הנושא היה קרוב מאוד לליבו, כי אביו, הרב יצחק הלוי הרצוג, שהיה הרב הראשי הראשון למדינת ישראל, כתב את עבודת הדוקטורט שלו על התכלת. הוא חקר וחיפש אותה רבות, והעניין העסיק אותו מאוד.</p>
+      <p>החוקרים אמרו לנשיא: נראה שגילינו את התכלת, אבל אי אפשר לצוד את החילזון. והנשיא, שהיו לו קשרים, דאג להם לאישור זמני. כך צדו את החילזון בארץ באותה תקופה. כפי שנאמר בשיעור, היום כבר אין צדים אותו בארץ, אלא מביאים אותו ממקומות אחרים.</p>
+      <p>הרב גם הזכיר שהרב הרצוג עצמו, עם כל המחקר שהשקיע, לא זכה להגיע לזיהוי שמקובל היום על רבים מן החוקרים. זה מראה כמה הדרך לגילוי הייתה ארוכה, ושהגילוי הגיע דווקא בדורנו.</p>
+      <p>והעיקר נשאר: יש דין מפורש שהתכלת הכשרה באה דווקא מן הים. כך, בכל חוט תכלת, אנו נזכרים בקריעת ים סוף. החילזון הקטן שבמעמקי הים נושא בתוכו את זיכרון הים שנבקע לפני עם ישראל.</p>
+      <p class="bold-para">גילוי התכלת בדורנו נקשר במשפחה שעסקה בחקר התכלת לאורך שנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התכלת והים</div>
+      <h3 class="story-title">⚖️ "שכלו המצרים"</h3>
+      <p>הקשר בין התכלת ליציאת מצרים אינו רק בצבע. הרב הביא שבספרי מובא דבר מעניין: למה נקרא שמה "תכלת"? על שם שכלו המצרים בבכורות. ויש שם דעה נוספת: על שם שכלו המצרים בים.</p>
+      <p>כלומר, אפילו המילה "תכלת" עצמה היא מלשון כיליון: כיליון בכורות מצרים במכה האחרונה, או כיליון צבא מצרים בים סוף. כל פעם שאנו מזכירים את שם התכלת, אנו מזכירים את הרגע שבו ה' נקם בפרעה ובמצרים והוציא את ישראל לחירות.</p>
+      <p>עד כאן ראינו שהתכלת קשורה ליציאת מצרים בשלוש דרכים: היא דומה לים שנעשו בו ניסים, היא באה מחילזון שגדל בים, ושמה רומז לכיליון המצרים.</p>
+      <p>אבל הציצית אינה עשויה רק מתכלת. יש בה גם חוטים לבנים, והם רוב הציצית. האם גם ללבן יש קשר ליציאת מצרים? הרב מראה שכן, ושהקשר הזה מלמד אותנו משהו יסודי על מי שאנחנו.</p>
+      <p class="bold-para">הספרי מבאר שגם שם התכלת רומז לכיליון המצרים ביציאת מצרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הלבן – חותם של עבדים</div>
+      <h3 class="story-title">🔏 חותם של טיט וחותם של זהב</h3>
+      <p>באותה סוגיה במסכת מנחות אומר רבי מאיר: "גָּדוֹל עָנְשׁוֹ שֶׁל לָבָן יוֹתֵר מֵעָנְשׁוֹ שֶׁל תְּכֵלֶת". מי שלא שם חוטים לבנים בציצית – חמור יותר ממי שלא שם תכלת. למה?</p>
+      <p>רבי מאיר מביא משל: מלך בשר ודם אמר לשני עבדיו. לאחד אמר: הבא לי חותם של טיט. ולשני אמר: הבא לי חותם של זהב. שניהם התרשלו ולא הביאו. איזה מהם עונשו גדול יותר? זה שנאמר לו להביא חותם של טיט ולא הביא.</p>
+      <p>ההיגיון פשוט. חותם של טיט אינו עולה כמעט כלום. מי שלא טרח להביא דבר פשוט כזה – התרשל לגמרי. אבל חותם של זהב הוא דבר יקר וקשה להשיג, וקשה להעניש עבד שלא הצליח להביא אותו. כך גם הלבן, שקל להשיג, לעומת התכלת היקרה והנדירה.</p>
+      <p>אבל הרב שואל שאלה נוספת: למה בחרה הגמרא דווקא במשל של חותם? אפשר היה להביא משל של כוס מחרס וכוס מזהב, או דף מנייר ודף מזהב. משלים יש לרוב. למה דווקא חותם?</p>
+      <p class="bold-para">רבי מאיר אומר שעונשו של לבן גדול מעונשו של תכלת, ומביא משל משני עבדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הלבן – חותם של עבדים</div>
+      <h3 class="story-title">⚪ סימן של עבד</h3>
+      <p>התוספות על המקום מבארים: למה מדמים את הציצית לחותם של טיט? כי בעבר היו עושים חותם לעבדים, כדי שלא יברחו. היה לעבד סימן שקשה להסיר, שכל מי שרואה אותו יודע שהוא שייך לאדון מסוים.</p>
+      <p>וכך, אומרים התוספות, הציצית מעידה על ישראל שהם עבדי הקדוש ברוך הוא. הציצית היא הסמל שלנו. אנו מסמנים בה שזכינו להיות עבדיו של מלך מלכי המלכים.</p>
+      <p>ולכן המשל דווקא בחותם. לא סתם דבר זול ודבר יקר, אלא דבר שכל מטרתו להראות למי העבד שייך. החוטים הלבנים של הציצית הם כמו החותם של העבד: הם מכריזים שאנחנו שייכים לה'.</p>
+      <p>ומכאן עולה השאלה הבאה, שמחזירה אותנו אל יציאת מצרים: מתי נעשה עם ישראל עבדי ה'? באיזה רגע בהיסטוריה התחילה השייכות הזאת? התורה עונה על כך במפורש.</p>
+      <p class="bold-para">לפי התוספות, הציצית היא כמו חותם שעושים לעבד, והיא מעידה שאנו עבדי ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הלבן – חותם של עבדים</div>
+      <h3 class="story-title">⛓️ "כי עבדי הם"</h3>
+      <p>התורה אומרת על עבד עברי: "כִּי עֲבָדַי הֵם אֲשֶׁר הוֹצֵאתִי אֹתָם מֵאֶרֶץ מִצְרָיִם, לֹא יִמָּכְרוּ מִמְכֶּרֶת עָבֶד". ובהמשך: "כִּי לִי בְנֵי יִשְׂרָאֵל עֲבָדִים, עֲבָדַי הֵם אֲשֶׁר הוֹצֵאתִי אוֹתָם מֵאֶרֶץ מִצְרָיִם, אֲנִי ה' אֱלֹקֵיכֶם".</p>
+      <p>כלומר, צריך להיזהר מאוד בכבודו של יהודי. אסור למכור אותו לעבדות עולם. למה? כי הוא עבד שלי, אומר הקדוש ברוך הוא. ומתי נעשה עבד שלי? ביציאת מצרים. כשהוצאתי אותם מלהיות עבדי פרעה, נתתי להם במקום זאת לזכות להיות עבדי.</p>
+      <p>ואם כך, יש קשר נפלא גם בין החוט הלבן לבין יציאת מצרים. התוספות אמרו שהלבן הוא החותם שמסמל שאנו עבדי ה'. ומתי נעשינו עבדי ה'? כשיצאנו ממצרים.</p>
+      <p>נמצא שגם התכלת וגם הלבן מזכירים את יציאת מצרים, כל אחד מצד אחר. התכלת מזכירה את הים ואת הניסים, והלבן מזכיר את העבדות החדשה, עבדות של כבוד, שקיבלנו ביום שבו יצאנו לחירות.</p>
+      <p class="bold-para">ביציאת מצרים יצאנו מעבדות פרעה ונעשינו עבדי ה', ולכן גם הלבן מזכיר את היציאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הלבן – חותם של עבדים</div>
+      <h3 class="story-title">🎶 "למי החותמת ולמי הפתילים"</h3>
+      <p>יש פיוט מפורסם של רבי יהודה הלוי, "יום ליבשה נהפכו מצולים", ששר על קריעת ים סוף. בעבר נהגו לאמרו בתפילת שחרית של שביעי של פסח, ממש לפני ברכת "גאל ישראל", ולכן הוא מסתיים בבקשה לגאולה. במחזורים ישנים הוא עדיין מופיע. והיום נוהגים רבים, בעיקר מקהילות אשכנז, לשיר אותו בברית מילה, ויש לו מנגינות רבות. וחוזר בו הפזמון: "שִׁירוּ שִׁירָה חֲדָשָׁה, שַׁבְּחוּ גְאוּלִים".</p>
+      <p>בפיוט יש שורה מעניינת: "למי זאת נרשמת, הכר נא דבר אמת, למי החותמת ולמי הפתילים". מה החותמת ומה הפתילים?</p>
+      <p>הרב מביא את דברי הגמרא בעניין עבד, שיש לו חותם בגופו וחותם בבגדו. כך זיכה אותנו הקדוש ברוך הוא בשני חותמות, כדי שכולם יכירו שאנו עבדיו: חותם בגוף – ברית המילה, שעליה אומרים "וְצֶאֱצָאָיו חָתַם בְּאוֹת בְּרִית קֹדֶשׁ"; וחותם בבגד – הציצית, הפתילים.</p>
+      <p>ולפי זה מובן מנהג שנוהגים רבים בברית מילה: כל מי שמקבל כיבוד – הסנדק, הקוואטר, המביא את הכיסא – לובש טלית. למה צריך ציצית דווקא שם? כי כשעושים את החותם שבגוף, רצו לחבר אליו גם את החותם שבבגד.</p>
+      <p class="bold-para">בפיוט של רבי יהודה הלוי לקריעת ים סוף משולבים יחד ברית המילה והציצית, שני חותמות של ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הלבן – חותם של עבדים</div>
+      <h3 class="story-title">8️⃣ שמונה</h3>
+      <p>ויש עוד רמז יפה. ברית המילה נעשית ביום השמיני. ובכל ציצית יש שמונה חוטים. שני החותמות של עם ישראל, זה שבגוף וזה שבבגד, קשורים במספר שמונה.</p>
+      <p>והרב הוסיף שיש מדרש שמקשר גם את קריעת ים סוף לעניין הזה: הים נקרע רק בזכות מי שהיה ראוי לכך, ויש בדברים קשר לדרגה של "שמונה" – המספר שמסמל את מה שלמעלה מן הטבע.</p>
+      <p>ולכן מובן מאוד שרבי יהודה הלוי, כשהוא שר על קריעת ים סוף, משלב בתוך השיר את ברית המילה ואת הציציות. כולם הם חותמו של הקדוש ברוך הוא על עמו, וכולם נקשרים ליציאה ממצרים.</p>
+      <p>בכך מסתיים החלק הראשון של השיעור. למדנו שהתכלת מזכירה את קריעת ים סוף, והלבן מזכיר שאנו עבדי ה'. עכשיו נראה איך הדברים מתחברים זה לזה, ואיך הם מגיעים עד ארץ ישראל ועד התקופה שלנו.</p>
+      <p class="bold-para">ברית המילה ביום השמיני ושמונת חוטי הציצית קשורים במספר שמונה, שמובא שנקשר גם בקריעת ים סוף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בנים ועבדים</div>
+      <h3 class="story-title">👑 בנים ועבדים</h3>
+      <p>בציצית יש תכלת ולבן, והם מסמלים שני דברים: אחד – בנים, ואחד – עבדים. בתפילת ערבית אנו אומרים: "הָעוֹשֶׂה לָּנוּ נִקָּמָה בְּפַרְעֹה, אוֹתוֹת וּמוֹפְתִים בְּאַדְמַת בְּנֵי חָם... הַמַּעֲבִיר בָּנָיו בֵּין גִּזְרֵי יַם סוּף". בקריעת ים סוף אנחנו נקראים "בניו".</p>
+      <p>למה דווקא שם? כי כשרואים את גבורתו של ה', איך הוא מטביע את השונאים שעשו לנו רע, מרגישים את אהבתו אלינו. ואז נעשים בנים. וכך ממשיכה התפילה: "וּמַלְכוּתוֹ בְּרָצוֹן קִבְּלוּ עֲלֵיהֶם, מֹשֶׁה וּבְנֵי יִשְׂרָאֵל לְךָ עָנוּ שִׁירָה בְּשִׂמְחָה רַבָּה".</p>
+      <p>נמצא: עבדי ה' נעשינו ביציאה ממצרים, ובנים של הקדוש ברוך הוא נעשינו בקריעת ים סוף. התכלת, שמזכירה את קריעת ים סוף, מסמלת את היותנו בנים; והלבן, החותם של העבד, מסמל את היותנו עבדים. שני החוטים יחד רומזים על שתי הבחינות של יציאת מצרים.</p>
+      <p>ושני החוטים כרוכים זה בזה בכל ציצית. אי אפשר להפריד ביניהם: יהודי הוא גם עבד וגם בן, ושתי הבחינות האלה נולדו באותו מעמד של יציאה מן העבדות אל החירות.</p>
+      <p class="bold-para">ביציאת מצרים נעשינו עבדי ה', ובקריעת ים סוף הרגשנו שאנו בניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בנים ועבדים</div>
+      <h3 class="story-title">🔁 הפסוק שפותח ומסיים באותן מילים</h3>
+      <p>יש חידה ידועה: איזה פסוק בתורה פותח באותן מילים ומסתיים באותן מילים? והתשובה היא הפסוק האחרון של פרשת ציצית: "אֲנִי ה' אֱלֹקֵיכֶם אֲשֶׁר הוֹצֵאתִי אֶתְכֶם מֵאֶרֶץ מִצְרַיִם לִהְיוֹת לָכֶם לֵאלֹקִים, אֲנִי ה' אֱלֹקֵיכֶם".</p>
+      <p>ובאותה הזדמנות הובאה בשיעור חידה נוספת, בדרך צחות: באיזה פסוק משה רבנו "אינו אומר אמת"? באותו פסוק עצמו – כי בסופו אין כתובה המילה "אמת", ואנחנו מוסיפים אותה בקריאת שמע ואומרים "ה' אלוקיכם אמת".</p>
+      <p>אבל השאלה האמיתית היא: למה צריך לומר "אני ה' אלוקיכם" פעמיים באותו פסוק? הרב הציע שלפי מה שלמדנו, יש כאן שתי בחינות. פעם אחת "אני ה' אלוקיכם" כאדון, שאנו עבדיו מאז שהוציא אותנו ממצרים. ופעם שנייה "אני ה' אלוקיכם" כאב, שאנו בניו, כפי שהתגלה בקריעת ים סוף.</p>
+      <p>כך הפסוק שבו אנו מקיימים בכל יום את זכירת יציאת מצרים מכיל בתוכו את שני החוטים של הציצית: הלבן והתכלת, העבד והבן.</p>
+      <p class="bold-para">"אני ה' אלוקיכם" נאמר פעמיים בפסוק האחרון, כנגד היותנו עבדי ה' ובניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בנים ועבדים</div>
+      <h3 class="story-title">💙 לבוש מלכות תכלת</h3>
+      <p>באותה גמרא, "תכלת דומה לים, וים דומה לרקיע, ורקיע דומה לכיסא הכבוד", מביא רש"י פירוש נוסף. מלבד מה שהתכלת מזכירה את בורא עולם, אומר רש"י, עוד נאה לישראל שיהיה כיסאו עליהם, כמו שנאמר על מעמד הר סיני: "וְתַחַת רַגְלָיו כְּמַעֲשֵׂה לִבְנַת הַסַּפִּיר".</p>
+      <p>כלומר, התכלת מסמלת שהקדוש ברוך הוא בא לשכון על עם ישראל, להיות עליהם. זה ביטוי של אהבה: הוא שוכן בתוכנו.</p>
+      <p>והרמב"ן מוסיף, כפי שהביא הרב, שהתכלת הייתה צבע של מלכות. אפילו בזמנים מאוחרים לא היה מלבד המלכים מי שילבש אותה. וכך כתוב במגילת אסתר: "וּמָרְדֳּכַי יָצָא מִלִּפְנֵי הַמֶּלֶךְ בִּלְבוּשׁ מַלְכוּת תְּכֵלֶת וָחוּר". גם בבגדי הכהונה יש תכלת.</p>
+      <p>מכאן יוצא שהתכלת מורה עלינו שאנחנו בנים של מלך. בן של מלך לובש תכלת. וזה מתאים מאוד למה שאמרנו: בקריעת ים סוף, כשהתגלתה אהבת ה' אלינו בגלוי, נעשינו בניו, וזה מה שחוט התכלת אומר בכל יום.</p>
+      <p class="bold-para">התכלת היא בגד של מלכות, ולכן היא מסמלת את מי שהוא בן של מלך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בנים ועבדים</div>
+      <h3 class="story-title">🤲 ללבוש תכלת היום?</h3>
+      <p>הרב סיפר על אחד הרבנים שעוסקים בחקר התכלת, שהגיע כמה פעמים אל אחד מגדולי הפוסקים עם קלסרים מלאים בהוכחות. בסוף שאל אותו: מה עוד צריך להביא כדי להוכיח שזו התכלת האמיתית? והפוסק אמר לו שאין צורך להביא עוד. אם כך, שאל, האם אני יכול ללבוש תכלת?</p>
+      <p>התשובה הייתה מעניינת. אילו היית יהודי פרטי, עשה כרצונך. אבל אתה רב שמייצג ציבור. אם אתה תלבש, אנשים יבינו שזו ההלכה. אם אתה מוכן לפסוק בזה הלכה לכל ישראל – לבש. הוא אמר שאינו יכול לפסוק כך לכל ישראל, וקיבל עצה: אל תלבש, אבל לך ותן שיעורים בכל מקום, והסבר כמה חשוב הדבר.</p>
+      <p>ומה המצב היום? אי אפשר לומר ליהודי שהוא חייב ללבוש תכלת. כי אין במדע מאה אחוז. יש הסתברות, אפילו גבוהה מאוד, אבל לא ודאות. ובהלכה אנו הולכים בדרך כלל לפי מסורת מדור לדור, וכאן המסורת נקטעה.</p>
+      <p>אבל דווקא כאן יש דבר יפה. כשיש מצווה שאין חובה לקיים אותה, האדם יכול לבטא בה את אהבתו. מי שרוצה ללבוש – זוכה, כפי שנראה מן ההוכחות, למצווה גדולה. מי שאינו לובש – זכותו המלאה. וכך יוצא שבימינו התכלת היא ביטוי של אהבה מצד האדם לבורא עולם.</p>
+      <p class="bold-para">היום אי אפשר לחייב ללבוש תכלת, ולכן מי שלובש אותה מבטא אהבה לה' מרצונו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · התכלת וארץ ישראל</div>
+      <h3 class="story-title">🧭 "ותוליכנו קוממיות לארצנו"</h3>
+      <p>הרב מראה קשר נוסף, בין התכלת לבין ארץ ישראל. אנחנו אוחזים את הציציות לקראת קריאת שמע. אבל באיזה רגע בדיוק? בסידורים רבים כתוב לקבץ את הציציות בברכת "אהבה רבה", כשאומרים: "וַהֲבִיאֵנוּ לְשָׁלוֹם מֵאַרְבַּע כַּנְפוֹת הָאָרֶץ, וְתוֹלִיכֵנוּ קוֹמְמִיּוּת לְאַרְצֵנוּ".</p>
+      <p>כלומר, ברגע שאנו מבקשים לבוא לארץ ישראל, אנחנו אוחזים בציציות, בחוטים שבהם היה פעם חוט של תכלת. זה מנהג ישן, הרבה לפני שנבחר הדגל. יש כאן רמז לקשר בין הציצית ובין השיבה לארץ.</p>
+      <p>ומה פירוש הקשר? אמרנו שהלבן מסמל את האדם שהוא עבד ה', והתכלת את האדם שהוא בן של מלך, שמרגיש את אהבת ה'. איפה אנחנו נקראים עבדים, ואיפה אנחנו מרגישים בנים?</p>
+      <p>בחוץ לארץ, לאורך הגלות, היינו בעיקר עבדי ה'. כמעט לא ראינו בגלוי את אהבתו: לא ניסים גלויים, לא נקמה באויבים. ראינו צרות, סבל וייסורים. ובארץ ישראל המצב אחר.</p>
+      <p class="bold-para">את הציציות אוחזים בתפילה דווקא כשמבקשים לשוב לארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · התכלת וארץ ישראל</div>
+      <h3 class="story-title">🏰 "הביאני המלך חדריו"</h3>
+      <p>על הפסוק בשיר השירים "הֱבִיאַנִי הַמֶּלֶךְ חֲדָרָיו" מובא בשם הגאון מווילנא שזו הכניסה לארץ ישראל: הקדוש ברוך הוא מביא אותנו אל ארמון המלך. כאן אנחנו בנים, וכאן הוא עושה לנו נפלאות שלא ראינו כדוגמתן אלפי שנים.</p>
+      <p>ולכן לא במקרה דווקא כאן, בארץ ישראל, מרגישים שהגיע הזמן ללבוש תכלת. בחוץ לארץ לא היה חוט תכלת, כי שם היינו רק עבדים. כאן אנו בנים של בורא עולם, וכאן המקום המתאים לגילוי התכלת.</p>
+      <p>הרב הביא מן הספר תשובות והנהגות: יש קבלה בשם האר"י הקדוש שהתכלת דומה לרקיע, לרמוז שאנו מונהגים בהשגחתו הגלויה. בזמן המקדש, כשזכינו לניסים ממש, הייתה לנו אפשרות לקיים את המצווה. אבל כשהלך ונעלם גילוי השכינה, ובעוונותינו בא הסתר פנים, גם התכלת נסתרה.</p>
+      <p>אם כן, כשהתכלת חוזרת ומתגלה, זה סימן שגילוי ההשגחה חוזר. ואכן, אנחנו רואים בימינו כמה ה' משגיח עלינו.</p>
+      <p class="bold-para">בארץ ישראל מרגישים בנים של ה', ולכן דווקא כאן מתגלה שוב התכלת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · התכלת וארץ ישראל</div>
+      <h3 class="story-title">✨ ניסים שרואים בעיניים</h3>
+      <p>הרב הביא דוגמאות מן הזמן הזה. בשנים האחרונות שוגרו לעבר הארץ טילים ממרחקים עצומים, שעלו לגובה של יותר ממאה קילומטרים, הרבה מעל לגובה שבו טסים מטוסים. והצליחו ליירט אותם עוד מחוץ לאטמוספירה. דבר שקשה אפילו לדמיין. מי שמתבונן רואה בזה השגחה גלויה.</p>
+      <p>והוא הוסיף סיפור ששמע על הקמת המדינה. כפי שסופר בשיעור, לפני ההכרזה הזהירו גורמים חשובים בארצות הברית שהקמת מדינה תביא למלחמה גדולה, ולחצו שלא להכריז. גם בתוך היישוב לא היה קל לשכנע את כולם. ובכל זאת הוחלט להכריז. ובסוף, מה שהיה נראה כנגד כל הסיכויים התהפך: נשיא ארצות הברית הודיע על הכרה במדינה מיד לאחר הקמתה, בניגוד לדעת רבים מיועציו.</p>
+      <p>"ואם תרצה לספר ניסים ונפלאות – לא תגמור", אמר הרב. כמה ניסים ונפלאות עשה לנו הקדוש ברוך הוא כאן.</p>
+      <p>ולכן כאן מתאים שתהיה תכלת. בארץ ישראל מרגישים את אהבתו של הקדוש ברוך הוא, וכאן ניכר שאנו בניו.</p>
+      <p class="bold-para">בימינו רואים השגחה גלויה, וכמה אהבת ה' אלינו ניכרת בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · התכלת וארץ ישראל</div>
+      <h3 class="story-title">🌈 לסיכום: לחזור ולהרגיש בנים</h3>
+      <p>נסכם את מה שלמדנו. התכלת והלבן מתחילים ביציאת מצרים וממשיכים עד הדגל של היום. הלבן מסמל את האדם שהוא עבד ה', כמו חותם של עבד. התכלת מסמלת את האדם שהוא בן של מלך, ומזכירה את קריעת ים סוף – שם נעשינו בנים, שם קיבלנו את מלכותו ברצון, ושם הרגשנו כמה ה' אוהב אותנו.</p>
+      <p>למה במשך דורות כה רבים לא הייתה תכלת? פירוש נפלא: בגלות לא הרגשנו בנים. כדי להרגיש בן, צריך לראות את ה' עושה לנו ניסים ונקמה באויבים, כמו ביציאת מצרים. בגלות ראינו לעיתים הצלה מגזרה, אבל לא את הגילוי השלם של אהבתו.</p>
+      <p>ובארץ ישראל מגלים שוב את התכלת. ולא במקרה בחרו את הסמל של טלית עם תכלת. כאן אנחנו בנים של הקדוש ברוך הוא. כאן חוזרים להרגיש שטוב להיות יהודי, שזה אושר להיות יהודי. אנשים מכל העולם באים לראות מי הוא העם המיוחד הזה.</p>
+      <p>ומי שזוכה, כדאי לו להרגיש בן של הקדוש ברוך הוא – כל אחד לפי מה שהוא יכול. יהי רצון שכמו שהיו ניסים ביציאת מצרים, נזכה גם היום לראות ניסים ונפלאות וישועות לכל עם ישראל.</p>
+      <p class="bold-para">הלבן מסמל עבד ה', התכלת מסמלת בן של מלך, ובארץ ישראל חוזרים להרגיש בנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/9_mi-RDZ4jU · 2024-05-01 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ציצית וזכירת יציאת מצרים","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"כחול ולבן","icon":"🎨"},{"id":2,"title":"\"כל ימי חייך – להביא הלילות\"","icon":"🌙"},{"id":3,"title":"\"משיכיר בין תכלת ללבן\"","icon":"🌅"}]},{"id":2,"name":"התכלת והים","icon":"🌊","color":"#6d28d9","stories":[{"id":4,"title":"\"מה נשתנה תכלת?\"","icon":"🌊"},{"id":5,"title":"למה לא לקצר?","icon":"🔍"},{"id":6,"title":"הקשר שנפתר","icon":"🔗"},{"id":7,"title":"החילזון והנשיא","icon":"🐚"},{"id":8,"title":"\"שכלו המצרים\"","icon":"⚖️"}]},{"id":3,"name":"הלבן – חותם של עבדים","icon":"⚪","color":"#e08e00","stories":[{"id":9,"title":"חותם של טיט וחותם של זהב","icon":"🔏"},{"id":10,"title":"סימן של עבד","icon":"⚪"},{"id":11,"title":"\"כי עבדי הם\"","icon":"⛓️"},{"id":12,"title":"\"למי החותמת ולמי הפתילים\"","icon":"🎶"},{"id":13,"title":"שמונה","icon":"8️⃣"}]},{"id":4,"name":"בנים ועבדים","icon":"👑","color":"#1e88b8","stories":[{"id":14,"title":"בנים ועבדים","icon":"👑"},{"id":15,"title":"הפסוק שפותח ומסיים באותן מילים","icon":"🔁"},{"id":16,"title":"לבוש מלכות תכלת","icon":"💙"},{"id":17,"title":"ללבוש תכלת היום?","icon":"🤲"}]},{"id":5,"name":"התכלת וארץ ישראל","icon":"🇮🇱","color":"#c62b6b","stories":[{"id":18,"title":"\"ותוליכנו קוממיות לארצנו\"","icon":"🧭"},{"id":19,"title":"\"הביאני המלך חדריו\"","icon":"🏰"},{"id":20,"title":"ניסים שרואים בעיניים","icon":"✨"},{"id":21,"title":"לסיכום: לחזור ולהרגיש בנים","icon":"🌈"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
