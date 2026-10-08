@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 משכן בלב</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 משכן בלב</h1>
+  <p>מן המשכן הקטן ועד קודש הקודשים: איך הלב של האדם נעשה מקום לאהבת ה', ומהי אהבת האחדות שמעל לכל אהבה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ משכן בלב" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/A3vEdu7LXB4?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/A3vEdu7LXB4/hqdefault.jpg" alt="משכן בלב" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=A3vEdu7LXB4" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · כשהאהבה עזה</div>
+      <h3 class="story-title">❓ האם מותר לדבר כך?</h3>
+      <p>השיעור נפתח בשאלה כמעט נועזת: האם אפשר לדבר על "רומנטיקה" עם בורא עולם? האם יש בכלל מושג כזה ביהדות, או שזו רק לשון של העולם שבחוץ?</p>
+      <p>התשובה מגיעה מן הגמרא עצמה. במסכת סנהדרין מובא משל, שנאמר בלשון ארמית ונראה במבט ראשון כמו משפט על זוג נשוי ותו לא. אבל רש"י מסביר שהגמרא מדברת על המשכן ועל בית המקדש, ומשווה את היחס בין עם ישראל לקדוש ברוך הוא ליחס שבין איש לאשתו.</p>
+      <p>זו לא המצאה של דורנו. כל ספר שיר השירים בנוי על המשל הזה, וחז"ל ראו בו את הביטוי העמוק ביותר לקשר שבין ישראל לאביהם שבשמיים. ולכן מותר, ואף ראוי, לשאול: מה אנחנו יכולים ללמוד מן האהבה שבין בני זוג על האהבה שבין האדם לבורא עולם?</p>
+      <p>ובשיעור נראה שהמשל הזה אינו רק קישוט. הוא פותח דלת להבנת מבנה המשכן כולו, מן החצר ועד קודש הקודשים, ומלמד אותנו מה יכול לקרות בתוך הלב של כל יהודי.</p>
+      <p class="bold-para">חז"ל עצמם משווים את הקשר בין עם ישראל לבורא עולם לקשר שבין בני זוג.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · כשהאהבה עזה</div>
+      <h3 class="story-title">⚔️ על רוחב של סייף</h3>
+      <p>וזה לשון הגמרא: "כִּי רְחִימְתִּין הֲוָה עֲזִיזָא, אַפּוּתְיָא דְּסַפְסִירָא שְׁכִיבַן; הַשְׁתָּא דְּלָא עֲזִיזָא רְחִימְתִּין, פּוּרְיָא בַּר שִׁיתִּין גַּרְמִידֵי לָא סַגְיָא לַן". כשאהבתנו הייתה עזה, יכולנו לשכב על רוחב של סייף. עכשיו שאהבתנו אינה עזה, מיטה של שישים אמה אינה מספיקה לנו.</p>
+      <p>רש"י מסביר שהדברים נאמרו על המשכן ועל בית המקדש. המשכן היה קטן מאוד: אורכו שלושים אמה ורוחבו עשר אמות, כמו חדר של בית קטן. ובכל זאת, בימי המשכן אהבת ישראל לקדוש ברוך הוא הייתה עזה, והשכינה שרתה ביניהם בתוך המקום הצר הזה. כשיש אהבה, הכול מסתדר.</p>
+      <p>לעומת זאת, בבית המקדש השני, המבנה היה גדול לאין ערוך, והבית לבדו היה ארוך שישים אמה. אבל האהבה נחלשה, וכבר לא שרתה בו השכינה כמו קודם. המקום הרחב לא הספיק, כי כשהלבבות מתרחקים, שום גודל של בניין אינו ממלא את החסר.</p>
+      <p>רואים כאן שהגמרא משווה בפירוש את בית המקדש לחדר של בני זוג. הקשר בין שני הדברים עמוק מאוד, ונראה אותו הולך ומתבהר לאורך כל השיעור.</p>
+      <p class="bold-para">כשיש אהבה, אין בעיה של מקום; כשהאהבה נחלשת, גם מיטה רחבה של שישים אמה אינה מספיקה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בלבבי משכן אבנה</div>
+      <h3 class="story-title">✈️ החטוף שחזר</h3>
+      <p>מי שחיבר את המקדש לא רק לבני הזוג אלא לכל אדם ואדם, היה הגאון רבי יצחק הוטנר, בעל "פחד יצחק". הוא היה ראש ישיבה גדול בארצות הברית, אהב מאוד את תורת המהר"ל מפראג, והרבה לדבר על חוכמת הלב והנפש.</p>
+      <p>בשיעור סופר שהוא התפרסם גם בעקבות מאורע מבהיל. בחודש אלול, בשנים שבהן ארגוני מחבלים חטפו מטוסים, נחטף גם המטוס שבו טס עם בני משפחתו. המטוס הונחת במדבר בירדן, ורוב הנוסעים שוחררו, אבל אותו ואת היהודים שהיו איתו המשיכו להחזיק. כל העולם היהודי ידע שגדול בתורה נמצא בידי החוטפים.</p>
+      <p>מסופר שהרבי מלובביץ', שהעריך אותו מאוד, אמר שהיהודי הזה שלומד ומפיץ בהתלהבות כל כך גדולה את תורת המהר"ל, ודאי זכותו של המהר"ל תעמוד לו. ובסופו של דבר אירע נס: היהודים שוחררו בלי שום תמורה. ההסבר הטבעי שניתן לכך היה מאבק פנימי בין המחבלים לבין שלטונות ירדן, שבעקבותיו החליטו לשחרר את החטופים.</p>
+      <p>יהי רצון שנזכה גם בימינו לשחרור כזה, של כל החטופים, בלי תמורה ובלי מחיר. ובשיעור הובא שאחרי שניצל חיבר רבי יצחק הוטנר את השיר המפורסם "בלבבי משכן אבנה".</p>
+      <p class="bold-para">מחבר השיר "בלבבי משכן אבנה" היה גדול בתורה, שניצל בנס מידי חוטפים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בלבבי משכן אבנה</div>
+      <h3 class="story-title">🫀 הלב שנעשה משכן</h3>
+      <p>"בִּלְבָבִי מִשְׁכָּן אֶבְנֶה לַהֲדַר כְּבוֹדוֹ". השיר הזה מושר היום בכל מקום, ובשיעור הוא הושמע ברוב שמחה. מה הוא בא לומר?</p>
+      <p>המשכן אינו סיפור של פעם. לא לחינם אנו קוראים את פרשיות המשכן שנה אחר שנה. כל יהודי יכול להקים משכן בתוך ליבו. איך? כאשר הלב מתחבר לאהבת ה', מרגיש את הנעימות של בורא עולם, את היופי שבקרבתו, את הקשר החי עימו. אהבת ה' שבתוך האדם היא המשכן שבליבו.</p>
+      <p>כשאדם נהנה ממצווה, נהנה מתורה, נהנה מן הקרבה לבורא עולם, זה הסימן שהשכינה שורה בו. כך הובא בשיעור בשם רש"י על הפסוק "וִיהִי נֹעַם ה' אֱלֹקֵינוּ עָלֵינוּ": ותשרה שכינתו עלינו. הנועם, הנעימות שבעבודת ה', הוא השראת השכינה עצמה.</p>
+      <p>אם כן, משכן אינו רק בניין של עצים ויריעות. הוא מצב של הלב. ומכאן נעבור לראות איך כל חלק במשכן רומז לסוג אחר של אהבה שבאדם.</p>
+      <p class="bold-para">כאשר האדם נהנה מקרבת ה', השכינה שורה בתוך ליבו והוא עצמו נעשה משכן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלושת הכלים</div>
+      <h3 class="story-title">🕎 ריח, לחם ואור</h3>
+      <p>בשיעור הקודם נלמד שיש שלושה סוגי אהבה: אהבת הערב, אהבת המועיל ואהבת הטוב. עכשיו נראה שהמשכן עצמו מסודר לפיהן. האדם נכנס אל הקודש, ומה הוא פוגש?</p>
+      <p>ראשית, את מזבח הקטורת. איזה ריח טוב! הריח הוא דבר ערב, דבר שנותן לאדם תענוג ותחושה נעימה, אולי ברמה גבוהה ועדינה יותר מאוכל. זה מסמל את האדם שאוהב את בורא עולם בגלל כל הדברים הערבים והנעימים שברא בעולמו.</p>
+      <p>אחר כך הוא פוגש את השולחן, ועליו לחם הפנים. אין סמל גדול יותר לדבר מועיל מאשר לחם: "וְלֶחֶם לְבַב אֱנוֹשׁ יִסְעָד". הלחם מחייה את האדם ומקיים אותו. זו אהבת המועיל: אהבה לבורא עולם על כל מה שמועיל לנו ומחזיק אותנו בחיים.</p>
+      <p>ולבסוף הוא פוגש את המנורה הטהורה. "תורה אור". האור מסמל את החוכמה, את הטוב, את הדבר הנעלה. זו אהבת הטוב: אהבה לבורא עולם בגלל הטוב עצמו, האמת והחוכמה.</p>
+      <p>כך עומדים שלושת הכלים כמו שלושה עמודים שמחזיקים את המשכן כולו. אבל המשכן אינו נגמר כאן. נשאר עוד חדר אחד, הפנימי ביותר.</p>
+      <p class="bold-para">שלושת הכלים שבקודש רומזים לשלוש האהבות: אהבת הערב, אהבת המועיל ואהבת הטוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלושת הכלים</div>
+      <h3 class="story-title">🚪 מן החוץ פנימה</h3>
+      <p>כדאי לשים לב לסדר. האדם אינו מגיע ישר אל קודש הקודשים. הוא עובר דרך החצר, נכנס אל הקודש, פוגש את הקטורת, את השולחן ואת המנורה, ורק אז מגיע אל הפרוכת. המבנה של המשכן הוא מסלול של הלב.</p>
+      <p>שלוש האהבות הראשונות הן אהבות שיש להן סיבה. אני אוהב את בורא עולם כי הוא נותן לי דברים נעימים, כי הוא מועיל לי ומחייה אותי, כי הוא הטוב והאמת. כל אלה אמיתיות וחשובות מאוד, והן עמודי המשכן. מי שאין בליבו אף אחת מהן, אין לו מאיפה להתחיל.</p>
+      <p>אבל מי שמתבונן בהן שוב ושוב, ומרגיש אותן בכל יום, מתקדם פנימה. הוא כבר אינו אוהב רק בגלל מה שקיבל. הוא אוהב כי הוא קרוב. זהו המעבר מן הקודש אל קודש הקודשים, ובו נעסוק עכשיו.</p>
+      <p class="bold-para">המשכן מלמד מסלול: מן האהבות שיש להן סיבה, אל האהבה הפנימית שאין לה סיבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הקודשים</div>
+      <h3 class="story-title">🧲 מהי אהבה?</h3>
+      <p>מה היה בקודש הקודשים? הארון, ובתוכו הלוחות והתורה, ומעליו הכרובים. איזו אהבה מונחת שם? כדי להבין, צריך קודם להגדיר בקצרה מהי אהבה בכלל.</p>
+      <p>ההגדרה שמובאת בספרים רבים היא כך: אהבה היא הרצון להתחבר למשהו. משיכה נפשית להתקרב לדבר שאני מרגיש שהוא נעים לי, טוב לי, קרוב לי. כל סוגי האהבה הקיימים בעולם הם בעצם משיכה כזו.</p>
+      <p>ואיך יודעים שאדם אוהב? יש סימן פשוט: הוא נהנה מאוד כשהוא מתקרב, ומצטער כשהוא מתרחק. מי שאינו מרגיש שום דבר כשהוא מתרחק, אינו אוהב באמת.</p>
+      <p>אבל ההגדרה הזו, עד כמה שהיא נכונה, מתארת עדיין אהבה שנמצאת בדרך. אהבה של מי שרוצה להגיע, של מי שמשתוקק ומושך. נראה עכשיו שיש משהו גבוה יותר, ושם בדיוק נמצא סוד קודש הקודשים.</p>
+      <p>ההגדרה הזו גם עוזרת לאדם לבדוק את עצמו. כמה אני נהנה כשאני מתפלל, כשאני לומד, כשאני עושה מצווה? וכמה אני מצטער כשעובר יום בלי קרבה? התשובות לשאלות האלה הן המדד האמיתי לאהבת ה' שבלב.</p>
+      <p class="bold-para">אהבה היא משיכה של הנפש להתחבר לדבר מסוים; הסימן שלה הוא הנאה בהתקרבות וצער בהתרחקות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הקודשים</div>
+      <h3 class="story-title">🔺 משולש האהבה</h3>
+      <p>בעולם הכללי התפרסם מודל שנקרא "משולש האהבה", של פסיכולוג אמריקאי בשם סטרנברג. בעברית יוצא לו שם יפה במקרה: משולש אמ"ת, אינטימיות, מחויבות ותשוקה.</p>
+      <p>התשוקה היא בעיקר בהתחלה. היא שמתחילה את הקשר. המחויבות היא המסגרת: מה רוצים לבנות יחד, להקים בית, לגדל ילדים, לעזור זה לזה. בלי מחויבות, אין סיכוי שהקשר יחזיק, כי כל השאר עולה ויורד. המחויבות היא הבסיס שעליו הכול נשמר.</p>
+      <p>אבל מחויבות לבדה היא רדודה. צריך גם אינטימיות: קשר שבו נהנים מאוד מן הביחד, מספרים זה לזה, חווים יחד, מרגישים אחדות. וכאן נוגעים בנקודה החשובה.</p>
+      <p>אמרנו שאהבה היא הרצון להתחבר. אבל יש דבר גבוה יותר מן הרצון להתחבר: החוויה של הביחד עצמו. קחו זוג מבוגר שיוצא לטייל. הם אינם "מחזקים" עכשיו את האהבה. הם פשוט נהנים מן הביחד. לא מן הרצון להגיע, אלא מכך שהם כבר שם.</p>
+      <p>וכך גם בעבודת ה'. יש בה מחויבות: המצוות, הסדר הקבוע, ההלכה שמחזיקה את האדם גם בימים שהלב שותק. יש בה תשוקה: רגעים של התלהבות, של כמיהה להתקרב. אבל השלמות היא כשיש גם את החלק השלישי, ההנאה מן הקשר עצמו, הרגע שבו האדם מרגיש פשוט טוב להיות קרוב לבורא עולם, בלי לבקש שום דבר.</p>
+      <p class="bold-para">זוגיות מלאה בנויה מתשוקה, מחויבות ואינטימיות, והאינטימיות היא החוויה של הביחד עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הקודשים</div>
+      <h3 class="story-title">1️⃣ אהבה בגימטריה אחד</h3>
+      <p>כתוב בספרים ש"אהבה" בגימטריה "אחד". יש אהבה שהיא אמצעי להגיע לאחד: אני רוצה להיות איתך, להתקרב אליך. ויש אהבה שמעליה: האחד עצמו.</p>
+      <p>דוגמה שכולם מבינים: אמא אוהבת את ילדיה. למה? האם זו אהבת הערב? המועיל? הטוב? לא זה ולא זה. אהבה זו אינה תלויה בשום סיבה. היא נובעת מכך שהילד הוא חלק ממנה. זו אהבת האחדות.</p>
+      <p>ויש לה גם ביטוי קטן אצל כל אדם. מי שמצא את עצמו פעם במקום רחוק ונידח בקצה העולם, ופתאום פגש שם אדם מן העיר שלו, מכיר את התחושה. אולי מעולם לא דיברו בבית, אבל ברגע הזה נוצרת ביניהם קרבה חזקה. כך גם מי שהגיע למוסד גדול, מלא אנשים זרים, וגילה שם עוד אחד בלבד מאותה שכונה. פתאום נוצרת כימיה. זו לא אהבת הערב ולא המועיל. זו אחדות: אנחנו שייכים לאותו דבר.</p>
+      <p>וזה מה שהיה בקודש הקודשים: הכרובים, שפניהם איש אל אחיו. אהבה שלמעלה מטעם ודעת, אהבת האחדות, שגבוהה מכל השלוש.</p>
+      <p class="bold-para">מעל האהבה שרוצה להתקרב, יש אהבת האחדות: אהבה שאינה צריכה סיבה, כי היא כבר ביחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הקודשים</div>
+      <h3 class="story-title">📜 קודש קודשים</h3>
+      <p>בתוך הארון שבקודש הקודשים היו הלוחות והתורה. יש אדם שלומד תורה כחוכמה או כהנאה. ויש אדם שלומד ומרגיש שהוא מתחבר לבורא עולם דרך התורה שלו. הוא כל כך נהנה מן החוכמה האלוקית, שנוצר כביכול מיזוג בינו לבין נותן התורה. זו הדרגה שנקראת "וּבוֹ תִדְבָּק", זו הדרגה של "יוֹנָתִי תַמָּתִי", כמו תאומים.</p>
+      <p>ומכאן לדברי רבי עקיבא, שהיה מחובר מאוד לנושאים האלה. כשהיו שביקשו לגנוז את שיר השירים, אמר: "שֶׁאֵין כָּל הָעוֹלָם כֻּלּוֹ כְּדַאי כַּיּוֹם שֶׁנִּתַּן בּוֹ שִׁיר הַשִּׁירִים לְיִשְׂרָאֵל, שֶׁכָּל הַכְּתוּבִים קֹדֶשׁ, וְשִׁיר הַשִּׁירִים קֹדֶשׁ קָדָשִׁים".</p>
+      <p>למה דווקא קודש קודשים? כי כאשר האהבה מגיעה לרמה הגבוהה ביותר, אהבת האחדות, היא מקבילה לקודש הקודשים. שיר השירים הוא הסמל של האהבה הזו. "יִשָּׁקֵנִי מִנְּשִׁיקוֹת פִּיהוּ כִּי טוֹבִים דֹּדֶיךָ מִיָּיִן". "מָשְׁכֵנִי אַחֲרֶיךָ נָּרוּצָה".</p>
+      <p>ולכן גם יש מנהג לקרוא את שיר השירים בכניסת השבת. השבת היא יום של אחדות, וכמו קודש הקודשים בזמן, כך שיר השירים בכתובים.</p>
+      <p class="bold-para">לימוד תורה מתוך הנאה מן החוכמה האלוקית מביא את האדם לאחדות עם בורא עולם, וזה סוד שיר השירים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הקודשים</div>
+      <h3 class="story-title">🕯️ האורח שוויתר</h3>
+      <p>השבת קשורה לאהבה שבבית במיוחד. גם ההלכה מייחדת את ליל שבת כזמן של קרבה בין איש לאשתו, כי השבת כולה היא בחינה של קודש הקודשים.</p>
+      <p>בשיעור סופר מעשה נאה. רבי מאיר שפירא מלובלין, מייסד הדף היומי, הגיע פעם בשבת לעיירה ראדין הקטנה, מקומו של החפץ חיים. החפץ חיים שמח מאוד ורצה לארח אותו לסעודת ליל שבת.</p>
+      <p>אלא שרבי מאיר שפירא היה חסיד, ואמר: לפי מנהגי, איני יכול לשבת ליד אותו שולחן כשהרבנית יושבת מולי. אולי תוכל הרבנית לשבת בצד?</p>
+      <p>החפץ חיים חשב רגע, ואמר: כל השבוע הרבנית כמעט אינה פוגשת אותי. ליל שבת הוא הזמן שלנו, הזמן של נחת בבית. איני יכול לומר לה לשבת בשולחן אחר. וכך, כמה שרצה לארח את האורח החשוב, ויתר עליו.</p>
+      <p>יש כאן ביטוי חי לאותו מקום מיוחד, כביכול קודש הקודשים של האחדות, שאין דבר שדוחה אותו.</p>
+      <p class="bold-para">בליל שבת נשמר מקום מיוחד לאחדות שבבית, ואפילו אורח חשוב אינו דוחה אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הקודשים</div>
+      <h3 class="story-title">🌿 איך מגיעים לשם?</h3>
+      <p>בשיעור הוקראו דברים של אדם שניסה לתאר את התענוג של האחדות, והודה שכמעט אין לזה מילים: תשוקה רבת מסתורין, הרגשה של חדירה הדדית, כאילו הנפש מתאחדת עם הזולת בתוכה. זה דבר גבוה כל כך, שקשה מאוד להסביר אותו.</p>
+      <p>אז בואו נסכם. שאלנו: מהי אהבת הכרובים? היא גבוהה מכל מה שלמדנו בשיעור הקודם, מן הערב, המועיל והטוב. יש מצב שבו האדם מרגיש כל כך הרבה נעימות עם בורא עולם, שהוא מרגיש אחדות איתו.</p>
+      <p>ואיך מגיעים לזה? תראו מה קורה בנישואין. בני זוג שחיים יחד שנים רבות, ואינם רבים הרבה, מרגישים לאט לאט חיבור כמעט אוטומטי. עם השנים נעשית ביניהם התמזגות. כך גם אדם שמתרגל לשים לב למה שבורא עולם נותן לו, לראות כמה הוא אוהב אותו, נבנה אצלו לאט לאט חיבור. הוא נהנה מן הקשר, ומגיע לאהבה הגבוהה של קודש הקודשים.</p>
+      <p>יזכה אותנו ה' להגיע לדרגות כאלה, ולחיות בקדושת קודש הקודשים, כל אחד בתוך המשכן שבליבו.</p>
+      <p class="bold-para">כמו בני זוג שמתמזגים עם השנים, כך מי שמתרגל לראות את טובו של ה' מגיע לאט לאט לאחדות איתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/A3vEdu7LXB4 · 2024-03-06 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"כשהאהבה עזה","icon":"⛺","color":"#c62b6b","stories":[{"id":1,"title":"האם מותר לדבר כך?","icon":"❓"},{"id":2,"title":"על רוחב של סייף","icon":"⚔️"}]},{"id":2,"name":"בלבבי משכן אבנה","icon":"🎶","color":"#6d28d9","stories":[{"id":3,"title":"החטוף שחזר","icon":"✈️"},{"id":4,"title":"הלב שנעשה משכן","icon":"🫀"}]},{"id":3,"name":"שלושת הכלים","icon":"🕎","color":"#e08e00","stories":[{"id":5,"title":"ריח, לחם ואור","icon":"🕎"},{"id":6,"title":"מן החוץ פנימה","icon":"🚪"}]},{"id":4,"name":"קודש הקודשים","icon":"💞","color":"#1e88b8","stories":[{"id":7,"title":"מהי אהבה?","icon":"🧲"},{"id":8,"title":"משולש האהבה","icon":"🔺"},{"id":9,"title":"אהבה בגימטריה אחד","icon":"1️⃣"},{"id":10,"title":"קודש קודשים","icon":"📜"},{"id":11,"title":"האורח שוויתר","icon":"🕯️"},{"id":12,"title":"איך מגיעים לשם?","icon":"🌿"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
