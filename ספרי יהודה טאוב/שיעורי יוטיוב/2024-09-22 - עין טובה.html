@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 עין טובה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 עין טובה</h1>
+  <p>מחטא המרגלים ועד אברהם ובלעם: איך מתרגלים לראות טוב, במה זה שונה מחשיבה חיובית, ולמה זו דרך לאהבת ה'</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ עין טובה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/jEKXwsnBL3s?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/jEKXwsnBL3s/hqdefault.jpg" alt="עין טובה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=jEKXwsnBL3s" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעים יום של מבט</div>
+      <h3 class="story-title">🌅 מה מנבא אושר</h3>
+      <p>השיעור עוסק באחד הדברים שהמחקר המודרני מצביע עליהם כמנבאים אושר בחיים: היכולת לראות טוב. אבל הרב הקדים שבתורה המטרה אינה רק להגיע לאושר. דרך העין הטובה מגיעים גם לקיום מצוות רבות. ובהמשך יתברר שיש הבדל של ממש בין מה שהמחקר אומר לבין מה שהיהדות מלמדת. הם קרובים, אבל אינם אותו דבר.</p>
+      <p>הנושא קשור גם לזמן שבו נאמר השיעור. היה זה בחודש תמוז, ערב שבעה עשר בתמוז, ובשבוע שבו קוראים את פרשת בלק. במסכת אבות מונה המשנה את ההבדל בין תלמידיו של אברהם אבינו לתלמידיו של בלעם הרשע, והראשון שבהם הוא "עין טובה".</p>
+      <p>וגם חודש תמוז עצמו קשור לנושא. המרגלים יצאו לתור את הארץ בכ"ט בסיון. איך יודעים? הם חזרו "מִקֵּץ אַרְבָּעִים יוֹם", ביום תשעה באב. מי שסופר ארבעים יום לאחור מגיע לסוף חודש סיון. נמצא שהם יצאו ברגע האחרון של סיון, וחזרו בתחילת אב. כל חודש תמוז, מתחילתו ועד סופו, היו המרגלים בדרך.</p>
+      <p>על אותה הליכה נענש העם ארבעים שנה במדבר: יום לשנה, יום לשנה. ומכאן נפתחה שאלה גדולה.</p>
+      <p class="bold-para">המחקר מגלה שעין טובה מביאה אושר; היהדות מוסיפה שהיא גם דרך לקיים מצוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעים יום של מבט</div>
+      <h3 class="story-title">❓ למה נענשו על ארבעים היום?</h3>
+      <p>הגאון רבי חיים שמואלביץ שאל שאלה פשוטה. חטא המרגלים היה לשון הרע על ארץ ישראל. כך מבואר במשנה במסכת ערכין: הם הוציאו דיבת הארץ. אבל את לשון הרע דיברו רק אחרי שחזרו מתור הארץ. אם כן, למה נענשו ארבעים שנה כנגד ארבעים הימים שקדמו לעבירה?</p>
+      <p>הרי מעולם לא שמענו שמענישים גנב על התכנון. גנב רציני אינו גונב ביום אחד. הוא מתכנן זמן רב: איפה ייכנס, איך ינטרל את האזעקה, מה יעשה אחר כך. ובכל זאת, בית הדין מעניש אותו על הגניבה, לא על ימי התכנון.</p>
+      <p>אז מה אכפת לנו שהמרגלים הלכו ארבעים יום? החטא היה הדיבור, והדיבור היה ביום אחד. למה מעניש בורא עולם כנגד ארבעים ימי ההליכה?</p>
+      <p>ורבי חיים שמואלביץ ענה חידוש עצום: מכאן רואים שלא רק אסור לדבר רע, אלא אסור גם לחשוב רע. ארבעים יום הסתכלו המרגלים על ארץ ישראל מתוך עין רעה, ופירשו כל דבר לגנאי. על זה נענשו ארבעים שנה.</p>
+      <p class="bold-para">חטא המרגלים היה בדיבור של יום אחד, ובכל זאת נענשו כנגד ארבעים ימי ההליכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעים יום של מבט</div>
+      <h3 class="story-title">🧠 האיסור שבמחשבה</h3>
+      <p>רבי חיים שמואלביץ אינו אומר שמענישים אדם על מחשבות. עד שלא דיבר, לא נענשו. אבל שורש האיסור הוא המחשבה הרעה: ההרגל לראות דברים בצורה שלילית, ולא בצורה חיובית.</p>
+      <p>וזה מפתיע. כלפי הזולת, המחשבה עדיין לא הזיקה כלום. לא סיפרתי לאיש דבר. אבל היא פוגעת בי עצמי. אני מתרגל לראות את העולם בעין רעה, וזה הפגם.</p>
+      <p>ומה ראו המרגלים? הם ראו שבארץ מתים אנשים רבים בכל יום. הרב המשיל זאת לתמונות שראו באותם ימים ממדינות שבהן מגפה הפילה אלפי מתים ביום: בכל רחוב לוויה, בכל עיר מודעות אבל. כך ראו המרגלים את הארץ, ופירשו: "אֶרֶץ אֹכֶלֶת יוֹשְׁבֶיהָ הִוא".</p>
+      <p>אבל חז"ל מלמדים שהייתה זו טובה גדולה. הקדוש ברוך הוא רצה להציל אותם. מרגלים שהולכים בארץ זרה עלולים להתגלות בקלות. לכן גרם שבכל מקום שבאו יהיו האנשים עסוקים באבלם, ולא ישימו לב לזרים. וכך גם הענקים: הם יכלו לראות בהם עדות לכך שה' נותן להם את הארץ אף על פי שיש בה ענקים. אבל הם פירשו הכל לרעה.</p>
+      <p>כדי להמחיש כמה קשה למרגל יהודי להסתתר, הביא הרב סיפור שקרא. בשנים שבהן הכותל המערבי היה בידי ירדן, לא יכלו יהודים להגיע אליו. יהודי אחד החליט שהוא חייב להגיע. הוא נכנס לירדן כתייר, מחופש, והגיע עד הכותל.</p>
+      <p>שם עמד והתרכז כמה שניות, ופתאום הרגיש עשרות עיניים נעוצות בו. הוא עזב מהר, ברח על נפשו, ובקושי הצליח להימלט. מבט אחד הסגיר אותו.</p>
+      <p>קשה ליהודי להסתתר. ואם כך, מרגלים בארץ כנען היו בסכנה גדולה. לכן עשה להם הקדוש ברוך הוא חסד: הוא העסיק את יושבי הארץ באבלם, כדי שלא יבחינו בהם. והם ראו בחסד הזה סימן לארץ רעה.</p>
+      <p class="bold-para">עד שאדם לא דיבר לא נענש, אבל עצם הרגל המבט השלילי הוא הפגם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לראות טוב בכל דבר</div>
+      <h3 class="story-title">🌈 חשיבה חיובית</h3>
+      <p>בפסיכולוגיה יש היום מושג שנקרא "חשיבה חיובית". מי שרוצה להיות בריא ומאושר, צריך להתרגל: במקום לפרש כל דבר בצורה שלילית, לנסות תמיד לפרש בצורה חיובית. לא להניח שמישהו רוצה לעשות לך רע, שמישהו רוצה להזיק לך.</p>
+      <p>זה מעט שונה מן הביטוי "לראות את חצי הכוס המלאה", שעניינו לתפוס את החלק הטוב שבכל דבר. כאן מדובר בפרשנות: קרה דבר, ואיך אני מפרש אותו?</p>
+      <p>דוגמה שעלתה בשיעור: מישהו ירק לידך. אפשר להחליט מיד שהוא התכוון לבזות אותך. ואפשר לחשוב: אולי היה לו טעם רע בפה, אולי לא שם לב שאתה עובר בדיוק שם. זה מה שנקרא בלשון חז"ל "לימוד זכות", והוא אחד מיסודות החשיבה החיובית.</p>
+      <p>אבל רבי חיים שמואלביץ הוסיף יותר מזה. לא רק על בני אדם צריך לחשוב טוב, אלא גם על מה שקורה בבריאה כולה. כשבאה מגפה, למשל, אפשר לחפש בה גם את הצד הטוב. בשיעור עלו רעיונות: היו אנשים שבזכות הסגר פגשו סוף סוף את ילדיהם, והמשפחות ישבו יחד בבית. אין זה מבטל את הצער. אבל זה מלמד שגם בתוך הקושי יש מה לראות.</p>
+      <p class="bold-para">כל דבר אפשר לפרש בכמה דרכים, ומי שרוצה להיות מאושר מתרגל לפרש לטובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לראות טוב בכל דבר</div>
+      <h3 class="story-title">🏙️ שתי משפחות, עיר אחת</h3>
+      <p>הרב סיפר על ביקור שבו פגש, בזו אחר זו, שתי משפחות מאותה עיר. המשפחה הראשונה סיפרה בהתלהבות על העיר: כאן בונים מבנה ציבור, כאן עוד בית כנסת, כמה אנשים באים, איך העיר מתפתחת ברוך ה', כמה דברים נפלאים פותחים בה. עשרות סיפורים, וכולם על הטוב.</p>
+      <p>המשפחה הראשונה הלכה, והגיעה השנייה. והיא התחילה לספר: אתם יודעים למה ראש העיר נתן לו לבנות כך? אתם לא יודעים כמה הכניס לו מאחורי הגב. ולמה בנו את זה שם? הכל סידורים. כולם גונבים, כולם משחיתים, כולם רמאים.</p>
+      <p>מי שהיה שומע את שתי המשפחות מן הצד, היה בטוח שמדובר בשתי ערים שונות. בעיר האחת כולם צדיקים, בונים מוסדות ומלאים חסד. בעיר השנייה כולם נוכלים. ובאמת זו אותה עיר.</p>
+      <p>מה ההבדל? היכן שם האדם את המבט. וזה בדיוק, לפי רבי חיים שמואלביץ, היה חטא המרגלים. ובכך מתחדד היסוד: העובדות לבדן אינן קובעות את העולם שבו אדם חי. המבט שלו קובע.</p>
+      <p class="bold-para">אותה עיר בדיוק יכולה להיראות מלאה חסד או מלאה שחיתות; הכל תלוי היכן שמים את המבט.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לראות טוב בכל דבר</div>
+      <h3 class="story-title">🦷 לבנות שיניה</h3>
+      <p>אבל נשאלת שאלה: על המרגלים אמרו חז"ל שהם דיברו "על העצים ועל האבנים". וכי יש איסור לחשוב רע על עצים ואבנים? הם אינם בני אדם!</p>
+      <p>על כך הובאו בשיעור שני ביאורים. הראשון הוא של רבי חיים פלאג'י. הוא טוען שיש מצווה על האדם להתרגל לחשוב טוב גם על הדומם. והוא מביא מספר חובות הלבבות סיפור על חסיד אחד, שהלך עם תלמידיו וראו בדרך נבלה. אמרו התלמידים: כמה מסריחה הנבלה הזאת! אמר להם הרב: ראו כמה לבנות שיניה. הוא התכוון ללמד אותם לחפש בכל דבר את הצד החיובי.</p>
+      <p>נכון, זה רק דומם, אין כאן פגיעה באיש. אבל אדם צריך להתרגל לכך בכל החיים, גם בדברים שאינם בני אדם. מי שנכנס לבית הכנסת יכול לראות ספסלים יפים, שולחנות נאים, חלונות מפוארים. ותמיד יימצא מישהו שימצא דווקא את מה שלא בסדר.</p>
+      <p>והתכונה הזאת אינה גזירה. זו תכונה של בני אדם, ואדם מסוגל לשנות אותה.</p>
+      <p>הרב סיפר משל על אדם שהיה מתלונן תמיד, על כל דבר. יום אחד הגיע לבית הכנסת חזן מעולה, חזן מדופלם, והתפילה הייתה נפלאה. לא היה בה שום פגם.</p>
+      <p>אחרי התפילה שאלו את המתלונן: נו, מה אתה אומר על החזן? והוא השיב: לא שמעתם? הוא החליף את המנגינה! באחד המקומות הוא שר אחרת ממה שאנחנו רגילים.</p>
+      <p>תמיד יימצא משהו. מי שרגיל לחפש פגמים ימצא אותם גם בתפילה מושלמת. ומי שרגיל לחפש טוב, ימצא אותו גם בדבר פשוט.</p>
+      <p class="bold-para">אפילו בנבלה מסריחה אפשר למצוא דבר יפה, ומי שמתרגל לכך מוצא טוב בכל מקום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לראות טוב בכל דבר</div>
+      <h3 class="story-title">🇮🇱 המצווה לאהוב את ארץ ישראל</h3>
+      <p>הביאור השני, המקובל יותר, הובא בשם אחד מראשי הישיבות בדורנו. הוא שואל: מה פירוש איסור לשון הרע על ארץ ישראל? והוא עונה: האיסור לחשוב רע אינו איסור בפני עצמו. כשאדם חושב רע על דבר, הוא פשוט אינו אוהב אותו. וזה הפגם.</p>
+      <p>כך כותב הרמב"ם על מצוות "וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ": לפיכך צריך לספר בשבחו. אדם שחושב על חברו דברים שליליים, אפילו אם לא אמר דבר, אפילו אם לא הגיע לדבר לשון הרע, כבר אוהב אותו פחות. המחשבה עצמה מקררת את האהבה.</p>
+      <p>ואותו דבר בארץ ישראל. יש מצווה לאהוב את ארץ ישראל. היא אינה כתובה במפורש, אבל רואים אותה בברכת המזון, שבה אנו קוראים לה "אֶרֶץ חֶמְדָּה", ובעיקר מן התורה עצמה, שמפליגה בשבחה שוב ושוב: "אֶרֶץ זָבַת חָלָב וּדְבָשׁ", ארץ טובה, ארץ נחלי מים.</p>
+      <p>וכשהתורה משבחת את הארץ, יש לנו מצווה להתמקד בדברים הטובים שבה, כדי שנאהב אותה. כמו שמצווה לאהוב את הזולת, כך מצווה לאהוב את ארץ ישראל. ובמבט כזה מתקנים גם את חטא המרגלים, שגרם לבכייה לדורות: "אַתֶּם בְּכִיתֶם בְּכִיָּה שֶׁל חִנָּם, וַאֲנִי קוֹבֵעַ לָכֶם בְּכִיָּה לְדוֹרוֹת".</p>
+      <p class="bold-para">מחשבה רעה מקטינה את האהבה, וכשם שמצווה לאהוב את הרע, מצווה לאהוב את ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לראות טוב בכל דבר</div>
+      <h3 class="story-title">🥛 זבת חלב ודבש בימינו</h3>
+      <p>הרב הזכיר שהביטוי "ארץ זבת חלב ודבש" מתקיים היום פשוטו כמשמעו. הפרה הישראלית נחשבת היום מן המובילות בעולם בכמות החלב שהיא נותנת. פעם דיברו על "הפרה ההולנדית" כדוגמה; היום מקומה של הפרה הישראלית בראש. כשסיפר זאת פעם בדרשה, ניגש אליו אדם שעובד ברפת ואישר שראה זאת בעיניו.</p>
+      <p>וגם הדבש, שהוא דבש תמרים: הרב הביא שלפי הנתונים המפורסמים, ארץ ישראל הקטנה היא מן המקומות המובילים בעולם בגידול תמרי מג'הול המשובחים. זה נשמע מוזר: מדינה קטנה כל כך? אבל זה המצב, ברוך ה'.</p>
+      <p>ועכשיו לדוגמה מעשית. שואלים אדם: איך ארץ ישראל? אדם אחד מתחיל מיד לדבר על הממשלה, על המיסים, על כל מה שלא עובד, ומתלונן כל היום. ואדם אחר אומר: תראה איזו ארץ פורחת, ארץ זבת חלב ודבש, כמה ישיבות, כמה תורה, מקום ראשון בעולם בכל מיני דברים.</p>
+      <p>ושניהם צודקים. השאלה היא במה אתה בוחר להתמקד. והתורה, כשהיא משבחת את הארץ, מלמדת אותנו לבחור בטוב.</p>
+      <p class="bold-para">אותה ארץ אפשר לתאר ככישלון או כפריחה; ברכת התורה מתקיימת לעינינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אברהם ובלעם</div>
+      <h3 class="story-title">⚖️ עין טובה ועין רעה</h3>
+      <p>במשנה במסכת אבות שנינו: כל מי שיש בידו שלושה דברים הללו, הוא מתלמידיו של אברהם אבינו; ושלושה דברים אחרים, הוא מתלמידיו של בלעם הרשע. תלמידיו של אברהם אבינו: עין טובה, ורוח נמוכה, ונפש שפלה. תלמידיו של בלעם הרשע: עין רעה, ורוח גבוהה, ונפש רחבה.</p>
+      <p>מהי עין טובה אצל אברהם אבינו? הוא רוצה שיהיה טוב לזולת. הוא רוצה תמיד להשפיע, מחפש תמיד איך לתת. וכך פתח את אוהלו לכל עובר ושב.</p>
+      <p>ובלעם, עין רעה. הוא אומר לבלק: אִם יִתֶּן לִי בָלָק מְלֹא בֵיתוֹ כֶּסֶף וְזָהָב. הוא רוצה רק לקחת, ואינו רוצה לתת כלום. ויותר מזה: הוא רוצה להרוג את ישראל.</p>
+      <p>והרב שאל שאלה שכולם שואלים: אם בלק פחד מישראל, למה לא ביקש מבלעם ברכה? שיברך את מואב שתעבור את הכל בשלום, שישראל לא ילחמו בה. ראית פעם צדיק שאדם בא אליו ומתלונן על שכן רע, והצדיק מבקש שהשכן ימות? צדיק נותן ברכה שהשכן יעזוב אותך לנפשך. למה הלך בלק דווקא לקללה?</p>
+      <p class="bold-para">אברהם אבינו רצה תמיד להשפיע טוב, ובלעם רצה רק לקחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אברהם ובלעם</div>
+      <h3 class="story-title">🗣️ את אשר תברך מבורך</h3>
+      <p>האור החיים מדייק בדברי בלק לבלעם: "כִּי יָדַעְתִּי אֵת אֲשֶׁר תְּבָרֵךְ מְבֹרָךְ, וַאֲשֶׁר תָּאֹר יוּאָר". למה "תברך" בעתיד ו"מבורך" בהווה, ואילו "תאור" ו"יואר" שניהם בעתיד? הלשון אינה מקבילה.</p>
+      <p>והתשובה: בלעם לא היה יכול לברך באמת. כדי לברך את השני, להשפיע עליו טוב, צריך לרצות שיהיה לו טוב. כך אמר שלמה המלך: "טוֹב עַיִן הוּא יְבֹרָךְ". הרצון הטוב הוא שגורם לברכה להצליח. ולבלעם לא הייתה עין טובה. היא הייתה אצל אברהם אבינו.</p>
+      <p>אז מה היו ה"ברכות" של בלעם? בלעם היה חוזה. הוא ראה מראש מה עתיד לקרות, ו"בירך" את מי שממילא היה עתיד להצליח. כמו אדם שבא ומבטיח לאחר שימצא עבודה, כשכבר ידוע לו שמישהו עומד להציע לו משרה. זו לא ברכה. זו ידיעה.</p>
+      <p>לכן אמר לו בלק: אני יודע את האמת. "את אשר תברך" – כבר "מבורך" מלפני כן, אתה לא עשית כלום. אבל "אשר תאור – יואר": את הקללה אתה באמת יודע לעשות. כי הקללה באה מעין רעה, ועין רעה יכולה להזיק. לכן ביקש בלק קללה ולא ברכה. בלעם הוא כוח הקללה, ועם ישראל, תלמידיו של אברהם אבינו, הם כוח הברכה.</p>
+      <p class="bold-para">הברכה דורשת עין טובה, ולכן לבלעם לא היה כוח לברך, רק לקלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · תחשוב טוב</div>
+      <h3 class="story-title">🌍 גן עדן או גיהנום</h3>
+      <p>השפת אמת כתב: אדם שיש לו עין טובה רואה חסד ה' וטובו בכל דבר, ועל ידי כך חי בעולם שכולו טוב.</p>
+      <p>גם חכמי העולם אמרו דברים דומים. שייקספיר כתב שאין טוב ואין רע, אלא המחשבה עושה אותם כך. ונאמר גם שהעולם הוא גיהנום לאחד וגן עדן לאחר. הדברים שאנחנו בוחרים להתמקד בהם, הם שקובעים את העולם שבו אנו חיים.</p>
+      <p>יש לאדם בחירה. הוא מחליט היכן הוא חי: בגן עדן או בגיהנום. אותן נסיבות בדיוק יכולות להיות לאחד עולם של צער, ולשני עולם של חסד.</p>
+      <p>והשפת אמת מוסיף עוד דבר: יש לאדם כוח גם לגרום שהדבר יהיה טוב. כשאדם מפרש את מה שקורה לו בדרך של "גם זו לטובה", הפירוש עצמו מסוגל לגרום שבסוף יראה איך הכל היה לטובתו. כך קרא לו לנחום איש גם זו.</p>
+      <p>אבל כאן צריך להיזהר, כי יש רעיון דומה שמסתתרת בו טעות גדולה.</p>
+      <p class="bold-para">אדם שיש לו עין טובה רואה חסד ה' בכל דבר, ועל ידי כך חי בעולם שכולו טוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · תחשוב טוב</div>
+      <h3 class="story-title">💭 "תחשוב טוב יהיה טוב"</h3>
+      <p>אצל חסידי חב"ד מפורסם מאוד הפתגם "תחשוב טוב, יהיה טוב". מה פירושו? יש שהבינו אותו כאילו המחשבה יוצרת מציאות.</p>
+      <p>בעולם יצא ספר וגם סרט בשם "הסוד", שטען בדיוק את זה: מה שאדם חושב, כך יקרה. אם תחשוב חזק על משהו, הוא יבוא אליך. הרב הביא שחוקרים רבים יצאו נגד הרעיון הזה. אין לו הוכחה במחקר, ויותר מזה: הוא גורם צרות. אדם בטוח שמה שירצה יקרה, ואינו זוכה, ומתאכזב. הוא נעשה אנוכי, כי הוא חושב רק על מה שהוא רוצה לקחת לעצמו. וגרוע מכל: בכל פעם שקורה לו דבר רע, הוא מאשים את עצמו. קרה לי רע? כנראה לא חשבתי מספיק טוב.</p>
+      <p>אבל זה ממש לא פירוש הפתגם של חב"ד, ובחב"ד עצמם הדגישו זאת. "תחשוב טוב" פירושו שאדם מאמין שבורא עולם רוצה בטובתו, חפץ בטובתו. זו מידת הביטחון בה'. לא המחשבה יוצרת את הטוב, אלא הביטחון בה' הוא הסיבה שבסוף יהיה טוב.</p>
+      <p>ויש דרגה קרובה, של רבי עקיבא: "כל מה דעביד רחמנא לטב עביד", כל מה שעושה הקדוש ברוך הוא, לטובה הוא עושה.</p>
+      <p class="bold-para">"תחשוב טוב יהיה טוב" אינו כוח קסם של המחשבה, אלא ביטחון בה' שרוצה בטובתנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · תחשוב טוב</div>
+      <h3 class="story-title">🐓 גם זו לטובה</h3>
+      <p>יש הבדל בין "תחשוב טוב יהיה טוב" במובן של "מה שאני חושב שטוב, יקרה", לבין "גם זו לטובה". "גם זו לטובה" אינו אומר שמה שאני מדמיין יתממש. אדם אינו יודע תמיד מה טוב ומה רע. בהיסטוריה היו פעמים רבות שאנשים היו בטוחים שדבר מסוים יהיה טוב, והוא התברר כרע. "הכל לטובה" אומר: ה' יעשה הכל לטובה, ואיך, איני יודע.</p>
+      <p>ובכל זאת, יש באמירה כוח. בגמרא מסופר על רבי עקיבא שהלך בדרך, עם חמור, תרנגול ונר. ביקש מקום ללון בעיר, ולא נתנו לו. אמר: כל מה דעביד רחמנא לטב עביד, והלך ללון בשדה. באה רוח וכיבתה את הנר, בא חתול ואכל את התרנגול, בא אריה ואכל את החמור. ועל כל אחד אמר: כל מה דעביד רחמנא לטב עביד.</p>
+      <p>באותו לילה באו חיילים ושבו את אנשי העיר. ובבוקר ראה רבי עקיבא בעיניו איך הכל היה לטובה: אילו דלק הנר, אילו קרא התרנגול, אילו נער החמור, היו מוצאים גם אותו.</p>
+      <p>ובן יהוידע מדייק שם, שאמר רבי עקיבא לתלמידיו: הנה מה שאמרתי לכם. כלומר, בגלל שאמרתי כך, זה מה שקרה. האמירה עצמה, כשאדם מוציא אותה מפיו, היא סגולה לכך שיתגלה שהכל לטובה.</p>
+      <p class="bold-para">רבי עקיבא לא ידע איך יהיה לטובה, אבל בטח שכך יהיה, ובסוף ראה זאת בעיניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · תחשוב טוב</div>
+      <h3 class="story-title">📜 למה בארמית?</h3>
+      <p>ולכן נפסק בשולחן ערוך: לעולם יהא אדם רגיל לומר "כל מה דעביד רחמנא לטב עביד".</p>
+      <p>הרב הוסיף הערה מעניינת שראה פעם בחוברת. השולחן ערוך כתוב כולו בעברית. אין דרכו לכתוב בארמית. ואילו כאן הוא כותב את המשפט בארמית. למה?</p>
+      <p>ובסיפור בגמרא יש שינוי מפליא. בכל פעם שבאה צרה, בלילה, רבי עקיבא אומר את המשפט בארמית: "כל מה דעביד רחמנא לטב עביד". ואילו בבוקר, כשראה את הישועה, הוא אומר לתלמידיו בעברית: "לא אמרתי לכם, כל מה שעושה הקדוש ברוך הוא, הכל לטובה".</p>
+      <p>והחידוש שהובא: מלאכי השרת מבינים עברית ואינם מכירים בארמית. בזמן הצרה, כשהדין עדיין מתוח, מסוכן לומר בעברית שהכל לטובה, שמא יבואו המקטרגים לערער. לכן אומרים זאת בארמית. ובבוקר, כשהסיפור כבר הסתיים והתברר שהכל לטובה, אפשר לומר זאת בעברית. ומשום כך, אולי, השאיר השולחן ערוך את הלשון הארמית.</p>
+      <p class="bold-para">השולחן ערוך פסק בלשון ארמית: "לעולם יהא אדם רגיל לומר כל מה דעביד רחמנא לטב עביד".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עולם שכולו טוב</div>
+      <h3 class="story-title">🎨 בשביל מה נברא העולם</h3>
+      <p>אחד מגדולי הדורות היה אומר: מי שמסתכל בעין טובה על העולם ושמח בכל הטוב שיש בו, ומודה לקדוש ברוך הוא עליו, ממלא את מטרת הבריאה. על ידו מתגשם ייעודה של הבריאה, להיטיב לברואים, ומתרבה כבוד שמים.</p>
+      <p>מה הכוונה? בשביל מה ברא הקדוש ברוך הוא את העולם? רבי חיים ויטל פותח את ספרו עץ חיים במילים: "כאשר עלה ברצונו להיטיב לבריותיו". וכך כתב גם בעל מסילת ישרים, שהאדם לא נברא אלא להתענג.</p>
+      <p>ולמה צריך מצוות? משום שאדם אינו נהנה באמת ממה שמקבלים בחינם. אבא יכול לתת לבן כמה שירצה, ובכל זאת הבן רוצה לעבוד ולהרוויח. לא נעים לקבל. הרבה יותר נעים ליהנות מכסף שעבדת עליו. כל אדם בנוי כך. לכן נתן לנו הקדוש ברוך הוא מצוות, כדי שנהנה ממה שמגיע לנו.</p>
+      <p>אבל לא רק בעולם הבא. גם בעולם הזה ברא הקדוש ברוך הוא אינספור דברים טובים. ואדם שנהנה מהם, שם לב אליהם ואינו עסוק כל הזמן בשלילי, מקיים את ייעודה של הבריאה.</p>
+      <p class="bold-para">העולם נברא כדי להיטיב לברואים, ומי שנהנה מן הטוב ושם לב אליו ממלא את מטרת הבריאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עולם שכולו טוב</div>
+      <h3 class="story-title">🌬️ האוויר של הרב מילר</h3>
+      <p>הרב אביגדור מילר היה רב באמריקה, שלימד תלמידים רבים. עיקר הדגש בחייו היה לחפש תמיד ולראות כמה הקדוש ברוך הוא מטיב איתנו, ולהודות לו. והוא עשה זאת ברמה שנראית קיצונית.</p>
+      <p>דוגמה: יום אחד הלך ברחוב ושמע אנשים מתלוננים כמה האוויר מלוכלך ומזוהם. כאב לו מאוד שמדברים כך על האוויר שברא בורא עולם. הוא נכנס לביתו, מילא גיגית מים, והכניס את ראשו לתוכה.</p>
+      <p>נכדו נכנס הביתה, ראה את סבו, ראש הישיבה, עם הראש בתוך המים, ונבהל מאוד. חיכה דקה, דקה וחצי, לא ידע מה לעשות. ולבסוף הוציא הרב את ראשו מן המים, נשם עמוק ואמר: איזה אוויר טוב! כמה טוב!</p>
+      <p>מי שמתלונן על האוויר, שוכח שבלעדיו לא היה חי רגע. רק כשאדם מרגיש מה פירוש להיות בלעדיו, הוא מבין כמה האוויר הזה טוב.</p>
+      <p class="bold-para">הרב אביגדור מילר הקדיש את חייו לראות כמה הקדוש ברוך הוא מטיב איתנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עולם שכולו טוב</div>
+      <h3 class="story-title">🍏 הפירות שמשחקים מחבואים</h3>
+      <p>הרב הזכיר חוברת שהוציא לכבוד ט"ו בשבט, שכולה עוסקת בראיית חסדי ה' בפירות. היא מראה בכל דבר כמה חכמה עשה הבורא כדי שנהנה.</p>
+      <p>דוגמה: הפרי מחליף צבעים. בהתחלה הוא ירוק, ורק אחר כך נעשה צהוב, אדום או כתום. למה? כשהפרי אינו מוכן, הקדוש ברוך הוא אינו רוצה שנאכל אותו. אז הפרי משחק מחבואים: הוא ירוק, כמו העלים, ולא רואים אותו. נסה לחפש קלמנטינות ירוקות על העץ, ולא תמצא אותן. אבל כשהפרי מוכן, הוא מקבל צבע מאיר עיניים, כאילו קורא: הנה אני, בוא קח אותי.</p>
+      <p>ועוד דוגמה: נסה למשוך פרי בוסר מן העץ. הוא לא ייתלש. כל הענף יימשך אחריו, הפרי אינו רוצה לעזוב. אבל כשהפרי מוכן לאכילה, נגיעה קלה, והוא יורד. בורא עולם דאג לך.</p>
+      <p>כך היה הרב מילר הולך כל חייו, ומחפש איך לראות טוב בכל דבר. ותלמידיו ממשיכים זאת. גם כשמשהו אינו מצליח, הם אומרים: זה לא הזמן, זה לא המקום, הכל טוב וזורם.</p>
+      <p class="bold-para">בכל פרי יש חכמה שנבראה כדי שנהנה: צבע שמסתתר עד שהפרי מוכן, ועוקץ שמשתחרר בזמן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עולם שכולו טוב</div>
+      <h3 class="story-title">✨ וירא אלוקים והנה טוב מאוד</h3>
+      <p>והרב מילר חידש חידוש עצום על הפסוק "וַיַּרְא אֱלֹקִים אֶת כָּל אֲשֶׁר עָשָׂה וְהִנֵּה טוֹב מְאֹד". למה כתב הקדוש ברוך הוא בתורה שהוא ראה שהכל טוב מאוד? כדי ללמד אותנו שגם אנחנו צריכים ללמוד ממנו יתברך, ולהרגיש כמה העולם שאנו נמצאים בו הוא באמת עולם נפלא, עולם טוב מאוד.</p>
+      <p>יש מצווה על האדם ללכת בדרכי בורא עולם: "וְהָלַכְתָּ בִּדְרָכָיו". ואם בורא עולם ראה את כל מה שעשה והנה טוב מאוד, גם לנו יש מצווה להסתכל על הבריאה ולראות כמה היא טובה. להתבונן, לשים לב לטוב שתכנן בורא עולם ויצר בשבילנו, ולחיות בעולם שכולו טוב מאוד.</p>
+      <p>וזה, לדבריו, סוד הצלחת החיים. הקדוש ברוך הוא רוצה שהאדם ישים לב לטוב ולעונג שהוא מקבל בבריאה, ויודה עליהם. ועל ידי כך יגיע להכיר בטובו, ולאהבת ה'.</p>
+      <p>וכאן בדיוק עובר הקו שבין הפסיכולוגיה ליהדות.</p>
+      <p class="bold-para">מצוות "והלכת בדרכיו" מחייבת אותנו להסתכל על הבריאה ולראות שהיא טובה מאוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מחשיבה חיובית לאהבת ה'</div>
+      <h3 class="story-title">🌉 בית החולים שליד הגשר</h3>
+      <p>הרב סיפר על פסיכולוג יהודי בשם מרטין זליגמן, שעמד בראש איגוד הפסיכולוגים האמריקאי. הוא אמר לעמיתיו: עד מתי נבנה בית חולים ליד הגשר?</p>
+      <p>כוונתו למשל הידוע על חלם: היה שם גשר שבור, וכל מי שעבר עליו נפל ושבר את ידיו. מה עשו חכמי חלם? במקום לתקן את הגשר, בנו בית חולים ליד הגשר. ואמר זליגמן: אנחנו בדיוק כמו חלם. יש המון אנשים מדוכאים, והפסיכולוגיה מטפלת בהם אחרי שנפלו: שיחות, כדורים. כל המחקר עוסק במה שמקולקל. אולי הגיע הזמן ללמוד איך לא נעשים עצובים, איך אנשים נעשים מאושרים?</p>
+      <p>וכך, כשנבחר לעמוד בראש האיגוד, קבע זאת כנושא המרכזי, ונחקר הנושא איך אדם נעשה מאושר. הוא כתב ספר שתורגם לעברית, ובו עצות רבות. אחת המרכזיות שבהן: במקום לחשוב על כל הדברים הרעים, להתרגל לחשוב על הדברים הטובים שיש לך. להתווכח עם המחשבה השלילית, ולהרגיל את עצמך למחשבות טובות.</p>
+      <p>וזה דבר טוב, אמר הרב. אין בו פסול. אבל ביהדות המטרה גבוהה יותר.</p>
+      <p class="bold-para">הפסיכולוגיה החיובית נולדה מן ההבנה שעדיף ללמד אנשים להיות מאושרים מאשר רק לטפל בדיכאון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מחשיבה חיובית לאהבת ה'</div>
+      <h3 class="story-title">❤️ המטרה: ואהבת את ה'</h3>
+      <p>ביהדות, המטרה לחשוב טוב אינה רק כדי שלא נגיע לבית החולים. זה חשוב, אבל זו לא המטרה. יש לנו מצוות עשה מן התורה, מן הגדולות שבמצוות, שאנו חוזרים עליה בבוקר ובערב, כותבים אותה בתפילין על היד ועל הראש, ובכל מזוזה בפתח הבית: "וְאָהַבְתָּ אֵת ה' אֱלֹקֶיךָ".</p>
+      <p>החפץ חיים כותב שאדם צריך בכל יום להקדיש כמה דקות למחשבה: איך אני אוהב את בורא עולם. זו מצוות עשה מן התורה, כמו הנחת תפילין וכמו מזוזה. ובאמת, התפילין והמזוזה הם האמצעי, ואהבת ה' היא המטרה. קושרים את הפסוק על היד כדי לזכור את מצוות אהבת ה'.</p>
+      <p>ואיך מגיעים לאהבת ה'? הרמב"ם, בהלכות יסודי התורה ובספר המצוות, מביא כמה דרכים. אחת הנפלאות שבהן היא שאדם מתבונן בטוב שבורא עולם עושה איתו. ברוך ה' יש שיעור, יש בית כנסת, יש מניין, אפשר לבוא בנחת ובשלווה. ועוד אינספור דברים טובים.</p>
+      <p>זה ההבדל העצום: בפסיכולוגיה, המטרה היא להרגיש טוב. ביהדות, המטרה היא להגיע לאהבת ה'. כך אנו אומרים בברכת האילנות: שלא חיסר בעולמו כלום, וברא בו בריות טובות ואילנות טובים, ליהנות בהם בני אדם.</p>
+      <p class="bold-para">ביהדות מתבוננים בטוב לא רק כדי להרגיש טוב, אלא כדי לקיים את מצוות אהבת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מחשיבה חיובית לאהבת ה'</div>
+      <h3 class="story-title">⏱️ כמה דקות בכל יום</h3>
+      <p>ומה עושים בפועל? הרב נתן עצה פשוטה: ללכת בכל יום, ולהקדיש כמה דקות כדי לשים לב לדברים הטובים. לא כתרגיל פסיכולוגי בלבד, אלא כחלק מקיום מצוות אהבת ה' מדאורייתא.</p>
+      <p>אפשר להתחיל מן הדברים הקרובים ביותר. ברוך ה' כולם חיים ובריאים. ברוך ה' חזרו השיעורים, אחרי תקופה שבה לא היה אפשר להתכנס. ברוך ה' יש בית כנסת, ויש מניין, ואפשר לבוא בנחת ובשלווה. ועוד אינספור דברים טובים שאנו זוכים להם בארץ ישראל.</p>
+      <p>המחקר מלמד שהמבט השלילי הוא טבעו של האדם, ושצריך לעבוד כדי לאזן אותו. מי שמצליח להגיע לכך שיהיו לו יותר מחשבות טובות, כבר עשה שינוי גדול. והתורה מוסיפה: כל מחשבה כזאת, כשהיא מכוונת אל הבורא, היא לבנה בבניין האהבה אליו.</p>
+      <p>וכך, צעד אחר צעד, אדם הופך מתלמידו של בלעם לתלמידו של אברהם אבינו. הוא מתחיל לראות בעין טובה את העולם, את הארץ ואת הזולת, ומתוך כך גם את בורא העולם.</p>
+      <p class="bold-para">העצה המעשית: להקדיש בכל יום כמה דקות לשים לב לטוב, כדי לקיים את מצוות אהבת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מחשיבה חיובית לאהבת ה'</div>
+      <h3 class="story-title">🌤️ רבים מכאובים לרשע</h3>
+      <p>השיעור הסתיים בפסוק מוכר מספר תהילים: "רַבִּים מַכְאוֹבִים לָרָשָׁע, וְהַבּוֹטֵחַ בַּה' חֶסֶד יְסוֹבְבֶנּוּ". במבט ראשון הפסוק נראה כתיאור של שכר ועונש: לרשע מכאובים, ולבוטח בה' חסדים. אבל במציאות לא רואים תמיד שכל רשע סובל וכל צדיק מוקף חסדים.</p>
+      <p>אלא שהפסוק מתאר שני אנשים שנמצאים במצב גשמי זהה לחלוטין. ובכל זאת, האחד חי כל חייו בעולם של מכאובים בלתי פוסקים, והשני חי בגן עדן, חיים נעימים מלאי שמחה. שאל את הראשון לשלומו, והוא יתנה בפניך את צרותיו, את מכאוביו ואת מצבו הקשה. ואין זה דמיון; באמת יש לו על מה להתלונן.</p>
+      <p>המחקר מלמד שאדם בטבעו, כשאינו עובד על עצמו, ממוקד במה שאין לו. אדם רגיל חושב הרבה יותר מחשבות שליליות מחיוביות. הראיה: פתח את החדשות, וכמה דברים טובים תשמע? כמעט הכל רע. לא רק משום שהעורכים רעים, אלא משום שזה מה שמושך את הקהל. דבר רע מעורר את האדם, דבר טוב מרדים אותו. כך האדם בטבעו, ולכן הוא חי ב"רבים מכאובים".</p>
+      <p class="bold-para">שני אנשים במצב זהה: האחד רואה רק מכאובים, והשני רואה רק חסד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מחשיבה חיובית לאהבת ה'</div>
+      <h3 class="story-title">🚗 כל אדם רואה מה שהוא רוצה לראות</h3>
+      <p>ואילו השני, הבוטח בה', רואה תמיד את חסדו של הקדוש ברוך הוא על כל דבר. הוא אומר כרבי עקיבא: כל מה דעביד רחמנא לטב עביד. שאל אותו לשלומו, והוא יענה בשמחה: ברוך ה', חסדי ה'. ואין זה דמיון: הוא באמת שקוע בחסד ה' ובטובו. הוא אינו נמצא בעולם אחר. אבל ראשו מונח כל הזמן במקום שבו יש חסדים, והוא קולט אותם.</p>
+      <p>כל אדם רואה את מה שהוא רוצה לראות. רוצה לנסות? קנה מכונית. שים לב שמיד אחרי שקנית אותה, בכל נסיעה בכביש אתה רואה מכוניות כמו שלך. עד היום כמעט לא ראית אותן, ופתאום הן בכל מקום. מה קרה? הן תמיד היו שם. אבל אדם קולט את מה שמעניין אותו.</p>
+      <p>לכן, מי שרוצה לראות את חסדי ה', מי שרוצה לאהוב את הקדוש ברוך הוא, יראה את כל הדברים הטובים. והבחירה בידו: לחיות ב"רבים מכאובים לרשע", או ב"והבוטח בה' חסד יסובבנו".</p>
+      <p>יהי רצון שנזכה תמיד לבחור בטוב: לראות טוב, לחשוב טוב, ולהודות לה' יתברך על כל הטוב.</p>
+      <p class="bold-para">האדם קולט את מה שמעניין אותו; מי שרוצה לאהוב את ה' יראה בכל מקום את חסדיו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/jEKXwsnBL3s · 2024-09-22 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ארבעים יום של מבט","icon":"🗺️","color":"#c62b6b","stories":[{"id":1,"title":"מה מנבא אושר","icon":"🌅"},{"id":2,"title":"למה נענשו על ארבעים היום?","icon":"❓"},{"id":3,"title":"האיסור שבמחשבה","icon":"🧠"}]},{"id":2,"name":"לראות טוב בכל דבר","icon":"🔍","color":"#6d28d9","stories":[{"id":4,"title":"חשיבה חיובית","icon":"🌈"},{"id":5,"title":"שתי משפחות, עיר אחת","icon":"🏙️"},{"id":6,"title":"לבנות שיניה","icon":"🦷"},{"id":7,"title":"המצווה לאהוב את ארץ ישראל","icon":"🇮🇱"},{"id":8,"title":"זבת חלב ודבש בימינו","icon":"🥛"}]},{"id":3,"name":"אברהם ובלעם","icon":"⚖️","color":"#e08e00","stories":[{"id":9,"title":"עין טובה ועין רעה","icon":"⚖️"},{"id":10,"title":"את אשר תברך מבורך","icon":"🗣️"}]},{"id":4,"name":"תחשוב טוב","icon":"💭","color":"#1e88b8","stories":[{"id":11,"title":"גן עדן או גיהנום","icon":"🌍"},{"id":12,"title":"\"תחשוב טוב יהיה טוב\"","icon":"💭"},{"id":13,"title":"גם זו לטובה","icon":"🐓"},{"id":14,"title":"למה בארמית?","icon":"📜"}]},{"id":5,"name":"עולם שכולו טוב","icon":"🍎","color":"#c62b6b","stories":[{"id":15,"title":"בשביל מה נברא העולם","icon":"🎨"},{"id":16,"title":"האוויר של הרב מילר","icon":"🌬️"},{"id":17,"title":"הפירות שמשחקים מחבואים","icon":"🍏"},{"id":18,"title":"וירא אלוקים והנה טוב מאוד","icon":"✨"}]},{"id":6,"name":"מחשיבה חיובית לאהבת ה'","icon":"❤️","color":"#6d28d9","stories":[{"id":19,"title":"בית החולים שליד הגשר","icon":"🌉"},{"id":20,"title":"המטרה: ואהבת את ה'","icon":"❤️"},{"id":21,"title":"כמה דקות בכל יום","icon":"⏱️"},{"id":22,"title":"רבים מכאובים לרשע","icon":"🌤️"},{"id":23,"title":"כל אדם רואה מה שהוא רוצה לראות","icon":"🚗"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
