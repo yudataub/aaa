@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 המילה והארץ</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 המילה והארץ</h1>
+  <p>מילה ופריעה, דור המדבר, הגבעונים, והקשר הפנימי בין ברית המילה לירושת ארץ ישראל</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ המילה והארץ" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/yhR12Da9gio?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/yhR12Da9gio/hqdefault.jpg" alt="המילה והארץ" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=yhR12Da9gio" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ברית של שני צדדים</div>
+      <h3 class="story-title">🔍 סיפור מוכר באור אחר</h3>
+      <p>השיעור נאמר סביב שמחה של ברית מילה, ומטרתו הוגדרה כבר בפתיחה: ללמוד דוגמה למה שנקרא "פנימיות". יש דברים שמכירים אותם היטב על דרך הפשט, ופתאום מתברר שמאחוריהם עומד עולם שלם. אותו סיפור, אותו פסוק, אותה גמרא, ובכל זאת רואים אותם באור אחר לחלוטין.</p>
+      <p>הנושא הוא ברית המילה, אבל לא מצד ההלכות של המצווה. השאלה היא מה עומד מאחורי הסיפורים. בשיעור עוברים על כמה מקרים בתנ"ך: הברית עם אברהם אבינו, המילה בימי יהושע בן נון, דור המדבר שלא מל במשך ארבעים שנה, ופרשת הגבעונים שרימו את יהושע.</p>
+      <p>בכל אחד מהם מתגלה אותו חוט. ברית המילה וארץ ישראל קשורות זו בזו קשר עמוק. איפה שיש מילה, יש אחיזה בארץ. איפה שהמילה חסרה, גם הארץ מתרחקת. ובסוף השיעור מנסים להבין גם למה זה כך, ומה זה אומר לנו היום, הלכה למעשה, בדרך שבה אנחנו מסתכלים על מה שקורה בארץ.</p>
+      <p class="bold-para">השיעור מבקש לראות את ברית המילה ואת סיפורי התנ"ך ברובד הפנימי שלהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ברית של שני צדדים</div>
+      <h3 class="story-title">🤝 ברית היא דבר דו־צדדי</h3>
+      <p>בפרשת לך לך אומר הקדוש ברוך הוא לאברהם אבינו: "וַהֲקִמֹתִי אֶת בְּרִיתִי בֵּינִי וּבֵינֶךָ וּבֵין זַרְעֲךָ אַחֲרֶיךָ לְדֹרֹתָם לִבְרִית עוֹלָם לִהְיוֹת לְךָ לֵאלֹקִים וּלְזַרְעֲךָ אַחֲרֶיךָ". הדבר הראשון שאברהם זוכה לו הוא שהקדוש ברוך הוא יהיה לו לאלוקים. כלומר, השגחה מיוחדת על עם ישראל, יותר מכל העולם כולו.</p>
+      <p>והפסוק ממשיך: "וְנָתַתִּי לְךָ וּלְזַרְעֲךָ אַחֲרֶיךָ אֵת אֶרֶץ מְגֻרֶיךָ אֵת כָּל אֶרֶץ כְּנַעַן לַאֲחֻזַּת עוֹלָם וְהָיִיתִי לָהֶם לֵאלֹקִים". זה החלק של הקדוש ברוך הוא: אלוקות, השגחה, וארץ ישראל.</p>
+      <p>אבל ברית היא דבר של שני צדדים. זה לא הסכם שבו צד אחד רק נותן והשני רק לוקח. ולכן מיד אחר כך נאמר: "וְאַתָּה אֶת בְּרִיתִי תִשְׁמֹר", ובהמשך "זֹאת בְּרִיתִי אֲשֶׁר תִּשְׁמְרוּ... הִמּוֹל לָכֶם כָּל זָכָר".</p>
+      <p>אם כן, ההבטחה בנויה כך: הקדוש ברוך הוא נותן לנו את עצמו כאלוקים ואת ארץ ישראל, ואנחנו מצדנו נותנים את ברית המילה. מכאן מתחיל כל השיעור. אם הארץ ניתנת בתוך הברית, צריך להבין מה הקשר הפנימי בין שני הצדדים שלה.</p>
+      <p class="bold-para">בברית הקדוש ברוך הוא נותן אלוקות והשגחה וארץ, ואנחנו נותנים את ברית המילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ברית של שני צדדים</div>
+      <h3 class="story-title">🛡️ "והייתי להם לאלוקים"</h3>
+      <p>על המילים "וְהָיִיתִי לָהֶם לֵאלֹקִים" מביא רש"י דבר מפתיע: שם, בארץ ישראל, אהיה לכם לאלוקים. והדר בחוץ לארץ, כביכול, דומה כמי שאין לו אלוק. ההשגחה המיוחדת של הברית קשורה לארץ.</p>
+      <p>הרב ביקש להסתכל על זה במציאות. בחוץ לארץ עבר עם ישראל דברים קשים מאוד. ומאז שחזרנו לארץ, העולם עומד לא פעם בתמיהה: איך קורים לעם הזה ניסים ונפלאות כאלה? איך עוברים ייסורים כל כך רבים ועדיין ממשיכים לעמוד ולצמוח?</p>
+      <p>הדוגמה שהובאה היא מן הזמן האחרון. נורו לעבר ישראל מאיראן כמות עצומה של טילים, ואין כמעט עם בעולם שירו עליו כך. והתוצאות היו רחוקות מאוד ממה שאפשר היה לצפות. סיפורים כאלה, אמר הרב, שומעים רק בארץ ישראל.</p>
+      <p>זו לא רק תחושה. זו הבטחה כתובה. הקדוש ברוך הוא אמר "והייתי להם לאלוקים", ורש"י מלמד שהמקום שבו ההבטחה הזאת מתגלה הוא הארץ. מי שמתבונן בעיניים פתוחות, רואה את הפסוק מתקיים לנגד עיניו.</p>
+      <p class="bold-para">רש"י מלמד שההשגחה המיוחדת של "והייתי להם לאלוקים" שורה בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ברית של שני צדדים</div>
+      <h3 class="story-title">🌾 ניסים שאין להם הסבר</h3>
+      <p>הרב הוסיף עוד דוגמאות. שנתיים של מלחמה הן חורבן כלכלי לכל מדינה: כמה כסף זה עולה, כמה אנשים אינם עובדים, כמה השקעות נעצרות. ובכל זאת, ישראל ממשיכה לעלות. איך זה ייתכן?</p>
+      <p>הרב סיפר על סקר שראה, ולפיו ישראל נמצאת במקום הראשון בעולם בידע של אנשים בתחום הבינה המלאכותית. וזאת למרות שהמדינה עצמה כמעט אינה משקיעה בזה תקציבים, בעוד מדינות גדולות משקיעות סכומי עתק. מדינה שעוברת מלחמות וצרות, ועדיין במקום הראשון.</p>
+      <p>וכך גם בשפע הגשמי. "ארץ זבת חלב ודבש": לכאורה אין לארץ ישראל שדות מרעה בלי סוף, ובכל זאת הפרות כאן נותנות כמות חלב גבוהה מאוד. וכך התמרים, וכך הפירות. אין לזה הסבר הגיוני רגיל.</p>
+      <p>והדבר החשוב ביותר הוא ברוחניות. בארץ ישראל יהודים אינם נבלעים בין העמים, בעוד שבמקומות רבים בעולם ההתבוללות היא, לצערנו, אסון של ממש. כל אלה הם דוגמאות ל"והייתי להם לאלוקים". בארץ רואים איך הקדוש ברוך הוא משגיח בעצמו.</p>
+      <p class="bold-para">ההצלחה, השפע והשמירה הרוחנית בארץ ישראל הם המחשה חיה להבטחת הברית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה ופריעה</div>
+      <h3 class="story-title">✂️ שני חלקים במצווה אחת</h3>
+      <p>כדי להבין את הקשר בין המילה לארץ, צריך קודם להכיר את המצווה עצמה. מי שמביא את בנו לברית רואה שהמוהל עושה שני דברים, שני חלקים נפרדים.</p>
+      <p>החלק הראשון נקרא מילה: חיתוך הערלה והסרתה. אחר כך בא החלק השני, הפריעה: המוהל חותך ומקפל לאחור את הקרום הדק שנשאר, ומגלה את הבשר שהיה מכוסה תחתיו. מילה היא הסרה, ופריעה היא גילוי.</p>
+      <p>שני החלקים יחד הם מצוות ברית מילה, וחובה לעשות את שניהם. חז"ל אמרו על מי שעשה רק את החלק הראשון: "מל ולא פרע, כאילו לא מל". החיתוך לבדו אינו נחשב ברית שלמה.</p>
+      <p>עד כאן זו הלכה ידועה. אבל כאן מתחיל העומק: למה בכלל יש שני חלקים? ולמה דווקא הפריעה היא זו שבלעדיה המילה כאילו לא נעשתה? התשובה מתגלה בגמרא שמספרת מתי ניתנה כל אחת מהמצוות.</p>
+      <p class="bold-para">ברית המילה כוללת שני חלקים: מילה, שהיא חיתוך הערלה, ופריעה, שהיא גילוי הבשר שמתחתיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה ופריעה</div>
+      <h3 class="story-title">📖 לא ניתנה פריעה לאברהם</h3>
+      <p>הגמרא במסכת יבמות אומרת דבר מפתיע: לא ניתנה פריעת מילה לאברהם אבינו. אברהם קיבל מהקדוש ברוך הוא ציווי למול בלבד. גם אם אברהם פרע את יצחק בנו, הוא עשה זאת מעצמו, כמי שאינו מצווה ועושה.</p>
+      <p>מתי ניתנה מצוות הפריעה? הגמרא מביאה את הפסוק בספר יהושע: "בָּעֵת הַהִיא אָמַר ה' אֶל יְהוֹשֻׁעַ עֲשֵׂה לְךָ חַרְבוֹת צֻרִים וְשׁוּב מֹל אֶת בְּנֵי יִשְׂרָאֵל שֵׁנִית". מה פירוש "שנית"? לחזור עליהם עם הפריעה. רק אז, בכניסה לארץ, ניתנה מצוות הפריעה.</p>
+      <p>על פני הדברים, זו ידיעה היסטורית: קודם הייתה מצווה אחת, ובשלב מאוחר יותר נוספה השנייה. אפשר לקרוא את הגמרא, להבין אותה, ולהמשיך הלאה.</p>
+      <p>אבל כאן, אמר הרב, צריך לשאול: למה? מה קרה בימי יהושע שהצריך דווקא אז את הפריעה? למה אברהם אבינו, אבי האומה ובעל הברית, לא קיבל את המצווה בשלמותה? כאן מגיע ההסבר הפנימי, והוא קשור ישירות להבטחת הארץ.</p>
+      <p class="bold-para">הגמרא ביבמות מלמדת שאברהם נצטווה רק על המילה, ומצוות הפריעה ניתנה רק בימי יהושע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה ופריעה</div>
+      <h3 class="story-title">🗣️ מילה כנגד מילה</h3>
+      <p>המילה "מילה" בעברית היא גם דיבור. "רוּחַ ה' דִּבֶּר בִּי וּמִלָּתוֹ עַל לְשׁוֹנִי". גם בלשון בני אדם אומרים "נתתי לך את המילה שלי", כלומר הבטחתי.</p>
+      <p>עכשיו נסתכל על אברהם אבינו. מה הוא קיבל מהארץ בפועל? כמעט כלום. הוא אפילו נאלץ לשלם ארבע מאות שקל כסף על חלקת קבר לשרה. הארץ הובטחה לו, אבל לא ניתנה לו. כל מה שהיה בידו הוא דיבור, הבטחה, "מילה" של הקדוש ברוך הוא.</p>
+      <p>וכנגד זה, מה הוא נדרש לתת? גם הוא נותן רק "מילה". הקדוש ברוך הוא עוד לא פרע את השטר, עוד לא קיים בפועל את ההבטחה, ולכן גם מאברהם לא נדרשה פריעה. ברית היא דבר של שני צדדים, וכל צד נותן כנגד מה שהצד השני נותן.</p>
+      <p>כך הגמרא נקראת אחרת לגמרי. העובדה שלאברהם לא ניתנה פריעה אינה חיסרון בו. היא משקפת את השלב שבו עמדה ההבטחה: שלב הדיבור, לפני שהגיע זמן המעשה.</p>
+      <p class="bold-para">אברהם קיבל מהקדוש ברוך הוא רק "מילה" – הבטחה בדיבור – ולכן נצטווה רק על המילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה ופריעה</div>
+      <h3 class="story-title">💰 פריעה היא גם פירעון</h3>
+      <p>גם למילה "פריעה" יש משמעות נוספת. מלבד גילוי, כמו "וּפָרַע אֶת רֹאשׁ הָאִשָּׁה", היא משמשת גם לפירעון חוב. אומרים "פריעת בעל חוב מצווה". ולמה פירעון נקרא כך? כי בשעת התשלום מתגלה החוב שהיה מכוסה עד אז. החוב היה, והפירעון מוציא אותו לגלוי.</p>
+      <p>ועכשיו הכל מתיישב. בימי יהושע בן נון הקדוש ברוך הוא סוף סוף פורע את השטר: מכניס את בני ישראל לארץ ומקיים בפועל את מה שהבטיח לאברהם. כאשר הקדוש ברוך הוא פורע, מגיע גם הזמן שעם ישראל יפרע מצדו. ולכן דווקא אז ניתנה מצוות הפריעה.</p>
+      <p>אם הקדוש ברוך הוא אינו פורע, אי אפשר לבקש מאתנו לפרוע. וכשהוא פורע, אנחנו פורעים כנגדו. כך שני חלקי המצווה מקבילים לשני שלבי ההבטחה: המילה כנגד הדיבור, והפריעה כנגד הקיום.</p>
+      <p>זו דוגמה למה שנאמר בפתיחה. אותה גמרא, שנראתה כפרט היסטורי יבש, מתגלה כמשקפת את מבנה הברית כולה.</p>
+      <p class="bold-para">"פריעה" היא גם פירעון חוב, ולכן כשהקדוש ברוך הוא פרע את הבטחתו ניתנה גם מצוות הפריעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה ופריעה</div>
+      <h3 class="story-title">❓ מל ולא פרע</h3>
+      <p>מכאן מובן גם למה "מל ולא פרע, כאילו לא מל". מי שעושה רק את המילה, כביכול מצהיר שהקדוש ברוך הוא רק הבטיח ועוד לא קיים. וזה דבר חמור מאוד. אחרי שהקדוש ברוך הוא כבר פרע את השטר והכניס אותנו לארץ, ברית שלמה היא רק מילה ופריעה יחד, הכרה בכך שההבטחה התקיימה.</p>
+      <p>ומכאן עלתה בשיעור שאלה שהרב השאיר פתוחה. יש מי שאינו מל כלל. יש מי שמל ולא פרע. אבל מה הדין באדם שמל ופרע, והקדוש ברוך הוא בא לקיים את חלקו ולתת לו את הארץ, והוא אומר: אני לא מעוניין?</p>
+      <p>אדם כזה עשה את חלקו במצווה בגופו. אבל כאשר הקדוש ברוך הוא פורע את החוב ומגלה אותו, הוא אינו רוצה להכיר בפירעון, או אינו רוצה לקבל אותו. האם זו ברית שלמה?</p>
+      <p>הרב אמר שזו שאלה מורכבת ולא פשוטה כלל, ולא הכריע בה. נחזור אליה בסוף השיעור, כשנבין טוב יותר מה היא הברית ומה משמעותו של הוויתור על מה שניתן בה.</p>
+      <p class="bold-para">מי שמל ולא פרע, כביכול אומר שהקדוש ברוך הוא הבטיח ולא קיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · דור המדבר שלא מל</div>
+      <h3 class="story-title">🏜️ למה לא מלו במדבר?</h3>
+      <p>הסיפור הבא מוכר לכולם: חטא המרגלים. דור יוצאי מצרים לא האמין שהקדוש ברוך הוא ייתן לו את הארץ, ונענש שלא ייכנס אליה. ארבעים שנה הלכו במדבר, עד שתם הדור.</p>
+      <p>אבל הגמרא ביבמות מוסיפה פרט שמעורר תמיהה. בכל ארבעים השנים במדבר, בני ישראל לא מלו את בניהם. למה? הגמרא נותנת שתי סיבות. האחת, חולשת הדרך: המסעות במדבר החלישו אותם, והמילה הייתה מסוכנת. השנייה, שלא נשבה להם רוח צפונית, הרוח הנוחה שמסייעת לרפואת המילה.</p>
+      <p>ועכשיו תחשבו. מדובר בדור שחי כולו בתוך ניסים. ירד להם מן מן השמים בכל יום. הבגדים לא בלו: "שִׂמְלָתְךָ לֹא בָלְתָה מֵעָלֶיךָ וְרַגְלְךָ לֹא בָצֵקָה זֶה אַרְבָּעִים שָׁנָה". ולפי המדרש, אפילו ההרים והגבעות התיישרו לפניהם.</p>
+      <p>מי שיכול ליישר הרים, מי שדואג שהבגדים לא יתבלו ושהלחם ירד מן השמים, האם יש לו בעיה עם רוח צפונית? הרי זה נס קטן לעומת כל האחרים. למה לא עשה להם הקדוש ברוך הוא גם את הנס הזה?</p>
+      <p class="bold-para">הגמרא אומרת שבמדבר לא מלו בגלל חולשת הדרך ומפני שלא נשבה רוח צפונית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · דור המדבר שלא מל</div>
+      <h3 class="story-title">👕 בגדים של ארבעים שנה</h3>
+      <p>הרב התעכב על הנס של הבגדים כדי שנרגיש כמה הוא גדול. האם יש למישהו היום בגד שהוא לובש ארבעים שנה? אצלנו בגדים מתקלקלים, נקרעים, יוצאים מן האופנה. אם נשאר אצל מישהו בגד ישן מאוד מבית סבתא, זה כבר נחשב פלא קטן.</p>
+      <p>ובמדבר, לא רק שהבגדים לא בלו, אלא לפי חז"ל הם גדלו עם הילדים. ילד שיצא ממצרים קטן, השמלה שלו גדלה איתו. אין צורך בכביסה, אין צורך בתפירה, אין צורך בקנייה. זה נס בלתי נורמלי.</p>
+      <p>ובתוך כל זה, דבר אחד לא הצליח: ברית מילה. ארבעים שנה, דור שלם, ולא הסתדר. פעם חולשה, פעם אין רוח צפונית, תמיד משהו מפריע.</p>
+      <p>הרב הדגיש: אנחנו לא משנים את הגמרא. הגמרא צודקת, ובאמת לא נשבה רוח צפונית. אבל השאלה היא מה עומד מאחורי זה. למה דווקא הרוח הזאת לא נשבה? למה דווקא הנס הזה לא נעשה? כשמחברים את זה לקשר בין המילה לארץ, התשובה מתבהרת.</p>
+      <p class="bold-para">דור שחי בתוך ניסים גלויים לא יכול היה למול – וזה עצמו סימן שיש כאן סיבה עמוקה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · דור המדבר שלא מל</div>
+      <h3 class="story-title">💭 מי שאינו מאמין שרוצים לתת לו</h3>
+      <p>מה היה חטא המרגלים? הקדוש ברוך הוא רצה לתת להם את ארץ ישראל, והם אמרו: אנחנו לא ראויים. ההבטחה ניתנה לצדיקים, לא לנו. לא נצליח. הם לא האמינו שהקדוש ברוך הוא באמת רוצה לתת להם. ואמר להם הקדוש ברוך הוא: אם אינכם מאמינים, לא תקבלו.</p>
+      <p>זה יסוד חשוב מאוד גם בחיים שלנו. אדם שאינו מאמין שיש לו כוח, שאינו מאמין שהקדוש ברוך הוא רוצה לתת לו, שומע כביכול תשובה: אם אתה לא מאמין שאני רוצה לתת לך, לא תקבל.</p>
+      <p>והרב הוסיף שזה חשוב במיוחד בדור שלנו. יש אנשים שאינם מסוגלים להאמין שהקדוש ברוך הוא עושה לנו ניסים, שהוא רוצה לתת לנו את הארץ ורוצה שנצליח. תמיד הם תקועים בחשד, תמיד מחפשים את המלכודת, תמיד בטוחים שמישהו מתחכם ומנסה לרמות.</p>
+      <p>האמונה שהקדוש ברוך הוא רוצה להיטיב איננה רק תחושה נעימה. היא הכלי שבו מקבלים את הטוב. מי שסוגר את הכלי, גם כשהשפע מגיע הוא אינו יכול להיכנס.</p>
+      <p class="bold-para">אדם שאינו מאמין שהקדוש ברוך הוא רוצה לתת לו, אינו מקבל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · דור המדבר שלא מל</div>
+      <h3 class="story-title">🍞 מחר כעת הזאת</h3>
+      <p>הרב הזכיר את ההפטרה שקראו באותה תקופה, מספר מלכים. שומרון הייתה במצור כבד, והרעב היה נורא. אלישע הנביא עמד והבטיח: מחר בשעה הזאת יימכרו מצרכי מזון במחיר זול, "סְאָה סֹלֶת בְּשֶׁקֶל".</p>
+      <p>והשליש שעל ידו נשען המלך ענה בלעג: "הִנֵּה ה' עֹשֶׂה אֲרֻבּוֹת בַּשָּׁמַיִם, הֲיִהְיֶה הַדָּבָר הַזֶּה?" איך זה יכול להיות? ולמחרת באו ואמרו שמחנה ארם ריק לגמרי. כולם ברחו והשאירו הכל מאחור.</p>
+      <p>ומה אמר המלך? לא ייתכן. זו תחבולה. הם יצאו להתחבא בשדה כדי לתפוס אותנו כשנצא. גם כשהנס כבר עמד מול העיניים, היה קשה לו להאמין שיש כאן טוב פשוט.</p>
+      <p>יש אנשים, אמר הרב, שלא מסוגלים להאמין שיש משהו טוב בחיים. תמיד מישהו מתחכם, תמיד מישהו רוצה לגנוב. ניסים, לדעתם, אין. ולא יעזור כלום: תמיד הם יחפשו את המארב. זו בדיוק הנקודה של המרגלים, וזו הנקודה שאנחנו צריכים להיזהר ממנה.</p>
+      <p class="bold-para">השליש שלא האמין לנבואת אלישע, והמלך שחשד במחנה הריק, הם דוגמה למי שאינו מסוגל להאמין בטוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · דור המדבר שלא מל</div>
+      <h3 class="story-title">⚖️ מידה כנגד מידה</h3>
+      <p>ועכשיו נחזור לשאלה. הקדוש ברוך הוא גזר שדור המדבר לא ייכנס לארץ. אבל יש כאן בעיה. ברית המילה היא חלק האדם בברית, והיא זו שמזכה אותו בארץ. אם בני ישראל ימולו, איך אפשר להשאיר אותם במדבר? המילה והארץ הולכות יחד.</p>
+      <p>ומה עושה הקדוש ברוך הוא? דואג שלא ימולו. המן ירד, השמלה גדלה, ההרים התיישרו, אבל הרוח הצפונית לא נשבה. בכל פעם שניסו, משהו לא הסתדר. לא בגלל שהנס היה קשה מדי, אלא בגלל שהקדוש ברוך הוא לא רצה שימולו. אילו מלו, היו זוכים בארץ.</p>
+      <p>כך מתברר שהגמרא והפשט אמת לאמיתה: באמת לא נשבה רוח צפונית. אבל העומק הוא למה לא נשבה. חוסר האמונה בהבטחת הארץ גרם מידה כנגד מידה שלא יוכלו לקיים את הברית שמזכה בה.</p>
+      <p>והתוצאה ידועה. רק הדור הבא נכנס לארץ, ויהושע מל אותם בכניסה, ב"שוב מול את בני ישראל שנית", כדי שיוכלו לרשת אותה. המילה פתחה את שערי הארץ.</p>
+      <p class="bold-para">מכיוון שהמילה מזכה בארץ, הקדוש ברוך הוא מנע מדור המדבר את המילה כדי שיתקיים העונש שלא ייכנסו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · דור המדבר שלא מל</div>
+      <h3 class="story-title">👶 "מיום השמיני והלאה ירצה דמו"</h3>
+      <p>עלתה כאן שאלה צדדית. הרי אלה שמתו במדבר נימולו עוד במצרים. רק הילדים שנולדו במדבר לא נימולו. אז למה המילה שלהם לא זיכתה אותם בארץ?</p>
+      <p>הרב הביא לכך הסבר מתוך נוסח ה"הרחמן" שאומרים בברכת המזון של ברית מילה. על אבי הבן אומרים: "מיום השמיני והלאה ירצה דמו". והוא שאל: איך זה מתאים לאבא? הרי הדם של הברית הוא של התינוק, לא של האב.</p>
+      <p>וההסבר: איך יודעים שהברית של אדם היא באמת ברית שלו? הוא נימול כשהיה תינוק בן שמונה ימים. איש לא שאל אותו. אולי עשו זאת בעל כורחו? הראיה היא כאשר הוא עצמו מכניס את בנו לברית. אז מתברר למפרע שגם הוא רוצה במילה שנעשתה בו, ושאילו שאלו אותו, היה מסכים.</p>
+      <p>ומכאן לדור המדבר. כיוון שלא מלו את בניהם, לא הוכח שהם רוצים באמת בברית. כך נמנעה מהם גם ההוכחה הזאת, והמילה שלהם לא הייתה בה הכוח לזכות אותם בארץ.</p>
+      <p class="bold-para">כשאדם מל את בנו, מתברר למפרע שגם הוא רוצה בברית שנעשתה בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · סודם של הגבעונים</div>
+      <h3 class="story-title">🍞 "מארץ רחוקה באנו"</h3>
+      <p>הסיפור הבא מפורסם מאוד, מספר יהושע. הגבעונים שמעו מה עשה יהושע ליריחו ולעי, והגיעו אל מחנה ישראל בבגדים בלים ובנעליים מטולאות. בידיהם לחם יבש ומפורר. ואמרו: מארץ רחוקה באנו, אנחנו רוצים לכרות איתכם ברית.</p>
+      <p>בני ישראל האמינו להם ונשבעו להם. שלושה ימים אחר כך התברר שהם בכלל תושבי המקום, גרים כאן בסביבה. אבל כבר אי אפשר היה לעשות דבר: הבטחנו, נשבענו, וצריך לקיים. וכך נשארו הגבעונים לגור בתוך ארץ ישראל.</p>
+      <p>על פני הדברים, זו פרשה של תחבולה מוצלחת וטעות של הנהגת ישראל. כל אחד שקורא אותה שואל את עצמו: למה הקדוש ברוך הוא נתן לזה לקרות? הרי ציווה להוריש את שבעת העממים. למה לא גילה ליהושע מה עומד להתרחש? למה סובב שהגבעונים יצליחו לרמות?</p>
+      <p>גם כאן, אמר הרב, לא משנים דבר מהפשט. אבל צריך לשאול מה עומד מאחוריו, בפנימיות. והתשובה, שוב, עוברת דרך ברית המילה.</p>
+      <p class="bold-para">הגבעונים רימו את יהושע ואת ישראל, וזכו להישאר בארץ בגלל הברית שנכרתה איתם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · סודם של הגבעונים</div>
+      <h3 class="story-title">🔗 "ויעשו גם המה בערמה"</h3>
+      <p>בפסוק כתוב: "וְיֹשְׁבֵי גִבְעוֹן שָׁמְעוּ אֵת אֲשֶׁר עָשָׂה יְהוֹשֻׁעַ לִירִיחוֹ וְלָעָי, וַיַּעֲשׂוּ גַם הֵמָּה בְּעָרְמָה". המילה "גם" מעוררת שאלה: גם הם, כמו מי? מי עוד עשה בערמה?</p>
+      <p>ורש"י מבאר: גם הם, כמו שעשו בני יעקב בערמה לחמור אבי שכם, שהיה חוי. ויושבי גבעון מן החוי היו. כלומר, הגבעונים האלה הם מאותו עם שהיה בשכם, מאותו שבט של אנשי שכם שבני יעקב עשו עליהם את המעשה הידוע.</p>
+      <p>נזכיר את הסיפור. אחרי מה שעשה שכם בן חמור לדינה, בני יעקב אמרו לאנשי שכם בערמה שאם ימולו, יוכלו להתחתן עם משפחת יעקב. אנשי שכם הסכימו ונימולו. ובסוף, במקום חיתון, שמעון ולוי באו עליהם בחרב.</p>
+      <p>הרב ציין שאינו יודע איך בדיוק נשארו צאצאים מאותו עם ומאותו מקום. אבל זה מה שרש"י אומר. ועכשיו מתחבר משהו מדהים: הגבעונים הם צאצאי אנשים שנימולו.</p>
+      <p class="bold-para">רש"י מלמד שהגבעונים היו מן החוי, צאצאי אנשי שכם שבני יעקב רימו אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · סודם של הגבעונים</div>
+      <h3 class="story-title">⚖️ ערמה כנגד ערמה, מילה כנגד ארץ</h3>
+      <p>הקדוש ברוך הוא מסובב כאן מידה כנגד מידה בצורה מופלאה. בני יעקב רימו את אנשי שכם החוי. עכשיו הגבעונים, מן החוי, מרמים את בני ישראל. ערמה כנגד ערמה.</p>
+      <p>אבל יש כאן משהו עמוק עוד יותר. אנשי שכם נימולו. נכון שהמילה שלהם לא הייתה לשם שמיים; הם מלו כדי להתחתן עם משפחת יעקב ולהרוויח מכך, כמו שאמרו: "מִקְנֵהֶם וְקִנְיָנָם וְכָל בְּהֶמְתָּם הֲלוֹא לָנוּ הֵם". וגם אם המילה לא הייתה שלמה כמו של ישראל, בסופו של דבר הם מלו.</p>
+      <p>והרי בזכות המילה מקבלים את ארץ ישראל. אז המילה הזאת, גם אם הייתה חלקית ומתוך חשבונות, נתנה להם זכות מסוימת. ולכן צאצאיהם זכו, אחרי שנים רבות, להישאר לחיות בתוך ארץ ישראל.</p>
+      <p>ויש כאן עוד היפוך מעניין. אנשי שכם אמרו בזמנו לבני עירם: "וְהָאָרֶץ הִנֵּה רַחֲבַת יָדַיִם לִפְנֵיהֶם", כלומר בני יעקב יישבו איתנו בארץ ויהיו חלק מאיתנו. ובסוף התהפך הדבר: הגבעונים הם שישבו עם ישראל בארץ. מידה כנגד מידה בכל פרט.</p>
+      <p class="bold-para">אנשי שכם מלו, ולכן זכו צאצאיהם מידה כנגד מידה לאחיזה בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · סודם של הגבעונים</div>
+      <h3 class="story-title">🕰️ מילה שאינה שלמה</h3>
+      <p>מכאן עבר הרב לדברים ידועים מספר הזוהר. הזוהר מדבר על בני ישמעאל, שנוהגים במילה, ואומר שבזכות המילה הזאת יש להם אחיזה מסוימת בארץ ישראל. זה מסביר, לפי דבריו, למה כל כך קשה להוציא מן הארץ את מי שמחזיק בה מתוך הקשר הזה.</p>
+      <p>אבל הזוהר מוסיף שזו אחיזה זמנית. המילה שלהם אינה מילה אמיתית ושלמה כמו של ישראל. היא אינה נעשית ביום השמיני, ואינה מתוך ברית. לכן גם הזכות שהיא נותנת מוגבלת, ולא תימשך לעולם.</p>
+      <p>לישראל יש זכויות גדולות הרבה יותר: ברית שלמה, מילה ופריעה, בזמנה, מתוך ציווי. ולכן ההבטחה לישראל היא "אחוזת עולם". אבל עצם העובדה שאפילו מילה חלקית ומתוך חשבונות נותנת אחיזה מסוימת, מראה עד כמה עמוק הקשר בין המילה לארץ.</p>
+      <p>וזה מה שראינו בגבעונים: מילה כזאת, שאינה שלמה, זיכתה את הצאצאים בישיבה בארץ. הקדוש ברוך הוא אינו מקפח שכר של שום בריה, ואפילו מילה שלא לשמה נותנת משהו. על אחת כמה וכמה ברית שלמה של עם ישראל.</p>
+      <p class="bold-para">הרב הביא את דברי הזוהר שגם למילה של אומות אחרות יש אחיזה מסוימת בארץ, אך לא לעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארץ נימולה</div>
+      <h3 class="story-title">🌿 המהול והארץ המעולה</h3>
+      <p>עד כאן ראינו את הקשר בסיפורים. עכשיו צריך להבין את הסיבה. כמובן, הפשט הוא שכך כתוב: הקדוש ברוך הוא הבטיח בתוך הברית. אבל מה מונח בעומק? למה דווקא המילה מזכה בארץ?</p>
+      <p>הרב הביא דברים שכתב אחד המפרשים: הקשר בין המילה להבטחת הארץ הוא כדי שיבואו הנימולים ויקבלו את הארץ המעולה, וילכו הערלים וישכנו בארצות הערלות.</p>
+      <p>מה פירוש? המוהל מבדיל את הגוף מן הערלה. הוא מוריד את החלק הפסול, זורק אותו, ומה שנשאר הוא טהור. כך גם בין הארצות. ארץ ישראל היא הארץ ש"נימולה", הארץ הטהורה. ושאר הארצות נקראות בלשון הנביא "אדמה טמאה": "וְאַתָּה עַל אֲדָמָה טְמֵאָה תָּמוּת". גם חז"ל דיברו על טומאת ארץ העמים.</p>
+      <p>אם כן, יש התאמה: האדם הנימול, שהסיר מעליו את הערלה, ראוי לשכון בארץ שהיא כולה בבחינת מילה, ארץ טהורה. והערל מקומו בארצות שעדיין עומדות בבחינת ערלה. המילה אינה רק תנאי חיצוני; היא מכשירה את האדם להתאים לארץ.</p>
+      <p class="bold-para">כמו שהמוהל מסיר את הערלה ומשאיר את הגוף טהור, כך ארץ ישראל היא הארץ המעולה והטהורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארץ נימולה</div>
+      <h3 class="story-title">👁️ "עיני ה' אלוקיך בה"</h3>
+      <p>למה ארץ ישראל נקראת הארץ המעולה? התורה עצמה מסבירה: "אֶרֶץ אֲשֶׁר ה' אֱלֹקֶיךָ דֹּרֵשׁ אֹתָהּ תָּמִיד, עֵינֵי ה' אֱלֹקֶיךָ בָּהּ מֵרֵאשִׁית הַשָּׁנָה וְעַד אַחֲרִית שָׁנָה". זו הארץ היחידה שהקדוש ברוך הוא משגיח עליה בעצמו.</p>
+      <p>בשאר העולם ההשגחה עוברת דרך שליחים, דרך סיבובים ועקיפים. בארץ ישראל יש השגחה ישירה. לא צריך מתווכים, לא צריך דרכים מסביב. הקדוש ברוך הוא בעצמו משקה אותה ושומר עליה.</p>
+      <p>וזה מתחבר לברית המילה. השכינה אינה נדבקת בערל, ואינה מדברת עמו באופן ישיר. כך גם הקדוש ברוך הוא אינו מתייחס לארצות חוץ לארץ באופן ישיר, אלא על ידי שליח.</p>
+      <p>הרב הביא דוגמה מבלעם. הקדוש ברוך הוא החליט שיהיה נביא אחד לאומות העולם. אבל כתוב על בלעם "נֹפֵל וּגְלוּי עֵינָיִם": הוא לא יכול היה לעמוד בשעת הנבואה. היות והיה ערל, לא יכול היה להחזיק מעמד כשהשכינה שרתה עליו, והיה צריך ליפול ארצה. השראת שכינה ישירה מתאימה למי שנימול, ולארץ הנימולה.</p>
+      <p class="bold-para">ארץ ישראל היא הארץ שבה הקדוש ברוך הוא משגיח בעצמו, בלי שליח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארץ נימולה</div>
+      <h3 class="story-title">🌳 ארץ שהולכת ונעשית גן עדן</h3>
+      <p>ארץ ישראל איננה עומדת במקום. מהרגע שחזרנו אליה, היא הולכת ועולה. ולאן זה יגיע? הרב אמר שהתשובה כתובה בפסוק: "כִּי נִחַם ה' צִיּוֹן, נִחַם כָּל חָרְבֹתֶיהָ, וַיָּשֶׂם מִדְבָּרָהּ כְּעֵדֶן וְעַרְבָתָהּ כְּגַן ה'".</p>
+      <p>אם מחברים את שני חלקי הפסוק, "עדן" ו"גן", יוצא גן עדן. זה מה שעתיד להיות כאן. לא בבת אחת, אלא בהדרגה. לא יודעים מתי: אולי בעוד שבוע, אולי בעוד חודשיים, אולי בעוד חמש שנים או עשרים. אבל הכיוון ברור: הארץ הולכת ונעשית טובה יותר ויותר.</p>
+      <p>הרב אמר בחיוך שכל העולם עוד ירצה לגור כאן, ושההשקעה הטובה ביותר היא בארץ ישראל. מאחורי החיוך עומד יסוד רציני: זו הארץ המעולה, הארץ הטהורה ביותר, שהקדוש ברוך הוא משגיח עליה בעצמו.</p>
+      <p>ומי שמבין את זה, מסתכל על המציאות בארץ אחרת. כל צמיחה, כל הצלחה, כל נס, אינם אירועים מקריים. הם שלבים בדרך של ארץ שהולכת ומתגלה כגן ה'.</p>
+      <p class="bold-para">ארץ ישראל עולה בהדרגה, עד שתהיה כגן ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארץ נימולה</div>
+      <h3 class="story-title">🕯️ כיבוש הארץ דוחה שבת</h3>
+      <p>עכשיו אפשר להבין מדרש שנראה מוזר. הפסוק אומר: "וְזָכַרְתִּי אֶת בְּרִיתִי יַעֲקוֹב וְאַף אֶת בְּרִיתִי יִצְחָק וְאַף אֶת בְּרִיתִי אַבְרָהָם אֶזְכֹּר, וְהָאָרֶץ אֶזְכֹּר". הברית והארץ נזכרות יחד. ומובא במדרש שמכאן לומדים שארץ ישראל שקולה כנגד המילה, וכמו שמילה דוחה את השבת, כך כיבושה של ארץ ישראל דוחה את השבת.</p>
+      <p>לכאורה אפשר לשאול: מה הקשר? מה עניין מילה לכיבוש הארץ, שמדמים את הדין של זה לדין של זה?</p>
+      <p>אבל לפי מה שלמדנו, הדברים נפלאים. כריתת הערלה וגילוי המילה דוחים את השבת. וכיבוש ארץ ישראל הוא גם כן, כביכול, ברית מילה של הארץ: מסלקים ממנה את ה"ערלה", כדי שתהיה ארץ טהורה שהשכינה יכולה לשרות בה. מה שהמוהל עושה בגוף, הכיבוש עושה בארץ.</p>
+      <p>וממילא ברור למה דין אחד להם. מילה וארץ אינן שני דברים נפרדים שנקשרו זה בזה במקרה. הן שני ביטויים של אותה ברית: הסרת הערלה כדי לגלות את הקדושה.</p>
+      <p class="bold-para">המדרש משווה את ארץ ישראל למילה: כמו שמילה דוחה שבת, כך כיבוש הארץ דוחה שבת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארץ נימולה</div>
+      <h3 class="story-title">🏠 "לא ישבו בארצך"</h3>
+      <p>מכאן הרב עבר לציווי בתורה: "לֹא יֵשְׁבוּ בְּאַרְצְךָ פֶּן יַחֲטִיאוּ אֹתְךָ לִי". למה? כי מי שעומד בבחינת ערלה וטומאה, אין מקומו בארץ הנימולה, בארץ הטהורה.</p>
+      <p>אבל הרב הוסיף שייתכן מאוד שכל האיסור הוא רק באדם שאינו מקיים את שבע מצוות בני נח. מי שמקבל עליו את שבע המצוות, אולי אין בו את הבעיה הזאת.</p>
+      <p>ומכאן הציע הרב רעיון מעשי. כיום, עובדים זרים רבים שמגיעים לארץ עוברים קורס הכשרה. לומדים שם מעט עברית ואת המנהגים המקומיים, ויש מהם שיודעים היטב מה זה שולחן שבת ומה זה לא לערב חלב בבשר. לדעתו, היה מאוד ראוי שבמסגרת ההכשרה הזאת ילמדו אותם גם את שבע מצוות בני נח. זה לא כל כך מסובך ואין בזה פרטים רבים.</p>
+      <p>הרב הדגיש שזו מחשבה שלו, משאלה של "הלוואי". אבל היא נובעת מאותו יסוד: הארץ היא מקום טהור, ומי שיושב בה צריך להתאים לה.</p>
+      <p class="bold-para">הציווי שלא ישבו בארץ עובדי עבודה זרה קשור לכך שהארץ היא מקום טהור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארץ נימולה</div>
+      <h3 class="story-title">❗ המפר בריתו של אברהם</h3>
+      <p>ראינו עד כמה חמורה ברית המילה. המשנה במסכת אבות אומרת: "וְהַמֵּפֵר בְּרִיתוֹ שֶׁל אַבְרָהָם אָבִינוּ... אֵין לוֹ חֵלֶק לָעוֹלָם הַבָּא". מה פירוש "מפר בריתו"?</p>
+      <p>האפשרות הראשונה פשוטה: מי שאינו מל כלל. אבל הגמרא מביאה אפשרות נוספת. אדם שמל, ואחר כך מושך את ערלתו כדי לכסות את המילה. הוא מתבייש בברית, אינו רוצה שיכירו בו שהוא נימול. גם זה נקרא הפרת הברית.</p>
+      <p>וכאן חוזרת השאלה ששאלנו קודם, בצורה חדה יותר. מה הדין באדם שעשה ברית מילה כהלכתה, אבל כאשר הקדוש ברוך הוא בא לקיים את חלקו בברית ולתת לו את הארץ, הוא אומר: אני לא מעוניין? או שהוא מוסר חלקים מן הארץ שהקדוש ברוך הוא נתן לו?</p>
+      <p>האם גם זה נקרא, כביכול, הפרת הברית? הרב אמר שזו שאלה שצריך לדון בה, ושהיא כלל לא פשוטה. הוא לא הכריע בה בשיעור. אבל הוא הצביע על הנקודה שבה, לדעתו, השאלה הזאת תלויה בדרך כלל.</p>
+      <p class="bold-para">הפרת הברית כוללת גם מי שמל אבל מתבייש במילתו ומכסה אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארץ נימולה</div>
+      <h3 class="story-title">🙏 גבורתנו או קיום ההבטחה</h3>
+      <p>לפי דברי הרב, השאלה הזאת תלויה בדרך כלל באופן שבו אדם מסתכל על השאלה: למה יש לנו היום את הארץ?</p>
+      <p>יש מי שרואה את זה כך: היינו גיבורים, היו לנו מנהיגים טובים, היה לנו צבא חזק. ואם כך, מי אמר שגם היום אנחנו חזקים? אולי האויב התחזק? ומשם מתחיל פחד, ומתחילים הדיבורים: בואו נוותר, נחיה בשקט.</p>
+      <p>ולעומתו, מי שרואה בארץ את קיום ההבטחה של הקדוש ברוך הוא בברית המילה, יודע שלא בגלל שאנחנו חזקים וגיבורים ירשנו את הארץ. נכון שנלחמנו, אבל הקדוש ברוך הוא הוא שקיים את הברית. ואם כן, למה לפחד? האם הקדוש ברוך הוא נחלש? למה שבפעם הבאה לא נצליח? מאיפה מגיעים כל הפחדים?</p>
+      <p>כך מתחבר הכל. הדור במדבר לא האמין שהקדוש ברוך הוא רוצה לתת לו, ולא זכה. ומי שמכיר בכך שהקדוש ברוך הוא מקיים את הבטחתו, מקבל את מה שניתן לו. הרב סיים בתפילה שנזכה בקרוב שכולם ירגישו שהקדוש ברוך הוא מקיים את הבטחתו לארץ ישראל.</p>
+      <p class="bold-para">מי שרואה בארץ קיום של הבטחת הברית, אינו מפחד כמי שתולה הכל בכוחו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/yhR12Da9gio · 2025-05-14 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ברית של שני צדדים","icon":"🤝","color":"#c62b6b","stories":[{"id":1,"title":"סיפור מוכר באור אחר","icon":"🔍"},{"id":2,"title":"ברית היא דבר דו־צדדי","icon":"🤝"},{"id":3,"title":"\"והייתי להם לאלוקים\"","icon":"🛡️"},{"id":4,"title":"ניסים שאין להם הסבר","icon":"🌾"}]},{"id":2,"name":"מילה ופריעה","icon":"📜","color":"#6d28d9","stories":[{"id":5,"title":"שני חלקים במצווה אחת","icon":"✂️"},{"id":6,"title":"לא ניתנה פריעה לאברהם","icon":"📖"},{"id":7,"title":"מילה כנגד מילה","icon":"🗣️"},{"id":8,"title":"פריעה היא גם פירעון","icon":"💰"},{"id":9,"title":"מל ולא פרע","icon":"❓"}]},{"id":3,"name":"דור המדבר שלא מל","icon":"🏜️","color":"#e08e00","stories":[{"id":10,"title":"למה לא מלו במדבר?","icon":"🏜️"},{"id":11,"title":"בגדים של ארבעים שנה","icon":"👕"},{"id":12,"title":"מי שאינו מאמין שרוצים לתת לו","icon":"💭"},{"id":13,"title":"מחר כעת הזאת","icon":"🍞"},{"id":14,"title":"מידה כנגד מידה","icon":"⚖️"},{"id":15,"title":"\"מיום השמיני והלאה ירצה דמו\"","icon":"👶"}]},{"id":4,"name":"סודם של הגבעונים","icon":"🍞","color":"#1e88b8","stories":[{"id":16,"title":"\"מארץ רחוקה באנו\"","icon":"🍞"},{"id":17,"title":"\"ויעשו גם המה בערמה\"","icon":"🔗"},{"id":18,"title":"ערמה כנגד ערמה, מילה כנגד ארץ","icon":"⚖️"},{"id":19,"title":"מילה שאינה שלמה","icon":"🕰️"}]},{"id":5,"name":"ארץ נימולה","icon":"🌿","color":"#c62b6b","stories":[{"id":20,"title":"המהול והארץ המעולה","icon":"🌿"},{"id":21,"title":"\"עיני ה' אלוקיך בה\"","icon":"👁️"},{"id":22,"title":"ארץ שהולכת ונעשית גן עדן","icon":"🌳"},{"id":23,"title":"כיבוש הארץ דוחה שבת","icon":"🕯️"},{"id":24,"title":"\"לא ישבו בארצך\"","icon":"🏠"},{"id":25,"title":"המפר בריתו של אברהם","icon":"❗"},{"id":26,"title":"גבורתנו או קיום ההבטחה","icon":"🙏"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
