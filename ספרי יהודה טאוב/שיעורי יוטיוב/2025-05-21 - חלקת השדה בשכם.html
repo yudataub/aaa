@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 חלקת השדה בשכם</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 חלקת השדה בשכם</h1>
+  <p>המצווה היקרה ביותר שאדם מקיים, למה אברהם קנה לפני שקבר ויעקב קנה לפני שבת, ומה פירוש "כחלק העולם הבא"</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ חלקת השדה בשכם" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/Zfk49UGuGjk?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/Zfk49UGuGjk/hqdefault.jpg" alt="חלקת השדה בשכם" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=Zfk49UGuGjk" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המצווה שאיש אינו מכיר</div>
+      <h3 class="story-title">❓ שלוש שאלות</h3>
+      <p>הרב נוהג לשאול אנשים שלוש שאלות. הראשונה: מהי המצווה היקרה ביותר מכל המצוות שבתורה? מצווה שאינה נמשכת יום אחד או שבוע, כמו סוכות, אלא את כל החיים. מצווה שמשלמים עליה עשרים שנה ויותר, והיא ההוצאה הגדולה ביותר שאדם מוציא בחייו.</p>
+      <p>התשובה היא: קניית בית בארץ ישראל. השאלה השנייה: מה המקור למצווה הזאת? כאן רוב האנשים שותקים. הם חושבים וחושבים, ואינם יודעים.</p>
+      <p>והתשובה מפתיעה: המקור הגדול ביותר למצוות קניית בית בארץ ישראל נמצא בפרשת וישלח, בסיפור של יעקב אבינו בשכם.</p>
+      <p>זה דבר שקשה להאמין. אדם הולך לקיים מצווה במשך עשרים וחמש שנה. הוא משלם עליה את המחיר הגבוה ביותר בחייו. ובכל זאת אינו יודע אפילו את הבסיס: איפה זה כתוב, מה המקור, למה זו מצווה. על זה נועד השיעור. לא כדי להוסיף עוד ידיעה, אלא כדי שמי שכבר משלם את המחיר יידע מה הוא מקבל תמורתו.</p>
+      <p class="bold-para">קניית בית בארץ ישראל היא המצווה היקרה ביותר שאדם מקיים, ומעטים יודעים מה מקורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המצווה שאיש אינו מכיר</div>
+      <h3 class="story-title">🛖 הסבא בצריף</h3>
+      <p>בדור של הסבים, לא היה צורך להסביר שום דבר. הסבא של הרב עלה לארץ, והכול היה שממה וחורבות. הוא גר בצריף של פח, במקום שבו נמצא היום בניין הדואר בעיר. היה חם מאוד, ושם הוא גר. מי ששאל אז אם יש מצווה לבנות בית בארץ ישראל, קיבל תשובה פשוטה: סוף סוף מתחילים ליישב את הארץ. כל אחד ידע את זה.</p>
+      <p>אבל היום המצב שונה. אדם קונה דירה. לפעמים לא חדשה, ולפעמים חדשה, אבל לא במקום שומם. הוא קונה בתוך העיר, באזור מיושב לגמרי. אם תשאלו את מי שאחראי על הבנייה בעיר, הוא אולי יאמר שמבחינתו עדיף היה שהבניין הזה לא ייבנה כלל, כי אין מספיק תשתיות.</p>
+      <p>אם כן, מה בדיוק יישב האדם? הדירה הייתה שם לפניו. השכונה מלאה. אין כאן גבעה ריקה שהוא הפך ליישוב. אולי אין כאן מצווה בכלל?</p>
+      <p>התשובה היא שיש מצווה, וזה הנושא של הספר שנלמד בשיעור. לדברי הרב, זה צריך להיות אל"ף בי"ת שכל יהודי לומד.</p>
+      <p class="bold-para">בדור הקודם לא היה צריך להסביר את המצווה. היום, כשקונים דירה בעיר מיושבת, השאלה עולה מחדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המצווה שאיש אינו מכיר</div>
+      <h3 class="story-title">🎉 שאלת הסבא בחנוכת הבית</h3>
+      <p>הרב תיאר תמונה. סבא מוזמן לחנוכת הבית של הנכד. הנכד השקיע את כל כספו, את מה שיש לו ואת מה שאין לו. והסבא עומד ושואל: נכדי היקר, איזו מצווה קיימת? איפה זה כתוב? למה עושים מסיבה? מה קידשת כאן?</p>
+      <p>חבל אם הנכד לא יודע לענות. והאמת היא שיש תשובה, יש מקורות, יש טעם. מי שלמד אותם יכול לענות לסבא בגאון: יש מקור, וזו מצווה גדולה.</p>
+      <p>הרב סיפר שאנשים רבים אמרו לו שאחרי שראו את הספר והבינו שיש בזה מצווה, זה נתן להם הרבה כוח וחיות. כוח לעמוד בכל הטרחה מול הבנקים עד שמקבלים משכנתא, ובכל הלחצים שבדרך. כשאדם רואה שזו מצווה, ומבין מה ערכה וכמה היא חשובה, הוא מקבל המון חשק.</p>
+      <p>וזה הבדל עצום. אותו תשלום חודשי, אותו מאמץ. אבל אצל אחד זה עול כבד, ואצל השני זו השקעה במצווה. ההבדל הוא רק בידיעה.</p>
+      <p class="bold-para">מי שיודע שיש מצווה בקניית הבית, מקבל כוח לעמוד בכל הקשיים שבדרך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המצווה שאיש אינו מכיר</div>
+      <h3 class="story-title">📞 חצי משכורת לחצי יובל</h3>
+      <p>הספר נפתח בסיפור. אברך צעיר, שקראו לו בספר זכריה, זכה לפני כמה חודשים לקנות דירה. פקיד הבנק הודיע לו בטלפון שהמשכנתא לדירת שלושת החדרים שלו תימשך עשרים וחמש שנה. זכריה היה מלמד, ומשמעות הדבר הייתה שחצי ממשכורתו תלך לדירה.</p>
+      <p>זכריה הקפיד תמיד לחפש את טובו וחסדו של ה' בכל דבר שקורה לו, לקיים מה שנאמר: "אַךְ טוֹב וָחֶסֶד יִרְדְּפוּנִי כָּל יְמֵי חַיָּי". כשהניח את הטלפון חשב: אם דרכי לחפש את הטוב בכל אירוע, הרי כאן ראוי לכתוב ספר שלם. בורא עולם מזכה אותי לשלם חצי ממשכורתי במשך חצי יובל שנים, בעבור הזכות לקנות דירה בארץ ישראל. חייב להיות שיש כאן דבר טוב ומיוחד.</p>
+      <p>הרב מוסיף חשבון. עשרים וחמש שנה אדם משלם על הדירה שלו. ואחר כך, עוד עשרים וחמש שנה, הוא חוסך או משלם בעבור הדירות של ילדיו. נמצא שכמעט יובל שנים שלמות אדם מפריש חלק גדול מאוד מכספו בשביל דירות בארץ ישראל.</p>
+      <p>ואם כך, אדם צריך להבין מה בדיוק המצווה הזאת, שבשבילה הוא עושה דבר כזה כמעט כל חייו.</p>
+      <p class="bold-para">מי שמחפש את טוב ה' בכל דבר, מבין שאם ה' זיכה אותו לשלם כל כך הרבה, יש כאן משהו מיוחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המצווה שאיש אינו מכיר</div>
+      <h3 class="story-title">📚 הספר היחיד</h3>
+      <p>דבר מעניין: לדברי הרב, הספר הזה הוא כמעט הספר היחיד שנכתב על מצוות קניית בית בארץ ישראל. היום יש ספרים על כל דבר. על רכב יש ספר, על מחשב יש ספר, על שלג יש ספר. אפילו על הקורונה, בתוך זמן קצר, כבר יצאו כמה ספרי הלכות: מה הדין בגנים, מה הדין בתפילה, מי משלם ומי פטור.</p>
+      <p>ועל המצווה הגדולה ביותר, שאדם מוציא עליה את רוב כספו ומקיים אותה הכי הרבה שנים, כמעט אין ספר. זה פלא.</p>
+      <p>גם אנשים שעוסקים בתחום, יועצי משכנתאות ומתווכים, כמעט אינם מכירים את הנושא. הרב סיפר שניסה כמה פעמים להפיץ את הספר בקרב אנשי המקצוע, ולא הצליח. אבל הוא מקווה שיום אחד הדבר יהיה ידוע לכל.</p>
+      <p>ובאמת, כמה יהודים בארץ ישראל עומדים ומשלמים את המשכנתא בכל חודש, ואינם יודעים כמה זכות גדולה יש בזה. כשראו אנשים את הדפים של זכריה על "הזכות הגדולה שבתשלום המשכנתא", חטפו אותם בצימאון עצום. כנראה שיש כאן צורך אמיתי.</p>
+      <p class="bold-para">על כל נושא נכתבו ספרים, ועל המצווה שאדם משקיע בה הכי הרבה כמעט לא נכתב דבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מערת המכפלה</div>
+      <h3 class="story-title">⚖️ המחיר המדויק</h3>
+      <p>בספר מובא יסוד: לא מצאנו בתורה פעמים רבות שאדם קונה חפץ, והתורה מציינת באיזה מחיר הוא קנה. ושני המקומות הבולטים שבהם זה קורה עוסקים דווקא בקניית אדמה בארץ ישראל.</p>
+      <p>הראשון הוא אברהם אבינו, שקנה את מערת המכפלה מעפרון בארבע מאות שקל כסף. השני הוא יעקב אבינו, שקנה את חלקת השדה בשכם במאה קשיטה. התורה טורחת לספר לנו כמה שילמו. היא רוצה שנדע שזה היה מחיר יקר, ושכדאי היה לשלמו.</p>
+      <p>מכאן לומדים שקרקע בארץ ישראל כדאי לקנות יותר מכל קניין אחר, ובכל מחיר שבעולם. זה הקניין היחיד שהתורה מלמדת אותנו להעריך כך.</p>
+      <p>בשיעור זה לא חזרו על כל הסוגיה של מערת המכפלה, שכבר נלמדה בשיעור קודם. אבל יש בה קושיה של הרמב"ן, ובעקבותיה התחדש תירוץ נוסף אחרי שהספר יצא לאור. זה מה שנלמד כעת.</p>
+      <p>וכדאי לשים לב: התורה אינה ספר של עסקאות. היא אינה מספרת לנו כמה שילמו האבות על בגדים, על בהמות או על כלים. כשהיא בכל זאת מציינת מחיר, זה סימן שיש כאן לימוד לדורות. והלימוד הוא שהקרקע הזאת שווה כל מחיר.</p>
+      <p class="bold-para">התורה מציינת מחיר של קנייה רק במקומות מעטים, ושניים מהם הם קניית קרקע בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מערת המכפלה</div>
+      <h3 class="story-title">🪨 קושיית הרמב"ן</h3>
+      <p>האבן עזרא כותב שהתורה סיפרה שאברהם אבינו קנה את מערת המכפלה כדי להודיע את מעלת ארץ ישראל. הרמב"ן אינו מבין: כיצד אפשר ללמוד מכאן את מעלת ארץ ישראל? אולי אברהם קבר את שרה בארץ ישראל פשוט משום ששם היא נפטרה?</p>
+      <p>מה רצית שיעשה? שייקח אותה לחרן? אשתו נפטרה, והוא קבר אותה במקום שבו היו. אין כאן שום ראיה למעלה מיוחדת של הארץ. הרמב"ן נשאר בקושיה על האבן עזרא.</p>
+      <p>בספר מובא תירוץ: המפרשים מסבירים שכוונת האבן עזרא אינה להוכיח ממה שאברהם עשה, אלא ממה שהתורה סיפרה. כל הסיפור הארוך, המשא ומתן, וגם ציון המחיר הגבוה ששילם – לשם מה כל זה בתורה? אלא שהתורה רוצה ללמד את הדורות שיש מעלה גדולה ועצומה בקניית אדמה בארץ הקודש.</p>
+      <p>זה תירוץ טוב ואמיתי. אבל אחרי שיצא הספר, התחדש תירוץ נוסף, עמוק יותר, שאינו צריך להגיע לכך. ומתוכו נבין יסוד חשוב מאוד על ארץ ישראל.</p>
+      <p>היסוד הזה יסביר לא רק את מעשה אברהם, אלא גם פסוקים אחרים בתנ"ך שנראים תמוהים, ואפילו דינים בהלכה. כולם מתחברים לנקודה אחת: לא רק איפה נמצאת הקרקע, אלא גם של מי היא.</p>
+      <p class="bold-para">הרמב"ן שואל: אולי אברהם קבר את שרה בארץ ישראל רק משום ששם נפטרה?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מערת המכפלה</div>
+      <h3 class="story-title">🔑 קנה לפני שקבר</h3>
+      <p>התירוץ החדש מתחיל משאלה פשוטה: איך קברו מתים באותם ימים? היו בתי קברות. כל מי שרצה, בא וקבר את מתו. אולי שילם סכום מסוים על הקבורה, וזהו.</p>
+      <p>אברהם אבינו לא הולך בדרך הזאת. הוא אינו קובר את שרה בקבר שכור או במערה ציבורית. הוא הולך וקונה אחוזה, חלקת אדמה שתהיה שייכת לו ולמשפחתו לעולם. ורק אחרי שהקרקע שלו, הוא קובר בה את שרה.</p>
+      <p>למה הוא טורח כל כך? למה לשלם ארבע מאות שקל כסף, סכום עצום, כשאפשר לקבור בלי זה? כאן נכנס החידוש: ארץ ישראל, כשהיא ביד ישראל, יש לה קדושה גדולה הרבה יותר מאשר כשהיא ביד גוי. כביכול, ארץ ישראל שהיא ביד גוי אינה ארץ ישראל במלוא מובן המילה.</p>
+      <p>את זה צריך להוכיח, כי זה נשמע מפתיע. והמקור החזק ביותר לכך נמצא אצל דוד המלך.</p>
+      <p class="bold-para">אברהם לא קבר את שרה בבית קברות ציבורי. הוא קנה קודם אחוזה משלו, ורק אז קבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קרקע ביד ישראל</div>
+      <h3 class="story-title">🛡️ דוד המלך בגת</h3>
+      <p>דוד המלך נאלץ לברוח משאול. לאן ברח? אל אכיש מלך גת. ואז הוא אומר משפט שכולם מכירים: "כִּי גֵרְשׁוּנִי הַיּוֹם מֵהִסְתַּפֵּחַ בְּנַחֲלַת ה' לֵאמֹר לֵךְ עֲבֹד אֱלֹקִים אֲחֵרִים". ומכאן לומדת הגמרא שכל הדר בחוץ לארץ, כאילו עובד עבודה זרה.</p>
+      <p>זו גמרא מפורסמת מאוד, ותמיד מעתיקים אותה. אבל כמעט אף פעם לא חושבים: איפה דוד גר? בגת. ואיפה גת? באזור שבו נמצאת היום קריית גת, לא רחוק מאשדוד, בדרך לבאר שבע. זה בתוך ארץ ישראל. אין אפילו מה להסתפק.</p>
+      <p>אם כן, על מה דוד מתלונן? על איזה חוץ לארץ הוא מדבר? הוא לא יצא מן הארץ כלל.</p>
+      <p>המפרשים כבר עמדו על כך. מי גר באותו זמן בגת? הפלשתים. מי שלמד ספר שופטים מכיר אותם: בכל פעם הם באים ועושים צרות לישראל. בגת היה אחד ממרכזי השלטון שלהם. כשדוד ברח לשם, הוא עזב את ארץ ישראל שבשלטון יהודי, ועבר לארץ ישראל שבשלטון גוי. וזה, כביכול, כבר לא ארץ ישראל. הוא נשאר בתחומי הארץ, אבל במדרגה נמוכה בהרבה.</p>
+      <p class="bold-para">דוד אמר שגירשוהו מנחלת ה' כשברח לגת, אף שגת נמצאת בתוך ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קרקע ביד ישראל</div>
+      <h3 class="story-title">🌾 ראיה מן השמיטה</h3>
+      <p>גם בהלכה רואים את זה. יש מי שמוכרים בשנת השמיטה את הקרקע שלהם לגוי, וכתוצאה מכך אין עליה דין שמיטה. מה פירוש? איך ייתכן? הרי זו ארץ ישראל! אלא שברגע שהבעלים הוא גוי, כביכול הקדושה פוקעת.</p>
+      <p>על כך היה דיון שלם בדורות האחרונים, והרב הזכיר את הרב קוק. שאלו אותו: איך אתה עושה דבר כזה? אתה מוריד את הקדושה מארץ ישראל! והתשובה הייתה שנכון שקדושה מסוימת יורדת, אבל היא אינה מופקעת לגמרי. הקרקע אינה הופכת לחוץ לארץ גמור. נשאר בה חלק מן הקדושה.</p>
+      <p>בין כך ובין כך, גם בהלכה המעשית רואים שיש הבדל גדול בין קרקע ביד ישראל לקרקע ביד גוי. יש דינים שהקדושה של הקרקע תלויה בהם, והם משתנים לפי השאלה מי הבעלים.</p>
+      <p>ועכשיו נחזור לאברהם אבינו. הוא רצה לקבור את שרה בארץ ישראל. אבל אם יקבור אותה סתם במערת קבורה של אחרים, היא תהיה קבורה, כביכול, חצי בחוץ לארץ. לכן הלך וקנה את הקרקע.</p>
+      <p class="bold-para">גם בהלכה רואים שקרקע ביד גוי מאבדת חלק מקדושת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קרקע ביד ישראל</div>
+      <h3 class="story-title">💡 התשובה לרמב"ן</h3>
+      <p>ועכשיו מתורצת קושיית הרמב"ן על האבן עזרא. הרמב"ן שאל: איך אתה רואה מן הפרשה שיש מעלה לארץ ישראל? אולי קבר את שרה כאן פשוט משום שכאן נפטרה?</p>
+      <p>התשובה: נכון, את עצם הקבורה כאן אפשר להסביר כך. אבל אברהם לא הסתפק בקבורה כאן. הוא הלך וקנה את הקרקע ושילם עליה הון, כדי שיוכל לקבור אותה בתוך שלו. מכאן רואים שיש מעלה מיוחדת בארץ ישראל, ושהמעלה הזאת תלויה בכך שהקרקע ביד יהודי.</p>
+      <p>מכאן עולה גם הבחנה חשובה. יש מצווה של ישיבת ארץ ישראל, ואותה מקיים גם מי שגר בשכירות. אבל יש עוד מצווה בפני עצמה: לקנות קרקע בארץ ישראל, שתהיה שלך.</p>
+      <p>נשאלה בשיעור שאלה: בימי אברהם השלטון בחברון לא היה יהודי. ובכל זאת, הקרקע שקנה הייתה שלו. מה קובע, הבעלות או השלטון? יש רבנים שדנו אם מצוות ישוב הארץ גדולה יותר בזמן שהשלטון יהודי. זו שאלה מעניינת, ולא ברור מה הדין. אבל מכאן לפחות רואים שהבעלות של יהודי על הקרקע עושה הבדל, בלי קשר לשלטון.</p>
+      <p class="bold-para">מכך שאברהם קנה את הקרקע לפני הקבורה, רואים את מעלתה של קבורה בארץ ישראל שביד ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קרקע ביד ישראל</div>
+      <h3 class="story-title">🕯️ "ולא בארץ"</h3>
+      <p>יש לכך ראיה נוספת, אצל יעקב אבינו. בסוף ימיו הוא אומר ליוסף: "וַאֲנִי בְּבֹאִי מִפַּדָּן מֵתָה עָלַי רָחֵל בְּאֶרֶץ כְּנַעַן בַּדֶּרֶךְ... וָאֶקְבְּרֶהָ שָּׁם בְּדֶרֶךְ אֶפְרָת". ורש"י מפרש שיעקב אמר ליוסף: יודע אני שיש בלבך עלי, שלא קברתי את אמך אפילו בארץ ישראל. ודע לך שעל פי הדיבור קברתיה שם.</p>
+      <p>הרמב"ן מקשה: איזה חוץ לארץ? בית לחם היא בארץ ישראל! והרמב"ן עצמו, שעלה לארץ ישראל, מספר שכשהגיע למקום הבין את הפסוקים באופן אחר ממה שחשב קודם. הוא ראה את המציאות במו עיניו, ונשאר בקושיה על רש"י.</p>
+      <p>ומובא בשם החתם סופר תירוץ לדברי רש"י. אילו לקח יעקב את רחל וקבר אותה במערת המכפלה, זו הייתה קבורה בארץ ישראל במלוא מובן המילה, כי זו קרקע שביד ישראל. אבל כיוון שקבר אותה סתם במקום כלשהו, בשדה שאינו שלו, יחסית למערת המכפלה זו כמו קבורה בחוץ לארץ. זו הייתה כוונת רש"י.</p>
+      <p>כך נמצא שיש כאן שיטה שלמה: אצל אברהם, אצל דוד ואצל רחל. ארץ ישראל שביד ישראל היא מדרגה אחרת לגמרי.</p>
+      <p class="bold-para">קבורתה של רחל בדרך, בשדה שאינו שלו, נחשבה כביכול כקבורה מחוץ לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קרקע ביד ישראל</div>
+      <h3 class="story-title">🪜 שלוש מדרגות</h3>
+      <p>כדאי לסכם את מה שעלה עד כאן, כי נוצרה כאן תמונה ברורה. יש כמה מדרגות בקשר של אדם לארץ ישראל.</p>
+      <p>המדרגה הראשונה היא עצם הישיבה בארץ. מי שגר בארץ ישראל, אפילו בשכירות, מקיים מצוות ישוב ארץ ישראל. זו מצווה גדולה, ואין לזלזל בה.</p>
+      <p>המדרגה השנייה היא הבעלות. מי שקונה קרקע או בית בארץ ישראל, מקיים מצווה נוספת בפני עצמה: שיהיה לו חלק בארץ. זה מה שעשו אברהם ויעקב, כשקנו ושילמו מחיר מלא, גם כשיכלו להסתדר בלי זה.</p>
+      <p>והמדרגה השלישית נוגעת לארץ עצמה: קרקע שביד ישראל קדושתה גדולה יותר מקרקע שביד גוי. זה מה שלמדנו מדוד המלך בגת, מדיני השמיטה ומקבורת רחל.</p>
+      <p>ומכאן מבינים למה כל קנייה של קרקע בידי יהודי היא דבר חשוב כל כך. היא אינה רק עסקה פרטית. היא מעלה את הקרקע עצמה למדרגה גבוהה יותר, ומחזירה עוד חלק מן הארץ לנחלת ה'.</p>
+      <p class="bold-para">גר בארץ, בעלים של קרקע בארץ, וקרקע ביד ישראל – שלוש מדרגות זו מעל זו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יעקב בשכם</div>
+      <h3 class="story-title">⛺ הדבר הראשון שעשה יעקב</h3>
+      <p>ועכשיו לפרשת השבוע. יעקב אבינו שב סוף סוף לארץ ישראל. עשרים שנה היה בבית לבן, ועוד שנתיים בדרך. עשרים ושתיים שנה חיכה לחזור. מה הדבר הראשון שעשה כשהגיע?</p>
+      <p>הוא לא נסע מיד להר המוריה להודות לה', כמו שכל תייר היה עושה. לא נסע לבקר את אביו, שעוד היה חי. אלא הדבר הראשון שעשה היה לשלם מחיר יקר בעבור קניית חלקת אדמה בארץ ישראל.</p>
+      <p>הרב מדגיש כמה זה נדיר. אדם שחוזר לארצו אחרי עשרים ושתיים שנה, ואינו הולך קודם לבקר את הוריו. ועוד: לפי רש"י, "וַיִּחַן אֶת פְּנֵי הָעִיר" פירושו שנכנס בערב שבת סמוך לחשכה, וקבע תחומין מבעוד יום. נמצא שהגיע ביום שישי, שעה או שעתיים לפני השבת. ומה עשה בשעות שנותרו? קנה קרקע.</p>
+      <p>הרב אמר בחיוך שלא פגש מעולם תייר כזה: באותו יום שהגיע, גם ראה את המקום, גם סגר עם המוכרים, גם שילם, וגם הקרקע עברה על שמו. הכול לפני כניסת השבת, ביום הראשון בארץ.</p>
+      <p class="bold-para">אחרי עשרים ושתיים שנה, הפעולה הראשונה של יעקב בארץ הייתה לקנות קרקע, עוד לפני שבת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יעקב בשכם</div>
+      <h3 class="story-title">🏺 "ויקן את חלקת השדה"</h3>
+      <p>כך כתוב בתורה: "וַיָּבֹא יַעֲקֹב שָׁלֵם עִיר שְׁכֶם אֲשֶׁר בְּאֶרֶץ כְּנַעַן בְּבֹאוֹ מִפַּדַּן אֲרָם וַיִּחַן אֶת פְּנֵי הָעִיר. וַיִּקֶן אֶת חֶלְקַת הַשָּׂדֶה אֲשֶׁר נָטָה שָׁם אָהֳלוֹ מִיַּד בְּנֵי חֲמוֹר אֲבִי שְׁכֶם בְּמֵאָה קְשִׂיטָה. וַיַּצֶּב שָׁם מִזְבֵּחַ וַיִּקְרָא לוֹ אֵל אֱלֹקֵי יִשְׂרָאֵל".</p>
+      <p>שימו לב לסדר. יעקב חונה לפני העיר, לא בתוכה. הוא קונה את חלקת השדה. התורה מציינת ממי קנה ובכמה. ורק אחרי הקנייה הוא מציב מזבח.</p>
+      <p>על מה המזבח? אפשר לומר שעל שני דברים. האחד, שזכה לחזור בשלום מבית לבן ולהינצל מעשו. והשני, שזכה להגיע לארץ ישראל ולקנות בה קרקע. המזבח הוא ביטוי של הודיה. יעקב אינו מקבל את הקרקע כדבר מובן מאליו. הוא עומד על אדמתו הראשונה בארץ, ומודה לה' על הזכות לעמוד עליה.</p>
+      <p>גם אברהם אבינו, כשהגיע לארץ, עבר תחילה בשכם. אולי יש בזה סודות פנימיים, ואולי פשוט זו הייתה הדרך למי שבא מן המזרח. הרב סיפר שבימינו, סמוך לצומת הכניסה לשכם, פתחו כמה בחורים בית מדרש בשם "תועה בשדה", על שם הפסוק שנאמר ביוסף כשחיפש את אחיו בשכם: "וְהִנֵּה תֹעֶה בַּשָּׂדֶה".</p>
+      <p class="bold-para">יעקב קנה את השדה בשכם, ובנה שם מזבח להודות על הצלתו ועל זכייתו בקרקע בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יעקב בשכם</div>
+      <h3 class="story-title">🏕️ תחילת ביאתו בתוך שלו</h3>
+      <p>הרמב"ן מוסיף כאן הסבר יפה לפשט הפסוקים. יעקב לא רצה לחנות בתוך העיר. הוא רצה שתהיה תחילת ביאתו בארץ בתוך שלו. לכן חנה בשדה, לפני העיר, וקנה את המקום. ולדברי הרמב"ן, זה כדי להחזיק בארץ, לעשות בה פעולה של חזקה.</p>
+      <p>יש בזה משהו עמוק. יעקב חוזר לארץ שה' הבטיח לאבותיו ולו. הוא יכול היה לסמוך על ההבטחה בלבד. אבל הוא אינו מסתפק בהבטחה. הוא רוצה שיהיה לו בארץ חלק ממשי, קרקע שאפשר לעמוד עליה ולומר: זו שלי.</p>
+      <p>וזה מסביר גם את הסדר שראינו. קודם הוא קונה, ורק אחר כך מציב מזבח. ההודיה לה' באה מתוך מקום שהוא כבר שלו. הוא אינו אורח בארץ, הוא בעלים בה.</p>
+      <p>וכך גם כל יהודי שקונה בית בארץ ישראל. הוא אינו רק מוצא מקום לגור בו. הוא עושה מעשה של אחיזה בנחלת ה', ממשיך את מה שעשה יעקב אבינו ביום הראשון שבו חזר לארץ.</p>
+      <p class="bold-para">יעקב רצה שהצעד הראשון שלו בארץ יהיה על קרקע שלו, כפעולה של אחיזה בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יעקב בשכם</div>
+      <h3 class="story-title">📜 למה התורה מספרת?</h3>
+      <p>ועכשיו השאלה הגדולה. מובן למה התורה מספרת על קניית מערת המכפלה. זה מקום קבורת אבות האומה, ויש לו חשיבות עצומה. אבל מה ראתה התורה לספר על קניית חלקת שדה ליד שכם?</p>
+      <p>נכון, אחרי מאות שנים נקבר יוסף בדיוק באותה חלקה, כמו שמסופר בספר יהושע. אבל באותה שעה, בספר התורה, האם היה חשוב כל כך להנציח את הקנייה? ולציין את המחיר המדויק והיקר, שלפי רש"י היה מאה מעות?</p>
+      <p>ועוד: יעקב לא התכוון להשתקע שם. הוא נתקע בשכם זמן מה בגלל מה שקרה שם עם דינה, ומשם המשיך לבית אל ולחברון, אל יצחק אביו. התורה אינה מספרת לאיזו מטרה קנה את השדה. הוא לא גר בו.</p>
+      <p>אלא שהתורה באה ללמד: כדאי לשלם מחיר יקר בעבור הזכות שיהיה לך חלק בארץ ישראל. יעקב קנה את חלקת השדה רק כדי להראות את העיקר הגדול הזה: יש לאדם זכות עצומה כשיש לו חלקת שדה בארץ ישראל, ואפילו אינו גר בה.</p>
+      <p class="bold-para">יעקב לא התכוון לגור בשכם, ובכל זאת קנה. התורה מלמדת שיש זכות עצומה בעצם הבעלות על קרקע בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלק בעולם הבא</div>
+      <h3 class="story-title">🌳 דברי האבן עזרא</h3>
+      <p>וכאן מגיעים לדבריו הנפלאים של האבן עזרא. הרב אמר שלו היה אחראי על משרד החינוך, היה קובע חוק: לא יהיה ילד יהודי בארץ ישראל שלא יידע את דברי האבן עזרא האלה בעל פה. ועוד אמר: ראוי לתלות אותם בכל בית יהודי, ולחזור עליהם בכל חודש כשמשלמים את המשכנתא.</p>
+      <p>וכך כותב האבן עזרא על הפסוק "ויקן את חלקת השדה": הזכיר זה הכתוב להודיע כי מעלה גדולה יש לארץ ישראל, ומי שיש לו בה חלק, חשוב כחלק העולם הבא.</p>
+      <p>דע לך: כשאתה קונה חלקה בארץ ישראל, לא קנית רק חלקה בארץ ישראל. קנית חלקה בעולם הבא. למה זה כך, ומאיפה האבן עזרא לקח את זה, יוסבר בשיעור אחר. כרגע מקבלים את הדברים כעובדה.</p>
+      <p>וחשוב לראות שלא רק הוא אומר זאת. הרמב"ן, שקודם חלק על האבן עזרא, כאן אין לו קושיה. הוא כותב שיעקב רצה שתהיה תחילת ביאתו בארץ בתוך שלו, ולכן קנה את המקום, ומביא את דברי רבי אברהם על מעלת הארץ. כך גם כתב רבנו בחיי. כאן כולם מסכימים.</p>
+      <p class="bold-para">"ומי שיש לו בה חלק, חשוב כחלק העולם הבא" – קונה קרקע בארץ ישראל קונה חלק בעולם הבא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלק בעולם הבא</div>
+      <h3 class="story-title">🏘️ המדרש: דרך ארץ לקנות</h3>
+      <p>גם במדרש הגדול מובא בהקשר זה: לימדה התורה דרך ארץ, שאדם שבא מחוץ לארץ, והוא מפורנס ויש לו כסף, צריך לקנות לו מקום בארץ ישראל.</p>
+      <p>מכאן עלתה בשיעור שאלה מעשית, שנשאלה כמה פעמים: האם ראוי לקנות דירה לילדים כבר בסמוך לחתונה? הרב לא רצה להיכנס לשיקולים הכספיים, ואמר שאינו יודע להכריע. אבל ציין דבר מעניין: בפרשה רואים שיעקב אבינו קנה מיד, ברגע הראשון שיכול היה. אולי יש בזה עניין, שמי שיכול, יקנה מוקדם ככל האפשר.</p>
+      <p>אין כאן פסק הלכה, וכל אחד צריך לשקול את מצבו. אבל יש כאן כיוון: הקנייה עצמה היא מצווה, ולא רק אמצעי. ומי שמזדמנת לו האפשרות, יכול לראות בה הזדמנות לקיים דבר שהאבות עשו בהתלהבות.</p>
+      <p>ולא רק בני ארץ ישראל. גם יהודי שגר בחוץ לארץ, ומשום מה עדיין לא זכה לעלות, יש לו מקום לקנות קרקע בארץ ישראל ולזכות בחלק בה. וכך עשה צדיק אחד, שסיפורו מובא בספר.</p>
+      <p class="bold-para">לימדה התורה דרך ארץ: מי שבא מחוץ לארץ ויש לו אמצעים, יקנה לו מקום בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלק בעולם הבא</div>
+      <h3 class="story-title">🚢 הרבי שלא זכה לעלות</h3>
+      <p>הסיפור הוא על רבי שמעון סופר, האדמו"ר מערלוי. חסידות ערלוי קיימת עד היום, והיא מעניינת מאוד: משפחה מצאצאי החתם סופר, שבמשך הזמן נעשתה לחסידות.</p>
+      <p>לפני כמאה שנה, רבי שמעון רצה לארגן משלחת גדולה של רבנים שתעלה לארץ ישראל: ספינה שלמה של גדולי ישראל, שיסיירו בארץ עם תוכנית מסודרת, ממש כמו מסע מאורגן בימינו. הוא הוציא כרוזים, קבע מקומות, גבה מקדמות, והכין הכול.</p>
+      <p>אבל התוכנית לא הצליחה. היא בוטלה, והוא לא עלה בסוף. מכיוון שלא זכה להיות בארץ ישראל בגופו, השתדל לקיים בינתיים מה שבידו, לפחות באופן חלקי. הוא רכש מכספו חלקת שדה קטנה סמוך לעיר צפת. הוא עדיין יושב בחוץ לארץ, ויש לו קרקע בארץ ישראל.</p>
+      <p>וזאת במטרה כפולה. האחת, כדי שיהיה לו חלק ונחלה בארץ אבותינו, שכדברי האבן עזרא מי שיש לו בה חלק חשוב כחלק העולם הבא. והשנייה, כדי לקיים על ידי זה את המצוות התלויות בארץ, לכל הפחות באמצעות שליח.</p>
+      <p class="bold-para">צדיק שלא הצליח לעלות לארץ, קנה חלקת שדה ליד צפת כדי שיהיה לו חלק בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלק בעולם הבא</div>
+      <h3 class="story-title">🧾 מה קונים בתשלום המשכנתא</h3>
+      <p>ועכשיו אפשר לחזור לשאלה שפתחה את השיעור. אדם משלם כל חודש, במשך עשרים וחמש שנה, סכום גדול מאוד. מה הוא מקבל תמורת זה?</p>
+      <p>התשובה הפשוטה היא: דירה. קירות, חדרים, מקום לגור בו. אבל מי שלמד את מה שנלמד כאן יודע שיש תשובה עמוקה יותר. הוא קונה חלק בארץ ישראל, כמו שקנה אברהם אבינו בחברון וכמו שקנה יעקב אבינו בשכם. והוא קונה, כדברי האבן עזרא, דבר שחשוב כחלק העולם הבא.</p>
+      <p>זה מה שהבין זכריה, האברך שהספר נפתח בסיפורו. אם ה' מזכה אותו לשלם חצי ממשכורתו על דירה בארץ ישראל, אין זה סתם עול. זו זכות. ומי שמחפש את הטוב שבכל דבר, מוצא אותו גם בתשלום החודשי לבנק.</p>
+      <p>ואולי זה הדבר החשוב ביותר שאפשר לקחת מן השיעור: לזכור, בכל פעם שמשלמים, מה קונים. המחשבה הזאת אינה מורידה שקל אחד מן החוב, אבל היא הופכת את התשלום כולו למצווה שמקיימים בשמחה.</p>
+      <p class="bold-para">מי שמשלם על בית בארץ ישראל אינו רק פורע חוב, אלא קונה חלק בנחלת ה' ובעולם הבא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלק בעולם הבא</div>
+      <h3 class="story-title">🌱 דירה ריקה או שדה חי?</h3>
+      <p>מכאן שאלה מעניינת לימינו. יהודים רבים מחוץ לארץ קונים כאן דירות. מה עדיף להם לקנות, בית או שדה?</p>
+      <p>הרב אמר שבעבר, כשיהודי מחוץ לארץ קנה בית, היה בזה תועלת ליישוב: יהודים יכלו לגור בו, ומקומות נשארו בידינו. אבל היום, כשקונה מחוץ לארץ קונה דירה ומשאיר אותה ריקה רוב השנה, לא ברור מה התועלת. הדירה עומדת חשוכה, השכונה ריקה, ולעתים זה רק מעלה את מחירי הדירות. לדירות כאלה קוראים "דירות רפאים".</p>
+      <p>לעומת זאת, יש היום שטחים עצומים בארץ, למשל באזור יבנאל שבגליל, שרבים מהם אינם בידי יהודים. אם יהודים יקנו אותם, תהיה זו ממש גאולת קרקע. לכן, לדעת הרב, מי ששואל מחוץ לארץ איך לקיים את דברי האבן עזרא, עדיף לו לכאורה לקנות חלקת אדמה ולא עוד דירה להשקעה.</p>
+      <p>הרב סיפר שיש גופים שעוסקים בכך: מוכרים חלקות לבני חוץ לארץ, נוטעים בהן עצים, ומקפידים על כל המצוות התלויות בארץ – ערלה, תרומות ומעשרות ושביעית – בפיקוח של משגיח. גם הוא עצמו קנה חלקה קטנה, בעיקר לשם מצווה: שתהיה לו חלקת אדמה בארץ ישראל, רשומה על שמו. וזה בדיוק מה שעשה יעקב אבינו בשכם, ביום הראשון שבו חזר לארץ.</p>
+      <p class="bold-para">לבני חוץ לארץ עדיף אולי לקנות שדה שעובדים אותו, מאשר דירה שעומדת ריקה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/Zfk49UGuGjk · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"המצווה שאיש אינו מכיר","icon":"🏡","color":"#c62b6b","stories":[{"id":1,"title":"שלוש שאלות","icon":"❓"},{"id":2,"title":"הסבא בצריף","icon":"🛖"},{"id":3,"title":"שאלת הסבא בחנוכת הבית","icon":"🎉"},{"id":4,"title":"חצי משכורת לחצי יובל","icon":"📞"},{"id":5,"title":"הספר היחיד","icon":"📚"}]},{"id":2,"name":"מערת המכפלה","icon":"🪨","color":"#6d28d9","stories":[{"id":6,"title":"המחיר המדויק","icon":"⚖️"},{"id":7,"title":"קושיית הרמב\"ן","icon":"🪨"},{"id":8,"title":"קנה לפני שקבר","icon":"🔑"}]},{"id":3,"name":"קרקע ביד ישראל","icon":"🗝️","color":"#e08e00","stories":[{"id":9,"title":"דוד המלך בגת","icon":"🛡️"},{"id":10,"title":"ראיה מן השמיטה","icon":"🌾"},{"id":11,"title":"התשובה לרמב\"ן","icon":"💡"},{"id":12,"title":"\"ולא בארץ\"","icon":"🕯️"},{"id":13,"title":"שלוש מדרגות","icon":"🪜"}]},{"id":4,"name":"יעקב בשכם","icon":"⛺","color":"#1e88b8","stories":[{"id":14,"title":"הדבר הראשון שעשה יעקב","icon":"⛺"},{"id":15,"title":"\"ויקן את חלקת השדה\"","icon":"🏺"},{"id":16,"title":"תחילת ביאתו בתוך שלו","icon":"🏕️"},{"id":17,"title":"למה התורה מספרת?","icon":"📜"}]},{"id":5,"name":"חלק בעולם הבא","icon":"🌳","color":"#c62b6b","stories":[{"id":18,"title":"דברי האבן עזרא","icon":"🌳"},{"id":19,"title":"המדרש: דרך ארץ לקנות","icon":"🏘️"},{"id":20,"title":"הרבי שלא זכה לעלות","icon":"🚢"},{"id":21,"title":"מה קונים בתשלום המשכנתא","icon":"🧾"},{"id":22,"title":"דירה ריקה או שדה חי?","icon":"🌱"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
