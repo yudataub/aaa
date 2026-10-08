@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 חלקת האבות בחברון</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 חלקת האבות בחברון</h1>
+  <p>איך גילה אברהם את מערת המכפלה, למה התעקש לשלם עליה בכסף מלא, איך אוהבים את ארץ ישראל, ושלושת המקומות שהם עמודי העולם</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ חלקת האבות בחברון" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/I3M1qRDb_qI?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/I3M1qRDb_qI/hqdefault.jpg" alt="חלקת האבות בחברון" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=I3M1qRDb_qI" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · באלוני ממרא</div>
+      <h3 class="story-title">🎵 שיעור שנבנה על שיר</h3>
+      <p>השיעור הזה נבנה סביב שיר מוכר על חברון, שמילותיו חוזרות שוב ושוב: "חברון עיר האבות שלנו, לדורי דורות, מעז ולתמיד, לנצח נצחים". הרב בחר להלביש את הלימוד על השיר, כדי שיהיה מעניין יותר, וכדי שאפשר יהיה לקחת את השיר הביתה ולשיר אותו בליל שבת עם הילדים, ולהבין כל מילה בו.</p>
+      <p>הבית הראשון של השיר פותח כך: "באלוני ממרא, זה לא היה מקרה, שאברהם אבינו קנה חלקת אדמה, והוא ידע שטוב עשה, שתבוא השעה שעם ישראל שלו יהיה בשעת צרה". כל מילה כאן היא פתח לנושא שלם: מי היה ממרא, איך הגיע אברהם אל המערה, ולמה היה חשוב לו כל כך לקנות אותה.</p>
+      <p>בהמשך השיר עובר אל ההווה, אל הדורות שחלמו להתפלל על קברי האבות, ובסופו מגיע אל העתיד, אל התפילה על חברון הבנויה. בשיעור הזה נלך בעיקר בעקבות הבית הראשון, ונראה כמה עומק יש בכמה מילים פשוטות.</p>
+      <p class="bold-para">השיר על חברון בנוי מעבר, הווה ועתיד, וכך גם השיעור הולך בעקבותיו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · באלוני ממרא</div>
+      <h3 class="story-title">🌳 העצה הטובה של ממרא</h3>
+      <p>השאלה הראשונה בשיעור הייתה: מי היה ממרא, ולמה זכה דווקא הוא שהמקום ייקרא על שמו, "אלוני ממרא"? כשה' ציווה את אברהם אבינו למול את עצמו, הוא התייעץ עם שלושה אוהביו: ענר, אשכול וממרא.</p>
+      <p>כפי שמובא בדברי חז"ל, השניים הראשונים ייעצו לו שלא למול. ממרא לעומתם אמר לו: מה שה' אמר לך, תעשה. בזכות העצה הטובה הזאת זכה ממרא, וה' נגלה אל אברהם דווקא באלוני ממרא: "וַיֵּרָא אֵלָיו ה' בְּאֵלֹנֵי מַמְרֵא".</p>
+      <p>יש בזה לימוד גם לנו. לפעמים אדם אומר מילה אחת לחברו, עצה קטנה לעשות את רצון ה', ונדמה לו שזה דבר של מה בכך. אבל עצה טובה כזאת יכולה להיות זכות לדורות. ממרא לא עשה מעשה גדול, רק עודד את אברהם ללכת בדרך שה' ציווה, ושמו נקשר לנצח בחברון ובמקום שבו נגלה ה' אל אברהם.</p>
+      <p class="bold-para">ממרא זכה שהמקום ייקרא על שמו בזכות עצה טובה אחת שנתן לאברהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · באלוני ממרא</div>
+      <h3 class="story-title">🐂 הבן בקר שברח אל המערה</h3>
+      <p>איך ידע אברהם אבינו על מערת המכפלה? המדרש מספר שכאשר הגיעו המלאכים אל אברהם, באלוני ממרא שבחברון, הוא רץ אל הבקר להכין להם סעודה. אחד מבני הבקר ברח, ואברהם רדף אחריו, עד שהגיע אל המערה.</p>
+      <p>שם הריח אברהם ריח של גן עדן, וראה שאדם הראשון וחווה קבורים במקום. כשחזר הביתה סיפר לשרה אמנו: הייתי במקום מיוחד, פגשתי שם את אדם הראשון, והם קבורים שם. ושרה אמרה לו: שם אני רוצה להיקבר.</p>
+      <p>הרב מתאר את המרחק במציאות. מקובל שביתו של אברהם אבינו היה בתל רומיידה, הגבעה שבה מצוי קבר ישי ורות. משם עד מערת המכפלה זו הליכה של כרבע שעה, ובריצה אפשר להגיע בכמה דקות. כך אפשר לדמיין את אברהם רץ אחרי בן הבקר, ממש בדרך הזאת.</p>
+      <p>ויש בזה רמז: את מערת המכפלה לא גילה אברהם בזמן שחיפש אותה, אלא בזמן שעשה חסד עם אורחים. מתוך החסד נפתחה לו הדרך אל המקום.</p>
+      <p class="bold-para">אברהם גילה את מערת המכפלה דווקא בשעה שעסק בהכנסת אורחים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · באלוני ממרא</div>
+      <h3 class="story-title">👑 "זממה שדה ותקחהו"</h3>
+      <p>המדרש מספר שפרק "אשת חיל", שאנו שרים בכל ליל שבת, היה ההספד שאמר אברהם אבינו על שרה אמנו. ובתוכו יש פסוק שמתאים בדיוק לסיפור שלנו: "זָמְמָה שָׂדֶה וַתִּקָּחֵהוּ".</p>
+      <p>איזה שדה זממה שרה? את שדה המערה. היא רצתה מאוד להיקבר שם, מאז ששמעה מאברהם על המקום. ובזכות הרצון הזה, כשנפטרה, קנה אברהם את השדה בשבילה. כך יוצא שהשדה נקנה בזכותה, אף על פי שהיא עצמה כבר לא הייתה בחיים כשנקנה.</p>
+      <p>בכל פעם שאנו שרים "זממה שדה ותקחהו" בשולחן השבת, אפשר לזכור את שרה אמנו, שהשתוקקה אל המקום הקדוש, ואת אברהם, שמימש את רצונה. ההשתוקקות שלה היא שקבעה את מערת המכפלה כמקום מנוחתם של האבות והאמהות לדורות.</p>
+      <p class="bold-para">פרק אשת חיל נאמר, לפי המדרש, כהספד של אברהם על שרה, ויש בו רמז לקניית המערה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · באלוני ממרא</div>
+      <h3 class="story-title">🍇 השדה והכרם</h3>
+      <p>הפסוק ממשיך: "זָמְמָה שָׂדֶה וַתִּקָּחֵהוּ, מִפְּרִי כַפֶּיהָ נָטְעָה כָּרֶם". שואל הגאון רבי חיים קניבסקי: מה ההבדל? למה את השדה קנתה סתם, ואת הכרם נטעה במו ידיה?</p>
+      <p>והוא עונה דבר נפלא. כתוב בתורה: "וְכִי תָבֹאוּ אֶל הָאָרֶץ וּנְטַעְתֶּם כָּל עֵץ מַאֲכָל". יש מצווה לטעת עצים בארץ ישראל. אבל על שדה תבואה לא מצאנו מצווה כזאת. לכן את השדה יכלה שרה לקנות על ידי שליח, שיעבוד בו ויודיע לה כשיסיים. אבל את הכרם, שיש בנטיעתו מצווה, היא נטעה בעצמה, מפרי כפיה.</p>
+      <p>הרב הוסיף מכאן עצה מעשית: מי שעוד לא נטע עץ בארץ ישראל, כדאי שיזדרז. אפשר לטעת עץ פרי בגינה, ויש מקומות רבים בארץ שמקבלים בשמחה יהודים שרוצים לטעת עצים. ואם יש הזדמנות, טוב לעשות זאת במו ידיו, ולא רק לשלוח מישהו אחר.</p>
+      <p class="bold-para">את השדה קנתה שרה על ידי אחרים, אבל את הכרם נטעה בעצמה, כי יש מצווה לטעת עצים בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לא בחינם</div>
+      <h3 class="story-title">⚖️ למה לשלם?</h3>
+      <p>עכשיו מגיעים לשאלה הגדולה של השיעור: למה היה צריך אברהם אבינו לקנות את המערה? בני חת מתחננים לפניו שייקח את המקום בחינם. עפרון אומר לו במפורש: אני נותן לך את השדה ואת המערה. ובוודאי היו מוכנים גם לכתוב לו שטר, כדי שלא יערערו על כך בעתיד.</p>
+      <p>והנה אברהם אומר: לא, אני רוצה לשלם. ויותר מזה, הוא שוקל ארבע מאות שקל כסף, סכום גדול מאוד.</p>
+      <p>ואין לומר שאברהם פשוט לא נהג לקבל מתנות. בפרשות הקודמות ראינו שהוא קיבל מתנות מפרעה, וקיבל גם מאבימלך. כשנתנו לו, הוא לקח. אם כן, מה שונה כאן?</p>
+      <p>יש מי שהציע שאברהם הסתכל על הדורות הבאים, ורצה שלא יהיו עוררין על הקרקע. אבל אם זו הייתה הבעיה, היה מספיק שטר מתנה מסודר. התשובה העמוקה יותר נמצאת בזוהר הקדוש.</p>
+      <p class="bold-para">אברהם קיבל מתנות מפרעה ומאבימלך, אבל על המערה התעקש לשלם את מלוא המחיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לא בחינם</div>
+      <h3 class="story-title">✨ הקדושה אינה באה בחינם</h3>
+      <p>הזוהר בפרשת תרומה דורש את הפסוק "וְיִקְחוּ לִי תְּרוּמָה": מי שרוצה להשתדל במצווה ובקדוש ברוך הוא, צריך שלא ישתדל בו בריקנות ובחינם, אלא כראוי, כפי כוחו. וכך נאמר: "אִישׁ כְּמַתְּנַת יָדוֹ".</p>
+      <p>ובאותו מקום מביא הזוהר דבר מפתיע. בספר הכשפים שלימד אשמדאי את שלמה המלך נאמר, שמי שרוצה להשרות עליו רוח טומאה, צריך לקנות אותה בחינם. כי רוח הטומאה מזדמנת תמיד בחינם, בלי שכר, ומפתה את בני האדם בפיתויים רבים. אבל רוח הקודש אינה כך. היא באה רק בשכר שלם, בהשתדלות רבה, בטהרת האדם ובטהרת ביתו, ברצון לבו ונפשו.</p>
+      <p>זה היסוד: אם רוצים שתשרה קדושה על מקום, אין לקחת אותו בחינם. אברהם רצה שחברון תהיה עיר האבות שלנו לדורי דורות, ולא רק לו ולבנו ולנכדו. לכן התעקש לשלם את מלוא המחיר.</p>
+      <p class="bold-para">הזוהר מלמד: רוח הטומאה באה בחינם, ורוח הקדושה שורה רק במה שנקנה במלוא המחיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לא בחינם</div>
+      <h3 class="story-title">📜 שלושת אלפים ושבע מאות שנה</h3>
+      <p>הרב עשה חשבון פשוט. אברהם אבינו נולד בשנת אלף תשמ"ח לבריאת העולם. שרה נפטרה בגיל מאה עשרים ושבע, ואברהם היה מבוגר ממנה בעשר שנים, כלומר בן מאה שלושים ושבע. נמצא שהמערה נקנתה בסביבות שנת אלפיים שמונים וחמש. ואנו נמצאים היום בשנות חמשת אלפים ושבע מאות. כלומר, עברו כשלושת אלפים ושבע מאות שנה מאז הקנייה.</p>
+      <p>תנסו לדמיין: בשבת פרשת חיי שרה מגיעים המוני אנשים לחברון, ובמקומות רבים יושבים ומדברים על המקום הזה. וכולם אומרים: זה שייך לנו. למה? כי אבא של אבא של אבא שלנו, לפני אלפי שנים, קנה אותו בכסף מלא.</p>
+      <p>האם יש לזה אח ורע בהיסטוריה? האם יש עוד מקום בעולם שעם שלם בא ואומר עליו: זה שלי, כי אבותיי קנו אותו לפני שלושת אלפים ושבע מאות שנה? נראה שאין. דבר כזה יכול להחזיק מעמד רק משום שנקנה כראוי, בקדושה ובמלוא המחיר.</p>
+      <p class="bold-para">אין בהיסטוריה עוד מקום שעם מצביע עליו ואומר: זה שלנו, כי אבותינו קנו אותו לפני אלפי שנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לא בחינם</div>
+      <h3 class="story-title">🏗️ מה שבא בקלות</h3>
+      <p>יש כלל ידוע: מה שבא בחינם, הולך בחינם. דבר שמגיע בקלות, נעלם במהירות. אם רוצים דבר שיצליח, שתשרה עליו קדושה ושיהיה שלנו לדורי דורות, צריך לקנות אותו בכוונה, לשם מצווה, ולהשקיע בו.</p>
+      <p>הרב המשיל זאת לבניין. בניין גדול צריך יסודות עמוקים. את היסודות אף אחד לא רואה, אבל עליהם עומד הכל. ומי שבונה מהר, בלי יסודות, יראה את הבניין שלו מתמוטט.</p>
+      <p>וזה נכון לכל דבר בחיים, ולכל מצווה שאדם עושה. אם עושים בקלות, זה נחמד, וזה יחזיק קצת. אבל אם רוצים שהמעשה יחזיק מעמד, שיהיה בו אורך ימים, צריך להשקיע. כמו שתינוק צריך תשעה חודשים עד שהוא נולד, כך כל דבר גדול צריך זמן, עמל והשקעה. וכשמשקיעים הרבה, רואים תוצאות. זה יסוד גדול בחיים, וזה הפירוש הראשון לכך שאברהם התעקש לשלם.</p>
+      <p class="bold-para">דבר שמשקיעים בו הרבה נשאר לאורך ימים, ומה שבא בחינם הולך מהר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לא בחינם</div>
+      <h3 class="story-title">🪙 "לא כי קנה אקנה בכסף מלא"</h3>
+      <p>האם יש עוד מקום בתנ"ך שבו אדם התעקש לקנות קרקע בכסף מלא? כן. דוד המלך, כשבא לקנות את גורן ארונה היבוסי, את המקום שבו ייבנה בית המקדש בירושלים.</p>
+      <p>ארונה אומר לדוד: קח לך את המקום, ואני נותן גם את הבקר לעולות, את המוריגים לעצים ואת החיטים למנחה, הכל נתתי. ודוד משיב לו: "לֹא, כִּי קָנֹה אֶקְנֶה בְּכֶסֶף מָלֵא, כִּי לֹא אֶשָּׂא אֲשֶׁר לְךָ לַה' וְהַעֲלוֹת עוֹלָה חִנָּם". ובדברי הימים מסופר שנתן לו שש מאות שקלי זהב.</p>
+      <p>שימו לב למילים: "כסף מלא". אלה בדיוק המילים שאמר אברהם אבינו לבני חת: "בְּכֶסֶף מָלֵא יִתְּנֶנָּה לִּי". מאות שנים אחרי אברהם, חוזר דוד על אותו ביטוי בדיוק. וגם יעקב אבינו קנה חלקת שדה בשכם, המקום שבו נקבר יוסף. מכאן רואים שאין זה רק עניין של מצווה כללית. דווקא את ארץ ישראל יש עניין מיוחד לקנות בכסף מלא.</p>
+      <p class="bold-para">גם דוד המלך סירב לקבל את מקום המקדש בחינם, ואמר את אותן מילים שאמר אברהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איך אוהבים את הארץ</div>
+      <h3 class="story-title">💋 מצווה לנשק את הארץ</h3>
+      <p>למה דווקא את ארץ ישראל צריך לקנות בכסף מלא? כדי להבין, הרב פנה לרמב"ם. אם תחפשו ברמב"ם, לא תמצאו שכתוב שיש לנשק את המזוזה, אף על פי שכולנו נוהגים כך. גם על נישוק דברים אחרים לא תמצאו שם.</p>
+      <p>הדבר היחיד שהרמב"ם כותב עליו שמנשקים אותו הוא ארץ ישראל. וכך כתב בסוף הלכות מלכים: "גְּדוֹלֵי הַחֲכָמִים הָיוּ מְנַשְּׁקִין עַל תְּחוּמֵי אֶרֶץ יִשְׂרָאֵל, וּמְנַשְּׁקִין אֲבָנֶיהָ, וּמִתְגַּלְגְּלִין עַל עֲפָרָהּ".</p>
+      <p>הרב הציע לכל אחד לקיים את זה בפועל. לא צריך לחכות עד שיוצאים לחוץ לארץ וחוזרים. אפשר ביום מן הימים, כשיש התעוררות אחרי שיעור טוב, לרדת ולתת נשיקה לאדמת הארץ. זה מעשה קדוש מאוד, ויש בו אהבה גלויה לארץ שה' נתן לנו.</p>
+      <p class="bold-para">הדבר היחיד שהרמב"ם כותב שמנשקים אותו הוא אדמת ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איך אוהבים את הארץ</div>
+      <h3 class="story-title">🌿 לבושו של גן עדן</h3>
+      <p>למה מנשקים את האדמה? הרב הביא משל מספר התורה. כשמוציאים ספר תורה, איננו מנשקים את הקלף עצמו, אלא את המעיל או את המטפחת שעוטפים אותו. למה מנשקים בד? כי הוא הלבוש של ספר התורה.</p>
+      <p>ובספרים מובא, בשם האבן עזרא, שארץ ישראל היא כביכול הלבוש של גן עדן. כאשר אדם מנשק את ארץ ישראל, הוא כאילו מנשק את גן עדן, כמו שמנשקים את מטפחת ספר התורה. ומערת המכפלה, שממנה עולה ריח גן עדן, היא עוד יותר מזה.</p>
+      <p>ובמילים פשוטות יותר: ספר התורה הוא התורה של ה', וארץ ישראל היא הבית של ה'. מי שאוהב את ה', אוהב את ביתו, ומנשק אותו כמו שמנשקים דבר יקר. וזו אחת הדרכים לבטא אהבה. אבל יש עוד דרך, ובה נעסוק עכשיו.</p>
+      <p class="bold-para">כמו שמנשקים את מעיל ספר התורה, כך מנשקים את ארץ ישראל, שהיא כביכול הלבוש של גן עדן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איך אוהבים את הארץ</div>
+      <h3 class="story-title">💎 כחפץ הקנוי בדמים יקרים</h3>
+      <p>בשירת הים אנו אומרים: "עַד יַעֲבֹר עַם זוּ קָנִיתָ". ומפרש רש"י: "חִבַּבְתָּ מִשְּׁאָר אֻמּוֹת, כְּחֵפֶץ הַקָּנוּי בְּדָמִים יְקָרִים שֶׁחָבִיב עַל הָאָדָם".</p>
+      <p>כל אחד מכיר את זה. אם שילמת על דבר הרבה כסף, חסכת בשבילו חודש אחרי חודש, ועבדת קשה כדי לקנות אותו, יהיה לך קשה מאוד למכור אותו אחר כך. יש לך רגש מיוחד אליו. השקעת בו, הוא עלה לך ביוקר, ולכן אתה קשור אליו.</p>
+      <p>וזו הדרך השנייה לאהוב את ארץ ישראל: לשלם עליה. אברהם אבינו שילם ארבע מאות שקל כסף, והמקום נעשה יקר לו, ונעשה יקר גם לבניו אחריו. האהבה עברה ליצחק וליעקב.</p>
+      <p>יעקב אבינו, לפני פטירתו, ציווה את בניו: "וְקָבַרְתֶּם אֹתִי אֶל אֲבֹתַי אֶל הַמְּעָרָה אֲשֶׁר בִּשְׂדֵה עֶפְרוֹן הַחִתִּי". אלה הדברים האחרונים שאמר לפני שנאסף אל עמיו. המקום הזה היה יקר לו מכל.</p>
+      <p class="bold-para">דבר ששילמו עליו ביוקר נעשה חביב על האדם, ולכן קונים את ארץ ישראל בכסף מלא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איך אוהבים את הארץ</div>
+      <h3 class="story-title">🏠 קופה של ארץ ישראל</h3>
+      <p>הרב הדגיש: זה לא רק סיפור, זו הלכה למעשה. וגם מי שכבר קנה דירה, יכול ללמד את זה לבניו ולנכדיו.</p>
+      <p>הוא הציע רעיון מעשי. כמו שהיו פעם קופות צדקה בבתים, אפשר להכין קופה מיוחדת של ארץ ישראל. לקשט אותה בתמונות של הארץ, ולשים בה כל יום סכום קטן, כדי שבכסף הזה יקנו הבנים והנכדים בית בארץ ישראל. כמו שאברהם אבינו שילם ארבע מאות שקל כסף, גם אנחנו משלמים, כל אחד כפי יכולתו.</p>
+      <p>ומי שמשלם משכנתא שנים רבות, שיחשוב בכל תשלום: אני לא סתם משלם כי אין ברירה וצריך לגור במקום כלשהו. אני קונה אדמה בארץ ישראל. ובספרים מובא שמי שקונה אדמה בארץ ישראל, קונה לו חלק לעולם הבא.</p>
+      <p>כך התשלום החודשי, שנראה כמו עול, הופך להיות דבר של אהבה וקדושה. כמו אברהם אבינו, שהתעקש לשלם, וידע שטוב עשה. ובזכות זה זוכים שחברון תהיה עיר האבות שלנו לדורי דורות.</p>
+      <p class="bold-para">כל תשלום על דירה בארץ הוא קנייה של חלקה בארץ ישראל, וכדאי לחשוב על כך בכל פעם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלושת עמודי העולם</div>
+      <h3 class="story-title">📍 שלושה מקומות שנקנו</h3>
+      <p>המדרש בבראשית רבה אומר: שלושה מקומות הם שאין אומות העולם יכולים להונות את ישראל ולומר להם "גזולים הם בידכם". מה הם? מערת המכפלה בחברון, מקום המקדש בהר המוריה, וקבר יוסף בשכם. את חברון קנה אברהם, את שכם קנה יעקב, ואת הר המוריה קנה דוד.</p>
+      <p>והנה דבר מפליא. דווקא שלושת המקומות האלה, שעליהם הבטיחו חז"ל שאין מי שיוכל לערער, הם המקומות הקשים ביותר עבורנו גם בימינו. במערת המכפלה לא תמיד מתאפשר להתפלל בכל חלקיה. על הר הבית מסובך מאוד. ולקבר יוסף נכנסים רק בליווי, ולא בקלות.</p>
+      <p>איך זה ייתכן? הרב אמר שהבעיה איננה אצל אחרים, אלא אצלנו. אילו היה אכפת לנו מן המקומות האלה כמו שצריך, אילו התגעגענו אליהם באמת, המצב היה אחר. וכדי להבין למה דווקא הם, צריך לראות מה מייצג כל אחד מהם.</p>
+      <p class="bold-para">המדרש מונה שלושה מקומות שאין אומות העולם יכולות לומר עליהם שהם גזולים בידינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלושת עמודי העולם</div>
+      <h3 class="story-title">🏛️ תורה, עבודה וגמילות חסדים</h3>
+      <p>"עַל שְׁלֹשָׁה דְבָרִים הָעוֹלָם עוֹמֵד: עַל הַתּוֹרָה וְעַל הָעֲבוֹדָה וְעַל גְּמִילוּת חֲסָדִים". הרב הביא רעיון יפה, ששלושת העמודים האלה נמצאים בארץ ישראל, שהיא הנקודה המרכזית של העולם, ושלושת המקומות שנקנו בכסף מלא הם כנגדם.</p>
+      <p>חברון היא עמוד החסד. אברהם גילה את המערה בשעה שעשה חסד עם המלאכים. הוא קנה אותה כדי לעשות חסד עם שרה ולקבור אותה, חסד של אמת. וכשיעקב מבקש להיקבר שם, הוא אומר ליוסף: "וְעָשִׂיתָ עִמָּדִי חֶסֶד וֶאֱמֶת".</p>
+      <p>הר המוריה הוא עמוד העבודה. שם הקורבנות ושם התפילה. עליו אמר יעקב: "אֵין זֶה כִּי אִם בֵּית אֱלֹקִים וְזֶה שַׁעַר הַשָּׁמָיִם", ועליו נאמר: "כִּי בֵיתִי בֵּית תְּפִלָּה יִקָּרֵא לְכָל הָעַמִּים".</p>
+      <p>ושכם היא עמוד התורה. יעקב אבינו, עמוד התורה, "אִישׁ תָּם יֹשֵׁב אֹהָלִים", קנה אותה. ובספר יהושע מסופר שבשכם כרת יהושע ברית עם ישראל, ושם לימד אותם את חוקי התורה.</p>
+      <p class="bold-para">שלושת המקומות שנקנו בכסף מלא הם כנגד שלושת הדברים שהעולם עומד עליהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלושת עמודי העולם</div>
+      <h3 class="story-title">🛡️ עמודים שצריך לשמור</h3>
+      <p>מכאן מובן למה דווקא סביב שלושת המקומות האלה יש כל כך הרבה קושי. הם אינם סתם מקומות היסטוריים. הם העמודים שעליהם עומד העולם: עמוד החסד, עמוד העבודה ועמוד התורה. וכשעם ישראל מחזיק בהם, יש לזה משמעות רוחנית עצומה.</p>
+      <p>הרב אמר שגם מי שאינו מבין את כל זה בשכלו, מרגיש בעומק את החשיבות של המקומות האלה. ולכן אין זה פלא שדווקא עליהם נאבקים יותר מכל.</p>
+      <p>ומה תפקידנו? ללמוד מאברהם, מיעקב ומדוד. הם לא קיבלו את המקומות האלה בחינם, אלא שילמו עליהם במלוא המחיר, ובזה קשרו את עצמם ואת בניהם אליהם לנצח. גם אנחנו צריכים להשקיע: לאהוב את המקומות, לדבר עליהם, להשתוקק אליהם ולהתפלל עליהם. כך מחזקים את העמודים, וכך זוכים שיחזרו אלינו במלואם.</p>
+      <p class="bold-para">המקומות שהם עמודי העולם דורשים מאיתנו אהבה והשתוקקות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · השיבה אל המערה</div>
+      <h3 class="story-title">🌅 בוקר אחד בחברון</h3>
+      <p>השיר ממשיך אל ההווה: "במשך הדורות חלמנו חלומות, לבוא להתפלל על קברי אבות". ובשיעור סופר איך חזרו יהודים אל המערה.</p>
+      <p>במלחמת ששת הימים, ביום רביעי בבוקר, נכנסו חיילי צה"ל אל העיר העתיקה בירושלים ואל הר הבית. משם המשיכו לקבר רחל, ובערב הגיעו לגוש עציון. הרב שלמה גורן, הרב הראשי לצה"ל, היה איתם.</p>
+      <p>ביום חמישי בבוקר שאל הרב גורן את המפקד: עכשיו הולכים למערת המכפלה? והמפקד ענה שיש עוד דברים לעשות בדרך. אמר הרב: אם כך, אני הולך. הוא לקח את הנהג שלו ויצא לבדו לכיוון חברון.</p>
+      <p>כשהגיע, מצא עיר שקטה לגמרי. בכל החלונות היו תלויים סדינים לבנים, ואיש לא נראה ברחובות. הרב גורן הבין שהוא צריך להודיע שהעיר נכבשה, אף על פי שבפועל היו שם רק הוא ונהגו. הוא עלה על עמוד במרכז העיר, ירה מחסנית שלמה באוויר, והכריז שצה"ל כבש את חברון.</p>
+      <p class="bold-para">מי שהגיע ראשון לחברון במלחמת ששת הימים היה הרב הראשי לצה"ל, יחד עם נהגו בלבד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · השיבה אל המערה</div>
+      <h3 class="story-title">🚪 השערים שנפתחו</h3>
+      <p>עכשיו היה צריך להגיע אל המערה. הרב גורן ביקר בה פעם, לפני שנים רבות, ולא זכר בדיוק את הדרך. הוא ביקש מנער מקומי שיראה לו את המקום, והגיע אל המערה. אבל השערים היו נעולים.</p>
+      <p>הוא דפק, וביקש שיפתחו, ולא נפתח דבר. הוא ניסה לירות במנעול, וגם זה לא עזר. הוא חיכה שם לבדו זמן רב. אחרי כשלוש שעות הגיע טנק. מתוך הטנק הוציאו מוט ברזל, חיברו אותו לשערים, ומשכו. אחת, שתיים, שלוש, והשערים נפרצו.</p>
+      <p>הרב גורן נכנס פנימה, ועם החיילים שהגיעו בינתיים התפלל תפילת שחרית, עם תפילין, בתוך מערת המכפלה. במשך מאות שנים לא דרכה שם רגל יהודית. היהודים הורשו לעלות רק עד המדרגה השביעית שבחוץ, ושם התפללו דור אחרי דור. ועכשיו עמד שם יהודי, מתרגש מאוד, ומתפלל לפני ה' במקום שבו קבורים האבות.</p>
+      <p class="bold-para">אחרי שעות של המתנה נפרצו שערי המערה, ונאמרה בה תפילת שחרית אחרי מאות שנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · השיבה אל המערה</div>
+      <h3 class="story-title">🙏 לא צריך אלא להשתוקק</h3>
+      <p>בשיר נאמר: "חיילינו נלחמו שם, שמיים הם קידשו". הרב העיר שזה לא מדויק במציאות. מי שהגיע לחברון היה אדם אחד, והוא לא נלחם עם איש, כי לא היה עם מי להילחם.</p>
+      <p>ומכאן הלקח: אם באמת נרצה, לא נצטרך המון חיילים ולא מלחמות גדולות. מה שצריך הוא שנבין כמה המקום קדוש, שנשתוקק אליו ונדבר עליו. כמו שאברהם אבינו השקיע בו, כך גם אנחנו צריכים להשקיע בו את הלב.</p>
+      <p>לשם כך עורך הרב "שבת חברון", שבה שרים את השירים על עיר האבות ומדברים עליה, כדי שכל אחד ייקח את זה הביתה, יתחבר לאהבת המקום ויתפלל עליו.</p>
+      <p>ומשם מגיע השיר אל העתיד: "ואנו פה נושאים תפילה לאחדותה של האומה, לשנה הבאה בחברון הבנויה". שלא רק חלק מן העיר יהיה שלנו, אלא חברון כולה, ושכולם יבינו כמה היא חשובה. בעזרת ה' נזכה לכך כולנו בקרוב.</p>
+      <p class="bold-para">מה שמחזיר את המקומות הקדושים הוא ההבנה כמה הם קדושים והגעגוע אליהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/I3M1qRDb_qI · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"באלוני ממרא","icon":"🌳","color":"#c62b6b","stories":[{"id":1,"title":"שיעור שנבנה על שיר","icon":"🎵"},{"id":2,"title":"העצה הטובה של ממרא","icon":"🌳"},{"id":3,"title":"הבן בקר שברח אל המערה","icon":"🐂"},{"id":4,"title":"\"זממה שדה ותקחהו\"","icon":"👑"},{"id":5,"title":"השדה והכרם","icon":"🍇"}]},{"id":2,"name":"לא בחינם","icon":"⚖️","color":"#6d28d9","stories":[{"id":6,"title":"למה לשלם?","icon":"⚖️"},{"id":7,"title":"הקדושה אינה באה בחינם","icon":"✨"},{"id":8,"title":"שלושת אלפים ושבע מאות שנה","icon":"📜"},{"id":9,"title":"מה שבא בקלות","icon":"🏗️"},{"id":10,"title":"\"לא כי קנה אקנה בכסף מלא\"","icon":"🪙"}]},{"id":3,"name":"איך אוהבים את הארץ","icon":"❤️","color":"#e08e00","stories":[{"id":11,"title":"מצווה לנשק את הארץ","icon":"💋"},{"id":12,"title":"לבושו של גן עדן","icon":"🌿"},{"id":13,"title":"כחפץ הקנוי בדמים יקרים","icon":"💎"},{"id":14,"title":"קופה של ארץ ישראל","icon":"🏠"}]},{"id":4,"name":"שלושת עמודי העולם","icon":"🏛️","color":"#1e88b8","stories":[{"id":15,"title":"שלושה מקומות שנקנו","icon":"📍"},{"id":16,"title":"תורה, עבודה וגמילות חסדים","icon":"🏛️"},{"id":17,"title":"עמודים שצריך לשמור","icon":"🛡️"}]},{"id":5,"name":"השיבה אל המערה","icon":"🚪","color":"#c62b6b","stories":[{"id":18,"title":"בוקר אחד בחברון","icon":"🌅"},{"id":19,"title":"השערים שנפתחו","icon":"🚪"},{"id":20,"title":"לא צריך אלא להשתוקק","icon":"🙏"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
