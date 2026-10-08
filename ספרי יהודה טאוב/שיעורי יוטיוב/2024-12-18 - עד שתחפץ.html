@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 עד שתחפץ</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 עד שתחפץ</h1>
+  <p>שלוש השבועות שבשיר השירים, שלוש דעות על משמעותן בימינו, וההשלכות ההלכתיות של כל דעה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ עד שתחפץ" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/xOp2ojf_6k0?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/xOp2ojf_6k0/hqdefault.jpg" alt="עד שתחפץ" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=xOp2ojf_6k0" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להכיר את הדעות</div>
+      <h3 class="story-title">🤝 ללמוד את שיטת האחר</h3>
+      <p>השיעור הזה נולד בעקבות בקשה מיוחדת. אולפנה שבה הבנות לומדות מחשבת ישראל ברמה מורחבת ביקשה מהרב להרצות על ארגון "קדושת ציון": מה בדיוק הארגון הזה חושב, ובמה הוא שונה מאחרים. במסגרת הלימוד שם הקפידו להכיר לא רק את השיטה של הציבור שלהן, אלא גם שיטות אחרות.</p>
+      <p>הרב ציין שזה דבר מעניין ולא מובן מאליו. בדרך כלל אדם אוהב לשמוע רק את השיטה שלו, ומה שמחוץ לה פשוט אינו קיים בעיניו. ודווקא לכן ההקדמה של השיעור הייתה: כמה חשוב ללמוד גם את שיטתו של האחר.</p>
+      <p>לא כדי להסכים איתו בהכרח. אלא בשביל דבר אחד: מי שרוצה להכיר אדם, להסתדר איתו ולהבין מה עובר עליו ומה כואב לו, צריך להבין מהיכן השיטה שלו נובעת. בלי זה, כל ויכוח הוא דיבור של שני אנשים שאינם שומעים זה את זה.</p>
+      <p>זו גם הרוח של הספר הזה. הנושא רגיש, ויש בו מחלוקת אמיתית בין גדולי ישראל ובין ציבורים שלמים. המטרה כאן היא להציג כל דעה כפי שהיא מבינה את עצמה, ולהבין את נקודת המוצא שלה.</p>
+      <p class="bold-para">כדי להבין אדם ולהסתדר איתו, צריך להבין מאין נובעת שיטתו – גם בלי להסכים איתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להכיר את הדעות</div>
+      <h3 class="story-title">🔑 נקודה אחת שמשנה הכל</h3>
+      <p>השיעור הוא מסע היכרות קצר בתולדות עם ישראל ובמחשבתו. יש שלוש שבועות, וננסה להביא עליהן שלוש דעות. הדעה הראשונה היא שיטת הספר "ויואל משה", של האדמו"ר מסאטמר. הדעה השנייה היא השיטה שמזוהה בשיעור עם ארגון "קדושת ציון". והשלישית היא שיטת ביניים, שעומדת בין שתיהן.</p>
+      <p>הרב מבקש לשים לב לדבר אחד. כל ההבדל בין הדעות נובע בעצם מנקודה עקרונית אחת: כיצד קוראים את המילים "עַד שֶׁתֶּחְפָּץ" שבפסוק. האם הזמן הזה כבר הגיע, או שעדיין לא.</p>
+      <p>ואיך שאדם מכריע בנקודה הזאת, כך ישתנה היחס שלו לשאלות רבות מאוד. לא רק לשאלות של השקפה, אלא גם לשאלות הלכתיות מעשיות: האם יש היום מצוות ירושת הארץ, מה מעמדם של מקומות מסוימים בארץ, ואיך מתייחסים לאומות העולם.</p>
+      <p>לכן לפני שמגיעים לדעות עצמן, צריך לחזור למקור: לפסוק בשיר השירים ולדברי הגמרא עליו. רק מתוך המקור אפשר להבין מה כל דעה רואה בו, ולמה היא מגיעה למסקנה שלה.</p>
+      <p class="bold-para">הדרך שבה מבינים מושג אחד – "עד שתחפץ" – משפיעה על היחס לאינספור שאלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השבועה שבשיר השירים</div>
+      <h3 class="story-title">📜 הפסוק שחוזר שלוש פעמים</h3>
+      <p>בשיר השירים מופיע פסוק אחד, כמעט באותן מילים, שלוש פעמים: "הִשְׁבַּעְתִּי אֶתְכֶם בְּנוֹת יְרוּשָׁלִַם בִּצְבָאוֹת אוֹ בְּאַיְלוֹת הַשָּׂדֶה אִם תָּעִירוּ וְאִם תְּעוֹרְרוּ אֶת הָאַהֲבָה עַד שֶׁתֶּחְפָּץ".</p>
+      <p>בשיר השירים הרעיה מייצגת את עם ישראל, והדוד מייצג את הקדוש ברוך הוא. השבועה היא שלא לעורר את האהבה לפני הזמן. והשאלה הראשונה היא: מי משביע את מי, ועל מה בדיוק?</p>
+      <p>הגמרא במסכת כתובות דורשת מן החזרה המשולשת הזאת שלוש שבועות. שלא יעלו ישראל לארץ ישראל "בחומה", כלומר יחד וביד חזקה. שלא ימרדו באומות העולם. ומנגד, שהשביע הקדוש ברוך הוא את אומות העולם שלא ישתעבדו בישראל יותר מדי. הרב הזכיר בהקשר זה גם את האיסור לדחוק את הקץ.</p>
+      <p>אצל רוב האנשים, שלוש השבועות נתפסות רק כאיסור: דבר שאוסר לעלות לארץ. אבל הרב מציע לקרוא את הפסוק ואת הגמרא מחדש, בעיון, ולראות שיש בהם שני חלקים ולא חלק אחד. כדי להבין זאת, צריך לשאול קודם כול על איזו אהבה מדובר.</p>
+      <p class="bold-para">שלוש פעמים חוזרת בשיר השירים השבועה שלא לעורר את האהבה עד שתחפץ, ומכאן דרשו חז"ל שלוש שבועות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השבועה שבשיר השירים</div>
+      <h3 class="story-title">💞 על איזו אהבה מדובר</h3>
+      <p>השאלה הפשוטה ביותר היא: על איזו אהבה מדבר הפסוק? והתשובה עולה מכל שיר השירים כולו. כל השיר מדבר על אהבה אחת – האהבה שבין עם ישראל לקדוש ברוך הוא, כמו אהבת חתן וכלה.</p>
+      <p>"פִּתְחִי לִי אֲחֹתִי רַעְיָתִי יוֹנָתִי תַמָּתִי" – זה הקדוש ברוך הוא הפונה לעם ישראל. וכשהרעיה אומרת "הִשְׁבַּעְתִּי אֶתְכֶם... אִם תִּמְצְאוּ אֶת דּוֹדִי מַה תַּגִּידוּ לוֹ שֶׁחוֹלַת אַהֲבָה אָנִי", זה עם ישראל, שחולה מרוב אהבה ומתגעגע.</p>
+      <p>ובתוך השיר הזה של אהבה, נאמר דבר מפתיע: יש לאהבה הזאת זמן מסוים. אסור לעורר אותה לפני שהגיע זמנה.</p>
+      <p>הגמרא מסבירה שעם ישראל הושבע שבזמן הגלות, כשהבנים מרוחקים משולחן אביהם, לא יעוררו את האהבה. האהבה קיימת, היא לא נעלמה. אבל היא ישנה, רדומה ומכוסה, וצריך לחכות.</p>
+      <p>מכאן מובן שהשבועות אינן מבטאות ריחוק מן הקדוש ברוך הוא. הן מבטאות סדר בתוך אהבה: יש זמן להמתנה, ויש זמן להתעוררות.</p>
+      <p class="bold-para">כל שיר השירים מדבר על האהבה שבין עם ישראל לקדוש ברוך הוא, והשבועה קובעת שלאהבה הזאת יש זמן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השבועה שבשיר השירים</div>
+      <h3 class="story-title">🌫️ אהבה מכוסה בזמן הגלות</h3>
+      <p>בזמן הגלות, כשעם ישראל סובל צרות ורדיפות, אהבת ה' אינה ניכרת. היא מוסתרת ומכוסה מן הבריות. יהודים חיו דורות רבים בלי לראות בעיניהם את האהבה של בורא עולם.</p>
+      <p>הרב מתאר את ההבדל שהוא רואה בין חיי הגלות לבין מה שאנחנו רואים בארץ ישראל בדורות האחרונים. בגולה יהודים נרדפו ונפגעו פעמים רבות, ולא ראו ניסים ונפלאות גלויים. ואילו בארץ ישראל, הוא אומר, רבים רואים בעיניהם את שמירת ה' על עמו, גם בתוך מלחמות קשות.</p>
+      <p>מי לא ירצה שהקדוש ברוך הוא יאהב אותו בגלוי? מי לא רוצה לראות את האהבה הזאת? הלב של כל יהודי משתוקק לזה. ובכל זאת, הקדוש ברוך הוא השביע אותנו שלא נעורר את האהבה הרדומה לפני הזמן.</p>
+      <p>וכאן עולה השאלה העיקרית של כל השיעור: עד מתי? מתי מגיע הרגע שבו מותר, ואולי אף צריך, לעורר את האהבה הזאת מן השינה? לפני שעונים על כך, צריך להבין קודם מה הם הדברים שמעוררים אותה.</p>
+      <p class="bold-para">בגלות האהבה קיימת, אבל אינה נראית; הבורא כביכול מסתיר את פניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השבועה שבשיר השירים</div>
+      <h3 class="story-title">🔥 מה מעורר את האהבה</h3>
+      <p>מה הדרך לעורר את אהבת ה'? הגמרא עצמה מגדירה אותה, דרך השבועות: לעלות לארץ "בחומה", לא להיכנע לאומות, לדחוק את הקץ. הדברים האלה, אומר הרב, הם בדיוק מה שמעורר את אהבת ה' לעמו.</p>
+      <p>למה עלייה לארץ מעוררת אהבה? משל לבן שחוזר לבית אביו. כל אב שמח כשבנו בא הביתה, ובוודאי אם לא ראה אותו שנה או שנתיים. כשיהודים עולים לארץ ישראל, זה מעורר מאוד את אהבתו של בורא עולם אליהם. וגם כשיהודים רוצים בכל כוחם שהגאולה תבוא, זה מעורר אהבה.</p>
+      <p>ואם כן, למה נאסר הדבר? כדי שהגלות תשלים את תפקידה. הגלות נגזרה בגלל חטאים ובגלל תיקונים שעם ישראל צריך לעבור, והיא צריכה להיות כפרה גמורה ותיקון גמור. אי אפשר באמצע הגלות לעורר את האהבה ולקצר אותה.</p>
+      <p>לכן מסופר על אמוראים גדולים שהשתוקקו מאוד לגאולה ולעלייה, ובכל זאת נשמרו מלעורר את האהבה. הם הושבעו להמתין עד שירצה ה' לגאול. אבל ההמתנה הזאת אינה לנצח. היא מוגבלת בזמן, כמו שנאמר: "עַד שֶׁתֶּחְפָּץ".</p>
+      <p class="bold-para">הדברים שנאסרו בשבועות הם בדיוק הדברים שמעוררים את אהבת ה' לעמו, ולכן נאסרו לפני הזמן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתי מגיע "עד שתחפץ"</div>
+      <h3 class="story-title">⏳ עד מתי?</h3>
+      <p>השבועה איננה נצחית. כתוב במפורש: "אִם תָּעִירוּ וְאִם תְּעוֹרְרוּ אֶת הָאַהֲבָה עַד שֶׁתֶּחְפָּץ". הושבענו שלא לעורר את האהבה עד שיגיע הזמן המוגדר, וכאשר הוא מגיע – מגיע הזמן לעורר את האהבה הגנוזה והרדומה.</p>
+      <p>מה פירוש "עד שתחפץ"? זו השעה שבה הקדוש ברוך הוא קורא לבניו ואומר להם: בניי, הגיע זמן גאולתכם. זה כבר לא זמן הגלות, אלא הזמן שבו ה' גואל את עמו. השעה שבה האהבה שהייתה ישנה מוכנה להתעורר.</p>
+      <p>ואז, אדרבה, מצווה עלינו לקבל את המסר. כמו שנאמר: "קוּמִי אוֹרִי כִּי בָא אוֹרֵךְ". הגיע הזמן לחיבור מחודש עם הקדוש ברוך הוא, לחיים מלאים באהבה ובגאולה.</p>
+      <p>אבל כאן מגיעה השאלה הגדולה, "שאלת המיליון" כלשון הרב: איך יודעים שהגיע "עד שתחפץ"? איך מזהים שהזמן הזה כבר כאן? כדי לענות עליה, הרב מציע ללמוד מן ההיסטוריה. כבר היה לעולמים: לא אנחנו הראשונים שעומדים בשאלה הזאת. היא עמדה כבר לפני עם ישראל בסוף גלות בבל.</p>
+      <p class="bold-para">השבועה מוגבלת בזמן: כשמגיע "עד שתחפץ", הקדוש ברוך הוא קורא לבניו – הגיע זמן גאולתכם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתי מגיע "עד שתחפץ"</div>
+      <h3 class="story-title">👑 הסימן מימי כורש</h3>
+      <p>בסוף גלות בבל פקד ה' את עמו, והבשורה הגיעה דרך כורש מלך פרס. כורש הכריז בכל ממלכתו: "מִי בָכֶם מִכָּל עַמּוֹ ה' אֱלֹקָיו עִמּוֹ וְיָעַל". כך מתחיל ספר עזרא, וכך גם מסתיים ספר דברי הימים – כלומר, כך מסתיים התנ"ך כולו.</p>
+      <p>הרב מבקש לבדוק דבר פשוט: האם כתוב בתנ"ך פסוק שבו ה' אומר לעם ישראל לעלות מבבל לארץ ישראל? אין פסוק כזה, אין נבואה כזאת. אז איך ידעו שהגיע הזמן? הכתוב מספר שעלו מפני שכורש קרא להם לעלות. זה היה הסימן.</p>
+      <p>ולמה דווקא זה סימן? הלכה היא בידוע שעשו שונא ליעקב. כשאתה בגלות, הגוי רוצה בדרך כלל רק את טובתו שלו. אם יום אחד אתה רואה שעשו הופך את עורו, ובמקום להילחם ביעקב הוא מחפש את טובתו וקורא לו לחזור לארצו – זה הסימן שהגיע "עת שתחפץ".</p>
+      <p>כך עם ישראל ידע בימי בית שני שהגיע זמן הגאולה: לא דרך קול משמיים, אלא דרך מלך גוי שקרא לו לעלות.</p>
+      <p class="bold-para">בבית שני לא ירדה נבואה שציוותה לעלות; הסימן היה שמלך גוי קרא לישראל לעלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתי מגיע "עד שתחפץ"</div>
+      <h3 class="story-title">🌄 גאולה שאינה באה בקול רעש</h3>
+      <p>מה מלמד הסימן של כורש? הרב מבקש לשים לב לדרך שבה הגיעה הגאולה בפעם הקודמת. לא היו קולות וברקים, לא ירדה בת קול מן השמיים, ולא נשמע ציווי מפורש של נביא לעלות. הכל קרה בדרך שנראית טבעית לגמרי: מלך אחד, משיקולים שלו, החליט להרשות ליהודים לשוב ולבנות את בית המקדש.</p>
+      <p>ובכל זאת, חז"ל ראו בכך את יד ה' באופן ברור. הם הבינו שהקדוש ברוך הוא מסובב את לב המלכים, ושהיתר של גוי לעלות הוא הקריאה עצמה. מי שחיכה לסימן גדול יותר, החמיץ את השעה.</p>
+      <p>זה הדגם שממנו לומדים לדורות. לפי דבריו, מי ששואל מתי יגיע "עד שתחפץ" צריך לדעת שהקדוש ברוך הוא אינו מתכנן בהכרח לקרוא לו בקול גדול כמו במעמד הר סיני. גם הרמב"ם, כפי שיתבאר, כותב שתחילת הגאולה תבוא בדרך הטבע ולא באותות ובמופתים.</p>
+      <p>לכן השאלה "איך יודעים" איננה שאלה של המתנה לנס גלוי. היא שאלה של התבוננות: לראות את המאורעות, ולשאול האם יש בהם אותו סימן שהיה בימי כורש – אומות שמחפשות את טובת ישראל וקוראות לו לשוב לארצו.</p>
+      <p class="bold-para">בבית שני הגאולה הגיעה בדרך הטבע, בלי נבואה מפורשת; זה הדגם שממנו לומדים לזהות את "עד שתחפץ".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתי מגיע "עד שתחפץ"</div>
+      <h3 class="story-title">🔄 מה שהיה אסור – נעשה מצווה</h3>
+      <p>ומה עושים כשמבינים שהגיע הזמן? מעוררים את האהבה. ואיך מעוררים אותה? הגמרא כבר הגדירה את הדרך: אותם דברים בדיוק.</p>
+      <p>הדרך שבה השבועה אוסרת לעורר את האהבה לפני זמנה, היא אותה דרך שבה צריך לעורר אותה כשמגיע זמנה. מה שהיה אסור – עלייה "בחומה", התעוררות לגאולה – הוא עכשיו המצווה הגדולה ביותר. הדברים שעד עתה הושבענו שלא לעשותם, נעשים עכשיו דברים שמצווה לבצע, כדי לעורר את אהבת ה'.</p>
+      <p>זה החידוש שהרב מדגיש בחלק הזה של השיעור. השבועות אינן רק איסור. יש בהן שני צדדים: לפני הזמן הן אוסרות, וכשמגיע הזמן הן מחייבות. אותה שבועה בדיוק, באותן מילים, מלמדת גם מה אסור לעשות בגלות וגם מה צריך לעשות כשהגלות מסתיימת.</p>
+      <p>כדי להמחיש את הרעיון הזה הביא הרב משל מחיי האדם, משל שכל אחד מבין מיד: משל הכלה. דרכו אפשר לראות איך אותו מעשה עצמו יכול להיות פעם אסור ופעם מצווה, הכל לפי הזמן.</p>
+      <p class="bold-para">כשמגיע הזמן, הדברים שנאסרו בשבועות הם עצמם הדרך לעורר את האהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתי מגיע "עד שתחפץ"</div>
+      <h3 class="story-title">💍 משל הכלה</h3>
+      <p>כלה שומרת מצוות אינה מעוררת אהבה לפני הנישואים. היא מחכה לרגע המיוחד שבו יתחייבו בני הזוג זה לזה. היא יודעת שעד אז יש איסורים, יש ריחוק, ואסור לעורר את האהבה עד החתונה. ההמתנה הזאת היא חלק מן ההכנה, והיא משקפת כבוד והבנה שיש זמן נכון לכל דבר.</p>
+      <p>אבל אחרי הנישואים, האהבה הזאת הופכת לתכלית של כל הנישואים. אם הכלה תמשיך גם אחרי החתונה לא לעורר את האהבה – בשביל מה התחתנו? עכשיו, אדרבה, ככל שתוסיף אהבה, כך תקיים את המצווה. מה שהיה אסור קודם, הוא עכשיו עיקר המצווה.</p>
+      <p>כך גם עם ישראל. לפני שהגיע הזמן, אסור לעורר את אהבת ה' בעלייה "בחומה". אבל כשמגיע הזמן שבו ה' חפץ בעמו וקורא לו לבוא לארץ ישראל, זו לא רק הזדמנות – זו שמחה עצומה ומצווה גדולה. כל האהבה שהייתה רדומה מתעוררת, והעם חוזר למקומו, מלא אהבה לקדוש ברוך הוא.</p>
+      <p>כביכול, זו החתונה עצמה: היא מתרחשת עכשיו, בעת שתחפץ.</p>
+      <p class="bold-para">כמו כלה שמשמרת את אהבתה עד החתונה, ואחריה עיקר המצווה הוא לעורר אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתי מגיע "עד שתחפץ"</div>
+      <h3 class="story-title">🧱 ההחמצה של ימי עזרא</h3>
+      <p>האם אנשים ידעו לשמוע את הקריאה בפעם הקודמת? הגמרא במסכת יומא מביאה את דברי ריש לקיש, שטוען שבימי כורש החמיץ עם ישראל את השעה. עם ישראל לא עשה עצמו "כחומה" ולא עלה כולו יחד ביד חזקה. עלו מעט מעט: קבוצה קטנה, ועוד קצת, ועוד קצת. לא עלו בהמוניהם.</p>
+      <p>ומה קרה? לפי ריש לקיש, העלייה החלקית הזאת גרמה לכך שהשכינה לא שרתה בבית שני במלואה, עד שלבסוף הוא נחרב. מי שלא עלה, גם אם היה חכם גדול, גרם כביכול לשכינה להתעכב.</p>
+      <p>הרב מסכם את הלימוד הזה: עלייה בשעה שה' פוקד את עמו היא הנקודה המרכזית, זה הדבר שמעורר את אהבת ה' אלינו. ומי שנשאר בחוץ באותה שעה, כביכול מוותר על התעוררות האהבה הזאת.</p>
+      <p>הוא מוסיף שלדעתו רואים זאת גם במציאות: ככל שיותר יהודים נמצאים בארץ ישראל, כך רואים כאן יותר ניסים. זהו הסיכום של החלק ההיסטורי, ומכאן עוברים לשאלה שנוגעת אלינו היום.</p>
+      <p class="bold-para">ריש לקיש אומר שאילו עלו כולם יחד בימי עזרא, הייתה השכינה שורה בבית שני במלואה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש דעות בימינו</div>
+      <h3 class="story-title">📕 שיטת "ויואל משה"</h3>
+      <p>עכשיו מגיעים לשלוש הדעות של ימינו. הדעה הראשונה היא שיטת האדמו"ר מסאטמר, בספרו "ויואל משה". הרב מדגיש שהאדמו"ר לא המציא אותה, אלא סידר והעמיק שיטה שהייתה קיימת.</p>
+      <p>לפי שיטה זו, אין להסתכל על אומות העולם כגוף אחד. כל אומה היא בפני עצמה, והשבועה חלה ביחס לכל אומה. לכן, אף שארגון האומות המאוחדות החליט להקים מדינה יהודית, הרי לפי שיטה זו נעברה השבועה, משום שתושבי המקום הערבים לא הסכימו לכך. הרב ציין שלדעתו יש על כך קושיות, למשל מימי כורש, כשתושבי המקום התנגדו לעולים ובכל זאת העלייה הייתה בהיתר.</p>
+      <p>עוד מבוסס בשיטה זו על פירוש רש"י, שהשבועה היא שלא יעלו "יחד ביד חזקה". לפי זה, גם אם אומות מסוימות הסכימו, אם היה צורך להילחם כדי לכבוש את הארץ – זו עדיין עלייה ביד חזקה.</p>
+      <p>זו השיטה הקיצונית בצד אחד: גם בפועל, גם היום, אסור לעלות בהמוניהם ולהתיישב בכוח, כי השבועה עדיין קיימת. הרב ציין שזו שיטה שאינה מוסכמת על רוב הפוסקים, אבל יש לה מקור ונימוק, וחשוב להבין אותה.</p>
+      <p class="bold-para">לפי שיטה זו השבועות עדיין בתוקף, וגם במציאות של היום העלייה וההתיישבות בכוח אסורות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש דעות בימינו</div>
+      <h3 class="story-title">📗 שיטת "קדושת ציון"</h3>
+      <p>השיטה ההפוכה בדיוק היא זו שהרב מזהה עם ארגון "קדושת ציון", ולדבריו כך סובר גם חלק גדול מן הציבור הדתי. לפי שיטה זו, אין היום איסור של שלוש השבועות. ולא רק שאין איסור – אלא בדיוק להפך: השבועות עצמן מחייבות אותנו היום לעלות לארץ ולבנות אותה.</p>
+      <p>ההיגיון הוא מה שלמדנו מן הפסוק. לשבועה יש גבול: "עַד שֶׁתֶּחְפָּץ". כאשר מגיע הזמן שבו ה' חפץ בנו, זו מצווה גדולה לעורר את אהבת ה' – לעלות לארץ ולבנות אותה.</p>
+      <p>ואיך יודעים שהזמן הגיע? חז"ל לימדו שכאשר כורש קרא לעם ישראל לבוא לארץ, הבינו שהגיע הזמן. כך גם בגאולה האחרונה: כאשר הגויים יקראו לנו לבוא לארצנו, זה הזמן שה' חפץ בנו.</p>
+      <p>אל תחכה לקול גדול כמו במעמד הר סיני, אומרת שיטה זו. הרמב"ם כותב במפורש שהגאולה, לפחות בתחילתה, לא תבוא באותות ובמופתים, אלא העולם ינהג כמנהגו. אילו יצאה בת קול מן השמיים, זה כבר לא היה בדרך הטבע. ובדורנו, לפי שיטה זו, הקריאה כבר הגיעה.</p>
+      <p class="bold-para">לפי שיטה זו לא רק שהשבועות אינן אוסרות היום, אלא הן עצמן מחייבות לעלות ולבנות את הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש דעות בימינו</div>
+      <h3 class="story-title">🌍 כשכל העולם קרא לנו לשוב</h3>
+      <p>לפי שיטה זו, הסימן של "עד שתחפץ" הוא ההחלטה בעצרת האומות המאוחדות בט"ז בכסלו תש"ח (כ"ט בנובמבר 1947). הרב תיאר את הימים ההם: רבים היו בטוחים שהרוב יהיה לצד העמדה הערבית, בגלל האינטרסים הכלכליים של מדינות העולם. ואז, באופן בלתי צפוי, הכריזה גם ברית המועצות על תמיכה בהקמת מדינה יהודית. היסטוריונים עדיין תוהים כיצד התרחש המהפך הזה.</p>
+      <p>הרב יוסף דוב סולובייצ'יק כתב על כך בספרו "קול דודי דופק" אחד הקטעים המרגשים ביותר. הוא כתב שמבחינת היחסים הבינלאומיים, הקמת המדינה הייתה התרחשות כמעט על טבעית. והוא נוטה להאמין שארגון האומות המאוחדות נוצר במיוחד לתכלית זו, כדי למלא את השליחות שהטילה עליו ההשגחה. מי שהסתכל ברוח, כתב, הרגיש שהיושב ראש האמיתי של הדיון היה הדוד – הקדוש ברוך הוא.</p>
+      <p>והרב מוסיף: אם מן הנביא לומדים שקריאה של מלך אחד מספיקה כדי לומר "עד שתחפץ", הרי כאן לא מלך אחד קרא, אלא כל העולם כולו התכנס והחליט – ברוב של שני שלישים – לתת לעם ישראל את ארצו.</p>
+      <p class="bold-para">לפי שיטה זו, ההחלטה באומות המאוחדות היא "קול דודי דופק": כל העולם כולו ולא מלך אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש דעות בימינו</div>
+      <h3 class="story-title">🎉 יום של שמחה והודיה</h3>
+      <p>באותם ימים, מתאר הרב, היה בעולם היהודי מתח עצום. יהודים התפללו ואמרו תהילים, ואיש לא ידע מה יהיה. ואז הכל התהפך. לאחר ההצבעה פרצה בארץ ישראל שמחה שקשה לדמיין. אולי הייתה זו הפעם היחידה שאנשים רקדו ברחובות בלי שהזמינו אותם, בלי הודעה מראש, רק מרוב שמחה והתלהבות.</p>
+      <p>הרב הביא את הדברים שמובאים על הפסוק, שאדם צריך לשמוח בביאת הארץ בכל יום, כאילו היום ניתנה לו. כל יום צריך לשמוח שאנחנו נמצאים בארץ ה', כאילו היום הוא אותו יום.</p>
+      <p>הרב הראה גם מודעה על כינוס הודיה שנערך מדי שנה בירושלים ביום זה, ביום ט"ז בכסלו, כדי להודות לבורא על שרשרת הניסים שהחלה בו ועל השיבה לארצנו הקדושה. בכינוס צוין שבתחילה, עוד לפני שנקבע יום העצמאות, היו רבנים שביקשו לקבוע את היום הזה עצמו כיום של הודיה.</p>
+      <p>ובשיעור עצמו עשו דבר קטן לזכר היום: אמרו יחד "מזמור לתודה". "הָרִיעוּ לַה' כָּל הָאָרֶץ. עִבְדוּ אֶת ה' בְּשִׂמְחָה, בֹּאוּ לְפָנָיו בִּרְנָנָה".</p>
+      <p class="bold-para">מובא שאדם צריך לשמוח בביאת הארץ בכל יום כאילו היום ניתנה לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש דעות בימינו</div>
+      <h3 class="story-title">⚖️ שיטת הביניים</h3>
+      <p>עכשיו מגיעה הדעה השלישית, שהרב רואה בה חידוש גדול. לדבריו זו שיטה שמחזיק בה ציבור רחב מאוד בישראל, ורבים מן הפוסקים בימינו פוסקים לפיה למעשה. כדי להבין את הציבור הזה, צריך להבין את ההגדרה המדויקת שלה.</p>
+      <p>לפי שיטת הביניים, אין איסור לעלות לארץ ישראל. היא אינה כמו שיטת "ויואל משה". אדרבה, היא מעודדת את העלייה, במיוחד כאשר האומות נותנות לכך רשות. ועם זאת, וכאן החידוש: לדעתה שלוש השבועות לא פקעו. האיסור עדיין קיים.</p>
+      <p>אז איך מותר לעלות? פשוט: טכנית, אין כאן מציאות של עלייה "בחומה" ובכוח נגד האומות. אדם עולה לארץ, יורד בשדה התעופה, ואיש אינו מונע ממנו. הוא אינו מורד באף אומה. הכל פתוח, והשערים מאפשרים לבוא.</p>
+      <p>מה שמבדיל שיטה זו מן השיטה השנייה הוא שהיא אינה רואה בכל מה שקרה את הסימן של "עד שתחפץ". היא אינה מזהה את המצב הנוכחי כ"פקדתי אתכם". ולעיתים היא סוברת שרק ביאת המשיח תיחשב "עד שתחפץ". מה שהשתנה, לדעתה, הוא המציאות – לא ההלכה.</p>
+      <p class="bold-para">לפי שיטת הביניים השבועות לא בטלו, אבל טכנית אין היום עלייה בכוח, ולכן אין איסור לעלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש דעות בימינו</div>
+      <h3 class="story-title">🏛️ משל בית הכנסת והשירותים</h3>
+      <p>כדי להבין את שיטת הביניים, הביא הרב משל. נניח שבסוף בית הכנסת היו שירותים. כולנו יודעים שאסור להיכנס עם תפילין לשירותים. יום אחד החליטו להרחיב את בית הכנסת, ושברו את השירותים. עכשיו מותר להיכנס לשם עם תפילין.</p>
+      <p>האם ההלכה השתנתה? לא. ההלכה נשארה בדיוק כמו שהייתה. מה שהשתנה הוא המציאות: המקום כבר אינו שירותים.</p>
+      <p>כך רואה שיטת הביניים את כל מה שקרה. הקמת המדינה, העלייה, כל השינויים – אין בהם שינוי בהלכה. השבועה עדיין קיימת. רק שבמציאות של היום, מי שעולה לארץ אינו מורד באף אחד. אין כאן מי שמונע ממנו, ולכן אין בעיה טכנית.</p>
+      <p>אבל הם אינם רואים בזה שינוי עקרוני, שהקדוש ברוך הוא אמר "עד שתחפץ" והכל השתנה. ולכן, אם יגיע מצב שבו יהיה צורך לעמוד מול אומות העולם ולהתעמת איתן, לפי שיטה זו עדיין יש לחשוש לאיסור. ואילו השיטה השנייה תאמר: אדרבה, הגיע הזמן, ואין להתחשב בגויים כאשר מדובר בטובת עם ישראל וארצו.</p>
+      <p>מכאן, אומר הרב, אפשר להבין מראש את עמדתו של כל ציבור בשאלות רבות.</p>
+      <p class="bold-para">לא ההלכה השתנתה אלא המציאות – כך רואה שיטת הביניים את המצב בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש דעות בימינו</div>
+      <h3 class="story-title">🔍 דעות מוחלטות ודעה זהירה</h3>
+      <p>הרב מעיר הערה על אופיין של הדעות. שתי השיטות שבקצוות הן דעות מוחלטות וברורות מאוד. שיטת "ויואל משה" יודעת בדיוק מה היא סוברת: השבועות קיימות, והעלייה בכוח אסורה. שיטת "קדושת ציון" יודעת בדיוק מה היא סוברת: הגיע "עד שתחפץ", והשבועות מחייבות.</p>
+      <p>שיטת הביניים, לעומתן, היא דעה זהירה. היא אינה אוסרת לעלות, ואף מעודדת את העלייה. אבל היא אינה מוכנה לקבוע שהזמן הגיע. ומאין זה נובע? לדברי הרב, מתוך קושי לראות בניסים שהתרחשו סימן מובהק לגאולה. מי שאינו רואה בהם סימן כזה, אינו יכול לומר שהשבועה פקעה.</p>
+      <p>הרב מדגיש עוד שהעמדות האלה אינן נולדות מתוך נוחות או מתוך מצב פוליטי כזה או אחר. הן נכתבו ונלמדו הרבה לפני כן. כל אחת מהן היא תוצאה של דרך לימוד שלמה ושל השקפה על הדור. לכן, מי שרוצה להבין למה פלוני פוסק כך ואלמוני פוסק אחרת, צריך לחזור לשאלה היסודית: האם הוא רואה את עצמו עומד ב"עת שתחפץ", או עדיין בתוך הגלות.</p>
+      <p class="bold-para">שתי השיטות הקיצוניות יודעות בדיוק מה הן סוברות; שיטת הביניים נובעת מקושי לראות במאורעות סימן לגאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ירושת הארץ – הלכה למעשה</div>
+      <h3 class="story-title">🏡 יישוב הארץ וירושת הארץ</h3>
+      <p>איפה ההבדל בין השיטות נוגע הלכה למעשה? בעיקר במצוות ירושת הארץ. וכאן צריך לשים לב לחילוק.</p>
+      <p>יש מצוות יישוב הארץ – כולנו מכירים אותה. זו המצווה לגור בארץ ישראל. אדם שגר בכל מקום בארץ מקיים אותה. ויש בנוסף מצווה אחרת: מצוות ירושת הארץ. אדם שהולך לגור במקומות שצריך ליישב אותם, במקומות שמהם נקבעת אחיזת עם ישראל בארצו, מקיים גם מצוות ירושת הארץ.</p>
+      <p>והחילוק המהותי הוא זה: יישוב הארץ היא מצווה פרטית, של כל אדם בעצמו. ירושת הארץ איננה מצווה של אדם יחיד. אדם אינו "יורש" את הארץ לבד. זו מצווה של הכלל, של עם ישראל כעם.</p>
+      <p>הרמב"ן מונה את המצווה מן הפסוק "וְהוֹרַשְׁתֶּם אֶת הָאָרֶץ וִישַׁבְתֶּם בָּהּ". והשאלה היא: האם המצווה הזאת, של העם כולו, נוהגת גם היום? כאן נכנסות שלוש השבועות, ומכאן מתחלקות הדעות.</p>
+      <p class="bold-para">יישוב הארץ הוא מצווה לכל אדם; ירושת הארץ היא מצווה של הכלל, לרשת את הארץ ולהרחיב את גבולותיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ירושת הארץ – הלכה למעשה</div>
+      <h3 class="story-title">📖 תשובת הרשב"ש</h3>
+      <p>אחד מגדולי הפוסקים, הרשב"ש – רבי שלמה בן שמעון דוראן, מחכמי אלג'יר ובנו של התשב"ץ – כתב בתשובה יסוד חשוב. הוא קבע שאין ספק שהדירה בארץ ישראל היא מצווה גדולה בכל עת ובכל זמן, והביא את דעת הרמב"ן שזו מצוות עשה.</p>
+      <p>אבל, כתב הרשב"ש, המצווה הכללית – זו שמוטלת על כל ישראל כציבור – נמנעת בגלות הזאת. היא נכללת בשבועות שהשביע הקדוש ברוך הוא את ישראל: שלא ידחקו את הקץ ושלא יעלו בחומה.</p>
+      <p>כלומר, לפי הרשב"ש, כל עוד השבועות בתוקף, אין מצוות ירושת הארץ. נשארת רק מצוות יישוב הארץ, של כל יחיד.</p>
+      <p>ומכאן מובנת המחלוקת של ימינו. מי שסובר שהשבועות עדיין קיימות – כמו שיטת הביניים – יאמר שגם היום אין מצוות ירושת הארץ. ומי שסובר שהגיע "עד שתחפץ" והשבועות כבר אינן אוסרות, יאמר שמצוות ירושת הארץ חזרה ונוהגת בדיוק כמו בימי יהושע בן נון.</p>
+      <p class="bold-para">הרשב"ש כתב שמצוות ירושת הארץ נמנעת בזמן הגלות מחמת השבועות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ירושת הארץ – הלכה למעשה</div>
+      <h3 class="story-title">🏗️ ירושה כמו בימי יהושע</h3>
+      <p>איך נראית מצוות ירושת הארץ למי שסובר שהגיע "עד שתחפץ"? לפי שיטה זו, אין הבדל בין ימי יהושע בן נון לבין היום. אנחנו נמצאים באותו מצב בדיוק, והציווי "וְהוֹרַשְׁתֶּם אֶת הָאָרֶץ וִישַׁבְתֶּם בָּהּ" נוהג במלואו.</p>
+      <p>הקדוש ברוך הוא, כביכול, ציווה עלינו היום לעלות לארץ ישראל, לרשת אותה ולעשות כל מה שאפשר כדי להרחיב את גבולותיה – ובלשונו של הרב, להרחיב את גבולות הגאולה.</p>
+      <p>לכן, לפי שיטה זו, כאשר יש מקומות בארץ שבהם האחיזה היהודית מתערערת, זו חובה של הציבור כולו להשקיע מאמצים כדי לחזק אותה. כל שכונה וכל יישוב שבהם מתחזקת ההתיישבות היהודית, הם קיום של מצווה גדולה.</p>
+      <p>ומנגד, מי שמחזיק בשיטת הביניים, ופוסק כדברי הרשב"ש שאין היום מצוות ירושת הארץ, לא יראה בכך חובה הלכתית של הכלל. הוא יכול לתמוך ביישוב הארץ, אבל השיקולים שלו בשאלות כאלה יהיו שיקולים אחרים.</p>
+      <p>כך אותה מחלוקת עקרונית, על שלוש מילים בשיר השירים, מתגלגלת עד לשאלות המעשיות ביותר.</p>
+      <p class="bold-para">לפי מי שרואה שהגיע "עד שתחפץ", מצוות ירושת הארץ נוהגת היום בדיוק כמו בימי יהושע בן נון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ירושת הארץ – הלכה למעשה</div>
+      <h3 class="story-title">🧩 כשההשקפה קובעת את הפסק</h3>
+      <p>הרב מסביר איך זה נראה בפועל. נניח שפוסק דן בשאלה האם מותר לוותר על חלקים מן הארץ במקום שיש בו חשש פיקוח נפש. לכאורה יש כאן סברה פשוטה: התורה ציוותה לכבוש את הארץ, וכיבוש כרוך תמיד בסכנת נפשות – "כִּי כָזֹה וְכָזֶה תֹּאכַל הֶחָרֶב". סימן שמצוות ירושת הארץ נוהגת גם במקום פיקוח נפש.</p>
+      <p>ואם כן, על מה מבוססת התשובה המתירה? פעמים רבות היא בנויה בדיוק על היסוד הזה: שלדעת הפוסק אין היום מצוות ירושת הארץ, משום שהשבועות עדיין קיימות. ומי שסובר שהגיע "עד שתחפץ" יגיע למסקנה אחרת, כי לדעתו מצוות הירושה נוהגת היום במלואה.</p>
+      <p>כך גם בשאלה איך להתייחס ללחצים של אומות העולם. מי שרואה את השבועות קיימות יאמר: אל תמרוד באומות, אל תעורר את כעסן. ומי שרואה שהגיע "עד שתחפץ" יאמר: אדרבה, אם הדבר טוב לעם ישראל, אין להתחשב בלחץ.</p>
+      <p>הרב מדגיש שהדעות האלה אינן נולדות מתוך השיקולים של היום. הן נלמדו ונכתבו הרבה לפני כן, ונובעות מן האופן שבו כל אחד לומד את הסוגיה ורואה את המציאות.</p>
+      <p class="bold-para">התשובה לשאלות מעשיות רבות נגזרת מן השאלה אם יש היום מצוות ירושת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ירושת הארץ – הלכה למעשה</div>
+      <h3 class="story-title">🏝️ נסיעה לאילת</h3>
+      <p>הנה דוגמה מעשית שמפתיעה רבים. אדם רוצה לנסוע לטיול באילת, ושואל רב אם מותר. התשובה, אומר הרב, תלויה באופן שבו אותו רב למד את סוגיית שלוש השבועות.</p>
+      <p>מה הקשר? אילת היא מקום מעניין מבחינה הלכתית. לא ידוע שיהושע בן נון כבש אותה. גבולות עולי מצרים היו רחוקים ממנה מאוד, ומגיעים בערך עד לאזור שמדרום לים המלח. גם בימי שלמה המלך, שהיו לו שם אוניות, לא ידוע שהיה שם יישוב יהודי של ממש. הרי באזור כזה, בלי מים, קשה מאוד היה לגור בימים ההם.</p>
+      <p>לכן אין ספק בפוסקים שהמצוות התלויות בארץ, כמו תרומות ומעשרות, אינן נוהגות באילת: גבולות ההפרשה נקבעים לפי כיבוש יהושע ולפי עולי בבל. ומכאן עולה השאלה: האם מותר לצאת לשם, או שזו יציאה לחוץ לארץ?</p>
+      <p>כאן השאלה מתחלקת. מי שסובר שהגיע "עד שתחפץ" יאמר דבר אחד, ומי שסובר שעדיין לא הגיע יאמר דבר אחר. כדי להבין למה, צריך להכיר עוד סוג של גבולות שמופיע בתורה.</p>
+      <p class="bold-para">האם אילת היא ארץ ישראל? התשובה תלויה באופן שבו לומדים את המילים "עד שתחפץ".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ירושת הארץ – הלכה למעשה</div>
+      <h3 class="story-title">🗺️ מים סוף ועד ים פלשתים</h3>
+      <p>בתורה מופיעים גבולות נוספים, לא רק גבולות כיבוש יהושע. כתוב: "וְשַׁתִּי אֶת גְּבֻלְךָ מִיַּם סוּף וְעַד יָם פְּלִשְׁתִּים". התורה אומרת במפורש שיבוא יום וארץ ישראל תגיע עד ים סוף. ואילת היא הנקודה הצפונית של ים סוף.</p>
+      <p>למתי נאמרה ההבטחה הזאת? לעתיד לבוא. וכאן השאלה הפשוטה: איך לומדים את המילים "עד שתחפץ"? מי שלומד שהזמן הגיע כאשר אומות העולם אמרו לנו לבוא לארץ ישראל, יאמר: אנחנו נמצאים עכשיו ב"לעתיד לבוא". וכאשר אילת בידינו, מתקיים לנגד עינינו מה שהתורה אמרה.</p>
+      <p>לפי זה, זה לא רק רעיון יפה, אלא הלכה למעשה: הנוסע לאילת נוסע לארץ ישראל לכל דבר, אף שאין מפרישים שם תרומות ומעשרות. ומי שסובר שאין היום מצוות ירושת הארץ, יאמר שאילת לא נכבשה בימי יהושע ולא בבית שני, ולכן אין לה דין ארץ ישראל.</p>
+      <p>הרב סיים את הדוגמה הזאת בפסוק: "כִּי נִחַם ה' צִיּוֹן נִחַם כָּל חָרְבֹתֶיהָ וַיָּשֶׂם מִדְבָּרָהּ כְּעֵדֶן". הוא ראה בהתיישבות היהודית בדרום ובמדבר קיום של הפסוק הזה.</p>
+      <p class="bold-para">לפי מי שרואה בימינו את "עד שתחפץ", מתקיימת לנגד עינינו ההבטחה "ושתי את גבלך מים סוף".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · הציבור החרדי ותמורות הזמן</div>
+      <h3 class="story-title">👶 כמו תינוק לפני הברית</h3>
+      <p>עד כאן שלוש הדעות. אבל הרב שואל את עצמו שאלה שגם חוקרים שואלים אותו פעמים רבות: מה סובר הציבור החרדי-ליטאי? כמו איזו דעה?</p>
+      <p>התשובה, לדבריו, מעניינת מאוד. הציבור החרדי בעיקרו נקט בשיטה של "לַמֵּד לְשׁוֹנְךָ לוֹמַר אֵינִי יוֹדֵעַ". כשקמה המדינה שאלו את החזון איש: מה זה? האם הגיעה הגאולה? והוא השיב במשל: כשם שאין קוראים שם לתינוק עד הברית, כך עדיין לא הגיע הזמן לקבוע. איני יודע עדיין לאיזה כיוון זה הולך.</p>
+      <p>החזון איש לא החזיק בשיטה שאומרת בוודאות גמורה שזו אינה גאולה, וגם לא בשיטה שאומרת בוודאות שזו גאולה. הוא עמד במקום של ביניים, ולא הכריע עקרונית לכאן או לכאן. ההחלטה הייתה, כלשון הרב, "להחליט לא להחליט".</p>
+      <p>הרב מביא ביטוי מעשי לכך: ארגון "קדושת ציון" עוסק הרבה בשיטתו, ובכל זאת כמעט לא תמצא רב ליטאי שיכתוב מכתב נגדו. לא מפני שאינו רוצה לריב, אלא משום שאינו יודע שהשיטה הזאת אינה נכונה. ייתכן מאוד שהיא נכונה.</p>
+      <p>יש בעמדה הזאת ענווה מיוחדת. היא אינה מכריזה שהגאולה כאן, ואינה מכריזה שאין כאן דבר. היא מודה שהמאורעות גדולים, ומשאירה את ההכרעה לזמן שבו התמונה תתבהר. והשאלה שהרב שואל בהמשך היא: האם מאז אותם ימים התמונה כבר התבהרה?</p>
+      <p class="bold-para">החזון איש אמר שכשם שאין קוראים שם לתינוק עד הברית, כך עדיין אינו יודע להגדיר את התקופה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · הציבור החרדי ותמורות הזמן</div>
+      <h3 class="story-title">🛤️ שלוש גישות בקום המדינה</h3>
+      <p>הרב מסכם שבציבור החרדי בתקופת קום המדינה היו שלוש גישות.</p>
+      <p>הגישה הראשונה ראתה בזמן הזה "עת שתחפץ" ו"פקידה", והסכימה בעיקר הדברים עם הדעה השנייה. למה לא אמרו זאת בקול גדול? כי בתקופה הראשונה זה נראה מסוכן. היו שהתקרבו מאוד לנושא, ולעיתים התקרבו גם לדרכם של מי שאינם שומרי תורה, וחששו מאוד מן ההשלכות. הרב סיפר על מכתב של אחד הרבנים מן הצד השני, שאמר: אנו מעדיפים לומר את האמת כפי שאנו מבינים אותה, גם אם יש בכך מחיר. ואילו אלה חששו לשלומם הרוחני של הצעירים, ולא היו מוכנים לסכן אותו.</p>
+      <p>הגישה השנייה היא זו שראינו אצל החזון איש: באמת אין יודעים להכריע.</p>
+      <p>והגישה השלישית היא שיטת הביניים שתוארה קודם: השבועות קיימות, ומה שהשתנה הוא רק המציאות הטכנית.</p>
+      <p>אלה היו השיטות בציבור החרדי בקום המדינה. אבל מאז עברו שנים רבות, והרב מבקש להתבונן במה שהשתנה מאז.</p>
+      <p class="bold-para">בקום המדינה היו בציבור החרדי מי שראו בה פקידה, מי שלא הכריעו, ומי שהחזיקו בשיטת הביניים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · הציבור החרדי ותמורות הזמן</div>
+      <h3 class="story-title">🌱 מה השתנה מאז</h3>
+      <p>החזון איש נפטר לפני כשבעים שנה, ואמר את דבריו בתחילת הדרך – כביכול לפני שעברו שמונה ימים מן הלידה. מאז התרחשו אינספור מאורעות.</p>
+      <p>הרב מבקש לשים לב לפער העצום. כשכתב האדמו"ר מסאטמר את ספרו, הוא ראה מול עיניו מציאות כואבת: עולים רבים התרחקו משמירת המצוות, והציבור הדתי בארץ הלך והצטמצם משנה לשנה. הדבר כאב לו מאוד, ומתוך הכאב הזה כתב.</p>
+      <p>והיום, אומר הרב, המצב הפוך בדיוק. המקום שבו התורה מתרבה והולכת משנה לשנה הוא ארץ ישראל. בדורות הראשונים של המדינה היה מספר לומדי התורה בישיבות קטן מאוד, ומאז הוא גדל פי כמה וכמה. רבים חוזרים בתשובה, וקהילות התורה פורחות.</p>
+      <p>לכן, לדבריו, יש רבים שטוענים שאילו היה החזון איש עמנו היום, היה רואה כאן את "עד שתחפץ": חזרה בתשובה המונית, צמיחת עולם התורה, ניסים ונפלאות ושמירה גדולה על עם ישראל. הרב הזכיר שיש אף מי שכתב ספר וטען בו שגם האדמו"ר מסאטמר עצמו, אילו ראה את המציאות של היום, היה מתייחס אליה אחרת.</p>
+      <p class="bold-para">המקום שבו התורה הולכת ומתרבה בדורנו הוא ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+          <a href="#story-29">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-29" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · הציבור החרדי ותמורות הזמן</div>
+      <h3 class="story-title">☀️ לקרוא את הסימנים</h3>
+      <p>הרב מסכם את החלק הזה בתחזית אישית. לדבריו, הוא מאמין שלאט לאט גם רוב הציבור החרדי יגיע למסקנה שהגיע "עד שתחפץ", ושאנחנו נמצאים בתקופת הגאולה. והוא מדגיש שזו איננה שאלה של סיסמאות: היא משנה הלכות רבות, ובראשן מצוות ירושת הארץ.</p>
+      <p>לכן, הוא אומר, צריך לעיין ולהתבונן. השאלה האם הגיע הזמן מעסיקה רבים, וצריך לשים לב לסימנים: לקרוא את מה שהקדוש ברוך הוא עושה, את התהליכים שקמים מסביבנו, ולדון בהם ברצינות.</p>
+      <p>ראינו דעות שראו את "עד שתחפץ" כבר מהרגע שבו העולם כולו קרא לנו לבוא לארץ ישראל. ראינו מי שנמנעו מלהכריע, ועמדו כביכול על הגדר. הרב השתמש בדימוי של זריחה: יש מי שכבר רואה שהשמש זרחה, ויש מי שעדיין אינו רואה זאת. ועל מי שאומר שעדיין לילה, הוא אומר בפשטות: הוא עדיין אינו רואה את התקופה כך.</p>
+      <p>זו עמדתו של הרב, כפי שאמר אותה בשיעור. וגם מי שרואה את הדברים אחרת, יכול לקבל ממנה הזמנה להתבונן בעצמו בשאלה – ולא להשאיר אותה כהרגל של מחשבה.</p>
+      <p class="bold-para">השאלה אם הגיע הזמן איננה שאלה תיאורטית; היא דורשת להתבונן במה שהקדוש ברוך הוא עושה סביבנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-28">⟶ הקודם</a>
+          <a href="#story-30">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(29, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-30" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · הציבור החרדי ותמורות הזמן</div>
+      <h3 class="story-title">🕯️ שתי פנים לשבועה אחת</h3>
+      <p>בסוף השיעור הרב מסכם את מה שנלמד. שלוש השבועות יש להן שתי משמעויות. לפני שמגיע הזמן, הן אוסרות. כשמגיע הזמן, הן מחייבות – בדיוק להפך. אותם דברים שמעוררים את אהבת ה', עלייה לארץ והתעוררות לגאולה, אסורים לפני הזמן ונעשים מצווה אחריו.</p>
+      <p>ראינו את שיטת "ויואל משה", שהשבועות קיימות גם במציאות של היום. ראינו את שיטת "קדושת ציון", שהשבועות מחייבות היום לבוא לארץ ישראל. וראינו את שיטת הביניים, שטכנית אין היום איסור, אבל עדיין לא הגיע "עד שתחפץ". ההבדל המעשי העיקרי ביניהן הוא מצוות ירושת הארץ, שהיא מצווה ציבורית, ונוהגת רק כאשר הקדוש ברוך הוא קורא לנו לבוא לארצו.</p>
+      <p>הרב סיים בהבעת תקווה אישית: שלאט לאט יבינו רבים שהקדוש ברוך הוא קורא לנו, ושנזכה לראות איך משנה לשנה המצב נעשה טוב יותר ויותר, עוד ישועה ועוד גאולה.</p>
+      <p>וגם מי שמחזיק בשיטה אחרת יכול לקחת מן השיעור את הלימוד הראשון שבו: להבין את שיטתו של האחר מבפנים, לדעת מאין היא נובעת, ולכבד את מי שלומד את הסוגיה אחרת. כך אפשר להתווכח באמת, מתוך הקשבה, ולהישאר עם אחד גם כשהדעות שונות.</p>
+      <p class="bold-para">השבועות אוסרות לפני הזמן ומחייבות כשהזמן מגיע; השאלה היא רק אם הזמן כבר הגיע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-29">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(30, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/xOp2ojf_6k0 · 2024-12-18 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"להכיר את הדעות","icon":"🧭","color":"#c62b6b","stories":[{"id":1,"title":"ללמוד את שיטת האחר","icon":"🤝"},{"id":2,"title":"נקודה אחת שמשנה הכל","icon":"🔑"}]},{"id":2,"name":"השבועה שבשיר השירים","icon":"📜","color":"#6d28d9","stories":[{"id":3,"title":"הפסוק שחוזר שלוש פעמים","icon":"📜"},{"id":4,"title":"על איזו אהבה מדובר","icon":"💞"},{"id":5,"title":"אהבה מכוסה בזמן הגלות","icon":"🌫️"},{"id":6,"title":"מה מעורר את האהבה","icon":"🔥"}]},{"id":3,"name":"מתי מגיע \"עד שתחפץ\"","icon":"🌅","color":"#e08e00","stories":[{"id":7,"title":"עד מתי?","icon":"⏳"},{"id":8,"title":"הסימן מימי כורש","icon":"👑"},{"id":9,"title":"גאולה שאינה באה בקול רעש","icon":"🌄"},{"id":10,"title":"מה שהיה אסור – נעשה מצווה","icon":"🔄"},{"id":11,"title":"משל הכלה","icon":"💍"},{"id":12,"title":"ההחמצה של ימי עזרא","icon":"🧱"}]},{"id":4,"name":"שלוש דעות בימינו","icon":"⚖️","color":"#1e88b8","stories":[{"id":13,"title":"שיטת \"ויואל משה\"","icon":"📕"},{"id":14,"title":"שיטת \"קדושת ציון\"","icon":"📗"},{"id":15,"title":"כשכל העולם קרא לנו לשוב","icon":"🌍"},{"id":16,"title":"יום של שמחה והודיה","icon":"🎉"},{"id":17,"title":"שיטת הביניים","icon":"⚖️"},{"id":18,"title":"משל בית הכנסת והשירותים","icon":"🏛️"},{"id":19,"title":"דעות מוחלטות ודעה זהירה","icon":"🔍"}]},{"id":5,"name":"ירושת הארץ – הלכה למעשה","icon":"🗺️","color":"#c62b6b","stories":[{"id":20,"title":"יישוב הארץ וירושת הארץ","icon":"🏡"},{"id":21,"title":"תשובת הרשב\"ש","icon":"📖"},{"id":22,"title":"ירושה כמו בימי יהושע","icon":"🏗️"},{"id":23,"title":"כשההשקפה קובעת את הפסק","icon":"🧩"},{"id":24,"title":"נסיעה לאילת","icon":"🏝️"},{"id":25,"title":"מים סוף ועד ים פלשתים","icon":"🗺️"}]},{"id":6,"name":"הציבור החרדי ותמורות הזמן","icon":"📈","color":"#6d28d9","stories":[{"id":26,"title":"כמו תינוק לפני הברית","icon":"👶"},{"id":27,"title":"שלוש גישות בקום המדינה","icon":"🛤️"},{"id":28,"title":"מה השתנה מאז","icon":"🌱"},{"id":29,"title":"לקרוא את הסימנים","icon":"☀️"},{"id":30,"title":"שתי פנים לשבועה אחת","icon":"🕯️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
