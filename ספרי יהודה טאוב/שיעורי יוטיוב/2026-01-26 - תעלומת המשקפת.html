@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 תעלומת המשקפת</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 תעלומת המשקפת</h1>
+  <p>שיעור לט"ו בשבט: סיפור על שני ילדים בהר התבור, האפיפיור שציפה לראות ארץ מקוללת, והעצים שהעידו שה' שב לאהוב את עמו</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ תעלומת המשקפת" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/2x_7jAHrwFk?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/2x_7jAHrwFk/hqdefault.jpg" alt="תעלומת המשקפת" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=2x_7jAHrwFk" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הולכים לנטוע</div>
+      <h3 class="story-title">🌱 כך הולכים השותלים</h3>
+      <p>השיעור נפתח בשיר הוותיק שכולם מכירים מט"ו בשבט: "כך הולכים השותלים, רון בלב ואת ביד, מן העיר ומן הכפר, בט"ו בשבט". הילדים הולכים בשורה מסודרת, עם השתילים והצמחים, ושרים.</p>
+      <p>ובאמת, בהרבה בתי ספר נהוג שבט"ו בשבט התלמידים הגדולים יוצאים לנטוע עצים. לא רק שרים על נטיעות, אלא ממש יוצאים ליום שלם, נוטעים, וחוזרים בערב עייפים ושמחים.</p>
+      <p>אבל למה זה כל כך חשוב? למה נטיעת עץ בארץ ישראל היא דבר שמתרגשים ממנו, ששרים עליו, שעושים לו מסיבה?</p>
+      <p>כדי להבין, השיעור מביא סיפור על עצים, ועל מה שהעצים האלה מוכיחים. הסיפור מסופר כמו הרפתקה של ילדים, אבל בלב שלו יש מעשה שהיה באמת, כאן בארץ ישראל.</p>
+      <p class="bold-para">ט"ו בשבט הוא יום שבו יוצאים לנטוע, ולכל עץ שנוטעים יש משמעות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התעלומה בהר</div>
+      <h3 class="story-title">🚗 שיירה של מכוניות שחורות</h3>
+      <p>נועם ותמר התחבאו מאחורי סלע גדול. שיירה ארוכה של מכוניות שחורות ומבריקות טיפסה לאט במעלה הר התבור. "מי זה יכול להיות?" לחשה תמר. "אפילו ראש הממשלה לא נוסע עם כל כך הרבה שומרים."</p>
+      <p>נועם הוציא פנקס קטן מן הכיס ואמר: "זה קשור לתעלומה של סבא. סבא סיפר לי שלפני שנים היו כתובים בספרים עתיקים דברים על הארץ הזאת, שהיא לא תצמיח שום דבר. אבל תראי כמה ירוק שם למטה."</p>
+      <p>פתאום עצרה אותו תמר: "איפה המשקפת של סבא?" נועם מישש את הצוואר. הרצועה הייתה שם, אבל המשקפת נעלמה. "אוי לא, היא בטח נפלה במטע השקדים. סבא יכעס מאוד אם לא אחזיר אותה."</p>
+      <p>ובדיוק אז נפתחו הדלתות של הלימוזינה האמצעית, מכונית יקרה מאוד, ואיש בגלימה לבנה ארוכה יצא החוצה. הוא חבש כובע לבן ונראה רציני מאוד. מי זה? ראש ממשלה לא לובש בגדים לבנים כאלה.</p>
+      <p class="bold-para">שני ילדים מגלים שיירה מסתורית במעלה הר התבור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התעלומה בהר</div>
+      <h3 class="story-title">🏜️ ארץ של גופרית ומלח?</h3>
+      <p>נועם ותמר זחלו בשקט בין עצי האלון. הם ידעו שאסור להתקרב, שיש שם שומרי ראש רבים, אבל הסקרנות הייתה חזקה מן הפחד. הם היו חייבים לגלות מי האיש המסתורי ולמה בא לכאן.</p>
+      <p>תמר הצביעה על עץ זית עתיק: "זוכר את העץ הזה, שחשבנו שהוא מת בחורף? תראה אותו עכשיו, מלא זיתים ירוקים. האדמה כאן טובה, נועם. למה שמישהו יחשוב שיש עליה קללה?"</p>
+      <p>נועם נזכר בדברי סבא: "פעם, תמר, כתוב בספרים שהארץ הייתה גופרית ומלח, ששום דבר לא גדל כאן. אמרו שזו קללה, שאלוקים כעס. הגויים חשבו שזה סימן שאלוקים עזב את היהודים."</p>
+      <p>ובאמת, כך נראתה הארץ במשך דורות: יבשה, שוממה, כמעט ריקה. מי שראה תמונות ישנות של הארץ, מול מה שרואים בה היום, מבין את ההבדל. פעם הכל היה יבש. היום הכל פורח.</p>
+      <p class="bold-para">בעבר ראו הגויים בשממון הארץ סימן לכך שה' עזב את עם ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התעלומה בהר</div>
+      <h3 class="story-title">🔭 האיש בלבן</h3>
+      <p>פתאום נחתה יד על כתפו של נועם. השניים קפצו בבהלה. זה היה דוד, המדריך. "מה אתם עושים כאן?" חייך, והושיט להם את המשקפת האבודה. ואז אמר ברצינות: "שימו לב. קורה כאן עכשיו משהו היסטורי."</p>
+      <p>נועם כיוון את המשקפת אל האיש בלבן. דרך העדשות ראה את פניו: זה היה האפיפיור, המנהיג של מיליוני נוצרים בכל העולם. פניו היו קפואות.</p>
+      <p>האפיפיור לא רצה להאמין במדינת ישראל. הוא אפילו לא הסכים להיכנס לארץ בדרך הרגילה, דרך תל אביב, כדי שלא ייראה כאילו הוא מכיר במדינה. הוא הגיע בדרך אחרת.</p>
+      <p>למה? כי לפי מה שהאמינו הנוצרים במשך דורות, אלוקים כעס על היהודים, דחה אותם, והפך את ארצם לארץ יבשה של גופרית ומלח. מדינה יהודית פורחת לא התאימה לתמונה הזאת בכלל.</p>
+      <p class="bold-para">דרך עדשות המשקפת גילו הילדים שהאיש בלבן הוא מנהיג הנוצרים בעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העצים מעידים</div>
+      <h3 class="story-title">👁️ עיניים נפתחות</h3>
+      <p>האפיפיור הרים את עיניו מן הספר העתיק שהחזיק, והסתכל על העמק. הוא ציפה לראות ארץ מקוללת, כמו שקרא בספריו: ארץ יבשה, גופרית ומלח.</p>
+      <p>אבל מה הוא ראה? שדות חיטה זהובים. פרדסים ירוקים. עצי פרי בשורות מסודרות. ובתים לבנים ונקיים.</p>
+      <p>נועם ראה דרך המשקפת את עיניו של האפיפיור נפתחות לרווחה. הידיים שלו רעדו. הוא ציפה לראות קללה, ובמקומה ראה ברכה. העצים פורחים. השדות מלאים. הארץ שהייתה שוממה מוציאה את פירותיה.</p>
+      <p>הוא לא האמין למראה עיניו. איך ייתכן? הרי לפי מה שלמד כל חייו, זה לא יכול לקרות. ארץ שנעזבה לא אמורה לפרוח. עם שנדחה לא אמור לחזור.</p>
+      <p>ואז הרים האפיפיור את ידיו לשמיים, כמו אדם שנכנע. במקום הגאווה שהייתה על פניו, הופיעה ענווה.</p>
+      <p class="bold-para">האפיפיור ציפה לראות ארץ מקוללת, וראה ארץ פורחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העצים מעידים</div>
+      <h3 class="story-title">📜 "חידשת את הברית"</h3>
+      <p>נועם ותמר היו שקטים כמו עכברים. הם שמעו את האפיפיור לוחש: "אלוקים, אני רואה שחידשת את הברית עם העם האהוב שלך."</p>
+      <p>כלומר: אני רואה שה' חזר לאהוב את היהודים. אחרת, איך ייתכן שהארץ הזאת פורחת?</p>
+      <p>וחשוב לדעת: זה לא רק סיפור. בשיעור הודגש שהמעשה עם האפיפיור היה באמת, אם כי בעמק אחר ולא בדיוק כפי שמתואר בהרפתקה של נועם ותמר. הסיפור התפרסם מאוד, והוא מובא בספר של הרב שמואל אליהו על הנבואה. הוא התפרסם כל כך, כי האפיפיור הוא המנהיג של הנוצרים, ודווקא הוא אמר בעצמו שה' שב אל היהודים.</p>
+      <p>השיירה נסעה לדרכה, והאבק שקע. נועם ותמר ישבו על הסלע ונשמו לרווחה. "פתרנו את התעלומה", אמרה תמר.</p>
+      <p class="bold-para">אפילו מי שלא רצה להאמין נאלץ להודות שה' שב לאהוב את עמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · העצים מעידים</div>
+      <h3 class="story-title">🌼 האוצר האמיתי</h3>
+      <p>"אבל נועם", אמרה תמר, "הסוד לא היה אוצר זהב. הסוד הוא העצים והפירות. הם ההוכחה שאלוקים חזר לאהוב אותנו." היא קטפה פרח צהוב קטן ומסרה אותו לנועם.</p>
+      <p>העצים והפירות הם הוכחה. אפילו האפיפיור, שלא רצה להאמין, היה חייב להודות כשראה את התפוזים ואת השדות.</p>
+      <p>השניים רצו במורד ההר שמחים ומאושרים. נועם החזיק חזק את המשקפת של סבא, שסוף סוף נמצאה. הם ידעו שפתרו תעלומה גדולה, ולמדו שה' שומר את הבטחותיו גם אחרי אלפי שנים.</p>
+      <p>ועכשיו מבינים למה הנטיעות בט"ו בשבט מרגשות כל כך. כל עץ שנוטעים בארץ ישראל הוא עוד חלק מן ההוכחה. במקום שיהיה יבש, הארץ שלנו פורחת בחזרה. מי שהולך לנטוע, משתתף בעצמו בסימן הזה של אהבה.</p>
+      <p>יש משהו מיוחד בדרך שבה השתכנע האפיפיור. איש לא נאם לפניו ולא הביא לו ראיות מן הספרים. הוא לא שמע הרצאה ולא קרא מאמר. הוא פשוט הסתכל על העמק.</p>
+      <p>על מילים אפשר להתווכח. אפשר לומר שהן לא נכונות, אפשר לפרש אותן אחרת. אבל שדה חיטה זהוב ופרדס מלא תפוזים אינם מתווכחים. הם פשוט עומדים שם, ומעידים.</p>
+      <p>ולכן העצים הם העדים הטובים ביותר. הם לא צועקים, הם לא מתווכחים, ובכל זאת אפילו מי שלא רצה לשמוע נאלץ להקשיב להם. כל עץ בארץ ישראל הוא כמו עד שקט שאומר: ה' לא עזב את עמו.</p>
+      <p class="bold-para">העצים והפירות הם ההוכחה שה' שומר את הבטחותיו גם אחרי אלפי שנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שירים של תודה</div>
+      <h3 class="story-title">🎶 ישושום מדבר וציה</h3>
+      <p>אחרי הסיפור שרו בשיעור שיר שמספר בדיוק את מה שראינו. המילים לקוחות מנבואת ישעיהו: "יְשֻׂשׂוּם מִדְבָּר וְצִיָּה וְתָגֵל עֲרָבָה וְתִפְרַח כַּחֲבַצָּלֶת... כִּי נִבְקְעוּ בַמִּדְבָּר מַיִם וּנְחָלִים בָּעֲרָבָה".</p>
+      <p>המדבר ישמח, הערבה תגיל ותפרח. מים יבקעו במקום יבש. זו הנבואה, וזה מה שהאפיפיור ראה מול עיניו בלי שרצה לראות.</p>
+      <p>מי שעבר על הסיפור, שומע את השיר הזה אחרת. אלה לא רק מילים יפות על פרחים. אלה מילים שמתארות את מה שקורה בארץ שלנו, ושגרמו אפילו לגדולי המתנגדים להודות שה' שב אל עמו.</p>
+      <p>ובאותו יום ט"ו בשבט, כשהילדים יוצאים לנטוע ושרים "כך הולכים השותלים", הם בעצם ממשיכים את הנבואה הזאת בידיים שלהם.</p>
+      <p>את השיעור חתם שיר נוסף, שהתלמידים התכוננו לשיר במסיבת ט"ו בשבט: "מה אשיב לה'?" אם ה' נתן לנו ארץ פורחת, עצים ופירות, איך אפשר להחזיר לו?</p>
+      <p>התשובה בשיר: לפני כל טעימה, לפני כל לגימה, לפני שתייה וארוחה, אומר יפה את הברכה. לפני כל נגיסה, לפני כל אכילה, לפני הארוחה, לא אשכח את הברכה.</p>
+      <p>ובפזמון: "הַשָּׁמַיִם שָׁמַיִם לַה' וְהָאָרֶץ נָתַן לִבְנֵי אָדָם". הארץ היא מתנה. והפירות שלה, שהעידו אפילו בפני האפיפיור על אהבת ה', הם מתנה שבאה אלינו לשולחן בכל יום.</p>
+      <p>כך מתחברים כל חלקי השיעור: יוצאים לנטוע, רואים את הארץ פורחת, מבינים שזו הוכחה לאהבת ה', ובסוף, לפני כל פרי, עוצרים ומברכים יפה. זו התודה שלנו על ארץ שחזרה לחיים.</p>
+      <p class="bold-para">השיר על פריחת המדבר מספר בדיוק את מה שראה האפיפיור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/2x_7jAHrwFk · 2026-01-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הולכים לנטוע","icon":"🌱","color":"#c62b6b","stories":[{"id":1,"title":"כך הולכים השותלים","icon":"🌱"}]},{"id":2,"name":"התעלומה בהר","icon":"🔭","color":"#6d28d9","stories":[{"id":2,"title":"שיירה של מכוניות שחורות","icon":"🚗"},{"id":3,"title":"ארץ של גופרית ומלח?","icon":"🏜️"},{"id":4,"title":"האיש בלבן","icon":"🔭"}]},{"id":3,"name":"העצים מעידים","icon":"🌳","color":"#e08e00","stories":[{"id":5,"title":"עיניים נפתחות","icon":"👁️"},{"id":6,"title":"\"חידשת את הברית\"","icon":"📜"},{"id":7,"title":"האוצר האמיתי","icon":"🌼"}]},{"id":4,"name":"שירים של תודה","icon":"🎵","color":"#1e88b8","stories":[{"id":8,"title":"ישושום מדבר וציה","icon":"🎶"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
