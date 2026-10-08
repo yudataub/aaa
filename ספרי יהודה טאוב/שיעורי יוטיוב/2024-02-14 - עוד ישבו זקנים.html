@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 עוד ישבו זקנים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 עוד ישבו זקנים</h1>
+  <p>ההזדמנות שבהזדקנות, חלק א: היחס לזקנה בעולם העתיק ובמערב לעומת היהדות, מהי הצלחה, אריכות ימים כברכה וכנס, נבואת זכריה המתקיימת לעינינו, וגישה יהודית שבה לכל תקופה בחיים יש תפקיד</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ עוד ישבו זקנים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/4QAC-CRF-rw?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/4QAC-CRF-rw/hqdefault.jpg" alt="עוד ישבו זקנים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=4QAC-CRF-rw" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · למה זה נוגע לכולנו</div>
+      <h3 class="story-title">🌳 ההזדמנות שבהזדקנות</h3>
+      <p>השיעור פותח נושא לא שגרתי: איך מתייחסים לתקופת הזקנה. שם ההרצאה הוא "ההזדמנות שבהזדקנות", והוא מבטא את הכיוון כולו. לא לראות בזקנה רק מצב שצריך להשלים איתו, ולא לחיות אותה בדיעבד, אלא לגלות את מה שהתורה רואה דווקא בתקופה הזו: הזדמנות מיוחדת שאין בשאר שנות החיים.</p>
+      <p>הרב הציג את מהלך השיעור: תחילה, מה היחס לזקנה בעולם, בעבר ובהווה. אחר כך, מה היהדות אומרת על אריכות ימים, ואיך הנבואות על כך מתקיימות לעינינו. ולבסוף, איך נראית הגישה היהודית לחיים כולם, ומה מקומה של הזקנה בתוכה. בחלק השני, שהוא ספר נפרד, יידונו בהרחבה המעלות המיוחדות של הגיל ושמותיו.</p>
+      <p>השאלות שעלו במהלך השיעור מן המשתתפים, שחלקם צעירים וחלקם מבוגרים, שולבו בדברים. וכבר בפתיחה עלתה שאלה מתבקשת: אם זה נושא של זקנים, למה לא יבוא אדם מבוגר וימסור את השיעור? ומה זה נוגע לצעירים?</p>
+      <p class="bold-para">התורה אינה רואה בזקנה רק מצב להשלים עמו, אלא תקופה עם הזדמנות מיוחדת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · למה זה נוגע לכולנו</div>
+      <h3 class="story-title">⏳ המחצית השנייה של החיים</h3>
+      <p>על השאלה מה זה נוגע לכולנו, השיב הרב בשני דברים. הדבר הראשון: יש היום ביטוי חדש במחקר, "משמעות החיים במחצית השנייה של החיים". החוקרים טוענים שאסור להיזכר מאוחר מדי. צריך להתחיל להתכונן לימים ההם כבר מאמצע החיים.</p>
+      <p>מתי מתחילה המחצית השנייה? קשה לדעת. אם מחשבים לפי שנות החיים הממוצעות, הרי שרבים מן היושבים בשיעור, ואף הרב עצמו, כבר שם, או קרובים לכך. לכן, אמר הרב בחיוך, גם אני צריך כבר ללמוד את הנושא.</p>
+      <p>יש בכך חכמה גדולה. רוב בני האדם אינם חושבים על הזקנה עד שהיא מגיעה. ואז הם נתקלים בה בהפתעה, בלי כלים ובלי השקפה. מי שמתחיל לחשוב על כך מבעוד מועד, יכול לבנות לעצמו מבט אחר: לא של פחד והשלמה, אלא של ציפייה ותכנון. הוא יכול לשאול כבר היום: מה ארצה לעשות בשנים ההן? מה יהיה תפקידי? איך אכין את עצמי?</p>
+      <p>ובנוסף, הבנה של התקופה הזו משנה גם את היחס שלנו להורים ולסבים, כבר עכשיו.</p>
+      <p class="bold-para">כדאי להתכונן לימי הזקנה כבר מאמצע החיים, ולא להיזכר מאוחר מדי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · למה זה נוגע לכולנו</div>
+      <h3 class="story-title">🙏 מפני שיבה תקום</h3>
+      <p>הדבר השני שהופך את הנושא לנוגע לכל אחד: מצוות התורה. "מִפְּנֵי שֵׂיבָה תָּקוּם וְהָדַרְתָּ פְּנֵי זָקֵן". זו מצוות עשה מן התורה, והיא חלה על כל אדם, צעיר כמבוגר.</p>
+      <p>והרב הדגיש את ההגדרה: לפי הרבה דעות, כאשר ציוותה התורה לכבד את האדם המבוגר, אין הכוונה רק לפעולות מעשיות. לא רק לקום בפניו, לעזור לו, לפנות לו מקום באוטובוס. הביטוי המעשי אמור לבטא את מה שמרגישים בלב. אדם צריך להעריך, להרגיש שמדובר באדם מכובד, אדם שיש לו ערך חשוב, כמו רב שעומדים בפניו. והקימה היא ביטוי לאותה הרגשה.</p>
+      <p>אם כך, התורה בעצם אומרת לכל אחד: התבונן והבן איזה דבר מיוחד יש כאן. כדי לקיים את המצווה כראוי, אתה צריך להבין מה מיוחד בזקנה, ולמה היא ראויה לכבוד. ולכן, אמר הרב, הנושא הזה אינו רק עניין לזקנים. הוא חלק מקיום מצוות עשה מן התורה, ונוגע לכל אחד ואחת.</p>
+      <p class="bold-para">מצוות כיבוד הזקן דורשת לא רק מעשים, אלא הערכה פנימית למעלתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הזקנה בעיני העמים</div>
+      <h3 class="story-title">🏛️ רומא, ספרטה ויוון</h3>
+      <p>כדי להבין את החידוש שבתורה, התחיל הרב דווקא מן הקצוות. בעולם העתיק היה מעמד הקשישים קשה מאוד. ברומא, למשל, נאמרו ביטויים מפחידים על הזקנים, שנראו כמי שגוזלים את המשאבים מן הדור הצעיר. בספרטה, כפי שידוע, ילדים חלשים לא נשארו בחיים, וכמוהם גם הקשישים. וביוון, ששם הודגשו היופי, האסתטיקה והכוח הגופני, לא היה לזקן מקום של כבוד.</p>
+      <p>היו גם עמים אחרים שבהם נהגו הזקנים לשים קץ לחייהם, או שנשלחו למות בבדידות. ומנגד, הוזכר שבתרבות הסינית נוהגים כבוד בזקן, וככל שהוא זקן יותר, הוא מכובד יותר.</p>
+      <p>הרב הודה שלא ערך סקר על כל העמים, ושאת חלק מן הדברים לא בדק בעצמו. אבל התמונה הכללית ברורה: בעמים רבים, הזקנה נחשבה לנטל, לירידה, לדבר שצריך להיפטר ממנו.</p>
+      <p>ומנגד עומדת התורה: "זְכֹר יְמוֹת עוֹלָם בִּינוּ שְׁנוֹת דֹּר וָדֹר, שְׁאַל אָבִיךָ וְיַגֵּדְךָ, זְקֵנֶיךָ וְיֹאמְרוּ לָךְ". אם רוצים להבין את ההיסטוריה, את מה שעבר על העם ואת ערך התורה והמצוות, צריך לשאול את הזקנים.</p>
+      <p class="bold-para">בתרבויות קדומות רבות נחשבו הזקנים לנטל, ואף נהגו בהם באכזריות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הזקנה בעיני העמים</div>
+      <h3 class="story-title">📖 שאל אביך ויגדך</h3>
+      <p>הפסוק "שאל אביך ויגדך, זקניך ויאמרו לך" מלמד שהזקנים הם הגשר שלנו אל העבר. הם אינם רק מי שהיו פעם; הם מקור של ידיעה שאין לה תחליף.</p>
+      <p>הרב תיאר את ההבדל בין מי ששמע מכלי ראשון לבין מי ששמע מכלי שני. מי ששמע מפי סבו איך עלה לארץ, איך נלחם, מה עבר עליו, יש לו יחס אחר לגמרי למדינה, לארץ ישראל ולכל מה שנבנה כאן. ומי ששומע את הסיפורים רק מפי אחרים, כבר בהעברה, מרגיש פחות. כשאדם שומע מן הזקן עצמו, הוא מבין עד כמה מה שיש לנו אינו מובן מאליו.</p>
+      <p>לכן הזקנים אינם נטל על החברה, אלא אוצר שלה. הם הזיכרון החי של העם. ותרבות שמשליכה את זקניה, משליכה גם את הזיכרון שלה ואת שורשיה.</p>
+      <p>ונשאלה שאלה מן הקהל: מה בדבר העמים השונים בימינו? הרב השיב שאין לו נתונים על כל אחד מהם, ועבר לדון בעולם המערבי, שבו הבעיה מוחשית מאוד.</p>
+      <p class="bold-para">מי ששומע מכלי ראשון את סיפורי הדור הקודם, מבין את ההווה בעומק אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הזקנה בעיני העמים</div>
+      <h3 class="story-title">🔁 לא רק עניין של עבר</h3>
+      <p>אפשר היה לחשוב שהיחס האכזרי לזקנים שייך רק לעולם העתיק, לרומא ולספרטה. אבל הרב הראה שגם בימינו, בעולם המערבי המתקדם, אותה תפיסה ממשיכה לפעול, רק בצורה מעודנת יותר. אין משליכים את הזקנים, אבל רואים בהם לא פעם נטל כלכלי, מוציאים אותם מן המעגל, ומקדשים את הצעירות.</p>
+      <p>אחד המשתתפים העיר שגם בחברה שלנו יש ביטויים כמו "אזרח ותיק", שנועדו לרכך את המילה "זקן". הרב הסכים שיש לכך השפעה, ושהשפה משקפת את התפיסה. כשמתביישים במילה, כנראה מתביישים גם במה שהיא מתארת.</p>
+      <p>ההבדל בין העולם העתיק למודרני הוא אפוא בעיקר בצורה, לא בתוכן. השאלה העמוקה נשארת: האם אדם שכבר אינו מייצר, אינו חזק ואינו יפה כבעבר, הוא עדיין בעל ערך? והתשובה תלויה, כפי שנראה מיד, במה שאנו מגדירים כהצלחה.</p>
+      <p class="bold-para">גם בחברה המודרנית, התפיסה של הזקן כנטל עדיין קיימת, רק בצורה מעודנת יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הזקנה בעיני העמים</div>
+      <h3 class="story-title">📉 הבוז לזקנה במערב</h3>
+      <p>הרב הביא נתונים מן המחקר על העולם המערבי. ההשקפה השלילית על הזקנה אינה נשארת בגדר רעיון. היא משפיעה על היחס בפועל לאנשים מבוגרים. מחקרים הראו שצעירים בחברות מערביות נוהגים פחות כבוד במבוגרים מאשר בתרבויות אחרות. ככל שהתרבות עתיקה יותר ושומרת על מסורת, היא מעריכה יותר את הזקן. וככל שהעולם נעשה מודרני יותר, הוא מעריך אותו פחות.</p>
+      <p>ולפעמים זה מגיע לקיצוניות. הרב הזכיר רופא אמריקני מוכר שפרסם לפני שנים במגזין חשוב מאמר, ובו טען שהחיים לאחר גיל 75 הם חסרי טעם. ואיך מדד זאת? לפי השאלה באיזה גיל זוכים אנשים בפרסים מדעיים, ומתי הם עושים את התגליות שלהם. לפי חשבונו, רוב התגליות נעשו בגילים צעירים בהרבה, ולכן, הסיק, אין לאדם בשביל מה לחיות אחרי 75. הרב העיר שגם הנתון עצמו מעורר שאלות, כי השאלה היא מתי נעשתה התגלית ולא מתי ניתן הפרס. אבל העיקר אינו בנתון, אלא בתפיסה שעומדת מאחוריו: שערכו של אדם נמדד רק במה שהוא מייצר ומגלה.</p>
+      <p>הרב עמד על כך שאדם יכול לפרסם דבר כזה בגלוי, בלי להתבייש. וזה מראה עד כמה עמוקה התפיסה. אם האדם נמדד רק במה שהוא מגלה ומייצר, אין טעם בחייו כשכבר אינו מייצר. ומכאן השאלה: מה גורם לחברה לראות כך את האדם?</p>
+      <p class="bold-para">בעולם המערבי המודרני, ככל שהתרבות חדשה יותר, היא מעריכה פחות את הזקנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מהי הצלחה</div>
+      <h3 class="story-title">⚖️ השאלה: מה זו הצלחה?</h3>
+      <p>הרב ניסח את ההבדל בין המערב ליהדות בשאלה פשוטה: מה מגדירים כהצלחה? מה נקרא דבר מוצלח?</p>
+      <p>אם הצלחה היא דבר גשמי – יופי, הופעה חיצונית, הנאה, עסקים, כוח – קל להבין למה אדם מבוגר נראה כמי שאין לו כלום. כשהגוף נחלש והיופי החיצוני דוהה, אין לו עוד מה להציע. ומכאן הביטוי המוכר במערב: העולם שייך לצעירים. ואם כל האדם הוא רק גשמיות, הזקן מנסה בכל כוחו להיראות צעיר, להסתיר את גילו, כי הגיל עצמו נחשב לכישלון.</p>
+      <p>אבל אם רואים את העולם כדבר רוחני, או לפחות גם רוחני, אם מטרת האדם היא רווחים רוחניים, התפתחות, נתינה ואהבה, אז גם לאדם המבוגר יש הרבה מאוד. ואולי, כפי שנראה, דווקא לו יש אפשרויות מיוחדות להתפתחות רוחנית. הניסיון, השקט, הזמן הפנוי והפרספקטיבה של שנים רבות הם נכסים שאין לצעיר.</p>
+      <p>לכן, אמר הרב, ההבדל בין העולם המערבי לבין היהדות ביחס לזקנה פשוט: הוא תלוי באיך מסתכלים על העולם. מי שמודד את האדם בגוף, רואה בזקנה ירידה. מי שמודד אותו בנשמה, יכול לראות בה עלייה.</p>
+      <p class="bold-para">היחס לזקנה נגזר מן השאלה מה נחשב בעינינו להצלחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מהי הצלחה</div>
+      <h3 class="story-title">🕳️ הריק הקיומי</h3>
+      <p>הרב הוסיף שהעולם המערבי סובל בימינו מן הרדיפה אחרי הגשמיות, ומגיע למצב קשה. למה? כי בכל אדם, גם בגוי, יש בחינה של נשמה. וכשהאדם רודף רק אחר גשמיות, מגיע שלב שבו הוא שואל: מה המשמעות שלי? בשביל מה אני עושה את כל זה? והוא מרגיש את הריקנות שבנשמה. בשפה הפסיכולוגית זה נקרא "הריק הקיומי".</p>
+      <p>הרב הזכיר נתון שהובא, לפיו עשרות אלפי אמריקנים בשנה שמים קץ לחייהם, וקשר זאת במידה רבה לחוסר משמעות. מגשמיות בלבד אי אפשר לחיות. זה נושא לשיעור בפני עצמו, אמר, ולא נכנס אליו לעומק.</p>
+      <p>אחד המשתתפים העיר: גם במערב מעריכים נתינה. והרב חידד את ההגדרה. כשהוא מדבר על "רוחניות", הוא אינו מתכוון דווקא ללימוד תורה. הוא מתכוון לכל דבר שיש בו ערך שמעבר לגוף: נתינה, אהבה, משמעות. גם הנאה רגשית מנתינה היא, במובן הזה, דבר רוחני, כי היא נובעת מן החלק הטוב באדם, ולא מן החלק שדואג רק לעצמו.</p>
+      <p>ולפי זה, ההבדל אינו בין יהודים לגויים, אלא בין מי שמודד את החיים בגוף לבין מי שמודד אותם בערכים.</p>
+      <p class="bold-para">חברה שרודפת רק אחר גשמיות מגיעה בסוף לתחושת ריקנות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אריכות ימים – ברכה ונס</div>
+      <h3 class="story-title">🌿 למען ירבו ימיכם</h3>
+      <p>השאלה השנייה שעלתה היא האם הזקנה עצמה טובה. בפילוסופיה דנים בזה הרבה: האם אריכות ימים היא ברכה או קללה? אבל ביהדות, אמר הרב, התשובה ברורה. כולנו אומרים בכל יום בקריאת שמע: "לְמַעַן יִרְבּוּ יְמֵיכֶם וִימֵי בְנֵיכֶם עַל הָאֲדָמָה". זו ההבטחה שהתורה נותנת למי ששומר תורה ומצוות.</p>
+      <p>ומן הצד השני, קיצור ימים נחשב קללה. לעלי הכהן נאמר: "וְלֹא יִהְיֶה זָקֵן בְּבֵיתְךָ כָּל הַיָּמִים". רואים מפורש שהתורה רואה באריכות ימים ברכה גדולה.</p>
+      <p>ויש לפילוסופיה שאלה עמוקה נוספת: למה בכלל נבראו ימי הזקנה? מבחינה אבולוציונית, הם אינם מבינים למה הם נחוצים. מה תפקידם?</p>
+      <p>אבל ליהודי מאמין, השאלה אינה מתחילה. אם העולם נברא בידי בורא, ולא במקרה, ואם הוא ברא את המציאות הזו של זקנה בכוונה, הרי שהיא חלק ממעגל החיים שתוכנן. ומה שהקדוש ברוך הוא ברא – "וְהִנֵּה טוֹב מְאֹד". אם כן, ברור שהזקנה היא תקופה טובה, שאלמלא כן לא הייתה נבראת. השאלה מתחילה רק אצל מי שחושב שהעולם נוצר במקרה.</p>
+      <p class="bold-para">התורה רואה באריכות ימים ברכה, ובקיצור ימים קללה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אריכות ימים – ברכה ונס</div>
+      <h3 class="story-title">🏙️ עוד ישבו זקנים וזקנות</h3>
+      <p>הרב עבר לפסוק מפורסם מאוד בנביא זכריה: "כֹּה אָמַר ה' צְבָאוֹת: עֹד יֵשְׁבוּ זְקֵנִים וּזְקֵנוֹת בִּרְחֹבוֹת יְרוּשָׁלִָם, וְאִישׁ מִשְׁעַנְתּוֹ בְּיָדוֹ מֵרֹב יָמִים". יש מקומות בירושלים שבהם תלו את הפסוק הזה, כי אפשר ממש להרגיש אותו מתקיים.</p>
+      <p>המצודות מפרש: עוד יבוא זמן הגאולה העתידה, וישבו זקנים ברחובות ירושלים. כלומר, לא תהיה להם חולשה המחייבת לשבת בבית, אלא ישבו ברחובות, כדרך הבחורים. ו"איש משענתו בידו מרוב ימים": גם כשיגיע לגיל שבו הוא כבר נשען על מקל, עדיין יסתובב, ייצא, ייסע.</p>
+      <p>והרב הדגיש יסוד חשוב: כשהמפרשים אומרים "זמן הגאולה העתידה", אין הכוונה שאין שום דבר עד שיבוא המשיח, ואז הכל בבת אחת. אין ביהדות מושג כזה של "כבוי-דלוק". הגאולה באה בהדרגה ובשלבים, וביאת המשיח היא אחד מהם. אין שום בעיה לומר שחלק מנבואות הגאולה כבר מתקיימות בימינו, ואין צורך להכחיש את המציאות שאנו רואים בעינינו בכל יום.</p>
+      <p>והנבואה הזו היא דוגמה מובהקת: זקנים וזקנות ברחובות ירושלים, פעילים, מטיילים, נוסעים באוטובוס גם בגיל תשעים.</p>
+      <p class="bold-para">נבואת זכריה על זקנים ברחובות ירושלים מתקיימת לעינינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אריכות ימים – ברכה ונס</div>
+      <h3 class="story-title">📊 תוחלת החיים בארץ</h3>
+      <p>הרב הציג נתונים על תוחלת החיים בישראל. לפי הנתונים שהציג, ישראל נמצאת במקומות הראשונים בעולם בתוחלת החיים, סמוך למדינות המובילות. והוא ציין שאם מחשבים רק את האוכלוסייה היהודית, ישראל עשויה להגיע כמעט למקום הראשון בעולם.</p>
+      <p>ונשאלה שאלה על ההבדל בין נשים לגברים: גם כאן, כבכל העולם, נשים חיות בממוצע כמה שנים יותר מגברים.</p>
+      <p>וכן הזכיר שתוחלת החיים במדינה עלתה מאוד במהלך השנים. ההתקדמות כה מהירה, אמר, שכל כמה שנים היא מוסיפה עוד חודשים לממוצע. וזו שאלה עצומה: לאן זה הולך? מה יעשו בני אדם בכל השנים הנוספות?</p>
+      <p>הרב ראה בכך התגשמות של מה שנאמר בתורה: "למען ירבו ימיכם... על האדמה אשר נשבע ה' לאבותיכם". ושל נבואת זכריה. לפני דורות ספורים, מי היה מאמין שבארץ ישראל יחיו אנשים כל כך הרבה שנים, ושהזקנים יהיו כל כך פעילים?</p>
+      <p class="bold-para">תוחלת החיים בישראל גבוהה מאוד, וזו התגשמות מוחשית של הנבואה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אריכות ימים – ברכה ונס</div>
+      <h3 class="story-title">❓ הזקנה לאן?</h3>
+      <p>מכאן עבר הרב לשאלה שמעסיקה כיום חוקרים רבים: "הזקנה לאן?". השאלה מעניינת את כל התחומים. את הרפואה, שצריכה לחקור איך לשמור על בריאות לאורך שנים רבות. את הפילוסופיה, ששואלת מה טעמן של השנים הנוספות. ואפילו את הכלכלה: חברת ביטוח שמבטחת אדם בגיל עשרים צריכה לחשב עד איזה גיל הוא צפוי להגיע, והחשבון הזה משתנה כל הזמן.</p>
+      <p>הרב השווה גם למקומות אחרים בעולם. יש ארצות שבהן תוחלת החיים נמוכה בהרבה, בעיקר בגלל מחלות ותנאי חיים קשים. ואילו כאן, עם רפואה מתקדמת, בני אדם חיים שנים רבות.</p>
+      <p>ואם כל התחומים מתעניינים בשאלה, קל וחומר שהיהדות צריכה להתעניין בה מאוד. כי השאלה האמיתית אינה רק כמה שנים יחיה האדם, אלא מה יעשה בהן. מה התפקיד של כל השנים הנוספות? איך ממלאים אותן? אם אין תשובה לשאלה הזו, אריכות הימים עלולה להפוך לנטל. ואם יש תשובה, היא יכולה להיות מתנה גדולה.</p>
+      <p>זו בדיוק המטרה של השיעור הזה ושל ההמשך שלו: למצוא את התשובה מתוך התורה.</p>
+      <p class="bold-para">העלייה בתוחלת החיים מעוררת שאלה בכל תחום, ובעיקר שאלה של משמעות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אריכות ימים – ברכה ונס</div>
+      <h3 class="story-title">✨ מזקנים אתבונן</h3>
+      <p>בסיום החלק הזה הביא הרב רעיון יפה: עצם העובדה שיש בעולם זקנים אינה דבר פשוט כל כך. דוד המלך אמר: "מִזְּקֵנִים אֶתְבּוֹנָן". ואחד המפרשים כתב: אם נתבונן בזקנים, נגלה ניסים גדולים. כל זקן בעולם הוא נס פרטי, בעצם העובדה שהאריך ימים עד זקנה.</p>
+      <p>והרב המחיש זאת: חפשו בבית מכונה אחת שעובדת חמישים שנה. כמעט אין כזו. אחד המשתתפים הזכיר מכונת תפירה ישנה שעדיין עובדת, ואחר הזכיר שעונים עתיקים. אבל גם אז, בדרך כלל, מחליפים בהם חלקים רבים. מכונה שעובדת ברציפות עשרות שנים, בלי תיקונים, היא נדירה מאוד.</p>
+      <p>ויש עוד דוגמה: מספר הצינורות בגוף האדם עצום. והנה, כמעט אין בית ישן שעדיין משתמש בצנרת שלו מלפני חמישים שנה בלי תיקונים ועקיפות. ואילו גוף האדם עובד עשרות שנים, ומתקן את עצמו. זה פלא אדיר.</p>
+      <p>ועוד: אילו נתנו למחשב לקבוע את אורך חיי האדם לפי גודל גופו, בהשוואה לבעלי חיים אחרים – חולדה שלוש שנים, כלב חמש עשרה, סוס שלושים, פיל שישים – התוצאה הייתה נותנת לאדם עשרים או שלושים שנה בלבד. ואנו רואים, ברוך ה', שבני אדם חיים הרבה יותר. מזקנים אתבונן.</p>
+      <p class="bold-para">עצם קיומם של זקנים בעולם הוא נס, אם מתבוננים בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אריכות ימים – ברכה ונס</div>
+      <h3 class="story-title">💯 הנער בן מאה שנה</h3>
+      <p>הרב הביא גם פסוק פחות מוכר מישעיה, בנבואות הגאולה: "לֹא יִהְיֶה מִשָּׁם עוֹד עוּל יָמִים וְזָקֵן אֲשֶׁר לֹא יְמַלֵּא אֶת יָמָיו, כִּי הַנַּעַר בֶּן מֵאָה שָׁנָה יָמוּת". מי שימות בגיל מאה, יאמרו עליו שמת נער.</p>
+      <p>והאבן עזרא מפרש: בימות המשיח יחיו שנים רבות, והזקן ימלא את ימיו, כמו הקדמונים מאדם ועד נח. ומי שימות בן מאה, יאמרו שעדיין לא שלמה דעתו. כי סוף העולם ישוב כראשיתו.</p>
+      <p>הרב תיאר כיצד היום כבר רואים בני מאה, שהולכים על רגליהם ומקבלים תעודת כבוד על כך, ושאפשר לראות תמונות של חגיגות בני מאה. וכשהוא נשאל אם הדבר סותר משהו בתורה, השיב שאינו סותר.</p>
+      <p>והרב הזכיר גם את דור המבול: בתחילה ברא הקדוש ברוך הוא את האדם בריא וחזק מאוד, האריך ימים מאוד, ולא היו עונות קשות. ומה עשו בני האדם? השתעממו, וחיפשו חטאים. ולכן שינה ה' את המציאות. ומכאן שאלה מעניינת: אם יחזרו בני האדם לאריכות ימים גדולה, האם ידעו מה לעשות בשנים האלה? זו בדיוק השאלה של החלק הבא.</p>
+      <p class="bold-para">נבואת ישעיה מתארת עתיד שבו אדם בן מאה ייחשב צעיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שלוש גישות לחיים</div>
+      <h3 class="story-title">📈 גרף עולה או פעמון</h3>
+      <p>בחלק האחרון של השיעור הציג הרב שלוש גישות לחיים. הגישה הראשונה רואה בזקנה את תכלית החיים ופסגתם. לפיה, החיים הם מסלול של עלייה מתמדת, כמו גרף שעולה עם הגיל. ככל שהאדם מתבגר, כך הוא ניצב גבוה יותר, כמו מי שמטפס על הר. ולפי זה, הזקנה היא הגיל המוצלח ביותר. הגישה הזו נדירה יחסית, אבל קיימת.</p>
+      <p>הגישה השנייה, הנפוצה בעולם, רואה בזקנה שלב של ירידה ודעיכה. לפיה, החיים מגיעים לשיא באמצע, כשהאדם בשיא יכולותיו, ומשם הוא יורד. החיים דומים לעקומת פעמון: במרכזה האנשים בשיא כוחם, ובקצוות הילדים והזקנים. או כמו השמש: האדם זורח בשחר חייו, מטפס עד הצהריים, ומשם דועך לשקיעה הבלתי נמנעת.</p>
+      <p>זו הגישה המערבית, ולכן היא מנסה למתוח כמה שיותר את תקופת האמצע, לשמור על מראה צעיר, ולדחות את הזקנה. כל הביטויים המוכרים על "שקיעה" ו"ערוב ימים" באים ממנה.</p>
+      <p>ומה היהדות אומרת? הרב הדגיש: היהדות אינה כאן ולא כאן.</p>
+      <p class="bold-para">יש הרואים בחיים עלייה מתמדת, ויש הרואים בהם עלייה וירידה כמו פעמון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שלוש גישות לחיים</div>
+      <h3 class="story-title">🧭 לכל תקופה תפקיד</h3>
+      <p>לפי הגישה היהודית, כפי שהוצגה בשיעור, הזקנה אינה מותאמת לאחת משתי הגישות הקיצוניות. במקורות יש מקומות שבהם מודגשת החולשה והירידה, ויש מקומות שבהם מודגשת דווקא המעלה של הזקנה. ומתוך דבריהם אפשר לבנות מבט שלם: גישה שאינה עושה אידיאליזציה לזקנה כשיא החיים, ואינה רואה בה רק שקיעה, אלא מבינה שלכל תקופת חיים יש תפקיד משלה.</p>
+      <p>יש תפקיד לימי הבחרות, יש תפקיד לימי העמידה, ויש תפקיד לימי הזקנה. בכל תקופה יש מעלה, ובכל תקופה יש חיסרון. קשה מאוד לומר שאחת טובה יותר מחברתה. זו הגישה האמצעית, כדרכה של היהדות: יש שתי גישות קיצוניות, והיהדות בוחרת דרך שלישית, מאוזנת.</p>
+      <p>בחלק הבא של השיעור, אמר הרב, נעסוק בעיקר במעלות. את החסרונות אין צורך להסביר – כל אחד מרגיש אותם, והרבה רופאים יכולים לפרט אותם. ולא באנו לחפש איך להמשיך את ימי הצעירות. באנו לחפש מה מיוחד דווקא בתקופה הזו.</p>
+      <p class="bold-para">הגישה היהודית רואה בכל תקופת חיים מעלות וחסרונות ותפקיד משלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שלוש גישות לחיים</div>
+      <h3 class="story-title">🎓 זקן – תואר של כבוד</h3>
+      <p>הרב סיים את החלק הזה בהערה על השפה. כל מתבגר שאומר "אני כבר זקן" שומע מיד מסביבו: "מה פתאום, אתה עדיין צעיר!" כאילו המילה "זקן" היא מילת גנאי. אבל ביהדות זה הפוך.</p>
+      <p>מנהיגי ישראל נקראים "זקנים": זקני העדה, זקני ישראל. ובלשון חכמים נאמר על אדם חשוב שהוא "כבר הורה זקן". גם בחברה התורנית שומעים לפעמים כינוי חיבה ל"זקן". וכן נפוץ שם המשפחה "בן זקן", וביידיש "אלטר" – שמות שנשאו בגאווה.</p>
+      <p>ויש גדולי ישראל שנקראו בתואר "הסבא": הסבא משפולי, הסבא מקלם, הסבא מסלבודקה, הסבא מנובהרדוק. לא ראו בזה זלזול, אלא תואר של כבוד והערכה. "סבא" פירושו אדם שיש בו חכמה, ניסיון, וגדלות.</p>
+      <p>כל זה מראה שהזקנה, בעיני היהדות, אינה רק ירידה, אלא גם מעלה. ובחלק הבא של השיעור, אמר הרב, נעמוד על שמותיה של התקופה הזו, ונראה את המעלות המיוחדות שבה.</p>
+      <p>ומי שמבין זאת, יכול גם לשנות את הדרך שבה הוא מדבר אל הוריו ואל סביו, ואל עצמו כשיגיע לגיל הזה. במקום להתנצל על הגיל, אפשר לשאת אותו בכבוד, כמו תואר שנרכש ביושר במשך שנים ארוכות של חיים.</p>
+      <p class="bold-para">ביהדות "זקן" הוא כינוי של כבוד, ולא מילת גנאי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/4QAC-CRF-rw · 2024-02-14 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"למה זה נוגע לכולנו","icon":"🤝","color":"#c62b6b","stories":[{"id":1,"title":"ההזדמנות שבהזדקנות","icon":"🌳"},{"id":2,"title":"המחצית השנייה של החיים","icon":"⏳"},{"id":3,"title":"מפני שיבה תקום","icon":"🙏"}]},{"id":2,"name":"הזקנה בעיני העמים","icon":"🏛️","color":"#6d28d9","stories":[{"id":4,"title":"רומא, ספרטה ויוון","icon":"🏛️"},{"id":5,"title":"שאל אביך ויגדך","icon":"📖"},{"id":6,"title":"לא רק עניין של עבר","icon":"🔁"},{"id":7,"title":"הבוז לזקנה במערב","icon":"📉"}]},{"id":3,"name":"מהי הצלחה","icon":"⚖️","color":"#e08e00","stories":[{"id":8,"title":"השאלה: מה זו הצלחה?","icon":"⚖️"},{"id":9,"title":"הריק הקיומי","icon":"🕳️"}]},{"id":4,"name":"אריכות ימים – ברכה ונס","icon":"✨","color":"#1e88b8","stories":[{"id":10,"title":"למען ירבו ימיכם","icon":"🌿"},{"id":11,"title":"עוד ישבו זקנים וזקנות","icon":"🏙️"},{"id":12,"title":"תוחלת החיים בארץ","icon":"📊"},{"id":13,"title":"הזקנה לאן?","icon":"❓"},{"id":14,"title":"מזקנים אתבונן","icon":"✨"},{"id":15,"title":"הנער בן מאה שנה","icon":"💯"}]},{"id":5,"name":"שלוש גישות לחיים","icon":"📈","color":"#c62b6b","stories":[{"id":16,"title":"גרף עולה או פעמון","icon":"📈"},{"id":17,"title":"לכל תקופה תפקיד","icon":"🧭"},{"id":18,"title":"זקן – תואר של כבוד","icon":"🎓"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
