@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 קץ שם לחושך</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 קץ שם לחושך</h1>
+  <p>יוסף בבית האסורים, שנתיים ימים של המתנה, ומה מלמדת אותנו התורה על האור שבא אחרי החושך ועל דרכה הטבעית של הגאולה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ קץ שם לחושך" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/9lFz-4xrrTQ?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/9lFz-4xrrTQ/hqdefault.jpg" alt="קץ שם לחושך" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=9lFz-4xrrTQ" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · יוסף בבית האסורים</div>
+      <h3 class="story-title">🎉 שיעור שנולד בתוך החג</h3>
+      <p>השיעור הזה נאמר במוצאי שמחת תורה, בימים שבהם עם ישראל כולו הרגיש כמעט כמו בשנה חדשה. אחרי שנתיים ארוכות של מתח, תפילה ודאגה, שבו החטופים החיים לביתם. הרב מספר שהרעיון של השיעור נולד ממש בתוך החג, בליל החג, כשהוא שמע אותו ממישהו, והוא פיתח אותו מיד.</p>
+      <p>הנושא המרכזי הוא התחלה חדשה: לאן אנחנו הולכים מכאן? מה אפשר להבין מן הימים האלה? האם יש בתורה דרך להסתכל על תקופה של חושך ועל מה שבא אחריה?</p>
+      <p>הרב מציין שהחומר הוכן גם עבור תלמידים בבית הספר. לכן חשוב לו להבחין היטב בין פשט המקרא לבין דברי המדרש, ולהציג את הדברים באופן שגם ילדים יוכלו להבין ולשאול עליהם. ועוד הקדמה חשובה: כשמדברים כאן על החטופים, אין הכוונה לדבר על כל אחד מהם באופן אישי. הם נחטפו בגלל היותם חלק מעם ישראל, ולכן הם מסמלים את עם ישראל כולו. השאלה איננה רק מה עבר עליהם, אלא מה עובר על העם כולו, ולאן מוביל אותו הקדוש ברוך הוא.</p>
+      <p class="bold-para">השיעור נולד מתוך תחושה של התחלה חדשה, בימים שבהם שבו החטופים החיים הביתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · יוסף בבית האסורים</div>
+      <h3 class="story-title">⛓️ בור בלי תקווה</h3>
+      <p>כדי להבין את ימינו, הרב חוזר אל סיפורו של יוסף הצדיק. יוסף נמכר בהיותו בן שבע עשרה, הגיע למצרים, לבית פוטיפר, ושם התגלגל לבית האסורים. למה הגיע לשם? לא בגלל חטא שעשה, אלא בגלל עלילה. העלילו עליו עלילת שקר, והשליכו אותו לכלא.</p>
+      <p>ושם הוא יושב. האם ראה תקווה? האם ידע מתי ייצא ואיך? לא. מבחינתו, לא נראתה שום דרך החוצה. לא היה עורך דין, לא היה הליך של חנינה, לא היה תאריך יציאה. רק המתנה, יום אחר יום.</p>
+      <p>בבית האסורים פגש יוסף את שר המשקים ואת שר האופים, ופתר להם את חלומותיהם. כשהתברר שפתרונו נכון ושר המשקים עומד לשוב לתפקידו, ביקש ממנו יוסף: "כִּי אִם זְכַרְתַּנִי אִתְּךָ כַּאֲשֶׁר יִיטַב לָךְ". אבל שר המשקים שכח אותו. והתורה מספרת שעברו עוד "שְׁנָתַיִם יָמִים" עד שפרעה חלם את חלומו.</p>
+      <p>אפשר רק לנסות לדמיין את השנתיים האלה. בכל בוקר אולי קיווה יוסף שהיום יקראו לו, ובכל ערב התברר שגם היום נשכח. זה החושך במלוא עומקו: לא רק סבל, אלא סבל שאין לו סוף נראה לעין.</p>
+      <p class="bold-para">יוסף ישב בבית האסורים בגלל עלילת שקר, ולא ראה שום דרך לצאת משם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · יוסף בבית האסורים</div>
+      <h3 class="story-title">📖 פשט ומדרש</h3>
+      <p>בשיעור עלתה שאלה: כמה שנים ישב יוסף בבית האסורים? לפי דברי חז"ל, הוא ישב שם שנים רבות, ושתי השנים האחרונות נוספו לו משום שתלה את בטחונו בשר המשקים ואמר לו "זְכַרְתַּנִי". חשבון השנים מסתדר: יוסף היה בן שבע עשרה כשנמכר, ובן שלושים כשעמד לפני פרעה. אבל היה צריך גם זמן עד שהגיע לבית פוטיפר, עד שפוטיפר הכיר אותו, סמך עליו והפקיד בידו את ביתו.</p>
+      <p>הרב מדגיש כאן נקודה חשובה, במיוחד כשהחומר מיועד לילדים: מה כתוב בפשט המקרא, ומה למדים מן המדרש. בפשט המקרא אין לנו מידע כמה זמן ישב יוסף בכלא לפני הפגישה עם שר המשקים. מה שכתוב במפורש הוא רק דבר אחד: מן הרגע הזה עברו שנתיים ימים.</p>
+      <p>והשנתיים האלה הן העיקר לענייננו. הן התקופה שבה כבר נראה היה שיש פתח, ואז הפתח נסגר. שר המשקים יצא, ויוסף נשאר מאחור, בלי תקווה נראית לעין.</p>
+      <p class="bold-para">לפי פשט המקרא אנחנו יודעים בבירור רק על שנתיים; את שאר השנים אנו לומדים מחז"ל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שנתיים ימים</div>
+      <h3 class="story-title">👑 מבור לפסגה</h3>
+      <p>ואז, אחרי שנתיים, קורה דבר מפתיע. לא עובר שום תהליך, לא מגיעה שום חנינה. פרעה פשוט חולם חלום, ואין מי שיפתור אותו. פתאום נזכר שר המשקים בנער העברי שפתר לו את חלומו. מוציאים את יוסף מן הבור, הוא פותר את החלום, ובאותו יום הוא נעשה שליט על כל ארץ מצרים.</p>
+      <p>שימו לב לעוצמת המהפך. יוסף לא רק יוצא מבית האסורים. הוא עובר מן התחתית אל הפסגה הגבוהה ביותר שאדם יכול היה להגיע אליה באותם ימים. כמעט אין דרגה גבוהה יותר עלי אדמות.</p>
+      <p>ויותר מזה: כל מה שנראה רע התהפך לטוב. אילו לא היה יוסף בבית האסורים, איך היו שר המשקים ושר האופים יודעים שהוא פותר חלומות? רק משום שישב איתם בכלא, ידע שר המשקים לומר לפרעה: יש מישהו שיודע לפתור חלומות. דווקא הבור הוא שהוביל אל הכתר.</p>
+      <p>המדרש דורש על המילים "וַיְהִי מִקֵּץ" את הפסוק באיוב: "קֵץ שָׂם לַחֹשֶׁךְ". הקדוש ברוך הוא קובע גבול לחושך. עד כאן, ולא יותר. כשהגיע הקץ, החושך נגמר, ואיש אינו יכול לעכב.</p>
+      <p class="bold-para">אחרי שנתיים, בלי שום תהליך מוקדם, הפך יוסף בבת אחת מאסיר למשנה למלך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שנתיים ימים</div>
+      <h3 class="story-title">⏳ שנתיים ימים גם בימינו</h3>
+      <p>כאן מביא הרב את ההקבלה שעוררה אותו. המלחמה פרצה בשמחת תורה תשפ"ד, ומאות מבני עמנו נחטפו לעזה. במשך כל הזמן הזה איש לא ידע מתי ייצאו ואיך. עד ימים ספורים לפני הסוף, לא נראה שום קצה. מן ההנהגה ועד המשפחות, נראה היה שאיש אינו יודע כיצד יסתיים הסיפור.</p>
+      <p>ואז, בהושענא רבה תשפ"ו, שבו כל החטופים החיים הביתה. הרב מדגיש: לפי הלוח העברי זה יוצא שנתיים ימים, ממש כמו אצל יוסף. עדיין מצפים ומתפללים גם להשבת החללים לקבורה בארץ.</p>
+      <p>האם יוסף ישב בדיוק שנתיים, יום ביום? הרב אומר שיש סברה לומר כך. יש גם מי שאומר שחלומות שר המשקים ושר האופים נחלמו בראש השנה, הזמן שבו נגזר דינם של כל באי עולם, ואז הם יצאו לחירות או למוות. אבל הרב מסייג: אין לנו בזה ידיעה ברורה. מה שברור הוא הדמיון המופלא.</p>
+      <p>האם מישהו יכול היה לחשב זאת מראש? לא. אבל במבט לאחור רואים את מה שהמדרש לימד: קֵץ שָׂם לַחֹשֶׁךְ. הקדוש ברוך הוא קבע לו גבול.</p>
+      <p class="bold-para">גם בימינו נמשך החושך שנתיים ימים, ואיש לא ידע מראש איך ומתי ייגמר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אחרי החושך – אור גדול</div>
+      <h3 class="story-title">🏺 החושך מכין את כלי הקיבול</h3>
+      <p>השאלה הגדולה של השיעור איננה רק מה היה, אלא מה יהיה. אצל יוסף, אחרי החושך בא אור גדול. האם גם אצלנו?</p>
+      <p>התשובה היא כלל שחוזר שוב ושוב בתורה ובהיסטוריה: אחרי החושך מגיע אור עצום. יותר מזה, החושך עצמו הוא פעמים רבות מה שמכשיר את כלי הקיבול לאור הבא. כמו שהבור של יוסף הוא שהביא אותו אל המלכות, כך הקושי הוא שמכין את המקום לישועה.</p>
+      <p>הדוגמה הראשונה היא יציאת מצרים. הקדוש ברוך הוא אמר לאברהם אבינו בברית בין הבתרים: "וַעֲבָדוּם וְעִנּוּ אֹתָם אַרְבַּע מֵאוֹת שָׁנָה". זה החושך. ומה יקרה אחר כך? "וְאַחֲרֵי כֵן יֵצְאוּ בִּרְכֻשׁ גָּדֹל". השעבוד הקשה הסתיים ביציאה גדולה, בניסים ובמתן תורה.</p>
+      <p>המסר הזה אינו מבטל את הכאב. החושך היה חושך אמיתי, והצער היה צער אמיתי. אבל הוא מלמד שהחושך איננו סוף הדרך. יש לו קץ, ומאחוריו מחכה אור. מי שזוכר זאת, יכול לעבור את ימי החושך בתקווה, ולצפות לאור בעיניים פקוחות.</p>
+      <p class="bold-para">החושך הוא פעמים רבות הכלי שמכין את האדם לקבל אור גדול יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אחרי החושך – אור גדול</div>
+      <h3 class="story-title">🛖 סוכות – מתנה אחרי החטא</h3>
+      <p>הדוגמה הקרובה ביותר היא החג שזה עתה הסתיים, חג הסוכות. מה קרה בעבר? עם ישראל יצא ממצרים בפסח, קיבל את התורה בשבועות, ואז חטא בחטא העגל. הלוחות נשברו, והכל כאילו נהרס. משה רבנו עלה שוב אל ההר, התפלל ובקש רחמים, עד שביום הכיפורים שמע: "סָלַחְתִּי כִּדְבָרֶךָ".</p>
+      <p>אבל הקדוש ברוך הוא לא הסתפק במחילה. למחרת יום הכיפורים נצטוו ישראל על בניית המשכן, מקום שבו תשרה השכינה ביניהם. וכשהחלו במלאכה, חזרו ענני הכבוד שהסתלקו בחטא העגל. לכן אנו חוגגים עד היום את חג הסוכות בחמישה עשר בתשרי, זכר לענני הכבוד שחזרו.</p>
+      <p>שימו לב: אחרי החטא, ישראל לא רק חזרו למצבם הקודם. הם קיבלו מתנה גדולה יותר, אהבה גדולה יותר.</p>
+      <p>וכך בכל שנה. יהודי נכשל במשך השנה, חוזר בתשובה בחודש אלול, ביום הכיפורים הקדוש ברוך הוא מוחל לו, ואחר כך בא חג הסוכות ואנו יושבים יחד עם בורא עולם בסוכה. חז"ל לימדו שבעלי תשובה עומדים לפעמים במקום גבוה יותר. האור שאחרי החושך גדול מן האור שלפניו.</p>
+      <p class="bold-para">אחרי שנמחל חטא העגל, קיבלו ישראל מתנה גדולה יותר: המשכן וענני הכבוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אחרי החושך – אור גדול</div>
+      <h3 class="story-title">👨‍👦 וּכְאָב אֶת בֵּן יִרְצֶה</h3>
+      <p>הכלל הזה מפורש בפסוק במשלי: "מוּסַר ה' בְּנִי אַל תִּמְאָס וְאַל תָּקֹץ בְּתוֹכַחְתּוֹ. כִּי אֶת אֲשֶׁר יֶאֱהַב ה' יוֹכִיחַ וּכְאָב אֶת בֵּן יִרְצֶה".</p>
+      <p>הרב מסביר את סוף הפסוק בדרך מיוחדת. מה פירוש "וּכְאָב אֶת בֵּן יִרְצֶה"? כל הורה מכיר את התחושה. לפעמים הבן מרגיז, והאב כועס ומעניש. ואחר כך, כשהכעס עובר, האב מרגיש לא טוב עם עצמו. הוא חושב: מה עשיתי לו? והוא מנסה לפייס את הבן, ונותן לו אפילו יותר ממה שנתן לפני כן. הוא מרצה אותו ומרבה לו אהבה.</p>
+      <p>אומר הפסוק: דע לך, גם אצל בורא עולם זה כך. לפעמים, מסיבות שאיננו יודעים, הקדוש ברוך הוא מביא ייסורים על בניו. איננו יודעים את חשבונותיו, ואין לנו לשפוט אף אדם. אבל דבר אחד הפסוק מגלה: אחרי שהייסורים מסתלקים, הקדוש ברוך הוא אוהב אותנו יותר, ונותן לנו הרבה יותר ממה שהיה לנו קודם.</p>
+      <p>זה איננו הסבר לצער, אלא הבטחה על מה שבא אחריו. החושך איננו סימן לריחוק. אחריו באה קרבה גדולה יותר.</p>
+      <p class="bold-para">כמו אב שמרגיש רחמים על בנו אחרי שהעניש אותו, כך הקדוש ברוך הוא מרבה אהבה אחרי הייסורים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אחרי החושך – אור גדול</div>
+      <h3 class="story-title">🇮🇱 אחרי השואה – שיבה לארץ</h3>
+      <p>הרב מביא דוגמה שקשה מאוד לומר אותה, ובכל זאת אי אפשר להתעלם ממנה. אלפיים שנה היה עם ישראל בגלות, ולא הצליח לשוב ולבנות את הארץ. דורות של יהודים התפללו "וְתֶחֱזֶינָה עֵינֵינוּ", ולא זכו לראות.</p>
+      <p>ואז בא החורבן הנורא של השואה, החושך הגדול ביותר שידע עמנו בדורות האחרונים. ומיד אחריו, תוך שנים ספורות, זכה עם ישראל לשוב לארץ ישראל ולהקים בה בית. רבים הרגישו אז שבורא עולם כביכול ריחם על עמו אחרי הצרה, ונתן לו מה שלא היה לו במשך אלפיים שנה.</p>
+      <p>אין בזה שום ניסיון להסביר את השואה, או לומר שהיא הייתה "כדאית". הכאב נשאר כאב, והאבדה נשארת אבדה. אבל במבט על מהלך ההיסטוריה, רואים שוב את אותו כלל: אחרי החושך הגדול, בא אור גדול. כמו שקרה במצרים, כמו שקרה אחרי חטא העגל, כמו שקרה אצל יוסף.</p>
+      <p>ולכן השאלה המתבקשת עכשיו היא: אם אחרי החושך בא אור, איזה אור יבוא עכשיו? כאן, אומר הרב, נמצאת נקודה שדורשת זהירות רבה.</p>
+      <p class="bold-para">אחרי החורבן הנורא ביותר, זכה עם ישראל למה שלא זכה לו אלפיים שנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האור אינו חייב להיות "משיח"</div>
+      <h3 class="story-title">💔 הסכנה שבאכזבה</h3>
+      <p>אם נשאל ילדים, ואפילו מבוגרים, "איזה אור גדול יבוא עכשיו?", רובם יכתבו מילה אחת: משיח. הרב אומר זאת מראש, ומוכן להתערב על כך. אין לו שום בעיה עם התשובה הזאת. אדרבה, אם יבוא משיח, נשמח מאוד. הבעיה היא מה יקרה אם זה לא יקרה כך: האנשים ייצאו מאוכזבים.</p>
+      <p>והרב מביא דוגמה מן ההיסטוריה. הוא שמע מאנשים שעברו את השואה, שהייתה להם בעיה גדולה מאוד אחריה. בתוך החושך הנורא הם חלמו כל הזמן שאחרי השואה יבוא המשיח. והמשיח, במובן שציפו לו, לא בא. מה בא? באה שיבה לארץ ישראל, באה מדינה. אבל מי שמצפה לדבר אחד, ומקבל משהו שנראה לו פחות ממנו, מתאכזב. לפעמים הוא אפילו לא רואה את מה שקיבל.</p>
+      <p>זה מה שמדאיג את הרב גם עכשיו. אם כל הציפייה מתמקדת בתמונה אחת מוגדרת, עלול האור שבא באמת לעבור מול עינינו בלי שנראה אותו. לכן חשוב להבין מאיפה נובעת הטעות הזאת, ולמה היא כל כך נפוצה.</p>
+      <p class="bold-para">מי שמצפה רק לדבר אחד מוגדר, עלול להחמיץ את האור שבא באמת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האור אינו חייב להיות "משיח"</div>
+      <h3 class="story-title">👀 לפקוח עיניים לאור</h3>
+      <p>הנקודה הזאת חשובה לא רק לשאלות הגדולות של הגאולה, אלא גם להסתכלות היומיומית. כשאדם מחכה לדבר אחד מסוים, הוא מודד כל מה שקורה לו מול התמונה שבראשו. אם מה שקרה איננו בדיוק מה שדמיין, הוא מרגיש שלא קרה כלום. כך יכול אדם לעמוד מול ישועה גדולה, ולא לשמוח בה.</p>
+      <p>לעומת זאת, מי שמבין שבורא עולם מביא את האור בדרכים שלו, בשלבים, ולפעמים בדרכים שאיש לא שיער, יכול לראות את האור בכל שלב. הוא שמח על כל צעד, מודה על כל ישועה, ואינו מתאכזב משום שהדבר לא בא בצורה שציפה לה.</p>
+      <p>הרב אינו מבקש להפחית מן הציפייה לגאולה השלמה. אדרבה, מצפים לה בכל יום. אבל הציפייה לשלמות אינה צריכה לעוור את העיניים מלראות את מה שכבר ניתן. כך גם אחרי שיבת החטופים: אפשר לשמוח בה בכל הלב, להודות עליה, ולהמשיך לצפות לאור הגדול שעוד יבוא.</p>
+      <p class="bold-para">מי שמשחרר את הציפייה לתמונה אחת, יכול לראות ולהודות על כל שלב של אור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האור אינו חייב להיות "משיח"</div>
+      <h3 class="story-title">🌫️ למה הכל נדחה ל"אחרי המשיח"</h3>
+      <p>הרב אומר שהטעות הזאת איננה שייכת לציבור מסוים. היא נפוצה כמעט אצל כולם. כמעט כל דבר שמסופר בנביאים ובדברי הפוסקים על הגאולה, אנשים ממקמים אוטומטית "אחרי המשיח". בית המקדש? אחרי המשיח. סנהדרין? אחרי המשיח. קרבנות? אחרי המשיח. "לִרְאוֹת מְהֵרָה בְּתִפְאֶרֶת עֻזֶּךָ", שיכירו וידעו כל יושבי תבל? אחרי המשיח. המשיח הפך לקו אדום, ורק מעבר לו הכל אפשרי.</p>
+      <p>למה זה כך? הרב מסביר זאת פסיכולוגית. אדם שומע על בית המקדש, ומנסה לדמיין איך זה יקרה. והדמיון לא מסתדר לו. איך ייבנה המקדש במציאות של היום? איך תקום סנהדרין שכל הציבורים יקבלו? איך יכירו כל העמים בה'? הוא לא מוצא תשובה.</p>
+      <p>ואז יש פתרון נפלא: משיח. ברגע שאדם מדבר על משיח, הוא עובר בראשו לעולם מיסטי, עולם שאינו פועל לפי חוקי הטבע. בית המקדש יורד מן השמים, המתנגדים נעלמים במילה אחת, והכל נפתר. בעולם כזה אפשר לדמיין כל דבר. אבל לומר שדברים יכולים לקרות כבר עכשיו, בדרך הטבע, לפני הקו האדום, את זה האדם מתקשה לקבל.</p>
+      <p>וזה קרה גם לפני כמאה שנה: רבים לא יכלו להאמין לחזון השיבה לארץ, כי לא הצליחו לדמיין אותו בלי נס גלוי.</p>
+      <p class="bold-para">כשאדם אינו מצליח לדמיין דבר בעולם הטבעי, הוא דוחה אותו לעולם "מיסטי" שאחרי המשיח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האור אינו חייב להיות "משיח"</div>
+      <h3 class="story-title">🚌 משל הילד שלא רצה לנסוע</h3>
+      <p>יש מי שחושב, אומר הרב, שאם אומרים שחלקים מן הגאולה יכולים לבוא לפני ביאת המשיח, בדרך הטבע, מקטינים בכך את עוצמת הגאולה. האמת הפוכה: בעומק, זה נס גדול הרבה יותר. ולהבהרה הביא משל.</p>
+      <p>משפחה אחת נוסעת לירושלים לחג הסוכות. כולם יוצאים לדרך, רק הבן הקטן, ישראל, מסרב לבוא. ההורים דיברו איתו, ניסו לשכנע, ולא הועיל. ישראל נשאר בבית. באוטובוס, אחד הנוסעים, חיים, רואה את ההורים עצובים ושואל למה. הם מספרים לו. אומר להם חיים: אין בעיה, מחר אביא לכם אותו.</p>
+      <p>יש שתי דרכים לעשות זאת. דרך אחת: חיים הוא שוטר. הוא מגיע עם ניידת, פורץ לבית, לוקח את הילד באזיקים ומביא אותו לירושלים. הנה, הבאתי אותו. דרך שנייה: חיים דופק בדלת, ישראל פותח, וחיים יושב איתו שעתיים, שלוש, חמש, עד שהוא מצליח לשכנע אותו שכדאי לו להיות עם ההורים. וישראל עולה בעצמו על האוטובוס ונוסע לירושלים.</p>
+      <p>איזה מעשה גדול יותר? ברור שהשני. רבים מדמיינים גאולה של ניידת ואזיקים: כוח, כפייה, ניסים שמכריחים את כולם. אבל בורא עולם רוצה להביא את הגאולה בדרך גבוהה ומשוכללת יותר: שעם ישראל, הילד שנקרא ישראל, יבחר בעצמו לבוא הביתה.</p>
+      <p class="bold-para">מעשה שבו הילד בוחר בעצמו לבוא גדול הרבה יותר ממעשה שבו מביאים אותו בכוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האור אינו חייב להיות "משיח"</div>
+      <h3 class="story-title">🌱 גאולה בדרך הטבע</h3>
+      <p>איך בדיוק זה יקרה? הרב אומר בכנות שהוא אינו רוצה לדמיין פרטים, כי כל ניסיון לצייר תמונה מסוימת רק מקלקל. קשה לדמיין את העתיד. אבל אפשר להסתכל על העבר.</p>
+      <p>איך הגענו לארץ? האם בורא עולם הרג את כל האומות והכריח אותן? לא. בכ"ט בנובמבר התכנסו אומות העולם, ורוב גדול מהן הצביע בעד מתן הארץ לעם ישראל. הבריטים עזבו את הארץ מעצמם, בלי שמישהו הכריח אותם. בורא עולם דאג שהטבע עצמו ירצה בכך. הדברים קרו בלי נס גלוי, ובכל זאת היו נס גדול.</p>
+      <p>וכך היה גם אצל יוסף. האם מישהו הכריח את פרעה למנות את יוסף למשנה למלך? אף אחד. פרעה בחר בכך מעצמו, מתוך הבנה שזה הדבר הנכון. וגם יוסף, בבור, לא יכול היה לדמיין איך בדיוק זה יקרה.</p>
+      <p>וכך, אומר הרב, ייתכן שגם הגאולה שאמורה לבוא, אם נזכה, תבוא בדרך טבעית. אין צורך לדעת מראש איך. צריך רק להאמין שבורא עולם יודע להפוך את הלבבות, כמו שהפך את לב פרעה, כמו שהפך את לב אומות העולם, וכמו שמשכנע את הילד שנקרא ישראל לבוא הביתה.</p>
+      <p class="bold-para">כמו שפרעה בחר מעצמו למנות את יוסף, כך תבוא הגאולה מתוך בחירה ולא מתוך כפייה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להכין את הכלים</div>
+      <h3 class="story-title">⚖️ "הָשִׁיבָה שׁוֹפְטֵינוּ" – מה עלינו לעשות</h3>
+      <p>הרב מזכיר את סדר הברכות בתפילת שמונה עשרה, שהוא גם סדר שלבי הגאולה. אחרי קיבוץ הגלויות באה הברכה "הָשִׁיבָה שׁוֹפְטֵינוּ כְּבָרִאשׁוֹנָה וְיוֹעֲצֵינוּ כְּבַתְּחִלָּה". ואם כך, אולי השלב הבא הוא שנזכה לשוב ולדון לפי דין תורה.</p>
+      <p>אבל מכאן עולה מסקנה מעשית חשובה מאוד. אם אנחנו רוצים שזה יקרה, השאלה איננה רק מה יעשה בורא עולם. השאלה היא מה אנחנו עושים כדי להכין את זה. צריך להכין תשתית. צריך לחשוב: אם ייתנו לנו לדון על פי התורה, איך נדון? מה מתאים לזמננו ומה לא? איך מתנהגים במצבים שלא היו בעבר?</p>
+      <p>הרב מביא דוגמה: הרב הרצוג היה מן היחידים שישבו בפועל והכינו תכנית כיצד אפשר יהיה לנהל מדינה על פי התורה. הוא כתב את הדברים, אך לא הדפיס אותם בחייו; הם יצאו לאור רק אחרי פטירתו. מי שמעיין בדבריו רואה כמה קשיים עמדו לפניו, וכמה פתרונות ניסה למצוא.</p>
+      <p>זו הדרך: לא לשבת ולחכות שהכל ייפתר בדרך נס, אלא ללמוד, לברר ולהכין, כדי שכשיבוא הזמן נהיה מוכנים.</p>
+      <p class="bold-para">מי שרוצה שתבוא הגאולה, צריך להכין לה בפועל את התשתית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להכין את הכלים</div>
+      <h3 class="story-title">❓ כשמנסים בפועל – מתעוררות שאלות</h3>
+      <p>עד כמה זה מעשי? הרב מזכיר את מה שנלמד אחרי חג השבועות: היו אנשים שניסו להכין בפועל את קרבן שתי הלחם. ברגע שניסו, התעוררו המון שאלות שמעולם לא נדונו.</p>
+      <p>הוא מביא דוגמה, כמעט משעשעת: מובא בחז"ל שכהן העובד במקדש צריך להסתפר כל שלושים יום. מה הדין בכהן שנוהג לגדל פאות ארוכות? ומה פירוש "להסתפר", כל הראש? ומה עם כהן שאין לו שיער כלל? מתברר שיש רשימה שלמה של שאלות, והיו עליהן דיונים רבים. כל זה רק דוגמה אחת קטנה.</p>
+      <p>הרב מספר ששלח פעם רשימת שאלות כאלה למקום שלומדים בו את סדר קדשים, וביקש תשובות. השיבו לו: כשיבוא משיח, נענה. הרב שאל: אם כך, בשביל מה לומדים? ועוד אמרו לו: הרי אין לזה מקור בגמרא, איך נדע?</p>
+      <p>אבל התורה לא עזבה אותנו כשאין תשובה כתובה. מה עושים? מתכנסים חכמי הדור יחד, דנים ומכריעים על פי הרוב, וזה הדין. אין בעיה. אבל צריך להתכנס, צריך לדון, צריך לעשות. ההכנה הזאת היא חלק מן הגאולה עצמה.</p>
+      <p class="bold-para">רק כשמנסים לקיים בפועל, מגלים כמה שאלות עוד לא נדונו – והתורה נתנה דרך להכריע בהן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להכין את הכלים</div>
+      <h3 class="story-title">🕯️ אחרי יום הכיפורים – אור התשובה</h3>
+      <p>האור הגדול לא חייב להיות דווקא ביאת המשיח. הוא יכול להיות דברים רבים אחרים. ולכך מביא הרב דוגמה מן ההיסטוריה הקרובה: מלחמת יום הכיפורים, תקופה של חושך גדול, שנמשכה כשלושה שבועות. מה בא אחריה?</p>
+      <p>הרב מתאר מגמה שהייתה מאז קום המדינה: מספר שומרי התורה והמצוות הלך וירד, שנה אחר שנה. במלחמת ששת הימים הירידה נבלמה במעט, ואחרי מלחמת יום הכיפורים החל לאט לאט שינוי, ובסוף שנות השבעים פרצה תנועה של התעוררות שקשה לתאר.</p>
+      <p>בתקופה ההיא פעלו רק ארגונים קטנים לקירוב רחוקים, כל אחד בנפרד, בשיעורים נקודתיים. ואז החליטו הארגונים להתאחד ולערוך, לראשונה, סמינר של שבוע שלם עם טובי הרבנים. לפי מה שסיפר לרב אחד המארגנים, כמעט כל המשתתפים בסמינר ההוא חזרו בתשובה.</p>
+      <p>כדי להבין את גודל הדבר: מסופר שבדור שלפני כן, כשסיפרו לחזון איש על כמה יהודים שחזרו בתשובה, הדבר נחשב לחידוש נדיר ומרגש. ומאז, הגל הזה לא נעצר. הוא נמשך עד היום, והמגמה התהפכה. זה האור שבא אחרי החושך.</p>
+      <p class="bold-para">אחרי החושך של מלחמת יום הכיפורים, החלה תנועה של חזרה בתשובה שהפכה את המגמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סיכום ושאלות לשיחה</div>
+      <h3 class="story-title">🧭 לסיכום – לאן אנחנו הולכים</h3>
+      <p>בסוף השיעור סיכם הרב את הדברים.</p>
+      <p>ראשית, ראינו את ההקבלה: שנתיים ימים ישב יוסף בבית האסורים אחרי שביקש משר המשקים לזכור אותו, ושנתיים ימים נמשך החושך גם בימינו. והמדרש לימד: "קֵץ שָׂם לַחֹשֶׁךְ". הקדוש ברוך הוא קובע גבול לחושך, וכשמגיע הקץ, החושך נגמר.</p>
+      <p>שנית, למדנו שאחרי החושך בא אור גדול. זה כלל שמופיע במקומות רבים: ביציאת מצרים, אחרי חטא העגל בחג הסוכות, ובהיסטוריה של עמנו. והוא מפורש בפסוק "וּכְאָב אֶת בֵּן יִרְצֶה": כמו אב שאחרי הכעס מרגיש רחמים ומרבה אהבה לבנו, כך בורא עולם.</p>
+      <p>שלישית, האור הגדול לא חייב להיות בדיוק מה שאנחנו מדמיינים. הרב אינו רוצה להיתפס לדבר מסוים. כנראה זה יהיה עוד שלב שיקרב את הגאולה. אולי בעוד כמה שנים נוכל להסתכל לאחור ולומר מה זה היה.</p>
+      <p>ורביעית: עלינו להיות שותפים, ולא לשבת מן הצד. אם אנחנו יכולים לעשות משהו כדי לקרב את הדברים האלה, זו מצווה גדולה. יהי רצון שנזכה בקרוב לראות אור גדול.</p>
+      <p class="bold-para">יש קץ לחושך, אחריו בא אור גדול, והאור הזה יכול לבוא בדרכים שאיננו מצפים להן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סיכום ושאלות לשיחה</div>
+      <h3 class="story-title">💬 שאלות לשיחה בכיתה ובבית</h3>
+      <p>מכיוון שהשיעור הוכן גם עבור תלמידים, הנה כמה שאלות שאפשר לדון בהן בכיתה או סביב שולחן השבת:</p>
+      <p>למה ישב יוסף בבית האסורים? האם ראה תקווה לצאת משם? מה כתוב בפשט המקרא על משך הזמן, ומה אנחנו לומדים מדברי חז"ל?</p>
+      <p>מה קרה ליוסף אחרי שיצא מבית האסורים? איך דווקא הבור הוא שהוביל אותו אל המלכות? האם אתם מכירים מקרה בחייכם שבו דבר שנראה רע התגלה בסוף כטוב?</p>
+      <p>איזו השוואה אפשר לעשות בין סיפור יוסף לבין מה שעבר על עם ישראל בשנתיים האחרונות? מה פירוש המילים "קֵץ שָׂם לַחֹשֶׁךְ"?</p>
+      <p>הביאו דוגמאות מן התורה ומן ההיסטוריה שבהן אחרי החושך בא אור גדול. מה הקשר בין חג הסוכות לבין חטא העגל?</p>
+      <p>במשל על הילד שלא רצה לנסוע לירושלים, איזו דרך גדולה יותר להביא אותו, ולמה? מה זה מלמד אותנו על הדרך שבה בורא עולם מביא את הגאולה?</p>
+      <p>ולבסוף, השאלה החשובה מכולן: מה אני יכול לעשות כדי להיות שותף בהבאת האור? לימוד, תפילה, מעשה טוב, אהבת ישראל – כל אחד יכול להוסיף קצת אור.</p>
+      <p class="bold-para">השאלות עוזרות לילדים ולמבוגרים לחשוב בעצמם על האור שאחרי החושך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/9lFz-4xrrTQ · 2025-10-15 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"יוסף בבית האסורים","icon":"⛓️","color":"#c62b6b","stories":[{"id":1,"title":"שיעור שנולד בתוך החג","icon":"🎉"},{"id":2,"title":"בור בלי תקווה","icon":"⛓️"},{"id":3,"title":"פשט ומדרש","icon":"📖"}]},{"id":2,"name":"שנתיים ימים","icon":"⏳","color":"#6d28d9","stories":[{"id":4,"title":"מבור לפסגה","icon":"👑"},{"id":5,"title":"שנתיים ימים גם בימינו","icon":"⏳"}]},{"id":3,"name":"אחרי החושך – אור גדול","icon":"☀️","color":"#e08e00","stories":[{"id":6,"title":"החושך מכין את כלי הקיבול","icon":"🏺"},{"id":7,"title":"סוכות – מתנה אחרי החטא","icon":"🛖"},{"id":8,"title":"וּכְאָב אֶת בֵּן יִרְצֶה","icon":"👨‍👦"},{"id":9,"title":"אחרי השואה – שיבה לארץ","icon":"🇮🇱"}]},{"id":4,"name":"האור אינו חייב להיות \"משיח\"","icon":"🧭","color":"#1e88b8","stories":[{"id":10,"title":"הסכנה שבאכזבה","icon":"💔"},{"id":11,"title":"לפקוח עיניים לאור","icon":"👀"},{"id":12,"title":"למה הכל נדחה ל\"אחרי המשיח\"","icon":"🌫️"},{"id":13,"title":"משל הילד שלא רצה לנסוע","icon":"🚌"},{"id":14,"title":"גאולה בדרך הטבע","icon":"🌱"}]},{"id":5,"name":"להכין את הכלים","icon":"🛠️","color":"#c62b6b","stories":[{"id":15,"title":"\"הָשִׁיבָה שׁוֹפְטֵינוּ\" – מה עלינו לעשות","icon":"⚖️"},{"id":16,"title":"כשמנסים בפועל – מתעוררות שאלות","icon":"❓"},{"id":17,"title":"אחרי יום הכיפורים – אור התשובה","icon":"🕯️"}]},{"id":6,"name":"סיכום ושאלות לשיחה","icon":"📝","color":"#6d28d9","stories":[{"id":18,"title":"לסיכום – לאן אנחנו הולכים","icon":"🧭"},{"id":19,"title":"שאלות לשיחה בכיתה ובבית","icon":"💬"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
