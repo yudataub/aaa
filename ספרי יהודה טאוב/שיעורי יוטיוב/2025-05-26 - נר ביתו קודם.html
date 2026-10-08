@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 נר ביתו קודם</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 נר ביתו קודם</h1>
+  <p>למה מתחתנים, האם אהבת האישה היא מדרבנן או תכלית התורה כולה, ולאן מובילות כל המצוות</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ נר ביתו קודם" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/8ssIR9oj-Q8?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/8ssIR9oj-Q8/hqdefault.jpg" alt="נר ביתו קודם" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=8ssIR9oj-Q8" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שאלה שמלווה כל החיים</div>
+      <h3 class="story-title">❓ למה מתחתנים – גם בסוף הדרך</h3>
+      <p>נושא השיעור הוא סיבת הנישואין. הרב הדגיש שזו שאלה שמתאימה לכל שלב בחיים: להתחלה, לאמצע וגם לסוף. כי השאלה אינה רק למה אדם מתחתן, אלא גם למה הוא נשאר נשוי.</p>
+      <p>הנה שאלה פשוטה: כל הילדים, ברוך ה', כבר פרחו מן הקן. כולם עזבו את הבית, יש נכדים. האם יש עדיין, על פי התורה, סיבה להיות נשוי? האם יש מצווה בכך? או שאם אין עוד ילדים לגדל, אפשר לפרק את החבילה? לצערנו, הרב ציין שיש אנשים שבאמת עושים כך, אחרי שחיתנו את כל ילדיהם.</p>
+      <p>ויש שאלה נוספת, עמוקה לא פחות: אדם מבוגר שאשתו נפטרה, לא עלינו – האם יש מצווה להקים בית שני? זה נושא לא פשוט, ויש בו כמה דעות. יש מגדולי ישראל שנישאו שנית גם בגיל מבוגר מאוד, ויש שלא עשו כך.</p>
+      <p>כדי לענות על השאלות האלה צריך להבין קודם כול מה בכלל סיבת הנישואין לפי התורה.</p>
+      <p class="bold-para">השאלה למה מתחתנים נוגעת לא רק לצעירים, אלא גם למי שכבר חיתן את כל ילדיו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שאלה שמלווה כל החיים</div>
+      <h3 class="story-title">🧓 שאלה שאיש לא ידע לענות עליה</h3>
+      <p>הרב סיפר שכבר מסר את סדרת השיעורים הזאת כמה פעמים, ובכל פעם שאל את השאלה: האם מישהו יודע למה צריך להישאר נשוי אחרי שמחתנים את כל הילדים? איזו מצווה יש בזה? איפה זה כתוב?</p>
+      <p>כמעט אף אחד לא ידע את התשובה. רובם חשבו שאדם נשאר נשוי אחרי שחיתן את ילדיו פשוט כי זה נוח לו, כי אינו רוצה להיות לבד. מצווה – לא ידעו שיש כאן.</p>
+      <p>וזה חבל מאוד. אדם שעושה מעשה טוב ואינו יודע שהוא עושה בכך את רצון ה', מפסיד הרבה. כמו שנאמר "גַּם בְּלֹא דַעַת נֶפֶשׁ לֹא טוֹב". השכר והחיות של מעשה תלויים מאוד בכך שהאדם יודע מה הוא עושה.</p>
+      <p>והתשובה, כפי שיתברר בהמשך, ברורה: לכל הדעות יש מצווה להיות נשוי, גם אחרי שמחתנים את כל הילדים. האם זה חיוב גמור – זו שאלה אחרת. אבל מצווה ודאי יש. וכדי להבין למה, צריך לחזור אל המקור.</p>
+      <p class="bold-para">רוב האנשים חושבים שנשארים נשואים מתוך נוחות, ואינם יודעים שיש בכך מצווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שאלה שמלווה כל החיים</div>
+      <h3 class="story-title">📚 הספר שכתב בורא עולם</h3>
+      <p>המקור של הכל הוא פרשת בראשית. הרב ציין שהתנ"ך הוא הספר הנפוץ ביותר בעולם, ותורגם לכל השפות. אבל יש בו דבר מיוחד הרבה יותר: התורה היא הספר היחיד עלי אדמות שכתב אותו בורא עולם. ואפילו אין מי שטוען שיש עוד ספר כזה בבריאה כולה.</p>
+      <p>נושא הנישואין ושלום הבית מעסיק היום את האנושות כולה. לא משנה לאיזו ספרייה תיכנס, תמצא עליו ספרים לאין ספור – כפטריות אחרי הגשם. אבל לפני כל הספרים האלה, הדבר הראשון הוא לפתוח את הספר של היוצר ולראות מה הוא כתב.</p>
+      <p>מי שברא את האדם ואת האישה, הוא היודע למה ברא אותם כך, ולמה הם צריכים להתחבר. ממנו צריך ללמוד את הסיבה האמיתית לנישואין. ובתורה, כפי שנראה, הסיבה אינה בדיוק מה שאנשים רגילים לחשוב.</p>
+      <p class="bold-para">על נושא שלום הבית יש אינספור ספרים, אבל הדבר הראשון הוא לפתוח את הספר של היוצר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שלושה טעמים לנישואין</div>
+      <h3 class="story-title">👶 השולחן ערוך: כדי לפרות ולרבות</h3>
+      <p>התשובות הרגילות שאנשים נותנים לשאלה למה צריך להתחתן הן: כדי לתקן את המידות, וכדי להוליד ילדים ולקיים את מצוות פרו ורבו. אבל האם רק לשם כך?</p>
+      <p>השולחן ערוך פותח את חלק אבן העזר: "חַיָּב כָּל אָדָם לִשָּׂא אִשָּׁה כְּדֵי לִפְרוֹת וְלִרְבּוֹת". וממשיך בלשון חריפה: כל מי שאינו עוסק בפריה ורביה – כאילו שופך דמים, וממעט את הדמות, וגורם לשכינה שתסתלק מישראל.</p>
+      <p>מדברי השולחן ערוך לבדם אפשר היה לחשוב שכל מטרת הנישואין היא הבאת ילדים, ותו לא. וממילא, מי שכבר הביא ילדים וגידל אותם – לכאורה סיים את תפקידו. כאן נכנס הרמ"א ומוסיף דבר חשוב מאוד.</p>
+      <p>ובאמת, הלשון החריפה של השולחן ערוך מלמדת עד כמה חשובה מצוות פריה ורביה. היא המצווה הראשונה בתורה, ובה תלוי קיום העולם. אין כאן ספק שזו סיבה אמיתית וחשובה לנישואין. השאלה היא רק אם זו הסיבה היחידה, ומה קורה כשהיא כבר אינה רלוונטית – אצל זוג מבוגר, או אצל מי שלא זכה לילדים.</p>
+      <p class="bold-para">הטעם הפשוט והמפורסם לנישואין הוא קיום מצוות פריה ורביה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שלושה טעמים לנישואין</div>
+      <h3 class="story-title">🧑 הרמ"א: קודם כול להיות אדם</h3>
+      <p>הרמ"א כותב: "וְכָל מִי שֶׁאֵין לוֹ אִשָּׁה שָׁרוּי בְּלֹא בְּרָכָה, בְּלֹא תּוֹרָה... וְלֹא נִקְרָא אָדָם". הוא בא ללמד שיש סיבה חשובה נוספת לנישואין: כדי להיקרא אדם.</p>
+      <p>הרב הביא כאן דבר יפה. בתפילת השחר אנו אומרים: "לְעוֹלָם יְהֵא אָדָם יְרֵא שָׁמַיִם". אמרו גדולי ישראל: לפני שאתה ירא שמיים, יש דבר קודם – "לעולם יהא אדם". קודם כול תהיה בן אדם, ואחר כך גם ירא שמיים. תרנגול אינו יכול להיות ירא שמיים; קודם צריך להיות אדם.</p>
+      <p>היסוד הזה חשוב מאוד. יש מי שחושב שהעיקר הוא הלימוד והתפילה, והשאר טפל. אבל התורה מלמדת שיש קומה שקודמת לכל: להיות אדם שלם, אדם של יחסים, של נתינה ושל שותפות. רק על היסוד הזה נבנית יראת השמיים.</p>
+      <p>ובא הרמ"א ואומר: כדי להיות אדם, צריך להיות עם אישה. בלעדיה, אדם הוא כביכול חצי. המקור לכך בגמרא במסכת יבמות: אמר רבי אלעזר, כל אדם שאין לו אישה אינו אדם, שנאמר "זָכָר וּנְקֵבָה בְּרָאָם... וַיִּקְרָא אֶת שְׁמָם אָדָם". רק כששניהם יחד, נקרא שמם אדם.</p>
+      <p>ויש שמבארים כך את הברכה "יוצר האדם" שבשבע ברכות. החתן נולד כבר לפני עשרים שנה, ולמה מברכים עכשיו "יוצר האדם"? כי רק עכשיו, כשמצא את החצי השני שלו, הוא נעשה אדם שלם.</p>
+      <p class="bold-para">הרמ"א מוסיף שמי שאין לו אישה אינו נקרא אדם, וקודם ליראת שמיים צריך להיות אדם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שלושה טעמים לנישואין</div>
+      <h3 class="story-title">🤔 מה חסר לחצי אדם?</h3>
+      <p>אבל הדברים צריכים ביאור. מה פירוש שאדם שמלא בתורה ובמידות טובות, אבל אינו נשוי, אינו נקרא אדם? מה חסר לו? יש לו ידיים ורגליים, יש לו שכל ולב. מה פירוש "חצי"? ואם התחתן פעם אחת, האם אחר כך שוב הוא "חצי"? אם לא מפשיטים את הדברים ומסבירים אותם, הם נשארים מילים באוויר.</p>
+      <p>ויש שאלה נוספת. אצל בעלי החיים אין חיי משפחה. לצורך ההולדה הזכר נפגש עם הנקבה, ואחר כך הולך לו. הרב ציין שכמדומה רק היונה והתור שומרים אמונים כל החיים, ולכן אולי זכתה היונה להיות סמל השלום.</p>
+      <p>הדוגמה הזאת מלמדת משהו חשוב. אם הקשר בין איש לאשתו היה רק אמצעי להבאת צאצאים, אפשר היה להסתפק במה שעושים בעלי החיים. העובדה שהתורה דורשת קשר קבוע, נאמן ומחייב לכל החיים, מראה שיש בנישואין דבר נוסף, שאינו תלוי בילדים כלל.</p>
+      <p>אם מטרת הנישואין היא הילדים בלבד, כמו שאמר השולחן ערוך, למה לא יהיה גם אצל האדם כך? למה ציווה ה' על קידושין ונישואין, על קשר שאין לו הפסקה יומם ולילה? ולמה, אחרי שמחתנים את הילדים, לא ייצאו האיש והאישה "לפנסיה" ויפרדו? האם הקשר נמשך רק מתוך נוחות, או שיש בו עניין אמיתי?</p>
+      <p class="bold-para">אם הנישואין הם רק להולדת ילדים, לא ברור למה האדם צריך קשר קבוע לכל החיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שלושה טעמים לנישואין</div>
+      <h3 class="story-title">🦴 "כי מאיש לוקחה זאת"</h3>
+      <p>ועכשיו נפתח את התורה. בורא עולם, נותן התורה, שברא את הבריאה, כותב למה אדם צריך להתחתן. היינו מצפים שיכתוב: כדי להוליד ילדים. בואו נראה מה כתוב באמת.</p>
+      <p>"וַיֹּאמֶר הָאָדָם: זֹאת הַפַּעַם עֶצֶם מֵעֲצָמַי וּבָשָׂר מִבְּשָׂרִי, לְזֹאת יִקָּרֵא אִשָּׁה כִּי מֵאִישׁ לֻקֳחָה זֹּאת. עַל כֵּן יַעֲזָב אִישׁ אֶת אָבִיו וְאֶת אִמּוֹ וְדָבַק בְּאִשְׁתּוֹ וְהָיוּ לְבָשָׂר אֶחָד".</p>
+      <p>שימו לב: לא כתוב בתורה שמתחתנים בגלל ילדים, וגם לא כדי לתקן את המידות. "על כן" – בגלל מה? בגלל שמאיש לוקחה זאת. סיבת הנישואין לפי התורה היא שהאישה הופרדה מן האיש.</p>
+      <p>ומה פירוש "יעזוב איש את אביו ואת אמו"? אין הכוונה שיפסיק לכבד אותם, חלילה. הוא עוזב את הקן המשפחתי והולך לבנות בית. ויש כאן גם שני סוגי אהבה שונים: אהבת הבן להוריו היא אהבה של רוממות, של הערצה ויראת כבוד. אהבת איש לאשתו היא אהבה של שווה בשווה. אלה אהבות שונות לגמרי, ואחת אינה באה על חשבון השנייה.</p>
+      <p>ומכאן גם תשובה למי ששואל איך אפשר לעזוב את ההורים. העזיבה היא של המקום, לא של הלב. הבן ממשיך לכבד את הוריו ולאהוב אותם, אבל מרכז חייו עובר אל הבית החדש שהוא בונה עם אשתו. שם מתחיל הפרק החדש של חייו, ושם הוא נעשה אדם שלם.</p>
+      <p class="bold-para">התורה עצמה אינה מנמקת את הנישואין בילדים, אלא בכך שהאישה נלקחה מן האיש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שלושה טעמים לנישואין</div>
+      <h3 class="story-title">🔗 מה הקשר אליי?</h3>
+      <p>אבל כאן עולה שאלה גדולה. התורה מספרת סיפור: חוה הופרדה מאדם הראשון. ניסרה, נחתכה ממנו. ומיד היא מסיימת: "על כן יעזוב איש את אביו ואת אמו" – כל אדם, בכל דור, אלפי שנים אחר כך. מה הקשר? האם כל אדם בימינו הופרד מאשתו? לכאורה יש כאן שני סיפורים שאינם קשורים זה לזה.</p>
+      <p>אחד המשתתפים הציע: היה חיבור ראשוני ושלם שנפרד, ועכשיו כדי לחזור לשלמות צריך לחבר מחדש. הרב אמר שזה בכיוון, ושהדבר יתבאר בהמשך.</p>
+      <p>ועוד: התורה כלל לא כתבה "ויתחתן". היא כתבה "ודבק באשתו". מה פירוש להיות דבוק באשתו? הרב התבדח: ודאי אין הכוונה שהבעל יישאר כל היום בבית. זה מתכון לכישלון; תפקידו לצאת בבוקר לעבודה או ללימוד. ומה פירוש "והיו לבשר אחד"? והאם הטעם של הרמ"א – להיות אדם – קשור לטעם של ההפרדה?</p>
+      <p>לסיכום הפרק: מצאנו שלושה טעמים. השולחן ערוך – כדי לפרות ולרבות. הרמ"א – כדי להיות אדם. התורה – כי מאיש לוקחה. ויש לברר איך כל הטעמים האלה מתחברים יחד.</p>
+      <p class="bold-para">התורה מחברת בין סיפור הפרדת חוה לבין כל זוג בכל דור – ושם מסתתר סוד הנישואין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שלושה טעמים לנישואין</div>
+      <h3 class="story-title">📜 למה התורה לא כתבה פרו ורבו?</h3>
+      <p>שאלו המשתתפים: והרי פרו ורבו כתוב בתורה! נכון, זו המצווה הראשונה בתורה. אבל לא כתוב בתורה שבגלל זה מתחתנים. ולמה? הרב נתן סיבה פשוטה: את פריה ורביה, לצערנו, אפשר לקיים גם בלי חתונה. ובימינו זה אפילו קל מדי.</p>
+      <p>ממילא, אם הטעם היחיד לנישואין היה הבאת ילדים, אין צורך במחויבות. ויש בדורנו מי שאינם רוצים את המחויבות הזאת. לכן התורה אינה מנמקת את הנישואין בילדים בלבד. החתונה היא מחויבות, קשר שלם וקבוע, ויש לה טעם עמוק יותר.</p>
+      <p>ועד כדי כך הדבר חשוב, שהרמ"א אומר שאדם בלי אישה אינו נקרא אדם. זה ביטוי חזק מאוד: לא שחסרה לו מצווה אחת, אלא שחסר לו משהו ביסוד היותו אדם. צריך להבין בדיוק מה חסר לו כל כך. לשם כך עובר השיעור לפרק הבא.</p>
+      <p class="bold-para">את פריה ורביה אפשר לקיים גם בלי נישואין; הנישואין הם מחויבות, ולשם כך יש להם טעם אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מצוות אהבת האישה</div>
+      <h3 class="story-title">⚖️ מצוות אהבת האישה – מדרבנן?</h3>
+      <p>הפרק השני עוסק בשאלה: היכן כתובה בתורה המצווה לאהוב את האישה? האם המצווה לכבד ולאהוב את האישה היא מדרבנן, מדאורייתא, או שמא היא חשובה כמו התורה כולה?</p>
+      <p>כאן יש לכאורה סתירה בין שני מקומות ברמב"ם. בהלכות אישות הוא כותב: "וְכֵן צִוּוּ חֲכָמִים שֶׁיְּהֵא אָדָם מְכַבֵּד אֶת אִשְׁתּוֹ יוֹתֵר מִגּוּפוֹ וְאוֹהֲבָהּ כְּגוּפוֹ". ואם יש לו ממון מרבה בטובתה כפי הממון, ולא יטיל עליה אימה יתרה, ויהיה דיבורו עמה בנחת, ולא יהיה עצב ולא רגזן.</p>
+      <p>יש כאן שבעה פרטים, שבע דרכים לשלום בית: לכבד, לאהוב, להרבות בטובתה, לא להטיל אימה יתרה, לדבר בנחת, לא להיות עצב ולא להיות רגזן. הרב הזכיר שיצא ספר שלם על שבעת היסודות האלה, מיסודו של הרב אברהם גנחובסקי, שמבאר כל אחד מהם הלכה למעשה.</p>
+      <p>אבל מלשון הרמב"ם "ציוו חכמים" משמע שהחיוב לכבד ולאהוב את האישה הוא מדרבנן בלבד. וזה תמוה: לכאורה זה מפורש בתורה – "וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ". למה צריך ציווי של חכמים?</p>
+      <p class="bold-para">ברמב"ם בהלכות אישות כתוב "וכן ציוו חכמים", ומשמע שאהבת האישה וכבודה הם מדרבנן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מצוות אהבת האישה</div>
+      <h3 class="story-title">🌍 "ואהבת לרעך" – אהבה כללית</h3>
+      <p>התירוץ שהציע הרב: "ואהבת לרעך כמוך" הוא ציווי כללי. הוא אומר לאדם לאהוב את הבריות, אבל אינו מחייב אותו להתאמץ דווקא על אדם מסוים. אי אפשר לאהוב את כולם באותה מידה. אחד בוחר לאהוב את השכן, אחד את חברו מבית הכנסת. התורה לא קבעה במי לבחור.</p>
+      <p>הרב השווה זאת למצוות חסד. יש מצווה לעשות חסד, אבל למי? כל אחד בתחומו: אחד אוהב לעזור לחלשים, אחד לשמח עצובים, אחד לנגן, אחד ללמד. התורה ציוותה באופן כללי, ולא קבעה אדם מסוים.</p>
+      <p>ובאו חכמים ואמרו: דע לך, את אשתך – זה פרויקט החיים שלך. שם אתה צריך להשקיע באהבה. היא הראשונה, ממנה אתה מתחיל. כמובן, מי שאוהב את אשתו מקיים גם "ואהבת לרעך כמוך". אבל את החיוב המיוחד, לבחור דווקא בה ולהשקיע בה יותר מבכל אדם אחר, קבעו חכמים. ולכן כתב הרמב"ם "ציוו חכמים".</p>
+      <p>ויש בזה מסר מעשי מאוד. אדם יכול לחשוב שהוא מקיים את מצוות האהבה כי הוא אדם נחמד לכולם, מחייך לשכנים ועוזר לחברים. אבל חכמים אומרים לו: המבחן הראשון אינו בחוץ. המבחן הראשון הוא בבית, מול האדם הקרוב אליך ביותר. שם צריך להשקיע את עיקר האהבה.</p>
+      <p class="bold-para">"ואהבת לרעך" הוא ציווי כללי; החכמים באו וקבעו שאת אשתו צריך לאהוב במיוחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מצוות אהבת האישה</div>
+      <h3 class="story-title">📞 עוזר לכל העולם</h3>
+      <p>הרב סיפר סיפור שבו פותח ספר יפה על שלום בית. פעם אחת התקשרה אישה אל רב וביקשה עזרה. היא סיפרה: בעלי עוזר לכל העולם כולו. בכל מקום שמבקשים חסד – הוא שם. ואני נמצאת בשמירת הריון, אסור לי לקום. בצהריים הילדים חוזרים הביתה, ואין מי שיפתח להם ויבשל להם. ביקשתי ממנו שיבוא הביתה בצהריים.</p>
+      <p>הרב התקשר אל הבעל וביקש שיבוא הביתה בשעה הזאת. והבעל השיב: אני מצטער, אני לא יכול. למה? אני צריך לעזור למישהו. יש אישה בשמירת הריון שאינה יכולה לקום, וצריך לעזור לה.</p>
+      <p>הוא לא שם לב שהאישה בשמירת ההריון היא אשתו. איך ייתכן? למה לכל העולם הוא יכול לעזור, ורק לבית לא? הרב אמר שבספר מבארים את הפסיכולוגיה של הדבר: לפעמים קל יותר לאדם לעזור לשכן ולאחרים, כי שם רואים אותו ומכבדים אותו. בבית איש אינו מוחא לו כפיים.</p>
+      <p>ולכן קבעו חכמים: את אשתך תאהב קודם. החסד הראשון מתחיל בבית.</p>
+      <p>וזה לא אומר שאסור לעזור לאחרים. להפך, חסד הוא דבר גדול. אבל הסדר חשוב: קודם הבית, ואחר כך העולם. מי שעוזר לכל העולם ומזניח את ביתו, הפך את הסדר. ומי שבונה קודם את ביתו באהבה, יוכל אחר כך להאיר גם החוצה, מתוך בית שלם ושמח.</p>
+      <p class="bold-para">לפעמים קל לאדם לעזור לכל העולם, ודווקא בבית הוא שוכח לעזור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · נר ביתו ונר חנוכה</div>
+      <h3 class="story-title">🕯️ נר ביתו קודם</h3>
+      <p>לעומת הלשון "ציוו חכמים", בהלכות חנוכה כותב הרמב"ם דבר אחר לגמרי. אדם שיש לפניו נר ביתו – נר שבת – ונר חנוכה, ואין לו כסף לשניהם: נר ביתו קודם, משום שלום ביתו.</p>
+      <p>והרמב"ם ממשיך: שהרי השם נמחק לעשות שלום בין איש לאשתו. "גָּדוֹל הַשָּׁלוֹם, שֶׁכָּל הַתּוֹרָה נִתְּנָה לַעֲשׂוֹת שָׁלוֹם בָּעוֹלָם, שֶׁנֶּאֱמַר: דְּרָכֶיהָ דַרְכֵי נֹעַם וְכָל נְתִיבוֹתֶיהָ שָׁלוֹם".</p>
+      <p>על פניו זו סתירה גמורה. ברמב"ם אחד כתוב שאהבת האישה היא מדרבנן. וברמב"ם השני כתוב שלא רק שהשלום בבית חשוב, אלא שכל התורה ניתנה בשבילו. איך מיישבים את שני הדברים?</p>
+      <p>הרב אמר שזו שאלה עצומה, וקשה מאוד ליישב. אבל לפני התירוץ, כדאי להבין עד כמה ההלכה של נר ביתו מפליאה.</p>
+      <p>שימו לב לחידוש: הרמב"ם אינו מסתפק בכך שהשלום בבית הוא מצווה חשובה. הוא אומר שזו התכלית של כל התורה כולה. לא מצווה אחת מתוך תרי"ג, אלא המטרה שכל התרי"ג מכוונות אליה. אם כן, איך יכול אותו רמב"ם לכתוב במקום אחר שזה רק "ציוו חכמים"?</p>
+      <p class="bold-para">"גדול השלום שכל התורה ניתנה לעשות שלום בעולם" – ונר השבת קודם לנר חנוכה משום שלום בית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · נר ביתו ונר חנוכה</div>
+      <h3 class="story-title">⚖️ תדיר או קדוש?</h3>
+      <p>יש כלל ידוע: "תדיר ושאינו תדיר – תדיר קודם". לדוגמה, בראש חודש טבת, שחל בחנוכה, מוציאים שני ספרי תורה. איזו קריאה ראשונה? של ראש חודש, כי הוא תדיר יותר. אבל הכלל הזה נאמר כשמקיימים את שני הדברים, והשאלה היא רק מה קודם.</p>
+      <p>כשאפשר לקיים רק אחד מן השניים, הכלל אחר: הקדוש קודם. ובשבת חנוכה, אדם שיש לו כסף רק לנר אחד – לכאורה נר חנוכה היה צריך לקדום. כתב הרמב"ם שמצוות נר חנוכה חביבה היא עד מאוד, ויש בה פרסום הנס.</p>
+      <p>ובכל זאת נר שבת קודם. לא משום שהוא קדוש יותר, אלא משום שלום בית. נר השבת מאיר את הבית, ובלעדיו יש בבית חושך ומתח. ושלום הבית חשוב מכל.</p>
+      <p>כל אחד מאיתנו יכול לשאול את עצמו: מה אני מוכן לוותר בשביל שלום בביתי? ההלכה הזאת מלמדת שאפילו מצווה חביבה ומפורסמת כמו נר חנוכה נדחית מפני שלום הבית. אם כן, ודאי שכדאי לוותר על עקשנות קטנה, על ויכוח מיותר או על "צדקתי", כדי שהבית יהיה מואר.</p>
+      <p>הרב סיפר שפעם התעורר ויכוח בשיעור על הרמב"ם הזה, באיזה מקרה בדיוק מדובר, וכל אחד הציע רעיון משלו. אבל העיקר פשוט: אסור להתחכם עם ההלכה. אם ההלכה אומרת שכאשר יש חשש לשלום הבית, נר הבית קודם – כך עושים. מכאן רואים כמה גדול כוחו של שלום בית.</p>
+      <p class="bold-para">כשאפשר לקיים רק אחד, הקדוש קודם – ובכל זאת נר שבת קודם לנר חנוכה, משום שלום בית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לאן מובילות המצוות</div>
+      <h3 class="story-title">🛒 צבא או עגלת קניות</h3>
+      <p>כדי ליישב את הסתירה ולהבין גם למה מתחתנים, צריך קודם להבין, על רגל אחת, מה חובת האדם בעולמו. ומכאן מגיעה שאלה עצומה: אדם עושה מצוות רבות במשך ימי חייו. האם יש לכולן מטרה משותפת, או שכל מצווה עומדת בפני עצמה?</p>
+      <p>אפשרות ראשונה – כמו צבא. יש חיל רגלים, חיל תותחנים, חיל אוויר וצוללות. כל אחד פועל במקום אחר ובדרך אחרת, אבל לכולם מטרה אחת: לגבור על האויב ולשמור על המדינה. כך אפשר שכל המצוות – סוכה, לולב, שבת, חנוכה – כולן נועדו ליצור דבר אחד בסוף.</p>
+      <p>אפשרות שנייה – כמו אדם שהולך בסופר עם עגלת קניות, ומכניס לתוכה כל מה שרואות עיניו: אבקת כביסה, גבינה, סמרטוט רצפה, סוללות וכבל מאריך. אין שום קשר בין הדברים. אדם בא לקנות לחם ויוצא עם עגלה מלאה. אולי גם המצוות הן אוסף כזה, בלי חוט מקשר?</p>
+      <p>ההבדל בין שתי האפשרויות עצום. מי שרואה את המצוות כעגלת קניות, מסיים את היום עם עגלה מלאה, אבל בלי כיוון. כל מצווה נעשית, ואחר כך נשכחת. ומי שרואה אותן כצבא אחד, יודע שכל מעשה קטן הוא חלק ממערכה גדולה, ושכל מצווה מקדמת אותו צעד אחד אל אותו יעד. השאלה היא: מה היעד?</p>
+      <p class="bold-para">האם לכל המצוות יש מטרה אחת, או שהן אוסף של מעשים בלי קשר ביניהם?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לאן מובילות המצוות</div>
+      <h3 class="story-title">🧭 יסוד החסידות ושורש העבודה</h3>
+      <p>על השאלה הזאת השיב הרמח"ל בפרק הראשון של ספרו מסילת ישרים, שהוא יסוד בספרי המוסר: "יְסוֹד הַחֲסִידוּת וְשֹׁרֶשׁ הָעֲבוֹדָה הַתְּמִימָה הוּא שֶׁיִּתְבָּרֵר וְיִתְאַמֵּת אֵצֶל הָאָדָם מַה חוֹבָתוֹ בְּעוֹלָמוֹ, וּלְמָה צָרִיךְ שֶׁיָּשִׂים מַבָּטוֹ וּמְגַמָּתוֹ בְּכָל אֲשֶׁר הוּא עָמֵל כָּל יְמֵי חַיָּיו".</p>
+      <p>לכאורה, מי אינו יודע מה חובת האדם? לקיים תרי"ג מצוות. למה צריך "שיתברר ויתאמת"? אלא שהרמח"ל מלמד שיש יעד אחד לכל המצוות: השלמות האמיתית היא רק הדבקות בו יתברך. כל המצוות הן אמצעים, ותכלית כולן להביא את האדם לידי דבקות.</p>
+      <p>ומה זו דבקות? קשר תמידי של אהבה. לא קשר זמני, אלא קשר חזק מאוד של אהבה. תפקיד כל המצוות הוא להביא את האדם לאהבת ה'.</p>
+      <p>לצערנו, רוב האנשים אינם מודעים לכך, ואם הם יודעים – אינם חושבים על זה. רוב שומרי התורה עושים את המצוות כאוסף: פעם זה, פעם זה. מעט מאוד אנשים מחפשים איך להפוך את המצוות לבניין אחד, שכולו מקרב אותם אל אהבת הבורא.</p>
+      <p class="bold-para">מסילת ישרים מלמד שכל המצוות הן אמצעים, ותכליתן אחת: הדבקות בה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לאן מובילות המצוות</div>
+      <h3 class="story-title">💭 "מה אכפת לי?"</h3>
+      <p>אפשר לשאול: מה אכפת לי מה מטרת המצוות? אני עושה בדיוק מה שכתוב בשולחן ערוך, והדבקות כבר תגיע מאליה. זו טענה נפוצה, אבל הדברים אינם כך. אם אדם אינו חושב לפני המצווה שמטרתו להגיע לדבקות, ואינו משתוקק אליה, הוא מחסיר את רוב הדבקות שהייתה יכולה לבוא מן המצווה.</p>
+      <p>וכך גם באהבת איש ואשתו. לא כל קשר בין בני זוג מביא לאהבה ולדבקות. רק כאשר האדם חושב על האהבה ומשתוקק להגיע אליה, היא באה.</p>
+      <p>הרב הביא דוגמה פשוטה: אדם עוזר בבית. האם זה מגדיל את אהבתו לאשתו? הרבה פעמים זה תלוי איך הוא ניגש לזה. אם הוא חושב: זה התפקיד שלי, יש חלוקת עבודה, אני אחראי על זה והיא על זה – זה יכול להישאר קר כמו קרח. אבל אם הוא חושב: תראה כמה היא טרחה, בוא נעזור לה – המחשבה הזאת לבדה מביאה אותו לאהבה.</p>
+      <p class="bold-para">דבקות אינה באה מאליה; היא באה כשאדם חושב עליה ומשתוקק אליה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לאן מובילות המצוות</div>
+      <h3 class="story-title">❤️ מעשה עם מחשבה</h3>
+      <p>זה דבר מדהים. אי אפשר לומר ללב: תאהב. אין כפתור שלוחצים עליו ומתחילים לאהוב. אבל מה כן אפשר לעשות? מעשה עם מחשבה. מעשה לבד אינו מביא כל כך לאהבה, ומחשבה לבד גם כן לא. אבל מעשה שנעשה מתוך מחשבה – כך האדם משפיע על לבו.</p>
+      <p>אותו הדבר באהבת ה'. עצם מעשה המצווה – נטילת לולב, לימוד תורה – לא תמיד מביא לאהבה. אבל אם אדם, לפני השיעור, לפני המצווה, לפני תפילת מנחה, חושב: אני מקיים את המצווה הזאת כדי לאהוב את בורא עולם – זה מעורר את האהבה מאוד מאוד.</p>
+      <p>זה סיכום מה שנלמד עד כאן. התחלנו בשאלה למה מתחתנים, וראינו שלושה טעמים. ראינו שיש מצווה לאהוב את האישה, ולא ברור אם היא מדרבנן או שהיא תכלית הכול. ולמדנו שחובת האדם בעולמו היא הדבקות – קשר תמידי של אהבה עם ה'. בשיעור הבא, בעזרת ה', נחזור מכאן אל האישה, ונראה איך כל החלקים מתחברים.</p>
+      <p class="bold-para">אי אפשר לצוות על הלב לאהוב, אבל מעשה עם מחשבה מעורר את האהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/8ssIR9oj-Q8 · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שאלה שמלווה כל החיים","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"למה מתחתנים – גם בסוף הדרך","icon":"❓"},{"id":2,"title":"שאלה שאיש לא ידע לענות עליה","icon":"🧓"},{"id":3,"title":"הספר שכתב בורא עולם","icon":"📚"}]},{"id":2,"name":"שלושה טעמים לנישואין","icon":"📖","color":"#6d28d9","stories":[{"id":4,"title":"השולחן ערוך: כדי לפרות ולרבות","icon":"👶"},{"id":5,"title":"הרמ\"א: קודם כול להיות אדם","icon":"🧑"},{"id":6,"title":"מה חסר לחצי אדם?","icon":"🤔"},{"id":7,"title":"\"כי מאיש לוקחה זאת\"","icon":"🦴"},{"id":8,"title":"מה הקשר אליי?","icon":"🔗"},{"id":9,"title":"למה התורה לא כתבה פרו ורבו?","icon":"📜"}]},{"id":3,"name":"מצוות אהבת האישה","icon":"❤️","color":"#e08e00","stories":[{"id":10,"title":"מצוות אהבת האישה – מדרבנן?","icon":"⚖️"},{"id":11,"title":"\"ואהבת לרעך\" – אהבה כללית","icon":"🌍"},{"id":12,"title":"עוזר לכל העולם","icon":"📞"}]},{"id":4,"name":"נר ביתו ונר חנוכה","icon":"🕯️","color":"#1e88b8","stories":[{"id":13,"title":"נר ביתו קודם","icon":"🕯️"},{"id":14,"title":"תדיר או קדוש?","icon":"⚖️"}]},{"id":5,"name":"לאן מובילות המצוות","icon":"🧭","color":"#c62b6b","stories":[{"id":15,"title":"צבא או עגלת קניות","icon":"🛒"},{"id":16,"title":"יסוד החסידות ושורש העבודה","icon":"🧭"},{"id":17,"title":"\"מה אכפת לי?\"","icon":"💭"},{"id":18,"title":"מעשה עם מחשבה","icon":"❤️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
