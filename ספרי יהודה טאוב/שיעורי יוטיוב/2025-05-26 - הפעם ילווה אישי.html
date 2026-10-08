@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 הפעם ילווה אישי</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 הפעם ילווה אישי</h1>
+  <p>מה מלמדים שמות ראובן, שמעון ולוי על האחדות בין איש לאשתו, ואיך החיבור בבית מחבר גם בין הקדוש ברוך הוא לעם ישראל</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ הפעם ילווה אישי" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/e7g_JvGlcnw?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/e7g_JvGlcnw/hqdefault.jpg" alt="הפעם ילווה אישי" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=e7g_JvGlcnw" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אהבה מתחילה מהקרובים</div>
+      <h3 class="story-title">🕯️ חידה לפתיחה</h3>
+      <p>את השיעור פתח הרב בחידה. יש מדרש פליאה על הפסוק בשיר השירים: "הַדּוּדָאִים נָתְנוּ רֵיחַ, וְעַל פְּתָחֵינוּ כָּל מְגָדִים". אומר המדרש: "הדודאים נתנו ריח" – אלו הדודאים של ראובן. "ועל פתחינו כל מגדים" – אלו נרות חנוכה, שמדליקים על הפתח.</p>
+      <p>מה הקשר בין הדודאים שמצא ראובן בשדה לבין נרות חנוכה? זו חידה תמוהה ביותר. אפשר לחשוב שזה סתם חידוד של מילים, אבל הרב אמר שזה דבר עמוק מאוד, ושבעזרת ה' לאט לאט נגיע אליו. והפתרון אכן יבוא בהמשך הסדרה, אחרי שנלמד את שמות השבטים אחד אחד.</p>
+      <p>בינתיים, הדבר שכדאי לזכור הוא שהסדרה הזאת עוסקת בשמות שקראה לאה אמנו לבניה. כל שם הוא סיפור קטן על מה שהתרחש בין יעקב ללאה, ועל המדרגה של האחדות שהגיעו אליה. ודרך השמות האלה לומדים הרבה מאוד על הבית היהודי – ובסוף גם על חנוכה.</p>
+      <p>לפני שנמשיך, צריך לחזור בקצרה על מה שנלמד בשיעור הקודם: השאלה הגדולה על המילה "שנואה", והיסוד שעולה ממנה לגבי מצוות אהבת הזולת.</p>
+      <p class="bold-para">מדרש פליאה מחבר את הדודאים של ראובן לנרות חנוכה, והשיעורים בסדרה הולכים ומתקרבים לפתרון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אהבה מתחילה מהקרובים</div>
+      <h3 class="story-title">❓ האם לאה הייתה שנואה?</h3>
+      <p>בתורה כתוב: "וַיַּרְא ה' כִּי שְׂנוּאָה לֵאָה". הראשונים שואלים: איך ייתכן שיעקב שנא את לאה? יש הלכה שאסור לאדם להביא ילדים מאישה שנואה, וזו אחת מתשע מידות שנמנו בזה. והזוהר שואל עוד יותר: הרי ראינו שיצאו ממנה ילדים צדיקים, השבטים הקדושים. אם הייתה שנואה, לא היו יוצאים ממנה בנים כאלה.</p>
+      <p>ועוד: בפסוק כתוב במפורש "וַיֶּאֱהַב גַּם אֶת רָחֵל מִלֵּאָה". המילה "גם" מלמדת שאהב גם את לאה, אלא שאת רחל אהב יותר. אם כן, לא הייתה כאן שנאה כלל.</p>
+      <p>ותירצו הראשונים, ובהם הרמב"ן והרד"ק: "שנואה" כאן היא יחסית. לעומת רחל, לאה הייתה פחות אהובה. אבל אז נשאלה בשיעור הקודם שאלה טובה: אם כן, למה התורה משתמשת במילה חריפה כל כך? למה לא כתוב "וירא ה' כי פחות אהובה"?</p>
+      <p>התשובה טמונה ביסוד גדול בהלכות "לֹא תִשְׂנָא אֶת אָחִיךָ בִּלְבָבֶךָ". צריך להבין מהי ההגדרה של שנאה בתורה. והתשובה מפתיעה: שנאה אינה רק רגש שלילי. היא נמדדת לעומת האהבה שאדם מחויב בה. כשחסר באהבה שהוא חייב לתת, התורה קוראת לזה שנאה.</p>
+      <p class="bold-para">"שנואה" אינה שנאה ממש, אלא אהבה פחותה ביחס לרחל – ובכל זאת התורה קוראת לזה שנאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אהבה מתחילה מהקרובים</div>
+      <h3 class="story-title">❤️ שנאה היא חיסרון באהבה</h3>
+      <p>כלפי כל אדם ברחוב, החובה היא לומר לו שלום, לא לכעוס עליו, לא להימנע מלדבר איתו מרוב כעס. זה נקרא "לא תשנא". אין חובה לאהוב כל אדם באותה מידה. אבל כלפי הקרובים אליו יש לאדם חובה אחרת: חובה לאהוב אותם באמת. וכשהאהבה הזאת חסרה – התורה מגדירה זאת כשנאה.</p>
+      <p>שימו לב לדיוק בפסוקים: "לא תשנא את אחיך" נאמר על כולם. אבל "וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ" – לרעך, למי שהוא רעך, הקרוב אליך. אסור לשנוא איש, אבל לאהוב את כולם רוב בני האדם אינם מסוגלים. יחידים בדור, כמו רבי אריה לוין, הגיעו לאהוב כל אדם. ומי שאינו שם – יתחיל באהבה למי שקרוב אליו, ויאהב אותו כמוהו.</p>
+      <p>ומי הקרוב ביותר? אשתו. וכך פוסק הרמב"ם: ציוו חכמים שיהיה אדם אוהב את אשתו כגופו. זו המצווה הראשונה של אהבת הזולת. ולכן, אם יעקב אהב את לאה פחות מכפי שאדם צריך לאהוב את אשתו, גם אם אהב אותה – התורה קוראת לזה "שנואה".</p>
+      <p>ומכאן לומדים כמה גבוהה הדרישה של התורה בבית. לא מספיק שלא תהיה מריבה. לא מספיק שיש כבוד הדדי. התורה מצפה לאהבה מלאה, וכל מה שחסר בה נחשב בעיניה כחיסרון של ממש.</p>
+      <p class="bold-para">כלפי כל אדם החובה היא לא לשנוא; כלפי הקרובים החובה היא לאהוב, וכל חיסרון באהבה נקרא שנאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אהבה מתחילה מהקרובים</div>
+      <h3 class="story-title">🍽️ זבח משפחה</h3>
+      <p>בספר החיים, לאחיו של המהר"ל, מובא יסוד שמתאים מאוד לימי חנוכה, כשנוהגים לעשות ערבי משפחה. המצווה העיקרית של "ואהבת לרעך כמוך" היא קודם כל לאהוב את המשפחה: את האישה, את הילדים, אחר כך את הדודים, הבנים והנכדים. ולאט לאט הלב מתרחב – לחברים, לעיר, ויש שזוכים להגיע לאהוב כל יהודי.</p>
+      <p>ולכן יש ערך אמיתי בכינוס של המשפחה. מטרתו לחבר את הלבבות. ולכך יש מקור בתנ"ך. כששאול שואל את יונתן מדוע לא בא דוד אל הסעודה, גם אתמול גם היום, עונה יונתן שדוד ביקש ללכת אל משפחתו, "כִּי זֶבַח מִשְׁפָּחָה לָנוּ". היו עושים סעודה לכל המשפחה, נשואים ורווקים, וכולם באו.</p>
+      <p>אבל צריך דבר אחד: שמישהו יעמוד ויזכיר לכולם את המטרה. רבותיי, הכינוס הזה הוא קיום של "ואהבת לרעך כמוך", ומקורו בתנ"ך. כשהלב יודע למה התכנסו, האהבה מתעוררת.</p>
+      <p>ומעשה שסיפר הרב על אחד מגדולי ישראל, שקרוב משפחתו בא לבקרו בחג הסוכות. הרב הושיב אותו בסוכה, ואמר שהוא עצמו חולה ולכן יאכל בבית. אחרי כמה דקות ירד הרב לסוכה עם המגש שלו. שאל אותו הקרוב: הרי אמרת שאתה חולה? השיב: חולה פטור מן הסוכה, אבל לא מצאתי שחולה פטור מהכנסת אורחים. ולכן ירד לשבת עם קרובו.</p>
+      <p class="bold-para">אהבת הזולת מתחילה במשפחה ומתרחבת משם, ולכן יש ערך גדול בכינוס המשפחה יחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ראובן ושמעון</div>
+      <h3 class="story-title">🔎 מצאו את ההבדלים</h3>
+      <p>עכשיו עוברים לשמות השבטים. על ראובן אומרת התורה: "וַתִּקְרָא שְׁמוֹ רְאוּבֵן, כִּי אָמְרָה: כִּי רָאָה ה' בְּעָנְיִי, כִּי עַתָּה יֶאֱהָבַנִי אִישִׁי". ועל שמעון: "וַתֹּאמֶר: כִּי שָׁמַע ה' כִּי שְׂנוּאָה אָנֹכִי, וַיִּתֶּן לִי גַּם אֶת זֶה, וַתִּקְרָא שְׁמוֹ שִׁמְעוֹן".</p>
+      <p>בואו נמצא את ההבדלים. הבדל ראשון: בפעם הראשונה כתוב "ראה", ובפעם השנייה "שמע". למה החליפה לאה את הפועל מראייה לשמיעה? הבדל שני: בפעם הראשונה הלשון חיובית – "יאהבני", ובפעם השנייה שלילית – "שנואה". והרי הסדר הטבעי הפוך: כשרוצים להתקרב, קודם מסירים את השנאה, ורק אחר כך מתחילים לאהוב. כאן התורה הפכה את הסדר – קודם אהבה, ואחר כך שנאה.</p>
+      <p>הבדל שלישי: בפעם הראשונה כתוב "ראה ה' בעניי" – יש לי צער, כואב לי. בפעם השנייה המילה "עניי" נעלמה. אין צער.</p>
+      <p>המשתתפים מצאו גם הבדל נוסף, בסדר שבין השם לבין הסיבה, אבל זה כבר נושא אחר. שלושת ההבדלים העיקריים – ראייה ושמיעה, אהבה ושנאה, והצער שנעלם – זקוקים לתשובה אחת שתסביר את כולם.</p>
+      <p class="bold-para">בין קריאת שמו של ראובן לקריאת שמו של שמעון יש שלושה הבדלים, וכל אחד מהם מעורר שאלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ראובן ושמעון</div>
+      <h3 class="story-title">👂 מה שרואים ומה ששומעים</h3>
+      <p>התשובה נפלאה. בבן הראשון עדיין הרגישה לאה חיסרון באחדות בינה לבין יעקב. היא ידעה שה' נתן לה בן ולרחל לא, משום שראה את החיסרון הזה. ולכן אמרה "כי ראה ה' בעניי" – זה היה צער אמיתי, דבר שאפשר לראות בעיניים של בשר ודם. ובעקבות הבן, "עתה יאהבני אישי". ואכן, יעקב התחיל לאהוב אותה.</p>
+      <p>ובבן השני? לאה כבר לא הרגישה שום צער. הבית היה טוב, יעקב אהב אותה. ובכל זאת ה' נתן לה עוד בן ולא לרחל. אמרה לאה: אם הקדוש ברוך הוא עדיין נותן לי, סימן שהוא רואה משהו דק מן הדק שעדיין חסר. דבר שאי אפשר לראות בעיניים – רק "לשמוע" בלב.</p>
+      <p>"שמע" בלשון הקודש אינו רק שמיעה באוזניים. זו הבנה, הרגשה פנימית, כמו "וְנָתַתָּ לְעַבְדְּךָ לֵב שֹׁמֵעַ". היום היו קוראים לזה אינטואיציה. רק ה', הבוחן לבבות, יכול להרגיש שיש חיסרון כזה באחדות. ולכן קראה לו שמעון. כך מבאר גם האור החיים: לאה ראתה צורך להודות לה' שדאג להסיר אפילו חיסרון דק מן הדק באחדות ביניהם.</p>
+      <p>ומכאן מובנים כל ההבדלים. ראובן – ראייה, כי החיסרון היה גלוי. שמעון – שמיעה, כי החיסרון היה נסתר. בראובן "בעניי", כי היה צער. בשמעון אין "עניי", כי לא היה צער כלל. והלשון "שנואה" בשמעון אינה צעד אחורה: זה בדיוק אותו חיסרון דק, שגם הוא נקרא בתורה שנאה.</p>
+      <p class="bold-para">בראובן היה חיסרון גלוי לעין; בשמעון היה חיסרון דק מן הדק, שרק הקדוש ברוך הוא שמע אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ראובן ושמעון</div>
+      <h3 class="story-title">🌳 מיטתו שלמה</h3>
+      <p>לומדים מכאן כמה חשובה בעיני ה' כל תוספת, אפילו הקטנה ביותר, באחדות בין איש לאשתו. החיסרון כבר לא נראה, לאה עצמה לא הרגישה בו צער, ובכל זאת התורה קוראת לו "שנואה אנוכי", והקדוש ברוך הוא נותן בן נוסף כדי להשלים אותו.</p>
+      <p>למה עד כדי כך? משום שמדובר ביעקב אבינו. מידתו של יעקב היא תפארת, שלמות. על יעקב נאמר "וַיָּבֹא יַעֲקֹב שָׁלֵם". יעקב צריך להגיע לשלמות מלאה, לאהוב בלי שום חיסרון. ולכן נתנו לו עוד בן ועוד בן, עד שיגיע לשלמות הגמורה.</p>
+      <p>ובאמת, חז"ל אומרים על יעקב ש"מיטתו שלמה" – כל בניו צדיקים. השלמות של הבית ושל האהבה היא שהולידה בית שכולו קדוש. זה לא מקרה, אלא תוצאה ישירה של העבודה הזאת, להשלים כל חיסרון דק באהבה.</p>
+      <p>ומה זה אומר לנו? שבבית אסור להסתפק ב"בסדר". גם כשהכל נראה טוב, ואין צער ואין מריבה, אפשר לשאול: האם יש עוד משהו דק שאפשר להוסיף? מילה, תשומת לב, קרבה. הקדוש ברוך הוא שומע את הדקויות האלה, והוא מחכה שנשלים אותן.</p>
+      <p class="bold-para">מידתו של יעקב היא שלמות, ולכן גם החיסרון הדק ביותר באהבה היה צריך להשלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לוי – חיבור נצחי</div>
+      <h3 class="story-title">👐 שלושה בנים ושתי ידיים</h3>
+      <p>עכשיו מגיעים לבן השלישי. אומרת התורה: "וַתֹּאמֶר: עַתָּה הַפַּעַם יִלָּוֶה אִישִׁי אֵלַי, כִּי יָלַדְתִּי לוֹ שְׁלֹשָׁה בָנִים, עַל כֵּן קָרָא שְׁמוֹ לֵוִי". זה פסוק שיש בו אינספור דיוקים.</p>
+      <p>הפירוש הראשון מובא בחזקוני, ויש בו חן רב. עד עכשיו היו ללאה שני בנים – אחד ביד ימין ואחד ביד שמאל. עכשיו, עם השלישי, כבר אין לה מספיק ידיים. היא צריכה מישהו שיבוא איתה. "ילווה אישי אלי" – בעלי יילווה אליי, יבוא לעזור. ואצלם הבנים נולדו בזה אחר זה, כמעט שנה אחר שנה, כך שבאמת היו שלושה תינוקות קטנים.</p>
+      <p>ויש גם שאלה מוזרה בפסוק: היא אומרת, והיא נותנת את הטעם, ופתאום כתוב "על כן קרא שמו לוי" – בלשון זכר. מי קרא לו לוי? לאה, יעקב, או הקדוש ברוך הוא? ועוד שאלה: מדוע זכה דווקא שבט לוי להיות שבט הכהונה ועבודת המקדש?</p>
+      <p>כדי להגיע לתשובה צריך להעמיק במילים "ילווה אישי אלי". רוב המפרשים מבארים אותן לא רק כעזרה מעשית, אלא כמשהו פנימי הרבה יותר.</p>
+      <p class="bold-para">החזקוני: עם שלושה בנים כבר אין לאם מספיק ידיים, והבעל יילווה אליה לעזור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לוי – חיבור נצחי</div>
+      <h3 class="story-title">🔗 חיבור שלם</h3>
+      <p>המפרשים מבארים: "ילווה" מלשון התחברות. הפעם הושלם לגמרי החיבור בינינו. וזה מתחבר יפה לשני הבנים הקודמים. בפעם הראשונה – "יאהבני", האהבה התחילה. בפעם השנייה – הוסר החיסרון הדק מן הדק. ובפעם השלישית – החיבור שלם.</p>
+      <p>זה, על פי הפשט, הדבר הנפלא ביותר שאדם זוכה להגיע אליו: אחדות מלאה עם אשתו. לא רק בלי מריבה, ולא רק עם אהבה, אלא חיבור גמור, ששני אנשים נעשים כאחד.</p>
+      <p>ובספר הפרשיות לרב אליהו כי טוב מובא פירוש נפלא לדברי לאה. היא אמרה: עד עכשיו הקדמתי את אחותי בבנים, כדי שיאהב אותי בעלי. בבן השני כבר הגעתי למעלה אחת עם אחותי. ועכשיו, בבן השלישי, הושלמתי. הקדוש ברוך הוא החזיר לי גם את ימי הצער שעברו, ועשה אותי עיקר ביתו של יעקב. הוא דבוק בי ואני דבוקה בו, מעתה ועד עולם.</p>
+      <p>שלושה שלבים, שלושה בנים, ושלושה שמות. כל שם מספר על מדרגה נוספת באחדות. ומי שמתבונן בשמות האלה, מקבל מפה של הדרך: מאהבה ראשונה, דרך תיקון הדקויות, ועד לחיבור השלם.</p>
+      <p class="bold-para">בראובן באה האהבה, בשמעון הוסר החיסרון הדק, ובלוי הושלם החיבור לגמרי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לוי – חיבור נצחי</div>
+      <h3 class="story-title">♾️ גם בעולם הבא</h3>
+      <p>האור החיים מוסיף רובד נוסף: "הפעם ילווה אישי אלי" – כי גם בזמן יציאתה מן העולם הזה לא תיפרד ממנו, אלא תהיה בת זוגו. כמו שאמרו בזוהר, הזוגות מתלווים בעולם העליון בתמידות. וכשאמרה "כי ילדתי לו שלושה בנים", הייתה זו חזקה: פעם, פעמיים, שלוש – סימן שאני בת זוגו האמיתית.</p>
+      <p>מכאן יסוד גדול: הזיווג אינו רק לעולם הזה. הוא "בניין עדי עד". אדם שבונה את ביתו כראוי, בונה משהו נצחי. כל תוספת של חיבור היא תוספת נצחית.</p>
+      <p>מסופר על אחד מגדולי ישראל שאמר לאשתו: אינני יודע אם אזכה להיכנס לגן עדן. אבל דבר אחד אני בטוח שיציל אותי. את צדקת, כל היום עושה חסדים, ובוודאי תגיעי לגן עדן. ואז תאמרי: איזה גן עדן זה, אם אני כאן ובעלי שם? בשבילי זה לא גן עדן. ובשמים ישמעו לך, ובזכותך יכניסו גם אותי.</p>
+      <p>כך צריך להבין את האהבה בין איש לאשתו. זו לא רק הנאה של עולם הזה. זה חיבור עצום בין נשמות, לנצח נצחים. ובעולם האמת רואים הכל, גם את המחשבות. שם יראו כמה אהבה הייתה בין בני הזוג, כמה זכו להגיע לחיבור – ומה עוד היה חסר.</p>
+      <p class="bold-para">האור החיים: הזיווג אינו רק לעולם הזה; "ילווה אישי" – גם בעולם העליון לא ייפרד ממני.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לוי – חיבור נצחי</div>
+      <h3 class="story-title">🕍 שבט עובדי ה'</h3>
+      <p>רבי חיים שמואלביץ, במאמר שכתב על מידת השלום, עונה על השאלה מדוע זכה שבט לוי לכהונה. הוא אומר: היות ולוי זכה להיות הבן שהשלים את האהבה בין לאה ליעקב, זכה להיות השבט של עובדי ה' בבית המקדש. וממנו יצא אהרן הכהן, אוהב שלום ורודף שלום.</p>
+      <p>ראובן הביא את האהבה. שמעון הסיר את החיסרון הדק. לוי כבר נולד מתוך שלום גמור. הוא הבן הראשון שנולד כשהם כבר שלמים. וילד שנוצר מתוך אחדות מלאה, הוא הראוי להיות המשרת בבית המקדש.</p>
+      <p>זה לא סתם קישור יפה. יש כאן סיבה ותוצאה: מה שאדם בונה בביתו משפיע על מה שייצא ממנו. בית של אחדות מוציא ממנו אנשים של שלום, ואנשים של שלום הם הראויים לעבוד את ה'.</p>
+      <p>ויש לזה עוד רמז נפלא במילה "אישי" עצמה. ביטוי זה אינו נפוץ כלל, ובכל זאת כולם מכירים אותו – ואומרים אותו פעם בשנה, ביום הכיפורים. משם נלמד את הצעד הבא.</p>
+      <p class="bold-para">לוי, הבן שהשלים את האהבה בין יעקב ללאה, זכה להיות השבט המשרת במקדש, וממנו יצא אהרן אוהב השלום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · חיבור למטה, חיבור למעלה</div>
+      <h3 class="story-title">👑 אישי כהן גדול</h3>
+      <p>במשנה במסכת יומא, שאומרים בסדר העבודה ביום הכיפורים, פונים אל הכהן הגדול בלשון "אִישִׁי כֹּהֵן גָּדוֹל". אם כן, יש לנו "אישי" פעמיים: פעם אחת בפרשה – "הפעם ילווה אישי", ופעם אחת במשנה – "אישי כהן גדול". מה הקשר?</p>
+      <p>מהבן שבו נולד החיבור המושלם בין יעקב ללאה, נולד שבט לוי, שתפקידו לחבר את הקדוש ברוך הוא לעם ישראל. כך אמרו חז"ל על קרבנות השלמים: למה נקראו שלמים? שמטילים שלום בפמליא של מעלה ובפמליא של מטה.</p>
+      <p>וזה סוד נפלא, שחשוב לזכור כל החיים: האיחוד בין איש לאשתו גורם מיד איחוד בין הקדוש ברוך הוא לעם ישראל. וככל שהאדם קדוש יותר, כך האיחוד למטה משפיע יותר על האיחוד למעלה. ולכן הבן שגרם לאיחוד בין יעקב ללאה הוא הבן הראוי לאחד בין הקדוש ברוך הוא לעם ישראל.</p>
+      <p>כשהכהן הגדול עומד ביום הכיפורים, קוראים לו "אישי", כאילו אומרים לו: אתה עומד כאן בזכות "הפעם ילווה אישי אלי". החיבור ההוא, שהיה בבית של יעקב ולאה, הוא שמעמיד אותך כאן, לחבר בין ישראל לאביהם שבשמים.</p>
+      <p class="bold-para">המשנה ביומא קוראת לכהן הגדול "אישי" – כי שבט לוי נולד מחיבור, ותפקידו לחבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · חיבור למטה, חיבור למעלה</div>
+      <h3 class="story-title">📜 משל שמשפיע על הנמשל</h3>
+      <p>שיר השירים כולו מדבר על הדוד והרעיה, על איש ואישה, כמשל לאהבה בין הקדוש ברוך הוא לעם ישראל. אבל זה לא רק משל יפה. זה משל שיש לו השפעה על הנמשל. כשיש אהבה בין איש לאשתו כראוי, בקדושה ובטהרה, זה גורם גם למעלה חיבור בין הקדוש ברוך הוא לעם ישראל.</p>
+      <p>הרב אביגדור נבנצל כותב בשיחותיו לספר ויקרא: לאהבה שבין בני הזוג בעולמנו, מלבד ייעודה לקיים את העולם, יש גם מטרה נעלה יותר – לקרב לדמיוננו, במידת האפשר, את אהבתו של ה' לעם סגולתו. הקדוש ברוך הוא ברא את האהבה בעולם הזה כדי שנוכל להבין כמה הוא אוהב אותנו. מי שאין לו משל, קשה לו מאוד להבין את הנמשל.</p>
+      <p>אבל לא רק ידיעה יש כאן. לאדם ניתנה יכולת נפלאה לשלוט על העולם במעשיו, כמו שאמר דוד: "תַּמְשִׁילֵהוּ בְּמַעֲשֵׂי יָדֶיךָ, כֹּל שַׁתָּה תַחַת רַגְלָיו". הבריאה כולה מונהגת לפי מעשי האדם, ובכלל זה העולמות העליונים. ולכן לאהבה שבחיינו יש תפקיד מרכזי ביחסים שבין הבורא לעם ישראל – ואף תפקיד בזירוז הגאולה.</p>
+      <p>ומכאן מובן מאמר חז"ל: כל המשמח חתן וכלה, כאילו בנה אחת מחורבות ירושלים. האהבה בין איש לאשתו מעוררת את האהבה בין הקדוש ברוך הוא לעם ישראל, והיא שתביא את הגאולה. כפי שאדם נוהג באהבה למטה, כך הוא מעורר את האהבה העליונה. יש ספרים שלמים שנכתבו על הרעיון הזה, ובהם מקורות רבים.</p>
+      <p class="bold-para">שיר השירים משתמש במשל של איש ואישה, כי האהבה למטה משפיעה ממש על האהבה שלמעלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · האוצר שבבית</div>
+      <h3 class="story-title">🕊️ האותיות של שלום</h3>
+      <p>ויש לזה רמז גם באותיות. במילה "שלום" יש באמצע את האותיות ל' ו-ו' – אותיות של לוי. האות ל' היא האות היחידה שעולה למעלה מן השורה, והאות ו' היא אות החיבור. השלום אינו מחבר רק כאן למטה. הוא מחבר את מה שלמטה עם מה שלמעלה.</p>
+      <p>ולכן נקרא שבט לוי בשם הזה. הוא נוצר מחיבור, ותפקידו לחבר את הקדוש ברוך הוא לעם ישראל. ובשמו טמונות האותיות שמראות על החיבור הזה.</p>
+      <p>ומכאן מובן גם מאמר מפורסם, שכולם מכירים ומעטים חושבים מה פירושו: כל המגרש את אשתו, אפילו המזבח מוריד עליו דמעות. למה דווקא המזבח? למה לא הארון, השולחן או הכרובים? משום שהמזבח הוא המקום שעליו הקריבו קרבנות, ו"קרבן" הוא מלשון קירוב. המזבח היה הכלי שבו התחברו ישראל עם אביהם שבשמים.</p>
+      <p>ולכן, כשאדם מפרק את החיבור בביתו, מי בוכה? המזבח, הכלי שמסמל את האחדות. החיבור למטה נשבר, והחיבור למעלה נפגע איתו. ולהפך: כשאדם זוכה ומחבר, הוא בונה – למטה ולמעלה.</p>
+      <p class="bold-para">במילה "שלום" יש את אותיות לוי: ל' שעולה למעלה, ו' של חיבור – שלום שמחבר מטה ומעלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · האוצר שבבית</div>
+      <h3 class="story-title">🏗️ בונה עולמות</h3>
+      <p>בספר פלא יועץ הדברים מפורשים: לפי גודל מעלת מצוות "ואהבת לרעך כמוך", ראוי לאדם להתחזק ולהכניס אהבה בינו לבין אשתו, על ידי מחשבות טהורות – אפילו אם אינה הכי מוצלחת. ומי שמכניס אהבה ושלום, בונה עולמות; ומי שגורם לשנאה ולמחלוקת, מחריב.</p>
+      <p>הוא כותב שעל ידי אהבה, אחווה, שלום ורעות, אדם מעורר אהבה למעלה, ועושה שלום במרומים. הוא גורם ייחוד קודשא בריך הוא ושכינתיה – קירוב בין הקדוש ברוך הוא לעם ישראל. וזהו הטעם שבזה תלויה גאולתנו ופדות נפשנו.</p>
+      <p>רואים לאן הגיעו הדברים. האהבה בבית אינה עניין פרטי של שני אנשים. היא אחד הדברים שיכולים לעורר מאוד את הגאולה. ומי שרוצה לעורר שפע בעם ישראל, אינו צריך להצליח לשכנע את מנהיגי המדינה להתאחד. הוא יכול להתחיל קרוב הרבה יותר – בתוך הבית שלו.</p>
+      <p>זו עבודה שאינה דורשת כוחות מיוחדים או מעמד מיוחד. כל אדם, בכל גיל, יכול לעשות אותה בכל יום. ובכל יום שהוא עושה אותה, הוא משפיע על עולמות שאינו רואה.</p>
+      <p class="bold-para">הפלא יועץ: מי שמכניס אהבה בבית, אפילו כשאינה הכי מוצלחת, מעורר אהבה למעלה ועושה שלום במרומים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · האוצר שבבית</div>
+      <h3 class="story-title">💎 האוצר שמתחת לתנור</h3>
+      <p>לסיום הביא הרב את הסיפור המפורסם על אייזיק, שמסופר בשם צדיקים. אייזיק חלם שמתחת לגשר בקרקוב טמון אוצר. הוא יצא לדרך, הגיע לקרקוב, והתחיל לחפור מתחת לגשר. תפס אותו השומר ושאל: מה אתה עושה כאן?</p>
+      <p>סיפר לו אייזיק על החלום. צחק השומר ואמר: חלומות! גם אני חלמתי שמתחת לתנור של איזה אייזיק אחד טמון אוצר – וכי בגלל זה אסע ואחפש? שמע זאת אייזיק, רץ הביתה, שבר את התנור, ומצא מתחתיו את האוצר.</p>
+      <p>ולמדו מכאן: אדם רץ רחוק רחוק לחפש איפה יוכל להשפיע ולפעול. יהודי, מה אתה רץ רחוק? בתוך הבית שלך זה נמצא. יש לאדם אפשרות להשפיע על כל העולמות מתוך ביתו, על ידי שהוא אוהב את אשתו לשם שמים, כראוי. ולפעמים הוא משפיע כך יותר מכל הפעילויות שיעשה בחוץ.</p>
+      <p>וזו התמונה המלאה שעולה משמות השבטים. ראובן – האהבה שמתחילה. שמעון – הקשב לחיסרון הדק. לוי – החיבור השלם, שממנו יוצא שבט שמחבר שמים וארץ. יזכנו ה' לבנות בית כזה, ולהגדיל בזה כבוד שמו.</p>
+      <p class="bold-para">כמו אייזיק שחיפש אוצר בקרקוב ומצאו בביתו, כך גם הכוח להשפיע על העולמות נמצא בתוך הבית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/e7g_JvGlcnw · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"אהבה מתחילה מהקרובים","icon":"🏡","color":"#c62b6b","stories":[{"id":1,"title":"חידה לפתיחה","icon":"🕯️"},{"id":2,"title":"האם לאה הייתה שנואה?","icon":"❓"},{"id":3,"title":"שנאה היא חיסרון באהבה","icon":"❤️"},{"id":4,"title":"זבח משפחה","icon":"🍽️"}]},{"id":2,"name":"ראובן ושמעון","icon":"👁️","color":"#6d28d9","stories":[{"id":5,"title":"מצאו את ההבדלים","icon":"🔎"},{"id":6,"title":"מה שרואים ומה ששומעים","icon":"👂"},{"id":7,"title":"מיטתו שלמה","icon":"🌳"}]},{"id":3,"name":"לוי – חיבור נצחי","icon":"🔗","color":"#e08e00","stories":[{"id":8,"title":"שלושה בנים ושתי ידיים","icon":"👐"},{"id":9,"title":"חיבור שלם","icon":"🔗"},{"id":10,"title":"גם בעולם הבא","icon":"♾️"},{"id":11,"title":"שבט עובדי ה'","icon":"🕍"}]},{"id":4,"name":"חיבור למטה, חיבור למעלה","icon":"🌌","color":"#1e88b8","stories":[{"id":12,"title":"אישי כהן גדול","icon":"👑"},{"id":13,"title":"משל שמשפיע על הנמשל","icon":"📜"}]},{"id":5,"name":"האוצר שבבית","icon":"💎","color":"#c62b6b","stories":[{"id":14,"title":"האותיות של שלום","icon":"🕊️"},{"id":15,"title":"בונה עולמות","icon":"🏗️"},{"id":16,"title":"האוצר שמתחת לתנור","icon":"💎"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
