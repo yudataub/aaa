@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 כאיש אחד</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 כאיש אחד</h1>
+  <p>מסירות נפש למען כלל ישראל: מהי כנסת ישראל, למה יוצאים למלחמה למרות "וחי בהם", מיהו הכלל שבשבילו מסתכנים, ומה למדנו מאסתר המלכה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ כאיש אחד" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/x5hsg4oC3Xg?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/x5hsg4oC3Xg/hqdefault.jpg" alt="כאיש אחד" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=x5hsg4oC3Xg" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא לחשוב רק על עצמך</div>
+      <h3 class="story-title">🏘️ אברך שרצה לעבור</h3>
+      <p>השיעור נפתח בסיפור שהובא כבר בשבוע הקודם, והפעם הוא משמש פתח לנושא כולו. אברך שגר בקרית אתא, עיר בצפון, ביקש לעבור לרכסים. הסיבה הייתה מובנת: ברכסים יש ציבור גדול של בני תורה, והנסיעה היומית הלוך ושוב הייתה קשה לו.</p>
+      <p>לפני שעשה את הצעד הוא פנה לרבי יעקב אדלשטיין זצ"ל, רבה של רמת השרון, ושאל. התשובה הפתיעה אותו: "אתה צריך להישאר". האברך שאל למה, והרב השיב במשפט שהוא לב השיעור: יהודי צריך לא לחשוב רק על עצמו. לך, אמר, אין חסרון. אבל צריך לחשוב על כלל ישראל.</p>
+      <p>עם ישראל צריך עוד מקומות של תורה בארץ ישראל, מקומות שאנשים יוכלו לבוא ולגור בהם, ולא רק בכמה ריכוזים גדולים. ואם כל אחד יעזוב את המקום הקטן ויעבור למקום הגדול, מה יהיה בסוף? לכן הורה לו הרב להישאר. ובשיעור הודגש: זו הייתה הוראה חד-משמעית, שאדם צריך, גם כשקשה לו מאוד, להתאמץ ולמסור את עצמו בשביל עם ישראל.</p>
+      <p class="bold-para">השאלה "איפה לגור" אינה רק שאלה פרטית; לפעמים היא שאלה של כלל ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא לחשוב רק על עצמך</div>
+      <h3 class="story-title">🏠 מחירי הדיור ופיקוח נפש</h3>
+      <p>כדי להבין את הרקע, הרב התעכב על המציאות. מחירי הדיור עולים ועולים. אדם לוקח על עצמו חוב של מיליון שקלים, ומשכנתא כזו פירושה תשלום של אלפי שקלים בכל חודש. לא תמיד אדם מחזיק מעמד בעומס כזה, והדבר גורם צרות רבות מאוד בבתים. בלשון חריפה נאמר שיש בזה ממש צד של פיקוח נפש.</p>
+      <p>הפער בין דירה במקום מרוחק לבין דירה באזור המרכז מגיע לעיתים למיליון שקלים ויותר. ובכל זאת אנשים אינם באים. למה? כי אדם מחפש מקום שיש בו ציבור גדול. ויש בזה סברה גדולה. התנא רבי יוסי בן קיסמא, כשהציעו לו הון עצום כדי שיעבור לגור במקומם, השיב שאינו דר אלא במקום תורה.</p>
+      <p>אבל הרב חידד: "מקום תורה" אינו פירושו שכולם בני תורה. צריך שיהיה שם קיבוץ של בני תורה: בית ספר טוב לילדים, חברה טובה, בתי כנסת, אנשים שאפשר להתחבר אליהם. זה מה שצריך, ולא יותר. ומי שבונה מקום כזה, עושה דבר גדול גם לעצמו וגם לכלל.</p>
+      <p class="bold-para">יש היגיון כלכלי וציבורי עמוק במקומות קטנים, אבל צריך שיהיה בהם גרעין של בני תורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לא לחשוב רק על עצמך</div>
+      <h3 class="story-title">📜 מה המקור?</h3>
+      <p>ההוראה של הרב אדלשטיין מעוררת שאלה. מנין שאדם צריך למסור את עצמו, להתאמץ, לוותר על נוחות ולפעמים אף על ביטחון, בשביל עם ישראל? איפה זה כתוב, ועד איזה גבול?</p>
+      <p>השיעור נבנה כמהלך של מקורות. תחילה יש להבין מה בכלל המושג "כנסת ישראל": האם העם הוא רק סכום של יחידים, או שיש לו מציאות משלו. משם עוברים לשאלה ההלכתית הקשה ביותר: למה אדם יוצא למלחמה ומסכן את חייו, אם התורה אומרת "וָחַי בָּהֶם". אחר כך נראה מה כתב הרב קוק על אהבת ישראל, מיהו ה"כלל" שבשבילו מותר ואף חייבים להסתכן, ומה למדו הפוסקים מאסתר המלכה.</p>
+      <p>חשוב להקדים: הדברים כאן הם לימוד עיוני של שיטות ומקורות, ולא הוראה למעשה. כל שאלה מעשית של סיכון עצמי, בין בצבא ובין בחיים האזרחיים, צריכה להישאל לפני מורה הוראה. המטרה כאן היא להבין את התפיסה התורנית של הקשר בין היחיד לכלל.</p>
+      <p class="bold-para">לפני שמחליטים כמה חייבים להתאמץ למען הכלל, צריך להבין מהו הכלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי כנסת ישראל</div>
+      <h3 class="story-title">🐑 מי הבעלים של קרבן התמיד?</h3>
+      <p>הרב פתח בדברים יפים של הרב יוסף דוב סולובייצ'יק. הוא שאל שאלה הלכתית פשוטה לכאורה: מי הבעלים של קרבן ציבור, כמו קרבן התמיד או קרבנות המוספים? התשובה הפשוטה: הציבור. אבל מהו הציבור?</p>
+      <p>לפי ההלכה, כך הסביר, הציבור אינו הסכום של כל היחידים. הבעלים של הקרבן אינם ראובן, שמעון ולוי, ואפילו לא כולם יחד, וגם לא אלה שנתנו את מחצית השקל שממנה נקנה הקרבן. הבעלים היא כנסת ישראל, כחטיבה אחת, כאישיות עצמית. ואין הכוונה כאן לסוד או לקבלה, אלא להגדרה הלכתית של ממש: לכנסת ישראל יש מעמד משפטי משלה, לא פחות מזה של אדם יחיד.</p>
+      <p>מכאן יוצא יסוד שיחזור לאורך כל השיעור. כשמדברים על "עם ישראל" אין סופרים אחד, שניים, שלושה. יש מושג של העם כולו, ויש לו מעמד בפני עצמו. והתורה פונה אליו: "וְאַתֶּם תִּהְיוּ לִי מַמְלֶכֶת כֹּהֲנִים וְגוֹי קָדוֹשׁ".</p>
+      <p class="bold-para">כנסת ישראל היא אישיות הלכתית אחת, ולא סכום של יחידים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי כנסת ישראל</div>
+      <h3 class="story-title">🕯️ תשעה צדיקים אינם מניין</h3>
+      <p>משל מוכר מבהיר את הרעיון. נניח שבבית הכנסת עומדים תשעה אנשים: הגאון מווילנא, הבעל שם טוב, האור החיים, הבן איש חי, החפץ חיים והחזון איש, ועוד כמה צדיקים כמותם. חסר עשירי. אין מניין. כמה שיהיו צדיקים, זה לא עוזר. למה? כי השכינה שורה דווקא בעשרה. יש מעלה שאינה תלויה בגדלות של כל אחד, אלא בצירוף.</p>
+      <p>ואם בעשרה כך, כלל ישראל הוא הרבה יותר מעשרה. השראת השכינה באומה כולה היא מדרגה שאף יחיד, גדול ככל שיהיה, אינו יכול להגיע אליה לבדו.</p>
+      <p>לכן הקדוש ברוך הוא לא נתן את התורה לאברהם, יצחק ויעקב, אלא לעם ישראל כולו, כשכולם עמדו כאחד. ותכנית התורה היא שנבוא לארץ ישראל ונקים בה חיי אומה על פי התורה. גם בבניין המשכן רואים זאת: הוא לא נבנה מתרומה של יחיד עשיר, אלא מנדבת כל העם, מגדול ועד קטן. ומובא בספרים שהשכינה שורה דווקא על מה ששייך לכלל ישראל.</p>
+      <p class="bold-para">יש מעלות שאינן תלויות בגדלות היחידים, אלא רק בצירוף של הציבור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי כנסת ישראל</div>
+      <h3 class="story-title">⚖️ מצוות שניתנו לאומה</h3>
+      <p>מי שלומד תורה מרגיש לאורך כל הדרך שהתורה מדברת אל הכלל. "שֹׁפְטִים וְשֹׁטְרִים תִּתֶּן לְךָ בְּכָל שְׁעָרֶיךָ" – מי מצווה כאן למנות שופטים? לא אדם פרטי, אלא האומה. וכך מצוות המלחמה, ירושת הארץ, דיני היובל ועוד רבות. יש מצוות שהתורה מצווה בהן את העם: איך עם ישראל צריך להתנהג כעם.</p>
+      <p>דוגמה מעשית מאוד לימינו היא דברי הרמב"ן. הוא כותב שהמצווה שחכמים מפליגים בה, דירת ארץ ישראל, כולה נובעת ממצוות עשה אחת: שנצטווינו לרשת את הארץ ולשבת בה. והרמב"ן עצמו מציין שיש כאן חידוש. בפסוקים מפורש שיש מצווה לרשת את הארץ, ומי מצווה בזה? העם. אין פסוק שאומר במפורש לאדם הפרטי לגור בארץ ישראל.</p>
+      <p>ובכל זאת, העם הוא אחד ועוד אחד ועוד אחד. אם כל אחד יאמר "לא אני", לא תתקיים המצווה. לכן כל יחיד שבא ויושב בארץ הוא חלק מקיום המצווה הכללית. אבל המטרה הסופית אינה רק פרט שיושב כאן, אלא שהארץ כולה תהיה שלנו, ושעם ישראל יירש אותה ויישב בה.</p>
+      <p class="bold-para">רבות ממצוות התורה מופנות אל העם כולו, וכל יחיד הוא חלק מקיומן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה יוצאים למלחמה</div>
+      <h3 class="story-title">🛡️ "וחי בהם" ויציאה למלחמה</h3>
+      <p>מכאן עובר השיעור לשאלה ההלכתית הקשה. השולחן ערוך פוסק בהלכות שבת: עיר שצרו עליה גויים, אם באו על עסקי ממון – אין מחללים עליהם את השבת; אם באו על עסקי נפשות – יוצאים עליהם בכלי זיין ומחללים את השבת. כלומר, כשמחבלים באים על ישוב יהודי, יוצאים נגדם גם בשבת, עם נשק, משום פיקוח נפש.</p>
+      <p>אבל כאן מתעוררת שאלה. נניח שהמחבלים תוקפים עיר מסוימת, ואני גר במקום אחר ואיני בסכנה. למה מותר לי, ואף חובה עליי, ללכת ולהכניס את עצמי לסכנת נפשות? התורה אמרה "וָחַי בָּהֶם", ודרשו חז"ל: ולא שימות בהם.</p>
+      <p>הרב הדגיש שזו שאלה לא פשוטה כלל, ויש לה פנים רבות. והיא אינה שאלה תיאורטית. בכל מבצע צבאי, בכל ניסיון לחלץ חטופים, בכל כניסה של לוחמים לשטח עוין, השאלה הזו עומדת ברקע: על סמך מה אנחנו שולחים אנשים לסכנה, ועל סמך מה הם הולכים.</p>
+      <p class="bold-para">ההלכה פוסקת שיוצאים להגן על עיר יהודית גם בשבת, אף על פי שהלוחמים נכנסים לסכנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה יוצאים למלחמה</div>
+      <h3 class="story-title">🚁 חובש במסוק בלב עזה</h3>
+      <p>כדי להמחיש עד כמה השאלה חיה, סיפר הרב על שיחה עם חייל שהשתתף במבצע לחילוץ חטופים מלב עזה. הוא היה חובש במסוק. במבצע הזה נכנסו לוחמים ללב אזור מלא מחבלים כדי לחלץ ארבעה חטופים, ובמהלכו נהרג אחד מן הלוחמים.</p>
+      <p>החובש סיפר שמתחילת המלחמה לא הנחיתו מסוקים בתוך השטח, כי זה מקום שבו האויב יכול לפגוע במסוק בקלות. הפעם היחידה שעשו זאת הייתה במבצע הזה, כשהיה חשש שהמבצע ייכשל. הוא תיאר את האש, את הפחד, ואת התחושה שאחריו: כאילו עדיין אינו מאמין שהוא חי ונמצא כאן.</p>
+      <p>הסיפור לא הובא כדי לשפוט את ההחלטה הצבאית, אלא כדי להראות את גודל השאלה. ארבעה יהודים נמצאים בשבי. האם מותר להיכנס לסכנה כזו כדי להציל אותם? ומה בכלל ההיתר להכניס לוחמים לסכנה? כדי לענות, צריך להתחיל מן ההלכה הפשוטה, ולבנות ממנה בזהירות.</p>
+      <p>ויש לזכור שהלוחמים עצמם אינם שואלים את השאלה הזו בשעת הקרב. הם הולכים כי הם מרגישים שזו חובתם כלפי אחיהם. אבל התורה מלמדת אותנו להבין מה עומד מאחורי ההרגשה הזו, ומהו הבסיס ההלכתי שלה.</p>
+      <p class="bold-para">הסיכון במבצעים להצלת יהודים יכול להיות עצום, והשאלה ההלכתית עליו אמיתית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה יוצאים למלחמה</div>
+      <h3 class="story-title">🩺 אין חובה לתרום כליה</h3>
+      <p>השאלה מתחדדת מדיון שמובא בשם הירושלמי: האם צריך היחיד להסתכן כדי להציל אדם אחר. והמפרשים שואלים: איך אפשר לחייב אדם להכניס את עצמו לספק סכנה? הרי "וחי בהם", ופיקוח נפש דוחה הכל, אפילו ספק פיקוח נפש.</p>
+      <p>הרב הביא דוגמה מעשית מימינו: תרומת כליה. לאדם יש שתי כליות בריאות. אדם אחר הולך למות אם לא יקבל כליה. האם חייבים לתרום לו? פשוט שלא. אדם אינו חייב לתרום כליה, ומי שמטפלים בתרומות כאלה מקפידים מאוד שלא להפעיל שום לחץ על התורם, ואומרים לו פעמים רבות שאינו חייב.</p>
+      <p>למה אינו חייב? כי ככלל, אדם אינו חייב להכניס את עצמו אפילו לספק סכנה, גם כשחברו עלול למות. וכאן מתחזקת הקושיה: אם כך, למה במלחמה כן הולכים? מה ההבדל? גם שם זו סכנה עבור הלוחם עצמו. (כמובן, שאלות מעשיות של תרומת איברים וסיכון עצמי – יש לשאול בהן פוסק.)</p>
+      <p class="bold-para">ככלל, היחיד אינו חייב להיכנס אפילו לספק סכנה כדי להציל את חברו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה יוצאים למלחמה</div>
+      <h3 class="story-title">✋ יד למען הגוף כולו</h3>
+      <p>את התשובה לשאלה הזו כתב הרב שאול ישראלי, שדן בה פעמים רבות. הרב הביא את המסקנה, שכך נקטו הפוסקים למעשה. יש חילוק גדול בין מסירות נפש למען חיי יחיד לבין מסירות נפש למען כלל ישראל.</p>
+      <p>כשדנים על חייך מול חיי חברך, אומר רבי עקיבא במעשה המפורסם בבקבוק המים: "חייך קודמים". זה נאמר כשאדם עומד מול אדם. אבל כשדנים על כלל ישראל, כל העם נחשב כדבר אחד. ובלשונו: במלחמה אנו רואים את הכלל כולו כאיש אחד ולא כפרטים בודדים, והיחיד קיים כלפי הכלל רק כאבר של הגוף השלם. בזה כבר לא שייך המושג "וחי בהם" במובן הפרטי, כי ההכרעה היא לפי חיי הכלל.</p>
+      <p>המשל ברור. לפעמים לאדם יש מחלה ברגל, והרופאים אומרים שצריך לכרות אותה כדי שהגוף כולו יחיה. אף אחד אינו שואל אם זה מותר. כך גם כאן: כשעם ישראל כולו הוא גוף אחד, ההגנה עליו מצדיקה שאבר אחד ייכנס לסכנה, כדי שהגוף כולו יחיה. כמו שאדם חייב לעבור ניתוח מסוכן כדי להציל את חייו.</p>
+      <p class="bold-para">במלחמה למען הכלל אין רואים את היחיד כפרט, אלא כאבר בגוף אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה יוצאים למלחמה</div>
+      <h3 class="story-title">⚔️ הקרב בלטרון</h3>
+      <p>הרב סיפר על לוחם שהשתתף בקרב על לטרון במלחמת השחרור. לפי מה שסיפר, הכוח שלו לא נשלח באמת כדי לכבוש את המקום. הקרבות שם היו קשים מאוד, והתכנון היה שהאויב יהיה עסוק בכוח הזה, ובינתיים יגיעו כוחות אחרים מצד שני. דומה למה שמסופר בספר יהושע על כיבוש העי.</p>
+      <p>הלוחמים לא ידעו זאת. הם עלו, נפגעו קשות, וביקשו עזרה בקשר. אמרו להם: תמשיכו, העזרה בדרך. אבל דבר לא הגיע. בשלב מסוים אמר הלוחם לחברו: אנחנו הולכים למות, אין סיכוי. הם החלו לסגת תחת אש כבדה, וברוך ה', הקדוש ברוך הוא השאיר אותו בחיים.</p>
+      <p>השאלה כאן קשה עוד יותר: איך מותר כדבר הזה? התשובה העקרונית היא אותה תשובה. במלחמה על עם ישראל אין רואים אדם פרטי. רואים את כל עם ישראל כגוף אחד, ובמצב כזה יש מצבים שבהם מותר שהיחיד יסתכן מאוד למען הכלל, כמו אבר למען הגוף. אין זה אומר שכל החלטה צבאית נכונה, אלא שהמסגרת ההלכתית שונה מזו של יחיד מול יחיד.</p>
+      <p class="bold-para">לפעמים הכלל דורש מן היחידים מחיר כבד מאוד, ובזה רואים את משמעות הגוף האחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ישראל קודמין</div>
+      <h3 class="story-title">📖 הוראת שעה להצלת ישראל</h3>
+      <p>גם הרב קוק עסק בשאלה, בצורה אחרת. הוא כתב שמצד הסברה פשוט שמותר לאדם להיכנס לסכנה בשביל הצלת כלל ישראל. ובדבריו הוא דן בהוראת שעה: יש מקרים שבהם חכמים ונביאים מורים לעבור על דבר מן התורה לשעה, כמו אליהו בהר הכרמל שהקריב בבמה. הדיון שם היה אם הוראת שעה נאמרה רק כדי לגדור פרצה, או גם כדי להציל את ישראל.</p>
+      <p>לפי מה שתואר בשיעור, אחד החכמים שהתכתב עם הרב קוק טען שמצאנו הוראת שעה רק כדי להחזיר את ישראל מן העבירה, אבל לא כדי להציל את ישראל מסכנה. הרב קוק השיב בחריפות, והביא מדרש מתנא דבי אליהו.</p>
+      <p>ההיגיון שלו פשוט: אם מותר לפעמים לחכמים לעשות גדר ולהוראת שעה כדי לשמור את התורה, וכמו שנאמר "עֵת לַעֲשׂוֹת לַה' הֵפֵרוּ תּוֹרָתֶךָ", קל וחומר שמותר כדי להציל את עם ישראל עצמו. לדבריו, מי שמסתפק בזה לא הבין עד כמה עם ישראל חביב לפני הקדוש ברוך הוא.</p>
+      <p class="bold-para">לדעת הרב קוק, הצלת כלל ישראל מצדיקה אף הוראת שעה, כמו שעשו נביאים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ישראל קודמין</div>
+      <h3 class="story-title">❤️ תורה וישראל – מי קודם?</h3>
+      <p>המדרש שהביא הרב קוק הוא מתנא דבי אליהו, ויש בו חידוש מפתיע. שני דברים יש בעולם שהקדוש ברוך הוא אוהב אהבה גמורה: התורה וישראל. אבל איני יודע, שואל המדרש, איזה מהם קודם.</p>
+      <p>והתשובה: דרכם של בני אדם לומר שהתורה קודמת, שנאמר "ה' קָנָנִי רֵאשִׁית דַּרְכּוֹ". אבל אני אומר, ישראל קודמים, שנאמר "קֹדֶשׁ יִשְׂרָאֵל לַה' רֵאשִׁית תְּבוּאָתֹה".</p>
+      <p>הרב עמד על הנקודה המעניינת: אם שואלים אנשים רגילים, הם יאמרו שבורא עולם אוהב יותר את התורה. אבל המדרש מלמד שאין דבר שהקדוש ברוך הוא אוהב יותר מעם ישראל. ומכאן הסיק הרב קוק: אם מותר לפעמים לעבור על דבר כדי לגדור את התורה, ודאי שמותר כדי להציל את ישראל, שהם קודמים. זה יסוד שמשנה את כל היחס לשאלת המסירות למען הכלל: לא מדובר בעניין משני, אלא בדבר החביב ביותר לפני ה'.</p>
+      <p class="bold-para">דרכם של בני אדם לומר שהתורה קודמת, אבל הקדוש ברוך הוא אומר: ישראל קדמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ישראל קודמין</div>
+      <h3 class="story-title">✨ לא שותפות אלא קדושה</h3>
+      <p>הרב קוק הוסיף הגדרה עמוקה על ההבדל בין עם ישראל לשאר העמים. בכל העולם, הציבור מתאגד כדי להיטיב עם היחידים. בלי התאגדות לא יהיו רכבות, אוטובוסים, כבישים ושירותים. כמו ועד בית: כולם מתאחדים כדי שלכל אחד יהיה טוב. בלשונו, הציבור כלפי היחידים הוא בבחינת שותפים, והשותפות קיימת בשביל השותפים.</p>
+      <p>אבל בישראל, כתב, הציבור והשותפים הם שני מושגים שונים. בציבור של ישראל יש קדושה ומציאות כללית שאינה נערכת כלל כלפי החלק של כל פרט, והיא למעלה מן החלוקה. לכן דברים שבקדושה צריכים ציבור דווקא. הצדוקים, שרצו שיחיד יביא את קרבן התמיד, לא הבינו שיש בכלל ישראל קדושה מיוחדת שאינה בשום עם ולשון.</p>
+      <p>כאן זה הפוך: לא הכלל בשביל הפרט, אלא הפרטים בשביל הכלל. הלאומיות שלנו, כך הוסבר, אינה כמו התאגדות של אינטרסים משותפים. היא לאומיות אלוקית, שבאה מתוך קריאה בשם ה', מאז "וְאַבְרָהָם הָיוֹ יִהְיֶה לְגוֹי גָּדוֹל". ולכן לדאגה לכלל יש משמעות שעולה על סך הדאגות לכל פרט.</p>
+      <p class="bold-para">אצל אומות העולם הציבור קיים בשביל היחידים; בישראל היחידים קיימים בשביל הכלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ישראל קודמין</div>
+      <h3 class="story-title">🏫 החפץ חיים והתורם העשיר</h3>
+      <p>כדוגמה לרגישות לכלל ישראל סיפר הרב סיפור על החפץ חיים. הוא החליט לבנות בניין גדול לישיבה בראדין, ותכנן לעבור מעיירה לעיירה ולאסוף כסף. באותה תקופה כבר היה מפורסם מאוד. יהודי עשיר, אדם מבוגר שלא היו לו ילדים, שמע על כך ובא אליו: אין בעיה, אני אתן את כל הכסף לבניין.</p>
+      <p>כל אדם אחר היה מודה ומברך. אבל החפץ חיים סירב. איך אפשר? אמר. התורה צריכה להיות שייכת לכל עם ישראל, ואתה רוצה לקחת את הזכות הזו מכל עם ישראל? העשיר לא ויתר: אני רוצה לתרום, איך אפשר למנוע ממני? בסוף הגיעו לדין תורה לפני רבי חיים עוזר גרודזנסקי, שהיה באותה תקופה הסמכות התורנית של יהדות אירופה.</p>
+      <p>רבי חיים עוזר הכריע פשרה: העשיר יתרום קיר אחד של הבניין, ואת השאר יתרום כלל ישראל, גם בתרומות הקטנות. החפץ חיים הרגיש שבניין של תורה צריך להיות של כולם, ושלכל יהודי יהיה בו חלק. זו דוגמה לאדם שחי את המושג "כלל ישראל" גם במקום שבו נראה היה שאין בו צורך.</p>
+      <p class="bold-para">תורה צריכה להיות שייכת לכל עם ישראל, ולכן גם בניינה צריך להיות מכלל ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מיהו הכלל</div>
+      <h3 class="story-title">🗺️ כמה אנשים הם "כלל ישראל"?</h3>
+      <p>מכאן עולה שאלה הלכתית לא פשוטה, שנוגעת פעמים רבות למעשה: מהו כלל ישראל? כמה אנשים הם? ארבעה יהודים בשבי בעזה – האם זו הצלת הכלל, שבשבילה מותר להיכנס לסכנה? מן הצד השני, טילים מעזה, מנהרות, או אויב מלבנון – זו כבר סכנה לכל עם ישראל, ולא לפרט מסוים.</p>
+      <p>ומה כשהמעשה נוגע לפרטים? יש ערבות הדדית, אבל, כך נאמר, ערבות היא דבר אחר: אדם אינו חייב למות בשביל חברו. עם זאת, הודגש שבמבצעי חילוץ אין הכוונה למות. כל המבצעים נעשים בסיכון מחושב, מתכננים אותם בזהירות, ורבים מהם הסתיימו בשלום. ולמעשה, יש גם מקום לומר שהשבת חטופים נוגעת לביטחון העם כולו.</p>
+      <p>בשאלה מיהו הכלל נחלקו גדולים. הרב קוק סבר, לפי מה שהובא בשיעור, שמותר לאדם למסור את נפשו, לא רק בספק אלא גם בוודאי, למען כלל ישראל, וכלל ישראל הוא עם ישראל שבארץ ישראל, גם אם אינו רוב העם.</p>
+      <p class="bold-para">לא כל הצלה היא הצלת הכלל; יש הבדל בין סכנה לכל עם ישראל לבין עזרה ליחידים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מיהו הכלל</div>
+      <h3 class="story-title">🌍 רק בארץ ישראל נקראים קהל</h3>
+      <p>המקור לכך הוא מן הגמרא במסכת הוריות. בהוראה של בית דין הולכים אחר רוב יושבי ארץ ישראל, שנאמר "וַיַּעַשׂ שְׁלֹמֹה בָעֵת הַהִיא אֶת הֶחָג וְכָל יִשְׂרָאֵל עִמּוֹ קָהָל גָּדוֹל מִלְּבוֹא חֲמָת עַד נַחַל מִצְרַיִם". שואלת הגמרא: אם נאמר "כל ישראל", למה צריך לפרט את הגבולות? ומשיבה: ללמד שאלה שבארץ נקראים קהל, ואלה שבחוץ לארץ אינם נקראים קהל.</p>
+      <p>וכך פסק הרמב"ם: אין משגיחים על יושבי חוץ לארץ, שאין קרויים קהל אלא בני ארץ ישראל. ההסבר הוא שעם ישראל יכול להיות אומה רק כשהוא בארצו. בחוץ לארץ היהודים הם תמיד פרטים, אלה כאן ואלה שם. אי אפשר להקים אומה במקום אחר.</p>
+      <p>ולכן כל המצוות הציבוריות נאמרו בארץ ישראל: "שֹׁפְטִים וְשֹׁטְרִים תִּתֶּן לְךָ בְּכָל שְׁעָרֶיךָ", דין המלך, היובלות. רק בארץ ישראל יש ציבור שאפשר לחייב אותו. הרב ציין שיש לכך נפקא מינות הלכתיות גם בימינו, והשאיר אותן להזדמנות אחרת.</p>
+      <p class="bold-para">לפי ההלכה, עם ישראל נעשה "קהל" ואומה דווקא בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מיהו הכלל</div>
+      <h3 class="story-title">✈️ ומה עם יהודים בחוץ לארץ?</h3>
+      <p>נשאלה שאלה טובה: האם מותר להיכנס לסכנה גדולה כדי להציל יהודים בחוץ לארץ? התשובה, כך נאמר, תלויה כמובן בגודל הסיכון ובגודל הסכנה. ונזכר כאן הרעיון שעמד ביסוד הקמת המדינה: שכאשר יש לעם ישראל מדינה, היא תדע להתערב ולמנוע רדיפה של יהודים במקום אחר.</p>
+      <p>כמו כן הובאה גישה שלפיה "רבים" אינו מספר מסוים של יהודים, אלא שאלה של מה שנוגע לכלל ישראל. והדוגמה המובהקת היא מגילת אסתר.</p>
+      <p>אחשוורוש גזר להשמיד, להרוג ולאבד את כל היהודים בכל מדינות מלכותו, מהודו ועד כוש. גזירה כזו כללה גם את היהודים שבארץ ישראל, שהייתה אז תחת שלטון פרס, וכל עם ישראל היה בסכנה. במצב כזה ברור שמדובר בכלל ישראל, גם אם לא כולם ישבו בארץ. ומכאן עוברים לאחת הראיות החשובות בנושא כולו: מה שעשתה אסתר.</p>
+      <p class="bold-para">גם גזירה על יהודים בכל מקום יכולה להיות עניין של כלל ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מיהו הכלל</div>
+      <h3 class="story-title">👑 "וכאשר אבדתי אבדתי"</h3>
+      <p>מרדכי ציווה על אסתר להיכנס אל המלך ולבקש על עמה. והיא השיבה: כל עבדי המלך יודעים שכל איש ואישה אשר יבוא אל המלך אל החצר הפנימית אשר לא ייקרא, אחת דתו להמית. אסתר אף לא ידעה איך יגיב המלך, שהרי לא ידע שהיא יהודייה, ודבר זה יכול היה לסכן אותה עוד יותר.</p>
+      <p>אבל מרדכי השיב: "אַל תְּדַמִּי בְנַפְשֵׁךְ לְהִמָּלֵט בֵּית הַמֶּלֶךְ מִכָּל הַיְּהוּדִים". ואסתר הלכה: "וּבְכֵן אָבוֹא אֶל הַמֶּלֶךְ אֲשֶׁר לֹא כַדָּת, וְכַאֲשֶׁר אָבַדְתִּי אָבָדְתִּי". חז"ל שיבחו אותה מאוד על מסירות הנפש הזו.</p>
+      <p>וכך גם בהלכה. בספר כלי חמדה מובא דיון עם בעל אור שמח, ובו נכתב שבכל מקום שהדבר נוגע לכלל ישראל, נראה שהכל מודים שחייב להכניס עצמו לספק סכנה. והראיה מאסתר, שהכניסה עצמה לסכנה כשנכנסה אל המלך שלא כדת, כדי שייעשה הנס לישראל. הרי לנו ראיה מפורשת מן המקרא שיהודי צריך להיכנס לסכנה גדולה למען עם ישראל.</p>
+      <p class="bold-para">אסתר נכנסה לסכנה גדולה למען ישראל, ומכאן למדו שחובה להיכנס לספק סכנה למען הכלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מוטבע בדם</div>
+      <h3 class="story-title">🌱 דרכים רבות למסור את הנפש</h3>
+      <p>בסיכום חזר הרב לנקודת הפתיחה. התחלנו בהוראה של רבי יעקב אדלשטיין לאברך להישאר בעירו למען עם ישראל. ראינו מה היא כנסת ישראל, למה יוצאים למלחמה למרות "וחי בהם", מה כתבו הרב ישראלי והרב קוק, מיהו הכלל, ומה למדנו מאסתר.</p>
+      <p>ויש דרכים רבות שבהן אדם מוסר את נפשו למען עם ישראל. יש החיילים, שיוצאים להילחם ומוסרים את נפשם ממש. יש שלוחים שיוצאים למקומות רחוקים כדי לחזק יהודים. ויש מי שבא לפתח מקום יישוב חדש, או להישאר במקום קטן, כדי שיהיו עוד מקומות שבני תורה יוכלו לגור בהם. גם זה עוזר מאוד לעם ישראל.</p>
+      <p>המשותף לכולם: הם אינם חושבים רק על עצמם. הם רואים את עצמם כאבר בגוף אחד, ושואלים לא רק "מה טוב לי", אלא גם "מה צריך עם ישראל". זו ההוראה שנתן הרב אדלשטיין, וזה היסוד שעולה מכל המקורות.</p>
+      <p class="bold-para">מסירות נפש לעם ישראל אינה רק במלחמה; היא גם בשליחות ובבניית מקומות חדשים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מוטבע בדם</div>
+      <h3 class="story-title">🔥 כמו שמירת שבת</h3>
+      <p>את השיעור חתם הרב בסיפור מן היום הקודם. הוא מסר הרצאה לקבוצת תלמידות באחד המקומות בארץ, ותוך כדי דיבור סיפר שביקשו ממנו להכין שיעור על החובה למסור את הנפש למען עם ישראל, כי היה מי ששאל למה צריך להתמסר כל כך.</p>
+      <p>באותו רגע הוא ראה את פניהן משתנות. הן הסתכלו עליו בתמיהה: איך ייתכן שיש יהודי שומר מצוות שלא ברור לו שצריך למסור את הנפש למען עם ישראל? בעיניהן זה היה כאילו אמר שהוא מכין שיעור לנשים שומרות מצוות כדי להוכיח שיש חובה לשמור שבת. הדבר היה פשוט להן כל כך, עד שהשאלה עצמה נראתה מוזרה.</p>
+      <p>אחר כך, כשהרב התפלא על כך, הוסבר לו שאצל רבים מהן הדבר טבוע בבית ובחינוך. הן גרות ביישובים, וכל המהלך של מגורים שם הוא מתוך תחושת שליחות של עם ישראל, עם הסכנה והקושי. זה כבר בדם. יהי רצון, סיים, שיהיו יהודים רבים מאוד שיידעו כמה גדול הערך של מסירות הנפש למען עם ישראל.</p>
+      <p class="bold-para">יש קהילות שבהן המסירות לעם ישראל טבועה בדם, ואינה צריכה הוכחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/x5hsg4oC3Xg · 2024-12-11 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"לא לחשוב רק על עצמך","icon":"🏘️","color":"#c62b6b","stories":[{"id":1,"title":"אברך שרצה לעבור","icon":"🏘️"},{"id":2,"title":"מחירי הדיור ופיקוח נפש","icon":"🏠"},{"id":3,"title":"מה המקור?","icon":"📜"}]},{"id":2,"name":"מהי כנסת ישראל","icon":"🕍","color":"#6d28d9","stories":[{"id":4,"title":"מי הבעלים של קרבן התמיד?","icon":"🐑"},{"id":5,"title":"תשעה צדיקים אינם מניין","icon":"🕯️"},{"id":6,"title":"מצוות שניתנו לאומה","icon":"⚖️"}]},{"id":3,"name":"למה יוצאים למלחמה","icon":"🛡️","color":"#e08e00","stories":[{"id":7,"title":"\"וחי בהם\" ויציאה למלחמה","icon":"🛡️"},{"id":8,"title":"חובש במסוק בלב עזה","icon":"🚁"},{"id":9,"title":"אין חובה לתרום כליה","icon":"🩺"},{"id":10,"title":"יד למען הגוף כולו","icon":"✋"},{"id":11,"title":"הקרב בלטרון","icon":"⚔️"}]},{"id":4,"name":"ישראל קודמין","icon":"❤️","color":"#1e88b8","stories":[{"id":12,"title":"הוראת שעה להצלת ישראל","icon":"📖"},{"id":13,"title":"תורה וישראל – מי קודם?","icon":"❤️"},{"id":14,"title":"לא שותפות אלא קדושה","icon":"✨"},{"id":15,"title":"החפץ חיים והתורם העשיר","icon":"🏫"}]},{"id":5,"name":"מיהו הכלל","icon":"🗺️","color":"#c62b6b","stories":[{"id":16,"title":"כמה אנשים הם \"כלל ישראל\"?","icon":"🗺️"},{"id":17,"title":"רק בארץ ישראל נקראים קהל","icon":"🌍"},{"id":18,"title":"ומה עם יהודים בחוץ לארץ?","icon":"✈️"},{"id":19,"title":"\"וכאשר אבדתי אבדתי\"","icon":"👑"}]},{"id":6,"name":"מוטבע בדם","icon":"🔥","color":"#6d28d9","stories":[{"id":20,"title":"דרכים רבות למסור את הנפש","icon":"🌱"},{"id":21,"title":"כמו שמירת שבת","icon":"🔥"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
