@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 חרבות לאתים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 חרבות לאתים</h1>
+  <p>מנשק בשבת ועד הזאב והכבש: מה ישתנה בימות המשיח ומה יישאר כמנהגו של עולם</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ חרבות לאתים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/-x8I46WwVyg?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/-x8I46WwVyg/hqdefault.jpg" alt="חרבות לאתים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=-x8I46WwVyg" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נשק בשבת</div>
+      <h3 class="story-title">🗡️ לא יצא האיש בסייף</h3>
+      <p>השיעור ממשיך בלימוד על ימות המשיח: מה בדיוק יהיה שם, ואיך הדברים ילכו. וכדרכה של התורה, הדרך לשאלה הגדולה עוברת דרך הלכה מעשית של שבת.</p>
+      <p>המשנה במסכת שבת אומרת: "לֹא יֵצֵא הָאִישׁ לֹא בְסַיִף וְלֹא בְקֶשֶׁת וְלֹא בִתְרִיס וְלֹא בְאַלָּה וְלֹא בְרֹמַח, וְאִם יָצָא – חַיָּב חַטָּאת". מי שיצא בשבת לרשות הרבים עם כלי נשק, בשוגג, חייב להביא קורבן. כמובן, כשיש פיקוח נפש, הדין שונה לגמרי.</p>
+      <p>רבי אליעזר חולק: "תַּכְשִׁיטִין הֵן לוֹ". לוחם שנושא את נשקו – זה חלק מלבושו ומכבודו, והוא אוהב שרואים אותו כך. וחכמים אומרים: "אֵינָן אֶלָּא לִגְנַאי", שנאמר: "וְכִתְּתוּ חַרְבוֹתָם לְאִתִּים וַחֲנִיתוֹתֵיהֶם לְמַזְמֵרוֹת, לֹא יִשָּׂא גוֹי אֶל גּוֹי חֶרֶב וְלֹא יִלְמְדוּ עוֹד מִלְחָמָה".</p>
+      <p>הרב מתאר את התמונה: את החרב ישברו ויעשו ממנה את – כלי חפירה, ואת החנית יהפכו למזמרה לגיזום עצים. לא יהיה בהן צורך עוד. ואם לעתיד לבוא שוברים את כלי הנשק, סימן שאינם תכשיט, כי תכשיט אין שוברים.</p>
+      <p>מן המשנה הקצרה הזאת נפתחות שתי דרכים. האחת מובילה אל ההלכה המעשית: מה מותר לאדם שנושא נשק בשבת בימינו. השנייה מובילה אל שאלת העתיד: האם באמת יבוא יום שבו לא יהיה עוד צורך בנשק, ומה עוד ישתנה אז בעולם. השיעור הולך בשתי הדרכים, זו אחר זו, ומראה עד כמה הן קשורות זו בזו.</p>
+      <p class="bold-para">חכמים לומדים מן הנבואה שכלי נשק אינם תכשיט, כי לעתיד לבוא הם יתבטלו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נשק בשבת</div>
+      <h3 class="story-title">🧱 הפסוק שעל הקיר</h3>
+      <p>הרב מראה לתלמידים תמונה: הפסוק "לֹא יִשָּׂא גוֹי אֶל גּוֹי חֶרֶב וְלֹא יִלְמְדוּ עוֹד מִלְחָמָה" חקוק באנגלית על קיר סמוך לבניין האומות המאוחדות בניו יורק. אנשים מכל העמים חלמו שיום אחד יגיע שלום בכל העולם, והציבו את דברי ישעיהו הנביא כסמל לתקווה הזאת.</p>
+      <p>הרב מדגיש שאין זה חלום ריק. זו נבואה מן התנ"ך, והיא באמת תתקיים. יבוא יום שישברו את הקשתות ואת החצים ואת כל כלי המלחמה, כי לא יהיה בהם צורך.</p>
+      <p>ועד שיבוא אותו יום, אנחנו חיים במציאות אחרת. ולכן מן המשנה עוברים לשאלה שנוגעת להרבה אנשים בימינו: האם מותר לשאת נשק בשבת?</p>
+      <p>בתחילת המלחמה האחרונה, הרב מספר, כמעט בכל בית כנסת היה מי שהחזיק נשק. מי שנשאר בביתו בשבת יכול להשאיר את הנשק בארון נעול. אבל מי שהתארח אצל קרובים, לא תמיד יכול להשאיר את הנשק במקום בטוח, ושואל מה מותר. הרב מחלק את השאלה לשני חלקים: טלטול ברשות הרבים, ומוקצה.</p>
+      <p class="bold-para">החזון הנבואי של שלום עולמי מוכר בכל העולם, והוא עתיד להתקיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נשק בשבת</div>
+      <h3 class="story-title">📖 חידושו של ערוך השולחן</h3>
+      <p>בעניין ההוצאה לרשות הרבים, הרב מביא חידוש גדול של ערוך השולחן. לדבריו, כל מה שאמרה המשנה שהנשק אינו תכשיט, נאמר על סתם אדם. אבל לבעלי מלחמה, לאנשי צבא המלך, הנשק הוא חלק מבגדיהם. לחייל שהולך כדרכו – זהו מלבוש ותכשיט, ומותר.</p>
+      <p>הרב מכנה זאת "חידוש אדיר", כי בדרך כלל למדו שדברי המשנה נאמרו לכל אדם, בלי הבדל. ויש מפוסקי זמננו שכתבו שאין להקל לשאת נשק בשבת ברשות הרבים אלא כשיש חשש פיקוח נפש.</p>
+      <p>חייל שנמצא במקום שאין בו עירוב, למשל בשטח קרב, ודאי מותר לו לשאת את נשקו, כי זה פיקוח נפש גמור. אבל אדם שהולך בשבת רגילה לבית הכנסת בעיר שקטה, במקום שאין בו עירוב – קשה מאוד להתיר, כי אין זה נקרא פיקוח נפש במצב רגיל.</p>
+      <p>במקום שיש עירוב, אין בעיית הוצאה. ובשעת הדחק, במצב קשה, יש שסומכים על ערוך השולחן. וכמובן, כל אחד ישאל את רבו לפי מצבו.</p>
+      <p class="bold-para">לפי ערוך השולחן, לחייל בצבא הנשק הוא חלק מבגדיו, אך רוב הפוסקים לא הסכימו לכך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נשק בשבת</div>
+      <h3 class="story-title">🔒 האם נשק הוא מוקצה</h3>
+      <p>השאלה השנייה, והמעשית יותר: האם נשק הוא מוקצה? הרב מתאר מצב מוכר. אדם מגיע לשבת אצל הורי אשתו, יש לו נשק, והוא לא יודע מי מטייל בבית ואיפה הילדים. המקום הבטוח ביותר הוא אצלו. האם מותר לו להחזיק את הנשק בשבת?</p>
+      <p>על פניו נראה שנשק הוא מוקצה. למה הוא מיועד? לירות, להרוג – פעולה שאסורה בשבת. כלי שמלאכתו לאיסור הוא מוקצה.</p>
+      <p>אבל זה לא כל כך פשוט. תלוי איך מסתכלים על הנשק. אם רואים בו כלי להריגה סתם – זו פעולה אסורה. אבל אם רואים אותו לפי ייעודו האמיתי – להגן על חיים מפני מחבלים – הגנה כזאת מותרת בשבת, כי פיקוח נפש דוחה שבת.</p>
+      <p>האם הולכים אחרי הפעולה הטכנית שהכלי עושה, או אחרי המטרה שבשבילה הוא מיועד? כדי להכריע, הרב מביא דוגמה מן ההלכה שיש בה בדיוק את אותה שאלה: סכין של מילה.</p>
+      <p class="bold-para">נשק מיועד לפעולה של הגנה על חיים, ולכן יש מקום לומר שאינו מוקצה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נשק בשבת</div>
+      <h3 class="story-title">🔪 סכין של מילה</h3>
+      <p>סכין של מילה מיועדת לחתוך. חיתוך כזה בשבת הוא בדרך כלל איסור. ובכל זאת, ברית מילה בזמנה דוחה שבת, ולכן החיתוך הזה בשבת מותר. האם הסכין מוקצה?</p>
+      <p>הפוסקים דנו בשאלה מה דינה של הסכין אחרי שגמרו את המילה. הרמ"א כתב להתיר לטלטל אותה גם אחרי המילה: כיוון שבין השמשות הייתה מיועדת לפעולה מותרת, אין היא נעשית מוקצה באמצע השבת.</p>
+      <p>לעומתו, המגן אברהם כתב שבכלים שמלאכתם לאיסור, רק דעתו של אדם הפכה אותם לצורך המילה, וכיוון שגמר את המילה – חזרו לאיסורם. וכן פסק המשנה ברורה לאסור.</p>
+      <p>הרב מסביר את שורש המחלוקת: אם הולכים אחרי המטרה, הסכין מיועדת למילה, ומילה מותרת בשבת – ולכן אינה מוקצה. אם הולכים אחרי סוג הפעולה, חיתוך הוא פעולה אסורה, ואחרי שהמצווה נגמרה, הסכין חוזרת להיות כלי שמלאכתו לאיסור.</p>
+      <p>ואם המשנה ברורה אוסר בסכין של מילה, לכאורה גם נשק יהיה מוקצה. אבל כאן מגיע חילוק חשוב.</p>
+      <p class="bold-para">הפוסקים נחלקו אם סכין של מילה נעשית מוקצה אחרי שגמרו את המילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נשק בשבת</div>
+      <h3 class="story-title">⏱️ כלי שצריך לו בכל רגע</h3>
+      <p>אחד הפוסקים מביא חילוק של הרמב"ן בדיני יום טוב שני. כלים שבהם קוברים מת ביום טוב מותרים בטלטול גם אחרי הקבורה, כי שמא יצטרכו להם למת אחר. אבל סכין של מילה אסורה אחרי המילה, כי אין מצוי שיצטרכו למול תינוק נוסף בלי שידעו על כך מאתמול.</p>
+      <p>ולפי זה, כותב אותו פוסק, כלים שעומדים להצלת נפשות דומים לכלי הקבורה. אין להם זמן קבוע. כל שעה ושעה היא זמנם, ואי אפשר להיערך לכך מראש. מתי ההגנה "נגמרת"? אף אחד לא יכול לומר. ולכן אין להם דין מוקצה.</p>
+      <p>ועוד טעם הובא: לנשק, ובמיוחד לרובה גדול, יש מטרה נוספת – הרתעה. הרבה פעמים עצם זה שרואים אדם עם נשק גורם לכך שמי שזומם להזיק אינו מתקרב בכלל. וההרתעה היא תכלית מותרת.</p>
+      <p>למעשה, אומר הרב: מי שאין לו צורך, למשל אדם שנשאר בביתו ויכול לנעול את הנשק בארון, עדיף שישאיר אותו שם. אבל מי שיש לו צורך, יכול לסמוך על כך שהנשק אינו מוקצה – בין משום שהוא מיועד לפעולה מותרת של הצלת נפשות, ובין משום ההרתעה.</p>
+      <p class="bold-para">נשק להגנה מיועד לכל רגע ורגע, ולכן אינו דומה לסכין של מילה שמצוותה נגמרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האם הנשק יתבטל</div>
+      <h3 class="story-title">🕯️ כשרגא בטיהרא</h3>
+      <p>מן ההלכה חוזרים אל הגמרא, ושם מתברר שהסוגיה נוגעת מאוד לשאלת ימות המשיח. שאלו את רבי אליעזר: אם כלי הנשק הם תכשיטים, מפני מה הם בטלים לימות המשיח? אמר להם: לפי שאינם צריכים, שנאמר "לֹא יִשָּׂא גוֹי אֶל גּוֹי חֶרֶב".</p>
+      <p>שאלו אותו: אם כן, שיישארו לנוי, כקישוט. ענה להם: "כְּשְׁרָגָא בְּטִיהֲרָא" – כמו נר בצהרי היום. נר הוא דבר יפה, אבל באור היום הוא אינו מאיר ואינו מוסיף דבר.</p>
+      <p>הרב מסביר: היום, כשרואים אדם עם נשק, מכבדים אותו, כי הנשק נחוץ. אבל כשאיש לא יצטרך עוד להגן על עצמו, הנשק יהיה כמו פנס גדול באמצע היום. מה יעשו בו?</p>
+      <p>גם לפי רבי אליעזר, אם כן, כלי הנשק יתבטלו בימות המשיח. המחלוקת בינו לבין חכמים היא רק בשאלה אם היום הם תכשיט. על העתיד – שניהם מסכימים שהמלחמות ייפסקו.</p>
+      <p class="bold-para">רבי אליעזר מסביר שהנשק יתבטל לא משום שאינו יפה, אלא משום שלא יהיה בו צורך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האם הנשק יתבטל</div>
+      <h3 class="story-title">💭 תכשיט או גנאי</h3>
+      <p>כדאי לעצור ולהבין את עומק המחלוקת בין רבי אליעזר לחכמים. רבי אליעזר מסתכל על המציאות כמו שהיא היום. לוחם שהולך עם נשקו אינו מתבייש בו; להפך, הוא אוהב אותו, וכולם רואים בו גיבור. בעולם שיש בו אויבים, הנשק הוא כבוד.</p>
+      <p>חכמים מסתכלים מנקודת המבט של העתיד. הם שואלים: מה יהיה עם הדבר הזה כשהעולם יתוקן? ואם התשובה היא שישברו אותו ויעשו ממנו כלי חקלאות, סימן שגם היום אין הוא תכשיט אמיתי, אלא צורך זמני של עולם שבור.</p>
+      <p>זו דרך חשיבה שאפשר ללמוד ממנה הרבה. כדי לדעת את ערכו האמיתי של דבר, שואלים מה יהיה ממנו בעולם השלם. מה שיישאר גם אז – הוא היופי האמיתי. מה שיתבטל – נחוץ אולי היום, אבל אינו מטרה בפני עצמו.</p>
+      <p>ובכל זאת, ההלכה מלמדת אותנו לחיות בתוך המציאות הנוכחית: לשמור על החיים, לשאת נשק כשצריך, ולדעת את הדין. התקווה לעתיד אינה מבטלת את האחריות של היום.</p>
+      <p class="bold-para">המחלוקת על הנשק היא מחלוקת על השאלה איך לראות כלי שנחוץ רק בעולם שאינו מתוקן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האם הנשק יתבטל</div>
+      <h3 class="story-title">👑 רק שעבוד מלכויות</h3>
+      <p>אבל הגמרא אומרת שהמשנה הזאת חולקת על שמואל. שמואל אמר: "אֵין בֵּין הָעוֹלָם הַזֶּה לִימוֹת הַמָּשִׁיחַ אֶלָּא שִׁעְבּוּד מַלְכֻיּוֹת בִּלְבַד".</p>
+      <p>מה פירוש? לפי שמואל, העולם ימשיך להתנהג כמו היום. ההבדל הוא רק שעם ישראל לא יהיה עוד משועבד לגויים. לא נהיה בגלות, והאומות לא יהיו אדונים עלינו.</p>
+      <p>ומניין למד זאת? מן הפסוק: "כִּי לֹא יֶחְדַּל אֶבְיוֹן מִקֶּרֶב הָאָרֶץ". אם יש עדיין אביונים בעולם, סימן שהעולם נוהג כמנהגו. אילו כל העולם היה משתנה והכול היה מושלם, איך ייתכן שיהיה אביון? ולפי שמואל, גם בימות המשיח עדיין תהיה מלחמה במקומות שונים.</p>
+      <p>מנגד, הגמרא מביאה את דברי רבי חייא בר אבא בשם רבי יוחנן: "כָּל הַנְּבִיאִים כֻּלָּן לֹא נִתְנַבְּאוּ אֶלָּא לִימוֹת הַמָּשִׁיחַ, אֲבָל לָעוֹלָם הַבָּא – עַיִן לֹא רָאָתָה אֱלֹקִים זוּלָתֶךָ". לפי שיטה זו, כל נבואות הנחמה מתקיימות בימות המשיח, וזה מסתדר עם המשנה: לא יהיו חרב ורומח.</p>
+      <p class="bold-para">לפי שמואל, ההבדל היחיד בין העולם הזה לימות המשיח הוא שעבוד מלכויות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הזאב והכבש</div>
+      <h3 class="story-title">🌍 אל יעלה על הלב</h3>
+      <p>ואיך פוסק הרמב"ם? בהלכות מלכים הוא כותב: "אַל יַעֲלֶה עַל הַלֵּב שֶׁבִּימוֹת הַמָּשִׁיחַ יִבָּטֵל דָּבָר מִמִּנְהָגוֹ שֶׁל עוֹלָם, אוֹ יִהְיֶה שָׁם חִדּוּשׁ בְּמַעֲשֵׂה בְרֵאשִׁית, אֶלָּא עוֹלָם כְּמִנְהָגוֹ נוֹהֵג".</p>
+      <p>בימות המשיח יבנו בתים, אנשים יהלכו ברגליהם, העולם ייראה כמו היום. ומה יעשה הרמב"ם עם הפסוק בישעיהו: "וְגָר זְאֵב עִם כֶּבֶשׂ וְנָמֵר עִם גְּדִי יִרְבָּץ"?</p>
+      <p>הרמב"ם מסביר שזה משל וחידה. עניין הדבר הוא שישראל ישבו לבטח עם אומות העולם, שנמשלו לזאב ולנמר. ומה יקרה? כולם יחזרו לדת האמת, ולא יגזלו ולא ישחיתו, אלא יאכלו דבר המותר בנחת כמו ישראל. זה פירוש "וְאַרְיֵה כַּבָּקָר יֹאכַל תֶּבֶן".</p>
+      <p>וכן כל הדברים הדומים להם בעניין המשיח, כותב הרמב"ם, הם משלים, ובימות המלך המשיח ייוודע לכל לאיזה דבר היו משל ומה עניין רמזו בהם. ושם הוא חוזר ומביא את דברי חכמים: אין בין העולם הזה לימות המשיח אלא שעבוד מלכויות בלבד.</p>
+      <p class="bold-para">הרמב"ם פוסק כשמואל: עולם כמנהגו נוהג, ונבואת הזאב והכבש היא משל לשלום בין ישראל לעמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הזאב והכבש</div>
+      <h3 class="story-title">🌱 ניצנים של דעת ה'</h3>
+      <p>הרב מעיר שאפשר כבר היום לראות ניצנים של "יחזרו כולם לדת האמת". כמה וכמה אנשים מן העמים באים לארץ ישראל כדי ללמוד מה זו אמונה ומה זו יהדות.</p>
+      <p>הוא מספר שפעמים רבות הגיעו אליו קבוצות של תיירים שביקשו הדרכה ביהדות. פעם אחת הגיעה קבוצה מארץ רחוקה במזרח, סמוך לחג הסוכות. הוא הסביר להם על הסוכה ועל ארבעת המינים, ובסוף הם הפתיעו אותו: הם עמדו ושרו לו שיר על הקדוש ברוך הוא, אבא שבשמים, מלך של כולם. לראות אנשים מקצה העולם שרים בהתלהבות על מלכות ה' – זו הייתה חוויה מופלאה.</p>
+      <p>אחר כך כתב לו מורה הקבוצה מכתב תודה. הם באו לכאן במיוחד כדי להכיר אמונה. הרב רואה בזה התחלה של מה שהנביאים והרמב"ם תיארו: שהעמים יתקרבו לאמונה האמיתית וילמדו אותה מישראל.</p>
+      <p>גם חוברות על שבע מצוות בני נח, שתורגמו לשפות רבות, נפוצו בעולם והגיעו לידיים רבות. דרכן גילו אנשים שיש דרך לעבוד את הבורא ולזכות לעולם הבא בחיים של טוב, בלי לפגוע באיש.</p>
+      <p class="bold-para">כבר בימינו רואים אנשים מן העמים שמחפשים ללמוד אמונה מישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הזאב והכבש</div>
+      <h3 class="story-title">📘 החוברת שהצילה חיים</h3>
+      <p>הרב מספר סיפור ששמע ממי שעסק בהפצת החוברות האלה. אחת החוברות תורגמה לערבית, ובית ספר אחד החליט לחלק אותה לבוגרי השנה כמתנת סיום.</p>
+      <p>כעבור כמה חודשים קיבל המפיץ טלפון מאמו של אחד הבוגרים. היא אמרה לו: אנחנו חייבים לכם את חיי בננו. הבן שלה התחיל להתקרב לחוגים קיצוניים, ושמע שם שהדרך לעולם הבא עוברת דרך מוות ואלימות. הוא היה כבר בדרך לשם.</p>
+      <p>ואז קרא את החוברת וגילה דבר שלא ידע: יש דרך אחרת להגיע לעולם הבא. לא צריך למות בשביל זה – אפשר לחיות. אדם שמקיים את שבע המצוות שנצטוו בני נח, ועובד את הבורא, זוכה לעולם הבא בחייו. הבחור עזב את הדרך ההיא וחזר לחיים.</p>
+      <p>זה מה שהרמב"ם מתאר: כשהעמים מכירים את האמת, הם מפסיקים לגזול ולהשחית. הזאב אינו משתנה בטבעו, אבל האדם שנמשל לזאב יכול להשתנות. הרב מביא גם בול דואר ישראלי ישן, מלפני כששים שנה, שהופיע בו הפסוק "וְגָר זְאֵב עִם כֶּבֶשׂ". החזון הזה ליווה את הדורות.</p>
+      <p class="bold-para">לימוד שבע מצוות בני נח יכול להפנות אדם מדרך של שנאה אל חיים של טוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הזאב והכבש</div>
+      <h3 class="story-title">🐺 רב סעדיה גאון: כפשוטו</h3>
+      <p>אבל לא כל הראשונים למדו כמו הרמב"ם. רב סעדיה גאון, שחי לפני הרמב"ם, כתב בספרו "אמונות ודעות" על אנשים מישראל שסברו שכל ההבטחות והנחמות שבספרי הנביאים כבר התקיימו בבית שני, ושאין לנו עוד מה לצפות.</p>
+      <p>רב סעדיה גאון דחה את דבריהם, והביא ראיות. אחת מהן היא נבואת ישעיהו: הנביא אמר שבעלי החיים יעשו שלום זה עם זה, שיִרעו הזאב והכבש יחד, והאריה יאכל תבן, והתינוק ישחק על חור הפתן. "והרי אנו רואים אותם היום בטבעם", כותב רב סעדיה, ונזקיהם לא נשתנו במאומה. מכאן שהנבואות עוד לא התקיימו.</p>
+      <p>רב סעדיה למד, אם כן, את הפסוקים כפשוטם: יבוא יום והזאב והכבש באמת יחיו יחד. וכן למדו ראשונים נוספים וחכמי הקבלה.</p>
+      <p>גם בתרגום על ישעיהו נאמר שבימי המשיח ירבה השלום בעולם, ויגור הנמר עם הגדי. כלומר, השלום לא יהיה רק בין בני האדם, אלא יתפשט ויתפתח עד שגם בעלי החיים ישנו את טבעם, והמזיקים יתבטלו מן העולם.</p>
+      <p class="bold-para">רב סעדיה גאון וראשונים רבים למדו שנבואת הזאב והכבש תתקיים כפשוטה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הזאב והכבש</div>
+      <h3 class="story-title">🦁 ושבתי חיה רעה</h3>
+      <p>על שיטת הרמב"ם יש קושיה מן התורה עצמה. בפרשת בחוקותי נאמר: "וְהִשְׁבַּתִּי חַיָּה רָעָה מִן הָאָרֶץ". אם העולם נוהג כמנהגו, ואין שום שינוי בטבע, מה יעשה הרמב"ם עם הפסוק הזה?</p>
+      <p>הרב מציע שתי אפשרויות. האחת: שגם את הפסוק הזה יפרש הרמב"ם כמשל, על בני אדם שמתנהגים כחיות טורפות, שיחדלו מלהזיק.</p>
+      <p>האפשרות השנייה, שהרב אומר שהרמב"ם לא כתב אותה במפורש אבל ייתכן מאוד שכך היה סובר: יבוא יום שבדרך טבעית, באופן שקשה לנו לדמיין, בעלי החיים לא ירצו לטרוף בני אדם. אולי ילמדו לאלף אותם, אולי משהו אחר יקרה. איך זה יקרה – אין לנו מושג. אבל זה לא יהיה שינוי במעשה בראשית, אלא התפתחות בתוך הטבע.</p>
+      <p>למעשה, יש כאן מחלוקת גדולה בין הראשונים. הרמב"ם לומד שהכול משל, ורבים מן הראשונים לומדים שהפסוק כפשוטו ממש, ושהשלום יהיה כל כך גדול שאפילו הנמר והגדי יחיו יחד. איך בדיוק זה ייראה – נדע כשנזכה לראות.</p>
+      <p class="bold-para">גם לשיטת הרמב"ם אפשר שבדרך טבעית יפסיקו החיות להזיק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ימות המשיח בעולמנו</div>
+      <h3 class="story-title">⚖️ ימים שאין בהם חפץ</h3>
+      <p>הגמרא מביאה דוגמה נוספת למחלוקת הזאת. שלמה המלך אמר בחכמתו: "וּזְכֹר אֶת בּוֹרְאֶיךָ בִּימֵי בְּחוּרֹתֶיךָ, עַד אֲשֶׁר לֹא יָבֹאוּ יְמֵי הָרָעָה וְהִגִּיעוּ שָׁנִים אֲשֶׁר תֹּאמַר אֵין לִי בָהֶם חֵפֶץ". "ימי הרעה" – אלו ימי הזקנה. "שנים אשר אין לי בהם חפץ" – אלו ימות המשיח, שאין בהם לא זכות ולא חובה.</p>
+      <p>הרב מעיר שזה קשה מאוד. אם בימות המשיח אי אפשר לצבור זכויות, למה אנחנו מחכים להם כל כך? אם אין בהם שכר, מה טוב בהם?</p>
+      <p>והגמרא אומרת שגם זו שיטה שחולקת על שמואל. לפי שמואל, שאין בין העולם הזה לימות המשיח אלא שעבוד מלכויות, גם בימות המשיח יהיו מצוות ויהיו עבירות, ואדם יוכל להמשיך ולצבור זכויות כמו היום.</p>
+      <p>וממילא מובן למה מחכים לימות המשיח: לא כדי לנוח מעבודת ה', אלא כדי לעבוד אותו בלי שעבוד, בלי טרדות ובלי פחד. בעולם שאין בו מלחמות ושעבוד, אפשר להתמסר לתורה ולמצוות בלב שלם.</p>
+      <p class="bold-para">יש שיטה שבימות המשיח אין זכות וחובה, ושמואל חולק וסובר שהמצוות נמשכות כרגיל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ימות המשיח בעולמנו</div>
+      <h3 class="story-title">👑 מלך שיגדל שמו</h3>
+      <p>הרמב"ם בהלכות תשובה מתאר מה יהיה כשיבוא המשיח. המלכות תחזור לישראל, והם יחזרו לארץ ישראל. ויעמוד מלך שיגדל שמו ויגיע לקצות תבל, יותר מן המלך שלמה. כל העמים יעשו שלום עמו, וכל הארצות יעבדוהו מפני גודל צדקו, ונפלאות יתגלו על ידו. וכל מי שיעמוד עליו – ה' יאבדהו ויתנהו בידו.</p>
+      <p>הרב מסביר שלפי הרמב"ם, המבנה עצמו של ימות המשיח לא ייראה זר לנו. עם ישראל יושב בארצו ויש לו שלטון משלו – את היסוד הזה כבר רואים היום. ההבדל הוא שאז לא יהיו מלחמות, וכל העמים יכבדו את ישראל ויחששו לפגוע בו.</p>
+      <p>כך מתחברות שתי השיטות שראינו. העולם נוהג כמנהגו, בתים נבנים, אנשים הולכים לעבודה, והטבע לא משתנה. אבל המציאות של ישראל בין העמים מתהפכת לגמרי: במקום שעבוד – כבוד, במקום פחד – ביטחון.</p>
+      <p>ולצד כל זה יש עוד שינוי אחד שהרמב"ם מדגיש, ובו נעסוק עכשיו: שינוי בפרנסה.</p>
+      <p class="bold-para">הרמב"ם מתאר מלך שיחזיר את המלכות לישראל, וכל העמים יעשו שלום עמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ימות המשיח בעולמנו</div>
+      <h3 class="story-title">🌾 ותקל להם פרנסתם</h3>
+      <p>באותו מקום מוסיף הרמב"ם, על דרך שיטת שמואל, שהעולם לא ישתנה ממנהגו ויישארו בו החזק והחלש. אבל יש דבר אחד שמשתנה: באותם הימים תקל לבני אדם פרנסתם מאוד.</p>
+      <p>הרב אומר לתלמידיו: אילו גוי היה שואל אותי היום, הייתי אומר לו – ראה, אנחנו כבר רואים התחלה של זה. תחפש בהיסטוריה מתי הייתה תקופה שבה אדם יכול לשבת חמש עשרה או עשרים שנה בלי לדאוג לפרנסה, ללמוד, להתפלל, והוא בריא.</p>
+      <p>היום אדם יוצא לפנסיה בגיל שבעים בערך, ויכול לשבת עוד שנים רבות וללמוד תורה בנחת. הפנסיה הומצאה לפני זמן לא רב, ובשעתה היא נועדה למעטים בלבד, כי רק אחוזים בודדים מבני האדם הגיעו לגיל כזה.</p>
+      <p>היום תוחלת החיים עולה משנה לשנה, וחברות הפנסיה מתקשות לחשב את העתיד. אבל במקום לדאוג, הרב אומר, צריך לראות כאן חסד: אנחנו חיים במציאות שלא הייתה כמותה, שבה הפרנסה קלה מאי פעם.</p>
+      <p class="bold-para">הרמב"ם כותב שבימות המשיח תקל לבני אדם פרנסתם מאוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ימות המשיח בעולמנו</div>
+      <h3 class="story-title">🍞 לחם על העצים</h3>
+      <p>הגמרא אומרת שעתידה ארץ ישראל להוציא גלוסקאות וכלי מילת. כלומר, לחם יגדל על העצים ובגדים יצמחו מן הארץ. האם הכוונה כפשוטה?</p>
+      <p>הרמב"ם מסביר שזה דרך משל. דרכם של בני אדם לומר על מי שמצא דבר מוכן בשפע: "מצא פלוני פת אפויה ותבשיל מבושל". חכמים לא התכוונו שהלחם יגדל ממש על העצים, אלא שהפרנסה תהיה קלה, והאדם ימצא את צרכיו מוכנים.</p>
+      <p>והרב מביא דוגמה מן החיים. בדורות הקודמים, כדי שיהיה לחם בבוקר, הייתה עקרת הבית קמה בארבע לפנות בוקר: טוחנת את הקמח, לשה ואופה, כדי שכשבעלה יחזור מתפילת שחרית יהיה לו מה לאכול. והיום? יוצאים למכולת ולוקחים לחם טרי ומוכן.</p>
+      <p>האם זה לא לחם שגדל על העצים? כך אומר הרמב"ם: זה מה שהתכוונו חכמים כשאמרו שבימות המשיח יגדל הלחם על העצים. הרב מסיים שאפשר לראות כיצד הדברים מתחילים להתקיים לנגד עינינו, וצריך להודות על כך.</p>
+      <p>ומי שרואה את השפע הזה, יכול להשתמש בו כדי להיות פנוי יותר לתורה ולעבודת ה'. כך הפנסיה, הלחם המוכן והשפע שסביבנו נעשים חלק מן ההכנה לימות המשיח, ולא רק נוחות של העולם הזה.</p>
+      <p class="bold-para">לפי הרמב"ם, "גלוסקאות" שארץ ישראל תוציא הן משל לפרנסה שתהיה מוכנה וקלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/-x8I46WwVyg · 2024-07-24 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"נשק בשבת","icon":"🛡️","color":"#c62b6b","stories":[{"id":1,"title":"לא יצא האיש בסייף","icon":"🗡️"},{"id":2,"title":"הפסוק שעל הקיר","icon":"🧱"},{"id":3,"title":"חידושו של ערוך השולחן","icon":"📖"},{"id":4,"title":"האם נשק הוא מוקצה","icon":"🔒"},{"id":5,"title":"סכין של מילה","icon":"🔪"},{"id":6,"title":"כלי שצריך לו בכל רגע","icon":"⏱️"}]},{"id":2,"name":"האם הנשק יתבטל","icon":"🗡️","color":"#6d28d9","stories":[{"id":7,"title":"כשרגא בטיהרא","icon":"🕯️"},{"id":8,"title":"תכשיט או גנאי","icon":"💭"},{"id":9,"title":"רק שעבוד מלכויות","icon":"👑"}]},{"id":3,"name":"הזאב והכבש","icon":"🐑","color":"#e08e00","stories":[{"id":10,"title":"אל יעלה על הלב","icon":"🌍"},{"id":11,"title":"ניצנים של דעת ה'","icon":"🌱"},{"id":12,"title":"החוברת שהצילה חיים","icon":"📘"},{"id":13,"title":"רב סעדיה גאון: כפשוטו","icon":"🐺"},{"id":14,"title":"ושבתי חיה רעה","icon":"🦁"}]},{"id":4,"name":"ימות המשיח בעולמנו","icon":"🌾","color":"#1e88b8","stories":[{"id":15,"title":"ימים שאין בהם חפץ","icon":"⚖️"},{"id":16,"title":"מלך שיגדל שמו","icon":"👑"},{"id":17,"title":"ותקל להם פרנסתם","icon":"🌾"},{"id":18,"title":"לחם על העצים","icon":"🍞"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
