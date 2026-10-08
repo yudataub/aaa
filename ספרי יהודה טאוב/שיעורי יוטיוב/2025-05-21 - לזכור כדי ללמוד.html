@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 לזכור כדי ללמוד</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 לזכור כדי ללמוד</h1>
+  <p>מבט על השואה לאור מגילת אסתר וימי בית שני: הדמיון בין התקופות, הסיבות שהגמרא מונה לגזרת המן, והלקח לדורנו – לפי דרכו של הרב</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ לזכור כדי ללמוד" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/779Ly5zxWek?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/779Ly5zxWek/hqdefault.jpg" alt="לזכור כדי ללמוד" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=779Ly5zxWek" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לשם מה זוכרים</div>
+      <h3 class="story-title">🕯️ "לא תתעב מצרי"</h3>
+      <p>השיעור נאמר ביום שבו מציינים בארץ ישראל את זכר השואה. הרב פתח בשאלה יסודית: מה התכלית של הזיכרון? יש שרצו לקשור את זכר השואה למצוות "זכור את אשר עשה לך עמלק". אבל צריך לשאול: האם יש מצווה לזכור דברים רעים רק כדי לזכור אותם?</p>
+      <p>הרב מבאר שלא. ראיה לכך הוא מביא מן הפסוק "לא תתעב מצרי כי גר היית בארצו". המצרים שעבדו את ישראל בפרך שנים רבות. אדם מישראל שפוגש מצרי יכול להיזכר בשני דברים: בכל הצרות והשעבוד, או בימים שלפני כן, כשהיה רעב בארץ כנען ומצרים קיבלה את בני יעקב. והתורה מכוונת אותו: היזכר בטוב.</p>
+      <p>הרב הוסיף שגם בעולם המחקר מתארים את נטיית האדם להתמקד במחשבות שליליות הרבה יותר מבחיוביות. התורה באה ומלמדת דרך אחרת. הזיכרון אינו כלי לשקוע ברע, אלא כלי לבנות ממנו טוב.</p>
+      <p>ומכאן לשואה. לפי דרכו של הרב, אין המטרה רק לשמר את זכר האסון, אף שזכר הנספים קדוש ויקר. המטרה היא לשאול מה אפשר ללמוד, ומה אנחנו יכולים לעשות טוב יותר בעקבות מה שקרה.</p>
+      <p class="bold-para">התורה אינה מצווה לזכור דברים רעים סתם; היא מכוונת את הזיכרון אל מה שאפשר ללמוד ממנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לשם מה זוכרים</div>
+      <h3 class="story-title">❓ האם אפשר לדעת?</h3>
+      <p>השאלה הגדולה היא האם יש לנו אפשרות לדעת למה הגיעה השואה. זו שאלה קשה מאוד, והרב עצמו הציג אותה כך. הוא לא אמר שהוא יודע את חשבונות שמים. הוא הציע דרך אחרת: להסתכל בעבר, במה שהתורה והגמרא סיפרו לנו, ומכוח זה להתבונן בהווה. כך, אין זו השערה פרטית של אדם, אלא קריאה של המציאות לאור דברי חז"ל, שנאמרו על מצב דומה מאוד. ומי שאינו מקבל את הדמיון, עדיין יכול ללמוד מן הדברים מוסר לעצמו.</p>
+      <p>היסוד שלו הוא שהכל טמון בתורה. אם מתבוננים ומעמיקים, מוצאים בה הדרכה לכל דור. ועמלק, כך מלמדת התורה, מגיע תמיד "בדרך" – "אשר קרך בדרך". השאלה היא: בדרך לאן? ולמה דווקא אז?</p>
+      <p>לכן נבחרה סוגיה אחת שבה הגמרא עצמה שואלת "מפני מה": גזרת המן בימי מרדכי ואסתר. המן היה מזרע עמלק, והגמרא במסכת מגילה דנה במפורש בשאלה למה נגזרה הגזרה על ישראל באותו דור. אם נראה כמה דומה המציאות של ימי בית שני למציאות של דורנו, אולי נוכל ללמוד ממה שאמרו חז"ל אז.</p>
+      <p>הרב הזכיר שהדמיון בין התקופות כבר עורר עניין גם אצל אחרים, ואף נכתב עליו מחקר אקדמי שיצא לאור כספר. אבל בשיעור הוא הציג את הדברים מתוך המקורות עצמם, שלב אחר שלב.</p>
+      <p class="bold-para">הרב אינו בא לחשב חשבונות משלו, אלא להתבונן במה שהגמרא כבר אמרה על גזרה דומה בעבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ימי בית שני וימינו</div>
+      <h3 class="story-title">📜 ארבעה שלבים בימי בית שני</h3>
+      <p>נתחיל בעובדות שמספרים התנ"ך וחז"ל. שלב ראשון: בתום שבעים שנות גלות בבל, מפרסם כורש מלך פרס את הצהרתו: "מי בכם מכל עמו... ויעל". מי שרוצה, רשאי לעלות לארץ ישראל. ובכל זאת, מעטים מאוד עלו. ספר עזרא מונה את העולים, והם היו מיעוט קטן מן העם.</p>
+      <p>שלב שני: הגויים שישבו בארץ באותו זמן כתבו "שטנה" על היהודים אל המלך. הם הזהירו אותו שאם ימשיך לתת ליהודים לעלות, הם ישתלטו על הארץ. והמלך חזר בו. מי שעלה עלה, ומי שלא עלה – אין עוד כניסה. העלייה נעצרה, וגם בניין הבית נעצר.</p>
+      <p>שלב שלישי: מגיע המן הרשע וגוזר "להשמיד להרוג ולאבד את כל היהודים". אבל ה' עושה נס, ועם ישראל ניצל.</p>
+      <p>שלב רביעי: כשלוש שנים אחרי נס פורים, בשנה השנייה לדריוש, בטלה הגזרה. ניתנה רשות לעלות ולבנות את בית המקדש. לפי חז"ל, אותו מלך היה בנה של אסתר. הוא הודיע שכל מי שרוצה יכול לעלות בלי הגבלה, ואף עזר בבניין הבית השני.</p>
+      <p class="bold-para">הצהרת כורש, השטנה שעצרה את העלייה, גזרת המן, ופתיחת השערים אחרי נס פורים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ימי בית שני וימינו</div>
+      <h3 class="story-title">🔁 מכורש ועד בלפור</h3>
+      <p>עכשיו קופצים יותר מאלפיים שנה קדימה. הרב תיאר זאת במשל מעולם המחשב: כאילו ההיסטוריה עשתה "העתק והדבק". אותם שלבים בדיוק חוזרים בדורנו.</p>
+      <p>שלב ראשון: בשנת תרע"ח פרסמה בריטניה את הצהרת בלפור, הקוראת להקים בית לאומי לעם היהודי בארץ ישראל. לראשונה מאז כורש, הכירה מעצמה עולמית בזכותו של העם היהודי לשוב לארצו. אחר כך אישרו את ההחלטה מדינות רבות יחד, ובהמשך התכנסו אומות העולם והחליטו ברוב גדול על הקמת בית לעם ישראל בארצו.</p>
+      <p>לדברים יש גם משמעות הלכתית. הגמרא בסוף מסכת כתובות לומדת מן הפסוק שחוזר שלוש פעמים בשיר השירים, "השבעתי אתכם בנות ירושלים... אם תעירו ואם תעוררו את האהבה עד שתחפץ", את שלוש השבועות. כבר בימי בית שני הייתה קריאה של מלך גוי לבוא לארץ סימן שהגיעה השעה. ולפי מה שכתב בעל "משך חכמה" על ההחלטה הבינלאומית שבימיו, מה שקרה בדורנו הוא סימן כזה, ובוודאי כשכל האומות יחד קראו לעם ישראל לשוב.</p>
+      <p>את הדיון ההלכתי המלא הרב לא פרש כאן. הוא הביא אותו כדי להראות שגם השלב הראשון של ימינו מקביל במדויק לשלב הראשון של ימי בית שני: גוי שקורא ליהודים לבוא, בניגוד לטבעו.</p>
+      <p class="bold-para">התקופה שלנו נראית כמו העתק של ימי בית שני, שלב אחרי שלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ימי בית שני וימינו</div>
+      <h3 class="story-title">📕 הספר הלבן</h3>
+      <p>שלב שני בדורנו: בשנת תרצ"ט פרסם שר המושבות הבריטי את "הספר הלבן". בריטניה נסוגה מהצהרת בלפור, והטילה הגבלה חמורה כמעט עד כדי איסור מוחלט על עליית יהודים לארץ ישראל.</p>
+      <p>הרב מדגיש את המילים שכמעט חוזרות על עצמן: מה שעבר עבר, ומה שלא עבר – לא יעבור. מי שנכנס נכנס, ומי שלא – אין עוד כניסה. בדיוק כמו המלך שחזר בו בעקבות השטנה בימי בית שני.</p>
+      <p>והתזמון מבהיל. השערים נסגרו כמעט לגמרי ממש ערב השואה, בשעה שיהודי אירופה היו זקוקים יותר מכל למקום מקלט. זה היה מצב נורא.</p>
+      <p>כאן הרב עוצר לרגע ומבקש מן השומעים להתבונן: לא מדובר בדמיון כללי בין שתי תקופות קשות. מדובר ברצף מדויק של שלבים. הצהרה, חזרה ממנה, גזרת השמדה, ושוב פתיחה. וכשרואים את הרצף הזה, מבינים שהמקור העתיק יכול ללמד אותנו משהו על מה שעברנו.</p>
+      <p class="bold-para">כמו השטנה בימי כורש, גם בדורנו נסגרו שערי הארץ דווקא ערב החורבן הגדול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ימי בית שני וימינו</div>
+      <h3 class="story-title">🛡️ נס במקום אחד</h3>
+      <p>שלב שלישי: הגיע המן של דורנו, היטלר, וגזר להשמיד להרוג ולאבד את כל היהודים. ולצערנו הרב, בשונה מימי מרדכי ואסתר, לא היה נס שביטל את הגזרה כולה. מיליונים מאחינו נרצחו, יהי זכרם ברוך.</p>
+      <p>ובכל זאת, הרב מצביע על מקום אחד שבו קרה מעין נס פורים: ארץ ישראל. בשנת תש"ב, כשצבא גרמניה נראה בלתי מנוצח ונע מניצחון לניצחון, הוא נבלם לראשונה בקרב גדול, דווקא בדרך אל ארץ ישראל. הישוב היהודי בארץ, שעמד בסכנה ממשית, ניצל.</p>
+      <p>שלב רביעי: כשלוש שנים אחר כך, בשנת תש"ח, בוטלה בפועל גזרת הספר הלבן, ונפתחו שערי הארץ לכל יהודי. ובדבר אחד מצבנו טוב בהרבה מזה של ימי בית שני. אז העולים עדיין היו משועבדים למלכות פרס. בדורנו זכינו לשלוט בעצמנו, כבני חורין.</p>
+      <p>והדבר הראשון שהוכרז עם הקמת המדינה, כבר בהכרזה עצמה, הוא שכל יהודי באשר הוא יכול לעלות לארץ ישראל. השערים שנסגרו לפני החורבן נפתחו לרווחה אחריו.</p>
+      <p class="bold-para">בשואה לא היה נס פורים שלם, אבל במקום אחד נעצר הצורר: בשערי ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ימי בית שני וימינו</div>
+      <h3 class="story-title">🧩 אותו רצף, שני דורות</h3>
+      <p>נחזור בקצרה על הרצף. בימי בית שני: הצהרת כורש, חזרה ממנה בעקבות השטנה, גזרת המן, ושלוש שנים אחרי הנס – פתיחת השערים בלי הגבלה. בדורנו: הצהרת בלפור, הספר הלבן, השואה, ושלוש שנים אחרי הבלימה בשערי הארץ – פתיחת השערים לכל יהודי.</p>
+      <p>הרב מדגיש שבימי בית שני, פתיחת השערים לא קרתה סתם. היא באה בעקבות נס פורים, גם במובן הגשמי וגם במובן הרוחני. הגזרה עצמה עוררה משהו בעם, והמשהו הזה הביא לשינוי.</p>
+      <p>לפני שממשיכים, הרב שואל שאלה שכל אחד צריך לשאול את עצמו. ה' אינו מכה סתם. נאמר "לשוא הכיתי את בניכם מוסר לא לקחו", ומכאן שהייסורים באים כדי שילמדו מוסר. אם כן, מה המוסר שעם ישראל יכול ללמוד מן השואה? איזה טוב יכול לצאת מזה?</p>
+      <p>כדי לענות, הרב חוזר אל העבר. הגמרא במסכת מגילה שואלת בדיוק את השאלה הזאת על ימי המן. נראה מה ענו חז"ל, ואחר כך נבחן אם אפשר ללמוד מזה גם על דורנו.</p>
+      <p class="bold-para">בשני הדורות הגזרה הנוראה היא שהביאה בסופו של דבר לפתיחת שערי הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מפני מה נתחייבו</div>
+      <h3 class="story-title">⚖️ שתי דרכים בגדולי הדור</h3>
+      <p>לפני שנכנסים לסיבות, הרב הזכיר שבשאלה הזאת עצמה נחלקו גדולי ישראל. בתחילת שנות התשעים של המאה הקודמת התבטא הרב שך שהשואה באה כעונש על חטאים שהצטברו במשך הדורות, והזהיר שהמשך בדרך זו עלול להביא צרות נוספות.</p>
+      <p>הרבי מליובאוויטש הגיב על כך, בדרך שאינה רגילה אצלו. לדבריו, השואה היא גזרה שאין להבין את טעמה, ואין לחפש לה סיבות. אין שום אפשרות לומר שעל חטא כלשהו מגיע עונש כזה. הוא השווה זאת להריגת רבי עקיבא, שסרקו את בשרו במסרקות של ברזל: אין לזה הסבר, זו גזרה מלפני ה', וכך צריך לקבל אותה.</p>
+      <p>הרב הציג את שתי הדעות בכבוד, והגדיר את המחלוקת כמעניינת מאוד. ואחר כך הבהיר את דרכו שלו: הוא אינו עושה חשבון על דעת עצמו. הוא לוקח את מה שהגמרא אמרה על המן הראשון, ומראה איך הדברים מתקיימים גם בדורנו.</p>
+      <p>זו הנקודה החשובה בהבנת השיעור. אין כאן טענה שאנחנו יודעים את חשבונו של מקום. יש כאן לימוד גמרא, והתבוננות בדמיון שבין העבר להווה, מתוך כוונה ללמוד ולהתקרב.</p>
+      <p class="bold-para">יש מגדולי ישראל שאמרו שאין לחפש סיבות לשואה, והרב מציג את דבריו כהתבוננות בדברי הגמרא בלבד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מפני מה נתחייבו</div>
+      <h3 class="story-title">📖 שתי תשובות במסכת מגילה</h3>
+      <p>הגמרא במסכת מגילה מספרת: שאלו תלמידיו את רבי שמעון בר יוחאי, מפני מה נתחייבו ישראל שבאותו הדור כליה? אמר להם: אמרו אתם.</p>
+      <p>אמרו לו: מפני שנהנו מסעודתו של אותו רשע. הם באו לסעודה של אחשוורוש ונהנו ממנה. השיב להם רבי שמעון: אם כן, שבשושן ייהרגו, ושבכל העולם כולו לא ייהרגו! הרי רק יהודי שושן השתתפו בסעודה.</p>
+      <p>אמרו לו: אמור אתה. אמר להם: מפני שהשתחוו לצלם בימי נבוכדנצר. ומסיימת הגמרא שגם הם לא עשו אלא לפנים, ולכן גם הקדוש ברוך הוא לא עשה עמהם אלא לפנים – הגזרה איימה, אבל לא התממשה.</p>
+      <p>יש מפרשים שמסבירים ששתי התשובות אינן חולקות זו על זו, אלא משלימות זו את זו. ההשתחוויה לצלם הייתה עוון ישן. כל עוד לא נוסף עליו דבר, הוא לא נתבע. אבל כשנהנו מסעודתו של אותו רשע, התעורר העוון הקודם, וביחד באה הגזרה. לפי זה, יש כאן שתי סיבות שפועלות יחד: עזיבה של עבודת ה', ועוד דבר שקשור לסעודה. ומה הוא אותו דבר? זה צריך הסבר.</p>
+      <p class="bold-para">רבי שמעון בר יוחאי ותלמידיו: מפני שנהנו מסעודתו של אחשוורוש, ומפני שהשתחוו לצלם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מפני מה נתחייבו</div>
+      <h3 class="story-title">🍷 מה רע בסעודה?</h3>
+      <p>צריך להבין: איזה איסור יש בסעודה? הרי הגמרא אומרת שהכל היה כשר. נאמר "והשתיה כדת", והמלך דאג שכל אחד יקבל כרצונו. ואם כן, מה החטא?</p>
+      <p>הרב מדייק בלשון: חז"ל לא אמרו "מפני שאכלו מסעודתו", אלא "מפני שנהנו". הבעיה הייתה ההנאה. וכדי להבין למה, צריך לשאול לכבוד מה נערכה הסעודה.</p>
+      <p>הגמרא במסכת מגילה מספרת שאחשוורוש עשה חשבון של שבעים השנים שנאמרו לגלות בבל. לפי חשבונו, השנים עברו ועם ישראל לא נגאל. הוא הסיק שלא תהיה עוד גאולה, שישראל יישארו בגלות לעולם. לכן הוציא את כלי בית המקדש והשתמש בהם בסעודתו: אם אין עוד בית מקדש, למה לשמור אותם?</p>
+      <p>ובאו יהודים לסעודה הזאת, ולא רק אכלו – הם נהנו. הייתה זו סעודה שכולה הכרזה שלא יהיה עוד בית מקדש ולא תהיה גאולה, והם היו שבעי רצון. טוב להם בחוץ לארץ. זה, לפי דרכו של הרב, עומק החטא: לא הנאה מאוכל, אלא השלמה עם הגלות.</p>
+      <p class="bold-para">הבעיה לא הייתה האוכל, אלא ההנאה מסעודה שנעשתה לכבוד הייאוש מן הגאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מפני מה נתחייבו</div>
+      <h3 class="story-title">💍 כשהכלה מוותרת על החתונה</h3>
+      <p>למה זה כל כך חמור? הרב חוזר אל משל שבשיר השירים. כשעם ישראל נמצא בחוץ לארץ, הוא כביכול רק מאורס לקדוש ברוך הוא. השיבה לארץ ישראל היא כמו הנישואין, כמו הכניסה לבית המשותף. לכן נאמר "אם תעירו ואם תעוררו את האהבה עד שתחפץ": יש אהבה שמחכה לשעתה.</p>
+      <p>עכשיו נחשוב על כלה מאורסת שמודיעה: אין לי צורך להתחתן, טוב לי כך. היא אולי לא עשתה מעשה רע מסוים, אבל במו ידיה ביטלה את הקשר כולו. כשיהודי מתייאש מארץ ישראל ומחליט שטוב לו בגלות, זה אינו עוד חטא אחד בין חטאים. זו הודעה שהוא ויתר על הגאולה.</p>
+      <p>ואז, באותו דור, הגיע המן. הגזרה הנוראה גרמה ליהודים להבין שאין להם מקום בחוץ לארץ. היום ניצלו, אבל מי יודע מה יהיה מחר. הם עשו תשובה, ובעקבות זה נפתחו השערים.</p>
+      <p>והרב הוסיף הערה היסטורית: הוא חיפש הרבה, ולא מצא תיעוד של מה שקרה ליהודים שנשארו בחוץ לארץ בימי בית שני. כמעט אין סיפורים על חכמים או קהילות משמעותיות שם באותה תקופה. מי שלא עלה, כמעט נעלם מן ההיסטוריה.</p>
+      <p class="bold-para">ייאוש מן השיבה לארץ ישראל הוא כמו כלה שמודיעה שאינה צריכה עוד להתחתן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מפני מה נתחייבו</div>
+      <h3 class="story-title">✉️ מי שהתנגד להצהרה</h3>
+      <p>הרב מראה שגם הצד הזה חזר בדורנו. כשבלפור עמד להוציא את הצהרתו, דווקא קבוצה של יהודים באנגליה, מן המתבוללים והמשכילים, ניסתה למנוע זאת. הם טענו: אנחנו רוצים להישאר כאן. ההצהרה תגרום לגויים לחשוד שאיננו נאמנים להם, שאנחנו רוצים להיבדל. אל תכריז.</p>
+      <p>באותה תקופה שהה הרב קוק בחוץ לארץ. הוא נסע לשווייץ, פרצה מלחמת העולם הראשונה, ולא יכול היה לחזור לארץ, וכך הגיע ללונדון. מסופר שכשהיה בשווייץ, לקחו אותו לראות את ההרים, את הנהרות ואת המפלים. על כל דבר אמר: בארץ ישראל יפה יותר. שאל אותו המלווה איך ייתכן. שאל אותו הרב קוק: האם הילדים שלך הם היפים ביותר בעולם? אמר לו: בוודאי, הם שלי. אמר לו הרב קוק: וארץ ישראל היא שלי.</p>
+      <p>הרב קוק עבר בין בתי הכנסת בבריטניה ואמר: אין מקומנו כאן. גם חיים ויצמן, שהיה מדען מוערך בבריטניה, פעל רבות באותו כיוון. יחד הצליחו להבהיר שאותם מתנגדים מייצגים רק את עצמם, ושמקומה של היהדות בירושלים.</p>
+      <p>ההשוואה ברורה: גם אז היו מי ש"נהנו מן הסעודה", שלא רצו גאולה כי היה להם טוב בגלות.</p>
+      <p class="bold-para">גם לפני הצהרת בלפור היו יהודים שרצו להישאר בגלות, והרב קוק פעל לשכנע אחרת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מפני מה נתחייבו</div>
+      <h3 class="story-title">🔎 שתי הסיבות בדורנו</h3>
+      <p>הרב מחיל את דברי הגמרא על דורנו בזהירות: הוא אינו אומר שזה החשבון כולו, אלא שאותן שתי סיבות שהגמרא אמרה על המן הראשון ניכרות גם בתקופה שלפני המן האחרון.</p>
+      <p>הסיבה הראשונה: השתחוויה לצלם. בימי נבוכדנצר זה היה פסל ממש. בדורות שלפני השואה, לפי תיאורו של הרב, רבים עזבו את עבודת ה' לטובת אלילים מודרניים: השכלה, קריירה, תנועות ואידיאולוגיות שאמרו שאין צורך בבורא עולם. ההתבוללות התפשטה מאוד. בצד זה היו כמובן קהילות של תורה וחסידויות רבות, אבל המגמה הכללית הייתה קשה. הרב סיפר ששמע ממי שחי בתקופה ההיא שתלמידי חכמים היו מבוזים, ומעטים רצו להשתדך עם מי שיושב ולומד.</p>
+      <p>הסיבה השנייה: ההנאה מן הגלות. רוב היהודים שעזבו את אירופה באותן שנים בחרו להגר לאמריקה, אף שמצב היהדות שם היה קשה מאוד, ורבים נאלצו לחלל שבת כדי להתפרנס. את ארץ ישראל בחרו מעטים.</p>
+      <p>חשוב להדגיש: הרב מדבר על המגמה הכללית של הדור, לא על הנספים עצמם. בין הנרצחים היו צדיקים וקדושים לאין ספור, וזכרם ברוך.</p>
+      <p class="bold-para">לפי דרכו של הרב, אותן שתי סיבות שבגמרא ניכרות גם בדור שלפני השואה: התרחקות מעבודת ה' והשלמה עם הגלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מפני מה נתחייבו</div>
+      <h3 class="story-title">🛤️ עמלק מגיע בדרך</h3>
+      <p>הרב חוזר אל הנקודה שבה התחיל: עמלק מגיע תמיד "בדרך". כבר במדבר, לפני שבא עמלק, התלוננו בני ישראל: "למה זה העליתנו ממצרים?" כלומר, טוב היה לנו שם. ואז בא עמלק.</p>
+      <p>והרב מראה רמז נפלא בסדר הפסוקים. פרשת "זכור את אשר עשה לך עמלק" בסוף פרשת כי תצא, ומיד אחריה: "והיה כי תבוא אל הארץ אשר ה' אלוקיך נותן לך נחלה, וירשתה וישבת בה". עמלק מופיע ממש לפני "והיה כי תבוא".</p>
+      <p>לפי דרכו של הרב, זה המסר: עמלק בא כשלא רוצים לבוא, ובסופו של דבר הוא עצמו גורם ל"והיה כי תבוא". הגזרה מעוררת את עם ישראל לשוב אל ארצו. כך היה בימי בית שני, שמיד אחרי נס פורים עלו; וכך היה גם בדורנו.</p>
+      <p>הרב אינו אומר זאת כדי להצדיק את הצרה או להקל בה ראש. הוא אומר זאת כדי שנבין את הכיוון שאליו מכוונת ההיסטוריה, וכדי שנלמד את הלקח מתוך בחירה ולא מתוך צרה.</p>
+      <p class="bold-para">פרשת זכור סמוכה ל"והיה כי תבוא אל הארץ", כי עמלק בא כשאין רצון לבוא לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הלקח לדורנו</div>
+      <h3 class="story-title">🚢 אחרי השואה: באש ובמים</h3>
+      <p>גם בדורנו, אחרי המן האחרון, הגיע עם ישראל לארצו, והרב מראה שזה קרה בשני מישורים.</p>
+      <p>במישור הגשמי: העולם ראה את מחנות ההשמדה ואת מחנות העקורים, ונוצרה הסכמה כללית שצריך לתת ליהודים מקום משלהם. הדעה הזאת בעולם הייתה חלק ממה שהביא להחלטה על הקמת בית לעם ישראל בארצו.</p>
+      <p>במישור הרוחני: נוצרה תחושה בעם כולו שהגלות נגמרה. אין לנו עוד מקום שם. באש ובמים, במסירות נפש, נעלה רק לארץ ישראל. הרב סיפר על ניצולים רבים שהייתה להם אפשרות להגר לאמריקה, שם חיכו להם קרובים, פרנסה ושקט. בארץ חיכו להם מעצרים בידי הבריטים, מלחמות וקשיים. ובכל זאת בחרו לבוא, ומי שבא לא רצה עוד לצאת.</p>
+      <p>זו בדיוק התשובה שהגמרא תיארה בימי המן: אחרי הגזרה, היהודים הבינו שאין מקומם בגלות, ושבו. ההבדל הוא שבדורנו השיבה הזאת הייתה רחבה הרבה יותר, וזכינו לה כעם עצמאי בארצו.</p>
+      <p>הרב מסיים את החלק הזה בהתבוננות: מי שמסתכל רק על החורבן, רואה חושך מוחלט. ובאמת היה זה חושך נורא, שאין מילים לתארו. אבל מי שמסתכל גם על מה שבא אחריו, רואה איך מתוך השברים התעוררה שיבה גדולה. אין בזה כדי להסביר את הכאב או לבטל אותו. יש בזה כדי לתת לנו כיוון: להמשיך את מה שהתחילו אותם עולים, שבאו באש ובמים.</p>
+      <p class="bold-para">השואה עוררה את העולם לתת לעם ישראל מקום, ואת עם ישראל להבין שאין לו מקום אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הלקח לדורנו</div>
+      <h3 class="story-title">✨ "ראויים היו ישראל"</h3>
+      <p>חז"ל אומרים דבר מדהים: ראויים היו ישראל שייעשה להם נס בימי עזרא, כדרך שנעשה להם בימי יהושע בן נון, אלא שגרם החטא. כלומר, השיבה בימי בית שני הייתה יכולה להיות מלווה בנסים גלויים, כמו בקריעת הירדן ובכיבוש הארץ בימי יהושע.</p>
+      <p>הגמרא אינה מפרשת מהו אותו חטא. יש מן המפרשים, ובהם המהרש"א, שמבארים שהחטא היה שלא עלו כולם. הקדוש ברוך הוא נתן אפשרות, ורוב העם לא ניצל אותה. בגלל זה לא זכו לנסים ולנפלאות כמו בימי יהושע.</p>
+      <p>ומכאן לימינו. הרב אומר שיש הרבה דברים שמקרבים את הגאולה, אבל אחד מהם בוודאי הוא חיזוק חיבת הארץ בלבבות. אם רוצים לראות נסים ונפלאות, צריך להעריך את המתנה שקיבלנו, ולהרגיש כמה נפלאה היא. כך, בעזרת ה', יתעוררו גם לבבות של יהודים רבים לבוא אל הארץ, ולשמוח בישועתו.</p>
+      <p>זו הזמנה שאינה תלויה בפוליטיקה או בגיאוגרפיה. היא מתחילה בלב של כל אחד מאיתנו. מי שגר בארץ ישראל יכול לשאול את עצמו: האם אני מרגיש את המתנה? האם אני שמח בה? או שמא התרגלתי, ואני רואה בעיקר את הקשיים? ההערכה הזאת, לפי דרכו של הרב, היא עצמה חלק מן התיקון.</p>
+      <p class="bold-para">חז"ל אומרים שבימי עזרא היו ראויים לנסים כבימי יהושע, אלא שגרם החטא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הלקח לדורנו</div>
+      <h3 class="story-title">❤️ שגרירים של אהבה</h3>
+      <p>איך עושים זאת בפועל? כל אחד מאיתנו פוגש מפעם לפעם יהודים מחוץ לארץ שבאים לבקר. מה הם רואים? אם הם יראו יהודים מאושרים בארצם, שמחים בה, לא מקטרים עליה, זה יעורר בהם רצון לבוא.</p>
+      <p>הרב חוזר לפסוק שבו פתח: "אם תעירו ואם תעוררו את האהבה עד שתחפץ". כאן, בארץ ישראל, זה כביכול החדר שבו החתן והכלה מתייחדים. בחוץ, אין עדיין חתונה של ממש. מי שחי את ההרגשה הזאת, מעביר אותה הלאה. כשנפגוש יהודי מחוץ לארץ ונשדר לו את האהבה הזאת, היא תשפיע עליו, ובסוף גם הוא יבוא.</p>
+      <p>זה הלקח שהרב מציע מן השואה. לא רק לזכור את מה שהיה – כמו שאמרנו בתחילה, אין מצווה לזכור דברים רעים סתם – אלא ללמוד. לפי דבריו, הגמרא מלמדת על שני דברים שגרמו לגזרה בימי המן: עזיבת עבודת ה', ועזיבת ארץ ישראל.</p>
+      <p>וככל שנתקן את שניהם – נחזור אל בורא עולם, ונחזור אל ארץ ישראל בשמחה ובאהבה עצומה – כך נזכה שהגאולה תגיע במהרה. וזכרם של הקדושים שנספו יהיה לנו לברכה ולחיזוק, להמשיך ולבנות את מה שהם לא זכו לראות.</p>
+      <p class="bold-para">יהודים שמחים בארץ ישראל הם ההזמנה הטובה ביותר לאחיהם שבחוץ לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/779Ly5zxWek · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"לשם מה זוכרים","icon":"🕯️","color":"#c62b6b","stories":[{"id":1,"title":"\"לא תתעב מצרי\"","icon":"🕯️"},{"id":2,"title":"האם אפשר לדעת?","icon":"❓"}]},{"id":2,"name":"ימי בית שני וימינו","icon":"📜","color":"#6d28d9","stories":[{"id":3,"title":"ארבעה שלבים בימי בית שני","icon":"📜"},{"id":4,"title":"מכורש ועד בלפור","icon":"🔁"},{"id":5,"title":"הספר הלבן","icon":"📕"},{"id":6,"title":"נס במקום אחד","icon":"🛡️"},{"id":7,"title":"אותו רצף, שני דורות","icon":"🧩"}]},{"id":3,"name":"מפני מה נתחייבו","icon":"🔍","color":"#e08e00","stories":[{"id":8,"title":"שתי דרכים בגדולי הדור","icon":"⚖️"},{"id":9,"title":"שתי תשובות במסכת מגילה","icon":"📖"},{"id":10,"title":"מה רע בסעודה?","icon":"🍷"},{"id":11,"title":"כשהכלה מוותרת על החתונה","icon":"💍"},{"id":12,"title":"מי שהתנגד להצהרה","icon":"✉️"},{"id":13,"title":"שתי הסיבות בדורנו","icon":"🔎"},{"id":14,"title":"עמלק מגיע בדרך","icon":"🛤️"}]},{"id":4,"name":"הלקח לדורנו","icon":"🌅","color":"#1e88b8","stories":[{"id":15,"title":"אחרי השואה: באש ובמים","icon":"🚢"},{"id":16,"title":"\"ראויים היו ישראל\"","icon":"✨"},{"id":17,"title":"שגרירים של אהבה","icon":"❤️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
