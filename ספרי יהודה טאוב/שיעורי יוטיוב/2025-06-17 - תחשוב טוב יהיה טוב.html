@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 תחשוב טוב יהיה טוב</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 תחשוב טוב יהיה טוב</h1>
+  <p>סדנת האושר: האם למחשבה יש כוח לשנות את המציאות – מקורות בתורה ובחז"ל, סיפור הצמח צדק, "אפקט פיגמליון", ו"הן לא יאמינו לי" של משה רבנו</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ תחשוב טוב יהיה טוב" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/m9WdZxvOnx0?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/m9WdZxvOnx0/hqdefault.jpg" alt="תחשוב טוב יהיה טוב" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=m9WdZxvOnx0" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה</div>
+      <h3 class="story-title">❓ נבואה שמגשימה את עצמה</h3>
+      <p>בשבוע הקודם, בפרשת שלח, דיבר הרב על המבט הלא טוב של המרגלים, שראו את הארץ בעין רעה. השבוע, בפרשת קורח, הנושא הוא המחשבה עצמה: האם יש בכוחה של מחשבה סובייקטיבית לשנות מציאות אובייקטיבית?</p>
+      <p>יש לזה כמה שמות. "נבואה שמגשימה את עצמה" – אדם חושב דבר, והדבר קורה. "תחשוב טוב יהיה טוב". "חוק המשיכה": דומה מושך דומה, ומה שמתמקדים בו מתעצם. ויש גם הבדיחה המוכרת: "תזכיר את אליהו הנביא, והוא כבר בפתח". או אדם שמתקשר לחבר, והחבר אומר: בדיוק חשבתי להתקשר אליך.</p>
+      <p>האם יש בכל זה ממש, או שזה רק אמונה עממית? האם יש מקור בתורה שמחשבה של אדם משפיעה על העולם?</p>
+      <p>הרב הבחין בין שני נושאים. יש שאלה אם המחשבה משפיעה על האדם עצמו – זה מה שנקרא "אפקט פלצבו", ועליו לא דיבר בשיעור הזה. והשאלה כאן היא אם המחשבה משפיעה על המציאות שמחוץ לאדם. והוא אמר שיש לכך כמה מקורות מפורשים, ואחר כך יעבור גם למחקר.</p>
+      <p class="bold-para">השאלה היא אם מחשבה של אדם יכולה להשפיע לא רק עליו, אלא גם על המציאות שמחוצה לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבעה מקורות</div>
+      <h3 class="story-title">🐑 המקלות של יעקב</h3>
+      <p>המקור הראשון בתורה הוא אצל יעקב אבינו. הוא עשה הסכם עם לבן: כל העקודים, הנקודים והטלואים יהיו שלו. ולבן נתן לו לרעות צאן שאין בו לא עקוד ולא נקוד ולא טלוא. לכאורה אין שום סיכוי: מצאן חום ואחיד לא ייוולדו כבשים מנומרים. לבן לא הבין במה יעקב חולם.</p>
+      <p>המשתתפים העירו שלפעמים נולד ילד ג'ינג'י להורים שאינם כאלה, בגלל גן רחוק מן הסבא. אבל כאן, אמר הרב, לא היה זה מקרה גנטי. יעקב עשה מעשה.</p>
+      <p>הוא לקח מקלות, פיצל בהם פצלות, ועשה בהם צורות של עקודים, נקודים וטלואים, והציב אותם בשקתות המים. הצאן באו לשתות, ראו את המקלות, וחשבו עליהם. ובגלל המחשבה הזאת, בשעת ההתעברות, נולדו עקודים, נקודים וטלואים.</p>
+      <p>המחשבה של הצאן יצרה מציאות חדשה. אמנם, העיר הרב, זו לא דוגמה טהורה של מחשבה בלבד – יש כאן גם מעשה. אבל זו הוכחה שמחשבה יכולה להשפיע על מה שקורה בפועל.</p>
+      <p class="bold-para">יעקב אבינו הניח מקלות מנומרים לפני הצאן, והמראה שראו בשעת ההתעברות השפיע על הוולדות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבעה מקורות</div>
+      <h3 class="story-title">🖼️ המלכה והתמונה</h3>
+      <p>הרב סיפר סיפור עממי שמובא בהקשר הזה, ואמר שאינו יודע אם הוא היסטורי. מלך ומלכה, שניהם לבני עור, ונולד להם ילד כהה עור. המלך היה בטוח שהמלכה בגדה בו, ורצה לגזור עליה דין מוות.</p>
+      <p>לפני שעשה זאת, שאל את החכם היהודי. החכם נזכר בפרשת יעקב והמקלות, ושאל: האם יש בחדר שלכם תמונה של ילד כהה עור? אמר המלך: כן, יש. אמר החכם: שאל את המלכה אם הסתכלה בתמונה הזאת בזמן ההריון. היא אישרה: בשלושת החודשים הראשונים הסתכלה בה הרבה.</p>
+      <p>אמר החכם: זה ההסבר. וכך ניצלה המלכה.</p>
+      <p>הסיפור הזה, כמו פרשת המקלות, ממחיש את הרעיון: מה שאדם רואה ומתמקד בו יכול להשפיע על המציאות. אבל, כאמור, יש כאן גם ראייה וגם מחשבה. ולכן הרב המשיך למקורות שבהם המחשבה לבדה היא שפועלת.</p>
+      <p class="bold-para">סיפור עממי ממחיש את אותו רעיון: מה שהאם ראתה השפיע על הוולד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבעה מקורות</div>
+      <h3 class="story-title">🍎 סימנים בראש השנה</h3>
+      <p>המקור השני: הגמרא אומרת "סימנא מילתא היא", ולכן יהיה אדם רגיל לאכול בראש השנה סימנים. אנו אוכלים תפוח בדבש, שתהיה שנה מתוקה; רימון, שנרבה זכויות; ראש של דג, שנהיה לראש ולא לזנב. ויש עוד מנהגים רבים שנוספו בשנים האחרונות.</p>
+      <p>מה זה יעזור? מה הקשר בין תפוח בדבש לבין שנה טובה? יש לזה פירושים רבים. אחד מהם, אמר הרב, נוגע בדיוק לנושא שלנו: הסימנים נועדו לגרום לאדם לחשוב טוב. בתחילת השנה הוא מתמקד בטוב, בוטח בה' שתהיה לו שנה טובה. והמחשבה הזאת עצמה גורמת, בעזרת ה', שהשנה באמת תהיה טובה.</p>
+      <p>אם כן, יש כאן מקור שני, קרוב לרעיון של "תחשוב טוב יהיה טוב": המנהג לפתוח את השנה במחשבה טובה, משום שהמחשבה משפיעה על מה שיבוא.</p>
+      <p>ואפשר ללמוד מכאן גם הנהגה לכל ימות השנה: לפני כל התחלה – של יום, של עבודה חדשה, של שנת לימודים – לעצור ולחשוב מחשבה טובה, לבטוח בה' שיהיה טוב, ולא לפתוח בדאגה ובחשש. כמו שבראש השנה עושים זאת במעשה ובסימן, כך אפשר לעשות זאת במחשבה בכל יום.</p>
+      <p class="bold-para">אחד הפירושים לסימנים של ראש השנה: מי שחושב טוב בתחילת השנה, גורם שהשנה תהיה טובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבעה מקורות</div>
+      <h3 class="story-title">😟 "כי פחד פחדתי ויאתיני"</h3>
+      <p>המקור השלישי הוא המפורש ביותר בתלמוד, ונחשב המקור המרכזי לכך שמחשבה משפיעה על המציאות. הגמרא במסכת ברכות מספרת על אדם שהלך עם אחד האמוראים, והאמורא שמע אותו נאנח אנחה כבדה. אמר לו: "יסורין קא בעית לאתויי אנפשך?" – אתה רוצה להביא ייסורים על עצמך? שנאמר: "כִּי פַחַד פָּחַדְתִּי וַיֶּאֱתָיֵנִי, וַאֲשֶׁר יָגֹרְתִּי יָבֹא לִי".</p>
+      <p>כלומר: מה שאדם פוחד ממנו – עלול לבוא. האנחה, הפחד, הציפייה לרע – יש להם כוח. ומכאן, אמר הרב, שגם בכיוון החיובי: מי שחושב טוב, גם זה יכול לקרות.</p>
+      <p>הרב הביא דוגמה ששמע, וסייג שאולי הייתה בדיחה ואולי לא, אבל הכיוון נכון: בתקופת הקורונה שאלו מדוע מספר המחלימים ירד פתאום. ונאמר שבשבועות הראשונים החדשות דיברו כל הזמן על המחלימים, ואילו אחר כך דיברו רק על החולים. הרב אמר שקשה לו להאמין שאיש מקצוע אמר דבר כזה, אבל עקרונית הרעיון נכון: מי שחושב רע ומתמקד ברע, מביא רע.</p>
+      <p class="bold-para">הגמרא מלמדת שאדם שמפחד מדבר רע, עלול להביא אותו על עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבעה מקורות</div>
+      <h3 class="story-title">🔥 מחשבה שפוסלת קרבן</h3>
+      <p>והמקור הרביעי הוא מן ההלכה עצמה. הרב שאל את המשתתפים: היכן בהלכה דבר נפסל בגלל מחשבה בלבד? והתשובה: בקרבנות. כהן ששוחט קרבן וחושב, בשעת השחיטה, לאכול אותו חוץ לזמנו או חוץ למקומו – הקרבן נפסל. זו "מחשבת פיגול".</p>
+      <p>זה פלא עצום, אמר הרב. הכהן לא עשה שום מעשה פסול; הוא שחט כראוי. רק המחשבה – והקרבן נפסל. ולמה דווקא בבית המקדש? כי במקום קדוש כזה מגיעים לדרגה שבה אפילו המחשבה משנה את המציאות.</p>
+      <p>אחד המשתתפים העלה שאלה מן החיים: למה לפעמים נדמה שמאכל טעים יותר, רק משום שאדם חושב שהוא טעים? והרב אמר שזה מעניין, ושזה כבר נוגע לנושא האחר, של השפעת המחשבה על האדם עצמו.</p>
+      <p>ובסיכום, ארבעה מקורות: הצאן של יעקב, הסימנים של ראש השנה, "כי פחד פחדתי" שבגמרא, ומחשבת פיגול בקרבנות. ועכשיו – איך זה עובד?</p>
+      <p class="bold-para">בבית המקדש הגיעו לדרגה שמחשבה לבדה יכולה לפסול קרבן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איך זה עובד</div>
+      <h3 class="story-title">🕯️ הצמח צדק והחסיד</h3>
+      <p>בחב"ד מרבים לומר "תחשוב טוב יהיה טוב". מאין זה התחיל? הרב סיפר שזה לא מימינו, אלא מימי האדמו"ר הצמח צדק, לפני כמאה וחמישים שנה.</p>
+      <p>חסיד אחד היה לו בן חולה מאוד, והרופאים אמרו שאין סיכוי. אז לא היו טלפונים ולא דואר אלקטרוני. הרב העיר שהיום אפשר לדבר בחינם עם אדם בקצה השני של העולם, שנוסע ברכב, כאילו הוא בחדר הסמוך. אז הדרך היחידה לבקש מן הרבי שיתפלל הייתה לנסוע אליו בעגלה, ימים ארוכים.</p>
+      <p>החסיד התלבט: אולי עד שיגיע, כבר לא יהיה על מה להתפלל? פגש חסיד אחר, שאמר לו: כתוב בגמרא "מי שיש לו חולה בתוך ביתו, ילך אצל חכם ויבקש עליו רחמים". עצם ההליכה לחכם כבר מועילה. הוא נסע, וכשהגיע לרבי פרץ בבכי.</p>
+      <p>ואז אמר לו הצמח צדק: "תחשוב טוב, יהיה טוב". בטח בה' שיעזור, ויהיה טוב. והוסיף: עוד תזכה לראות ממנו נכדים. מספרים החסידים שעברו על אותו אב ייסורים רבים עם הבן, וכל פעם שהיה קשה, נזכר בדמותו של הרבי אומר "תחשוב טוב יהיה טוב", והתחזק.</p>
+      <p class="bold-para">הסיסמה "תחשוב טוב יהיה טוב" נולדה מתשובה של הצמח צדק לחסיד שבנו היה חולה אנוש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איך זה עובד</div>
+      <h3 class="story-title">🌗 "ה' צלך"</h3>
+      <p>מה המקור של "תחשוב טוב יהיה טוב"? הרב הביא שניים. הראשון – הפסוק בתהילים: "וְהַבּוֹטֵחַ בַּה' חֶסֶד יְסוֹבְבֶנּוּ". כשאדם בוטח שה' ישמור עליו ויעזור לו, החסד מסובב אותו.</p>
+      <p>השני – פירוש מפורסם בשם הבעל שם טוב על הפסוק "ה' צִלְּךָ עַל יַד יְמִינֶךָ". הפסוק מדמה את ה' לצל. מה הכוונה? הרב הזכיר איך בילדותנו שיחקנו עם הצל: אתה מנופף לו לשלום, והוא מנופף לך. מה שאתה עושה – הצל עושה.</p>
+      <p>כך, כביכול, הקדוש ברוך הוא: אם אתה צוחק – הוא צוחק כנגדך; אם אתה בוכה – הוא בוכה כנגדך. בורא עולם מתנהג עם האדם כפי שהאדם מתנהג. אם האדם פוחד כל היום, באים עליו הפחדים. אם הוא מחייך, שמח ובוטח – הקדוש ברוך הוא "מחייך" אליו.</p>
+      <p>וזה גם דומה לפסוק "כַּמַּיִם הַפָּנִים לַפָּנִים, כֵּן לֵב הָאָדָם לָאָדָם". הרב הזכיר שיש מחקרים שטוענים שאדם משדר משהו כשהוא אוהב או שונא את חברו, ושהשני קולט זאת כשהם קרובים. הוא אמר שאינו יודע אם זו כוונת הפסוק, אבל הרעיון דומה.</p>
+      <p class="bold-para">הבעל שם טוב פירש: הקדוש ברוך הוא מתנהג עם האדם כמו צל, כפי שהאדם מתנהג.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איך זה עובד</div>
+      <h3 class="story-title">🧭 "בדרך שאדם רוצה לילך"</h3>
+      <p>הרב הביא את המקור המפורסם ביותר לרעיון, מספר "תורת המנחה", דווקא בפרשת קורח. שם נכתב בערך כך: הכל תלוי במחשבה ובכוונת הלב. בכוונת הלב האדם ממשיך עליו את הרוח ואת הרצון שהוא מבקש, לטוב ולרע. אם הוא מכוון לדבר מצווה, הוא מעורר עליו רוח ממרום שתעזור לו ותצליח אותו. ואם הוא מכוון לדבר עבירה, הוא מעורר עליו רוח טומאה שתעזור לו בה.</p>
+      <p>כלומר: מה שאתה רוצה, ומכוון אליו את מחשבתך – יש סיכוי רב שזה יקרה, ויעזרו לך מלמעלה.</p>
+      <p>ומה המקור? מה שאמרו חז"ל: "בדרך שאדם רוצה לילך – מוליכין אותו". רק רצון, רק מחשבה – ויש עזרה משמים לאותה דרך. וכן "הבא לטהר – מסייעין אותו". וכדברי שלמה המלך: "לֵב אָדָם יְחַשֵּׁב דַּרְכּוֹ, וַה' יָכִין צַעֲדוֹ".</p>
+      <p>הרב סייג: לא שצריך רק לחשוב טוב; צריך גם מעשים. אבל המחשבה הטובה היא דבר חשוב מאוד, והיא פותחת את הדרך לעזרה.</p>
+      <p class="bold-para">הספר "תורת המנחה" מסביר: כוונת הלב מושכת אל האדם את העזרה מלמעלה, לטוב או למוטב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · איך זה עובד</div>
+      <h3 class="story-title">🎶 "ירושלים של זהב"</h3>
+      <p>הרב הזכיר שני סיפורים שנוהגים לספר ביום ירושלים, כשנשאלת השאלה אם מחשבה ורצון של אנשים יכולים להשפיע על המציאות.</p>
+      <p>הסיפור הראשון: הרב צבי יהודה קוק, ביום העצמאות שלפני מלחמת ששת הימים, זעק בדרשתו: איפה שכם שלנו? איפה בית אל? איפה ירושלים? וסיפר שבזמן ההצבעה על החלוקה ישבו בבית אביו, הרב קוק, ובכו על כך שהארץ מחולקת. כשנשאל אחר כך מדוע אמר את הדברים, אמר שפתאום עלה בו רצון.</p>
+      <p>הסיפור השני: ראש העיר ירושלים ביקש מנעמי שמר לכתוב שיר על ירושלים לפסטיבל. היא היססה, אבל בסוף כתבה ושרה, ובבית האחרון התגעגעה לעיר העתיקה ולכותל. כל המדינה שרה על הגעגוע לירושלים. וכעבור שלושה שבועות, בלי שאיש תכנן, הגיעו לשם.</p>
+      <p>האם המחשבה והשירה גרמו לזה? אי אפשר לדעת, אמר הרב. אבל זה סיפור שמספרים בכל מקום: כשרבים רוצים ומשתוקקים לדבר, יש לזה השפעה. "בדרך שאדם רוצה לילך – מוליכין אותו".</p>
+      <p class="bold-para">מספרים שמחשבה ושירה של רבים, ששאפו לירושלים, קדמו לשחרורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחו של אמון</div>
+      <h3 class="story-title">👦 "איציק שלנו צדיק"</h3>
+      <p>מכאן הגיע הרב לתחום החינוך, שבו המושג "אמון" חשוב מאוד, ומדברים עליו הרבה היום.</p>
+      <p>דוגמה: ילד לקח כסף מן הארנק של אביו. אסור לומר לו "איזה גנב אתה". אם תאמר לו שהוא גנב, הוא יגיד לעצמו: טוב, אני גנב, אין לי סיכוי. צריך לעשות הפוך. נגיד שאח בא ומספר: "אבא, איציק גנב!". תאמר: "לא ייתכן. איציק שלנו צדיק. בטח היה לו צורך, אולי היה רעב, אולי חשב שהרשיתי לו". כשמאמינים בו – הוא לא יכול לשבור את האמון, ויש סיכוי גדול שזו תהיה הפעם האחרונה.</p>
+      <p>וכך בכל תחום. ילד שמרטיב בלילה – לא אומרים לו "במצב שלך תגיע ככה לישיבה". זה רק יקבע אצלו את הבעיה. אומרים לו: "אני בטוח שעד גיל שבע זה ייגמר". תמיד בכיוון החיובי.</p>
+      <p>הרב אמר שקרא פעם ספר שעסק בכוחו של אמון, ונהנה ממנו מאוד. ושם נכתב דבר מפתיע: עם ישראל חייב את קיומו לאדם אחד שהאמין בבנו, כשאף אחד אחר לא האמין בו.</p>
+      <p class="bold-para">כשמאמינים בילד, הוא מתאמץ שלא לשבור את האמון; כשמתייגים אותו, הוא נעשה מה שאמרו עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחו של אמון</div>
+      <h3 class="story-title">🏹 עשו ואביו</h3>
+      <p>מי היה אותו אב? היה אדם שכולם ידעו שהוא רשע ורוצח, ושרצה להרוג את יעקב אבינו. אבל הייתה לו בעיה אחת: היה אדם אחד שהאמין בו שהוא צדיק. יצחק אבינו.</p>
+      <p>יצחק היה בטוח שבנו עשו צדיק. הוא ביקש ממנו להכין לו מטעמים כדי לברך אותו, והאמין בכל השאלות והפלפולים שעשו שאל אותו. ועשו, שרצה להרוג את יעקב, אמר לעצמו: "יִקְרְבוּ יְמֵי אֵבֶל אָבִי, וְאַהַרְגָה אֶת יַעֲקֹב אָחִי".</p>
+      <p>כלומר: כל עוד חי האדם היחיד שעדיין מאמין בי – אינני יכול. אני חייב לשמור על האמון הזה. רק כשימות, אוכל לעשות את מה שאני רוצה.</p>
+      <p>ובזכות זה לא הרג את יעקב, ויעקב אבינו נשאר, ועם ישראל קיים עד היום. תראו, אמר הרב, כמה כוח יש לאמון: אפילו לעשו הרשע, האמון של אביו עצר אותו. ואם כך אצל עשו, קל וחומר אצל ילדינו ותלמידינו, שרוצים באמת להיות טובים: האמון שלנו בהם הוא אחד הכוחות החזקים ביותר שיש בידינו כדי לעזור להם לגדול.</p>
+      <p class="bold-para">יצחק האמין בעשו, ועשו לא הרג את יעקב כל עוד אביו חי, כדי לא לשבור את האמון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחו של אמון</div>
+      <h3 class="story-title">🎓 אפקט פיגמליון</h3>
+      <p>במחקר המודרני יש לזה שם: "אפקט פיגמליון", על שם אגדה עתיקה על אדם שחלם על פסל, והפסל הפך לאדם חי. הרב אמר שזה כמובן לא סיפור אמיתי, אבל המחקר שנקרא על שמו – אמיתי.</p>
+      <p>עשו בכיתה מבחן בסוף שנה, שבדק מי התלמידים המוצלחים. ומי שערך את הבדיקה החליט לעשות ניסוי. כשהגיע מורה חדש בתחילת השנה, שלא הכיר את התלמידים, נתנו לו רשימה של עשרים תלמידים ואמרו: אלה המוצלחים, הם הצליחו מאוד במבחן. אבל בפועל, הרשימה הייתה של תלמידים שנבחרו באקראי, ולא הצטיינו כלל.</p>
+      <p>ומה קרה בסוף השנה? אותם תלמידים התקדמו בציונים יותר משאר הכיתה. איך? המורה האמין בהם, ציפה מהם להצליח, והם הצליחו. לפי מה שהובא בשיעור, חזרו על הניסוי כמה פעמים, ונמצא שציפיות המורים מנבאות חלק ניכר מהצלחת התלמידים.</p>
+      <p>כשחושבים טוב על ילד – זה גורם במציאות שהוא יצליח. כמה כוח יש למחשבה של אדם.</p>
+      <p class="bold-para">כשמורה מאמין בתלמידים שהם מוצלחים, הם מצליחים יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · "הן לא יאמינו לי"</div>
+      <h3 class="story-title">⚡ המחלוקת שפגעה במשה</h3>
+      <p>ועכשיו לפרשת השבוע. משה רבנו, מנהיג עם ישראל, עומד באחד המצבים הקשים בחייו. לא אדם אחד ולא שניים, אלא מאתיים וחמישים ראשי סנהדראות, ראשי העדה, מתייצבים נגדו. וטענתם: אתה רודף כבוד. בחרת בעצמך להיות מנהיג, ובאהרן אחיך לכהן גדול. לקחת את הכל למשפחה שלך.</p>
+      <p>הרב תיאר כמה קשה מצב כזה. אדם שעומדים מולו רבים ומאשימים אותו – זה עלול לשבור אותו. הוא הזכיר מנהיג מן הדורות האחרונים שסבל מהפגנות ממושכות נגדו, ושאשתו סיפרה כמה זה שחק אותו. כשאנשים חשובים עומדים נגדך ומאשימים אותך, זה מכה קשה.</p>
+      <p>ונשאלת שאלה: מה עשה משה רבנו, שהגיעה אליו בושה כזו? הרי הכל בהשגחה. האם הייתה לו איזו נקודה, שבגללה נגרם לו המצב הזה?</p>
+      <p>והרב הביא תשובה מעניינת, בשם ספר שמובאים בו דברי החפץ חיים.</p>
+      <p class="bold-para">משה רבנו עמד מול מאתיים וחמישים ראשי העדה שהאשימו אותו ברדיפת כבוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · "הן לא יאמינו לי"</div>
+      <h3 class="story-title">🗣️ "והן לא יאמינו לי"</h3>
+      <p>שנים רבות לפני כן, כשהקדוש ברוך הוא שלח את משה לגאול את ישראל, אמר משה: "וְהֵן לֹא יַאֲמִינוּ לִי וְלֹא יִשְׁמְעוּ בְּקֹלִי". ושאל אותו ה': "מַה זֶּה בְיָדֶךָ?". ודרשו חז"ל, והביא רש"י: מזה שבידך אתה חייב ללקות – במקל, משום שחשדת בכשרים.</p>
+      <p>משה לא אמר "אולי לא יאמינו לי"; הוא אמר כמציאות: הם לא יאמינו. למה אתה כל כך פסימי? היה צריך להיות אופטימי, להאמין שעם ישראל מאמינים בגאולה. אם ה' אמר שיגאל אותם – יגאל.</p>
+      <p>והחפץ חיים אומר, בערך כך: לפי עניות דעתי אפשר לומר שבזה שאמר "והן לא יאמינו לי", גרם שיימצאו אנשים שיפקפקו בנבואתו, כמו מעשה קורח. בשפה של היום: נבואה שהגשימה את עצמה. משה אמר "לא יאמינו לי", ובסוף, אחרי שנים, זה קרה. המילים שאמר, המחשבה שחשד – התקיימו.</p>
+      <p>וכך מתחברים הדברים: המחשבה של אדם, ואפילו של משה רבנו, יש לה כוח לשנות מציאות.</p>
+      <p class="bold-para">משה אמר בתחילת שליחותו "והן לא יאמינו לי", ולפי החפץ חיים, המילים האלה גרמו שבסוף באמת לא האמינו בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · "הן לא יאמינו לי"</div>
+      <h3 class="story-title">☀️ סיכום: לחשוב טוב ולתת אמון</h3>
+      <p>בסוף השיעור סיכם הרב: פתחנו בשאלה אם מחשבה סובייקטיבית יכולה לשנות מציאות אובייקטיבית. ראינו ארבעה מקורות: הצאן של יעקב, שהמחשבה שלהם יצרה מציאות; הסימנים בראש השנה, שמשפיעים על השנה; "כי פחד פחדתי ויאתיני" שבגמרא; ומחשבת פיגול, שמחשבה בלבד פוסלת קרבן.</p>
+      <p>שאלנו איך זה עובד, וראינו את "תורת המנחה" על "בדרך שאדם רוצה לילך מוליכין אותו", ו"לב אדם יחשב דרכו". ואת המקורות של "תחשוב טוב יהיה טוב": "הבוטח בה' חסד יסובבנו", ו"ה' צלך" של הבעל שם טוב.</p>
+      <p>והרב סייג: צריך גם להיזהר לא להגזים. לא לפחד יותר מדי, כי פחד עלול להביא את מה שפוחדים ממנו. לחשוב שבעזרת ה' יהיה בסדר. וכמובן – לא רק לחשוב, אלא גם לעשות.</p>
+      <p>ובעיקר: לתת אמון. להאמין בבן הזוג, בילדים, באנשים. כי מי שחושב על אחר רע – זה עלול לקרות; ומי שמאמין, אפילו ברשע הגדול ביותר, נותן לו סיבה להגשים את האמון. כמו שראינו אצל עשו. ויהי רצון שנחשוב טוב, ונזכה לבשורות טובות לכל עם ישראל.</p>
+      <p class="bold-para">מחשבה טובה, בוטחת ומאמינה, היא כוח שמשפיע על המציאות – בעצמנו, בילדינו ובכלל ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/m9WdZxvOnx0 · 2025-06-17 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"השאלה","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"נבואה שמגשימה את עצמה","icon":"❓"}]},{"id":2,"name":"ארבעה מקורות","icon":"📚","color":"#6d28d9","stories":[{"id":2,"title":"המקלות של יעקב","icon":"🐑"},{"id":3,"title":"המלכה והתמונה","icon":"🖼️"},{"id":4,"title":"סימנים בראש השנה","icon":"🍎"},{"id":5,"title":"\"כי פחד פחדתי ויאתיני\"","icon":"😟"},{"id":6,"title":"מחשבה שפוסלת קרבן","icon":"🔥"}]},{"id":3,"name":"איך זה עובד","icon":"🔍","color":"#e08e00","stories":[{"id":7,"title":"הצמח צדק והחסיד","icon":"🕯️"},{"id":8,"title":"\"ה' צלך\"","icon":"🌗"},{"id":9,"title":"\"בדרך שאדם רוצה לילך\"","icon":"🧭"},{"id":10,"title":"\"ירושלים של זהב\"","icon":"🎶"}]},{"id":4,"name":"כוחו של אמון","icon":"🤝","color":"#1e88b8","stories":[{"id":11,"title":"\"איציק שלנו צדיק\"","icon":"👦"},{"id":12,"title":"עשו ואביו","icon":"🏹"},{"id":13,"title":"אפקט פיגמליון","icon":"🎓"}]},{"id":5,"name":"\"הן לא יאמינו לי\"","icon":"🗣️","color":"#c62b6b","stories":[{"id":14,"title":"המחלוקת שפגעה במשה","icon":"⚡"},{"id":15,"title":"\"והן לא יאמינו לי\"","icon":"🗣️"},{"id":16,"title":"סיכום: לחשוב טוב ולתת אמון","icon":"☀️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
