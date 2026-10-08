@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 לא תירא מהם</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 לא תירא מהם</h1>
+  <p>איסור הפחד במלחמה לפי הרמב"ם, הרמב"ן ורבנו יונה, גדריו, ומה הוא מלמד על השאלה אם מותר להפחיד את הציבור</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ לא תירא מהם" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/SIMyWkEu_SU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/SIMyWkEu_SU/hqdefault.jpg" alt="לא תירא מהם" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=SIMyWkEu_SU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה: מותר להפחיד?</div>
+      <h3 class="story-title">🏛️ כנס של תרחישי אימה</h3>
+      <p>השיעור פתח בסיפור שקרה באותו שבוע. העירייה כינסה את נציגי הציבור לכנס הכנה למצבי חירום. הגיע מומחה, והתחיל לתאר בפירוט מה עלול לקרות: אלפי טילים ביום, בלי הגנה אווירית, בלי חשמל. המטרה, כך הסביר, היא שהנציגים יעבירו את הדברים לקהילה, וכל אזרח יתכונן: יאגור מים ומזון.</p>
+      <p>אחד המשתתפים שאל שתי שאלות. ראשית, אתה מבקש ממני להעביר את זה לציבור, אבל אינך נותן לי שום הנחיה איך לעשות זאת בלי להכניס אנשים לפניקה. שנית, מאין לך שעדיף להכין אנשים לתרחיש קיצוני, מאשר לחסוך מהם את הבהלה והטראומה שהתיאור עצמו גורם? האם עשית חשבון של הפסד מול רווח?</p>
+      <p>התברר שלמארגנים לא היו תשובות. גם האחראים לא הכינו את עצמם לשאלות כאלה. ואחד מהם העיר שיש כאן שינוי של ממש בגישה: בעבר, למשל במלחמת המפרץ, הקו המנחה היה להרגיע ככל האפשר. כיום, משום מה, הנטייה הפוכה – להציג את התרחיש המפחיד ביותר.</p>
+      <p>כשהמשתתף סיפר לרב את הדברים, השיב לו הרב שאלה: ומי אמר שמותר לספר זאת בכלל? אולי יש כאן איסור תורה? הרי יש בתורה לאו מפורש שלא לפחד במלחמה. השאלה הזאת היא נושא השיעור.</p>
+      <p class="bold-para">השיעור נולד משאלה מעשית: האם מותר לתאר לציבור תרחישים מפחידים כדי שיתכונן?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה: מותר להפחיד?</div>
+      <h3 class="story-title">📰 לא שאלה תיאורטית</h3>
+      <p>הרב הראה דוגמאות מעיתונים שנכתבו חודשים קודם לכן. בכל אחד מהם תוארו תחזיות קשות: עשרות אלפי רקטות, ערים משותקות, מצב שאי אפשר לעמוד בו. אילו היינו פוגשים מציאות כזאת באמת, הייתה זו קטסטרופה. אבל השאלה היא לא אם התחזיות מבוססות. השאלה היא מה הן עושות לאדם שקורא אותן.</p>
+      <p>לכן הנושא נבנה בסדר ברור. קודם נלמד מה אומרת התורה: האם יש איסור לפחד, ואיזו עצה היא נותנת. אחר כך נראה איך פוסק הרמב"ם ומה הוא מבטיח. אחר כך נבחן את גדרי האיסור: על מי הוא נאמר, מתי, ומה בדיוק אסור. ורק בסוף נחזור לשאלה המעשית ונראה איך מכריעים בה.</p>
+      <p>הרב הדגיש שזו שאלה הנוגעת למעשה. מי שעומד לפני קהל ומתאר לו תרחישים, צריך לדעת שלפני כן עליו לשאול: האם התועלת שבהכנה גדולה מן הנזק שבפחד? והאם יש כאן חשש של איסור? אל תהיה בטוח מראש שמותר.</p>
+      <p class="bold-para">לפני שקובעים מה מותר לומר לציבור, צריך ללמוד מה גדר האיסור שבתורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצוות התורה ועצתה</div>
+      <h3 class="story-title">📜 "כי תאמר בלבבך"</h3>
+      <p>התורה אומרת: "כִּי תֹאמַר בִּלְבָבְךָ רַבִּים הַגּוֹיִם הָאֵלֶּה מִמֶּנִּי אֵיכָה אוּכַל לְהוֹרִישָׁם". עם ישראל עומד להיכנס לארץ, ורואה שהעמים רבים ממנו. וזה לא חידוש של היום: תמיד היו הם רבים מאיתנו. ועל כך אומרת התורה: "לֹא תִירָא מֵהֶם".</p>
+      <p>אבל הפסוק אינו נעצר באיסור. הוא ממשיך: "זָכֹר תִּזְכֹּר אֵת אֲשֶׁר עָשָׂה ה' אֱלֹקֶיךָ לְפַרְעֹה וּלְכָל מִצְרָיִם". זו כבר עצה. כי קשה מאוד לומר לאדם "אל תפחד". הרב תיאר אדם שראה באותו בוקר: כולו רועד, אשתו מנסה להרגיע אותו, ושום מילה לא עוזרת. אי אפשר לכבות פחד בבת אחת.</p>
+      <p>לכן התורה נותנת דרך. לך לאביך ולסבך, שאל אותם איך ניצחנו את מצרים, איך עברנו את כל מה שעברנו. כשאדם שומע את הסיפורים, הוא מתחיל להרגיש שה' שומר עליו. ובהמשך: "לֹא תַעֲרֹץ מִפְּנֵיהֶם כִּי ה' אֱלֹקֶיךָ בְּקִרְבֶּךָ אֵל גָּדוֹל וְנוֹרָא". מי שזוכר את מה שהיה, פחות מפחד ממה שיהיה.</p>
+      <p class="bold-para">התורה לא רק אוסרת לפחד, אלא גם מלמדת איך לא לפחד – על ידי זכירת הניסים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצוות התורה ועצתה</div>
+      <h3 class="story-title">⚖️ פחד שמועיל ופחד שמשתק</h3>
+      <p>בשיעור עלתה שאלה פשוטה: הרי אי אפשר בלי פחד בכלל. מי שאינו חושש מן האויב, לא יתכונן ולא ייזהר. וגם בבוקר שבו נשמעים פיצוצים, טבעי שאדם ייבהל. האם התורה באמת מבקשת שלא נרגיש דבר?</p>
+      <p>התשובה, כפי שיתברר לאורך השיעור, היא שיש שני סוגי פחד. יש פחד מסוים שצריך: הוא גורם לאדם להבין שיש סכנה, להיכנס למקום מוגן, לשמוע להנחיות. ויש פחד שאדם נכנס בו לפניקה, שבו הוא מאבד את השליטה ואת היכולת לחשוב. על זה אמרה התורה "לֹא תַעֲרֹץ".</p>
+      <p>וגם העצה שהתורה נותנת מכוונת לכך. היא אינה אומרת לאדם "אל תרגיש". היא אומרת לו: תמלא את ליבך בזיכרון של מה שה' עשה. כשהלב מלא בזה, אין בו מקום לבהלה שמשתקת. נשאר בו רק הפחד הבריא, זה שמביא לזהירות ולתפילה.</p>
+      <p>ההבחנה הזאת חשובה גם לשאלה שבה פתחנו. מי שנותן לציבור הנחיות ברורות, מחזק את הפחד הבריא. מי שמתאר תרחישי אימה בלי הנחיות, מגדל את הפחד המשתק. ובין שני הדברים יש מרחק גדול.</p>
+      <p class="bold-para">יש פחד שמביא לזהירות, ויש פחד שמביא לפניקה – והתורה מכוונת נגד השני.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצוות התורה ועצתה</div>
+      <h3 class="story-title">📖 ספר היסטוריה כתרופה לפחד</h3>
+      <p>הרב הציע להחיל את העצה הזאת גם בימינו. מי שרוצה לא לפחד, שיקח ספר על מלחמת המפרץ. שם יראה כמה מעט הייתה המדינה יכולה לעשות כדי להתגונן. טיל אחר טיל נחת, ומספר ההרוגים מפגיעה ישירה היה זעום, כמעט אפסי. הרב הזכיר את התמונה המפורסמת מאותה מלחמה: בית שקרס כולו, ואדם שיצא מתוכו בשלום.</p>
+      <p>וכך לאורך כל הדורות בארץ: מלחמה אחר מלחמה, מצבים שבהם היה הרבה ממה לפחד, ובכל זאת רואים בחוש שה' שומר בדרכים שמעל לגדרי הטבע. גם במלחמת יום הכיפורים, כשהמצב היה מסוכן מאוד, בחסדי שמיים הסתיימה המלחמה תוך זמן קצר יחסית.</p>
+      <p>אבל העצה הזאת עובדת רק אצל מי שמאמין שה' שומר. מי שמאמין, אומר: אם ה' שמר בעבר, ישמור גם בעתיד. מי שחושב שהכל היה מקרה, או שההצלחות היו רק תוצאה של כוח טבעי, באמת יש לו ממה לפחד. מי אמר שגם הפעם נצליח? לכן יש מי שמפרסם תחזיות אימה על קריסה קרובה. מי שמחשב רק חשבונות טבע, מגיע לייאוש.</p>
+      <p class="bold-para">מי שמסתכל על מלחמות ישראל רואה השגחה שמעל הטבע, וזה מה שמרגיע את הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצוות התורה ועצתה</div>
+      <h3 class="story-title">🎓 המרצה שדילג על מלחמות ישראל</h3>
+      <p>הרב סיפר סיפור ששמע. סטודנט ישראלי, רחוק לגמרי משמירת מצוות, למד באוניברסיטה בארצות הברית במסלול שמנתח מלחמות: למה צבא אחד ניצח ולמה אחר הפסיד, וממה אפשר ללמוד אסטרטגיה.</p>
+      <p>המרצה עבר על מלחמות העולם, ניתח כל אחת מהן לעומק. כשהגיע לשנת תש"ח, דילג. הסטודנט חשב: אולי סתם החליט לוותר. אבל כשהגיע המרצה למלחמת ששת הימים ודילג שוב, הסטודנט לא התאפק. אחרי השיעור ניגש אליו ושאל: איך אפשר לדלג על מלחמה כזאת, שבה השתתפו כמה צבאות?</p>
+      <p>המרצה השיב: אנחנו לומדים כאן אסטרטגיה. אנחנו מנתחים למה מדינה אחת ניצחה מדינה אחרת. אין לי עניין לנתח מלחמות שאלוקים נלחם בהן. זה לא דבר טבעי שאפשר לנתח. אין כאן מה ללמוד.</p>
+      <p>הסטודנט היה המום. הוא, הישראלי, לא ראה בזה דבר מיוחד, וכאן מרצה זר אומר בפשטות שאלוקים עשה את זה. הדברים חדרו לליבו, ובעקבותיהם התחיל אצלו תהליך הדרגתי של התקרבות. זו דוגמה למה שהתורה אומרת: "זָכֹר תִּזְכֹּר". מי שמתבונן במה שהיה, רואה את היד החזקה.</p>
+      <p class="bold-para">גם מי שמנתח מלחמות באופן מקצועי יכול להודות שיש מלחמות שאי אפשר להסביר בכלים טבעיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">⚖️ ספר המצוות: לאו שלא לפחד</h3>
+      <p>הרמב"ם בספר המצוות מונה מצוות לא תעשה: הזהירנו שלא לירא מן הכופרים בעת המלחמה, ושלא נברח מפניהם, אלא חובה עלינו להתגבר ולעמוד ולהתחזק כנגדם. ומי שנסוג אחור ובורח, עבר על לא תעשה. הוא מביא את הפסוק "לֹא תַעֲרֹץ מִפְּנֵיהֶם", ומציין שהאזהרה הזאת נכפלה בתורה כמה פעמים.</p>
+      <p>הרב העיר שהרמב"ם הוא כמעט היחיד שכתב הלכות מלחמה באופן מסודר. במשך דורות רבים כמעט לא נכתבה ספרות הלכתית בנושא, כי כולם חשבו שהדברים יהיו נוגעים רק לימות המשיח. לכן כשהנושא נעשה מעשי, כולם חוזרים ולומדים את הרמב"ם.</p>
+      <p>אבל כדאי לשים לב: בספר ההלכה שלו, במשנה תורה, הרמב"ם כותב את ההלכה בצורה מעט שונה, ומדויקת יותר. ושם נמצא המפתח להבנת גדר האיסור. בהלכות מלכים פרק ז הלכה טו, הלכה שהיא מהיסודיות ביותר בכל ההכנה לקרב, נמצאים כל רכיבי הדרך שבה יהודי אמור להיכנס למלחמה.</p>
+      <p class="bold-para">הרמב"ם מונה בספר המצוות לאו מיוחד שלא לירא מן האויב בשעת המלחמה ולא לברוח מפניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">🙏 תפילה לפני היציאה לקרב</h3>
+      <p>על הפסוקים האלה נבנתה תפילה מפורסמת, שחיבר הרב שלמה גורן כשכיהן כרב הראשי לצבא. התפילה פותחת בדברי הכהן משוח מלחמה: "שְׁמַע יִשְׂרָאֵל אַתֶּם קְרֵבִים הַיּוֹם לַמִּלְחָמָה עַל אֹיְבֵיכֶם אַל יֵרַךְ לְבַבְכֶם אַל תִּירְאוּ וְאַל תַּחְפְּזוּ וְאַל תַּעַרְצוּ מִפְּנֵיהֶם כִּי ה' אֱלֹקֵיכֶם הַהֹלֵךְ עִמָּכֶם לְהִלָּחֵם לָכֶם עִם אֹיְבֵיכֶם לְהוֹשִׁיעַ אֶתְכֶם".</p>
+      <p>אחר כך החייל מתפלל שה' ישמור עליו ועל חבריו, ויצילם מכל רע. נוספו לתפילה פסוקים נוספים ממקומות שונים בתנ"ך. הרב גורן היה מחלק אותה בכל מקום שהגיע אליו, כדי שכל לוחם יאמר אותה לפני הקרב.</p>
+      <p>עד היום, במקומות רבים, אומרים את התפילה הזאת לפני היציאה לפעולה. יש בכך דבר עמוק: הפסוקים שהכהן היה אומר לעם לפני המלחמה הפכו לתפילה שהלוחם אומר בעצמו. הוא מזכיר לעצמו את הציווי שלא לירא, ובאותה נשימה מבקש מה' את הכוח לקיים אותו.</p>
+      <p>זו בעצם המצווה עצמה בפעולה: לא להבהיל את עצמך, אלא למלא את הלב בביטחון ובתפילה רגע לפני הכניסה לקרב.</p>
+      <p class="bold-para">הרב גורן חיבר תפילה לפני קרב שנבנתה על פסוקי הכהן משוח מלחמה, והיא נאמרת עד היום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">🏛️ מזכרת בחברון</h3>
+      <p>הרב סיפר מעשה שקשור לתפילה הזאת. במלחמת ששת הימים הגיע הרב גורן מן הראשונים לחברון, אל מערת המכפלה. הדלת הייתה נעולה. הוא דפק, ניסה, אבל השומר טען שאין לו מפתח. רק כשהגיעו עוד חיילים ופרצו את הדלת, התברר שהמפתחות דווקא היו בידיו.</p>
+      <p>בינתיים שמע ראש העירייה המקומי שהגיעו החיילים, ולא ניסה להילחם כלל. הוא בא כדי למסור את העיר. הרב גורן אמר שאין זה המקום, והלך עמו לבניין העירייה, ושם נחתם מסמך הכניעה.</p>
+      <p>בסוף ביקש ממנו ראש העירייה מזכרת. הרב גורן חשב מה יש לו לתת, והוציא עותק של התפילה לפני היציאה לקרב. הוא ביקש שיחתום עליה משהו, והרב גורן כתב את סוף שירת דבורה: "כֵּן יֹאבְדוּ כָּל אוֹיְבֶיךָ ה'", ומסר לו.</p>
+      <p>הסיפור ממחיש עד כמה התפילה הזאת, הבנויה על פסוקי "אל ירך לבבכם", ליוותה את הלוחמים. וכעת נחזור לדברי הרמב"ם בהלכות מלכים, ונעיין בכל מילה שבהם.</p>
+      <p class="bold-para">בששת הימים כתב הרב גורן למי שביקש ממנו מזכרת את הפסוק "כן יאבדו כל אויביך ה'".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">🗡️ ומאחר שיכנס בקשרי המלחמה</h3>
+      <p>כך כותב הרמב"ם: "ומאחר שיכנס בקשרי המלחמה, ישען על מקוה ישראל ומושיעו בעת צרה, וידע שעל ייחוד השם הוא עושה מלחמה, וישים נפשו בכפו ולא יירא ולא יפחד, ולא יחשוב לא באשתו ולא בבניו, אלא ימחה זכרונם מליבו ויפנה מכל דבר למלחמה".</p>
+      <p>הרכיב הראשון הוא ביטחון: לסמוך על ה', שהוא מושיע ישראל בעת צרה. הרכיב השני מעניין: לדעת שעל ייחוד השם הוא נלחם. אפשר לשאול: מה עניין כבוד שמיים כאן? הרי מדובר בהצלת עם ישראל. אלא שרש"י על הפסוק "נקמת ה' במדין" מביא את דברי חז"ל, שהעומד כנגד ישראל כאילו עומד כנגד הקדוש ברוך הוא. עם ישראל הוא העם שנושא את שם ה' בעולם, וכשכבודו עולה, מתרבה כבוד שמיים. כך גם אנו מבקשים בראש השנה: "תן כבוד לעמך".</p>
+      <p>הרכיב השלישי: "וישים נפשו בכפו". והרביעי: שלא יחשוב באותה שעה על אשתו ועל ילדיו, מה יהיה אם לא יחזור. מחשבות כאלה מחלישות את הלוחם, והרמב"ם מצווה למחות אותן מן הלב ולהתפנות כולו למשימה.</p>
+      <p class="bold-para">לפי הרמב"ם הלוחם נשען על ה', יודע שהוא נלחם על ייחוד השם, ושם נפשו בכפו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">🔗 כל דמי ישראל תלויין בצווארו</h3>
+      <p>ממשיך הרמב"ם: "וכל המתחיל לחשוב ולהרהר במלחמה ומבהיל עצמו, עובר בלא תעשה, שנאמר: אַל יֵרַךְ לְבַבְכֶם אַל תִּירְאוּ וְאַל תַּחְפְּזוּ וְאַל תַּעַרְצוּ מִפְּנֵיהֶם". ולא עוד, אלא שכל דמי ישראל תלויים בצווארו.</p>
+      <p>למה כל כך חמור? כי פחד אינו נשאר אצל אדם אחד. פניקה גוררת פניקה. לוחם אחד שנבהל יכול להבהיל את כל היחידה, ומי שלא נלחם בכל ליבו ונפשו, נחשב כאילו שפך דמים. הרמב"ם מביא על כך את הפסוק "וְלֹא יִמַּס אֶת לְבַב אֶחָיו כִּלְבָבוֹ".</p>
+      <p>הרב הוסיף שבדורות קודמים היו האויבים מנסים להבהיל את הצבא שמולם ברעש גדול: תופים, מצלתיים, צעקות. כיום עושים זאת באמצעים אחרים: שידורים, תעמולה, דברים שנועדו להכניס בלוחמים פחד וחוסר מוטיבציה. הכלים השתנו, אבל העיקרון זהה: מלחמה מתנהלת גם בלב.</p>
+      <p>ושימו לב לדיוק בלשון: הרמב"ם אינו כותב "כל מי שמפחד". הוא כותב "המתחיל לחשוב ולהרהר" ו"מבהיל עצמו". לדיוק הזה נחזור כשנלמד את גדרי האיסור.</p>
+      <p class="bold-para">פחד של אחד מתפשט לאחרים, ולכן הרמב"ם מחמיר במי שמבהיל את עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">🏠 ההבטחה של הרמב"ם</h3>
+      <p>ובסוף ההלכה כותב הרמב"ם הבטחה מרגשת: "וכל הנלחם בכל ליבו בלא פחד, ותהיה כוונתו לקדש את השם בלבד, מובטח לו שלא ימצא נזק ולא תגיעהו רעה, ויבנה לו בית נכון בישראל ויזכה לו ולבניו עד עולם, ויזכה לחיי העולם הבא". ומביא פסוק מדברי אביגיל לדוד: "כִּי עָשֹׂה יַעֲשֶׂה ה' לַאדֹנִי בַּיִת נֶאֱמָן כִּי מִלְחֲמוֹת ה' אֲדֹנִי נִלְחָם".</p>
+      <p>כלומר, היציאה לקרב מתוך ביטחון ובלי להכניס פחדים, לשם שמיים, היא עצמה שמירה. אבל מיד עולה שאלה: מי אמר שההבטחות האלה שייכות גם לימינו? התורה דיברה על כיבוש הארץ מידי שבעת העממים. ואיך אפשר לדעת שגם היום ה' יושיע?</p>
+      <p>הרב הדגיש שזו לא שאלה תיאורטית. כבר עמדו בה בפועל, ובכרטיס הבא נראה מתי ואיך הכריעו בה גדולי ישראל.</p>
+      <p>כדאי לשים לב שהרמב"ם אינו מבטיח הצלחה לכל מי שיוצא למלחמה. ההבטחה מותנית: בכל ליבו, בלא פחד, וכוונתו לקדש את השם בלבד. התנאים האלה הם עצמם המצווה, והשכר הוא פירותיה. מי שמקיים את המצווה, נמצא תחת הבטחה מיוחדת.</p>
+      <p class="bold-para">מי שנלחם בכל ליבו ובלי פחד, וכוונתו לקדש את השם, מובטח לו שלא יגיע אליו נזק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">✈️ מלחמת המפרץ: להישאר</h3>
+      <p>בשנת תשנ"א פלשה עיראק לכווית, וארצות הברית איימה לתקוף אותה. עיראק איימה מצידה לשגר טילים לארץ ישראל, ונשמעו אף איומים בנשק לא קונבנציונלי. נשאלה שאלה גדולה: בחורים ואנשים מחוץ לארץ ששהו כאן, האם עליהם לעזוב?</p>
+      <p>הלכו לשאול את הרב שך, והוא הורה להם להישאר. בהתחלה אפשר היה לומר: אלה רק איומים. אבל הימים עברו, והגיע הזמן שבו היה ברור שהמלחמה עומדת לפרוץ ממש. אחד מראשי הישיבות התקשר שוב ושאל אם ההוראה עדיין בתוקף, ולא הסתפק בכך – נסע אליו בעצמו.</p>
+      <p>הרב שך השיב: מי שאמו בוכה ומפחדת, שיחזור, אין להשאיר אם בפחד. אבל לתלמידים יש לומר שמי שיכול – שיישאר. אדרבה, זה זמן שבו הלב מתעורר וכולם מתפללים יחד. הקדוש ברוך הוא שומר על עם ישראל.</p>
+      <p>ועדיין נשאלת השאלה: מאין הביטחון? הרי בדורות קודמים היו בארץ חורבנות קשים. ישובים שלמים נחרבו, טבריה נחרבה עד היסוד כמה פעמים. התשובה, אמר הרב, נמצאת בפרשת השבוע.</p>
+      <p class="bold-para">בשעת איום ממשי הורו גדולי ישראל לבני הישיבות מחוץ לארץ להישאר, מתוך ביטחון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">🌅 הבטחת פרשת נצבים</h3>
+      <p>בפרשת נצבים, פרק ל, אומרת התורה: "וְהָיָה כִי יָבֹאוּ עָלֶיךָ כָּל הַדְּבָרִים הָאֵלֶּה הַבְּרָכָה וְהַקְּלָלָה", והשבות אל לבבך, ושבת עד ה' אלוקיך. ואז: "וְשָׁב ה' אֱלֹקֶיךָ אֶת שְׁבוּתְךָ וְרִחֲמֶךָ", "אִם יִהְיֶה נִדַּחֲךָ בִּקְצֵה הַשָּׁמָיִם מִשָּׁם יְקַבֶּצְךָ".</p>
+      <p>הרב מנה ארבעה שלבים שהתורה מבטיחה. ראשית, "וֶהֱבִיאֲךָ ה' אֱלֹקֶיךָ אֶל הָאָרֶץ". שנית, "וִירִשְׁתָּהּ" – לא תהיה כאן כמו בזמנים שבהם שלטו בך אחרים. הרב הזכיר שבמלחמת העולם הראשונה גירשו השלטונות הטורקיים חלק גדול מן היהודים שבארץ, ומי שרצה להישאר נדרש לקבל נתינות ולהתגייס לצבא. שלישית, "וְהֵיטִבְךָ" – שפע וברכה. רביעית, "וְהִרְבְּךָ מֵאֲבֹתֶיךָ" – בכל דור יותר ויותר. הרב ציין שכיום זה המקום שבו מתקיים ריבוי יהודי באופן הבולט ביותר. ואחר כך: "וּמָל ה' אֱלֹקֶיךָ אֶת לְבָבְךָ" – שיבה אל ה' באהבה.</p>
+      <p>לפי דברי הרב, יש כאן הבטחה לדור שלנו, שהולכת ומתקיימת בהדרגה. מכאן הביטחון: לא פחד שעוד רגע הכל יקרוס, אלא ידיעה שה' שומר ומוסיף לעשות ניסים יום אחר יום. וכך, אמר הרב, הורו גדולי ישראל באותה שעה לתושבי חוץ לארץ: אין לכם מה לברוח.</p>
+      <p class="bold-para">הרב רואה בפרשת נצבים הבטחה מדורגת לשיבה, לירושה, להטבה ולריבוי – הבטחה שמחזקת את הביטחון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרמב"ם: הלוחם בקרב</div>
+      <h3 class="story-title">🧲 רבנו בחיי: הפחד מביא את הצרה</h3>
+      <p>רבנו בחיי כותב על הפסוקים האלה שאין כאן רק מצוות עשה ולא תעשה, אלא גם סגולה. לפי שמי שירא מבשר ודם, יש בזה חטא הנפש וחיסרון גדול בבטחונו בה'. והיראה מבשר ודם גורמת לו מוקש ומכשול לנפשו: היא מביאה עליו צרה, אף על פי שלא הייתה ראויה לבוא עליו.</p>
+      <p>כלומר, ייתכן שהיה אמור להינצל, והכל היה אמור להיות טוב, ורק הפחד יצר את הבעיה. ולעומת זאת, מי שירא את ה' ובוטח בו, ניצל מן הצרה אף על פי שהייתה ראויה לבוא עליו.</p>
+      <p>רבנו בחיי מביא לכך את דברי שלמה המלך: "חֶרְדַּת אָדָם יִתֵּן מוֹקֵשׁ וּבוֹטֵחַ בַּה' יְשֻׂגָּב". החרדה עצמה היא המוקש. ובסוף השיעור נראה איך המהר"ל מסביר את הדבר הזה לעומק.</p>
+      <p>כאן מסתיים החלק הראשון של השיעור. בחלק השני נלמד את גדרי האיסור: האם כולם מסכימים שיש לאו, מה בדיוק אסור, ועל מי הוא חל.</p>
+      <p class="bold-para">מעבר למצווה, הביטחון הוא סגולה להינצל, והפחד עצמו עלול לגרום לצרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">🤔 מחלוקת: לאו או הבטחה?</h3>
+      <p>לא כל מוני המצוות מנו את הלאו הזה. בעל הלכות גדולות לא מנה אותו, והרמב"ן בהשגותיו חולק על הרמב"ם. לדעתו, "לא תירא מהם" הוא הבטחה לעם ישראל שיצליחו, ולא איסור על האדם לפחד.</p>
+      <p>בעל מגילת אסתר, ממפרשי ספר המצוות, מיישב את דעת הרמב"ם. הוא שואל: איך אפשר לומר שזו הבטחה? הרי הכהן היה אומר את הדברים לפני כל מלחמה, ובכל מלחמה נפלו חללים. איזו הבטחה יש כאן לכל אחד שיחזור בשלום? אי אפשר לומר שהתורה ציוותה את הכהן להבטיח דבר שאינו מתקיים. אלא ודאי זו מצווה, שלא לירא ולא לערוץ, כי באופן זה מתגברים על האויב.</p>
+      <p>הרב הוסיף שגם בימינו חלק גדול מן ההצלחה תלוי בתחושה של הלוחמים: באומץ, בחשק, באמון בדרך. מי שמתחיל לפקפק ולשאול "מי אמר שאני צודק, מי אמר שצריך לעשות כך", מאבד את כוחו.</p>
+      <p>אבל מיד נשאלה שאלה בשיעור: הרי אין אדם שאינו מפחד כלל. ואדרבה, מי שאינו חושש מן האויב בכלל, אולי לא יילחם בכל כוחו. אם כן, על איזה פחד דיברה התורה?</p>
+      <p class="bold-para">הרמב"ן חולק על הרמב"ם וסובר שהפסוקים הם הבטחה ולא לאו, ובעל מגילת אסתר מיישב את שיטת הרמב"ם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">🕯️ רבנו יונה: לא לאבד תקווה</h3>
+      <p>רבנו יונה מסביר: כי נדע שה' רב להושיע, וגם אחרי שהצרה קרובה הוא יכול להציל, כמו לפני הצרה. עוד לא נסתיימו העלילות, והרבה רווח והצלה לפניו. ואם כן, איך יחרד הלב וימס? התקווה תחזק את הלב, כמו שנאמר "חִזְקוּ וְיַאֲמֵץ לְבַבְכֶם", ולפי גודל התקווה מתאמץ הלב.</p>
+      <p>החידוש של רבנו יונה גדול: הכוונה אינה שאסור להרגיש פחד כלל. האיסור הוא להגיע למצב של ייאוש, שבו אדם חושב שאין סיכוי ושהעסק אבוד. כאילו כבר נגמרו כל האפשרויות. ולקדוש ברוך הוא יש דרכים רבות מאוד להציל, דרכים שאדם לא חלם עליהן.</p>
+      <p>עוד מסביר רבנו יונה שהאיסור הוא שלא לפחד בגלל הכמות שיש לאויב. מה אכפת לך שיש להם הרבה כלי נשק? אין מעצור לה' להושיע ברב או במעט. מלחמה היא דבר מפחיד, ובוודאי יש מקום לזהירות, אבל ריבוי כוחו של האויב אינו סיבה לאבד את הלב.</p>
+      <p>ועוד הוא מוסיף שהביטחון נשען על רחמי ה'. גם מי שיודע שיש בידו עוונות, יכול לבטוח, כי לא על צדקותינו אנו מפילים תחנונינו. ה' שומע תפילה ומרחם בכל מצב.</p>
+      <p class="bold-para">לפי רבנו יונה האיסור הוא לאבד תקווה, משום שלה' דרכים רבות להושיע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">❔ והרי יעקב אבינו פחד?</h3>
+      <p>על ההבנה שאסור לפחד בכלל יש קושיות. יעקב אבינו, לפני המפגש עם עשו: "וַיִּירָא יַעֲקֹב מְאֹד וַיֵּצֶר לוֹ". שמואל, כשנצטווה ללכת למשוח מלך, אמר: "אֵיךְ אֵלֵךְ וְשָׁמַע שָׁאוּל וַהֲרָגָנִי". רואים שגדולי עולם פחדו, ולא אמרו שאין ממה לחשוש.</p>
+      <p>ועוד: התורה עצמה, בפרשת היציאה למלחמה, אומרת "מִי הָאִישׁ אֲשֶׁר בָּנָה בַיִת חָדָשׁ וְלֹא חֲנָכוֹ יֵלֵךְ וְיָשֹׁב לְבֵיתוֹ פֶּן יָמוּת בַּמִּלְחָמָה". התורה מודה במפורש שיש סכנה. אם כן, איך היא מצווה באותה פרשה "לא תיראו"?</p>
+      <p>כדי ליישב את הקושיות, צריך להגדיר בדיוק את האיסור לשיטת הרמב"ם. הגדרה מעניינת מאוד בשיטתו כתב בעל קהלות יעקב, הגאון רבי יעקב ישראל קניבסקי, שנראה בכרטיס הבא.</p>
+      <p>השאלות האלה אינן קושיות של התרסה. הן מכריחות אותנו להבין מה בדיוק התורה דורשת מאדם. אם התורה הייתה אוסרת כל תחושת פחד, היו גדולי עולם עוברים עליה. לכן ברור שהאיסור מוגדר יותר, ואינו נוגע ברגש הטבעי עצמו, אלא במה שהאדם עושה איתו.</p>
+      <p class="bold-para">יעקב אבינו ושמואל פחדו, ובתורה עצמה נאמר "פן ימות במלחמה" – ומכאן הצורך להגדיר את האיסור במדויק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">⚖️ קהלות יעקב: ביטחון או מסירות נפש</h3>
+      <p>בעל קהלות יעקב חוקר: האם החיוב שלא לפחד הוא מדין ביטחון, כלומר שיהיה בטוח בליבו שה' יציל אותו ולא תקרה לו תקלה? או שהוא חיוב של מסירות נפש: שלא יהיה אכפת לו על חייו כלל, ויהיה מסור למלחמה לקדש שם שמיים?</p>
+      <p>והוא מכריע שהדבר מוכרח: אין חיוב להיות בטוח שלא ימות. הרי הכהן עצמו מכריז "פֶּן יָמוּת בַּמִּלְחָמָה". התורה עצמה אומרת שאינו בטוח, ואיך יחייבו אותו להיות בטוח בדבר שהתורה אומרת שאינו ודאי? ומה שכתב הרמב"ם שהנלחם בכל ליבו מובטח לו שלא ימצא נזק – גם יעקב אבינו קיבל הבטחה ופחד שמא יגרום החטא. ואיך יוכל אדם להיות בטוח שכל כוונתו רק לשם שמיים, ושלא יאבד אותה לרגע?</p>
+      <p>לכן, לשיטת הרמב"ם, החיוב הוא ללכת במסירות נפש, ולא לחשוב על עצמו. וכך נוהגים ללמוד את הרמב"ם: האיסור לפחד פירושו שמרגע שנכנסת לקרב, אינך חושב "מה יקרה אם". אתה הולך מתוך מסירות נפש, למען כבוד שמיים ולמען עם ישראל.</p>
+      <p class="bold-para">החיוב שלא לפחד אינו ודאות שלא ימות, אלא נכונות למסור את הנפש בלי לחשוב על עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">🚁 החייל במסוק</h3>
+      <p>הרב סיפר על חייל ביחידת חילוץ מוטסת שבא אליו ישר מן הקרב. הוא סיפר את מה שמותר לספר: באחת הגיחות ירו לעבר המסוק טיל. הוא כבר אמר "שמע ישראל", בטוח שזה הסוף. רגע לפני הפגיעה, הטיל סטה הצידה. המחבל ירה שוב, ושוב הטיל סטה ברגע האחרון.</p>
+      <p>הרב שאל אותו: איך אתה מסוגל להילחם במצב כזה? התשובה הייתה פשוטה: יוצאים למלחמה על דעת זה שאולי לא חוזרים. צריך למסור את הנפש למען עם ישראל, וזהו. איני מתעסק במחשבה מה יהיה. את המוות ראיתי מקרוב יותר מפעם אחת, ובאיזו צורה אני כאן.</p>
+      <p>זו בדיוק ההגדרה של הקהלות יעקב. הוא לא היה בטוח שיחזור. הוא "סגר את דלת הפחד": מראש הלך על דעת מסירות נפש, ולכן הפחד לא שלט בו. ותיקי מלחמות רבים מספרים כך: מי שלחם לא חשב מה יקרה אם לא יחזור ומה יהיה עם הילדים. הוא עשה את מה שהיה צריך לעשות.</p>
+      <p>זה ההבדל: אפשר להרגיש פחד, אבל לא להילחם מתוכו ולא להיות מונהג על ידו. מי שקיבל על עצמו מראש את המשימה, יכול לפעול גם כשהלב דופק.</p>
+      <p class="bold-para">לוחם שקיבל על עצמו מראש למסור את נפשו, "סוגר את דלת הפחד" ויכול לפעול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">📌 המצווה כפי שנפסקה</h3>
+      <p>כדאי לסכם את ההגדרה כפי שנהוג ללמוד ולפסוק לשיטת הרמב"ם. כשאומרים ללוחם "אל תפחד", אין הכוונה שלא ירגיש דבר, ואין הכוונה שיהיה בטוח שלא יקרה לו כלום. הכוונה שמרגע שנכנס לקרב, אינו מתעסק במחשבה מה יקרה אם, ומה יהיה כאשר. הוא הולך על דעת מסירות נפש, למען עם ישראל ולמען כבוד שמיים.</p>
+      <p>שתי הקושיות מתיישבות כך. יעקב אבינו פחד, ושמואל אמר "איך אלך" – כי פחד עצמו אינו האיסור. והתורה אומרת "פן ימות במלחמה" – כי המצווה אינה דורשת ודאות שלא ימות, אלא נכונות למסור את הנפש.</p>
+      <p>וגם ההבטחה של הרמב"ם מקבלת כאן משמעות. מי שנלחם בכל ליבו, בלי להבהיל את עצמו, וכוונתו לקדש את השם בלבד, מובטח לו שלא ימצא נזק. אבל אין אדם יכול לדעת בוודאות שהגיע למדרגה הזאת. לכן הלוחם אינו נשען על ההבטחה כעל ביטוח. הוא פשוט עושה את שלו, ומשאיר את השאר לה'.</p>
+      <p class="bold-para">לפי הרמב"ם, הלוחם אינו נדרש להיות בטוח שיחזור, אלא ללכת במסירות נפש ולא להבהיל את עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">🧠 פחד טבעי מול "מבהיל עצמו"</h3>
+      <p>ועדיין נשאלת השאלה: פחד הוא תכונה טבעית באדם. במלחמה הוא מתעורר מאליו. איך אפשר לצוות על רגש?</p>
+      <p>האחרונים משיבים מתוך דיוק לשון הרמב"ם. הוא לא כתב "כל המפחד", אלא "כל המתחיל לחשוב ולהרהר במלחמה ומבהיל עצמו". אם כן, אין איסור על הפחד הטבעי המתעורר במלחמה. אדרבה, יש בו אף צד חיובי, שהאדם מבין שיש סכנה. האיסור הוא על מי שמפתח בליבו את הפחד: מעלה במחשבתו הרהורים שמעמיקים אותו ומגדילים אותו.</p>
+      <p>הרמב"ם עצמו נותן דוגמה: אדם שבאמצע הקרב חושב על אשתו ובניו, מה יהיה עליהם. מחשבה כזאת מחלישה את הלוחם, וכך אינו יכול להילחם. רבנו יונה נותן דוגמה אחרת, מן הפסוק "וְרָאִיתָ סוּס וָרֶכֶב עַם רַב מִמְּךָ": אדם שמתחיל לחשב כמה יש להם וכמה יש לנו, מה היתרון שלהם ומה היתרון שלנו. החישובים האלה מפתחים בלב רגשות פחד.</p>
+      <p>לסיכום שיטת הרמב"ם: אין כוונת התורה שלא לפחד כפשוטו, כי זה בלתי אפשרי לאדם. האיסור הוא להכניס ללב מחשבות והרהורים שמגדילים את הפחד. זו ההלכה לשיטתו.</p>
+      <p class="bold-para">הפחד הטבעי אינו אסור; האיסור הוא לפתח את הפחד במחשבות ובחישובים מבהילים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">⏳ "מי האיש הירא" – מתי חל האיסור</h3>
+      <p>הרמב"ן הקשה על הרמב"ם קושיה נוספת: אם יש לאו שלא לפחד, איך מכריזים השוטרים "מִי הָאִישׁ הַיָּרֵא וְרַךְ הַלֵּבָב יֵלֵךְ וְיָשֹׁב לְבֵיתוֹ"? הרי אסור להיות ירא! סימן שאין כאן איסור.</p>
+      <p>המפרשים עונים שזה כלל אינו קשה. הרמב"ן הבין שזמן האיסור הוא כבר כשהכהן משוח מלחמה מדבר אל העם, לפני היציאה. אבל לפי הרמב"ם, האיסור חל רק בשעת הקרב עצמו, כפי שמשמע מלשונו: "ומאחר שיכנס בקשרי המלחמה". לפני הקרב אין עדיין איסור. ולכן מי שירא, ההכרזה מאפשרת לו לחזור לביתו עוד קודם, והוא אינו עובר על דבר. רק מי שנכנס לקרב, שם חל עליו הלאו.</p>
+      <p>בשיעור הוזכר גם שיש בחז"ל מי שפירש "הירא ורך הלבב" כמי שמפחד מן העבירות שבידו, ולא דווקא מן המלחמה. אבל בכל מקרה, התשובה העיקרית לשיטת הרמב"ם היא ההבחנה בזמן: לפני הקרב – אפשר לחזור; בתוך הקרב – אסור להבהיל את עצמך.</p>
+      <p class="bold-para">לפי הרמב"ם האיסור חל רק בשעת הקרב עצמו, ולכן אין סתירה להכרזה "מי האיש הירא".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גדרי האיסור</div>
+      <h3 class="story-title">🌳 שתי שיטות, שני שורשים</h3>
+      <p>יש כאן מחלוקת ברורה, וההבדל בין השיטות עמוק. לפי הרמב"ם, זו מצווה שנועדה לכך שהלוחם יהיה לוחם: לכן נאסר עליו הפחד בשעת הקרב, והשורש הוא מסירות נפש.</p>
+      <p>לפי הרמב"ן, זה עניין אחר לגמרי. על הפסוק "כִּי תֵצֵא לַמִּלְחָמָה עַל אֹיְבֶךָ וְרָאִיתָ סוּס וָרֶכֶב" הוא מסביר שהתורה מזהירה שלא יירך ליבם ולא יפחדו מן האויבים, וגם שלא יבטחו בגבורתם ויחשבו "גיבורים אנחנו ואנשי חיל", אלא ישימו את ליבם אל ה' ויבטחו בישועתו, כי לא בגבורת הסוס יחפוץ. כלומר, זה חלק ממידת הביטחון בה'.</p>
+      <p>ורבנו יונה הרחיב זאת עוד יותר: הוזהרנו בזה שאם יראה האדם כי צרה קרובה, תהיה ישועת ה' בליבו ויבטח עליה. לפי זה האיסור אינו רק על החייל. כל אדם בעת צרה מחויב שלא להיבהל יותר מדי, ולהרגיש שה' יכול להושיע.</p>
+      <p>ההבדלים למעשה גדולים. לפי הרמב"ם, האיסור הוא רק על הלוחמים, ורק בשעת הקרב. לפי הרמב"ן ורבנו יונה, הוא חל גם בשעת ההכנה, וגם על כל מי שנמצא בסכנה.</p>
+      <p class="bold-para">לרמב"ם האיסור הוא מדין מסירות נפש של הלוחם; לרמב"ן ולרבנו יונה – מדין ביטחון, ולכן הוא רחב יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העורף והאוכלוסייה</div>
+      <h3 class="story-title">📢 מה מותר לומר לציבור</h3>
+      <p>ועכשיו אפשר לחזור לשאלה שבה פתחנו. האם מותר לעירייה, או לכל גורם, לתאר לציבור תרחישים מפחידים ולהכניס אנשים לבהלה?</p>
+      <p>אין חולק שמותר לתת הנחיות מעשיות: היכן להיכנס כשיש התרעה, מה להכין, מה לעשות. הנחיות כאלה אינן מפחידות, הן מחזקות. אבל תיאור מפורט של תרחיש קיצוני הוא בדיוק מה שהרמב"ם ורבנו יונה תיארו: לחשב כמה יש לאויב, להעלות במחשבה את הגרוע מכל.</p>
+      <p>לפי הרמב"ם האיסור הוא רק על הלוחמים. אבל לפי רבנו יונה, הוא חל על כל אדם בשעת צרה. ממילא, הכנסת האוכלוסייה לפחד עלולה להיות קרובה לאיסור תורה.</p>
+      <p>וגם מי שטוען שיש תועלת בהכנה, צריך לעשות חשבון לא פשוט. הכנסת אנשים לפחד גדול היא עצמה סכנה: אדם יכול להיכנס לפניקה, להיפגע נפשית, ולאבד את יכולתו לתפקד. לכן לפני שמספרים תרחישי אימה, צריך לבדוק אם הסכנה באמת כה קרובה, ואם התועלת באמת גדולה מן הנזק.</p>
+      <p class="bold-para">לפי רבנו יונה גם הבהלת האוכלוסייה עלולה להיכנס לאיסור, ולכן הנחיות מעשיות עדיפות על תרחישי אימה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העורף והאוכלוסייה</div>
+      <h3 class="story-title">🧭 כמה צריך להתכונן?</h3>
+      <p>הרב העיר שיש כאן שאלה גדולה שאין לה תשובה פשוטה: כמה באמת צריך להתכונן? מצד אחד, יש חובה להישמר ולנקוט אמצעי זהירות. מצד שני, הכנסת אנשים לפחד היא עצמה סכנה גדולה. אדם שנכנס לבהלה עלול לפגוע בעצמו, לקבל החלטות שגויות, ולהעביר את הבהלה לסובבים אותו.</p>
+      <p>לכן זו אינה רק שאלה מקצועית של מומחי חירום. מומחה יכול לומר מה עלול לקרות, אבל ההכרעה אם מותר לספר זאת לציבור, ובאיזו צורה, נוגעת לאיסור תורה. מכאן שיש מקום לשאול חכמי תורה לפני שמחליטים על דרך כזאת, ולא לקבוע מראש שהדבר מותר.</p>
+      <p>ובשיקול עצמו צריך לבדוק כמה דברים. ראשית, האם הסכנה באמת כה קרובה וממשית, או שמדובר בתרחיש רחוק. שנית, האם יש דרך להשיג את התועלת – ההכנה המעשית – בלי לתאר את הגרוע מכל. ושלישית, מה המחיר הנפשי של התיאור, על ילדים, על זקנים, על אנשים חרדים מטבעם.</p>
+      <p>הרב סיפר שהמשתתף בכנס, כששמע שייתכן שיש כאן איסור, הופתע מאוד. הוא פנה לחבריו וביקש מהם שלפני שהם מעבירים את הדברים לקהילה, ילכו לשאול את רב הקהילה אם הדבר מותר. זו הדרך הנכונה: לא לפעול מתוך הנחה שזה פשוט.</p>
+      <p class="bold-para">השאלה כמה להכין את הציבור דורשת הכרעה של תורה, ולא רק של מומחי ביטחון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העורף והאוכלוסייה</div>
+      <h3 class="story-title">📨 תשובה מרמת גן</h3>
+      <p>במלחמת המפרץ נפלו טילים רבים באזור רמת גן, ותושבים רבים עזבו את העיר. הרב יעקב אריאל, שהיה רבה של רמת גן, נשאל אם עליו להורות לתושבים להישאר. בתחילה רצה לומר שהעיקר להלכה כרמב"ם, שהאיסור הוא רק על הלוחמים בקרב, ואין כאן איסור.</p>
+      <p>אבל, כך הוא מספר בתשובתו, הגיע לביקור בעיר הרב הראשי לישראל דאז, הרב אברהם שפירא, וחלק עליו. הוא הראה לו שבספר המצוות הרמב"ם מביא כמקור את הפסוקים בספר דברים. ושם, כשמעיינים במקור, מדובר לא רק בלוחמים, אלא בכל העם שהיה במדבר: שלא יחשוש להיכנס לארץ למרות הסיכונים. גם הנשים והזקנים בכלל, שאם הם יהיו רשאים לפחד ולא להיכנס, איך יוכלו הגברים לקיים את המצווה לבדם?</p>
+      <p>מכאן הוכיח שהמצווה חלה גם על האוכלוסייה האזרחית: אסור לפחד ולברוח ממקומה בשעת מלחמה, כשהדבר פוגע במאמץ הכללי.</p>
+      <p>יש בתשובה הזאת חידוש חשוב: גם לשיטת הרמב"ם עצמו, אפשר שהאיסור אינו מוגבל תמיד לשדה הקרב. הכול תלוי במקור ובמטרה של המצווה. אם המטרה היא שעם ישראל יעמוד מול אויביו, הרי שכל מי שהפחד שלו מערער את העמידה הזאת, נכלל בה.</p>
+      <p class="bold-para">הרב אברהם שפירא סבר שבשעת מלחמה האיסור חל גם על האוכלוסייה האזרחית, כי העורף משפיע על הלוחמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העורף והאוכלוסייה</div>
+      <h3 class="story-title">🧱 העורף מחזיק את הצבא</h3>
+      <p>היסוד שבדברי הרב שפירא הוא שאין כאן כלל קבוע. בדרך כלל אמנם הלוחמים הם שמכריעים את המלחמה, ולכן האיסור נאמר עליהם. אבל לעתים קרובות העורף הוא שמחזיק את הצבא.</p>
+      <p>דוגמה: אם בשעה שעם ישראל עומד להיכנס לארץ, האישה תאמר לבעלה "אני מאוד מפחדת", הדבר יגרום לבעל להישאר מחוץ לארץ. וכך היה בחטא המרגלים: קבוצת אנשים סיפרה לעם כמה מפחיד יהיה בארץ, והפחד התפשט עד שכל העם נבהל ובכה.</p>
+      <p>ממילא, אם יקומו בעורף גורמים שיפעלו להחליש את רוח הלוחמים, להשמיע כל הזמן קולות שמטילים ספק בצדקת הדרך, הדבר יוריד לאט לאט את המוטיבציה, והלוחמים יתחילו להסתפק אם מה שהם עושים ראוי. במצב כזה האיסור כולל גם את מי שאינו בשדה הקרב.</p>
+      <p>גם הרמב"ן, שלא מנה את הלאו הזה, מונה מצווה אחרת קרובה: שימנע האיש הירא ורך הלבב מלבוא במלחמה, כדי שלא ינוס ויהיה תחילת מפלה לעם. מי שמפחד אינו נכנס לקרב, כי הפחד שלו מסכן את כולם.</p>
+      <p class="bold-para">בדרך כלל האיסור נאמר על הלוחמים, אבל כשהעורף משפיע על רוחם, הוא נכלל באיסור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+          <a href="#story-29">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-29" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · כוחו של הביטחון</div>
+      <h3 class="story-title">📗 לפי גודל הביטחון גודל ההצלחה</h3>
+      <p>הנושא האחרון של השיעור הוא כוחו של הביטחון במלחמה. בספר מחנה ישראל, שכתב החפץ חיים עבור חיילים יהודים שנאלצו לשרת בצבא בתקופת מלחמת העולם הראשונה, מובא: בכמה מקומות בדברי הנביאים רואים שעיקר הצלת נפש האדם בעת מלחמה, והתגברותו על אויבו, תלויים בגודל התחזקותו בביטחון בה'. לפי גודל הביטחון, כן גודל ההצלחה.</p>
+      <p>וכשם שמצווה להתחזק בעצמו, צריך לחזק גם את חבריו במידת הביטחון. ומביא את הפסוק "חֶרְדַּת אָדָם יִתֵּן מוֹקֵשׁ וּבוֹטֵחַ בַּה' יְשֻׂגָּב": על ידי שאדם חרד ואינו בוטח, ניתן לפניו מוקש. וכן בירמיהו: "אַל תֵּחַת מִפְּנֵיהֶם פֶּן אֲחִתְּךָ לִפְנֵיהֶם" – אם תתחיל לפחד מהם, הפחד עצמו יגרום שתישבר לפניהם.</p>
+      <p>והגמרא במסכת ברכות מספרת על אחד שהלך אחרי חברו ונאנח. אמר לו: ייסורים אתה רוצה להביא על עצמך? שנאמר "כִּי פַחַד פָּחַדְתִּי וַיֶּאֱתָיֵנִי". הפחד מזמין את מה שמפחדים ממנו.</p>
+      <p class="bold-para">החפץ חיים כתב לחיילים שעיקר ההצלה במלחמה תלוי בגודל ההתחזקות בביטחון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-28">⟶ הקודם</a>
+          <a href="#story-30">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(29, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-30" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · כוחו של הביטחון</div>
+      <h3 class="story-title">🪵 המהר"ל והקרש בין הגגות</h3>
+      <p>המהר"ל מסביר מדוע הפחד גורם לדבר שמפחדים ממנו לקרות. כאשר אדם מתיירא מן הצרה, הוא נותן לה מקום לפעול בו, ולכן היא באה עליו. וכך אמר איוב: "כִּי פַחַד פָּחַדְתִּי וַיֶּאֱתָיֵנִי וַאֲשֶׁר יָגֹרְתִּי יָבֹא לִי". כשאדם ירא מדבר, הוא מקטין את עצמו לפניו, ונותן לו שליטה עליו.</p>
+      <p>והמהר"ל מביא דוגמה ברורה. הנח קרש עץ על הרצפה ועבור עליו. כמעט ודאי שתעבור מקצה לקצה בלי שום בעיה. עכשיו הנח את אותו קרש בין שני בתים, בגובה רב, ונסה לעבור. יש סיכוי גדול שתיפול באמצע. מה השתנה? הקרש אותו קרש, הרגליים אותן רגליים. השתנה רק דבר אחד: הפחד. המחשבה על הנפילה היא שפועלת באדם ומפילה אותו, כי השכל הוא הפועל באדם.</p>
+      <p>מכאן הלקח לשאלה שלנו. מי שמכניס באנשים פחדים – יהיה כך, ויקרה כך – אינו רק גורם להם צער. הוא עלול, לפי דברי המהר"ל, לתת לדברים מקום לקרות. זה עניין שצריך לשקול בכובד ראש.</p>
+      <p class="bold-para">המהר"ל מסביר שהפחד נותן לדבר המפחיד מקום לפעול, כמו מי שהולך על קרש בגובה ונופל מפחדו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-29">⟶ הקודם</a>
+          <a href="#story-31">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(30, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-31" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · כוחו של הביטחון</div>
+      <h3 class="story-title">🕊️ "וישבתם לבטח בארצכם"</h3>
+      <p>הרב מפוניבז', הרב יוסף שלמה כהנמן, נהג להצביע על השלווה המיוחדת שיש בארץ ישראל. לדבריו, בתקופתו לפחות, לא היה הסבר טבעי לשלווה העוטפת את האוכלוסייה היהודית בארץ, גם בזמנים של מצור וסכנה גלויה לעין. ימים של צחצוח חרבות, מדינות רבות מאיימות מסביב, ובכל זאת הציבור אינו נתפס לבהלה, ממשיך בשגרת חייו בתושייה מופלאה.</p>
+      <p>הוא אמר שכבר בימיו מתקיים בארץ ישראל הפסוק "וִישַׁבְתֶּם לָבֶטַח בְּאַרְצְכֶם". יהודים יושבים כאן לבטח, למרות כל מה שיש מסביב. זו השגחה גלויה, כמו יונה שמוליכה את בניה בין גלי הים.</p>
+      <p>השלווה הזאת אינה הכחשה של הסכנה. היא ביטוי לביטחון שהתורה ציוותה עליו, והיא עצמה מגן.</p>
+      <p>ומכאן לכל אחד מאיתנו: גם כשהחדשות מלאות איומים, אפשר לבחור לא להבהיל את עצמנו. להקשיב להנחיות, לעשות את המוטל עלינו, ולהשאיר את הלב פנוי לתפילה ולביטחון. זו לא אדישות, אלא דרך התורה בשעת צרה.</p>
+      <p class="bold-para">הרב מפוניבז' ראה בשלווה של יהודי ארץ ישראל בשעת סכנה עדות להשגחה גלויה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-30">⟶ הקודם</a>
+          <a href="#story-32">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(31, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-32" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · כוחו של הביטחון</div>
+      <h3 class="story-title">✅ המסקנה: לחשב רווח מול הפסד</h3>
+      <p>לסיכום, האם כדאי להפחיד? ברור שיש חשש של איסור תורה, "לֹא תַעַרְצוּ מִפְּנֵיהֶם", לפחות לשיטת רבנו יונה ולשיטת הרב שפירא, הכוללים גם את האוכלוסייה. ומעבר לאיסור, הביטחון עצמו הוא סיבה לישועה, והפחד עצמו עלול לגרום את הצרה, כפי שלמדנו מרבנו בחיי, מן החפץ חיים ומן המהר"ל.</p>
+      <p>גם כשיש תועלת מסוימת בהכנה, צריך לחשב היטב רווח מול הפסד. אם הסכנה ממשית וקרובה, יש מקום להכין, ובעיקר בהנחיות מעשיות ובדרך שמחזקת. אבל כשמדובר בחשש רחוק, נראה שההפסד שבהכנסת הפחד גדול מן הרווח. ובמקרים רבים אדם יכול להכריע כך בעצמו, אם הוא שוקל את הדברים כראוי.</p>
+      <p>והדרך שהתורה נותנת נשארת אותה דרך: "זָכֹר תִּזְכֹּר אֵת אֲשֶׁר עָשָׂה ה' אֱלֹקֶיךָ". מי שזוכר את הניסים שראינו בעינינו, מוצא בליבו כוח לעמוד בשעת סכנה, ומחזק גם את מי שסביבו. כך מקיימים את "חִזְקוּ וְיַאֲמֵץ לְבַבְכֶם כָּל הַמְיַחֲלִים לַה'".</p>
+      <p class="bold-para">הפחדת הציבור עלולה להיות קרובה לאיסור תורה, ולכן מותרת רק אחרי שקילה זהירה של התועלת מול הנזק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-31">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(32, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/SIMyWkEu_SU · 2024-09-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"השאלה: מותר להפחיד?","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"כנס של תרחישי אימה","icon":"🏛️"},{"id":2,"title":"לא שאלה תיאורטית","icon":"📰"}]},{"id":2,"name":"מצוות התורה ועצתה","icon":"📜","color":"#6d28d9","stories":[{"id":3,"title":"\"כי תאמר בלבבך\"","icon":"📜"},{"id":4,"title":"פחד שמועיל ופחד שמשתק","icon":"⚖️"},{"id":5,"title":"ספר היסטוריה כתרופה לפחד","icon":"📖"},{"id":6,"title":"המרצה שדילג על מלחמות ישראל","icon":"🎓"}]},{"id":3,"name":"הרמב\"ם: הלוחם בקרב","icon":"⚔️","color":"#e08e00","stories":[{"id":7,"title":"ספר המצוות: לאו שלא לפחד","icon":"⚖️"},{"id":8,"title":"תפילה לפני היציאה לקרב","icon":"🙏"},{"id":9,"title":"מזכרת בחברון","icon":"🏛️"},{"id":10,"title":"ומאחר שיכנס בקשרי המלחמה","icon":"🗡️"},{"id":11,"title":"כל דמי ישראל תלויין בצווארו","icon":"🔗"},{"id":12,"title":"ההבטחה של הרמב\"ם","icon":"🏠"},{"id":13,"title":"מלחמת המפרץ: להישאר","icon":"✈️"},{"id":14,"title":"הבטחת פרשת נצבים","icon":"🌅"},{"id":15,"title":"רבנו בחיי: הפחד מביא את הצרה","icon":"🧲"}]},{"id":4,"name":"גדרי האיסור","icon":"🔍","color":"#1e88b8","stories":[{"id":16,"title":"מחלוקת: לאו או הבטחה?","icon":"🤔"},{"id":17,"title":"רבנו יונה: לא לאבד תקווה","icon":"🕯️"},{"id":18,"title":"והרי יעקב אבינו פחד?","icon":"❔"},{"id":19,"title":"קהלות יעקב: ביטחון או מסירות נפש","icon":"⚖️"},{"id":20,"title":"החייל במסוק","icon":"🚁"},{"id":21,"title":"המצווה כפי שנפסקה","icon":"📌"},{"id":22,"title":"פחד טבעי מול \"מבהיל עצמו\"","icon":"🧠"},{"id":23,"title":"\"מי האיש הירא\" – מתי חל האיסור","icon":"⏳"},{"id":24,"title":"שתי שיטות, שני שורשים","icon":"🌳"}]},{"id":5,"name":"העורף והאוכלוסייה","icon":"🏘️","color":"#c62b6b","stories":[{"id":25,"title":"מה מותר לומר לציבור","icon":"📢"},{"id":26,"title":"כמה צריך להתכונן?","icon":"🧭"},{"id":27,"title":"תשובה מרמת גן","icon":"📨"},{"id":28,"title":"העורף מחזיק את הצבא","icon":"🧱"}]},{"id":6,"name":"כוחו של הביטחון","icon":"🌿","color":"#6d28d9","stories":[{"id":29,"title":"לפי גודל הביטחון גודל ההצלחה","icon":"📗"},{"id":30,"title":"המהר\"ל והקרש בין הגגות","icon":"🪵"},{"id":31,"title":"\"וישבתם לבטח בארצכם\"","icon":"🕊️"},{"id":32,"title":"המסקנה: לחשב רווח מול הפסד","icon":"✅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
