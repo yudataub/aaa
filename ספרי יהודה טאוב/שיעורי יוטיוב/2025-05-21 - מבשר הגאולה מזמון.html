@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מבשר הגאולה מזמון</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מבשר הגאולה מזמון</h1>
+  <p>משנתו של הרב יהודה אלקלעי: גאולה שמתחילה במעשה, "תשובה" שפירושה שיבה לארץ, צום גדליה בעשרת ימי תשובה, ומלכי הגויים שיסייעו</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מבשר הגאולה מזמון" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/vfhZ1pRHZVo?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/vfhZ1pRHZVo/hqdefault.jpg" alt="מבשר הגאולה מזמון" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=vfhZ1pRHZVo" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ביום ההילולא</div>
+      <h3 class="story-title">🕯️ כוחו של לימוד ביום הזיכרון</h3>
+      <p>השיעור נאמר בד' בתשרי, יום פטירתו של הרב יהודה אלקלעי. לפני שנכנס לעיקר, הקדים הרב כמה סיפורים קצרים, כדי להראות כמה חשוב ללמוד תורה לעילוי נשמתו של נפטר ביום ההילולא שלו.</p>
+      <p>הרב סיפר על מקרה שאירע לאחרונה בין מכריו. אישה אחת חלמה בלילה על סבה שנפטר. בחלום הוא נראה עצוב, בודד ומסכן מאוד, והחלום היה כל כך קשה שהיא צעקה מתוכו. בבוקר ניסתה להבין: למה פתאום הגיע אליה בחלום? ואז נזכרה – באותו יום היה יום פטירתו.</p>
+      <p>ובאורח פלא, איש מן המשפחה לא זכר זאת. ולא רק זה: בנו היחיד, שהיה אומר עליו קדיש, נפטר באותה שנה, ולא נשאר מי שיאמר קדיש ויזכיר אותו. בבוקר התקשרה לכל המשפחה, וכולם למדו לעילוי נשמתו.</p>
+      <p>ומכאן למד הרב: אין לנו מושג כמה גדול הדבר, כשאדם לומד לעילוי נשמת נפטר ביום פטירתו. כאילו הנפטר בא ואמר: אל תשכחו אותי. לכן גם אנחנו נלמד היום על הרב אלקלעי, ונזכיר את תורתו.</p>
+      <p class="bold-para">לימוד לעילוי נשמת נפטר ביום פטירתו משפיע הרבה יותר ממה שאנו משערים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ביום ההילולא</div>
+      <h3 class="story-title">⛰️ הקבר בהר הזיתים</h3>
+      <p>הסיפור השני קשור לרב אלקלעי עצמו. הרב סיפר שהכיר יהודי שגר בשכונה היהודית שבהר הזיתים, ומדריך שם סיורים, בעיקר לתיירים מחוץ לארץ. על כל מטר בהר יש לו סיפור: ממתי עומד כל עץ זית, מי קבור בכל קבר ולמה.</p>
+      <p>פעם הדריך קבוצת תיירים, והצביע על הבתים שבהם הוא גר. התיירים פתחו עיניים בתדהמה: עד היום ידענו שיהודים יודעים למות בהר הזיתים. עכשיו אנחנו רואים חידוש – שיהודים יודעים גם לחיות בהר הזיתים!</p>
+      <p>שנה לפני השיעור, ביום זיכרון של אחד מבני משפחתו, עלה הרב לבקר קבר בהר הזיתים. בדיוק כשגמר, התקשר אליו אותו יהודי, בלי לדעת היכן הוא נמצא, ושאל אם אפשר להיפגש. הוא בא, לקח אותו לביתו, ובסוף הוביל אותו אל קברו של הרב אלקלעי, בחלקה הספרדית.</p>
+      <p>בלעדיו, אמר הרב, לא היה מוצא את הקבר בין אלפי הקברים. וזה היה, בדיוק, בסמוך לד' בתשרי. הרב הרגיש בזה השגחה פרטית ממש, ולכן גם השנה ביקש להקדיש את השיעור לתורתו של הרב אלקלעי, ולראות כמה מן הדברים שכתב התקיימו לעינינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · חייו ופועלו</div>
+      <h3 class="story-title">📜 מסרייבו לירושלים</h3>
+      <p>הרב יהודה אלקלעי נולד בסרייבו שבבוסניה בשנת תקנ"ח, 1798. בין רבותיו היה הרב אליעזר פאפו, בעל "פלא יועץ", הספר שכולם מכירים. ורבו המובהק היה הרב יהודה ביבאס, שהיה קרוב משפחה של אור החיים הקדוש, ומוזכר בספריו פעמים רבות. איך בדיוק היה קרוב משפחה, יש בזה דעות שונות בין החוקרים.</p>
+      <p>כבר בגיל צעיר מאוד, כבן אחת עשרה, הגיע לארץ ישראל ולמד תורה בירושלים. ומעניין: זה היה בדיוק בתקופה שבה עלו תלמידי הגר"א, אף שלכאורה לא היה קשר ביניהם. הרב נתן סימן לשנת עלייתם: שנת תק"ע, כמו שאומרים בתפילה "תְּקַע בְּשׁוֹפָר גָּדוֹל לְחֵרוּתֵנוּ".</p>
+      <p>תלמידי הגר"א היו שונים מאוד מן העליות שקדמו להם. רבים מן העולים לפניהם באו לשבת בשקט וללמוד. תלמידי הגר"א באו מלאי מרץ לבנות את הארץ. הם גאלו את חורבת רבי יהודה החסיד, ובנו אחר כך שכונות חדשות כמו נחלת שבעה. הם לא רצו לשבת במקום, אלא להתקדם ולבנות.</p>
+      <p>הרב אלקלעי הושפע בירושלים מתורת הגאולה שלהם. הוא אינו מזכיר אותם בשמם, אבל השקפתו דומה מאוד להשקפתם, כמו שנראה.</p>
+      <p class="bold-para">הרב אלקלעי למד בצעירותו בירושלים, והושפע מתורת הגאולה של תלמידי הגר"א.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · חייו ופועלו</div>
+      <h3 class="story-title">🏘️ רב בזמון</h3>
+      <p>בשנת תקפ"ה, כשהיה בן עשרים ושבע, התמנה לרב הקהילה הספרדית בעיר זמון, שעל גבול הונגריה וסרביה. בתפקיד הזה שימש שנים רבות. ובזקנותו, כשהיה כבר בן למעלה משבעים, עלה שוב לארץ ישראל.</p>
+      <p>הוא היה מן הרבנים הספרדים הבולטים בדורו, אדם שחידש חידושים בתחומים רבים, וחיבר ספרים רבים על הגאולה ועל ארץ ישראל. נפטר בד' בתשרי תרל"ט, ונקבר בהר הזיתים, בחלקת הספרדים.</p>
+      <p>והעיר אור יהודה, שכולנו מכירים, נקראת על שמו של הרב יהודה אלקלעי. הרב העיר שאילו הייתה המדינה מקפידה יותר לזכור את גדולי התורה שקדמו לה, אולי היה שמו מוכר יותר. כי כפי שנראה, הרבה ממה שהתרחש אחר כך, הוא כתב ותכנן הרבה לפני כן.</p>
+      <p>ספריו כונסו בימינו בשני כרכים גדולים בהוצאת מוסד הרב קוק, הכוללים את כל כתביו, הספרים והחוברות שהוציא. ובהם אפשר לראות את מה שכתב, ולהשוות למה שקרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · חייו ופועלו</div>
+      <h3 class="story-title">🌱 גאולה שמתחילה בבורות מים</h3>
+      <p>בשנת ת"ר פרסם את ספרו "מנחת יהודה". באותה שנה אירעה עלילת דמשק, והרב אלקלעי הציג אותה כסימן בדרך הגאולה, אות שנועד לעורר את עם ישראל לשוב לארץ אבותיו.</p>
+      <p>בספר כתב את התורה שלמד בירושלים: ראשית הגאולה תבוא על ידי מעשים של בניין ואהבת הארץ. לבנות בתים, לחצוב בורות מים, לטעת כרמים וזיתים. לצד זה דיבר גם על התשובה הכללית, שנגיע אליה בהמשך.</p>
+      <p>בכך יצא נגד השקפה שהייתה נפוצה מאוד באותו זמן: שעלינו לשבת בחוץ לארץ עד שיבוא המשיח, והוא יביא אותנו לארץ ישראל. הרב אלקלעי קרא בכל כוחו: לא כך! אנחנו צריכים לבוא לארץ ישראל בכוחות עצמנו, ואחר כך יגיע המשיח.</p>
+      <p>הרב ציין שבזמנו של הרב אלקלעי הוא הלך כמעט נגד כולם. היום, אמר, רוב גדולי ישראל קוראים ליהודים לבוא לארץ ישראל. אבל אז זה היה חידוש עצום, והוא כתב ספר אחר ספר, ואנשים לא קיבלו את דבריו.</p>
+      <p>כדאי לשים לב לחידוש שבכך. הרב אלקלעי לא ביטל את הציפייה למשיח. להפך, הוא חי אותה בכל נפשו. אבל הוא לימד שהציפייה צריכה להתבטא במעשים: מי שמחכה באמת לגאולה, מתחיל לבנות את הארץ כבר עכשיו.</p>
+      <p class="bold-para">ראשית הגאולה תבוא על ידי מעשים: בניית בתים, חציבת בורות ונטיעת כרמים וזיתים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · חייו ופועלו</div>
+      <h3 class="story-title">🏠 כמו אברהם במערת המכפלה</h3>
+      <p>בספריו כתב הרב אלקלעי על הצורך לרכוש קרקעות בארץ ישראל עבור המתיישבים היהודים, כמו שעשה אברהם אבינו, שקנה את מערת המכפלה בכסף מלא. אברהם לא חיכה שהארץ תינתן לו במתנה. הוא קנה, שילם, וקבע אחיזה.</p>
+      <p>הוא נדד בין קהילות ישראל בדרום אירופה, ועם ספרו הגיע גם ללונדון. שם נפגש עם משה מונטיפיורי, שהתרשם מאוד מדבריו ומחזונו. ייתכן שזו אחת הסיבות לכך שמונטיפיורי התגייס בכל כוחו לסייע לישוב בארץ ישראל.</p>
+      <p>מונטיפיורי, כידוע, עזר לכל מי שבנה כאן, גם מבחינה כספית וגם מבחינה משפטית. הוא סייע לתלמידי הגר"א בבניין חורבת רבי יהודה החסיד, שהייתה מרכזם הרוחני בירושלים. ועזר בהקמת השכונות החדשות מחוץ לחומות.</p>
+      <p>הרב אלקלעי ניסה גם לגייס את מעצמות אירופה לתמוך בתוכניתו. הוא נסע למקומות רבים, ופעל בעל פה ובכתב. אדם אחד, רב של קהילה קטנה, שמסתובב בעולם ומנסה לשכנע מלכים ונגידים שהגיע הזמן לבנות את ארץ ישראל.</p>
+      <p class="bold-para">יש לקנות קרקעות בארץ ישראל, כמו שעשה אברהם אבינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מבשר לדור שלא היה מוכן</div>
+      <h3 class="story-title">📘 גורל לה'</h3>
+      <p>את משנתו פרס הרב אלקלעי בספר "גורל לה'". הספר יצא בשלוש מהדורות, ואף תורגם לאנגלית. ובו כתב, לראשונה, תוכנית ריאלית ומפורטת להקמת בית לעם היהודי בארץ ישראל.</p>
+      <p>הרב הדגיש: התוכנית הזאת כוללת את כל היסודות הארגוניים שהופיעו חמישים שנה מאוחר יותר בספרו של הרצל, "מדינת היהודים". רב ספרדי, שומר תורה ומצוות, כתב כבר אז איך יוכל עם ישראל להקים לעצמו בית.</p>
+      <p>וכמה התנגדו לו? כתבו ספר נגדו. הרב שאל את השומעים אם הם יכולים לנחש מה היה שם הספר. מכיוון שספרו נקרא "גורל לה'", קראו לספר שנכתב נגדו "גורל לעזאזל" – כמו בשני השעירים של יום הכיפורים. כך התווכחו איתו, כנגד כל מה שכתב.</p>
+      <p>וזה מלמד כמה קשה הייתה דרכו. לא רק שלא קיבלו את דבריו, אלא כתבו נגדו ספרים שלמים. ובכל זאת לא נסוג, והמשיך לכתוב ולפעול.</p>
+      <p class="bold-para">חמישים שנה לפני "מדינת היהודים" כתב הרב אלקלעי תוכנית מפורטת לבית לאומי בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מבשר לדור שלא היה מוכן</div>
+      <h3 class="story-title">📯 השופר בבית הכנסת של זמון</h3>
+      <p>ועכשיו דבר מעניין, שאי אפשר לדעת בוודאות אם הוא נכון, אבל מבחינה היסטורית הוא מסתבר מאוד. ייתכן שהרצל עצמו קרא את "גורל לה'", והושפע מן הרעיונות שבו.</p>
+      <p>למה? כי משפחתו של הרצל הייתה קשורה לרב אלקלעי. לפי מה שהובא בשיעור, אביו של הרצל היה מתלמידיו של הרב אלקלעי, וסייע בהדפסת ספריו בזמון. וסבו של הרצל היה הגבאי ותוקע השופר בבית הכנסת של הרב אלקלעי.</p>
+      <p>אם כן, ייתכן מאוד שהרצל, כשהיה ילד, היה נמצא בבית הכנסת הזה, ושמע את הרב דורש. הרב אלקלעי היה חוזר ואומר בכל הזדמנות: רבותיי, הגאולה תגיע רק כשעם ישראל יגיע לארץ ישראל. צריך לעלות לארץ ישראל, אין לנו תקומה אחרת.</p>
+      <p>וילד ששמע דברים כאלה, אולי שמר אותם בלבו גם כשהלך בדרכים אחרות. ומי יודע, אולי כשהתחיל לעסוק ברעיון המדינה, חזרו אליו הדברים ששמע בילדותו. זו אפשרות בלבד, ואי אפשר לדעת. אבל היא מראה כמה רחוק יכולים להגיע דברים שנאמרים מעל בימה של בית כנסת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מבשר לדור שלא היה מוכן</div>
+      <h3 class="story-title">🌾 הזרע שצמח אחרי מותו</h3>
+      <p>הרב אלקלעי נדד ממדינה למדינה, והפיץ את דעותיו בכתב ובעל פה. אבל מעטים קיבלו אותן, ורבים התקוממו נגדו. כל חייו וכל מעשיו היו נתונים למטרה הזאת. הוא היה מבשר חזון לדור שעדיין לא היה מוכן לקבל אותו.</p>
+      <p>הוא לא זכה לראות בניצחון רעיונותיו. ואפילו במותו, לא התפרסם הדבר בעיתונות העברית, גם לא באותם עיתונים שבהם הרבה לפרסם בחייו. הוא עשה "רעש" גדול כל ימיו, ולא התייחסו אליו.</p>
+      <p>אבל הזרע שזרע צמח ונשא פירות אחרי מותו. כל התוכניות והרעיונות שלו הפכו כעבור שנים למעשים. והיום, בדיעבד, אנחנו יכולים לראות כיצד גם רבים מביאוריו בנבואות הגאולה התקיימו.</p>
+      <p>הרב אמר שבספריו אפשר למצוא דברים רבים שנראים כאילו נכתבו ברוח הקודש, ואנו רואים כיצד התקיימו אחד לאחד. ונראה עכשיו כמה מהם.</p>
+      <p class="bold-para">הרב אלקלעי לא זכה לראות בניצחון רעיונותיו, אבל הזרע שזרע נשא פרי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מבשר לדור שלא היה מוכן</div>
+      <h3 class="story-title">⏳ מאה השנים שמשנת ת"ר</h3>
+      <p>בזוהר, בפרשת וירא, מובא שבשנת שש מאות לאלף השישי ייפתחו שערי החכמה, ויתרחשו דברים גדולים. רבים למדו מכאן שמשהו גדול יקרה בשנת ת"ר. ובשנת ת"ר, מלבד עלילת דמשק, לא קרה דבר מיוחד. אנשים לא הבינו מה התכוון הזוהר.</p>
+      <p>בא הרב אלקלעי וחידש: הכוונה אינה לשנה אחת. הכוונה היא למאה השנים כולן, מאה השנים של המאה השביעית לאלף השישי, משנת ת"ר ועד שנת ת"ש. הזמן הזה כולו הוא שעת הזדמנות לעם ישראל לשוב לארץ ישראל, ופתח של גאולה נפתח בו.</p>
+      <p>בהקדמה לספרו "שלום ירושלים" הוא קובע שעת הגאולה אינה שנה אחת בלבד, אלא מאה שנים, מן היום ועד שנת תרצ"ט. הוא ראה בכך את ימות המשיח, וחשש שחלילה יעברו בלי שננצל אותם. ולכן פעל במרץ רב, כדי להתחיל בפעולות המעשיות.</p>
+      <p>וכשמסתכלים על מאה השנים האלה מן הצד, רואים שבתוכן אכן התחילו העליות, נבנו המושבות והשכונות, והתעוררה תנועת השיבה לארץ. הרב ראה בזה דוגמה לכך שהרב אלקלעי ראה את הדברים מראש.</p>
+      <p class="bold-para">הרב אלקלעי ראה במאה השנים שמשנת ת"ר חלון הזדמנות לשוב לארץ, ופעל בכל כוחו לנצל אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · התשובה – שיבה לארץ</div>
+      <h3 class="story-title">⚖️ מה קודם – תשובה או גאולה?</h3>
+      <p>כדי להבין את החידוש הגדול ביותר של הרב אלקלעי, חידוש שעד היום קשה לרבים לקבל, צריך להקדים את הסוגיה בגמרא במסכת סנהדרין. שם דנים מה יבוא קודם: הגאולה או התשובה?</p>
+      <p>נחלקו בדבר רבי אליעזר ורבי יהושע. רבי אליעזר אומר: "אִם יִשְׂרָאֵל עוֹשִׂין תְּשׁוּבָה – נִגְאָלִין, וְאִם לָאו – אֵין נִגְאָלִין". הדבר הראשון הוא התשובה. בלי תשובה, אפשר לחכות ולחכות, והגאולה לא תבוא.</p>
+      <p>רבי יהושע משיב: אם אינם עושים תשובה, אינם נגאלים? אלא הקדוש ברוך הוא מעמיד להם מלך שגזרותיו קשות כהמן, וישראל עושים תשובה ומחזירם למוטב. כלומר, יש גבול לכל דבר, והקדוש ברוך הוא עצמו מביא את ישראל לידי תשובה.</p>
+      <p>ופוסק הרמב"ם בהלכות תשובה: "וְאֵין יִשְׂרָאֵל נִגְאָלִין אֶלָּא בִּתְשׁוּבָה", שנאמר "וּבָא לְצִיּוֹן גּוֹאֵל וּלְשָׁבֵי פֶשַׁע בְּיַעֲקֹב". קודם תשובה, ואחר כך גאולה. וכך חשבו רבים: קודם שכל ישראל יחזרו בתשובה, יתוודו ויתחרטו, ורק אחר כך תבוא הגאולה.</p>
+      <p class="bold-para">חז"ל נחלקו אם הגאולה תלויה בתשובה, והרמב"ם פסק שאין ישראל נגאלים אלא בתשובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · התשובה – שיבה לארץ</div>
+      <h3 class="story-title">🏡 "שישובו לארץ ישראל"</h3>
+      <p>ובא הרב אלקלעי ואמר חידוש שקשה לדמיין את עוצמתו. הוא אמר: דע לך, כשהגמרא אומרת שישראל עושים תשובה ונגאלים, אין הכוונה רק לתשובה שבהלכות תשובה, של וידוי, חרטה ועזיבת החטא. הכוונה היא גם לתשובה במובן הפשוט של המילה: לשוב. לשוב אל ארץ ישראל.</p>
+      <p>החידוש הזה היה כל כך מרכזי במשנתו, שכשהוציא מוסד הרב קוק את כל כתביו בשני כרכים, כתבו על כריכת הספרים, מתחת לשמו, שתי שורות: "אין ישראל נגאלים אלא בתשובה" – ושם, בפירושו: שישובו לארץ ישראל. זה החידוש שאיתו מזוהה הרב אלקלעי יותר מכל.</p>
+      <p>ולפי זה, הסדר הוא כך: קודם שבים לארץ. ואחרי שישובו לארץ ישראל, הקדוש ברוך הוא יפתח את הלב, ויקיים "וּמָל ה' אֱלֹקֶיךָ אֶת לְבָבְךָ וְאֶת לְבַב זַרְעֶךָ לְאַהֲבָה אֶת ה' אֱלֹקֶיךָ". אבל האות הראשונה של התשובה, הצעד הראשון, היא לשוב לארץ ישראל.</p>
+      <p>הרב אמר שהדור שאחרי השואה היה אולי הדור שאהב את ארץ ישראל יותר מכל דור. רבים היו יכולים לנסוע לאמריקה ולמקומות אחרים, ולא רצו אלא דבר אחד: לבוא לארץ ישראל. ובזה, אמר, רואים בעיניים את השיבה הזאת.</p>
+      <p class="bold-para">החידוש של הרב אלקלעי: התשובה שעליה דיברו חז"ל היא גם השיבה לארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · התשובה – שיבה לארץ</div>
+      <h3 class="story-title">📓 יומן של עולה</h3>
+      <p>הרב סיפר שלפני כמה שנים נמצא, בין כתביו של אחד מבני משפחתו, יומן שכתב לעצמו אחרי המלחמה. הוא מעולם לא סיפר על כך, ורק אחרי שנים מצאו את הדברים. ביומן תיאר איך יצא מבוקרשט שברומניה, ואיך הגיע לארץ ישראל, וכל מה שעבר עליו בדרך.</p>
+      <p>אי אפשר לדמיין, אמר הרב, כמה עבר. כל ארבעת הדברים שחייבים עליהם להודות – יורדי הים, הולכי מדבריות, חבושים בבית האסורים וחולים שהבריאו – עברו עליו בדרך. ים, ייסורים, מדבר, הכל.</p>
+      <p>והוא לא היה יחיד. רבים כמותו היו יכולים לנסוע לאמריקה ולארצות אחרות, שבהן חיכו להם חיים נוחים יותר. אבל הם רצו רק דבר אחד: לבוא לארץ ישראל. לא רצו שום דבר אחר.</p>
+      <p>זה, אמר הרב, מה שראה הרב אלקלעי בעיני רוחו: עם שלם ששב אל ארצו, בכל מחיר. שיבה כזאת היא עצמה תשובה, שיבה אל המקום שבו עם ישראל גר יחד עם אביו שבשמיים.</p>
+      <p class="bold-para">דור שלם בחר בארץ ישראל על פני כל מקום אחר, אף שהדרך אליה הייתה קשה מנשוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · התשובה – שיבה לארץ</div>
+      <h3 class="story-title">🔓 מהי גאולה?</h3>
+      <p>הרב ביקש להבין את המילה "גאולה" עצמה. בתורה, "גאולה" נאמרת על שדה שנמכר וחוזר לבעליו: "וּגְאֻלָּה תִּתְּנוּ לָאָרֶץ". עד היום היה שייך לאחר, ועכשיו חוזר לבעליו הראשונים. וגאולה נאמרת גם על עבד שיוצא לחירות.</p>
+      <p>וכך במצרים: "וְגָאַלְתִּי אֶתְכֶם". מה הפירוש? עד היום הייתם עבדים, ועכשיו אתם יוצאים לחירות. ובברכה שאנו אומרים בכל יום, "גָּאַל יִשְׂרָאֵל", אנו מודים על כך שעם ישראל יצא משעבוד לחירות.</p>
+      <p>היום אנו משתמשים במילה "גאולה" בעיקר לביאת המשיח, וזה נפלא. אבל הפירוש המילולי של "גאולה" הוא שעם ישראל מפסיק להיות משועבד, וחוזר לבעלות על ארצו.</p>
+      <p>ולפי זה, אמר הרב, אנחנו נמצאים היום בתוך תהליך של גאולה. עם ישראל אינו משועבד לאומות, יושב בארצו, ושב אליה מכל קצוות תבל. ומה שכתב הרב אלקלעי – שהתשובה הראשונה היא השיבה לארץ – מסביר את מה שאנו רואים בעינינו.</p>
+      <p class="bold-para">גאולה פירושה יציאה לחירות; לפי הפשט, עם ישראל שאינו משועבד נמצא בתהליך של גאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · צום גדליה ועשרת ימי תשובה</div>
+      <h3 class="story-title">🕊️ ארבעה צומות, ארבעה חסרונות</h3>
+      <p>השיעור נאמר יום אחרי צום גדליה, וכאן הביא הרב רעיון יפה. יש שאלה שכל אדם צריך לשאול: מה הקשר בין צום גדליה לעשרת ימי תשובה? נגמר ראש השנה, ומיד ביום הראשון של עשרת ימי תשובה – צום על חורבן? לכאורה זה קרה במקרה. אבל ביהדות אין מקרה. אם המאורע חל בתאריך הזה, סימן שיש קשר בין התאריך למאורע.</p>
+      <p>לפני התשובה, הקדים הרב הסבר של הרב גרוסמן בספרו על המועדים. ארבעת הצומות אינם ארבע פעמים אותו צום על החורבן. כל אחד מהם מבטא סיבה אחרת לסבלו של עם ישראל.</p>
+      <p>עשרה בטבת – שנאת הגויים. מלך בבל בא מרחוק ושם מצור על ירושלים. שבעה עשר בתמוז – אובדן השלטון היהודי. הובקעה חומת העיר, ואין עוד שלטון. תשעה באב – חורבן בית המקדש, המקום שבו שרתה השכינה.</p>
+      <p>וצום גדליה? ברור שאיננו צמים על מותו של צדיק. כמה צדיקים מתו, גם משה רבנו וגם שמואל הנביא, ואין צמים עליהם. אלא בג' בתשרי, אחרי שנהרג גדליה בן אחיקם, ברחה שארית הפליטה למצרים, ונגמר הישוב היהודי בארץ ישראל. הארץ נשארה שוממה. צום גדליה מבטא את אובדן הישוב היהודי בארץ.</p>
+      <p class="bold-para">כל אחד מארבעת הצומות מבטא חסרון אחר: שנאת הגויים, אובדן השלטון, חורבן המקדש וחורבן הישוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · צום גדליה ועשרת ימי תשובה</div>
+      <h3 class="story-title">🚪 הבן שחזר לבית אביו</h3>
+      <p>ועכשיו התשובה לשאלה. כבר ראינו את יסודו של הרב אלקלעי: התשובה הראשונה היא לשוב לארץ ישראל. ואין זה סתם חוק. הרב הסביר זאת במשל.</p>
+      <p>אב ובנו רבו ביניהם, והמריבה הגיעה למצב נורא. הבן טרק את הדלת ויצא מן הבית. עשר שנים לא ראה את אביו ולא התקשר. אחרי עשר שנים, יש לבן שתי דרכים לשוב.</p>
+      <p>דרך אחת: הוא מרים טלפון ואומר, אבא, אני מצטער, חטאתי, לא התנהגתי טוב. הוא מקבל על עצמו להתנהג אחרת. זו תשובה נפלאה. ודרך שנייה: הבן אינו אומר דבר על העבר, אבל אומר: אבא, אני רוצה לחזור להיות איתך. והאב, כמו כל אב, מקבל את בנו בכל מצב, ואומר: בוא, אתה מוזמן. והבן חוזר לבית אביו, ושמח לגור בו. גם זו תשובה. למה? כי עד היום גרו בנפרד, ועכשיו הוא שב לבית אביו.</p>
+      <p>יש אפוא שני מיני תשובה. תשובה אחת של חרטה על החטאים שעשינו. ותשובה שנייה של חזרה לגור יחד עם בורא עולם. ומה זה ארץ ישראל? המקום שבו גרים יחד עם בורא עולם, מקום השכינה.</p>
+      <p class="bold-para">יש תשובה של חרטה על החטאים, ויש תשובה של חזרה לגור יחד עם בורא עולם – בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · צום גדליה ועשרת ימי תשובה</div>
+      <h3 class="story-title">📅 היום הראשון של עשרת ימי תשובה</h3>
+      <p>ועכשיו אפשר להבין כמה יפה הדבר. ביום הראשון של עשרת ימי תשובה, מה אנחנו עושים? אנחנו צמים ומתאבלים על כך שעם ישראל אינו יושב בארץ ישראל, על חורבן הישוב בארץ. ובכך אנחנו אומרים: ריבונו של עולם, אנחנו רוצים לשוב. לשוב להיות איתך יחד, בארץ ישראל.</p>
+      <p>זו התשובה הראשונה, האות א' של התשובה. ורק אחריה באים שאר הימים, עם התשובה על החטאים, עד יום הכיפורים. הסדר הזה מתאים בדיוק למה שלימד הרב אלקלעי: קודם שבים לארץ, ואחר כך ה' פותח את הלב.</p>
+      <p>הרב אמר שזה תירוץ שאולי רק בדורנו אפשר לומר, כי רק בדורנו אנו רואים בעינינו את השיבה לארץ. והוסיף שגם היום יש מקום לצער בצום הזה. פעם בכו יהודים על כך שאינם יכולים לבוא לארץ. היום, כשהדרך פתוחה, יש לנו צער אחר: שעדיין רבים מאחינו אינם כאן. ויהי רצון שה' ישיב את כולם, ויחזיר את כולם בתשובה שלמה.</p>
+      <p class="bold-para">ביום הראשון של עשרת ימי תשובה אנו מבקשים לשוב לבית אבינו – לארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · גאולה על ידי מלכי הארץ</div>
+      <h3 class="story-title">👑 כמו כורש</h3>
+      <p>ועוד חידוש נפלא של הרב אלקלעי, שכתב מראש: גאולת ישראל תהיה על ידי מלכי הארץ. איך תבוא הגאולה? לא יבוא פתאום משיח שייקח את עם ישראל על עננים. כתב הרב אלקלעי: לה' לבדו התשועה, והוא מסבב אותה על ידי בני אדם. כמו שסיבב את תשועת גלות בבל על ידי כורש, כך לעתיד לבוא יסבב את גאולת ישראל על ידי מלכי הגויים, שיעיר ה' את רוחם לשלחם.</p>
+      <p>כך כתב גם הרד"ק על הפסוק "אַל תִּבְטְחוּ בִנְדִיבִים בְּבֶן אָדָם שֶׁאֵין לוֹ תְשׁוּעָה": אם לא ברצון ה', אין ביד אדם להושיע. אבל ה' מסבב את הישועה על ידי בני אדם, כמו בכורש.</p>
+      <p>הרב סיפר שיש בבית סבו ספר שנקרא "מכורש ועד בלפור", מחקר שמשווה בין השניים. כמו שכורש אמר "מִי בָכֶם מִכָּל עַמּוֹ... וְיָעַל", כך הצהרת בלפור אמרה, בלשונה, שיש לעם ישראל זכות לשוב לארצו.</p>
+      <p>והרב אלקלעי הוסיף שהגאולה הזאת שונה מגאולת בבל. שם העיר ה' רק את רוח כורש, והפעם יעיר את לב כל מלכי הארץ. כי האומות שהגלו את ישראל צריכות לעשות תשובה, ולכבד את ישראל שהפיצו בין העמים.</p>
+      <p class="bold-para">הגאולה תבוא בדרך טבעית, על ידי מלכי הגויים שה' יעיר את רוחם, כמו שהיה בכורש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · גאולה על ידי מלכי הארץ</div>
+      <h3 class="story-title">🌍 "והביאו בניך בחוצן"</h3>
+      <p>הרב אלקלעי הביא את דברי הנביא ישעיהו: "הִנֵּה אֶשָּׂא אֶל גּוֹיִם יָדִי וְאֶל עַמִּים אָרִים נִסִּי, וְהֵבִיאוּ בָנַיִךְ בְּחֹצֶן וּבְנֹתַיִךְ עַל כָּתֵף תִּנָּשֶׂאנָה. וְהָיוּ מְלָכִים אֹמְנַיִךְ וְשָׂרוֹתֵיהֶם מֵינִיקֹתַיִךְ". הגויים בעצמם יביאו את בני ישראל לארצם. ופירש: כל המלכויות יסכימו כאחד שראוי להחזיר את הארץ לבעליה. והכל ייעשה בדרך הטבע, על ידי מהלכים מדיניים.</p>
+      <p>הרב ביקש להבין כמה מופלא הדבר. אילו שאלו היסטוריון לפני מאה שנה: האם יש סיכוי שאומות העולם יסכימו לתת ליהודים את ארץ ישראל? הוא היה אומר שאין סיכוי. גם מסיבות של אמונה, דבר כזה נראה בלתי אפשרי. כשהרצל נפגש עם האפיפיור וביקש את תמיכתו, נענה בשלילה מוחלטת.</p>
+      <p>ובכל זאת, בכ"ט בנובמבר הצביעו מדינות רבות בעד הקמת מדינה ליהודים בארץ ישראל. איך קרה דבר כזה? הרב ראה בזה מהלך אלוקי, ממש כמו שכתב הרב אלקלעי: ה' מעיר את לב מלכי הארץ.</p>
+      <p>והביא את הפסוק מן המזמור "לַמְנַצֵּחַ בִּנְגִינֹת": "אֶרֶץ נָתְנָה יְבוּלָהּ", ובו "יוֹדוּךָ עַמִּים". מתי יודו העמים? כשיראו שהארץ נותנת את יבולה. ארץ שהייתה שוממה מאות שנים, פורחת דווקא כשבניה שבים אליה. ולא רק זה: לפעמים דווקא מי שהחריבו, סייעו אחר כך לבנות.</p>
+      <p class="bold-para">גם הגויים יסייעו לקיבוץ הגלויות, כמו שניבא ישעיהו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · גאולה על ידי מלכי הארץ</div>
+      <h3 class="story-title">🌳 ארץ שנותנת את יבולה</h3>
+      <p>הרב חזר על הנקודה הזאת, כי ראה בה עדות ברורה. במשך מאות שנים ניסו עמים רבים לשלוט בארץ ישראל ולהפריח אותה, ולא הצליחו. היא נשארה שוממה. ודווקא כשחזרו אליה בניה, היא התחילה לתת את פירותיה.</p>
+      <p>מסופר שאחד ממנהיגי העמים שביקר בארץ, והביט מראש הר על העמק הפורח, שאל של מי השדות האלה. כשאמרו לו שהם של היהודים, נפלט מפיו שכנראה אלוקים שב לאהוב אותם. הרב הביא זאת כדי להמחיש את הפסוק "אֶרֶץ נָתְנָה יְבוּלָהּ... יוֹדוּךָ עַמִּים": כשהארץ פורחת בידי בניה, גם העמים רואים זאת ומודים.</p>
+      <p>ומי שמסתכל היום על הארץ, רואה עמקים פורחים, מטעים, כרמים ושדות. מה שהיה פעם מדבר ובצות, נעשה גן. הרב אמר שאין צורך להוכיח זאת בספרים. מספיק לפקוח את העיניים ולראות, ולהודות לה' על כל פרי ופרי.</p>
+      <p>וזה מתחבר לראשית דבריו של הרב אלקלעי: הגאולה מתחילה בבניין, בבורות מים, בכרמים ובזיתים. מה שהוא כתב כתוכנית, אנחנו רואים כמציאות.</p>
+      <p class="bold-para">הפריחה של ארץ ישראל דווקא בידי בניה היא עדות גלויה לכל העמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · גאולה על ידי מלכי הארץ</div>
+      <h3 class="story-title">🧭 "עורי צפון ובואי תימן"</h3>
+      <p>ועוד דבר מופלא כתב הרב אלקלעי. על פי רוח הזמן, כתב, הסיכויים אצל מלכי אירופה טובים, כי הם מלכי חסד ורחמים יותר ממלכי הקדם. והוא קבע שמלכות בריטניה תהיה הראשונה לסייע, ואחריה צרפת.</p>
+      <p>הרב השתומם: איך יכול אדם לכתוב דבר כזה, עשרות שנים לפני שקרה? והנה, כידוע, בריטניה הייתה הראשונה, עם הצהרת בלפור. ואחר כך, בוועידת סן רמו, הצטרפה גם צרפת.</p>
+      <p>ועוד כתב על הפסוק "עוּרִי צָפוֹן וּבוֹאִי תֵימָן": קיבוץ הגלויות יתחיל מן הצפון, כלומר מארצות אירופה, ואחר כך יבואו גם מן הדרום. וכך אכן היה: גלי העלייה הראשונים באו מאירופה, ואחר כך הגיעו קהילות שלמות מארצות הדרום והמזרח.</p>
+      <p>יש בספריו עוד דברים רבים ומעניינים, שבהם תיאר מה יקרה ואיך. הוא כתב שתקום מדינה ליהודים, מי יקים אותה ואיך זה יהיה. אז לא האמינו לו ולא הבינו אותו. והיום אנחנו יכולים ליהנות מלראות את תורתו כתובה בספר, ומבארת לנו את הדברים הנפלאים שהתקיימו הלכה למעשה.</p>
+      <p>ויש בזה גם לימוד לכל אחד מאיתנו. אדם שרואה את האמת, ואין מקבלים את דבריו, עלול להתייאש. הרב אלקלעי לא התייאש. הוא המשיך לכתוב ולפעול עד יומו האחרון, אף שלא ראה תוצאות. ודבריו, שנראו בזמנו כחלום רחוק, נעשו לחלק מן המציאות שבה אנחנו חיים.</p>
+      <p class="bold-para">הרב אלקלעי כתב, עשרות שנים מראש, שבריטניה תהיה הראשונה לסייע ואחריה צרפת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · גאולה על ידי מלכי הארץ</div>
+      <h3 class="story-title">🌅 עוד מעט – רוב העם בארצו</h3>
+      <p>בסיום השיעור הביא הרב נתון מרגש: כיום נמצאים בארץ ישראל קרוב למחצית מעם ישראל, כארבעים ושישה אחוזים. ועוד מעט, בעזרת ה', יגורו בארץ ישראל רוב היהודים.</p>
+      <p>ולדבר הזה יש משמעות רבה בהלכה. לפי הרמב"ם, תרומות ומעשרות נוהגים היום מדרבנן, ונוהגים מן התורה כאשר רוב עם ישראל יושבים בארצם. כלומר, כשיהיה רוב, ישתנו דינים של מצוות התלויות בארץ.</p>
+      <p>איך ישפיע הדבר על כל העם ועל כל המדינה, אי אפשר לדעת. אבל אפשר לדעת שאנחנו נמצאים באמצע תקופה מיוחדת מאוד, שאיננו יודעים מה מחכה לנו בה. ואנו מתפללים: "אוֹר חָדָשׁ עַל צִיּוֹן תָּאִיר, וְנִזְכֶּה כֻלָּנוּ מְהֵרָה לְאוֹרוֹ".</p>
+      <p>וזה מה שלמדנו ביום ההילולא של הרב יהודה אלקלעי. הוא כתב, הוא זעק, הוא נדד, ולא שמעו לו. ואנחנו זוכים לראות כיצד מתקיימים דבריו. יהי רצון שזכות לימוד תורתו תעמוד לעילוי נשמתו, ושנזכה להמשיך ולעורר את עם ישראל לשוב אל ארצו ואל אביו שבשמיים.</p>
+      <p class="bold-para">כשרוב עם ישראל יהיה בארצו, ישתנו גם דינים בהלכה; אנו חיים באמצע תקופה מיוחדת מאוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/vfhZ1pRHZVo · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ביום ההילולא","icon":"🕯️","color":"#c62b6b","stories":[{"id":1,"title":"כוחו של לימוד ביום הזיכרון","icon":"🕯️"},{"id":2,"title":"הקבר בהר הזיתים","icon":"⛰️"}]},{"id":2,"name":"חייו ופועלו","icon":"📜","color":"#6d28d9","stories":[{"id":3,"title":"מסרייבו לירושלים","icon":"📜"},{"id":4,"title":"רב בזמון","icon":"🏘️"},{"id":5,"title":"גאולה שמתחילה בבורות מים","icon":"🌱"},{"id":6,"title":"כמו אברהם במערת המכפלה","icon":"🏠"}]},{"id":3,"name":"מבשר לדור שלא היה מוכן","icon":"📣","color":"#e08e00","stories":[{"id":7,"title":"גורל לה'","icon":"📘"},{"id":8,"title":"השופר בבית הכנסת של זמון","icon":"📯"},{"id":9,"title":"הזרע שצמח אחרי מותו","icon":"🌾"},{"id":10,"title":"מאה השנים שמשנת ת\"ר","icon":"⏳"}]},{"id":4,"name":"התשובה – שיבה לארץ","icon":"🏡","color":"#1e88b8","stories":[{"id":11,"title":"מה קודם – תשובה או גאולה?","icon":"⚖️"},{"id":12,"title":"\"שישובו לארץ ישראל\"","icon":"🏡"},{"id":13,"title":"יומן של עולה","icon":"📓"},{"id":14,"title":"מהי גאולה?","icon":"🔓"}]},{"id":5,"name":"צום גדליה ועשרת ימי תשובה","icon":"🕊️","color":"#c62b6b","stories":[{"id":15,"title":"ארבעה צומות, ארבעה חסרונות","icon":"🕊️"},{"id":16,"title":"הבן שחזר לבית אביו","icon":"🚪"},{"id":17,"title":"היום הראשון של עשרת ימי תשובה","icon":"📅"}]},{"id":6,"name":"גאולה על ידי מלכי הארץ","icon":"👑","color":"#6d28d9","stories":[{"id":18,"title":"כמו כורש","icon":"👑"},{"id":19,"title":"\"והביאו בניך בחוצן\"","icon":"🌍"},{"id":20,"title":"ארץ שנותנת את יבולה","icon":"🌳"},{"id":21,"title":"\"עורי צפון ובואי תימן\"","icon":"🧭"},{"id":22,"title":"עוד מעט – רוב העם בארצו","icon":"🌅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
