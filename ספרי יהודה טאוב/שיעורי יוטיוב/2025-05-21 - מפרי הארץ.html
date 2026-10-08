@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מפרי הארץ</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מפרי הארץ</h1>
+  <p>ארבעה טעמים למצווה לקנות ולאכול דווקא פירות שגדלו בארץ ישראל, וסיפורי צדיקים שהקפידו בה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מפרי הארץ" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/7LFsmbBjMMA?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/7LFsmbBjMMA/hqdefault.jpg" alt="מפרי הארץ" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=7LFsmbBjMMA" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שאלה של כמה שקלים</div>
+      <h3 class="story-title">🍊 זה לא נגמר בט"ו בשבט</h3>
+      <p>השיעור נאמר בחודש שבט, החודש שבספרים נאמר עליו שהוא זמן לתיקון האכילה. ובט"ו בשבט כולם אוכלים פירות. אבל השיעור עוסק במצווה שאינה נגמרת בט"ו בשבט: המצווה לאכול פירות של ארץ ישראל. פירות אוכלים בכל יום, ולכן גם השאלה הזאת נוגעת לכל יום.</p>
+      <p>פעם השאלה הייתה פחות מעשית. בתקופה האחרונה, לצערנו, היא נעשתה מעשית מאוד. ההובלה נעשתה זולה, ולא פעם התוצרת מחוץ לארץ זולה יותר מן התוצרת המקומית.</p>
+      <p>לך לסופרמרקט ותראה: מיץ ענבים מחוץ לארץ נמכר במחיר שקשה מאוד לייצר בו מיץ ענבים בארץ. ושמן זית? כמעט לא תמצא על המדף שמן זית מתוצרת הארץ. רוב השמן מגיע מספרד. לא מפני שחסרים זיתים בארץ – יש זיתים – אלא מפני שאי אפשר להתחרות במחירים כאלה.</p>
+      <p>ובשיעור העירו המשתתפים שהעניין אינו רק המחיר. יש מי שמרגישים שגם הטעם שונה. אבל השאלה ההלכתית נשארת: מה הדין? האם יש מצווה לאכול דווקא פירות של ארץ ישראל?</p>
+      <p class="bold-para">המצווה לאכול פירות ארץ ישראל אינה רק בט"ו בשבט, ושאלתה נעשתה מעשית מאוד בימינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שאלה של כמה שקלים</div>
+      <h3 class="story-title">🛒 האם שווה לשלם עוד חמישה שקלים?</h3>
+      <p>פעם בשבע שנים, בשנת השמיטה, יש ארגונים שמשקיעים מאמץ גדול כדי שיקנו פירות של ארץ ישראל, ובהם "אוצר הארץ". ושאלו: למה רק פעם בשבע שנים? מה קרה בשאר השנים?</p>
+      <p>התשובה, כך אמר הרב, היא שלצערנו אין מודעות בציבור. רוב האנשים אינם יודעים שיש בזה מצווה בכל השנים.</p>
+      <p>אז השאלה המעשית היא כזאת: אם המוצר המקומי עולה ארבעה או חמישה שקלים יותר, האם ראוי לשלם אותם עבור תוצרת ארץ ישראל? בשיעור נראה ארבעה טעמים שהביאו גדולי ישראל, וכל אחד מהם מוסיף נדבך. חלקם הלכתיים, וחלקם עוסקים בפנימיות הדברים. וכדאי לשים לב שאף אחד מהם אינו תלוי בשנת השמיטה דווקא: כולם נכונים בכל שנה, ובכל קנייה של פרי או ירק.</p>
+      <p>הטעם הראשון – חיבת הארץ. השני – מה שהשתבחה בו הארץ. השלישי – יישוב הארץ. והרביעי – הקדושה שבפירות עצמם. ובדרך נשמע כמה סיפורים על צדיקים שהקפידו על כך מאוד.</p>
+      <p class="bold-para">השאלה היא אם ראוי לשלם יותר עבור תוצרת הארץ, והתשובה מתחילה במודעות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · חיבת הארץ</div>
+      <h3 class="story-title">🍋 אתרוג מקורפו</h3>
+      <p>כדי להבין את הטעם הראשון, צריך לחזור כמאה ושלושים שנה לאחור. לפני כן, במשך דורות רבים, כמעט לא גידלו בארץ ישראל פירות. הארץ הייתה שוממה. היו בה יהודים מעטים, ואדמתה לא נתנה את פריה. כך אמרו חז"ל: כל זמן שעם ישראל אינו בארץ, הכלה אינה נותנת את פריה.</p>
+      <p>רק כשהחלו יהודים לבוא, התחילו לגדל שוב. הרב הזכיר שאחד הפרדסים הראשונים היה פרדס שקנה משה מונטיפיורי ביפו. ופתאום, לראשונה מאז הגלות, היה אפשר לקנות פירות שגדלו בארץ ישראל.</p>
+      <p>כדאי להתעכב רגע על המציאות הזאת, כי היא מלמדת עד כמה הדבר איננו מובן מאליו. הפירות שאנו רואים היום בשפע בכל שוק, לא היו כאן במשך דורות רבים. מי שזוכה לאכול אותם, זוכה למה שאבותינו התפללו עליו בכל דור, ולא זכו לראות בעיניהם. וזה כשלעצמו סיבה לשמוח בכל פרי כזה ולהודות עליו.</p>
+      <p>ואז התעוררה שאלה: איזה אתרוג קונים לסוכות? האתרוג שהיו רגילים בו מדורות, שהגיע מן האי קורפו ומארצות אחרות, או האתרוג החדש, שגדל בארץ ישראל?</p>
+      <p>בעניין הזה נכתב מכתב חריף מאוד על ידי בעל "ערוך השולחן", רבי יחיאל מיכל עפשטיין, רבה של נובהרדוק. הוא ראה בהעדפת אתרוג מחוץ לארץ דבר חמור מאוד, ונבין מיד מדוע הוא כתב בחריפות כזאת.</p>
+      <p class="bold-para">כשהחלו לגדל שוב פירות בארץ, התעוררה מחלוקת אם לקנות אתרוגים מארץ ישראל או מחוץ לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · חיבת הארץ</div>
+      <h3 class="story-title">✉️ מכתבו של ערוך השולחן</h3>
+      <p>בעל ערוך השולחן כותב על אלה שמעדיפים את אתרוגי חוץ לארץ על פני אתרוגי ארץ ישראל, ומשתמש בלשון התורה: הם "מבכרים את בן השנואה על פני בן האהובה". הוא כותב בכאב רב על הדבר, ושואל: מי ראה כזאת, מי שמע כאלה?</p>
+      <p>ואז הוא כותב את העיקר: אף אילו לא היה שום חשש באתרוג של קורפו – הרי היה חשש שהוא מורכב – הנכון לאיש הישראלי לבכר את פרי ארצנו הקדושה על פני פרי ארץ העמים. זה כבודו יתברך, וזה כבוד התורה, שבפסוקים רבים כל כך השתבחה בשבחה של ארץ ישראל.</p>
+      <p>הוא מזכיר את משה רבנו, שהתחנן: "אֶעְבְּרָה נָּא וְאֶרְאֶה אֶת הָאָרֶץ הַטּוֹבָה". ומזכיר את חכמי התלמוד במסכת כתובות: רבי אבא היה מנשק את אבני עכו, ורבי חייא בר גמדא היה מתגלגל בעפרה, שנאמר "כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ וְאֶת עֲפָרָהּ יְחֹנֵנוּ". ואלה, הוא כותב, מתגנדרים בפרי ארץ אחרת, ומבזים את פריה וטובה של הארץ הקדושה.</p>
+      <p>ומכאן קל וחומר: אם רבי אבא נישק את האבנים של ארץ ישראל, על אחת כמה וכמה שראוי לחבב ולאכול את פירותיה. התורה שיבחה את הארץ כל כך – ארץ זבת חלב ודבש – ואתה הולך ומעדיף פרי של חוץ לארץ? זה הטעם הראשון: חיבת הארץ.</p>
+      <p class="bold-para">גם אילו לא היה שום חשש באתרוג של קורפו, הנכון לאיש הישראלי להעדיף את פרי ארצנו הקדושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · חיבת הארץ</div>
+      <h3 class="story-title">🌧️ גם הגשם מיוחד</h3>
+      <p>הרב העיר שהיום מביאים לפעמים אפילו מים מחוץ לארץ. ועל המים בארץ ישראל יש דברים מופלאים בגמרא. הגמרא במסכת תענית אומרת שארץ ישראל משקה אותה הקדוש ברוך הוא בעצמו, וכל העולם כולו – על ידי שליח.</p>
+      <p>"לִמְטַר הַשָּׁמַיִם תִּשְׁתֶּה מָּיִם" – אפילו הגשם של ארץ ישראל הוא דבר מיוחד מאוד. הוא אינו עוד גשם. הוא מגיע ישירות, כביכול, מידו של הקדוש ברוך הוא.</p>
+      <p>בשיעור שאלו: האם אפשר להרגיש את זה גם בפירות? ונאמר שרוב ההשקיה של הפירות בארץ באה בסופו של דבר ממי הגשמים. וכשאוכלים פרי שגדל במים האלה, אוכלים משהו מן הברכה המיוחדת הזאת.</p>
+      <p>הרב גם הזכיר שאלה שעמדה פעם לפני הרב מרדכי אליהו: הבבא סאלי היה שולח לו אתרוג ממרוקו, ובאותו זמן עדיין לא גידלו אתרוגים מסוג זה בארץ. על איזה אתרוג יברך – זה שקיבל מן הבבא סאלי, או אתרוג של ארץ ישראל? זו הייתה שאלה לא פשוטה, כי שני הצדדים יקרים.</p>
+      <p class="bold-para">את ארץ ישראל משקה הקדוש ברוך הוא בעצמו, ואת שאר העולם – על ידי שליח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה שהשתבחה בו הארץ</div>
+      <h3 class="story-title">🌾 שבעת המינים קודמים</h3>
+      <p>הטעם השני מובא בספר "שדי חמד". מחברו, רבי חיים חזקיהו מדיני, עלה לארץ ישראל וגר בחברון. הוא מביא ראיה שיש להעדיף אתרוג של ארץ ישראל, מן ההלכה של קדימה בברכות.</p>
+      <p>במשנה במסכת ברכות: היו לפניו מינים הרבה – על מה מברך? רבי יהודה אומר: אם יש ביניהם ממין שבעה, מברך עליו. וחכמים אומרים: מברך על איזה מהם שירצה. והפוסקים, וכך נפסק בשולחן ערוך, קבעו שמעלת שבעת המינים קודמת למעלת החביב.</p>
+      <p>כלומר, אם אתה אוהב תפוח, והביאו לפניך תפוח ותמר – על מה תברך? על התמר. למה? כי שבעת המינים עדיפים. ומדוע הם עדיפים? משום שבפירות האלה השתבחה ארץ ישראל: "אֶרֶץ חִטָּה וּשְׂעֹרָה וְגֶפֶן וּתְאֵנָה וְרִמּוֹן, אֶרֶץ זֵית שֶׁמֶן וּדְבָשׁ".</p>
+      <p>ומכאן לומד השדי חמד קל וחומר. המשנה אינה מחלקת: גם אם התמר גדל בחוץ לארץ, והתפוח בארץ ישראל – התמר קודם, כי הוא מן המינים שהשתבחה בהם הארץ. אם כן, פרי שגדל באמת בארץ ישראל – לא רק שהשתבחה בו הארץ, אלא שהוא עצמו מן הארץ – על אחת כמה וכמה שהוא קודם לפרי של חוץ לארץ, גם אם הפרי של חוץ לארץ חביב יותר.</p>
+      <p class="bold-para">השדי חמד: אם שבעת המינים קודמים בברכה משום שהשתבחה בהם הארץ, קל וחומר שפרי של ארץ ישראל עצמה קודם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה שהשתבחה בו הארץ</div>
+      <h3 class="story-title">🍞 "המוציא לחם מן הארץ"</h3>
+      <p>הרב חיבר זאת לשאלה שעלתה בשיעורים קודמים. למה על ירקות מברכים "בורא פרי האדמה", ועל לחם "המוציא לחם מן הארץ"? למה כאן אדמה וכאן ארץ?</p>
+      <p>הגאון מווילנה אומר תירוץ נפלא. דע לך כלל: ארצות אחרות אינן נקראות "ארץ" סתם. יש ארץ מצרים, ארץ כוש, ארץ כנען – תמיד ארץ עם שם. רק ארץ אחת נקראת "הארץ" בלי תוספת: "כִּי תָבֹאוּ אֶל הָאָרֶץ". בכל התורה, "הארץ" סתם היא ארץ ישראל.</p>
+      <p>ובמה השתבחה ארץ ישראל? בשבעת המינים. בירקות היא לא השתבחה. מי השתבחה בירקות? מצרים, שנאמר עליה "כְּגַן הַיָּרָק".</p>
+      <p>לכן, כשאני מברך על עגבנייה או על מלפפון, אני אומר "בורא פרי האדמה". אני לא יכול לומר "בורא פרי הארץ", כי בירקות לא השתבחה הארץ – זה לא שבחה. אבל על חיטה, שהיא משבעת המינים ובה השתבחה ארץ ישראל, אני מברך "המוציא לחם מן הארץ". כאן אפשר להזכיר את ארץ ישראל, כי בזה השתבחה. הקדוש ברוך הוא מוציא לחם מן הארץ – מארץ ישראל.</p>
+      <p class="bold-para">הגר"א: "הארץ" סתם היא ארץ ישראל, ולכן מזכירים אותה רק בברכה על מה שהשתבחה בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה שהשתבחה בו הארץ</div>
+      <h3 class="story-title">🫒 "על הארץ ועל פירותיה"</h3>
+      <p>ועוד דוגמה מן הברכות. בברכה מעין שלוש, כשאוכלים מזונות, אומרים "על המחיה". ואילו היה ידוע שהקמח מארץ ישראל, היו אומרים "על מחייתה" – כמו שאומרים "על פירותיה" על פירות הארץ. אבל ברוב המקרים אי אפשר לדעת.</p>
+      <p>הרב סיפר שפעם שאל בעל מאפייה מאיפה מגיעה החיטה, ונאמר לו שחלק ניכר ממנה מיובא מחוץ לארץ. ובשיעור הוזכר שיש חברה מסוימת שמייצרת קמח רק מחיטה של ארץ ישראל, אבל רק קמח מלא.</p>
+      <p>ולמה כך? כי אם היו אנשים מעדיפים לחם מחיטה של ארץ ישראל, היו מייצרים אותו תמיד. בימינו מייצרים כל מה שיש לו ביקוש. רק שיהיה אכפת לאנשים. ולצערנו, כמעט לא אכפת להם: לחם מארץ ישראל, לחם מחוץ לארץ – אותו דבר.</p>
+      <p>זה בדיוק מה שהשיעור מבקש לשנות. לא רק לדעת את ההלכה, אלא להרגיש שיש הבדל. ומי שמרגיש – בוחר. ומי שבוחר – משנה את מה שעל המדף.</p>
+      <p class="bold-para">כשיש מודעות וביקוש לתוצרת הארץ, היצרנים מספקים אותה; הבעיה היא שלא אכפת לאנשים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יישוב הארץ</div>
+      <h3 class="story-title">🚜 עבודת האדמה היא גוף המצווה</h3>
+      <p>הטעם השלישי מבוסס על דברי החתם סופר, בחידושיו למסכת סוכה, בפרק "לולב הגזול". הוא כותב: דע לך, העבודה בקרקע בארץ ישראל היא גוף המצווה. כי עיקר יישוב ארץ ישראל הוא להוציא את פירותיה הקדושים. עצם זה שאדם עובד את האדמה בארץ ישראל, הוא מקיים מצוות יישוב הארץ.</p>
+      <p>ובחוץ לארץ – להפך. ככל שבני ישראל מרבים בפיתוח ארצות אחרות, זה מוסיף חורבן. הרב הזכיר מה שנאמר בשיעורים קודמים: בכל מקום שהיהודים הלכו, הברכה הלכה איתם, והכלכלה שם פרחה. מי שמפתח את חוץ לארץ, נותן כוח לאחרים. ואילו היו כולם באים לכאן, כל השפע היה מגיע לכאן.</p>
+      <p>החתם סופר מזכיר שמשום יישוב ארץ ישראל התירו אפילו לומר לנכרי בשבת לכתוב שטר על קניית קרקע בארץ ישראל. וגם הרמב"ם מפליג במעלת מצוות יישוב הארץ.</p>
+      <p>ומכאן מסקנתו: כיוון שעל ידי שנקיים את המצווה בפירות של ארץ ישראל יתרבה יישוב הארץ, ותהיה פרנסה לכמה מאות משפחות שעובדות את אדמת הקודש ומוציאות את פירותיה הקדושים – ככל שנקנה יותר תוצרת הארץ, כך יותר אנשים יעבדו את האדמה.</p>
+      <p class="bold-para">החתם סופר: עבודת הקרקע בארץ ישראל היא עצמה מצוות יישוב הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יישוב הארץ</div>
+      <h3 class="story-title">⚖️ עדיף אפילו עם חשש</h3>
+      <p>החתם סופר הולך רחוק עוד יותר. הוא אומר שאפילו אם היה, חלילה, באתרוג של ארץ ישראל חשש של איסור דרבנן – עדיף לקחת אותו, מאשר אתרוג מחוץ לארץ. עד כדי כך.</p>
+      <p>למה? כי במקום של יישוב ארץ ישראל לא גזרו חכמים. כמו שמצינו באמירה לנכרי בשבת, שהותרה לצורך קניית קרקע בארץ, כך גם כאן. וכל שכן, הוא אומר, שאתרוגי ארץ ישראל כשרים בלי שום חשש, ואילו באתרוגי קורפו יש חשש הרכבה. ודאי שראוי לתקן לברך דווקא על אתרוגי ארץ הקודש.</p>
+      <p>ומה שיוצא מכאן הלכה למעשה הוא טעם מעניין מאוד. כל פעם שאתה קונה פרי מארץ ישראל, אתה מקיים מצוות יישוב הארץ. אתה אינך חקלאי, ואינך עובד באדמה. אבל כשאתה עומד בחנות ומחפש שמן זית שגדל בארץ, אתה שותף בעבודת הארץ. אתה מחזיק את מי שעובד אותה.</p>
+      <p>בשיעור שאלו: מה אם הפרי גדל אצל מי שאינו יהודי? והרב הבהיר שלפי הטעם הזה, העיקר הוא שהקרקע שייכת ליהודי. אם הפירות גדלו בקרקע של יהודי, הקונה מקיים מצוות יישוב הארץ. שאלת העבודה העברית, כך אמר, היא נושא אחר, ואין זה המקום לדון בו.</p>
+      <p class="bold-para">לפי החתם סופר, אתרוג מארץ ישראל עם חשש דרבנן עדיף על אתרוג מחוץ לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יישוב הארץ</div>
+      <h3 class="story-title">🌿 פירות של שומרי שמיטה</h3>
+      <p>הרב סיפר שבשנת השמיטה, כשהיו פירות של "אוצר בית דין", היה קונה מהם הרבה. למה? כי ידע שהפירות האלה אינם סתם פירות. הם גדלו אצל אנשים שומרי תורה ומצוות, שהתאמצו לשמור את השמיטה כהלכתה. ומי שקונה מהם – מחזק אותם.</p>
+      <p>והוא העיר שגופי הכשרות עוסקים בעיקר בשאלה אחת: כשר או לא כשר. את שאלת יישוב ארץ ישראל הם משאירים לצרכן עצמו. אתה צריך לדאוג לזה בעצמך.</p>
+      <p>וזה לא פשוט. חקלאי שמגדל זיתים ומייצר שמן זית בארץ מתקשה מאוד למכור את השמן בחנות, במחיר שיוכל להתחרות במוצר המיובא. אבל אם היה אכפת לאנשים, הדבר היה משתנה.</p>
+      <p>בשנת השמיטה עצמה יש שאלות קשות. יש מי שמנסים שכל התוצרת תהיה מן הארץ, ונעזרים לשם כך בקולות שונים בהלכה. ויש מי שאומרים שאינם רוצים לסמוך על קולות, ומעדיפים לייבא ירקות מחוץ לארץ. מה עדיף? זו שאלה לא פשוטה, ויש בה דעות שונות בין גדולי הפוסקים. אבל כל הטעמים שלמדנו נוגעים בדיוק לשאלה הזאת, ולא רק כתיאוריה.</p>
+      <p class="bold-para">בשנת השמיטה, קניית פירות מאוצר בית דין היא דרך לחזק את מי ששומרים את מצוות הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יישוב הארץ</div>
+      <h3 class="story-title">📜 "מה נאכל בשנה השביעית"</h3>
+      <p>הרב הביא דבר יפה בשם בעל "בת עין", מן הצדיקים שעלו לארץ ישראל וקבעו את מושבם בצפת. פעם הביאו לפניו לחם מחוץ לארץ, והוא אמר: אני רוצה רק לחם של ארץ ישראל.</p>
+      <p>שאלו אותו: מה העניין? ענה: כתוב בתורה "וְכִי תֹאמְרוּ מַה נֹּאכַל בַּשָּׁנָה הַשְּׁבִיעִת הֵן לֹא נִזְרָע וְלֹא נֶאֱסֹף אֶת תְּבוּאָתֵנוּ". ולכאורה, מה הבעיה? יביאו מחוץ לארץ! למה זה כל כך קשה? אם התורה מציגה זאת כשאלה של ממש – מכאן למדתי שהבאה מחוץ לארץ איננה פתרון. הקדושה נמצאת בארץ ישראל.</p>
+      <p>ובספר אחד על הלכות שביעית, שנכתב בתחילת ימי המדינה, נכתב בגנות מי שנפשם חושקת דווקא בתפוחים ובשאר פירות הבאים מחוץ לארץ, ומזלזלים בתפוזים ובשאר פירות ארץ ישראל. באותו זמן עוד היה לאדם באמת בחירה. היום כמעט אין מייבאים תפוזים, כי אי אפשר להתחרות בתפוזי הארץ. אבל אז – היה מי שהעדיף את המיובא.</p>
+      <p>ובאותו ספר הוא משבח את מי שבגולה מהדרים לקנות יינות ותפוזים של ארץ ישראל. כי גם על פירות ארץ ישראל שיצאו לחוץ לארץ נאמר: "כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ", וכל שכן את פירותיה.</p>
+      <p class="bold-para">בעל "בת עין" למד מן הפסוק שהבאת לחם מחוץ לארץ אינה פתרון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה בכל פרי</div>
+      <h3 class="story-title">✨ לחם שהוא כמו מן</h3>
+      <p>הטעם הרביעי הוא העמוק ביותר. השפת אמת כתב פעמים רבות על ירידת המן. המן ירד במדבר, ולא בארץ ישראל. למה? הרי היה אפשר להמשיך לתת אותו גם בארץ.</p>
+      <p>התשובה: המן, שהוא "דגן שמים", היה נחוץ רק בחוץ לארץ. בארץ ישראל, הלחם היוצא מן הארץ שקול כמו המן שיורד מן השמים בחוץ לארץ.</p>
+      <p>דע לך, יש באוכל של ארץ ישראל רוחניות. הרבה רוחניות. עד כדי כך: בחוץ לארץ ירד מן, ובארץ ישראל לא היה צורך בו, כי האוכל של ארץ ישראל קדוש כמו המן שירד במדבר.</p>
+      <p>זה הטעם הרביעי: כשאתה קונה פירות של ארץ ישראל, אתה קונה קדושה.</p>
+      <p>וזה משנה את כל ההסתכלות על השאלה שפתחנו בה. אם פרי של ארץ ישראל הוא רק מוצר, אז ההבדל של כמה שקלים הוא שיקול כלכלי בלבד. אבל אם יש בו קדושה, אם הוא בחינת "לחם מן השמים", אז מי שבוחר בו אינו רק מעדיף תוצרת מקומית. הוא בוחר להכניס לגופו מזון שיש בו רוחניות. וכך גם הסעודה הפשוטה ביותר בבית נעשית קרובה יותר לקדושה. נראה עכשיו כמה צדיקים הרגישו זאת, ועד כמה הקפידו על כך.</p>
+      <p class="bold-para">השפת אמת: המן ירד רק בחוץ לארץ, כי הלחם של ארץ ישראל שקול כמו המן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה בכל פרי</div>
+      <h3 class="story-title">🥖 החלה הקטנה</h3>
+      <p>מסופר על אחד מאדמו"רי סלונים, שהביאו לו מארץ ישראל חלה קטנה שנאפתה מעיסה של הארץ. בשבת הוא צירף אותה ללחם משנה, יחד עם חלתו הגדולה. ונסתפק: על איזו מהן יברך – על החלה הגדולה מחוץ לארץ, או על החלה הקטנה מארץ ישראל?</p>
+      <p>בדרך כלל, גדול קודם. אבל כאן עומדים זה מול זה גדול וחשוב. לידו ישב תלמיד חכם, ואמר הברקה.</p>
+      <p>כתוב בתורה: "עַד הַנָּהָר הַגָּדֹל נְהַר פְּרָת". ופירש רש"י: נהר פרת אינו הגדול שבנהרות; הוא נזכר אחרון בארבעת הנהרות שיצאו מעדן. ובכל זאת נקרא גדול – משום שנזכר יחד עם ארץ ישראל. כמו שאומרים: הידבק לאדם חשוב, ויחשיבו גם אותך.</p>
+      <p>אדם יכול להיות גדול בשתי דרכים: או שהוא גדול בעצמו, או שהוא סמוך לגדול, ואז גם הוא נקרא גדול. אם כן, אמר אותו תלמיד חכם, אף על פי שהחלה של ארץ ישראל קטנה יותר, יש לה דין של גדולה, ויש לברך עליה. אם נהר פרת נקרא גדול מפני שהוא נוגע בארץ ישראל, החלה שגדלה בארץ ישראל ודאי גדולה.</p>
+      <p>ובשאלות ותשובות הרדב"ז נשאל אם ראוי להחמיר שלא לאכול ענבים בארץ ישראל מחשש רחוק של ערלה. והשיב: "כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ", וכל שכן את פירותיה. ויפה עושים חכמי ארץ ישראל שלא נהגו חומרה כזו. וכן עשיתי אני כשישבתי בירושלים: לא נמנעתי מלאכול מפירותיה.</p>
+      <p class="bold-para">חלה קטנה מארץ ישראל נקראת "גדולה", כמו נהר פרת שנקרא גדול בזכות סמיכותו לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה בכל פרי</div>
+      <h3 class="story-title">🍎 ניזונים מקדושת השכינה</h3>
+      <p>בגמרא במסכת ברכות מסופר על אחד האמוראים בבבל, שהיה מברך על שמן אפרסמון "בורא שמן ארצנו". למה? משום שהייתה חביבה עליו ארץ ישראל. רואים מכאן שגם בחוץ לארץ יש מצווה לחבב את פירות ארץ ישראל, ואף מה שאינו משבעת המינים.</p>
+      <p>ידועים דברי הב"ח, וכן דברי אור החיים, על קדושת פירות ארץ ישראל, שצדיקים נהגו להזכיר מפעם לפעם. הב"ח כותב: הארץ שופעת מקדושת השכינה השוכנת בקרבה, ומקדושה זו שופעים גם פירותיה, שיונקים מקדושת השכינה. ובאכילת פירותיה אנו ניזונים מקדושת השכינה ומטהרתה, ונשבעים מטובה.</p>
+      <p>כל אחד מבין מה זה "שיריים" מן הרבי – כולם רצים לקבל. למה? כי מה שעבר דרך צדיק, יש בו קדושה. אומר הב"ח: דע לך, בפירות של ארץ ישראל יש קדושה ממש. מי שאוכל אותם, נכנסת בו קדושה.</p>
+      <p>ועל רבי אהרן מבעלז, שניצל מן השואה ועלה לארץ, מסופר שהקפיד לאכול בכל יום בסוף הסעודה לפתן – קומפוט – העשוי מפירות של ארץ ישראל.</p>
+      <p class="bold-para">הב"ח: בפירות ארץ ישראל שופעת קדושת השכינה, ובאכילתם אנו ניזונים ממנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה בכל פרי</div>
+      <h3 class="story-title">🍏 "הם גדולים, מתוקים ויפים"</h3>
+      <p>המשמש של הרבי מבעלז סיפר על השנים הראשונות, כשהחקלאות בארץ עדיין לא הייתה מפותחת, וכמעט לא היה אפשר להשיג פירות שגדלו בארץ. הרבי התאמץ מאוד, וביקש בכל יום: תחפשו, אני רוצה לאכול פירות של ארץ ישראל. ומדי פעם היה שואל: האם אתם בטוחים שאלה פירות של ארץ ישראל?</p>
+      <p>פעם אחת, באמצע האכילה, אמר הרבי – ספק אליו, ספק לעצמו: מה יוצא לי מן האכילה הזאת, כשאינני יודע אם אלה פירות ארץ ישראל? והוסיף: אין לדמות, אבל האר"י הקדוש הקפיד לאכול בכל יום מפירות ארץ ישראל. ובספרים מובא ששבעת המינים כנגד שבע הספירות התחתונות, ובכל פרי מקבלים קדושה מספירה מסוימת.</p>
+      <p>יום אחד הצליח המשמש להשיג בוודאות תפוחים מתוצרת חדשה של ארץ ישראל, ובישל מהם לפתן. כשהרבי שאל, יכול היה להשיב בשמחה: אלה ודאי פירות ארץ ישראל. ואז הוסיף מעצמו: אפשר לראות זאת, כי הם קטנים וירוקים.</p>
+      <p>כששמע הרבי את המילים האלה, הזדעזע. כיצד אפשר לדבר כך על פירות ארץ ישראל? ואמר למשמש לחזור אחריו שלוש פעמים, ביידיש: הם גדולים, הם מתוקים, הם יפים, הם אדומים.</p>
+      <p>זה הלקח: לא משנה איך הפרי נראה. צריך תמיד להרגיש את טובת הארץ, ולדבר עליה רק טוב. יזכנו ה' לחבב את ארץ ישראל ואת פירותיה, ולהרגיש בכל פרי את הקדושה שבו.</p>
+      <p class="bold-para">אסור לדבר בגנות פירות ארץ ישראל; צריך תמיד להרגיש את טובת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה בכל פרי</div>
+      <h3 class="story-title">🧺 ארבעה טעמים בכל ביס</h3>
+      <p>נסכם את מה שלמדנו. הטעם הראשון, של בעל ערוך השולחן: חיבת הארץ. התורה שיבחה את ארץ ישראל בפסוקים רבים, משה רבנו התחנן לראות אותה, וחכמי התלמוד נישקו את אבניה. מי שמעדיף את פרי חוץ לארץ על פני פריה, כאילו מבכר את בן השנואה על פני בן האהובה.</p>
+      <p>הטעם השני, של השדי חמד: שבעת המינים קודמים בברכה משום שבהם השתבחה הארץ, וקל וחומר פרי שגדל בה ממש. והגר"א הראה שאפילו בנוסח הברכות, "המוציא לחם מן הארץ", יש זכר לשבחה של ארץ ישראל.</p>
+      <p>הטעם השלישי, על פי החתם סופר: כל קנייה של פרי מארץ ישראל מחזקת את מי שעובד את אדמתה, וזו מצוות יישוב הארץ. הקונה בחנות נעשה שותף לחקלאי בשדה.</p>
+      <p>והטעם הרביעי, של השפת אמת והב"ח: בפירות ארץ ישראל יש קדושה. הלחם שלה שקול כמן, ובאכילת פירותיה ניזונים מקדושת השכינה.</p>
+      <p>ארבעה טעמים, ואולי זה הסוד שבכל ביס. מי שעומד מול המדף ומתלבט אם לשלם עוד כמה שקלים, יכול לזכור: הוא אינו קונה רק פרי. הוא מחבב את הארץ, משבח אותה, מיישב אותה ומקבל מקדושתה.</p>
+      <p class="bold-para">חיבה, שבח, יישוב וקדושה – ארבעה טעמים שמצטרפים יחד בכל פרי של ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/7LFsmbBjMMA · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שאלה של כמה שקלים","icon":"🛒","color":"#c62b6b","stories":[{"id":1,"title":"זה לא נגמר בט\"ו בשבט","icon":"🍊"},{"id":2,"title":"האם שווה לשלם עוד חמישה שקלים?","icon":"🛒"}]},{"id":2,"name":"חיבת הארץ","icon":"❤️","color":"#6d28d9","stories":[{"id":3,"title":"אתרוג מקורפו","icon":"🍋"},{"id":4,"title":"מכתבו של ערוך השולחן","icon":"✉️"},{"id":5,"title":"גם הגשם מיוחד","icon":"🌧️"}]},{"id":3,"name":"מה שהשתבחה בו הארץ","icon":"🌾","color":"#e08e00","stories":[{"id":6,"title":"שבעת המינים קודמים","icon":"🌾"},{"id":7,"title":"\"המוציא לחם מן הארץ\"","icon":"🍞"},{"id":8,"title":"\"על הארץ ועל פירותיה\"","icon":"🫒"}]},{"id":4,"name":"יישוב הארץ","icon":"🚜","color":"#1e88b8","stories":[{"id":9,"title":"עבודת האדמה היא גוף המצווה","icon":"🚜"},{"id":10,"title":"עדיף אפילו עם חשש","icon":"⚖️"},{"id":11,"title":"פירות של שומרי שמיטה","icon":"🌿"},{"id":12,"title":"\"מה נאכל בשנה השביעית\"","icon":"📜"}]},{"id":5,"name":"קדושה בכל פרי","icon":"✨","color":"#c62b6b","stories":[{"id":13,"title":"לחם שהוא כמו מן","icon":"✨"},{"id":14,"title":"החלה הקטנה","icon":"🥖"},{"id":15,"title":"ניזונים מקדושת השכינה","icon":"🍎"},{"id":16,"title":"\"הם גדולים, מתוקים ויפים\"","icon":"🍏"},{"id":17,"title":"ארבעה טעמים בכל ביס","icon":"🧺"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
