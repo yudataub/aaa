@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מתשלום לשירה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מתשלום לשירה</h1>
+  <p>שלוש דרגות של ברכה, "כי חג ה' לנו" מול עבודה של חובה, ה' המשפיל לראות, ותפילה להפוך כל ברכה לרגע של קרבה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מתשלום לשירה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/JB1tLqMiSc8?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/JB1tLqMiSc8/hqdefault.jpg" alt="מתשלום לשירה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=JB1tLqMiSc8" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שלוש דרגות של ברכה</div>
+      <h3 class="story-title">💧 מה מיוחד בתודה?</h3>
+      <p>השיעור הזה היה שונה מן הרגיל. הוא הראה כיצד אפשר לקחת רעיון אחד קטן, אפילו משפט אחד שנאמר בשיחת לימוד קצרה של בוקר, ולפתח אותו לעולם שלם: למאמר, לשיעור, לשיר ולתפילה. והרעיון שנבחר היה פשוט מאוד: ברכה.</p>
+      <p>השאלה שפתחה את הכול הייתה: מה כל כך מיוחד בהודיה לה'? הרי כולם מברכים, כל יום. מי לא מברך? כתוב בספרים שאדם צריך להודות, לברך מתוך הודיה, לומר תודה. אבל מה החידוש? כולנו עושים זאת ממילא.</p>
+      <p>והתשובה מתחילה בהתבוננות כנה. האם שמתם לב פעם להבדל בין ברכה שנאמרת כמצוות אנשים מלומדה, ובין רגע של הודיה אמיתית? אנו מברכים "שהכל נהיה בדברו" על כוס מים. האם באמת אנחנו מרגישים את המשמעות? או שהברכה הפכה למעין תשלום רוחני אוטומטי?</p>
+      <p>השיעור מבקש לחשוף את הסוד העמוק של הברכות: כיצד אפילו הברכה הפשוטה ביותר, על כוס מים, יכולה להפוך לרגע של גילוי ושל התעלות. והדרך לשם עוברת בשלוש דרגות.</p>
+      <p class="bold-para">כולם מברכים בכל יום, אבל השאלה היא אם הברכה מורגשת או שהפכה להרגל אוטומטי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שלוש דרגות של ברכה</div>
+      <h3 class="story-title">🧾 ברכה כתשלום במכולת</h3>
+      <p>הדרגה הראשונה היא ברכה כתשלום. לפעמים אנחנו מברכים כמו שאדם משלם בקופה של המכולת. זו פעולה טכנית, נכונה מבחינה הלכתית, אבל חסר בה העומק הרגשי.</p>
+      <p>חשבו על אדם שנכנס למכולת. הוא לוקח את מה שצריך, ניגש לקופה ומשלם. הוא אינו מרגיש רגשי הודיה כלפי בעל המכולת. הוא לקח, הוא שילם, וזהו. החשבון סגור.</p>
+      <p>וכך אצל רוב האנשים, בדרך כלל, הברכה עובדת. העולם שייך לה', ואסור ליהנות ממנו בלי ברכה. איך משלמים לה'? כסף הוא לא צריך. אז מה עושים? אומרים ברכה. הברכה היא כאן התשלום של המכולת. מברכים, והאוכל מותר.</p>
+      <p>אין בזה פסול. זו קיום הלכה, וזו כבר דרגה. אדם שמברך כך מכיר בכך שהעולם אינו שלו, ושעליו לבקש רשות מבעליו. אבל ברור שיש כאן משהו חסר. בעל המכולת אינו אוהב את הלקוח, והלקוח אינו אוהב את בעל המכולת. יש ביניהם עסקה, לא קשר.</p>
+      <p>ואם כל הברכות שלנו נשארות ברמה הזו, אנחנו מפספסים את רוב מה שהברכה יכולה לתת.</p>
+      <p class="bold-para">בדרגה הראשונה הברכה היא כמו תשלום בקופה: פעולה נכונה, אבל בלי רגש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שלוש דרגות של ברכה</div>
+      <h3 class="story-title">🌳 ברכה מתוך התפעלות</h3>
+      <p>יש ברכה מסוג שני, גבוה הרבה יותר: ברכה מתוך התפעלות. כשאדם רואה את פריחת האילנות באביב, או מראה מיוחד בטבע, ההתפעלות הטבעית מובילה אותו לברך. זו ברכה שנובעת מהתרגשות אמיתית ומתחושת פליאה.</p>
+      <p>כאן האדם כבר לא בא רק לשלם, כי זה לא שלו. הוא מרגיש התפעלות. הוא רואה משהו מיוחד, ומתוך כך הוא מברך. מה הוא מרגיש? פליאה אדירה: כמה נפלא שהקדוש ברוך הוא ברא דברים כאלה. איזה יופי, איזה טבע. ומתוך ההתפעלות יוצאת הברכה.</p>
+      <p>ההבדל בין שתי הדרגות האלה גדול. בדרגה הראשונה הברכה היא תנאי להנאה. בדרגה השנייה הברכה היא חלק מן ההנאה עצמה, ואולי אף העיקר שבה. האדם נהנה מן הפרי, אבל עוד יותר הוא נהנה מן הפליאה על הבורא שברא אותו.</p>
+      <p>ואת הדרגה הזו אפשר להשיג לא רק מול נופים מרהיבים. גם כוס מים צלולה, גם פרוסת לחם טרייה, גם אור השמש בבוקר – כל אלה יכולים לעורר פליאה למי שמתבונן בהם באמת.</p>
+      <p class="bold-para">בדרגה השנייה הברכה נובעת מהתרגשות אמיתית ומתחושת פליאה מול מעשי ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שלוש דרגות של ברכה</div>
+      <h3 class="story-title">💞 הודיה מתוך אהבה</h3>
+      <p>ויש דרגה שלישית, הגבוהה ביותר: הודיה מתוך אהבה. הרובד העמוק ביותר הוא כשהברכה נולדת מתוך אהבת ה'. כמו אדם שמעריך מעשה טוב של חברו גם כשהוא עצמו לא קיבל ממנו דבר – כך אנו יכולים להודות לה' מתוך אהבה טהורה.</p>
+      <p>כדי להבין זאת, צריך להבחין בין שבח ובין הודיה. הודיה היא על משהו שקיבלתי, שנהניתי ממנו, ואני אומר עליו תודה. שבח הוא פשוט מאוד: אני רואה מה שהקדוש ברוך הוא עושה, כמה הוא גדול, ואני משבח את מעשיו. פסוקי דזמרה הם שבח. הם אינם תודה על מה שאני קיבלתי, אלא "הַלְלוּהוּ בַּמְּרוֹמִים, הַלְלוּהוּ כָּל מַלְאָכָיו".</p>
+      <p>וכשאדם מרגיש אהבה למישהו, הוא מרגיש שהוא מיוחד, הוא מעריך אותו מאוד. ומחמת האהבה, הוא מתפעל מכל מה שעושה האהוב, ומשבח את כל מעשיו – בלי קשר למה שהוא עצמו קיבל. הוא משבח אותו כי הוא אוהב אותו.</p>
+      <p>זו ההודיה שמגיעה ממצוות אהבת ה'. אדם כזה מברך לא רק כי צריך, ולא רק כי נהנה, אלא כי לבו מלא אהבה לבורא העולם.</p>
+      <p class="bold-para">בדרגה הגבוהה ביותר הברכה נולדת מאהבת ה', כמו אדם שמשבח את חברו גם כשלא קיבל ממנו דבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שלוש דרגות של ברכה</div>
+      <h3 class="story-title">🍵 שהכל על כוס תה</h3>
+      <p>מסופר על אחד הצדיקים שהיה מברך אפילו "שהכל נהיה בדברו" על כוס תה, וכל בית המדרש היה מרגיש את יראת השמים ואת ההתרגשות האדירה שבברכה הזו. תלמידיו סיפרו שכאשר שמעו אותו מברך ברכה אחת על כוס תה, הרגישו שהוא עומד לפני המלך.</p>
+      <p>איך אדם מגיע לכך? איך עוברים ממצב של חובה למצב של שמחה? הדרך היא שינוי הגישה הפנימית, והיא בנויה משלושה שלבים.</p>
+      <p>השלב הראשון: לראות את הטוב בכל דבר. להתרגל להסתכל על כל דבר ולחפש את הטוב שבו. השלב השני: לפתח את ההתפעלות. לא לקבל את הכול כשגרה, כמובן מאליו. השלב השלישי: לטפח רגש של אהבה והכרת הטוב. להרגיש שבורא העולם דואג לך, חשב עליך, רצה בטובתך – ומתוך כך להתחיל לאהוב אותו.</p>
+      <p>הברכה האמיתית אינה רק המילים שאנחנו אומרים, אלא בעיקר הרגש שמאחוריהן. כשאנחנו מצליחים לחבר את הלב למילים, הברכה הופכת מתשלום להזדמנות של התעלות רוחנית ושל קרבת ה'.</p>
+      <p>וזו התנועה שכל השיעור מבקש ללמד: מחובה לשמחה. יש אדם שמברך כי הוא מרגיש שהוא חייב, כי הדבר אינו שלו. ויש אדם שמברך כי הוא שמח להודות לבורא העולם על הטוב שקיבל.</p>
+      <p class="bold-para">מסופר על צדיק שברכת שהכל שלו על כוס תה הרעידה את כל בית המדרש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כי חג ה' לנו</div>
+      <h3 class="story-title">👑 הוויכוח בין משה לפרעה</h3>
+      <p>את אותו רעיון בדיוק אפשר למצוא בפרשת השבוע, פרשת בא. יש שם ויכוח מרתק בין משה רבנו ובין פרעה.</p>
+      <p>עבדי פרעה אומרים לו: "עַד מָתַי יִהְיֶה זֶה לָנוּ לְמוֹקֵשׁ, שַׁלַּח אֶת הָאֲנָשִׁים וְיַעַבְדוּ אֶת ה' אֱלֹקֵיהֶם". פרעה קורא למשה ולאהרן ושואל: "מִי וָמִי הַהֹלְכִים?"</p>
+      <p>ומשה עונה: "בִּנְעָרֵינוּ וּבִזְקֵנֵינוּ נֵלֵךְ, בְּבָנֵינוּ וּבִבְנוֹתֵנוּ, בְּצֹאנֵנוּ וּבִבְקָרֵנוּ נֵלֵךְ, כִּי חַג ה' לָנוּ".</p>
+      <p>פרעה מסרב: "לְכוּ נָא הַגְּבָרִים וְעִבְדוּ אֶת ה', כִּי אֹתָהּ אַתֶּם מְבַקְשִׁים". רק הגברים ילכו.</p>
+      <p>יש כאן לכאורה מחלוקת אדירה. פרעה טוען: ילכו הגברים. משה טוען: מה פתאום? כולם ילכו – נערים וזקנים, בנים ובנות. ומה עומד מאחורי המחלוקת הזו? לא רק ויכוח פוליטי על מי ייצא ממצרים, אלא שאלה יסודית: מהי מהותה של עבודת ה'? האם היא חובת עבודה, או שמחה וחגיגה?</p>
+      <p>יש עבודה שאדם הולך אליה, כמו שהולכים למשרד. ויש מקום שאדם הולך אליו כמו שהולכים לחתונה או למסיבה. פרעה ומשה ראו את עבודת ה' בשני האופנים האלה.</p>
+      <p class="bold-para">פרעה הסכים שילכו רק הגברים, ומשה עמד על כך שילכו כולם, "כי חג ה' לנו".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כי חג ה' לנו</div>
+      <h3 class="story-title">🎉 עבודה או חגיגה</h3>
+      <p>פרעה טען: עבודת ה' היא חובה ועול, כמו עבודה. ומשה טען: מה פתאום? עבודת ה' היא שמחה והתעלות, כמו חגיגה.</p>
+      <p>ותראו כמה זה יפה. אם עבודת ה' היא חובה, עבודה – מי הולך לעבודה? הגברים, המחויבים. מתי לקחתם את הילד לעבודה? בדרך כלל אדם אינו לוקח את ילדיו למקום עבודתו. זה לא המקום שלהם.</p>
+      <p>אבל אם זו חגיגה, אם יש מסיבה – יאללה, שיבואו כולם! הילדים הקטנים, הזקנים, כל מי שרק מסוגל ליהנות. כולם באים.</p>
+      <p>ולכן הוויכוח על מי הולך תלוי במהות. אם זו עבודה, משתתפים בה רק המחויבים. אם זו חגיגה, כולם באים. וגם האופן שונה: בעבודה אדם שם לב למה שהוא חייב לעשות, ולא יותר. בחגיגה הוא שם לב איך לעשות את הדבר בצורה הכי שמחה והכי יפה.</p>
+      <p>וזה נוגע גם לחינוך הילדים. אם זו עבודה – אין בה מקום לילדים. אם זו חגיגה – אדרבה, חשוב מאוד לשתף גם אותם, שגם הם ייהנו. איזה אדם מוותר על הילדים כשיש מסיבה? חלק מן ההנאה הוא לראות את הילדים חוגגים.</p>
+      <p class="bold-para">לעבודה הולכים רק המחויבים, ולחגיגה באים כולם – ולכן השאלה מי הולך תלויה בשאלה מה זה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כי חג ה' לנו</div>
+      <h3 class="story-title">👨‍👩‍👧 חג שמחבר בין הדורות</h3>
+      <p>עכשיו מובנים דברי פרעה: "לְכוּ נָא הַגְּבָרִים וְעִבְדוּ אֶת ה', כִּי אֹתָהּ אַתֶּם מְבַקְשִׁים". מה אתם מבקשים? לעבוד. ומי הולך לעבודה? הגברים.</p>
+      <p>ושימו לב מה עונה לו משה: "בִּנְעָרֵינוּ וּבִזְקֵנֵינוּ נֵלֵךְ... כִּי חַג ה' לָנוּ". למה כולם? כי זה חג. כשיש חגיגה, לוקחים את כולם. ולהפך – הילדים נהנים בחגיגה אפילו יותר מן המבוגרים.</p>
+      <p>משה רבנו לימד שעבודת ה' האמיתית היא בבחינת "חג ה' לנו". היא מקיפה את כל המשפחה, היא נעשית מתוך שמחה, והיא מחברת בין הדורות. מכאן אנו לומדים לראות את קיום המצוות כהזדמנות לשמחה ולהתעלות משפחתית, ולא כעול וחובה בלבד.</p>
+      <p>זו בדיוק התנועה שראינו בברכות. יש מי שרואה בברכה תשלום, חובה שצריך לסלק. ויש מי שרואה בה חגיגה, רגע של שמחה עם בורא העולם. וההבדל אינו במילים – המילים זהות. ההבדל הוא בלב.</p>
+      <p>כשאדם עושה מצווה כמו שהולכים לעבודה, הוא עושה את המינימום. כשהוא עושה אותה כמו שהולכים לחתונה, הוא מביא את כל המשפחה, לובש בגדים יפים, ושמח בכל רגע.</p>
+      <p class="bold-para">משה לימד שעבודת ה' האמיתית היא "חג ה' לנו": היא מקיפה את כל המשפחה ונעשית בשמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כי חג ה' לנו</div>
+      <h3 class="story-title">🙏 תפילה של כניעה ותפילה של אהבה</h3>
+      <p>בשיעור הובאה השוואה מעניינת. יש דתות שבהן התפילה היא בעיקר כניעה: משתחווים פעמים רבות, חוזרים שוב ושוב על משפט אחד או שניים, כמעין נוסחה קבועה. ולעולם לא תמצאו שם ריקודים או שירה של שמחה בתפילה.</p>
+      <p>למה? כי שם הבורא נתפס כמו בוס. העולם שייך לו, ואם אתה רוצה שלא יפגע בך, אתה צריך לרצות אותו. משתחווים לו, נכנעים לפניו. אבל לרקוד איתו? לשמוח איתו? מה שייך?</p>
+      <p>אצל היהודים התפילה כולה מלאה אהבה. "אַהֲבָה רַבָּה אֲהַבְתָּנוּ", "אַהֲבַת עוֹלָם" – בורא העולם בחר בנו ואוהב אותנו. וההלכה אומרת שמי שיכול, טוב שיאמר את פסוקי השבח בנגינה. כי אצל היהודים עבודת ה' אינה רק עבודה. ה' רוצה בטובתנו, "כי חג ה' לנו". היהדות היא חגיגה, שירה ושמחה.</p>
+      <p>ולכן, אומר הרב, אולי פרעה הכיר את העולם הזה של כניעה. במצרים ראו את עבודת האלילים כעבודה, כעול – "כי אותה אתם מבקשים". ואנחנו רואים בעבודת ה' חגיגה ושמחה. זו הגדרת ההבדל.</p>
+      <p class="bold-para">מי שרואה בבורא רק "בוס" שצריך לרצות, מתפלל בכניעה; מי שיודע שהוא רוצה בטובתנו, מתפלל בשירה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כי חג ה' לנו</div>
+      <h3 class="story-title">💍 החתונה של כל המשפחה</h3>
+      <p>האם שמתם לב פעם לתופעה מעניינת בחתונות? לחתונה של חברים או של קרובים רחוקים, מגיעים בדרך כלל רק המבוגרים. הילדים נשארים בבית. אבל בחתונה של קרובי משפחה – כולם מגיעים, מקטן ועד גדול. האחים מביאים את כל הילדים.</p>
+      <p>וזה מפתח להבנת דברי משה רבנו. מדוע עמד על כך שילכו כולם, כולל הילדים והזקנים? כי "חג ה' לנו". מעמד הר סיני, כמו שאמרו חז"ל, הוא "יום חתונתו". מתן תורה לא היה חתונה של מישהו זר. זו הייתה החתונה המשפחתית הגדולה ביותר בהיסטוריה: הקשר הנצחי בין הקדוש ברוך הוא לעם ישראל.</p>
+      <p>מכאן נובעת תובנה עמוקה על מהות הקשר לתורה. זהו קשר משפחתי, אינטימי ועמוק. כשם שלחתונה משפחתית לוקחים את כל בני המשפחה, כך בתורה – כל יהודי, מן הקטן ועד הגדול, הוא חלק בלתי נפרד מן הברית.</p>
+      <p>"חג ה' לנו" – לא חג של מישהו רחוק, אלא שלנו. זו החתונה האישית שלנו. ולכן כולם צריכים להגיע.</p>
+      <p class="bold-para">מעמד הר סיני היה "יום חתונתו" של עם ישראל, ולכן כל יהודי, מקטן ועד גדול, חלק מן הברית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כי חג ה' לנו</div>
+      <h3 class="story-title">📜 עזרת נשים בשמחת תורה</h3>
+      <p>לרעיון הזה יש השלכות מעשיות. בשיעור סופר על בית כנסת שלא הייתה בו עזרת נשים. רב הקהילה הודיע: אם לא ידאגו שתהיה עזרת נשים בשמחת תורה, אני לא אגיע.</p>
+      <p>והוא הסביר: איך אפשר? בשמחת תורה כולם צריכים להגיע. זה "חג ה' לנו". גברים, נשים, ילדים – כולם. שמחת התורה אינה של הגברים בלבד, היא של המשפחה כולה. והוא לא הסכים לבוא עד שתוקן הדבר.</p>
+      <p>יש מי שתמהו עליו, אבל הוא ידע מה הוא אומר. זה בדיוק מה שטען משה רבנו מול פרעה: עבודת ה' היא חגיגה, ולחגיגה באים כולם. אם רק חלק מן המשפחה נמצא, השמחה חסרה.</p>
+      <p>וזה נוגע לכל אחד מאיתנו. כשאנחנו מקיימים מצוות בבית, האם הילדים מרגישים שזו חגיגה? האם הם רואים אותנו שמחים? או שהם רואים אנשים שעושים עבודה, ממהרים לסיים? הילדים לומדים לא רק ממה שאנחנו עושים, אלא מן האופן שבו אנחנו עושים. ומי שמראה לילדיו שעבודת ה' היא שמחה, מוריש להם את החג.</p>
+      <p class="bold-para">רב שסירב לבוא לשמחת תורה בבית כנסת שאין בו עזרת נשים, כי בחג של כולם צריכים להיות כולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רם ומשפיל לראות</div>
+      <h3 class="story-title">🌌 רם ולא גבוה</h3>
+      <p>בהלל אנו אומרים: "רָם עַל כָּל גּוֹיִם ה', עַל הַשָּׁמַיִם כְּבוֹדוֹ". יש כאן דיוק מעניין. מה ההבדל בין "גבוה" ובין "רם"?</p>
+      <p>גבוה הוא דבר שמתחיל מלמטה ומגיע למעלה. אדם גבוה עומד על הקרקע, וראשו מגיע לגובה רב. אבל "רם" הוא דבר שאינו מתחיל מלמטה. הוא נמצא שם, אי שם במרומים, ואין לו מגע עם הקרקע.</p>
+      <p>וכך, עד היום, רואים רבים מן הגויים, גם אלה שמאמינים בבורא, את אלוקים: "רם על כל גוים ה'". הוא מרומם מאוד, "על השמים כבודו". הוא נמצא בשמים, ומה לו ולהתעסק עם אנשים קטנים בעולם הזה, עד הפרט הקטן ביותר?</p>
+      <p>נסו לומר לאדם כזה שמאורע מסוים בחדשות, פרט קטן בתזמון שלו, קרה כך כי בורא העולם רצה לשמור על כבוד השבת של משפחה יהודית אחת. הוא לא יקבל זאת. מה, אלוקים נכנס לפרטים כאלה? בעיניו, הבורא רם מדי בשביל זה.</p>
+      <p class="bold-para">"רם" הוא מי שמרומם מלמעלה ומנותק, ואילו "גבוה" מתחיל מן הקרקע; כך רואים אומות העולם את הבורא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רם ומשפיל לראות</div>
+      <h3 class="story-title">🔭 המשפילי לראות</h3>
+      <p>ומה אומר הפסוק הבא? "מִי כַּה' אֱלֹקֵינוּ, הַמַּגְבִּיהִי לָשָׁבֶת, הַמַּשְׁפִּילִי לִרְאוֹת בַּשָּׁמַיִם וּבָאָרֶץ".</p>
+      <p>שימו לב: לא "רם", אלא "המגביהי" – לשון של גובה, שמגיע מלמטה למעלה. והוא "המשפילי לראות": מסתכל גם בשמים וגם בארץ, בהכול.</p>
+      <p>המפרשים מסבירים: אתם, אומות העולם, אומרים שאלוקים משגיח רק על השמים ולא על הארץ. אנחנו אומרים לכם: הקדוש ברוך הוא כל כך גבוה, שאפילו להסתכל על המלאכים בשמים זו השפלה בשבילו. הוא כל כך מרומם, שגם השמים נמוכים אצלו. ואם הוא כבר משפיל את עצמו לראות – הוא רואה גם את השמים וגם את הארץ. אצלו אין הבדל. גם השמים וגם הארץ נמוכים, והוא מסכים לרדת לשניהם.</p>
+      <p>ומכאן חוזרים לברכות. אם הבורא משגיח על כל פרט, אז גם כוס המים שלי אינה מקרה. מישהו חשב עליה, דאג שתהיה, ונתן לי אותה. ברכה על כוס מים היא הודיה לבורא שמשפיל עצמו לראות גם אותי.</p>
+      <p class="bold-para">הקדוש ברוך הוא כה מרומם שאפילו להביט בשמים הוא השפלה עבורו, ובכל זאת הוא משגיח גם על הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להעיר את הלב</div>
+      <h3 class="story-title">☕ ברכה אחת ביום</h3>
+      <p>בשיעור עלתה שאלה אמיתית: אני שותה עכשיו כוס מים. אני צריך להתפעל מכל כוס? מכל ברכה? הרי מברכים מאה ברכות ביום. זה קשה מאוד, כמעט בלתי אפשרי.</p>
+      <p>והתשובה מרגיעה: לא צריך שכל הברכות יהיו כך. העיקר שכמה ברכות ביום, ואפילו ברכה אחת ביום, יאמרו מתוך התרגשות. אם אדם מברך ברכה אחת בכל יום ושם לב באמת – הוא כבר במקום אחר לגמרי.</p>
+      <p>יש אמרה יהודית: יש מי שאוכל כדי לברך, ויש מי שמברך כדי לאכול. המברך כדי לאכול – הברכה אצלו היא התשלום, הכרטיס להנאה. האוכל כדי לברך – האוכל אצלו הוא ההזדמנות להודות.</p>
+      <p>ואפשר להתחיל בקטן. פעם אחת ביום, אפילו פעם בכמה ימים, לשים לב למשהו: לפרוסת הלחם, לאור, לכוס הקפה. פעם להתפעל מן האוכל, פעם מן האור, פעם מדבר אחר. העיקר שאדם יתרגל להרגיש את הטוב, ולהבין שהקדוש ברוך הוא דאג לו.</p>
+      <p class="bold-para">אין צורך שכל הברכות יהיו חוויה; די שבכל יום תהיה ברכה אחת שנאמרת מתוך התפעלות אמיתית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להעיר את הלב</div>
+      <h3 class="story-title">🫖 כשקפה היה מאורע</h3>
+      <p>קחו לדוגמה כוס קפה. נסו להיזכר איך הכינו פעם קפה. לא היה מכשיר שמחמם מים בלחיצת כפתור. היה קומקום על האש, ומחכים עד שהמים רותחים. ואחר כך מוזגים לכוסות.</p>
+      <p>ואתם זוכרים? פעם היו צריכים לשטוף את הכוס לפני ששותים. בבית הכנסת, בכל מקום ציבורי, אנשים היו שוטפים כוס במים ובסבון, ורק אחר כך שותים. לא היו כוסות חד פעמיות שזורקים וזורקים.</p>
+      <p>היום אנו חיים בעולם של שפע. כמעט כל דבר זמין מיד, בלי מאמץ. וזה דווקא מה שמקשה עלינו להתפעל. מה שבא בקלות, נראה מובן מאליו.</p>
+      <p>אבל מי שעוצר רגע ונזכר, מגלה כמה טוב יש בכל דבר קטן. כוס הקפה של הבוקר היא תוצאה של חסדים רבים: מים זורמים, אש זמינה, מזון בשפע. וכך גם הלחם שאדם אוכל, האור שמאיר את ביתו, והבגדים שהוא לובש.</p>
+      <p>כל אחד מן הדברים האלה יכול להפוך לרגע של התפעלות. לא צריך לחפש נופים מיוחדים. מספיק להתבונן במה שכבר יש.</p>
+      <p class="bold-para">מי שזוכר כמה טרחה הייתה פעם בכוס קפה, מבין כמה שפע יש בכל כוס היום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להעיר את הלב</div>
+      <h3 class="story-title">🌷 להתרגל להתפעל</h3>
+      <p>הדרך להתעלות מחובה לשמחה מתחילה בפיתוח מודעות לטוב שבכל דבר. זו מידה טובה מאוד: להתרגל להיות אדם שמתפעל. לא להתפעל מכל דבר בצורה מוגזמת, אבל לשים לב לטוב שבכל דבר.</p>
+      <p>יש בני אדם שלא משנה מה קורה להם, כמה טוב יקרה להם – הם נשארים קרים כקרח, אדישים. ויש אנשים חמים, שמתרגשים ומתפעלים בקלות. חלק מזה הוא טבע. יש מי שרואה תמיד את חצי הכוס הריקה, ויש מי שרואה את המלאה.</p>
+      <p>אבל זו גם מידה שאדם יכול לקנות. אולי לא לגמרי, אבל אפשר להשתפר בה מאוד. מי שהיה קר לגמרי יכול להתחמם. אדם יכול להתרגל להתפעל: לעמוד ולהסתכל על הפרחים, להתבונן בדברים. זה לימוד, וזה אימון.</p>
+      <p>אחר כך הוא יכול להעמיק ברגשי אהבה והודיה. הוא שם לב שקיבל דבר טוב, וחושב: כמה אהבה הגיעה לכאן. כמה מישהו חשב עליי, כמה מישהו דאג לי. ומתוך כך הוא מרגיש אהבה למי שנתן. כי אפשר לקבל ולא להרגיש שום רגש של אהבה – וזה מה שצריך לתקן.</p>
+      <p>ולבסוף, הוא מחבר את הלב למילות הברכה, שהמילים לא יהיו קרות, אלא יצאו מלב חם.</p>
+      <p class="bold-para">יש אנשים שנולדו חמים ויש קרים, אבל כל אדם יכול לפתח בעצמו את היכולת להתפעל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להעיר את הלב</div>
+      <h3 class="story-title">⏱️ חמש שניות לפני הברכה</h3>
+      <p>יש פתגם ידוע: יש אבנים שיש בהן לב, ויש בני אדם שלבם לב אבן. ליד הכותל המערבי, שהוא אבנים, אנשים בוכים. ויש אנשים חיים שאינם מרגישים דבר. השאלה היא אם אדם מרשה ללב שלו להרגיש.</p>
+      <p>אם אדם רוצה שהברכה תהיה מתוך רגש, השיטה הפשוטה והנפלאה ביותר היא לעצור. אפילו חמש שניות. לעצור ולחשוב: על מה אני מברך? מה יש כאן טוב? איזה דבר נפלא נמצא כאן לפניי?</p>
+      <p>חמש שניות אינן הרבה זמן. אבל הן ההבדל בין ברכה שנפלטת מן הפה ובין ברכה שיוצאת מן הלב. מי שמתרגל לעצור לפני הברכה, מגלה שגם המילים עצמן מקבלות טעם אחר.</p>
+      <p>ואז אדם יכול להפוך את רגע הברכה להזדמנות רוחנית, שבה הוא מודה לקדוש ברוך הוא באמת. לא עוד תשלום בקופה, אלא רגע של מפגש.</p>
+      <p>ואפשר לנסות זאת כבר היום. לפני הכוס הבאה של מים, לעצור, להסתכל בה, ולחשוב לרגע מאין באה. ואז לומר "שהכל נהיה בדברו" לאט, מילה אחר מילה, ולהרגיש שאתה מדבר אל מי שנתן.</p>
+      <p>וזה יסוד לחיי היום יום. אין צורך בשינוי דרמטי, בשעות של התבוננות. מספיק רגע אחד, לפני כל ברכה או לפחות לפני כמה מהן, כדי להעיר את הלב.</p>
+      <p class="bold-para">העצה הפשוטה ביותר: לעצור לפני הברכה ולחשוב על מה מברכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להעיר את הלב</div>
+      <h3 class="story-title">🍰 החתם סופר והעוגה שנשכחה</h3>
+      <p>על החתם סופר מסופר סיפור מדהים. בכל בוקר, שעה אחרי התפילה, היה השמש מביא לו עוגה וכוס תה. החתם סופר היה שקוע בלימוד, ותוך כדי הלימוד אכל ושתה.</p>
+      <p>יום אחד השמש היה רעב, ואכל בעצמו את העוגה. הוא חשב: הרב שקוע בסוגיה, הוא בכלל לא שם לב אם הוא אוכל או לא. והביא לו רק כוס תה, בלי עוגה.</p>
+      <p>בשעה מאוחרת יותר שאל החתם סופר: למה היום לא הבאת לי עוגה? השמש היה בטוח שהרב לא שם לב, ואמר: הבאתי, הרב אכל. הרב היה שקוע בסוגיה, ואינו זוכר.</p>
+      <p>אמר לו החתם סופר: אתה צודק. אם אכלתי או לא אכלתי, אני באמת לא זוכר. אבל דבר אחד אני זוכר בוודאות: שלא בירכתי.</p>
+      <p>כל ברכה של החתם סופר הייתה חוויה כזו, שאי אפשר היה לשכוח אותה. את האוכל שכח, אבל את הברכה – לעולם לא. וכל אדם יכול ללכת בדרך הזו, קצת: להתבונן לפני שהוא מברך, לשים לב למילים, ולהפוך את הברכה מתשלום לדרך של קשר עם בורא העולם.</p>
+      <p class="bold-para">החתם סופר לא זכר אם אכל, אבל זכר בוודאות שלא בירך, כי כל ברכה שלו הייתה חוויה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שיר ותפילה</div>
+      <h3 class="story-title">🔑 אתה ואבינו – נוכח ונסתר</h3>
+      <p>בשיעור הוזכרה שאלה ידועה ששואל הרשב"א: למה הברכה פותחת "ברוך אתה ה'" – בלשון נוכח, כמדבר אל מי שעומד מולו – וממשיכה "אלוקינו מלך העולם, אשר קדשנו" או "בורא פרי העץ" – בלשון נסתר?</p>
+      <p>התשובה נוגעת בדיוק בנושא שלנו. יש שני ממדים בבורא העולם. מצד אחד, הוא גדול ורם, ואדם מתבייש לעמוד לפניו. הוא נסתר. ומצד שני, הוא אבינו שבשמים, שאוהב אותי. הוא קרוב, נוכח. ולכן הברכה עוברת מלשון ללשון.</p>
+      <p>וזה המפתח לכל הברכות: הקדוש ברוך הוא רחוק וקרוב בעת ובעונה אחת. אנו עומדים לפניו בענווה, בחושינו האנושיים המוגבלים, אך גם באמון של בנים באהבת אביהם.</p>
+      <p>ברכה של תשלום רואה רק את המלך. ברכה של אהבה רואה גם את האב. ומי שזוכה, מרגיש את שניהם יחד: את גדלות הבורא, ואת קרבתו המיוחדת אליו.</p>
+      <p class="bold-para">הברכה פותחת בלשון נוכח ועוברת ללשון נסתר, כי ה' הוא גם המלך הרחוק וגם האב הקרוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שיר ותפילה</div>
+      <h3 class="story-title">🎶 שירה של ברכה</h3>
+      <p>חרוזים ושירה נכנסים ללב האדם בקלות רבה. לכן הוצג בשיעור גם שיר, שבו נאמרים כל הרעיונות של השיעור בצורה של שירה. וזה לשונו, בחלקו:</p>
+      <p>"בבוקר בקומי, בלב מתעורר, / אשמע ציפור מזמר. / לא עוד כחובה, כתשלום ממהר, / אלא באהבה, כלב מתנער. / בכל פרי ועץ, בכל טיפת מים, / אראה פלא בורא עולמים. / לא רק במילים, בשפתיים, / כי בעומק לב ברכות כנחלים."</p>
+      <p>"כשאברך שהכל נהיה בדברו, / אראה אור חדש בכל יצירתו. / הלב יתרחב בהכרת טובו, / הברכה תעלה עד כיסא כבודו. / כי ברכה אמיתית נובעת מהלב, / כמעיין המתחדש בכל רגע שקרב. / כשנפתח את הלב להודות ולתת, / נראה את האור בכל פינה וזווית."</p>
+      <p>השיר מסכם בשפה פשוטה את כל המהלך: מן החובה אל האהבה, מן המילים אל הלב, מן השגרה אל ההתחדשות. ומי שאומר אותו, או מנגן אותו, מזכיר לעצמו בכל בוקר מחדש איך רוצים לברך.</p>
+      <p class="bold-para">את רעיונות השיעור אפשר לומר גם בשיר, שנכנס ללב יותר מכל הסבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שיר ותפילה</div>
+      <h3 class="story-title">🕊️ תפילה על הברכות</h3>
+      <p>השלב הבא בשיעור היה להפוך את כל הרעיון לתפילה: שאדם יתפלל לה' שיזכה לברך כך. וזו התפילה, כפי שנוסחה:</p>
+      <p>"ריבונו של עולם, אבי שבשמים, פותח אני את לבי לפניך כספר. בידיים רועדות ובעיניים דומעות אני מבקש לגעת באור פניך. מודה אני לפניך, אבי הרחמן, על כל נשימה ונשימה, על כל טיפת חסד שהרעפת עליי, גם כשלא ידעתי להודות.</p>
+      <p>אנא, פתח את לבי לראות את נפלאותיך בכל רגע ורגע: בכל פרח פורח, בכל עלה נושר, בכל טיפת גשם, בכל קרן שמש. למדני, אבי, לברך באמת – לא כמצוות אנשים מלומדה, לא כמילים קבועות, אלא כברכה הנובעת ממעיין הלב, טהורה וחזקה כטל בוקר.</p>
+      <p>עזור לי לראות בכל ברכה הזדמנות להתקרב אליך, ולהרגיש את נוכחותך הקדושה בכל מאכל, בכל שתייה, בכל נשימה. וכשאני אומר 'ברוך אתה ה'', תן שיהיו המילים חיות ובוערות, מלאות אהבה וכיסופים, כמו תפילתו הראשונה של תינוק.</p>
+      <p>עזור לי להיות כלי לאורך, להאיר את העולם באור ההודיה. וכאשר אברך, יהיה לבי פתוח לקבל את שפע ברכותיך, ולהעביר את אור חסדיך לכל אשר סביבי. אמן, כן יהי רצון."</p>
+      <p class="bold-para">התפילה מבקשת מה' את עצם היכולת לראות את נפלאותיו ולברך מתוך לב חי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שיר ותפילה</div>
+      <h3 class="story-title">🌅 מברכות של שגרה לברכות של התחדשות</h3>
+      <p>בשיעור הובא גם ביאור לתפילה, פסקה אחר פסקה. הפתיחה, "ריבונו של עולם, אבי שבשמים", מעמידה אותנו בין שני הממדים שראינו: גדלות הבורא כריבון העולמים, וקרבתו האינטימית כאב.</p>
+      <p>"מודה אני לפניך על כל נשימה" – כאן מתחילה ההכרה בחסד שבכל רגע. כמה פעמים אנו נושמים בלי לשים לב? כמה טיפות של חסד זורמות אלינו בלי שנרגיש? ההודיה הזו היא התעוררות מאוטומטיות החיים אל ההכרה בנס שבכל רגע.</p>
+      <p>"פתח את לבי לראות" – כאן אנחנו מבינים שאפילו היכולת לראות את הניסים היא מתנה שצריך להתפלל עליה. כל פרח, כל עלה, אינם רק תופעת טבע, אלא אותיות בספר האהבה של הבורא.</p>
+      <p>"למדני לברך באמת" – זה הווידוי העמוק: לפעמים הברכות שלנו נעשו שחוקות. אנחנו מבקשים ללמוד מחדש להתפעל, כמו מי שרואה את העולם בפעם הראשונה. שכל "ברוך אתה ה'" יהיה כמו בפעם הראשונה, כמו תינוק שרק לומד לברך.</p>
+      <p>והסיום, "עזור לי להיות כלי לאורך", מבטא את השאיפה העמוקה ביותר: לא רק לקבל, אלא להעביר. להפוך את ההודיה מחוויה פרטית לאור שמאיר את כל הסובבים. מהודיה של מילים להודיה של חיים. אמן, כן יהי רצון.</p>
+      <p class="bold-para">התפילה מתחילה בלב פתוח לקבל ומסתיימת בלב שמעביר הלאה, וכך הברכה הופכת לדרך חיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/JB1tLqMiSc8 · 2025-01-29 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שלוש דרגות של ברכה","icon":"💧","color":"#c62b6b","stories":[{"id":1,"title":"מה מיוחד בתודה?","icon":"💧"},{"id":2,"title":"ברכה כתשלום במכולת","icon":"🧾"},{"id":3,"title":"ברכה מתוך התפעלות","icon":"🌳"},{"id":4,"title":"הודיה מתוך אהבה","icon":"💞"},{"id":5,"title":"שהכל על כוס תה","icon":"🍵"}]},{"id":2,"name":"כי חג ה' לנו","icon":"🎉","color":"#6d28d9","stories":[{"id":6,"title":"הוויכוח בין משה לפרעה","icon":"👑"},{"id":7,"title":"עבודה או חגיגה","icon":"🎉"},{"id":8,"title":"חג שמחבר בין הדורות","icon":"👨‍👩‍👧"},{"id":9,"title":"תפילה של כניעה ותפילה של אהבה","icon":"🙏"},{"id":10,"title":"החתונה של כל המשפחה","icon":"💍"},{"id":11,"title":"עזרת נשים בשמחת תורה","icon":"📜"}]},{"id":3,"name":"רם ומשפיל לראות","icon":"🌌","color":"#e08e00","stories":[{"id":12,"title":"רם ולא גבוה","icon":"🌌"},{"id":13,"title":"המשפילי לראות","icon":"🔭"}]},{"id":4,"name":"להעיר את הלב","icon":"❤️","color":"#1e88b8","stories":[{"id":14,"title":"ברכה אחת ביום","icon":"☕"},{"id":15,"title":"כשקפה היה מאורע","icon":"🫖"},{"id":16,"title":"להתרגל להתפעל","icon":"🌷"},{"id":17,"title":"חמש שניות לפני הברכה","icon":"⏱️"},{"id":18,"title":"החתם סופר והעוגה שנשכחה","icon":"🍰"}]},{"id":5,"name":"שיר ותפילה","icon":"🎶","color":"#c62b6b","stories":[{"id":19,"title":"אתה ואבינו – נוכח ונסתר","icon":"🔑"},{"id":20,"title":"שירה של ברכה","icon":"🎶"},{"id":21,"title":"תפילה על הברכות","icon":"🕊️"},{"id":22,"title":"מברכות של שגרה לברכות של התחדשות","icon":"🌅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
