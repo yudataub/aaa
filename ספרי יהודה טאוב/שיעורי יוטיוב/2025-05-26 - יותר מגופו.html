@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 יותר מגופו</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 יותר מגופו</h1>
+  <p>חלק א: מקורות החיוב לכבד את האישה – בגמרא, ברמב"ם ובכתובה – ומה פירוש המילה "כבוד"</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ יותר מגופו" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/PjFo_EmoxNY?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/PjFo_EmoxNY/hqdefault.jpg" alt="יותר מגופו" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=PjFo_EmoxNY" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מתלמידיו של אהרן</div>
+      <h3 class="story-title">📅 התאריך היחיד בתורה</h3>
+      <p>השיעור נפתח בשאלה מעניינת. התורה מספרת על אנשים רבים, ובכל זאת כמעט על אף אחד מהם היא אינה כותבת את תאריך פטירתו. מתי נפטר אדם הראשון? מתי נפטרו נח, אברהם אבינו ושרה אמנו? על חלקם יש מסורות, אבל בתורה עצמה הדבר אינו כתוב.</p>
+      <p>יש רק אדם אחד בלבד שהתורה מציינת את יום פטירתו: אהרן הכהן. ומעניין עוד יותר המקום שבו הדבר נכתב. את מיתתו של אהרן מספרת התורה כבר בפרשת חוקת, ושם גם נגזר עליו שלא ייכנס לארץ. אבל את התאריך היא אינה כותבת שם. רק כמה פרשיות אחר כך, בפרשת מסעי, בתוך רשימת המסעות, כתוב שאהרן עלה אל הר ההר ומת שם "בַּחֹדֶשׁ הַחֲמִישִׁי בְּאֶחָד לַחֹדֶשׁ".</p>
+      <p>למה דווקא שם? הביא הרב תירוץ יפה בשם השפת אמת. כמעט בכל שנה, פרשת מסעי נקראת סמוך מאוד לראש חודש אב, לפעמים ממש באותו שבוע. התורה רצתה שבשבוע שבו חל יום הפטירה של אהרן, נקרא בדיוק את התאריך הזה. זו תזכורת שחוזרת כל שנה.</p>
+      <p class="bold-para">רק על אדם אחד כתבה התורה את יום פטירתו: אהרן הכהן, בראש חודש אב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מתלמידיו של אהרן</div>
+      <h3 class="story-title">🕊️ המידה שאנחנו צריכים לפני החורבן</h3>
+      <p>ולמה התורה רוצה כל כך שנזכור את אהרן דווקא בראש חודש אב? כי ראש חודש אב הוא היום שבו מתחילים דיני האבלות על בית המקדש – כל אחד כמנהגו: בשר ויין, שירים, רחצה וכדומה. ובימים האלה צריך לשאול: במה צריך להתחזק יותר מכל, כדי לזכות שבית המקדש ייבנה?</p>
+      <p>התשובה היא המידה של אהרן הכהן. כך שנינו בפרקי אבות: "הֱוֵי מִתַּלְמִידָיו שֶׁל אַהֲרֹן, אוֹהֵב שָׁלוֹם וְרוֹדֵף שָׁלוֹם, אוֹהֵב אֶת הַבְּרִיּוֹת וּמְקָרְבָן לַתּוֹרָה". כל שנה, כשמגיעים לפרשת מסעי, התורה מזכירה לנו את אהרן, הכהן הגדול הראשון. מי שנזכר בו ומתחזק במידתו, יזכה שהכהונה תחזור למקומה.</p>
+      <p>אבל צריך לדייק על איזה שלום מדובר. הרב הדגיש שאין הכוונה לשלום עם מי שרוצים לעקור את הדת. זה נושא אחר לגמרי, שיש בו דיונים רבים. המשנה מדברת על שלום בין יהודים: שלום שמתחיל מן הבסיס, ומשם מתרחב הלאה והלאה.</p>
+      <p class="bold-para">ראש חודש אב פותח את ימי האבלות, והתיקון לחורבן הוא מידתו של אהרן – אהבת השלום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מתלמידיו של אהרן</div>
+      <h3 class="story-title">⭕ מתחילים מהמעגל הקרוב</h3>
+      <p>איך מתחילים לאהוב? התורה אומרת: "וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ". למה דווקא "רעך"? הרי במקום אחר כתוב "לֹא תִשְׂנָא אֶת אָחִיךָ". הרב הסביר ש"רעך" הוא הביטוי של הקרבה הגדולה ביותר. התורה מלמדת שלא מתחילים מכל העולם. מתחילים ממי שהכי קרוב אליך, מן המעגל הקרוב, ומשם הדבר מתרחב ומתרחב, עד שהאדם זוכה בעזרת ה' לאהוב את כל הבריות.</p>
+      <p>והמעגל הקרוב ביותר הוא הבית. הדבר החשוב ביותר הוא לאהוב בתוך הבית.</p>
+      <p>ואם יאמר אדם: מה כבר אני יכול לתקן? אני אדם אחד, איך האהבה שלי תתקן את חורבן בית המקדש? על זה עונה הגמרא במסכת גיטין, שמספרת על קמצא ובר קמצא: "אַקַּמְצָא וּבַר קַמְצָא חֲרוּב יְרוּשָׁלַיִם". כמה אנשים החריבו את ירושלים? שניים שרבו. אם שניים יכולים להחריב, שניים שאוהבים זה את זה יכולים גם לבנות. וכל בית שיש בו שלום הוא אבן אחת בבניין בית המקדש.</p>
+      <p>לכן נבחר לשיעורים האלה נושא שקשור כולו לשלום: כבוד האישה. מה בדיוק ההגדרה שלו, מתי הוא חל ומה הוא כולל. זהו נושא אקטואלי מאוד בימינו, שמדברים עליו הרבה, לכאן ולכאן. כדאי ללמוד מה אומרת עליו התורה באמת.</p>
+      <p class="bold-para">אהבת הבריות מתחילה מהקרוב ביותר, ובראש ובראשונה מן הבית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הגמרא והרמב"ם</div>
+      <h3 class="story-title">📌 הגדרה בשורה אחת</h3>
+      <p>לפני שנכנסים לפרטים, הרב הציע סיכום של כל השיעור במשפט אחד: כבוד האישה ביהדות הוא חיוב של הבעל לשמור על כבוד אשתו – ברגש, וגם בפעולות מעשיות כלפיה. וחז"ל חייבו את הבעל להקדים את כבוד אשתו לכבוד עצמו.</p>
+      <p>המקור הראשון הוא גמרא במסכת יבמות: "תָּנוּ רַבָּנָן: הָאוֹהֵב אֶת אִשְׁתּוֹ כְּגוּפוֹ, וְהַמְכַבְּדָהּ יוֹתֵר מִגּוּפוֹ, וְהַמַּדְרִיךְ בָּנָיו וּבְנוֹתָיו בְּדֶרֶךְ יְשָׁרָה, וְהַמַּשִּׂיאָן סָמוּךְ לְפִרְקָן – עָלָיו הַכָּתוּב אוֹמֵר: וְיָדַעְתָּ כִּי שָׁלוֹם אָהֳלֶךָ".</p>
+      <p>מי שקורא את הגמרא הזאת בפשטות, יחשוב שהיא מתארת אדם טוב. מהו יהודי טוב? מי שאוהב את אשתו, מכבד אותה ומדריך את ילדיו בדרך ישרה. זה תיאור יפה, שבח לאדם כזה. לכאורה אין כאן ציווי, אלא סיפור על אדם שראוי לברכה ששלום שורה באוהלו.</p>
+      <p>ובאמת, הגמרא אינה אומרת "חייב" ואינה אומרת "צריך". היא אומרת "עליו הכתוב אומר" – כלומר, זה אדם שהכתוב משבח אותו. ומכאן מתחילה שאלה גדולה, כשמגיעים לרמב"ם.</p>
+      <p class="bold-para">כבוד האישה הוא חיוב של הבעל לשמור על כבוד אשתו, ברגש ובמעשה, ולהקדים את כבודה לכבודו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הגמרא והרמב"ם</div>
+      <h3 class="story-title">📜 "וכן ציוו חכמים"</h3>
+      <p>הרמב"ם קרא את הגמרא אחרת לגמרי. הוא העתיק את הדברים להלכה, וכתב בהלכות אישות: "וְכֵן צִוּוּ חֲכָמִים שֶׁיְּהֵא אָדָם מְכַבֵּד אֶת אִשְׁתּוֹ יוֹתֵר מִגּוּפוֹ, וְאוֹהֲבָהּ כְּגוּפוֹ". וממשיך: אם יש לו ממון – מרבה בטובתה כפי הממון, ולא יטיל עליה אימה יתרה, ויהיה דיבורו עמה בנחת, ולא יהיה עצב ולא רגזן.</p>
+      <p>פלא פלאים. בגמרא זה מסופר כתיאור של אדם נפלא, ואיך הרמב"ם לקח את זה וכתב "ציוו חכמים"? איפה הציווי? רבים מתקשים בזה.</p>
+      <p>התירוץ שהביא הרב מובא בספר "עמודי השבעה": דעת הרמב"ם היא שאם חז"ל שיבחו את מי שמתנהג כך, סימן שכל אדם צריך להשתדל להגיע לכך. כך למד הרמב"ם: כשאתה רואה שחז"ל משבחים אדם על מעשה מסוים, זה סימן שמצווים אותך להתנהג כך. השבח עצמו הוא ההוראה.</p>
+      <p>והרמב"ם פוסק זאת להלכה, וגם הבאים אחריו הלכו בעקבותיו. וכך יצא שבהלכה אחת ברמב"ם יש כמה וכמה פרטים, שכל אחד מהם הוא חלק מן ההנהגה הנכונה בבית.</p>
+      <p class="bold-para">הרמב"ם הפך את השבח שבגמרא לציווי הלכתי, משום שמה שחז"ל משבחים – כל אדם מצווה להשתדל להגיע אליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הגמרא והרמב"ם</div>
+      <h3 class="story-title">🏛️ ספר "עמודי השבעה"</h3>
+      <p>הרב סיפר על הספר הזה. הוא מבוסס על שיעוריו של הרב אברהם גנחובסקי, שהיה תלמיד חכם גדול מאוד בירושלים, ומסר שיעורים בישיבתו לבחורים שעומדים להתחתן.</p>
+      <p>הוא היה אומר להם: יום אחד, כשיהיה כאן סדר כמו שצריך, יהיה כמו שעושים לפני שעולים על רכב. לפני שנוהגים לומדים תיאוריה, אחר כך עושים טסט, ורק אז מקבלים רישיון. למה? כי אם כל אחד יעלה על רכב בלי ללמוד, אוי ואבוי מה יהיה. כך, אמר, יום אחד יצטרכו גם לפני החתונה ללמוד "תיאוריה" – רישיון להקים בית.</p>
+      <p>ועל מה יהיה בנוי כל הלימוד הזה? על הרמב"ם, שמנה בהלכה אחת את הפרטים של איך אדם צריך להתנהג עם אשתו. הוא היה למדן חריף, רגיל לפלפל בגמרא וברמב"ם, ואת כל כוח ההיגיון שלו הביא אל ההלכה הזאת. במשך שנים מסר עליה שיעורים, הביא דוגמאות מן החיים, ורבים באו להתייעץ איתו בענייני שלום בית.</p>
+      <p>הוא אמר תמיד שהוא מקווה שיום אחד מישהו יסכם את הדברים בספר. אחרי פטירתו לקחו תלמידיו את השיעורים, ערכו וסיכמו אותם, והוציאו ספר שנקרא "עמודי השבעה" – על שם שבעת הפרטים שברמב"ם. זה ספר יפה ומעניין מאוד.</p>
+      <p class="bold-para">גדול בתורה חלם שיום אחד ילמדו חתנים "תיאוריה" לפני הנישואין, כמו לפני רישיון נהיגה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הגמרא והרמב"ם</div>
+      <h3 class="story-title">🔍 מצא את ההבדלים</h3>
+      <p>הרב אמר שלא בא ללמד עצות מעשיות, כי זה לא התחום שבו הוא מומחה. הוא בא ללמוד את המקורות כדרכה של תורה, בעיון ובפלפול. ונתחיל בקושיה פשוטה: יש הבדל בין הגמרא לבין הרמב"ם. הסתכלו היטב, ומצאו את ההבדל.</p>
+      <p>ההבדל הוא בסדר. בגמרא כתוב קודם "האוהב את אשתו כגופו" ואחר כך "והמכבדה יותר מגופו". הרמב"ם הפך את הסדר: קודם "מכבד את אשתו יותר מגופו", ורק אחר כך "ואוהבה כגופו". למה הרמב"ם משנה מן הסדר שבגמרא?</p>
+      <p>התירוץ מעניין מאוד. יש הבדל בין ספר הלכה לבין דברים שמתארים את האדם השלם. הגמרא לא כתבה את דבריה בתור הלכה. היא באה לומר מיהו האדם השלם, זה שכבר הגיע לפסגה: הוא אוהב את אשתו ומכבד אותה.</p>
+      <p>הרמב"ם, לעומת זאת, אינו מספר לך מיהו האדם השלם. הוא ספר הלכה, והוא מלמד אותך איך להתנהג – מאיפה מתחילים ולאן מגיעים. ובספר כזה הסדר הוא קודם כול כבוד, ואחר כך אהבה.</p>
+      <p class="bold-para">הגמרא מקדימה אהבה לכבוד, והרמב"ם מקדים כבוד לאהבה – ויש בזה סיבה עמוקה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הגמרא והרמב"ם</div>
+      <h3 class="story-title">🪜 קודם יראה, אחר כך אהבה</h3>
+      <p>כדי להבין זאת, הביא הרב דוגמה מעבודת ה'. מה הסדר בעבודת ה'? קודם כול יראת ה': להבין שיש בורא עולם ולירא מפניו. ורק אחר כך אהבה. אי אפשר לקפוץ ישר לאהבה בלי יראה.</p>
+      <p>ויש שמראים זאת אפילו מן האותיות. סוף המילה "יראה" הוא האותיות א-ה, ובאותן אותיות בדיוק מתחילה המילה "אהבה". סוף היראה הוא תחילת האהבה.</p>
+      <p>אבל אם אני רוצה לתאר את האדם השלם, אומר אחרת: הוא אוהב את ה' וירא אותו. מקדימים את האהבה, כי האדם השלם כבר הגיע לפסגה. כך הגמרא דיברה על הפסגה, והרמב"ם דיבר על הדרך.</p>
+      <p>ולכן הרמב"ם כותב קודם "מכבד" ואחר כך "אוהב". הכבוד שאדם נותן לאשתו הוא מה שיביא אותו בסוף לאהוב אותה באמת. הכבוד הוא היסוד, והאהבה צומחת ממנו. מי שמתחיל מן האהבה בלי כבוד, בונה בית על חול.</p>
+      <p>זה גם מסר מעודד מאוד. אדם יכול לחשוב: איך אצווה על עצמי לאהוב? הרגש אינו בשליטתי. אבל לכבד – זה בשליטתו. הוא יכול להחליט לדבר בנחת, להקדים, לתת את הטוב יותר. וכשהוא עושה זאת יום אחרי יום, הרגש בא בעקבות המעשה, והאהבה צומחת מאליה.</p>
+      <p class="bold-para">בדרך העבודה הכבוד בא קודם, והוא שמביא בסוף אל האהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הגמרא והרמב"ם</div>
+      <h3 class="story-title">🎆 אהבה של זיקוקים</h3>
+      <p>למה צריך להתחיל דווקא מן הכבוד? כי מה שקוראים בחוץ "אהבה" אינו אהבה אמיתית. הרב הביא ביטוי חריף של אחד מגדולי ישראל, שאמר שמה שהעולם קורא "אהבה" אינו אהבה כלל אלא תאווה. אולי הביטוי חריף מדי, אבל הכוונה ברורה.</p>
+      <p>מה שמכונה בחוץ אהבה דומה לזיקוקים: נחמד מאוד בהתחלה, מרגש ומאיר, אבל זה לא נשאר הרבה זמן. הקדוש ברוך הוא ברא את הרגש הזה כדי שיהיה קיום לעולם, אבל אם זה יהיה הבסיס של הבית – אין סיכוי שהבית יחזיק מעמד.</p>
+      <p>הרב ציין שרואים את זה בעולם: ככל שהנישואין בנויים יותר על הרגש הזה, כך הגירושין הולכים ורבים. אם זו הסיבה היחידה להתחתן, כשהרגש נחלש – נגמר הסיפור.</p>
+      <p>לכן צריך שהבית יהיה בנוי על כבוד. כבוד נשאר לאורך זמן. הוא אינו תלוי במצב הרוח של היום, ואינו נחלש עם השנים. להפך, ככל שהשנים עוברות, הכבוד יכול רק להעמיק, ומתוכו צומחת האהבה האמיתית.</p>
+      <p class="bold-para">התרגשות רגעית אינה נשארת, ובית שבנוי עליה לא יחזיק מעמד; כבוד נשאר לאורך זמן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הגמרא והרמב"ם</div>
+      <h3 class="story-title">🥛 תביא קודם לרבנית</h3>
+      <p>הרב סיפר על זוג של תלמיד חכם ירושלמי ואשתו, שחיו יחד שנים רבות מאוד, עד גיל מופלג. הם היו ידועים בכבוד העצום שנהגו זה בזה.</p>
+      <p>אחד התלמידים, שהיה עוזר בביתם כשכבר היו מבוגרים מאוד ובקושי יכלו לזוז, סיפר: יום אחד ביקשה הרבנית שיביא לה כוס מים. הרב לא שמע כל כך טוב, ובאותו רגע ביקש גם הוא שיביא לו מים. פתאום שם לב שהרבנית ביקשה, ואמר לתלמיד: גש, תביא קודם לרבנית, ואחר כך לי. והרבנית, ששמה לב שגם הרב ביקש, אמרה לו: תביא קודם לרב, ואחר כך לי.</p>
+      <p>הרב התבדח: יש סוגיה בגמרא מה עושים כשאבא אומר "השקני מים" ואמא אומרת "השקני מים". אבל מקרה שבו האבא אומר "תביא לה" והאמא אומרת "תביא לו" – אפילו הגמרא לא הביאה.</p>
+      <p>זה בדיוק הכבוד שהרמב"ם מדבר עליו: לא רק לתת לאשתו את מה שמגיע לה, אלא להקדים אותה לעצמו. וכשהכבוד הוא הדדי, הבית מלא שלום.</p>
+      <p>ושימו לב: הם לא למדו את זה בגיל מבוגר. הרגל כזה נבנה במשך עשרות שנים, בבקשה קטנה אחר בקשה קטנה. מה שרואים בסוף החיים הוא פרי של כבוד שנזרע בכל יום מחדש, מן הימים הראשונים של הבית.</p>
+      <p class="bold-para">זוג שכל אחד מבקש להקדים את השני – זו התמונה של כבוד הדדי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בכל לבבך ובכל נפשך ובכל מאודך</div>
+      <h3 class="story-title">❤️ הקבלה לפסוק "ואהבת"</h3>
+      <p>עוד דבר מעניין מאוד גילה הרב בלשון הרמב"ם. נראה שהרמב"ם חשב על כך כשכתב את דבריו: לכבד את אשתו יותר מגופו, לאהוב אותה כגופו, ואם יש לו ממון – להרבות בטובתה כפי הממון. שלושה דברים.</p>
+      <p>והסדר הזה מקביל לפסוק שאנו אומרים בכל יום: "וְאָהַבְתָּ אֵת ה' אֱלֹקֶיךָ בְּכָל לְבָבְךָ וּבְכָל נַפְשְׁךָ וּבְכָל מְאֹדֶךָ". "בכל לבבך" – זו האהבה, שמקומה בלב. "בכל מאודך" – בכל ממונך, וזה מקביל ל"מרבה בטובתה כפי הממון". ומה מקביל ל"בכל נפשך"? הכבוד.</p>
+      <p>כביכול, הרמב"ם רצה לרמוז שאדם צריך לתת לאשתו – להבדיל – משהו מעין מה שהוא נותן לבורא עולם: בלב, בנפש ובממון. הרב הודה שזה אולי נשמע מוגזם, אבל כך נראה מן ההקבלה. עד כדי כך הגיעה חשיבות הדבר בעיני הרמב"ם.</p>
+      <p>אבל עדיין צריך להבין: למה דווקא הכבוד מקביל לנפש? מה הקשר בין כבוד לבין הנפש?</p>
+      <p class="bold-para">שלושת הדברים שברמב"ם – אהבה, כבוד וממון – מקבילים ל"בכל לבבך ובכל נפשך ובכל מאודך".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בכל לבבך ובכל נפשך ובכל מאודך</div>
+      <h3 class="story-title">✨ הנפש נקראת כבוד</h3>
+      <p>בכל יום אנחנו אומרים בתפילה: "לְמַעַן יְזַמֶּרְךָ כָבוֹד וְלֹא יִדֹּם". מי הוא ה"כבוד" שמזמר ואינו שותק? וכן בפסוק "עוּרָה כְבוֹדִי". ויש עוד פסוקים כאלה. המפרשים אומרים שבמקומות האלה "כבוד" פירושו הנפש.</p>
+      <p>למה הנפש נקראת כבוד? כי כשמכבדים אותך – איפה אתה מרגיש את זה? ודאי לא בגוף. אדם מרגיש כבוד ומרגיש בושה בנפש. יש אנשים שמרגישים שהם יכולים למות מרוב בושה, ויש שבאמת נפגעו קשות מבושה. ויש אנשים שמוכנים לוותר על הרבה מאוד בשביל כבוד.</p>
+      <p>הכבוד נוגע בנקודה הפנימית ביותר של האדם. לכן הנפש נקראת כבוד: שם האדם מרגיש את הכבוד ואת הבושה. וזה הפירוש של "עורה כבודי" – עורי נפשי.</p>
+      <p>ומכאן מובן למה הכבוד מקביל ל"בכל נפשך". מי שמכבד את אשתו, נוגע בנפשה. ומי שפוגע בכבודה, פוגע בה בנקודה העמוקה ביותר. הרב העיר שנושא הכבוד – האם הוא טוב או רע, ומה פירוש "הבורח מן הכבוד" – ראוי לשיעור בפני עצמו, ואין כאן המקום להאריך בו.</p>
+      <p class="bold-para">את הכבוד ואת הבושה מרגישים בנפש, ולכן הנפש נקראת בפסוקים "כבוד".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ברכת הבית והכתובה</div>
+      <h3 class="story-title">🌾 הברכה בזכות האישה</h3>
+      <p>המקור השלישי הוא גמרא נוספת, במסכת בבא מציעא: "לְעוֹלָם יְהֵא אָדָם זָהִיר בִּכְבוֹד אִשְׁתּוֹ, שֶׁאֵין בְּרָכָה מְצוּיָה בְּתוֹךְ בֵּיתוֹ שֶׁל אָדָם אֶלָּא בִּשְׁבִיל אִשְׁתּוֹ".</p>
+      <p>זו גמרא מעניינת מאוד. היא טוענת שהברכה בבית מגיעה רק בזכות האישה. ואפשר לשאול: למה לא בזכותי? מה יש לאישה שהברכה תלויה דווקא בה?</p>
+      <p>הרב הביא לכך משל מן המציאות: כשהאיש מתבגר מאוד, לפעמים כבר אינו יכול לעשות הרבה. ואילו האישה ממשיכה לבשל ולדאוג לבית. המציאות עצמה מראה שהאישה היא שמחזיקה את הבית. היא העמוד שעליו הבית עומד, והברכה שורה דרכה.</p>
+      <p>ולכן, כשרוצים ברכה בבית, הדרך היא להיזהר בכבוד האישה. מי שמכבד את אשתו – מכבד את הצינור שדרכו הברכה מגיעה אליו. ומי שפוגע בכבודה, כביכול סוגר בעצמו את הצינור. זה לא רק עניין של מידות טובות, אלא עניין של ברכה ממשית בבית ובפרנסה.</p>
+      <p>ומכאן גם שם הסדרה כולה: כבוד האישה הוא מפתח הפרנסה ושלום הבית. מי שמחפש ברכה בפרנסתו, יתחיל לחפש אותה בתוך ביתו.</p>
+      <p class="bold-para">"לעולם יהא אדם זהיר בכבוד אשתו, שאין ברכה מצויה בתוך ביתו של אדם אלא בשביל אשתו".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ברכת הבית והכתובה</div>
+      <h3 class="story-title">🍷 כוס של ברכה</h3>
+      <p>ומן היסוד הזה נובעת גם הנהגה מעשית. הרב הביא שכאשר אדם מברך ברכת המזון בזימון על הכוס, ראוי שייתן את הכוס של ברכה לאשתו.</p>
+      <p>למה דווקא לה? כי הכוס של זימון היא כוס של ברכה, והברכה, כפי שלמדנו, באה אל הבית דרך האישה. לכן נותנים לה את הכוס. זה לא רק סימן של כבוד, אלא ביטוי לכך שהיא שותפה לברכה, ושהברכה עוברת דרכה אל הבית כולו.</p>
+      <p>זו דוגמה יפה לכך שכבוד האישה אינו רק רעיון. הוא מתבטא בפעולות קטנות, ברגעים של שגרה: ליד השולחן, בברכת המזון, בכוס אחת. ומתוך הפעולות הקטנות האלה, הבית כולו מתמלא ברכה.</p>
+      <p>וכדאי לשים לב: הכבוד הזה נעשה לעיני כל בני הבית. ילדים שרואים את אביהם נותן לאמם את כוס הברכה, לומדים בלי מילים מה מקומה של האם בבית. כך הכבוד עובר מדור לדור, לא מתוך הסברים, אלא מתוך מה שרואים ליד השולחן.</p>
+      <p class="bold-para">בזימון נותנים את הכוס לאישה, כי הברכה עוברת דרכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ברכת הבית והכתובה</div>
+      <h3 class="story-title">📃 "ואנא אפלח ואוקיר"</h3>
+      <p>המקור הרביעי והאחרון הוא הכתובה עצמה. היום, החתן מגיע לחתונה ולפעמים לא קרא את הכתובה מעולם. קוראים אותה בארמית, מהר, והוא חותם. אבל מה כתוב בה?</p>
+      <p>בכתובה הבעל אומר לאשתו: "וַאֲנָא אֶפְלַח וְאוֹקִיר וְאֵיזוּן וַאֲפַרְנֵס יָתִיכִי" – ואני אעבוד, ואכבד, ואזון ואפרנס אותך. החיוב לכבד את האישה כתוב בתוך החוזה שעליו נבנה הבית. זו לא רק עצה טובה, אלא התחייבות שהבעל חותם עליה ביום חתונתו.</p>
+      <p>הרב העיר שיש מי שהציע שהחתן ילמד את נוסח הכתובה לפני החתונה, כדי שיבין על מה הוא חותם. בכתובה יש התחייבויות ממשיות, ויש בהלכה דיונים רבים על פרטיהן, על הסכומים שבה ועל מה תוקפם בימינו. כל אלה נושאים בפני עצמם.</p>
+      <p>אבל הנקודה המרכזית ברורה: הכבוד הוא חלק מן ההתחייבות היסודית של הנישואין, כתוב באותה שורה עם הפרנסה.</p>
+      <p>ויש משמעות לכך שהמילה "ואוקיר" באה מיד אחרי "אפלח". העבודה והפרנסה אינן מטרה בפני עצמן; הן חלק מן הכבוד. מי שיוצא לעבוד כדי לפרנס את ביתו, מקיים בכך את מה שהבטיח: לכבד את אשתו גם בדאגה לצרכיה.</p>
+      <p class="bold-para">בכתובה הבעל מתחייב לעבוד, לכבד, לזון ולפרנס את אשתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ברכת הבית והכתובה</div>
+      <h3 class="story-title">⚖️ פרנסה לפי כבודה</h3>
+      <p>בהלכה נקבע שאדם צריך לפרנס את אשתו לפי הרמה שלה – לפי המשפחה שממנה באה ולפי מה שהיא רגילה בו. על זה עוד ידובר בהמשך הסדרה, כי זה אחד הפרטים המעשיים של הכבוד.</p>
+      <p>ושואל החלקת מחוקק שאלה מעניינת: מה הדין באדם שיש לו כסף לזון את אשתו בפשטות, אבל אין לו כסף לפרנס אותה לפי כבודה? דעתו היא שהוא חייב להשתדל, ואפילו לעבוד אצל אחרים, כדי שיוכל לפרנס אותה לפי כבודה. מאיפה זה? מן הכתובה: "אנא אפלח" – אני אעבוד. הוא התחייב לעבוד כדי לכבד אותה.</p>
+      <p>שאל אחד המשתתפים: ואם האישה מוותרת? הרב השיב שיש דברים בכתובה שמותר לוותר עליהם, ויש דברים שאי אפשר. על ממון מועיל תנאי ומועיל ויתור. הוא הזכיר את מה שלמדו בפרשת השבוע, בתנאי של בני גד ובני ראובן: תנאי בדבר שבממון מועיל. אבל יש חיובים שאינם ממוניים, ועליהם תנאי אינו מועיל.</p>
+      <p class="bold-para">לפי החלקת מחוקק, מי שיש לו רק כדי לזון את אשתו בפשטות חייב להשתדל לפרנס אותה כפי כבודה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה פירוש לכבד</div>
+      <h3 class="story-title">🤔 כבוד של רגש או כבוד של מעשה?</h3>
+      <p>עכשיו עוברים לשאלה הבאה: כשאומרים "כבוד", למה הכוונה? האם הכוונה לביטויים מעשיים של כבוד, או לרגש של כבוד? לפוסקים הייתה כאן שאלה גדולה: מה פירוש שאדם חייב לכבד את אשתו?</p>
+      <p>בכיבוד אב ואם הגמרא מגדירה: "אֵיזֶהוּ כִּבּוּד? מַאֲכִיל וּמַשְׁקֶה, מַלְבִּישׁ וּמְכַסֶּה, מַכְנִיס וּמוֹצִיא". אלה פעולות של שירות. אם חסר מלח בבית ואבא מבקש מלח, ברור שצריך להביא. אם אמא מבקשת שתקנה לה משהו, זה חלק מכיבוד הורים – אלא אם כן אינך יכול, כי אדם אינו חייב לוותר על עבודתו בשביל זה.</p>
+      <p>אבל כשהגמרא אומרת "המכבדה יותר מגופו", האם הכוונה שהבעל צריך לשרת את אשתו כמו שבן משרת את הוריו? אם חסר מלח, האם הבעל חייב לקום ולהביא? זה לא נראה כך. אם כן, מה פירוש הכבוד כאן?</p>
+      <p>התשובה היא שהכבוד כאן אינו פעולות שירות, אלא דבר אחר: הקדמה. לתת לה את הטוב יותר, את היפה יותר.</p>
+      <p class="bold-para">כיבוד הורים הוא פעולות שירות; ומה פירוש כבוד האישה – שירות, או משהו אחר?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה פירוש לכבד</div>
+      <h3 class="story-title">🥂 לתת לה את המלא</h3>
+      <p>מה פירוש "לכבד יותר מגופו"? נניח שיש שתי כוסות מים, ואחת מהן מלאה יותר מן השנייה. לכבד פירושו לתת לה את המלאה. נניח שהביאו שני דברים הביתה – לתת לה את היפה שבהם.</p>
+      <p>זה מה שנקרא "בעין יפה". זה אינו שירות, כמו להביא ולהגיש, אלא יחס: מתוך כל מה שיש בבית, הטוב והיפה יותר הולך אליה. הבעל אינו חייב לרוץ אחרי כל בקשה, אבל כשיש מה לחלק – היא קודמת לו.</p>
+      <p>זה הפירוש של "יותר מגופו". את גופו הוא אוהב ודואג לו, וזה טבעי. אבל כשמגיעים לחלוקה בין שניהם, הוא מקדים אותה לעצמו. ומכאן מובן גם מה שלמדנו בסיפור הרב והרבנית: כל אחד מהם רצה שהשני יקבל קודם. זה הכבוד במלוא מובנו.</p>
+      <p>ויש בזה עוד נקודה. כבוד כזה אינו דורש כסף רב או זמן רב. הוא דורש רק תשומת לב: לשים לב מה יפה יותר, מה טוב יותר, ולהגיש אותו אליה בלי לחשוב פעמיים. ודווקא בדברים הקטנים האלה האישה מרגישה אם היא באמת קודמת, או שהיא רק נמצאת שם.</p>
+      <p class="bold-para">לכבד את האישה פירושו לתת לה את הטוב והיפה יותר, בעין יפה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה פירוש לכבד</div>
+      <h3 class="story-title">👔 "יגל אש"</h3>
+      <p>את השיעור סיים הרב בסיפור שהביא הבן איש חי, הלכה למעשה. הוא אינו כותב על מי היה המעשה. פעם היו קונים בד ומביאים לתופר, ולא קונים בגדים מוכנים. והיו בדים פשוטים ובדים יקרים, כמו שיש היום חליפה פשוטה וחליפה יקרה מאוד.</p>
+      <p>היה אדם שהלך לקנות בד לבגד לכבוד החג – בגד לו ובגד לאשתו. הוא קנה בד יקר ובד פשוט. כשחזר הביתה, את הבד הפשוט נתן לאשתו, ואת הבד הטוב לקח לעצמו. הלכו לתופר ותפרו את הבגדים. בהתחלה האישה לא שמה לב, כי לא תמיד רואים מיד את ההבדל בין בד לבד. אבל כשהגיע החג ולבשו את הבגדים, היא ראתה: הבגד שלו יפה, ושלה פשוט. שאלה אותו למה לקח לעצמו את הבד היפה. הוא ענה: מה, לא טוב לך מה שקניתי לך? ובזה נגמר העניין.</p>
+      <p>באותו לילה חלם חלום: הופיעו לפניו המילים "יגל אש". הוא לא הבין – "יגל" הוא לשון שמחה, "אש" הוא דבר מפחיד. הלך לרב ושאל. הרב שאל אותו מה קרה אצלם, ושמע על הבגדים. אמר לו הרב: הרמז הוא בפסוק "לֹא יִהְיֶה כְלִי גֶבֶר עַל אִשָּׁה וְלֹא יִלְבַּשׁ גֶּבֶר שִׂמְלַת אִשָּׁה". אתה הפכת את היוצרות – את מה שראוי לה לקחת לעצמך.</p>
+      <p>המסר ברור: מי שלוקח לעצמו את הטוב ומשאיר לאשתו את הפשוט, הפך את הסדר שהתורה קבעה. כאן נעצר השיעור, וההמשך – פרטי הכבוד המעשי – יבוא בחלק הבא.</p>
+      <p class="bold-para">סיפור הבן איש חי: מי שלוקח לעצמו את הטוב ונותן לאשתו את הפשוט – הפך את הסדר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/PjFo_EmoxNY · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מתלמידיו של אהרן","icon":"🕊️","color":"#c62b6b","stories":[{"id":1,"title":"התאריך היחיד בתורה","icon":"📅"},{"id":2,"title":"המידה שאנחנו צריכים לפני החורבן","icon":"🕊️"},{"id":3,"title":"מתחילים מהמעגל הקרוב","icon":"⭕"}]},{"id":2,"name":"הגמרא והרמב\"ם","icon":"📜","color":"#6d28d9","stories":[{"id":4,"title":"הגדרה בשורה אחת","icon":"📌"},{"id":5,"title":"\"וכן ציוו חכמים\"","icon":"📜"},{"id":6,"title":"ספר \"עמודי השבעה\"","icon":"🏛️"},{"id":7,"title":"מצא את ההבדלים","icon":"🔍"},{"id":8,"title":"קודם יראה, אחר כך אהבה","icon":"🪜"},{"id":9,"title":"אהבה של זיקוקים","icon":"🎆"},{"id":10,"title":"תביא קודם לרבנית","icon":"🥛"}]},{"id":3,"name":"בכל לבבך ובכל נפשך ובכל מאודך","icon":"❤️","color":"#e08e00","stories":[{"id":11,"title":"הקבלה לפסוק \"ואהבת\"","icon":"❤️"},{"id":12,"title":"הנפש נקראת כבוד","icon":"✨"}]},{"id":4,"name":"ברכת הבית והכתובה","icon":"🏠","color":"#1e88b8","stories":[{"id":13,"title":"הברכה בזכות האישה","icon":"🌾"},{"id":14,"title":"כוס של ברכה","icon":"🍷"},{"id":15,"title":"\"ואנא אפלח ואוקיר\"","icon":"📃"},{"id":16,"title":"פרנסה לפי כבודה","icon":"⚖️"}]},{"id":5,"name":"מה פירוש לכבד","icon":"🎁","color":"#c62b6b","stories":[{"id":17,"title":"כבוד של רגש או כבוד של מעשה?","icon":"🤔"},{"id":18,"title":"לתת לה את המלא","icon":"🥂"},{"id":19,"title":"\"יגל אש\"","icon":"👔"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
