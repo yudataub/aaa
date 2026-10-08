@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ונהפוך הוא</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ונהפוך הוא</h1>
+  <p>מתי מגיע המן: ההקבלה בין ימי בית שני לדורנו, והמהפך הנסתר של פורים – איך המן, שבא לעצור את בניין המקדש, הניח בלי לדעת את היסוד לבנייתו</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ונהפוך הוא" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/yng6vKmGmIg?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/yng6vKmGmIg/hqdefault.jpg" alt="ונהפוך הוא" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=yng6vKmGmIg" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני תמידים</div>
+      <h3 class="story-title">😊 פורים שמח – כל השנה</h3>
+      <p>השיעור נאמר סמוך לפורים, והרב פתח בדבר ששמע על אחד מגדולי ישראל: כשאמרו לו "פורים שמח", היה עונה: למה רק בפורים? כל השנה צריך להיות שמח!</p>
+      <p>ומאין הוא למד זאת? מן ההלכה האחרונה בשולחן ערוך, בסוף הלכות פורים. הרמ"א דן שם בשאלה אם יש לשמוח רק בי"ד או גם בט"ו, ומסיים: "וְטוֹב לֵב מִשְׁתֶּה תָמִיד". אדם צריך להיות תמיד שמח וטוב לב, כמו אחרי משתה.</p>
+      <p>והרב הוסיף: מה ההלכה הראשונה של הרמ"א בשולחן ערוך, בסימן א'? "שִׁוִּיתִי ה' לְנֶגְדִּי תָמִיד". הוא פותח ב"תמיד" ומסיים ב"תמיד". כמו שבמקדש היו שני תמידים, בוקר וערב, כך לאדם צריכים להיות שני תמידים: "שויתי ה' לנגדי תמיד", ו"טוב לב משתה תמיד".</p>
+      <p>והסדר חשוב: מתחילים ביראת שמיים, בתודעה שה' עומד מולי תמיד, ומשם מגיעים לשמחה תמידית, לטוב לב. השמחה של פורים היא ביטוי של מה שצריך להיות כל השנה.</p>
+      <p class="bold-para">הרמ"א פותח את השולחן ערוך ב"שויתי ה' לנגדי תמיד" ומסיים ב"וטוב לב משתה תמיד".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני תמידים</div>
+      <h3 class="story-title">🌱 מיראה אל שמחה</h3>
+      <p>הרב הדגיש את הסדר שבין שני ה"תמידים". הרמ"א לא פתח בשמחה. הוא פתח ב"שויתי ה' לנגדי תמיד", בתודעה שהאדם עומד תמיד לפני המלך. רק בסוף, אחרי כל ההלכות, הוא מגיע ל"טוב לב משתה תמיד".</p>
+      <p>יש בזה לימוד. שמחה שאין לה יסוד עלולה להיות שמחה ריקה, הוללות. אבל מי שמרגיש שה' עומד מולו, שהוא משגיח עליו ושומר עליו, מגיע לשמחה אמיתית ויציבה. הוא שמח לא משום שהכל מסתדר, אלא משום שהוא יודע מי מנהל את הכל.</p>
+      <p>וזה בדיוק מה שהשיעור יראה בהמשך: השמחה של פורים נובעת מן ההכרה שה' מנהל את ההיסטוריה, גם כשהוא נסתר. מגילת אסתר היא המגילה שבה שם ה' אינו כתוב כלל, ובכל זאת ידו ניכרת בכל פרט.</p>
+      <p>מי שלמד לראות את היד הנסתרת הזאת, יכול להיות שמח לא רק בפורים, אלא תמיד. וזה מה שאמר אותו צדיק: למה "פורים שמח"? כל השנה צריך להיות שמח.</p>
+      <p class="bold-para">השמחה התמידית נבנית על יסוד של יראת שמיים, ולא במקומה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המן מגיע בדרך</div>
+      <h3 class="story-title">🛤️ המן מגיע בדרך</h3>
+      <p>בשבת זכור קראנו: "זָכוֹר אֵת אֲשֶׁר עָשָׂה לְךָ עֲמָלֵק בַּדֶּרֶךְ בְּצֵאתְכֶם מִמִּצְרָיִם", "אֲשֶׁר קָרְךָ בַּדֶּרֶךְ". המן, מזרע עמלק, מגיע תמיד בדרך. השאלה היא: בדרך לאן? ולמה דווקא אז?</p>
+      <p>הרב הציע להתבונן בפעמים שבהן פגשנו את עמלק בהיסטוריה. הוא מנה שלוש פעמים מרכזיות: ביציאת מצרים, בימי פורים, ובדורנו – בשואה, שמונים שנה לפני השיעור. ובין הפעמים יש הקבלה מדהימה.</p>
+      <p>הרב הדגיש שבשיעור הזה הוא אינו בא לחשב חשבונות משלו, אלא להתבונן בדברי חז"ל ובמהלכי ההיסטוריה. ונתחיל בעובדות שברקע לנס פורים, ואחר כך נראה את ההקבלה לימינו.</p>
+      <p>ונראה שבכל הפעמים יש תשובה אחת לשאלה "בדרך לאן": בדרך לארץ ישראל. עמלק מופיע כשעם ישראל עומד בדרך אל הארץ, ומהסס ללכת בה.</p>
+      <p class="bold-para">עמלק תמיד מגיע "בדרך", והשאלה היא: בדרך לאן?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המן מגיע בדרך</div>
+      <h3 class="story-title">🔁 ארבעה שלבים, פעמיים</h3>
+      <p>בימי בית שני היו ארבעה שלבים. ראשית, כורש פרסם הצהרה: היהודים רשאים לשוב לארץ ולבנות את המקדש. אבל עלו מעטים מאוד, כמספר שבספר עזרא, כארבעים ושניים אלף. שנית, אויבי היהודים בארץ כתבו שטנה, וגרמו למלך לחזור בו ולעצור את העלייה והבנייה. שלישית, המן גזר להשמיד, להרוג ולאבד את כל היהודים, ועם ישראל ניצל בנס. רביעית, כמה שנים אחר כך, בשנת שתיים לדריוש, בוטלה הגזירה, ניתנה רשות לעלות, ונבנה בית המקדש.</p>
+      <p>ובדורנו, אמר הרב, אותם שלבים ממש. בשנת תרע"ח פרסמה בריטניה הצהרה שקראה להקים בית לאומי לעם היהודי בארצו. עלו מעטים יחסית. ערב השואה פרסמה בריטניה את "הספר הלבן", שהגביל כמעט לגמרי את עליית היהודים. אחר כך באה הגזירה הנוראה. ושלוש שנים אחרי סיומה, בתש"ח, נפתחו שערי הארץ.</p>
+      <p>והרב הביא את פירוש הגר"א על "לְהַשְׁמִיד לַהֲרֹג וּלְאַבֵּד": "לאבד" פירושו לאבד גם את הגופות, אחרי ההריגה. והעיר שגם בדורנו הצורר ביקש לא רק להרוג אלא גם לשרוף, דבר שכמעט אין לו אח בהיסטוריה.</p>
+      <p>והוא הוסיף שהמספר שלוש מסמל חיבור, כמו בדין "לבוד": פחות משלושה טפחים נחשב מחובר. שלוש שנים בין סוף הגזירה לפתיחת השערים מראות שהדברים מחוברים זה לזה.</p>
+      <p class="bold-para">הצהרת כורש, השטנה, גזרת המן ופתיחת השערים – ובדורנו: בלפור, הספר הלבן, השואה וקום המדינה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המן מגיע בדרך</div>
+      <h3 class="story-title">📖 שתי סיבות לגזירה</h3>
+      <p>למה נגזרה גזרת המן? הגמרא במסכת מגילה מספרת ששאלו תלמידי רבי שמעון בר יוחאי את רבם: מפני מה נתחייבו שונאיהם של ישראל שבאותו הדור כליה? אמר להם: אמרו אתם. אמרו לו: מפני שנהנו מסעודתו של אותו רשע. והוא הוסיף: מפני שהשתחוו לצלם בימי נבוכדנצר.</p>
+      <p>ההשתחוויה לצלם מובנת: עבודה זרה. אבל מה האיסור בהנאה מן הסעודה? הרי הכל היה בכשרות מהודרת, "לַעֲשׂוֹת כִּרְצוֹן אִישׁ וָאִישׁ".</p>
+      <p>צריך לדייק בלשון חז"ל: לא "שאכלו", אלא "שנהנו". הבעיה לא הייתה האוכל, אלא ההנאה. ומה הייתה הסעודה? אחשוורוש חישב שעבר הזמן שבו היו ישראל אמורים להיגאל, והחליט שהם לא ייגאלו עוד. על כך עשה סעודה, והוציא את כלי המקדש.</p>
+      <p>והיהודים באו ונהנו. הם הראו שטוב להם בגלות, ושאינם מעוניינים לעלות לארץ ישראל. וכשיהודי מתייאש מן הגאולה ומארץ ישראל – זה הדבר הנורא ביותר.</p>
+      <p class="bold-para">הגמרא מונה שתי סיבות לגזרת המן: ההשתחוויה לצלם וההנאה מסעודת אחשוורוש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המן מגיע בדרך</div>
+      <h3 class="story-title">🍽️ סעודת הייאוש</h3>
+      <p>הרב תרגם זאת לימינו במשל. נניח שאויבינו עורכים סעודה כדי לחגוג את החלטתם שהיהודים לעולם לא יזכו במקום המקדש. ומגיעה קבוצת יהודים, יושבת שם, אוכלת ושרה ונהנית. האם תשאל אם האוכל היה כשר? זה בכלל לא הנושא. השאלה היא איך יהודי יכול ליהנות מסעודה כזאת.</p>
+      <p>לכן גם המגילה אינה מספרת אם הסעודה הייתה כשרה. זה לא העניין. העניין הוא שבאו יהודים ונהנו, ולא היה אכפת להם מירושלים. כשאדם מאבד את אמונתו בגאולה ומחליט "אשאר כאן", מישהו צריך לבוא ולעורר אותו.</p>
+      <p>וזה, אמר הרב, התפקיד שמילא המן: הוא בא לעורר. כאילו אומר: רבותיי, זה לא המקום שלכם. אינכם מבינים? אראה לכם שאין לכם מקום כאן.</p>
+      <p>והרב ראה את שתי הסיבות גם בדור שלפני השואה: רבים התרחקו מן התורה והמצוות, ורוב היהודים שהיגרו בחרו בארצות אחרות ולא בארץ ישראל, אף שהמצב הרוחני שם היה קשה מאוד. הוא סיפר שאחד מגדולי התורה נשאל פעם מה עדיף, להתגייס לצבא הרוסי או להגר לאמריקה, והשיב שעדיף הצבא הרוסי, בגלל המצב הרוחני שם.</p>
+      <p class="bold-para">ההנאה מסעודה שנעשתה לכבוד הייאוש מן הגאולה היא שהזמינה את המן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המן מגיע בדרך</div>
+      <h3 class="story-title">🛡️ הנס בשערי הארץ</h3>
+      <p>הרב הצביע על פרט נוסף בהקבלה. בימי פורים היה נס גלוי: הגזירה התהפכה, והיהודים ניצלו. בדורנו לא היה נס כזה בכל מקום. אבל היה מקום אחד שבו הצורר נעצר.</p>
+      <p>צבא גרמניה, שהיה בשיא כוחו והצליח לגבור כמעט על כל יריביו, הובס לראשונה בשדה הקרב דווקא בפתחה של ארץ ישראל, במדבר המערבי של מצרים, בדרך לארץ. אילו עבר, היה היישוב היהודי בארץ בסכנה נוראה.</p>
+      <p>הרב סיפר סיפור שמובא, לדבריו, בכמה ספרים, על האופן שבו נחלשו שם כוחות האויב, ואמר שאינו יודע אם הוא מדויק. אבל העיקר אינו הפרטים. העיקר הוא שהגבול שבו נעצרה הגזירה היה שער ארץ ישראל.</p>
+      <p>גם זה חלק מן ההקבלה: עמלק מגיע בדרך לארץ, והנס מתגלה בשער הארץ. הארץ עצמה היא המקום שבו הגזירה נעצרת, והיא המקום שאליו מובילה הדרך אחרי שעמלק נוצח.</p>
+      <p class="bold-para">בדורנו לא היה נס פורים שלם, אבל הצורר נעצר דווקא בשערי ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המן מגיע בדרך</div>
+      <h3 class="story-title">🏞️ "והיה כי תבוא"</h3>
+      <p>ועכשיו מובן: עמלק מגיע תמיד בדרך. איזו דרך? הדרך לארץ ישראל. כשעם ישראל אינו רוצה לבוא לארץ, ואומר כמו במדבר "לָמָּה זֶּה יָצָאנוּ מִמִּצְרָיִם", עמלק מגיע. אם שוכחים לאן הדרך מובילה, מישהו בא להזכיר.</p>
+      <p>ותראו היכן מופיעה פרשת "זכור את אשר עשה לך עמלק": בסוף פרשת כי תצא. ומיד אחריה: "וְהָיָה כִּי תָבוֹא אֶל הָאָרֶץ אֲשֶׁר ה' אֱלֹקֶיךָ נֹתֵן לְךָ נַחֲלָה וִירִשְׁתָּהּ וְיָשַׁבְתָּ בָּהּ". אחרי שגומרים את עמלק, באים אל הארץ.</p>
+      <p>וכך בשלוש הפעמים: אחרי יציאת מצרים התגעגעו למצרים, ובא עמלק. בימי פורים רצו להישאר בגלות, ובא המן. ובדורנו נפתחו השערים בהצהרה, ולא עלו – ובא הצורר. ובכל פעם, אחרי שעמלק נוצח, באה ה"והיה כי תבוא אל הארץ".</p>
+      <p>חז"ל אמרו שראויים היו ישראל שייעשו להם ניסים בימי עזרא כמו בימי יהושע, אלא שגרם החטא – שלא עלו כולם. והרב סיים את החלק הזה בקריאה לחזק את חיבת הארץ בלב, ובכך לזכות לגאולה ולניסים.</p>
+      <p class="bold-para">פרשת עמלק סמוכה לפרשת "והיה כי תבוא אל הארץ" – כי עמלק מגיע כשהדרך לארץ נשכחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המאבק על המקדש</div>
+      <h3 class="story-title">✉️ מי כתב את השטנה?</h3>
+      <p>ועכשיו לחלק השני של השיעור, ובו "ונהפוך הוא" חדש, שהרב עצמו לא הכיר עד שלמד אותו. כדי להבינו, צריך לדעת מה קרה בירושלים באותה תקופה.</p>
+      <p>כאמור, כורש נתן רשות לשוב, ועלו מעטים. אחר כך ביטל כורש את הרשות. בספר עזרא מבואר שאויבי יהודה ובנימין שלחו שטנה למלך פרס, והצליחו לבטל את מלאכת בניין המקדש מימי כורש, כל ימי אחשוורוש, ועד מלכות דריוש השני.</p>
+      <p>ומי היו אותם אויבים? רש"י במגילה, על עשרת בני המן, כותב בשם סדר עולם: אלו העשרה שכתבו שטנה על יהודה וירושלים, כמו שכתוב בספר עזרא "וּבְמַלְכוּת אֲחַשְׁוֵרוֹשׁ בִּתְחִלַּת מַלְכוּתוֹ כָּתְבוּ שִׂטְנָה עַל יֹשְׁבֵי יְהוּדָה וִירוּשָׁלָם". ומה הייתה השטנה? לבטל את העולים מן הגולה, שהתחילו לבנות בימי כורש.</p>
+      <p>כלומר, המן ובניו היו בירושלים, ונסעו לשושן הבירה כדי לבטל את מלאכת בניין המקדש. הם ניסו והצליחו. עשרת בני המן אינם סתם שמות ברשימה. הם החבורה שדאגה לעצור את בניין הבית.</p>
+      <p>והרב סיפר את הבדיחה הידועה: למה קוראים את עשרת בני המן בנשימה אחת? והוסיף שלהמן היו שלושים בנים, וטוב שרק עשרה כתובים.</p>
+      <p class="bold-para">לפי רש"י, עשרת בני המן הם שכתבו את השטנה שעצרה את בניין המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המאבק על המקדש</div>
+      <h3 class="story-title">🧭 גם מרדכי בא מירושלים</h3>
+      <p>ומה עם מרדכי? בספר עזרא, ברשימת העולים עם זרובבל, מופיע "מָרְדֳּכַי בִּלְשָׁן". כלומר, מרדכי היה מן העולים הראשונים. הוא עלה לירושלים.</p>
+      <p>אם כן, איך הגיע לשושן? הרב הביא את דברי אחד המפרשים: מרדכי יצא מירושלים מפני השטנה שכתבו לאחשוורוש. כשעצרו את הבנייה, נסע לשושן כדי להשתדל בכל עוז להשלים את בניין הבית, אולי ימצא חן בעיני מלכי פרס.</p>
+      <p>ומכאן הבנה חדשה של מעשה בגתן ותרש. מרדכי שומע ששני סריסים רוצים להרוג את אחשוורוש. לכאורה, למה לו להציל אותו? אחשוורוש לקח את אסתר. יש מי שמסביר שמרדכי חשש שיבוא מלך גרוע ממנו. אבל יש פירוש יפה יותר: מרדכי היה בשושן למטרה אחת – להשיג רשות לבנות את המקדש. הוא חשב: אגלה למלך את המזימה, ומחר ישאל אותי מה אני רוצה, ואבקש את בית המקדש.</p>
+      <p>אבל זה לא הצליח. הדבר נכתב בספר הזיכרונות, ואיש לא שאל את מרדכי מה הוא רוצה. כל ההשתדלויות שלו לא הועילו. נמצא שגם המן וגם מרדכי באו לשושן בגלל בית המקדש: המן כדי להרוס, ומרדכי כדי לבנות.</p>
+      <p class="bold-para">מרדכי היה מעולי הגולה, ובא לשושן כדי להשיג רשות לבניין המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המאבק על המקדש</div>
+      <h3 class="story-title">🧗 ההשתדלות שלא הצליחה</h3>
+      <p>יש משהו מרגש בדמותו של מרדכי כפי שהיא מצטיירת כאן. הוא עלה לארץ עם הראשונים. כשנעצרה הבנייה, לא ישב בירושלים וחיכה. הוא יצא לשושן, ישב בשער המלך, חיפש קשרים, הציל את חיי המלך – הכל כדי להשיג רשות לבנות.</p>
+      <p>וכל זה לא הצליח. המלך לא שאל אותו מה הוא רוצה. הבנייה לא חודשה. מבחינה חיצונית, כל מאמציו היו כישלון.</p>
+      <p>ובכל זאת, ההשתדלות של מרדכי לא הייתה לשווא. הוא היה שם, בשער המלך, כשהגיעה שעת הגזירה, והוא שהניע את אסתר לפעול. הוא שגידל את אסתר, שממנה בא דריוש. ההשתדלות לא השיגה את מה שתכנן, אבל הייתה חלק מן המהלך הגדול.</p>
+      <p>וזה לימוד לכל מי שעושה למען עם ישראל: לא תמיד נראה את פירות ההשתדלות בדרך שציפינו. לפעמים הישועה מגיעה ממקום אחר לגמרי. אבל מי שהשתדל, היה שותף לה.</p>
+      <p class="bold-para">מרדכי השתדל בכל כוחו ולא הצליח, אבל השתדלותו לא הייתה לשווא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המאבק על המקדש</div>
+      <h3 class="story-title">⚔️ שני אויבים בשושן</h3>
+      <p>כדאי לעצור ולראות את התמונה החדשה שמתגלה. בדרך כלל אנו קוראים את המגילה כסיפור על הצלת חיים: המן רצה להשמיד, ומרדכי ואסתר הצילו. וזה נכון. אבל מתחת לסיפור הזה יש סיפור נוסף.</p>
+      <p>שני האנשים המרכזיים במגילה, המן ומרדכי, הגיעו שניהם לשושן מירושלים. שניהם באו בעניין אחד: בית המקדש. המן בא כדי לעצור את הבנייה, ובניו כתבו את השטנה. מרדכי בא כדי להשיג רשות לחדש אותה.</p>
+      <p>ובשושן, בחצר המלך, מתנהל מאבק שקט. המן עולה לגדולה, מרדכי יושב בשער המלך. המן מצליח בכל, מרדכי ממתין להזדמנות. וכשמרדכי מציל את המלך, הוא מקווה לגמול שיאפשר לו לבקש את המקדש. אבל הגמול אינו בא.</p>
+      <p>המבט הזה משנה את הקריאה. המחלוקת בין המן למרדכי אינה רק אישית, על השתחוויה. היא מאבק על עתידה של ירושלים. ולכן גם הישועה של פורים קשורה, בסופו של דבר, לבניין הבית. וכך מתברר שהקריאה בפסוקי עזרא ובפסוקי המגילה יחד מגלה תמונה שלמה, שאי אפשר לראות מכל אחד מהם לבדו.</p>
+      <p class="bold-para">המאבק בשושן לא היה רק על חיי היהודים, אלא גם על בניין בית המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המאבק על המקדש</div>
+      <h3 class="story-title">👑 עד חצי המלכות</h3>
+      <p>גם כשאחשוורוש רצה לעשות את רצונה של אסתר, הגדיר: "עַד חֲצִי הַמַּלְכוּת". ורש"י מפרש: דבר שהוא באמצע, בחצי המלכות, ולא אתן לך – בניין בית המקדש. כורש התחיל לבנות וחזר בו, ואחשוורוש עמד אחריו וביטל את המלאכה.</p>
+      <p>כלומר, גם במצב הטוב ביותר, כשהמלך אוהב את אסתר ומוכן לתת לה הכל, בית המקדש אינו בחשבון. הוא מחוץ לתחום. אפשר לבקש עושר, כבוד, מעמד, ואפילו חצי ממלכה שלמה – אבל לא את הדבר האחד שבאמת חשוב.</p>
+      <p>הכל נראה סגור. המן מצליח, מרדכי נכשל, והמלך עצמו קבע שבית המקדש לא ייבנה. "אבל רבים מחשבות בלב איש", והקדוש ברוך הוא משחק בהם כרצונו. ועכשיו נראה דבר נפלא באמת.</p>
+      <p class="bold-para">אחשוורוש הבטיח לאסתר הכל "עד חצי המלכות" – חוץ מבניין המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · המהפך הנסתר</div>
+      <h3 class="story-title">🗣️ ממוכן</h3>
+      <p>המגילה פותחת במשתה אחשוורוש. במשתה הזה הוא רצה להראות את עושרו, וכאמור – לחגוג את ההכרה שישראל לא ייגאלו עוד. ובמשתה קרא לושתי, והיא סירבה. המלך כעס, ושאל את חכמיו מה לעשות.</p>
+      <p>ענה ממוכן: "לֹא עַל הַמֶּלֶךְ לְבַדּוֹ עָוְתָה וַשְׁתִּי הַמַּלְכָּה". ויעץ להוציא אותה מן המלכות ולתת את מלכותה לרעותה הטובה ממנה. הגמרא במגילה אומרת: ממוכן זה המן.</p>
+      <p>מה קרה בעקבות העצה? חיפשו מלכה, ובסוף, בשנה השביעית למלכותו, לקח אחשוורוש את אסתר. והמן, שעצתו התקבלה, נהיה לראש השרים, הקרוב ביותר למלכות. לכאורה, ניצחון מושלם: הוא דאג שהמקדש לא ייבנה, והגיע לגדולה.</p>
+      <p>בינתיים מרדכי ממשיך לחפש דרך, ומצווה את אסתר לא לגלות את עמה ואת מולדתה. הוא ממתין להזדמנות להביא את המלך להסכים לבניין, אבל ההזדמנות אינה מגיעה.</p>
+      <p>בשלב הזה, מי שהיה מסתכל מן הצד היה אומר שהמאבק הוכרע. המן בראש, מרדכי בשער, ובית המקדש נשאר חרב. אבל המגילה כולה מלמדת שאין להסיק מסקנות לפני הסוף, כי היד שמנהלת את הדברים נסתרת מן העין.</p>
+      <p class="bold-para">לפי הגמרא, ממוכן שיעץ להרוג את ושתי הוא המן – והעצה שלו הובילה לבחירת אסתר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · המהפך הנסתר</div>
+      <h3 class="story-title">👶 דריוש בן אסתר</h3>
+      <p>ומתי נבנה בית המקדש בפועל? בימי דריוש השני. ומיהו דריוש? רש"י בתחילת ספר חגי כותב: הוא דריוש מלך פרס, שהיה בנו של אחשוורוש, ומצאנו במדרש שהיה בנה של אסתר.</p>
+      <p>ועכשיו תראו איזה מהפך מדהים. אחשוורוש עשה משתה כדי לחגוג את ביטול בניין המקדש. ובאותו משתה עצמו נזרע הגרעין לבניין המקדש: בעקבות המשתה הוצאה ושתי, נבחרה אסתר, ומאסתר נולד דריוש, שבימיו נבנה הבית.</p>
+      <p>ומי גרם לכל זה? ממוכן – הוא המן. המן, שבא במיוחד מארץ ישראל לשושן כדי לבטל את בניין המקדש, הוא בעצמו, בעצתו, זרע את הזרע שממנו קם בית שני. הוא יעץ להוציא את ושתי, ובכך פינה את המקום לאסתר, שממנה בא דריוש הבונה.</p>
+      <p>"יוֹשֵׁב בַּשָּׁמַיִם יִשְׂחָק". מרדכי, שזו הייתה משימתו, לא הצליח להביא לבניין. ודווקא המן, שנראה כמי שעצר את הבנייה, הניח את היסוד לה. אחשוורוש חגג את הניצחון על ירושלים, ובאותו משתה התחילה תקומתה. ונהפוך הוא.</p>
+      <p>והרב התפעל: אילו היה המן יודע מה תהיה התוצאה של עצתו, לא היה אומר אותה לעולם. הוא חשב שהוא מחזק את מעמדו ומבטיח את ניצחונו, ובפועל פתח את הדרך לבניין הבית שרצה למנוע.</p>
+      <p class="bold-para">בית שני נבנה בימי דריוש, ולפי רש"י הוא בנה של אסתר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · המהפך הנסתר</div>
+      <h3 class="story-title">💡 מה לומדים מן המהפך</h3>
+      <p>המהפך הזה אינו רק חידוש פרשני. יש בו לימוד לחיים. במשך שנים נראה היה שהמן מנצח. בניין המקדש נעצר, מרדכי נכשל, המלך עצמו קבע שהמקדש מחוץ לתחום. מי שחי באותם ימים היה יכול להתייאש.</p>
+      <p>אבל דווקא אז, בתוך ההצלחה של הרשע, נזרע זרע הישועה. כל צעד של המן קידם, בלי שידע, את מה שרצה למנוע. והישועה הגיעה דרך מסלול שאיש לא יכול היה לצפות.</p>
+      <p>כך גם בחיים הפרטיים ובחיי העם: יש תקופות שבהן נראה שהכל הולך בכיוון ההפוך. ההשתדלות אינה מצליחה, והמכשולים גדלים. מי שזוכר את "ונהפוך הוא", יודע שאין זה סוף הסיפור. ייתכן שדווקא המכשול הוא שמכין את הישועה.</p>
+      <p>וזה גם מה שמאפשר להיות שמח תמיד. לא שמחה עיוורת, אלא שמחה של מי שיודע שהכל מנוהל בידי מי שמכוון את הכל לטובה, גם כשאיננו רואים איך.</p>
+      <p class="bold-para">מי שמבין שה' מנהל הכל, אינו מתייאש כשנראה שהרשעים מצליחים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עד דלא ידע</div>
+      <h3 class="story-title">🍷 "עד דלא ידע" – אי אפשר?</h3>
+      <p>הגמרא אומרת: "מִיחַיַּב אִינִישׁ לְבַסּוּמֵי בְּפוּרַיָּא עַד דְּלָא יָדַע בֵּין אָרוּר הָמָן לְבָרוּךְ מָרְדֳּכַי". והשולחן ערוך פוסק כך.</p>
+      <p>אבל, הרב שאל: האם ראיתם פעם אדם שיכור שמתבלבל בין ארור המן לברוך מרדכי? מי שהיה בפורים יודע: השיכור אינו מתבלבל. הוא מקלל את המן פי עשרה, ומברך את מרדכי פי עשרה. השכרות מסירה את הבלמים, אבל המוח נשאר. האדם יודע בדיוק מי הרשע ומי הצדיק.</p>
+      <p>אם כן, מה רוצה הגמרא? אין מצב כזה על האדמות, שאדם אינו יודע להבחין בין המן למרדכי. צריך להבין את הכוונה העמוקה.</p>
+      <p>ההבנה מגיעה מן ה"ונהפוך הוא". הפסוק המפורסם "וְנַהֲפוֹךְ הוּא אֲשֶׁר יִשְׁלְטוּ הַיְּהוּדִים הֵמָּה בְּשֹׂנְאֵיהֶם" מבטא את ההבנה שגזרת המן לא רק בטלה, אלא התהפכה: היום שבו ביקשו להשמיד, נהיה יום של ניצחון. והמהפך שראינו בבניין המקדש הוא "ונהפוך הוא" עמוק עוד יותר.</p>
+      <p class="bold-para">שיכור אינו מתבלבל בין ארור המן לברוך מרדכי, ולכן צריך להבין מה כוונת חז"ל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עד דלא ידע</div>
+      <h3 class="story-title">❓ של מי המעשים?</h3>
+      <p>ועכשיו מובן "עד דלא ידע". אין הכוונה שלא יידע מי טוב ומי רע. הכוונה שלא יידע של מי המעשים שהביאו את הישועה. האם מעשיו של מרדכי, שבא להשתדל אצל המלכות הפרסית בעניין המקדש? או מעשיו של המן הרשע, שהוא שזרע את הקו שהוביל לבנייה?</p>
+      <p>המן ניסה להרוס את המקדש, מרדכי ניסה לבנות. מי הצליח בסוף? לא מרדכי. מי שדאג, בלי לדעת, שהמקדש ייבנה, הוא דווקא המן: הוא הביא להוצאת ושתי, משם לאסתר, ומאסתר לדריוש הבונה.</p>
+      <p>ובזה הדרך דאג הקדוש ברוך הוא לקיים את בריתו. עד שאדם מגיע להכרה שאינו יודע מה הוביל לישועה יותר – "ארור המן" או "ברוך מרדכי" – כי הכל מנוהל מלמעלה, ואפילו רשעים משמשים, בלי לדעת, כשליחים של הגאולה.</p>
+      <p>זה "עד דלא ידע" במובן העמוק: לראות את יד ה' שמנהלת את ההיסטוריה, עד שאין אדם יכול לייחס את הישועה לעצמו או לכל בשר ודם.</p>
+      <p class="bold-para">"עד דלא ידע": להגיע להכרה שאי אפשר לדעת מי הביא את הישועה – מרדכי או המן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עד דלא ידע</div>
+      <h3 class="story-title">🌍 ונהפוך הוא בדורנו</h3>
+      <p>הרב סיים בהרחבת הרעיון לימינו. גם בדורנו, אמר, רואים איך דברים שנועדו להרוס הובילו בסופו של דבר לבנייה. בשנים שלפני מלחמת העולם השנייה, רבנים ומנהיגים קראו ליהודים לעלות, ובכל זאת עלו מעטים. ואחרי השואה, היישוב היהודי בארץ גדל פי כמה וכמה. היהודים אמרו: באש ובמים, אנחנו באים לארץ. הרדיפה, שנועדה להשמיד, הביאה בסופה לבניין הארץ.</p>
+      <p>וכך גם במלחמות שאחר כך: הצעות חלוקה נדחו בידי האויבים, ובמלחמות שבאו בעקבותיהן גדל השטח שבידי ישראל. מי שביקש לקחת, גרם בסוף שיינתן יותר.</p>
+      <p>זה "עד דלא ידע" גם בדורנו: לפעמים איננו יודעים מה הוביל לישועה – מעשי הצדיקים או מזימות הרשעים, שהקדוש ברוך הוא הפך אותן לטובה.</p>
+      <p>ומכאן לשמחת פורים: לא רק שמחה על הצלה, אלא על ההכרה שה' מנהל הכל, ושגם מה שנראה כחורבן יכול להפוך לבניין. ומי שמבין זאת, יכול להיות "טוב לב משתה תמיד" – לא רק בפורים. יהי רצון שנזכה לראות במהרה את ה"ונהפוך הוא" השלם, ואת בניין הבית, בשמחה גדולה.</p>
+      <p class="bold-para">גם בדורנו, מה שנועד להרוס הביא לא פעם לבנייה – וכך מתגלה "ונהפוך הוא".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/yng6vKmGmIg · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שני תמידים","icon":"😊","color":"#c62b6b","stories":[{"id":1,"title":"פורים שמח – כל השנה","icon":"😊"},{"id":2,"title":"מיראה אל שמחה","icon":"🌱"}]},{"id":2,"name":"המן מגיע בדרך","icon":"🛤️","color":"#6d28d9","stories":[{"id":3,"title":"המן מגיע בדרך","icon":"🛤️"},{"id":4,"title":"ארבעה שלבים, פעמיים","icon":"🔁"},{"id":5,"title":"שתי סיבות לגזירה","icon":"📖"},{"id":6,"title":"סעודת הייאוש","icon":"🍽️"},{"id":7,"title":"הנס בשערי הארץ","icon":"🛡️"},{"id":8,"title":"\"והיה כי תבוא\"","icon":"🏞️"}]},{"id":3,"name":"המאבק על המקדש","icon":"🏛️","color":"#e08e00","stories":[{"id":9,"title":"מי כתב את השטנה?","icon":"✉️"},{"id":10,"title":"גם מרדכי בא מירושלים","icon":"🧭"},{"id":11,"title":"ההשתדלות שלא הצליחה","icon":"🧗"},{"id":12,"title":"שני אויבים בשושן","icon":"⚔️"},{"id":13,"title":"עד חצי המלכות","icon":"👑"}]},{"id":4,"name":"המהפך הנסתר","icon":"🔄","color":"#1e88b8","stories":[{"id":14,"title":"ממוכן","icon":"🗣️"},{"id":15,"title":"דריוש בן אסתר","icon":"👶"},{"id":16,"title":"מה לומדים מן המהפך","icon":"💡"}]},{"id":5,"name":"עד דלא ידע","icon":"🍷","color":"#c62b6b","stories":[{"id":17,"title":"\"עד דלא ידע\" – אי אפשר?","icon":"🍷"},{"id":18,"title":"של מי המעשים?","icon":"❓"},{"id":19,"title":"ונהפוך הוא בדורנו","icon":"🌍"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
