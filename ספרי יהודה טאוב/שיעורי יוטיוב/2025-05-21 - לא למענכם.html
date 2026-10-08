@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 לא למענכם</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 לא למענכם</h1>
+  <p>חמש הבטחות בנבואת יחזקאל שבהפטרת פרשת פרה, והדרך שבה ראה הרב את התחלת התגשמותן בימינו: קיבוץ גלויות, תשובה, לב בשר, שפע הארץ ובניינה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ לא למענכם" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/b8C3S4np5Aw?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/b8C3S4np5Aw/hqdefault.jpg" alt="לא למענכם" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=b8C3S4np5Aw" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · גאולה בלי תשובה?</div>
+      <h3 class="story-title">📜 חמש נבואות בהפטרה אחת</h3>
+      <p>השיעור עוסק בחמש נבואות שכתובות בהפטרה של פרשת פרה, בספר יחזקאל פרק ל"ו, מפסוק כ"ב והלאה. לדברי הרב, את כולן אפשר כביכול לראות בימינו מתחילות להתקיים, ואנו מצפים שיתקיימו עוד במלואן בעזרת ה'.</p>
+      <p>הזמן מתאים: השיעור נאמר בימים שלפני פסח, ובניסן נגאלו ובניסן עתידים להיגאל. לכן נבחר נושא הגאולה. ונראה בהמשך גם מה הקשר בין הנבואה הזאת לפרשת פרה.</p>
+      <p>אבל לפני שנקרא את הפסוקים, הרב פתח בשאלה הגדולה והמפורסמת ביותר, שליוותה את כל תהליך שיבת ציון. היהודים חזרו לארץ ישראל, קמה כאן מדינה, אבל רבים מאלה שהובילו את התהליך לא היו שומרי תורה ומצוות. כיצד ייתכן שגאולת ישראל תבוא על ידי אנשים כאלה? האם ייתכן שהקדוש ברוך הוא מביא את הגאולה בלי שעם ישראל עשה תשובה?</p>
+      <p>זו שאלה שרבים לא ידעו איך להתמודד איתה. והנבואה של יחזקאל, כפי שנראה, נותנת עליה תשובה ברורה מאוד.</p>
+      <p class="bold-para">בהפטרת פרשת פרה יש חמש הבטחות של גאולה, שהרב ראה את תחילת קיומן בימינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · גאולה בלי תשובה?</div>
+      <h3 class="story-title">⚖️ "אין ישראל נגאלין אלא בתשובה"</h3>
+      <p>מה שמחדד את השאלה הוא דברי הרמב"ם המפורסמים בהלכות תשובה, פרק ז': אין ישראל נגאלין אלא בתשובה, וכבר הבטיחה תורה שסוף ישראל לעשות תשובה בסוף גלותם ומיד הן נגאלין. שנאמר: "וְשַׁבְתָּ עַד ה' אֱלֹקֶיךָ וְשָׁמַעְתָּ בְקֹלוֹ... וְשָׁב ה' אֱלֹקֶיךָ אֶת שְׁבוּתְךָ".</p>
+      <p>וכך אנחנו אומרים בכל יום בקריאת שמע: "וְהָיָה אִם שָׁמֹעַ תִּשְׁמְעוּ... וְנָתַתִּי מְטַר אַרְצְכֶם". הברכה תלויה בשמירת המצוות. אם כן, איך ייתכן שתבוא גאולה כשרבים מן העם אינם שומרים מצוות? הרי לא מגיע להם.</p>
+      <p>הרב ציין דוגמה שמראה כמה המציאות השתנתה מאז. יש היום מאפיית מצות בקיבוץ אחד, מקום שבעבר נחשב רחוק מאוד מתורה ומצוות, עד שאיש לא האמין שיהיו בו מטבחים כשרים לפסח. ובכל זאת, תחילת התהליך הייתה בידי אנשים רחוקים.</p>
+      <p>ועכשיו נפתח את ספר יחזקאל, ונראה מה הנביא אומר על בדיוק השאלה הזאת.</p>
+      <p class="bold-para">השאלה חריפה במיוחד, כי הרמב"ם כותב במפורש שהגאולה תלויה בתשובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · גאולה בלי תשובה?</div>
+      <h3 class="story-title">✨ בשביל קידוש השם</h3>
+      <p>כך פותחת הנבואה: "לָכֵן אֱמֹר לְבֵית יִשְׂרָאֵל כֹּה אָמַר ה' אֱלֹקִים לֹא לְמַעַנְכֶם אֲנִי עֹשֶׂה בֵּית יִשְׂרָאֵל כִּי אִם לְשֵׁם קָדְשִׁי אֲשֶׁר חִלַּלְתֶּם בַּגּוֹיִם אֲשֶׁר בָּאתֶם שָׁם".</p>
+      <p>הנביא אומר כאן במפורש: לכם זה לא מגיע. למה אני אושיע אתכם? בשביל שמי הקדוש. וממשיך: "וְקִדַּשְׁתִּי אֶת שְׁמִי הַגָּדוֹל הַמְחֻלָּל בַּגּוֹיִם... וְיָדְעוּ הַגּוֹיִם כִּי אֲנִי ה'".</p>
+      <p>מה היה חילול השם? כשעם ישראל נמצא בגלות שנים רבות כל כך, הגויים רואים בזה סימן שבורא עולם אינו יכול עוד לגאול את עמו, או שעזב אותו. כך חשבו רבים מן הנוצרים: שאין לו אפשרות להושיע את ישראל.</p>
+      <p>והרב הוסיף: הגאולה התחילה כשחילול השם הגיע לממדים שאי אפשר לתאר. בשואה היה חילול השם שלא היה כמוהו בהיסטוריה, עד שאפילו יהודים לא הצליחו להבין איך זה יכול לקרות. ומיד אחרי זה, כמו שהפסוק ממשיך: "וְלָקַחְתִּי אֶתְכֶם מִן הַגּוֹיִם". הגאולה באה למטרה אחת, שהנביא חוזר עליה שוב ושוב: קידוש השם. שיראו כולם את יכולתו של ה' ואת אהבתו לעם ישראל.</p>
+      <p class="bold-para">הנביא אומר במפורש: הגאולה באה לא משום שמגיע לנו, אלא כדי לקדש את שם ה' שחולל בגויים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · גאולה בלי תשובה?</div>
+      <h3 class="story-title">⏳ מידת הדין ומידת קידוש השם</h3>
+      <p>אבל המפרשים שואלים כאן שאלה עצומה: אם הקדוש ברוך הוא גואל את ישראל בשביל קידוש השם, מדוע הגלה אותם מלכתחילה? ואם קידוש השם מכריע, מדוע לא גאל מיד?</p>
+      <p>התשובה שהם נותנים: הקדוש ברוך הוא קבע שיש דין ויש דיין. כשעם ישראל אינו מתנהג כראוי, מגיע לו עונש, ומידת הדין אינה מוותרת. העולם נברא במידת הדין. מתי יכולה לבוא הטענה של קידוש השם? רק כאשר מידת הדין קיבלה את כל מה שהיא תבעה. רק כשעם ישראל קיבל עונש מספיק, והדין נפרע עד תום, יכול לבוא קידוש השם ולטעון: עכשיו מגיע לעם ישראל להיגאל.</p>
+      <p>ואותו רעיון רואים ביציאת מצרים. כשמשה רבנו מגיע לבשר על הגאולה, העבודה לא נעשית קלה יותר, אלא כבדה יותר. משה אינו מבין איך זה ייתכן. והתשובה: הקדוש ברוך הוא רצה לגאול, אבל עדיין לא הושלם מה שהיה צריך להיות. קושי השעבוד השלים את החסר, וקיצר את הזמן.</p>
+      <p>מובא בשם הגאון מווילנא רמז לכך בטעמי המקרא שעל "וַיְמָרְרוּ אֶת חַיֵּיהֶם": משום שמררו את חייהם, הקדימה הגאולה ובאה מהר. כך גם בדורנו: רק אחרי שמידת הדין נפרעה, יכלה לבוא טענת קידוש השם.</p>
+      <p class="bold-para">רק אחרי שמידת הדין נפרעה עד תום, יכולה לבוא הטענה של קידוש השם ולהביא את הגאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קיבוץ ואחריו טהרה</div>
+      <h3 class="story-title">🌍 "מכל הארצות"</h3>
+      <p>ההבטחה הראשונה: "וְלָקַחְתִּי אֶתְכֶם מִן הַגּוֹיִם וְקִבַּצְתִּי אֶתְכֶם מִכָּל הָאֲרָצוֹת וְהֵבֵאתִי אֶתְכֶם אֶל אַדְמַתְכֶם".</p>
+      <p>הנביא יחזקאל כבר ניבא על דבר שהתקיים לעינינו: "מכל הארצות". הרב סיפר שקרא בספר שמסכם את הנתונים, שיש בארץ ישראל יהודים שהגיעו ממעל מאה ארצות. לא מארץ אחת או שתיים, אלא מכל קצוות תבל, בדיוק כלשון הנבואה.</p>
+      <p>ועוד מילה חשובה: "אֶל אַדְמַתְכֶם". הבטחת הגאולה אינה רק שהיהודים יצאו מן הגלות. היא שהם יבואו דווקא אל אדמתם. בדורות האחרונים היו הצעות להקים בית ליהודים במקומות אחרים, באפריקה או בדרום אמריקה. אבל הנבואה אמרה: אל אדמתכם, ולא למקום אחר.</p>
+      <p>זה השלב הראשון של הגאולה, כפי שהנביא מתאר אותו: איסוף העם מן הגלויות והבאתו לארצו. ושימו לב, השלב הזה מתואר לפני כל דבר אחר. לפני תשובה, לפני טהרה. וזה מוביל אותנו לפסוק הבא, שבו מתבררת התשובה לשאלה הגדולה שפתחנו בה.</p>
+      <p class="bold-para">ההבטחה הראשונה: קיבוץ גלויות מכל הארצות, ודווקא אל אדמת ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קיבוץ ואחריו טהרה</div>
+      <h3 class="story-title">💧 "וזרקתי עליכם מים טהורים"</h3>
+      <p>הפסוק הבא: "וְזָרַקְתִּי עֲלֵיכֶם מַיִם טְהוֹרִים וּטְהַרְתֶּם מִכֹּל טֻמְאוֹתֵיכֶם וּמִכָּל גִּלּוּלֵיכֶם אֲטַהֵר אֶתְכֶם".</p>
+      <p>כאן, אומר הרב, הפסוק מתאר במפורש ואין מה להסתפק: קודם כל יבואו לארץ ישראל, ורק לאחר מכן תתחיל הטהרה. יתחיל תהליך של חזרה בתשובה, לאט לאט, כמו מים טהורים שמזים על הטמא.</p>
+      <p>וזה גם הקשר לפרשת פרה. בשבת פרשת פרה קוראים על הפרה האדומה, שבאפרה מטהרים את הטמאים. ובהפטרה קוראים את הנבואה הזאת, שבה הקדוש ברוך הוא מבטיח לטהר את עם ישראל כולו. כמו שיש טהרה בפרה אדומה, כך יטהר ה' את עמו.</p>
+      <p>ומכאן תשובה לשאלה הגדולה. הרמב"ם אמר שאין ישראל נגאלין אלא בתשובה, והנביא מתאר את הסדר: קיבוץ גלויות, ואחריו תשובה. הגאולה אינה מתחילה מן התשובה, אלא מביאה אותה. מי שציפה שקודם יחזרו כולם בתשובה ורק אחר כך יבואו לארץ, לא קרא את הפסוק כסדרו.</p>
+      <p class="bold-para">הנביא מפרש את הסדר: קודם יבואו לארץ, ורק אחר כך תתחיל הטהרה – וזה הקשר לפרשת פרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קיבוץ ואחריו טהרה</div>
+      <h3 class="story-title">📉 הירידה והבלימה</h3>
+      <p>הרב תיאר את מה שקרה בפועל. בשנים הראשונות אחרי ההגעה לארץ, מצב היהדות לא הלך והשתפר, אלא הלך והידרדר. לפי הנתונים שהביא, אחוז שומרי המצוות בארץ ירד שוב ושוב.</p>
+      <p>אדם מבוגר שגר בשכונה חרדית סיפר לרב שבאותן שנים, גם אצל משפחות של חסידים, היה נדיר שכל הבנים המשיכו לשמור תורה ומצוות. בתי הספר, הצבא והסביבה משכו רבים החוצה. הוא הכיר משפחות רבות כאלה, ומעטות זכו שכל ילדיהן נשארו בדרך.</p>
+      <p>מתי זה נעצר? אחרי מלחמת ששת הימים. הייתה אז התעוררות עצומה. עדיין לא חזרו בתשובה בהמוניהם, אבל הירידה נבלמה. משהו השתנה בלב.</p>
+      <p>והחזרה בתשובה עצמה התחילה בערך באמצע שנות השבעים, כמה שנים אחרי מלחמת יום הכיפורים. משם והלאה, כפי שנראה, היא גדלה לממדים שאיש לא דמיין. וזה בדיוק הסדר שבנבואה: קודם "וקבצתי אתכם", ואחר כך, לאט לאט, "וזרקתי עליכם מים טהורים".</p>
+      <p class="bold-para">בשנים הראשונות שמירת המצוות הלכה ופחתה; אחרי מלחמת ששת הימים נבלמה הירידה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קיבוץ ואחריו טהרה</div>
+      <h3 class="story-title">🕯️ השבת הראשונה</h3>
+      <p>הרב סיפר את מה שסיפר הרב שמחה כהן, שעמד בראש ארגון בשם "אל המקורות". באותה תקופה היו עורכים ערבי שיעורים, וראו שיש עניין רב. אנשים רבים שאינם שומרי מצוות רצו לשמוע על יהדות. אבל ערב אחד של שיעור לא היה מספיק.</p>
+      <p>יום אחד החליטו לנסות משהו חדש: לכנס את האנשים לכמה ימים, לשבת שלמה, עם מרתון של שיעורים. הם ניסו לאחד את כל הארגונים שעסקו בכך באותה תקופה, ולארגן שבת אחת לאנשים מכל הארץ.</p>
+      <p>התוצאות היו מדהימות. לדבריו, בסמינר הראשון ההצלחה הייתה כמעט מוחלטת. הנוכחים התרגשו כל כך, שכמעט כולם החליטו לחזור בתשובה. זו הייתה הפעם הראשונה שראו תנועה כזאת, של רבים יחד.</p>
+      <p>ובין המשתתפים בשבת ההיא היה יוסי וליס, שחזר בתשובה, ולאחר מכן הקים את ארגון ערכים. משם התהליך הלך וגדל: מאה שבתות בשנה, סמינרים בארץ ובחוץ לארץ, ארגונים רבים. מה שהתחיל בשבת אחת, הפך לתנועה גדולה, שאיש לא האמין שתהיה.</p>
+      <p class="bold-para">סמינר שבת אחד, שבו כמעט כל המשתתפים התעוררו, הצית תנועה שלמה של חזרה בתשובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קיבוץ ואחריו טהרה</div>
+      <h3 class="story-title">💰 "ואם אתן לך עשרה מיליון?"</h3>
+      <p>עוד סיפור מאותה תקופה. מנהל ערכים נסע לאמריקה, לכנס שבו נאספו אנשים עשירים מאוד. הוא סיפר להם: יש משהו חדש בארץ ישראל. יהודים מתחילים לחזור בתשובה. אנחנו עורכים סמינרים, וצריך כסף לרבנים, למלונות, לכל ההוצאות.</p>
+      <p>שאלו אותו: כמה אתה צריך? הוא אמר סכום מסוים. שאלו: ואם ניתן לך יותר, מה תעשה? הוא התחיל לתאר. ואם ניתן עוד יותר? וכך שוב ושוב, עד שגמר לתאר את כל מה שהיה רוצה לעשות. אמרו לו: בסדר גמור. קיבלת.</p>
+      <p>התמיכה הייתה כל כך גדולה, שבאותה תקופה הייתה להם שאלה: האם בכלל לגבות תשלום מן המשתתפים בשבתות? בסוף החליטו שחשוב שאדם ישלם משהו, כי מה שאדם משלם עליו משפיע עליו יותר.</p>
+      <p>הרב העיר שהשפע הזה של אותה תקופה כבר אינו כפי שהיה. אבל הוא היה חלק מן התמונה: באותן שנים הגיעו יחד גם התעוררות של תשובה וגם המשאבים להפיץ אותה. וזה מה שהתורה מספרת בנבואה, שהטהרה תבוא לאט לאט אחרי השיבה לארץ.</p>
+      <p class="bold-para">בתקופת ראשית התשובה היה גם שפע של תמיכה, עד שהתלבטו אם לגבות כסף מן המשתתפים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לב בשר</div>
+      <h3 class="story-title">❤️ מלב אבן ללב בשר</h3>
+      <p>הפסוק הבא: "וְנָתַתִּי לָכֶם לֵב חָדָשׁ וְרוּחַ חֲדָשָׁה אֶתֵּן בְּקִרְבְּכֶם וַהֲסִרֹתִי אֶת לֵב הָאֶבֶן מִבְּשַׂרְכֶם וְנָתַתִּי לָכֶם לֵב בָּשָׂר".</p>
+      <p>הקדוש ברוך הוא מבטיח שכאשר נגיע לארץ ישראל, הוא ייתן לעם ישראל לב חדש. הלב הקשה, לב האבן, יוסר, ובמקומו יבוא לב רך, לב בשר. לב שמסוגל להתרגש, להתפלל, לחזור.</p>
+      <p>סיפור מעניין קשור לפסוק הזה. מסופר על רבי נחמן מברסלב, שגר בעיר אחרת, ובאחת השבתות הגיע להתארח בעיירה ברסלב. כשעשה קידוש בליל שבת, התהפך הגביע וכל היין נשפך. הוא ראה בזה רמז, ובאותו רגע החליט שעליו לגור בעיירה הזאת.</p>
+      <p>ומובא שגם שם החסידות, ברסלב, קשור לפסוק הזה: האותיות של "ברסלב" הן האותיות של "בשר לב" – "ונתתי לכם לב בשר". כך מפרשים את בחירת השם, כרמז להבטחה של יחזקאל. הרב העיר שאפשר שרבי נחמן התכוון גם להתעוררות שתבוא לדורות.</p>
+      <p class="bold-para">ההבטחה הבאה: "והסרתי את לב האבן מבשרכם ונתתי לכם לב בשר".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לב בשר</div>
+      <h3 class="story-title">🗣️ התבודדות בכל הציבורים</h3>
+      <p>מי שמכיר את ההיסטוריה יודע שחסידות ברסלב הייתה בעבר תנועה קטנה מאוד. כמה אלפים לכל היותר. בראש השנה היו כל החסידים מתכנסים במקום אחד, וזה הספיק. זו הייתה אולי מן החסידויות הקטנות ביותר.</p>
+      <p>וההתעוררות הגדולה התחילה בשנים האחרונות. רבים מאוד מתקרבים, וגם המספרים שמגיעים לאומן בראש השנה גדלו לאין שיעור לעומת העבר.</p>
+      <p>ולא רק זה. הרעיון המרכזי של רבי נחמן התפשט בכל עם ישראל. מה הוא? שכל יהודי, מלבד התפילה הקבועה, יקבע לעצמו זמן ביום שבו ידבר עם בורא עולם במילים שלו, בשפה שלו. כמו שכתב: התבודדות היא מעלה עליונה וגדולה מן הכל. והיום הרעיון הזה נמצא בכל הציבורים: חרדים, דתיים, דתיים לאומיים, ואפילו אצל מי שאינם מגדירים את עצמם כדתיים.</p>
+      <p>הרב הביא דוגמה מסיפור שקרא בפרסומים של ארגון שעוסק בתרומת כליה. אישה אחת, שאינה מוגדרת דתייה במיוחד, סיפרה שבכל יום היא יוצאת להליכה, ובמהלכה מדברת עם בורא עולם: מבקשת, ומודה על כל הטוב. יום אחד שאלה את עצמה: מה אני יכולה להשיב לה' על כל הטוב? והחליטה לתרום כליה ליהודי שצריך. זה לב הבשר.</p>
+      <p class="bold-para">רעיון ההתבודדות של רבי נחמן, לדבר עם ה' במילים שלך, התפשט היום בכל חלקי העם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לב בשר</div>
+      <h3 class="story-title">🩹 סגולה לרפואה</h3>
+      <p>הרב חיבר את הרעיון גם לפרשת השבוע, תזריע. בפרשת הנגעים התורה פותחת: "אָדָם כִּי יִהְיֶה בְעוֹר בְּשָׂרוֹ". אחר כך: "נֶגַע צָרַעַת כִּי תִהְיֶה בְּאָדָם". אבל כשמדובר ברפואה, הלשון משתנה: "וּבָשָׂר כִּי יִהְיֶה בוֹ בְעֹרוֹ שְׁחִין וְנִרְפָּא". לא "אדם", אלא "בשר".</p>
+      <p>הגמרא במסכת סוטה עומדת על כך, ומלמדת יסוד גדול: אין תפילתו של אדם נשמעת אלא אם כן משים לבו כבשר, שנאמר: "יָבוֹא כָל בָּשָׂר לְהִשְׁתַּחֲוֹת לְפָנַי". הקדוש ברוך הוא רוצה לב רך, כבשר.</p>
+      <p>ומסביר הרב לפי דברי חז"ל: "אדם" הוא מלשון אדמה, דבר קשה. כשאדם קשה, כמו לב אבן, אז "נגע צרעת כי תהיה באדם". אבל כשאדם רך, נכנע ומודה, אז "ובשר כי יהיה בו... ונרפא".</p>
+      <p>זו סגולה לרפואה מן הגמרא: כשאדם מקבל את מה שקורה לו בהכנעה ובאהבה, במקום לצעוק ולהתמרמר, ומודה לה' על הכל – זה עצמו מביא רפואה. לב הבשר שהנביא הבטיח אינו רק התעוררות לתשובה. הוא גם המפתח לתפילה שנשמעת.</p>
+      <p class="bold-para">הגמרא בסוטה: הלב הרך והנכנע הוא סגולה לרפואה ולתפילה שנשמעת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לב בשר</div>
+      <h3 class="story-title">🤝 "והייתם לי לעם"</h3>
+      <p>הנבואה ממשיכה: "וְאֶת רוּחִי אֶתֵּן בְּקִרְבְּכֶם וְעָשִׂיתִי אֵת אֲשֶׁר בְּחֻקַּי תֵּלֵכוּ וּמִשְׁפָּטַי תִּשְׁמְרוּ וַעֲשִׂיתֶם. וִישַׁבְתֶּם בָּאָרֶץ אֲשֶׁר נָתַתִּי לַאֲבֹתֵיכֶם וִהְיִיתֶם לִי לְעָם וְאָנֹכִי אֶהְיֶה לָכֶם לֵאלֹקִים".</p>
+      <p>שימו לב, הרב מדגיש, מה הפסוק אומר. לא סתם יתקבצו כאן אנשים. יהיה כאן עם, עם ישראל, שהולך בחוקי ה' ושומר את משפטיו. זו התכלית שאליה מוביל כל התהליך.</p>
+      <p>ועד כאן שני השלבים הראשונים. השלב הראשון: קיבוץ גלויות מכל הארצות. השלב השני: חזרה בתשובה, מים טהורים ולב בשר. וברוך ה', אמר הרב, זכינו לראות איך תנועת התשובה מתחילה לפעול ולהתפשט.</p>
+      <p>חשוב לראות את הסדר כפי שהנביא תיאר אותו. אין זה שיש גאולה בלי תשובה. התשובה היא חלק מן הגאולה, אבל היא אינה התנאי שקודם לה. היא באה בתוכה, כפרי שלה. ועכשיו נמשיך לשלב השלישי.</p>
+      <p class="bold-para">הנביא מבטיח לא רק קיבוץ של אנשים, אלא עם שהולך בחוקי ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הדגן ופרי העץ</div>
+      <h3 class="story-title">🌾 "וקראתי אל הדגן"</h3>
+      <p>השלב השלישי: "וְהוֹשַׁעְתִּי אֶתְכֶם מִכֹּל טֻמְאוֹתֵיכֶם וְקָרָאתִי אֶל הַדָּגָן וְהִרְבֵּיתִי אֹתוֹ וְלֹא אֶתֵּן עֲלֵיכֶם רָעָב".</p>
+      <p>כדי להבין על מה מדובר, הרב הביא נתונים שקרא במאמר שהביא את הפסוק הזה כותרת. לפי מה שנכתב שם, לפני כמאה שנה, גרגר חיטה אחד שנזרע בארץ הצמיח בערך שנים עשר גרגרים. לפני כמה עשרות שנים, כארבעים. והיום, כך נכתב, גרגר אחד מצמיח מאות גרגרים, משום שפיתחו חיטה שמוציאה כמה שיבולים מכל צמח.</p>
+      <p>הרב אמר בכנות שקשה לו להאמין למספר הזה, ושהוא מתכוון לשאול חבר חקלאי. אבל הכיוון ברור: "וקראתי אל הדגן והרביתי אותו".</p>
+      <p>ועוד הוסיף ששמע מאדם שעבד בהובלת גרגרי חיטה בנמל, שלדבריו הגרגרים שגדלים בארץ גדולים וטובים יותר מן המיובאים. הסיבה שמייבאים, לדבריו, היא כלכלית ולא איכותית. ודגן, כך הסבירו, אפשר לייבא ולשמור, מה שאי אפשר לעשות כמעט עם ירקות טריים, שגדלים כולם בארץ.</p>
+      <p class="bold-para">ההבטחה השלישית: שפע של דגן – והרב תיאר את הקפיצה ביבולי החיטה בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הדגן ופרי העץ</div>
+      <h3 class="story-title">🫓 המצה ששמרה</h3>
+      <p>בהקשר של הדגן סיפר הרב סיפור ששמע מתקופה של מלחמה מול עזה. באותה שנה ירד גשם מאוחר, בסביבות חודש אייר. ויש מהדרים שמקפידים, לכתחילה, שאם החיטה כבר הגיעה לזמן קצירתה וירד עליה גשם, היא אינה נחשבת שמורה למצה מהודרת, מחשש חימוץ.</p>
+      <p>חיפשו בכל הארץ חיטה שלא ירד עליה גשם אחרי שבשלה, ומצאו שדה אחד באזור הסמוך לעזה, שבו החיטה עוד לא בשלה בזמן הגשם. לא היה פשוט להגיע לשם, אבל סיכמו עם בעל השדה, ויום אחד באו וקצרו את כל השדה, עד השיבולת האחרונה.</p>
+      <p>כעבור זמן קצר יצאו מחבלים ממנהרה, בתכנית לחדור לאחד היישובים ולעשות טבח. אחד השומרים הבחין בתנועה חשודה, הזעיק את הצבא, והם נעצרו. לאחר מכן התברר מה הייתה התכנית: הם תכננו לצאת מן המנהרה אל תוך שדה החיטה הגבוה, ולהתקרב בתוכו בלי שאיש יראה אותם. אבל כשיצאו, לא היה שם שדה. הכל נקצר.</p>
+      <p>ועל כך אמרו: אל תקרי "מצה שמורה" אלא "מצה שומרת". המצה היא ששמרה עליהם.</p>
+      <p class="bold-para">סיפור מתקופת מלחמה: שדה חיטה שנקצר כולו לצורך מצה שמורה, ובכך נחשפה מערה של מחבלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הדגן ופרי העץ</div>
+      <h3 class="story-title">🍎 חרפת רעב</h3>
+      <p>הנבואה ממשיכה: "וְהִרְבֵּיתִי אֶת פְּרִי הָעֵץ וּתְנוּבַת הַשָּׂדֶה לְמַעַן אֲשֶׁר לֹא תִקְחוּ עוֹד חֶרְפַּת רָעָב בַּגּוֹיִם".</p>
+      <p>כאן, אמר הרב, הפסוק חוזר אל מה שהתחלנו בו. אחת התמונות המפורסמות ביותר מן השואה היא של ילדים מורעבים, שרואים על פניהם את הרעב. העולם כולו צילם והפיץ אותה. זו תמונה של חרפה, שעם ישראל הגיע למצב כזה. מצמרר לראות אותה.</p>
+      <p>והקדוש ברוך הוא אומר: עכשיו יהיה בדיוק ההפך. הרבה פרי עץ, הרבה תנובת שדה, כדי שלא תהיה עוד חרפת רעב בגויים. לא רק שלא תרעבו, אלא שהגויים יראו את השפע ולא את הבושה.</p>
+      <p>ומיד אחר כך: "וּזְכַרְתֶּם אֶת דַּרְכֵיכֶם הָרָעִים... לֹא לְמַעַנְכֶם אֲנִי עֹשֶׂה נְאֻם ה' אֱלֹקִים יִוָּדַע לָכֶם בּוֹשׁוּ וְהִכָּלְמוּ מִדַּרְכֵיכֶם בֵּית יִשְׂרָאֵל". הפסוק אומר במפורש, ואין על מה להתווכח: בתחילת הגאולה מצבו הרוחני של העם לא יהיה טוב, עד כדי "בושו והכלמו". ובכל זאת ה' גואל, כדי שלא יהיה עוד חילול השם, וכולם יראו שהוא ממשיך לאהוב את עמו.</p>
+      <p class="bold-para">ההבטחה שלא תהיה עוד "חרפת רעב בגוים" – היפוכה של תמונת הרעב מן השואה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הדגן ופרי העץ</div>
+      <h3 class="story-title">🌿 "אלוקי היהודים חזר לאהוב אותם"</h3>
+      <p>הרב סיפר סיפור שמראה איך דווקא השפע הזה פעל על הגויים. שיבת עם ישראל לארצו הייתה קשה מאוד לעולם הנוצרי לעכל, כי לפי תפיסתם עם ישראל נדחה.</p>
+      <p>מסופר שכאשר האפיפיור פאולוס השישי ביקר בארץ, הוא נמנע בכוונה מכל הכרה במדינה. הוא עבר במקומות שונים בלי לעצור לפגוש את נציגיה. באחד המקומות עמד על גבעה, והמלווה שלו הסביר לו את מה שרואים. הוא שאל: של מי כל השדות הירוקים האלה? ענו לו: של היהודים. אמר: אם כך, כנראה צריך לומר שאלוקי היהודים חזר לאהוב אותם. אין לי הסבר אחר לכך שבארצם הכל פורח.</p>
+      <p>ואמרו שבאותו רגע התקיים הפסוק שבמזמור "למנצח בנגינות", שנוהגים לאומרו בצורת מנורה: "יוֹדוּךָ עַמִּים אֱלֹקִים יוֹדוּךָ עַמִּים כֻּלָּם. אֶרֶץ נָתְנָה יְבוּלָהּ". מתי יודו העמים? כשיראו שהארץ נותנת את יבולה.</p>
+      <p>זו בדיוק הנבואה של יחזקאל: "וְיָדְעוּ הַגּוֹיִם כִּי אֲנִי ה'". קידוש השם לא בא מדרשה או מוויכוח. הוא בא מן השדה הירוק.</p>
+      <p class="bold-para">כשהארץ נותנת יבולה, אפילו הגויים מודים שה' שב לאהוב את ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הדגן ופרי העץ</div>
+      <h3 class="story-title">📦 הצנע שנגמר</h3>
+      <p>ועוד בעניין "לא אתן עליכם רעב": בשנים הראשונות אחרי קום המדינה הגיעו לארץ רבבות עולים, ובכללם יהודי תימן, כשהשליט שם התיר פתאום לכל מי שרוצה לעלות. הרב הביא מה שקרא, שיש מי שאמרו שהחשבון של אויבי ישראל היה פשוט: אם לא הצליחו במלחמה, אולי יצליחו כך. נשלח לשם כל כך הרבה יהודים, שלא יהיה מה לתת להם, והמדינה תקרוס מחוסר אמצעים.</p>
+      <p>ובאמת, בהתחלה היה כך. הייתה תקופה של צנע, של מחסור קשה ומנות קצובות. אבל תוך זמן קצר המצב השתנה.</p>
+      <p>אחת הסיבות לכך, כפי שהרב תיאר, הייתה דבר מפתיע: אותה מדינה שרצחה את היהודים התחילה לשלם פיצויים. כסף רב נכנס לארץ, גם לאזרחים וגם למדינה, ותוך שנים ספורות היא השתחררה מן הצנע. הרב כינה זאת "ונהפוך הוא" ממש, כמו בפורים: מי שהוציא את עם ישראל מן הרעב היה דווקא מי שגרם לו.</p>
+      <p>ומכאן, אמר הרב, עברנו את השלב השלישי. עם ישראל שב לארצו, התחיל לחזור בתשובה, והארץ נותנת את פריה בשפע. חרפת הרעב חלפה.</p>
+      <p class="bold-para">בשנים הראשונות היה מחסור קשה, ובתוך כמה שנים השתנה המצב מן הקצה אל הקצה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ערים בנויות ועם רב</div>
+      <h3 class="story-title">🏡 "והיתה כגן עדן"</h3>
+      <p>השלב הרביעי: "כֹּה אָמַר ה' אֱלֹקִים בְּיוֹם טַהֲרִי אֶתְכֶם מִכֹּל עֲוֹנוֹתֵיכֶם וְהוֹשַׁבְתִּי אֶת הֶעָרִים וְנִבְנוּ הֶחֳרָבוֹת. וְהָאָרֶץ הַנְּשַׁמָּה תֵּעָבֵד תַּחַת אֲשֶׁר הָיְתָה שְׁמָמָה לְעֵינֵי כָּל עוֹבֵר".</p>
+      <p>וממשיך: "וְאָמְרוּ הָאָרֶץ הַלֵּזוּ הַנְּשַׁמָּה הָיְתָה כְּגַן עֵדֶן וְהֶעָרִים הֶחֳרֵבוֹת וְהַנְשַׁמּוֹת וְהַנֶּהֱרָסוֹת בְּצוּרוֹת יָשָׁבוּ. וְיָדְעוּ הַגּוֹיִם... כִּי אֲנִי ה' בָּנִיתִי הַנֶּהֱרָסוֹת נָטַעְתִּי הַנְּשַׁמָּה אֲנִי ה' דִּבַּרְתִּי וְעָשִׂיתִי".</p>
+      <p>הנביא מתאר את הארץ שהייתה שוממה לעיני כל עובר ואיך היא תיבנה עד שיאמרו עליה שהיא כגן עדן. הערים שנהרסו ייושבו, והחרבות ייבנו.</p>
+      <p>הרב ציין שבפסוק הזה ארץ ישראל מושווית לגן עדן, ושבעזרת ה' יעסוק בכך בהרחבה בשיעור הבא. ובינתיים די להתבונן: מה שהיה שממה, נעשה לגן. ושוב הדגש: "וידעו הגוים". הבניין עצמו הוא קידוש השם.</p>
+      <p class="bold-para">ההבטחה הרביעית: הערים החרבות ייבנו, והארץ השוממה תהיה כגן עדן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ערים בנויות ועם רב</div>
+      <h3 class="story-title">👨‍👩‍👧‍👦 "כצאן אדם"</h3>
+      <p>ההבטחה החמישית: "עוֹד זֹאת אִדָּרֵשׁ לְבֵית יִשְׂרָאֵל לַעֲשׂוֹת לָהֶם אַרְבֶּה אֹתָם כַּצֹּאן אָדָם. כְּצֹאן קָדָשִׁים כְּצֹאן יְרוּשָׁלַיִם בְּמוֹעֲדֶיהָ כֵּן תִּהְיֶינָה הֶעָרִים הֶחֳרֵבוֹת מְלֵאוֹת צֹאן אָדָם וְיָדְעוּ כִּי אֲנִי ה'".</p>
+      <p>כמה יפה לראות זאת היום, אמר הרב. אין מקום על הקרקע, ובונים כלפי מעלה. הורסים בתים נמוכים ובונים במקומם בניינים גבוהים. הערים מלאות אדם.</p>
+      <p>ויש כאן דבר שלדבריו עומד נגד כל הסטטיסטיקה בעולם. בכל העולם יש כלל: ככל שהרווחה עולה, מספר הילדים יורד. ברוב המדינות המפותחות הממוצע נמוך מאוד. וכאן, בארץ ישראל, הכלל הזה אינו עובד. יש שפע, שני ההורים עובדים, ובכל זאת מספר הלידות הממוצע גבוה בהרבה, כשלושה ילדים למשפחה.</p>
+      <p>והרב הדגיש שזה אינו קשור רק ליהודים באשר הם. בחוץ לארץ, לדבריו, אצל יהודים רבים שהתרחקו מן התורה, המצב קשה מאוד: רבים אינם מתחתנים, חלק מתחתנים עם מי שאינם יהודים, ומספר הילדים נמוך מאוד. ואילו כאן הכל פורח, מתחתנים ומביאים ילדים. כך הבטיח הקדוש ברוך הוא: "ארבה אתם כצאן אדם".</p>
+      <p class="bold-para">ההבטחה החמישית: "ארבה אתם כצאן אדם" – והרב ראה בה את ריבוי הילדים בארץ, בניגוד למגמה העולמית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ערים בנויות ועם רב</div>
+      <h3 class="story-title">🧭 חמשת השלבים במבט אחד</h3>
+      <p>בסיום כדאי לראות את התמונה כולה, כפי שהרב פרש אותה מתוך פסוקי ההפטרה.</p>
+      <p>השלב הראשון: "וקבצתי אתכם מכל הארצות" – יהודים שבו מכל קצוות תבל, ודווקא אל אדמתם. השלב השני: "וזרקתי עליכם מים טהורים... ונתתי לכם לב בשר" – אחרי השיבה מתחילה טהרה, לאט לאט, ותנועה של תשובה ולב רך מתפשטת בעם. השלב השלישי: "וקראתי אל הדגן... והרביתי את פרי העץ" – הארץ נותנת את פריה, וחרפת הרעב חולפת. השלב הרביעי: "ונבנו החרבות... והיתה כגן עדן" – הארץ השוממה נבנית. השלב החמישי: "ארבה אתם כצאן אדם" – הערים מתמלאות.</p>
+      <p>ומעל כל השלבים מרחף המשפט שהנביא חוזר עליו פעמיים: "לא למענכם אני עושה". זו התשובה לשאלה שפתחנו בה. הגאולה אינה פרס על מעשינו. היא קידוש שם שמים. ומתוכה, כחלק ממנה, באה גם התשובה שהרמב"ם דיבר עליה.</p>
+      <p>ומכאן גם תפקידנו: להכיר את מה שה' עושה לנגד עינינו, להודות עליו, ולהשתתף בשלב שעוד לא נשלם – "והייתם לי לעם". יזכנו ה' לראות את כל הנבואות מתקיימות במלואן.</p>
+      <p class="bold-para">קיבוץ, טהרה, שפע, בניין וריבוי – והכל "לא למענכם", אלא לקידוש שם ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/b8C3S4np5Aw · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"גאולה בלי תשובה?","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"חמש נבואות בהפטרה אחת","icon":"📜"},{"id":2,"title":"\"אין ישראל נגאלין אלא בתשובה\"","icon":"⚖️"},{"id":3,"title":"בשביל קידוש השם","icon":"✨"},{"id":4,"title":"מידת הדין ומידת קידוש השם","icon":"⏳"}]},{"id":2,"name":"קיבוץ ואחריו טהרה","icon":"💧","color":"#6d28d9","stories":[{"id":5,"title":"\"מכל הארצות\"","icon":"🌍"},{"id":6,"title":"\"וזרקתי עליכם מים טהורים\"","icon":"💧"},{"id":7,"title":"הירידה והבלימה","icon":"📉"},{"id":8,"title":"השבת הראשונה","icon":"🕯️"},{"id":9,"title":"\"ואם אתן לך עשרה מיליון?\"","icon":"💰"}]},{"id":3,"name":"לב בשר","icon":"❤️","color":"#e08e00","stories":[{"id":10,"title":"מלב אבן ללב בשר","icon":"❤️"},{"id":11,"title":"התבודדות בכל הציבורים","icon":"🗣️"},{"id":12,"title":"סגולה לרפואה","icon":"🩹"},{"id":13,"title":"\"והייתם לי לעם\"","icon":"🤝"}]},{"id":4,"name":"הדגן ופרי העץ","icon":"🌾","color":"#1e88b8","stories":[{"id":14,"title":"\"וקראתי אל הדגן\"","icon":"🌾"},{"id":15,"title":"המצה ששמרה","icon":"🫓"},{"id":16,"title":"חרפת רעב","icon":"🍎"},{"id":17,"title":"\"אלוקי היהודים חזר לאהוב אותם\"","icon":"🌿"},{"id":18,"title":"הצנע שנגמר","icon":"📦"}]},{"id":5,"name":"ערים בנויות ועם רב","icon":"🏙️","color":"#c62b6b","stories":[{"id":19,"title":"\"והיתה כגן עדן\"","icon":"🏡"},{"id":20,"title":"\"כצאן אדם\"","icon":"👨‍👩‍👧‍👦"},{"id":21,"title":"חמשת השלבים במבט אחד","icon":"🧭"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
