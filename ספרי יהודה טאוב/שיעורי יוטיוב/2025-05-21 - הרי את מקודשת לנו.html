@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 הרי את מקודשת לנו</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 הרי את מקודשת לנו</h1>
+  <p>קניין ארץ ישראל כקניין אישה: הקונה מתעלה, הארץ מתעלה, ועם ישראל מתחתן עם ארצו – חלק ב</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ הרי את מקודשת לנו" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/iJgNvppFuOY?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/iJgNvppFuOY/hqdefault.jpg" alt="הרי את מקודשת לנו" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=iJgNvppFuOY" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארץ ישראל בידי נכרים</div>
+      <h3 class="story-title">❓ שאלה שעלתה בימית</h3>
+      <p>את החלק השני של השיעור פתח הרב בסיפור מלפני כארבעים שנה. בזמן שחבל ימית שבסיני עמד לעבור לשלטון מצרי, עלה רעיון אצל כמה אנשים: להישאר לגור שם גם תחת שלטון מצרי. בסופו של דבר הרעיון לא יצא לפועל, אבל הוא עורר שאלה הלכתית אמיתית, ונכתבו עליה כמה תשובות באותה תקופה.</p>
+      <p>השאלה הייתה: האם יש עניין לגור בארץ ישראל כאשר היא תחת שלטון שאינו ישראלי? האם זה מעכב את מצוות ישיבת הארץ, או לא? האם שווה להשקיע בזה?</p>
+      <p>ודווקא השאלה הזאת קשורה ישירות לסוגיה שלנו, סוגיית אברהם אבינו הקונה את מערת המכפלה. בחלק הראשון למדנו למה היה חשוב לאברהם לקנות את הקרקע ולא לקבל אותה בחינם: על ידי הקנייה הוא התחבר לארץ ישראל ונעשה אוהב אותה. ומכאן הבנו למה לומדים קידושי אישה מקניין ארץ ישראל – כמו שקידושי אישה נועדו לאהבה, כך גם קניין הארץ אינו רק תשלום, אלא דרך לאהוב את החלק הנקנה.</p>
+      <p>עכשיו נעבור לשלב השני. נראה שיש כאן השפעה כפולה: לא רק האדם מתעלה כשהוא קונה קרקע בארץ ישראל. גם הארץ עצמה מתעלה. ומתוך זה נבין גם את שאלת ימית, גם את דבריו של דוד המלך כשברח לגת, וגם קושיה ידועה של הרמב"ן על קבורת רחל אמנו. כל אלה יתבהרו ביסוד אחד פשוט: מה קורה לקרקע של ארץ ישראל כשהיא עוברת מיד ליד.</p>
+      <p class="bold-para">האם מי שגר בארץ ישראל תחת שלטון נכרי מקיים את מצוות ישיבת הארץ?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארץ ישראל בידי נכרים</div>
+      <h3 class="story-title">🌱 גם הקרקע מתעלה</h3>
+      <p>כאשר קונים את ארץ ישראל בכסף, לא רק האדם מתעלה ומתחבר לארץ החיים. גם הקרקע מתעלה. כל עוד לא נקנתה מערת המכפלה, היה חיסרון גדול בקדושתה. כי כאשר ארץ ישראל נמצאת ברשות נכרית, היא מאבדת הרבה מקדושתה.</p>
+      <p>הראיה לכך מן ההלכה: לדעת פוסקים רבים, קרקע של נכרי בארץ ישראל אינה חייבת במצוות התלויות בארץ, כמו שמיטה ומעשרות. זה היסוד של "היתר המכירה" בשנת השמיטה: מוכרים את הקרקע לנכרי, ואז אין עליה דין שביעית. האם המכירה הזאת מועילה או לא – זה כבר נושא אחר. אבל מה שרואים ממנה הוא שקרקע של נכרי חסרה בקדושת הארץ.</p>
+      <p>וכך גם בפירות שמגיעים מקרקע של נכרים בארץ: יש מי שמביאים מהם בשנת השמיטה, כי אין בהם קדושת שביעית. זו ארץ ישראל, ובכל זאת מבחינה מסוימת היא חסרה בקדושה. לא שזה חוץ לארץ ממש – אין להגזים – אבל חסר בה משהו מקדושת ארץ ישראל.</p>
+      <p>ולכן, כשנשאלה השאלה על ימית, אמרו רבנים רבים שאין בזה עניין: אם השלטון והבעלות על הקרקע הם מצריים, אתם כביכול גרים בחוץ לארץ. לא לגמרי, אבל בדרגה נמוכה בהרבה.</p>
+      <p class="bold-para">כשהקרקע ברשות נכרי היא מאבדת הרבה מקדושתה, וכשיהודי קונה אותה היא חוזרת לקדושתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארץ ישראל בידי נכרים</div>
+      <h3 class="story-title">🏃 דוד המלך בגת</h3>
+      <p>עכשיו אפשר לענות על שאלה ששאלנו בחלק הראשון. דוד המלך, כשברח מפני שאול, הלך אל אכיש מלך גת. ושם הוא מתאונן שגירשו אותו מנחלת ה', כאילו נשלח לחוץ לארץ. ועליו התפלל: "אֶתְהַלֵּךְ לִפְנֵי ה' בְּאַרְצוֹת הַחַיִּים".</p>
+      <p>והשאלה: גת אינה רחוקה כלל. זה באזור קריית גת של היום, נסיעה קצרה מירושלים. איך אפשר לומר שזה חוץ לארץ?</p>
+      <p>התשובה: באותה תקופה המקום לא היה בידי ישראל. היה שם אכיש מלך גת, מלך פלשתי. וכשאתה נמצא תחת שלטון נכרי, אתה כביכול נמצא בחוץ לארץ. לא לגמרי, אבל בדרגה נמוכה בהרבה.</p>
+      <p>בשיעור עלתה גם שאלה ממשתתף על ימי הבית השני. הרב ציין שבמשך כמאתיים שנה, מאז שבי ציון ועד ימי החשמונאים, לא היה בארץ שלטון ישראלי, והמלכים הנכרים משלו בה ממש. רק החשמונאים חזרו וכבשו את הארץ, ולתקופה מסוימת עם ישראל משל בה שוב. כך גם הנס של חנוכה נוגע לעניין הזה: לא רק נס של פך שמן, אלא גם חזרה של הארץ לרשות ישראל.</p>
+      <p class="bold-para">דוד אמר שגירשו אותו מנחלת ה', אף שגת קרובה לירושלים, כי היא הייתה תחת שלטון נכרי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארץ ישראל בידי נכרים</div>
+      <h3 class="story-title">🕯️ שרה ורחל</h3>
+      <p>לפי זה מובן היטב מה עשה אברהם אבינו. הוא רצה לקבור את שרה בארץ ישראל. לקבורה בארץ ישראל יש מעלה עצומה, שנאמר "וְכִפֶּר אַדְמָתוֹ עַמּוֹ" – האדמה מכפרת. וכמו שלמדנו, ארץ ישראל היא בחינת העולם הבא; כשקוברים אדם בארץ ישראל, כאילו מכניסים אותו ישר לעולם הבא.</p>
+      <p>אבל איך יקבור אותה בארץ ישראל, כשהארץ ביד הכנעני? אם יקבור אותה בכל קבר אחר, בקרקע שאינה שלו, היא לא תהיה קבורה בארץ ישראל במלוא המובן. רק על ידי שאברהם הולך וקונה קרקע בכסף מלא – עכשיו היא שייכת ליהודי, ועכשיו שרה נקברת בארץ ישראל.</p>
+      <p>ומכאן תירוץ לקושיה ידועה. יעקב אבינו מתנצל לפני יוסף על שקבר את רחל בדרך. רש"י מביא בשמו: "ולא הוליכתיה אפילו לבית לחם להכניסה לארץ". והרמב"ן מקשה: הרי המקום בארץ ישראל! הרמב"ן גם מספר שבתחילה חשב שרחל קבורה ברמה, משום הפסוק "קוֹל בְּרָמָה נִשְׁמָע"; וכשבא לארץ ראה שקברה ליד בית לחם, ואין שם שום רמה.</p>
+      <p>התשובה, לפי מה שלמדנו: יעקב קבר אותה בשטח הפקר, כשהארץ ביד הכנעני. הוא לא קנה את המקום. לכן מבחינה מסוימת זה כמו חוץ לארץ. רק אילו קנה את המקום, הייתה רחל קבורה בארץ ישראל במלוא המובן.</p>
+      <p class="bold-para">שרה נקברה בארץ ישראל רק משום שאברהם קנה את הקרקע; רחל נקברה בשטח הפקר, ולכן נחשב כאילו לא הוכנסה לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · למה נכתבה הפרשה</div>
+      <h3 class="story-title">📖 קושיית הרמב"ן על האבן עזרא</h3>
+      <p>הרמב"ן בפרשת השבוע שואל שאלה פשוטה: לשם מה נכתבה הפרשה הזאת? התורה מאריכה בפסוקים רבים איך קנו את השדה, ואת המערה, ואת כל העץ אשר בשדה, ואיך אברהם לא הסכים לקבל בחינם. בשביל מה כל זה? מה המטרה של הסיפור הזה?</p>
+      <p>הרמב"ן מביא את תשובת האבן עזרא: "להודיע מעלת ארץ ישראל על כל הארצות, לחיים ולמתים". מעלה לחיים – שיש להם קרקע בארץ ישראל. יש מצווה שלכל יהודי תהיה קרקע בארץ ישראל, והמקור הראשוני למצווה הזאת הוא כאן, בפרשה. ומעלה למתים – שנקברים באדמת ארץ ישראל, שנאמר "וְכִפֶּר אַדְמָתוֹ עַמּוֹ".</p>
+      <p>אבל הרמב"ן לא מבין: איזו ראיה יש מכאן למעלת ארץ ישראל? שרה מתה, ואברהם היה צריך לקבור אותה. מה רצית שיעשה, שיחזיר אותה לחרן? הוא גר כאן, והיא מתה כאן, אז קבר אותה כאן. מניין שיש בזה מעלה מיוחדת לארץ ישראל?</p>
+      <p>הרמב"ן נשאר בשאלה. אבל לפי מה שלמדנו, אפשר לבאר את דברי האבן עזרא בצורה יפה מאוד.</p>
+      <p>וכדאי לשים לב לשאלה עצמה. התורה אינה ספר היסטוריה, ואינה מספרת סיפורים רק כדי שנדע מה קרה. כשהיא מאריכה כל כך בפרטי המשא ומתן – מי דיבר, מה הציע, מה ענו לו, כמה שילם – יש לכך מטרה. ושני גדולי המפרשים מסכימים שצריך למצוא אותה; השאלה היא רק מהי. ולפי מה שלמדנו בחלק הראשון ובחלק הזה, התשובה מתבהרת מאליה.</p>
+      <p class="bold-para">האבן עזרא: הפרשה נכתבה להודיע מעלת ארץ ישראל על כל הארצות, לחיים ולמתים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · למה נכתבה הפרשה</div>
+      <h3 class="story-title">💡 תשובה לקושיה</h3>
+      <p>אילולא מעלת ארץ ישראל, היה אברהם קובר את שרה בשטח הפקר, או במערת קבורה כלשהי. לא היה צריך לקנות. רק משום שאברהם אבינו רצה לקבור אותה בקדושת ארץ ישראל, היה עליו לקנות שטח אדמה, כדי שיקבל את קדושת הארץ.</p>
+      <p>באותו זמן הארץ הייתה ברשות הכנעני. רק על ידי שאברהם קנה את המקום, נעשה המקום בעל קדושת ארץ ישראל. זו הראיה למעלת הארץ: כל המשא ומתן הארוך, וההתעקשות לשלם בכסף מלא, באו כדי שהקבורה תהיה בארץ ישראל ממש.</p>
+      <p>הרב הוסיף שמכאן יש לדעת דבר גם היום: מקומות בארץ שכרגע אינם ברשות יהודית, גם אם מבקרים בהם, הם פחות קדושים מבחינה מסוימת. לא חוץ לארץ, אבל חסרים.</p>
+      <p>והעלה גם שאלה מעניינת: מה יקרה אם יום אחד חברה גדולה, בבעלות של נכרי, תקנה דירות בארץ ותשכיר אותן ליהודים? האם השוכר גר בארץ ישראל במלוא המובן? זו שאלה שצריך לשאול ולבדוק. אבל היא ממחישה את היסוד: בעלות של נכרי מפקיעה מקדושת הארץ.</p>
+      <p>ולכן כל כך חמור האיסור למכור קרקע בארץ ישראל לנכרי. מעבר לכל השיקולים האחרים, מי שמוכר קרקע כזאת לוקח חלק מארץ ישראל ומוחק, כביכול, את קדושתו.</p>
+      <p class="bold-para">אילולא מעלת הארץ, היה אברהם קובר בשטח הפקר; הוא קנה כדי שהמקום יקבל קדושת ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · למה נכתבה הפרשה</div>
+      <h3 class="story-title">🔁 חמש פעמים בספר בראשית</h3>
+      <p>לכן חזרה התורה פעמים רבות על הפרשה הזאת. קניין המערה מוזכר חמש פעמים בספר בראשית: בקנייתה, בפרשתנו; בקבורת אברהם, בסוף הפרשה; בבקשת יעקב מבניו, כשהוא מספר שם קברו את אברהם ושרה, יצחק ורבקה, ושם קבר את לאה; ובקבורת יעקב, ממש לפני סוף ספר בראשית.</p>
+      <p>שם נאמר: "וַיִּשְׂאוּ אֹתוֹ בָנָיו אַרְצָה כְּנַעַן וַיִּקְבְּרוּ אֹתוֹ בִּמְעָרַת שְׂדֵה הַמַּכְפֵּלָה אֲשֶׁר קָנָה אַבְרָהָם אֶת הַשָּׂדֶה לַאֲחֻזַּת קֶבֶר מֵאֵת עֶפְרֹן הַחִתִּי עַל פְּנֵי מַמְרֵא". וכי מישהו עדיין לא יודע? כולם כבר קראו זאת פעמים רבות. למה התורה כותבת שוב "אשר קנה אברהם"?</p>
+      <p>התשובה: להראות לך כמה חביב בעיני בורא עולם שיהודי קונה קרקע בארץ ישראל. דבר שחביב, חוזרים עליו שוב ושוב.</p>
+      <p>אם כן, יש כאן מעלה כפולה. כשקונים קרקע בארץ ישראל, האדם מתרומם ומתחבר לארץ, כמו שראינו בחלק הראשון. אבל לא רק האדם; גם המקום מתרומם ונעשה קדוש הרבה יותר. מעלה לקונה, ומעלה לנקנה.</p>
+      <p>על החזון איש מסופר שאף שגר בשכירות בבני ברק, קנה לעצמו חלקת קרקע בארץ ישראל. הוא לא עשה בה דבר. קנה אותה רק בשביל המצווה – שתהיה לו קרקע בארץ ישראל.</p>
+      <p class="bold-para">התורה חוזרת על קניין המערה חמש פעמים, להראות כמה חביב בעיני ה' שיהודי קונה קרקע בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ויקם – שתי תקומות</div>
+      <h3 class="story-title">⬆️ "ויקם" פעמיים</h3>
+      <p>בפרשה כתוב פעמיים "וַיָּקָם". בפעם הראשונה: "וַיָּקָם שְׂדֵה עֶפְרוֹן אֲשֶׁר בַּמַּכְפֵּלָה... לְאַבְרָהָם לְמִקְנָה". ובפעם השנייה, אחרי הקבורה: "וַיָּקָם הַשָּׂדֶה וְהַמְּעָרָה אֲשֶׁר בּוֹ לְאַבְרָהָם לַאֲחֻזַּת קָבֶר מֵאֵת בְּנֵי חֵת". מה פירוש "ויקם"? לאן קם השדה? רש"י אומר: תקומה הייתה לו, שיצא מיד הדיוט ליד מלך. כלומר, המקום התרומם.</p>
+      <p>ולמה פעמיים? לפי הפשט, היו כאן שני קניינים. הרב המשיל: אדם שרוצה לבנות בית כנסת בן ארבע קומות על מגרש – מה הוא צריך? שני אישורים. אישור מבעל המגרש, שימכור לו, ואישור מהרשות, שתתיר לבנות.</p>
+      <p>כך אברהם אבינו. הוא רוצה להפוך את הקרקע לאחוזת קבר – "שינוי ייעוד", בלשון של היום. לכן הוא צריך אישור מבני העיר, שכנראה היו מתכנסים יחד ומחליטים, ואישור מבעל השדה. זה "ויקם" אחד מעפרון, ו"ויקם" שני מבני חת.</p>
+      <p>ויש עוד דבר: איש לא ידע מה נמצא שם. אילו ידע עפרון שאדם הראשון קבור במקום, אולי לא היה מוכר. רק אברהם ידע. שם המקום של אבות האומה, ולכן גם אדם הראשון קבור שם – הוא האבא של כל האבות.</p>
+      <p class="bold-para">לפי הפשט, אברהם היה צריך שני אישורים: מבעל הקרקע ומבני העיר, כי שינה את ייעוד המקום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ויקם – שתי תקומות</div>
+      <h3 class="story-title">🌄 תקומה לחיים ותקומה למתים</h3>
+      <p>ולפי הדרש, יש כאן עומק נוסף. למה כתוב פעמיים "ויקם"? כי הפרשה רומזת לשתי מעלות, כמו שכתב האבן עזרא: היא נכתבה להודיע את מעלת הארץ לחיים ולמתים.</p>
+      <p>היו כאן שתי תקומות. תקומה אחת – מעלה לחיים. אברהם אבינו זוכה עכשיו, והוא חי, שיש לו קרקע בארץ ישראל. ותקומה שנייה – מעלה למתים. מת שקבור בארץ ישראל זוכה למעלה גדולה, כי האדמה מכפרת.</p>
+      <p>בשיעור עלתה גם שאלת העלאת מתים מחוץ לארץ לקבורה בארץ ישראל. הרב ציין שיש בזה דיון: יש דעה בזוהר שאין עניין להעלות לארץ אדם שבחר לגור כל חייו בחוץ לארץ. יעקב אבינו רצה לגור כל ימיו בארץ ישראל, ונאלץ לרדת למצרים מפני שלא הייתה לו ברירה, והקדוש ברוך הוא ציווה עליו. אבל מי שבחר לגור בחוץ לארץ – אם נזכר רק אחרי מותו, זה מאוחר מדי. יש בנושא גם תשובות של פוסקים בדורות האחרונים.</p>
+      <p>ויש עוד נקודה. פעם, מי שקנה קרקע מנכרי, הפך אותה מקרקע חסרת קדושה לקרקע של ארץ ישראל. היום, רוב הקרקעות נקנות מיהודים, ואין את המעלה הזאת. האם יש בזה עדיין מעלה? הרב ציין שכן, אבל הניח את הדיון לפעם אחרת.</p>
+      <p class="bold-para">שני ה"ויקם" רומזים לשתי המעלות שבקניין הארץ: מעלה לחיים ומעלה למתים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמח את הכלה</div>
+      <h3 class="story-title">🎉 "ושמח את אשתו"</h3>
+      <p>ועכשיו נעבור לקטע הבא: שמחת נישואין כפולה. נאמר בתורה שאדם הנושא אישה יש לו מצווה בשנה הראשונה לשמח את אשתו: "נָקִי יִהְיֶה לְבֵיתוֹ שָׁנָה אֶחָת וְשִׂמַּח אֶת אִשְׁתּוֹ אֲשֶׁר לָקָח".</p>
+      <p>חז"ל במסכת סוטה, בפרק משוח מלחמה, למדו שהדין הזה כפול. הוא נאמר לא רק על אדם הנושא אישה, אלא גם על אדם שבנה בית. "נקי יהיה לביתו" – גם מי שבנה בית חוזר מן המלחמה, וכמו החתן, יש לו שנה שלמה של שמחה.</p>
+      <p>אבל במה ישמח? בקירות? באבנים? הרב אמר שחיפש בספרים רבים ולא מצא תשובה ברורה: במה אדם צריך לשמוח אחרי שקנה בית?</p>
+      <p>ולפי מה שלמדנו, הדברים נפלאים. למדנו שקניין הארץ הוא קניין כפול, כמו קניין אישה. כשם שאדם הנושא אישה צריך לשמוח עמה שנה שלמה כדי להתאחד איתה, כך אדם ש"נושא" את ארץ ישראל. כשאתה קונה בית בארץ ישראל, אתה לא רק קונה בית. אתה מתחתן, כביכול, עם ארץ ישראל.</p>
+      <p>ולכן אתה צריך לשמח את הכלה – את ארץ ישראל. ללמוד ולחוש את מעלתה, כדי להתאחד איתה. השנה הראשונה בבית החדש היא כמו שנת הנישואין הראשונה: זמן להתחבר.</p>
+      <p class="bold-para">חז"ל השוו את מי שבנה בית בארץ ישראל למי שנשא אישה: שניהם פטורים מן המלחמה ומצווים לשמוח שנה שלמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמח את הכלה</div>
+      <h3 class="story-title">⚖️ קניין אישה וקניין הארץ שווים</h3>
+      <p>נחזור עכשיו לנקודה שבה התחלנו. פרשת השבוע מתחילה באברהם אבינו הקונה את ארץ ישראל. הגמרא לומדת "קיחה קיחה" משדה עפרון, ומשווה בין קניין אישה לבין קניין ארץ ישראל.</p>
+      <p>באה הגמרא לומר לך: דע שקניין אישה וקניין ארץ ישראל שווים. למה? כי גם ארץ ישראל היא כביכול אשתו של עם ישראל, ועם ישראל מתחתן עם ארץ ישראל.</p>
+      <p>זה לא רק דימוי יפה. כמו בנישואין, יש כאן קניין ממוני, אבל עיקרו ברית של אהבה. יש כאן שני צדדים שמשלימים זה את זה. ויש כאן אחריות: לשמח, לדאוג, להתחבר.</p>
+      <p>כך מובן גם הקשר בין שני הקניינים שבפרשה עצמה. אברהם קונה את המערה, ואליעזר הולך לקדש את רבקה. התורה הצמידה אותם זה לזה, כי שניהם אותו מהלך: יצירת בית. בית של משפחה, ובית של עם. ושניהם נבנים באותה דרך – בנתינה, בהשקעה ובאהבה. ומי שמבין זאת, מבין למה אברהם לא הסתפק במתנה. מתנה אפשר לקבל בלי להתחבר; קניין של אהבה דורש לתת מעצמך.</p>
+      <p>ולפני שנמשיך להסבר הזה, יש סיפור אחד שממחיש את כל מה שלמדנו. זה סיפור קצת מצחיק, אבל העומק שלו הוא כל מה שדיברנו עליו בשיעור הזה.</p>
+      <p class="bold-para">הגמרא משווה את שני הקניינים כדי ללמד שארץ ישראל היא כביכול אשתו של עם ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עם ישראל וארצו</div>
+      <h3 class="story-title">🚧 החתונה בסבסטיה</h3>
+      <p>בשנת תשל"ו, בחנוכה, התכנסו קבוצות גדולות של אנשים לעלות להתיישב בסבסטיה שבשומרון, ליד תחנת הרכבת העתיקה שם. הם רצו ליישב את הארץ, וביקשו כל אמה וכל טפח בה. אך לא היה להם אישור, ורבים מהם הגיעו ברגל, דרך השדות והגבעות.</p>
+      <p>בנר השלישי של חנוכה יצאו לשם כמה אנשים במכונית, ובהם רבי שלמה קרליבך ורב מן הרבנים שבאו לחזק את העולים. בדרך, ליד אחד הצמתים, נעצרו במחסום. החייל שעמד שם אמר: יש לי הוראה מלמעלה, אין כניסה לרכב אזרחי.</p>
+      <p>החייל הוסיף שהוא יודע שאנשים רבים צועדים לשם כבר מן הבוקר, ושאי אפשר היה לעצור את כולם, כי עברו דרך השדות. אבל לכלי רכב, כך אמר, אין הוא נותן לעבור כלל.</p>
+      <p>היה כבר ערב, היה גשם, והדרך רחוקה. ללכת ברגל לא היה אפשר. הם ישבו נבוכים במכונית וכבר חשבו לחזור. פתאום נזכרו שבתא המטען מונחת חופה – פרוכת עם ארבעה מוטות – שנשארה מחתונה שנערכה ימים אחדים קודם.</p>
+      <p>ניגש הרב אל החייל ואמר לו: שמע ידידי, אנחנו מבינים את ההוראה שקיבלת. אבל אנחנו לא סתם באים. מחכים שם חתן וכלה לחופה וקידושין. אינך רואה את החופה שאנחנו מביאים? אני מסדר הקידושין, וקרליבך הוא החזן. איך אפשר להשאיר את החתן והכלה כך?</p>
+      <p>החייל ראה את החופה ושוכנע. הוא התקשר למפקד והסביר את חומרת העניין, וקיבל אישור. הוא סימן להם שהם רשאים לעבור את המחסום, והם המשיכו בדרכם בשמחה גדולה.</p>
+      <p class="bold-para">בחנוכה, בדרך לסבסטיה, אמרו לחייל במחסום שהם בדרך לחופה וקידושין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עם ישראל וארצו</div>
+      <h3 class="story-title">💍 "הרי את מקודשת לנו"</h3>
+      <p>בסבסטיה כבר הייתה השמחה בעיצומה. אלה היו עסוקים בהקמת אוהלים, ואלה הכינו סעודה כדי להודות לה' על חסדו, שזיכה אותם לשוב לחבלי ארץ אבותיהם. קרליבך הדליק שלושה נרות בחנוכייה, לקח את הגיטרה ופרץ בשירה גדולה. והרב בירך את הציבור בדברים היוצאים מן הלב על היום הגדול, שדורות רבים חלמו עליו.</p>
+      <p>בבוקר ביקשו לחזור. נתפס קרליבך למחשבות ואמר: רבותיי, הבטחנו לחייל אחד מבחורי ישראל הנפלאים שאנחנו הולכים לערוך חופה וקידושין, ובזכות זה קיבלנו אישור. אם נחזור עכשיו, נמצא ששיקרנו לו. אין לי פנים לשקר לאדם כזה.</p>
+      <p>קמו יחד ואמרו: נעשה חופה וקידושין. החתן יהיה עם ישראל, והכלה תהיה ארץ ישראל. נקדש אותם זה לזה.</p>
+      <p>והסבירו: כשמקדשים כלה בשר ודם, מקדשים אותה בטבעת זהב – חומר דומם. אם כן, כלה שהיא עצמה חומר דומם, אדמה, מקדשים אותה בטבעת של בשר ודם.</p>
+      <p>קרליבך אסף עשרה אנשים ויצר מהם מעגל, ובתוכו חלל של ארבע אמות מאדמת ארץ ישראל. ציווה לארבעה חברים לאחוז את המוטות ולפרוס את החופה מעל. הקהל נאסף סביב, והוא הכריז בקול: "ארץ, ארץ, ארץ, הרי את מקודשת לנו בטבעת זו כדת משה וישראל".</p>
+      <p class="bold-para">החתן הוא עם ישראל והכלה היא ארץ ישראל: מקדשים אותה בטבעת של בשר ודם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עם ישראל וארצו</div>
+      <h3 class="story-title">💔 שני מיני נשים</h3>
+      <p>זה נשמע כמו בדיחה, אבל יש בסיפור עומק נפלא. הסיפור האמיתי של עם ישראל וארץ ישראל הוא בדיוק כמו של חתן וכלה.</p>
+      <p>פרשת חיי שרה היא כביכול פרשת השידוכים, פרשת האישה. היא הפרשה היחידה בתורה שנקראת על שם אישה, וכל כולה עוסקת באישה. אבל, כך נאמר בשם הגר"א, יש כביכול שני מיני נשים. יש האישה שאנחנו מכירים בבית, ויש ארץ ישראל, שהיא כביכול אשתו של עם ישראל.</p>
+      <p>וכשעם ישראל עוזב את ארץ ישראל, הוא כביכול מגרש אותה. באיזו מסכת מופיע סיפור החורבן, סיפור קמצא ובר קמצא? במסכת גיטין – מסכת הגירושין. ואיך פותחת מגילת איכה? "אֵיכָה יָשְׁבָה בָדָד הָעִיר רַבָּתִי עָם הָיְתָה כְּאַלְמָנָה". כאלמנה – ולא אלמנה ממש, כי בעלה עתיד לחזור.</p>
+      <p>וכשעם ישראל חוזר לארצו, יש כאן כביכול קידושין מחדש. ובפרשת השבוע, בקניין הראשון בארץ ישראל, אברהם אבינו – היהודי הראשון – מתחתן כביכול עם ארץ ישראל. לא בכדי מסכת קידושין פותחת בקניין ארץ ישראל: הוא קניין של נישואין.</p>
+      <p class="bold-para">כשעם ישראל עוזב את ארצו, הוא כביכול מגרש אותה; כשהוא חוזר, יש כאן קידושין מחדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עם ישראל וארצו</div>
+      <h3 class="story-title">🎶 "כי יבעל בחור בתולה"</h3>
+      <p>ויש פסוק נפלא שאומר את כל זה. ישעיהו הנביא אומר על ארץ ישראל: "כִּי יִבְעַל בָּחוּר בְּתוּלָה יִבְעָלוּךְ בָּנָיִךְ". הבנים – עם ישראל – יתחתנו עם הארץ. ומה ההמשך, שכולם מכירים מן השיר? "וּמְשׂוֹשׂ חָתָן עַל כַּלָּה יָשִׂישׂ עָלַיִךְ אֱלֹקָיִךְ".</p>
+      <p>כאשר עם ישראל מתחתן עם ארץ ישראל, הוא זוכה שגם הקדוש ברוך הוא שמח עליו, כשמחת חתן על כלה. יש כאן שתי חתונות, זו בתוך זו.</p>
+      <p>הרב ציין שהדור הקודם, שבא לארץ, לא היה צריך הסבר. כולם ידעו מה עושים: נלחמים, בונים, גואלים קרקעות. לדור הצעיר יש היום פחות הזדמנויות כאלה. אז איך מתחתנים היום עם ארץ ישראל?</p>
+      <p>המצווה שנשארה לכל אדם, הלכה למעשה, היא קניית בית. כמעט כל יהודי בארץ קונה דירה, בזול או ביוקר. ואיזה פלא: כך הוא מקיים מצוות עשה מן התורה, ומתחתן כביכול עם ארץ ישראל. וכפי שלמדנו, מי שמתחתן עם ארץ ישראל קונה בזה גם חלק בעולם הבא.</p>
+      <p class="bold-para">כשעם ישראל מתחתן עם ארצו, הוא זוכה שגם הקדוש ברוך הוא שמח עליו כחתן על כלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עם ישראל וארצו</div>
+      <h3 class="story-title">🔑 לדעת מה עושים</h3>
+      <p>והרב העיר שכמעט אין אנשים שיודעים שיש מצווה לקנות בית בארץ ישראל. הרי היום קונים מיהודי ולא מנכרי – איזו מצווה יש בזה? איפה היא כתובה? רבים אינם מכירים אותה כלל.</p>
+      <p>המקור הראשוני ביותר למצווה הוא בפרשת השבוע: התורה מספרת איך אברהם אבינו הלך וקנה. ובהמשך, כך אמר הרב, נלמד שגם מי שקונה מיהודי מקיים מצווה. אמנם יש הבדל: כשקונים מנכרי הרווחנו כפליים – גם הארץ הרוויחה, וגם הקונה הרוויח. היום אפשרות כזאת כמעט אינה מצויה, אבל עדיין האדם הקונה מתעלה.</p>
+      <p>לכן כתבה התורה "ויקם": הייתה תקומה למקום, אבל גם לאדם עצמו. ולכן קנה אברהם בכסף מלא – גם בשביל שהמקום יתעלה, וגם בשביל שהוא עצמו יתעלה.</p>
+      <p>וזה מה שהרב מבקש להחדיר לדור הצעיר: כשאתה קונה דירה, תדע מה אתה עושה. אתה משקיע לא יום אחד, אלא עשרים שנה ויותר. כמעט אין מי שיש לו מזומן לקנות דירה; כמעט כולם משקיעים שנים רבות. שלפחות יידעו שזו מצווה, מה מקורה, ולמה היא כל כך חשובה.</p>
+      <p>ונסיים בפסוק: "אַתָּה תָקוּם תְּרַחֵם צִיּוֹן כִּי עֵת לְחֶנְנָהּ כִּי בָא מוֹעֵד. כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ וְאֶת עֲפָרָהּ יְחֹנֵנוּ". כאשר עם ישראל מתחתן עם ארצו, הקדוש ברוך הוא מתחתן איתו, והגאולה השלמה מתקרבת.</p>
+      <p class="bold-para">מי שקונה בית בארץ ישראל משקיע שנים רבות, ושווה שיידע שהוא מקיים בזה מצווה גדולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/iJgNvppFuOY · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ארץ ישראל בידי נכרים","icon":"🗺️","color":"#c62b6b","stories":[{"id":1,"title":"שאלה שעלתה בימית","icon":"❓"},{"id":2,"title":"גם הקרקע מתעלה","icon":"🌱"},{"id":3,"title":"דוד המלך בגת","icon":"🏃"},{"id":4,"title":"שרה ורחל","icon":"🕯️"}]},{"id":2,"name":"למה נכתבה הפרשה","icon":"📖","color":"#6d28d9","stories":[{"id":5,"title":"קושיית הרמב\"ן על האבן עזרא","icon":"📖"},{"id":6,"title":"תשובה לקושיה","icon":"💡"},{"id":7,"title":"חמש פעמים בספר בראשית","icon":"🔁"}]},{"id":3,"name":"ויקם – שתי תקומות","icon":"⬆️","color":"#e08e00","stories":[{"id":8,"title":"\"ויקם\" פעמיים","icon":"⬆️"},{"id":9,"title":"תקומה לחיים ותקומה למתים","icon":"🌄"}]},{"id":4,"name":"לשמח את הכלה","icon":"🎉","color":"#1e88b8","stories":[{"id":10,"title":"\"ושמח את אשתו\"","icon":"🎉"},{"id":11,"title":"קניין אישה וקניין הארץ שווים","icon":"⚖️"}]},{"id":5,"name":"עם ישראל וארצו","icon":"💍","color":"#c62b6b","stories":[{"id":12,"title":"החתונה בסבסטיה","icon":"🚧"},{"id":13,"title":"\"הרי את מקודשת לנו\"","icon":"💍"},{"id":14,"title":"שני מיני נשים","icon":"💔"},{"id":15,"title":"\"כי יבעל בחור בתולה\"","icon":"🎶"},{"id":16,"title":"לדעת מה עושים","icon":"🔑"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
