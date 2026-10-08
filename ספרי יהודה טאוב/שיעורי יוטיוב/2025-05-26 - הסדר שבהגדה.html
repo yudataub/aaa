@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 הסדר שבהגדה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 הסדר שבהגדה</h1>
+  <p>ההגדה של פסח אינה אוסף מדרשים אלא מבנה מסודר: ארבעה חלקים, שבכל אחד שאלה, סיפור, שבח והודאה – ולמה הוא בנוי כך, כדי לתפוס את כל סוגי בני האדם</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ הסדר שבהגדה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/wEuJT3B3ImE?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/wEuJT3B3ImE/hqdefault.jpg" alt="הסדר שבהגדה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=wEuJT3B3ImE" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · למה "ליל הסדר"</div>
+      <h3 class="story-title">🍷 לילה של בלגן?</h3>
+      <p>הרב פתח בשאלה: למה קוראים ללילה הזה "ליל הסדר"? אילו היה תלוי בו, אמר בחיוך, היה קורא לו "ליל הבלגן": פעם קוראים, פעם שותים, פעם טובלים, פעם אוכלים, קדש, ורחץ, כרפס, יחץ – מיליון דברים. מה כל כך מסודר כאן?</p>
+      <p>התשובה הפשוטה: חז"ל תיקנו לשתות בלילה הזה ארבע כוסות. אדם יכול לחשוב: ארבע כוסות? אשתה אותן אחת אחרי השנייה, כמו בפורים, וגמרתי. אבל אומרים לו: לא כך. לכל כוס יש זמן ותפקיד. כוס ראשונה – קידוש. שנייה – הגדה. שלישית – ברכת המזון. רביעית – הלל. מי ששתה את ארבעתן בבת אחת לא יצא ידי חובה. הלילה הזה הוא לילה שבו כל דבר צריך להיעשות לפי הסדר שסידרו.</p>
+      <p>והרב העיר שחוץ מכוס הקידוש, כל הכוסות נשתות אחרי שירה: "אין אומרים שירה אלא על היין". הכוס השנייה – אחרי שאמרנו "בצאת ישראל ממצרים". הכוס השלישית – על ברכת המזון, שגם היא שירה, כמו שאנו שרים בזמר "צור משלו אכלנו": "עַל כֵּן נוֹדֶה לִשְׁמוֹ וּנְהַלְּלוֹ בְּפִינוּ". והרביעית – על ההלל, שכולו שירה.</p>
+      <p>ואם הכוסות מסודרות כל כך, נשאלת השאלה: האם גם להגדה עצמה יש סדר?</p>
+      <p class="bold-para">הלילה נקרא "ליל הסדר" משום שכל דבר בו נעשה בזמנו ובמקומו, כמו ארבע הכוסות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · למה "ליל הסדר"</div>
+      <h3 class="story-title">📰 עיתון או סיפור</h3>
+      <p>הרב השווה לספר "ילקוט שמעוני": זהו אוסף של מדרשים על התורה, קצת מכאן וקצת משם. אין טעם לחפש קשר בין קטע לקטע, ממש כמו בעיתון: אין קשר בין המודעה שלמעלה לבין הידיעה שלמטה.</p>
+      <p>ואגב, הרב העיר על עיתונות: הוא סיפר שראה פעם בעצמו אירוע, ואחר כך קרא עליו כתבה, וגילה כמה הכתבה רחוקה מן המציאות. למשל, כתב שרצה להראות פריצה לבית כנסת, ומאחר שלא היה הרבה מה לצלם, הפך ספסלים ושולחן כדי שהתמונה תהיה מרשימה. מאז למד כמה צריך להיזהר לפני שמאמינים לכל מה שכתוב.</p>
+      <p>אבל מה עם ההגדה? יש בה "כמה מעלות טובות למקום עלינו", ואחר כך "פסח, מצה ומרור", ולפני כן "ביד חזקה", "דם ואש ותימרות עשן", ודברי חכמים רבים. האם זה אוסף מדרשים, או שיש קשר בין חלק לחלק?</p>
+      <p>הרב אמר שאת התשובה למד מן ההגדה של הרב יוסף צבי רימון, שאחיינו הראה לו, ושגילה, כלשונו, את הסוד שמאחורי ההגדה. מי שיקשיב היטב, אמר, יוכל אחר כך לכתוב את סדר ההגדה בעל פה – לא מילה במילה, אבל את כל הקטעים לפי סדרם, כי הם בנויים בצורה מסודרת ויפה.</p>
+      <p class="bold-para">בילקוט שמעוני אין קשר בין קטע לקטע; האם גם ההגדה היא אוסף כזה?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · למה "ליל הסדר"</div>
+      <h3 class="story-title">🏺 הגדות עתיקות</h3>
+      <p>הרב הקדים הערה היסטורית: את ההגדה התחילו לומר לפני שנים רבות מאוד. נמצאו בגניזה הגדות עתיקות מאוד, בנוסח ארץ ישראלי, שאינו דומה לנוסח שלנו. יש בהן נוסח אחר, ולא כל מה שמופיע אצלנו, למשל דברי התנאים, מופיע שם.</p>
+      <p>כלומר, ההגדה שלפנינו נבנתה בהדרגה, ונוספו לה קטעים במשך הדורות. ולכן אפשר היה לחשוב שהיא פשוט אוסף של מה שהצטבר.</p>
+      <p>אבל, כפי שיתברר, מי שבנה את ההגדה כפי שהיא לפנינו, בנה אותה לפי תבנית ברורה, שהיסוד שלה כבר נמצא במשנה. ומי שמבין את התבנית, רואה שכל קטע נמצא במקומו.</p>
+      <p>ובשיעור השני גם הראה הרב שיש קטעים שנוספו מאוחר, כמו "הא לחמא עניא", ושאפשר לזהות אותם דווקא משום שהם יוצאים מן התבנית.</p>
+      <p class="bold-para">ההגדה התפתחה לאורך דורות רבים, ונמצאו נוסחים קדומים שונים משלנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ההגדה על רגל אחת</div>
+      <h3 class="story-title">📜 כל ההגדה במשנה אחת</h3>
+      <p>הרב פתח במשנה בפרק "ערבי פסחים", ואמר שהיא אומרת את כל ההגדה כולה במשנה אחת: "מָזְגוּ לוֹ כּוֹס שֵׁנִי, וְכָאן הַבֵּן שׁוֹאֵל אָבִיו... מַה נִּשְׁתַּנָּה הַלַּיְלָה הַזֶּה מִכָּל הַלֵּילוֹת... וּלְפִי דַעְתּוֹ שֶׁל בֵּן אָבִיו מְלַמְּדוֹ. מַתְחִיל בִּגְנוּת וּמְסַיֵּם בְּשֶׁבַח, וְדוֹרֵשׁ מֵ'אֲרַמִּי אוֹבֵד אָבִי' עַד שֶׁיִּגְמֹר כָּל הַפָּרָשָׁה כֻּלָּהּ".</p>
+      <p>שמעתם? זו כל ההגדה, על רגל אחת, בשלושים שניות: מה נשתנה, מתחיל בגנות ומסיים בשבח, ודורש "ארמי אובד אבי".</p>
+      <p>הרב העיר שבמשנה הייתה גם שאלה על הצלי: "שבכל הלילות אנו אוכלים בשר צלי, שלוק ומבושל". היום אין לנו קרבן פסח, ולכן אין שואלים אותה, ונוספה במקומה שאלה אחרת.</p>
+      <p>ומה פירוש "מתחיל בגנות"? איזו גנות? המשתתפים חיפשו בהגדה, וגילו שזה לא פשוט: יש בה שני מקומות שבהם אפשר למצוא גנות. וזה בדיוק מה שהגמרא שואלת.</p>
+      <p class="bold-para">המשנה בפסחים מסכמת את כל ההגדה: שאלה, "מתחיל בגנות ומסיים בשבח", ודרשת "ארמי אובד אבי".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ההגדה על רגל אחת</div>
+      <h3 class="story-title">⚖️ רב ושמואל</h3>
+      <p>שואלת הגמרא: "מאי בגנות?" רב אמר: "מִתְּחִלָּה עוֹבְדֵי עֲבוֹדָה זָרָה הָיוּ אֲבוֹתֵינוּ". ושמואל אמר: "עֲבָדִים הָיִינוּ לְפַרְעֹה בְּמִצְרָיִם".</p>
+      <p>מה ההבדל בין שתי הגנויות? אחד המשתתפים הגדיר זאת יפה: אחת רוחנית ואחת גשמית. לפי שמואל, הגנות היא שהיינו במצב פיזי רע. לא שאנחנו לא היינו בסדר, אלא שהיה לנו רע – עבדים, בלי ברירה. ולפי רב, הגנות היא רוחנית: אבותינו עבדו עבודה זרה, ועכשיו קירבנו המקום לעבודתו.</p>
+      <p>ומה ההלכה, כמו רב או כמו שמואל? התשובה: אנחנו עושים את שניהם. "עבדים היינו לפרעה במצרים" – זו ההגדה של שמואל. וכמה דפים אחר כך, "מתחילה עובדי עבודה זרה היו אבותינו" – זו ההגדה של רב.</p>
+      <p>ונשאלת שאלה: למה מתחילים בשמואל, בגנות הגשמית? הרי רב חשוב יותר בדרך כלל, והרוחניות חשובה מן הגשמיות. אם היו שואלים אותנו, אולי היינו מציעים להתחיל ברוחני.</p>
+      <p class="bold-para">רב אומר שהגנות היא עבודה זרה – גנות רוחנית; שמואל אומר שהיא עבדות – גנות גשמית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ההגדה על רגל אחת</div>
+      <h3 class="story-title">🌱 קודם גוף, אחר כך נשמה</h3>
+      <p>למה מתחילים בגאולה הגשמית? הרב אמר: תסתכלו על הגאולה של דורנו, ותבינו.</p>
+      <p>קודם כל, הקדוש ברוך הוא הציל את הגוף. בשואה, הגוף היה נרדף, עשו ביהודים מה שרצו. הרב הזכיר שהיו יהודים שנשאו את זכרונות הימים ההם כל חייהם. וזו הייתה גלות הגוף.</p>
+      <p>ואחר כך, בתחילת הדרך בארץ, המצב הרוחני לא היה פשוט כלל. אבל לאט לאט רואים, ברוך ה', איך נפתחים בתי כנסת, ישיבות ובתי מדרש, ומיום ליום זה הולך וגדל. הרב סיפר שבילדותו היה בעירו כולל אחד בלבד, ושני בתי כנסת שבהם למדו כמה זקנים. והיום יש ברוך ה' כוללים וישיבות רבים, ושיעורי תורה בכל מקום. וכל אדם יכול להביא בשנייה אחת את כל היהדות לתוך ביתו: הרב סיפר שאמר לאדם שאינו שומר מצוות שרצה לברך את ברכת האילנות – אין בעיה, כתוב במנוע חיפוש "ברכת האילנות" ויש לך את הנוסח.</p>
+      <p>וזה גם הסדר בחזון העצמות היבשות: קודם עצמות, גידים ובשר, ורק אחר כך הרוח. כך גם בהגדה: קודם שמואל – הגאולה הגשמית, ואחר כך רב – הגאולה הרוחנית.</p>
+      <p class="bold-para">סדר הגאולה הוא קודם גאולה גשמית ואחר כך רוחנית, וכך אנו רואים גם בדורנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ההגדה על רגל אחת</div>
+      <h3 class="story-title">🏗️ קומה אחרי קומה</h3>
+      <p>הרב אמר שזו גם התשובה למי ששואל: על מה אתה שמח ביום העצמאות ובהקמת המדינה? לזה חיכינו אלפיים שנה? למצב שבו יש כאן גם דברים שאינם לפי התורה?</p>
+      <p>התשובה, אמר, תלויה באיך שמסתכלים. אם אדם חושב שזו הגאולה השלמה – הוא באמת עצוב, כי לא לזה חיכינו. אבל אם הוא מבין שזה תהליך – קומה ראשונה, קומה שנייה, קומה שלישית – הוא שמח. הגאולה אינה מגיעה בבת אחת.</p>
+      <p>וזה בדיוק מה שלמדנו בתחילת השיעור על הכוסות: אי אפשר לשתות את כל הכוסות בבת אחת. יש סדר, כל כוס בזמנה. עכשיו יש גאולה גשמית; חכו, זה לא נגמר כאן. זה ימשיך הלאה ויתקדם.</p>
+      <p>ולכן, אמר, הוא שמח: כי זו הקומה הראשונה, והוא יודע שעליה תבוא, בעזרת ה', הקומה השנייה. ומשם הוא חזר למשנה, כדי לראות איך היא בונה את מבנה ליל הסדר.</p>
+      <p class="bold-para">מי שרואה את הגאולה כתהליך, יכול לשמוח בשלב הראשון גם כשהוא עוד רחוק מן השלמות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שאלה, סיפור, שבח והודאה</div>
+      <h3 class="story-title">❓ שאלה</h3>
+      <p>המשנה פותחת: "מזגו לו כוס שני, וכאן הבן שואל". כלומר, היסוד הראשון של הלילה: לא מתחילים ישר בתשובות, אלא בשאלות. למה? כדי לעורר את כולם.</p>
+      <p>הרב נתן דוגמה: למה מטבילים פעמיים – פעם כרפס ופעם מרור בחרוסת? יש לכך תשובה? התשובה היא: כדי שישאלו. זו המטרה, ולא צריך יותר מזה. שישימו לב שקורה כאן משהו מיוחד.</p>
+      <p>ועוד דבר: רק אדם בן חורין שואל שאלות. עבד מקבל מה שאומרים לו, ואינו שואל. ברגע שאדם מתחיל לשאול "למה עשית כך? למה זה ככה?", זה סימן שהוא בן חורין. ולכן בליל החירות פותחים בשאלה.</p>
+      <p>ובכך יש לנו שלושה שלבים מן המשנה: שלב ראשון – שאלות. שלב שני – "מתחיל בגנות", כלומר הסיפור על מה שהיה. ושלב שלישי – "מסיים בשבח". אבל יש עוד שלב, ואולי הוא החשוב מכולם.</p>
+      <p class="bold-para">הלילה פותח בשאלות כדי לעורר את המשתתפים; ורק בן חורין שואל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שאלה, סיפור, שבח והודאה</div>
+      <h3 class="story-title">📖 להזכיר או לספר</h3>
+      <p>הרב הביא שאלה מפורסמת של רבי חיים מבריסק: בכל לילה ולילה מזכירים יציאת מצרים, כדברי רבי אלעזר בן עזריה בהגדה. אם כן, מה מיוחד בליל הסדר?</p>
+      <p>המשתתפים הציעו כמה הבדלים, למשל שבליל הסדר צריך לספר לאחר, ולא רק לעצמו. ואחד ההבדלים העיקריים: בכל לילה המצווה היא "להזכיר", ובליל הסדר המצווה היא "לספר". ומה ההבדל? מי שאומר "יצאתי" – הזכיר. סיפור יש לו התחלה, אמצע וסוף.</p>
+      <p>הרב נתן דוגמה מתקופת הקורונה: לא מספרים "היה, ונגמר". מספרים: בהתחלה צחקו ואמרו שזה לא יגיע לכאן. ואז הגיע ראש חודש ניסן, וכולם היו סגורים בבתים. ליל הסדר שבו כל אחד ישב לבד, פעם ראשונה מאז שנולד. ואחר כך הקדוש ברוך הוא נתן חוכמה לבני אדם, ונמצא חיסון, ולאט לאט נפתח הכל. זה סיפור.</p>
+      <p>וכך בליל הסדר: לא "יצאנו ממצרים", אלא סיפור שלם – איך היינו, מה עבר עלינו, ואיך יצאנו.</p>
+      <p class="bold-para">בכל לילה מזכירים יציאת מצרים; בליל הסדר צריך לספר, עם עבר, הווה ועתיד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שאלה, סיפור, שבח והודאה</div>
+      <h3 class="story-title">🙌 והחלק הרביעי: הודאה</h3>
+      <p>והרב הביא עוד הוספה, בשם הגרי"ד סולובייצ'יק: סיפור טוב אינו נגמר בסיפור בלבד. מצוות הסיפור מחייבת לא רק לספר את הנפלאות והניסים שעשה לנו ה', אלא גם לשבח ולהודות. ולפיכך אנחנו חייבים להודות ולהלל – וזה יסוד אמירת ההלל בליל פסח.</p>
+      <p>ההלל של הלילה הזה אינו כמו ההלל של כל השנה. ראשית, בדרך כלל אין אומרים הלל בלילה; כאן אומרים. התשובה: זה לא הלל של "יום שמח". זה הלל שנובע מן הסיפור עצמו. הסיפור כל כך רומם וריגש את האדם, עד שהוא מרגיש כאילו הוא עצמו יצא ממצרים, ומפיו פורצת שירה ושבח. "בְּכָל דּוֹר וָדוֹר חַיָּב אָדָם לִרְאוֹת אֶת עַצְמוֹ כְּאִלּוּ הוּא יָצָא מִמִּצְרַיִם... לְפִיכָךְ אֲנַחְנוּ חַיָּבִים לְהוֹדוֹת".</p>
+      <p>ואם כן, ההגדה המסודרת צריכה להיות כך: פותחים בשאלה, מספרים כמה נורא היה – "מתחיל בגנות", מסיימים בשבח – כמה טוב עכשיו, ובסוף מודים לקדוש ברוך הוא.</p>
+      <p>שאלה, גנות, שבח והודאה. והלילה הזה כולו בנוי על ארבע: ארבע כוסות, ארבעה בנים, ארבע קושיות. גם ההגדה עצמה בנויה מארבעה.</p>
+      <p class="bold-para">לפי הגרי"ד סולובייצ'יק, הסיפור צריך להסתיים בשבח והודאה, ולכן אומרים הלל בלילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שאלה, סיפור, שבח והודאה</div>
+      <h3 class="story-title">🧩 חלק א' וחלק ב'</h3>
+      <p>עכשיו פתח הרב את ההגדה, והראה איך המבנה עובד. חלק א': שאלה – "מה נשתנה". גנות – "עבדים היינו לפרעה במצרים". שבח – "ויוציאנו ה' אלוקינו משם ביד חזקה ובזרוע נטויה". והודאה? המשתתפים חיפשו, והרב רמז שלא צריך לחפש רחוק: מיד אחרי הדברים על הזכרת יציאת מצרים בלילות, אומרים "בָּרוּךְ הַמָּקוֹם, בָּרוּךְ הוּא, בָּרוּךְ שֶׁנָּתַן תּוֹרָה לְעַמּוֹ יִשְׂרָאֵל". זו ההודאה. ובזה נגמר חלק א' – ההגדה של שמואל, הגאולה הגשמית.</p>
+      <p>חלק ב': שוב שאלות – "חכם מה הוא אומר? רשע מה הוא אומר? תם מה הוא אומר?". שוב מתחילים בשאלה, כדי לעורר. גנות – "מתחילה עובדי עבודה זרה היו אבותינו". שבח – "ועכשיו קרבנו המקום לעבודתו". והודאה – "ברוך שומר הבטחתו לישראל, ברוך הוא", ו"והיא שעמדה לאבותינו ולנו... והקדוש ברוך הוא מצילנו מידם".</p>
+      <p>זה המבנה, אמר הרב. שאלה, גנות, שבח, הודאה – ושוב שאלה, גנות, שבח, הודאה. ההגדה של שמואל, ואחריה ההגדה של רב.</p>
+      <p>ובחלק השני של השיעור המשיך לחלק ג' ולחלק ד'.</p>
+      <p class="bold-para">"מה נשתנה" עד "ברוך המקום" הוא ההגדה של שמואל; "חכם מה הוא אומר" עד "והיא שעמדה" הוא ההגדה של רב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "השתא עבדי"</div>
+      <h3 class="story-title">🍞 קטע שיוצא מן הכלל</h3>
+      <p>בפתיחת החלק השני של השיעור שאל הרב: יש קטע אחד, לפני כל מה שהסברנו, שלא הסברנו כלל. איזה? "הא לחמא עניא". אם ההגדה בנויה מארבעה חלקים, מה הקטע הזה עושה שם?</p>
+      <p>התשובה: "הא לחמא עניא" נוסף בשלב מאוחר, ואינו חלק מן הנוסח המקורי. איך יודעים? ראשית, מן המילים עצמן: "הָשַׁתָּא הָכָא, לְשָׁנָה הַבָּאָה בְּאַרְעָא דְיִשְׂרָאֵל" – מי שכתב זאת גר בחוץ לארץ. ההגדה המקורית חוברה בזמן בית שני ובתקופת התנאים, בארץ.</p>
+      <p>ושנית, השפה: כל ההגדה כתובה בעברית, בלשון הקודש, ו"הא לחמא עניא" כתוב בארמית. מי שחיבר אותו גר כנראה מחוץ לארץ, במקום שבו דיברו ארמית; בארץ ישראל דיברו בדרך כלל עברית.</p>
+      <p>ולכן מי שמנסה למצוא את "הא לחמא עניא" בתוך המבנה, יתקשה. הוא נוסף בתקופת הגלות, כקטע פתיחה.</p>
+      <p class="bold-para">"הא לחמא עניא" אינו חלק מן המבנה, ונוסף בתקופת הגלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "השתא עבדי"</div>
+      <h3 class="story-title">🎖️ "השתא עבדי" בבסיס צבאי</h3>
+      <p>הרב סיפר מעשה שסיפר הרב ישראל מאיר לאו. הוא ערך פעם ליל סדר לאלף חיילים בבסיס צבאי. כשהגיע ל"הא לחמא עניא", הסביר להם בעברית את מה שכתוב בארמית. ושאל אותו אחד החיילים: הרב, זה נוסח שהיה טוב כשגרו בחוץ לארץ. אבל אנחנו נמצאים עכשיו בישראל. על מה אתה מדבר, "לשנה הבאה בארעא דישראל"? ו"השתא עבדי"? הנה הנשק בידינו – למי אנחנו עבדים?</p>
+      <p>וענה לו הרב לאו: כשלמדתי בישיבה, הגיע יום כיפור, ושמעתי את גדולי התורה אומרים "אשמנו, בגדנו, גזלנו". גזלנו? הצדיק הזה גזל? אלא כל עם ישראל מרגיש עם אחד, כולם יחד. אם אחד עובר עבירה, במובן מסוים כולם מרגישים "חטאנו". אתה, ברוך ה', קם בארץ ישראל. אבל יש יהודים רבים שאינם כאן, ויש יהודים שבאותה תקופה לא יכלו לעלות לארץ. אנחנו מתכוונים לכולנו יחד, ומתפללים שכולם יהיו בשנה הבאה בארץ ישראל.</p>
+      <p>הרב העיר שהיום כמעט אין יהודי בעולם שאינו יכול לעלות לארץ. מי שלא עולה – זו כבר בחירה שלו. ואם כן, נשארת השאלה: מה פירוש "השתא עבדי" בדורנו?</p>
+      <p class="bold-para">הרב לאו נשאל איך אפשר לומר "השתא עבדי" במדינה עצמאית, וענה מתוך אחריות כלל ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "השתא עבדי"</div>
+      <h3 class="story-title">📱 עבדים לתרבויות ולתאוות</h3>
+      <p>הרב הביא שני פירושים שראה. הראשון, בשם הרב חיים דרוקמן: בתקופתנו אנחנו עדיין עבדים לתרבויות שונות. עם ישראל עדיין אינו חופשי לגמרי מהשפעות זרות, שמושכות אותו לכיוונים שאינם שלו. הרב הביא לכך דוגמאות מן החיים הציבוריים, ואמר שזה עצוב מאוד.</p>
+      <p>הפירוש השני: אנחנו עבדים, לצערנו, לכל מיני תאוות גשמיות. והרב נתן דוגמה שכולם מכירים: הטלפון. אנשים רבים אינם מסוגלים להחזיק מעמד אפילו חצי שעה בשיעור בלי לבדוק את הטלפון. כל מרצה מתחנן היום לציבור: תשימו בשקט. אדם נעשה עבד לדבר גשמי, ואינו מסוגל להינתק ממנו, אף שיודע שזה הורס לו את הריכוז ואת העבודה.</p>
+      <p>ולכן אנו מתפללים: "לשנה הבאה בני חורין" – שלא יהיו לנו כאלה "שעבודים" שמכריחים אותנו לדברים שאיננו מצליחים להתגבר עליהם.</p>
+      <p>ואחרי ההקדמה הזאת, חזר הרב למבנה, לחלק ג' ולחלק ד'.</p>
+      <p class="bold-para">גם היום אפשר להיות עבד – לתרבויות זרות או לתאוות, כמו הטלפון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארבעה חלקים לארבעה בנים</div>
+      <h3 class="story-title">🔍 חלק ג': ארמי אובד אבי</h3>
+      <p>חלק ג' של ההגדה: "צא ולמד מה ביקש לבן הארמי לעשות ליעקב אבינו". שוב פותחים בשאלה. ואחר כך – "ודורש מארמי אובד אבי", כמו שאמרה המשנה. לוקחים ארבעה פסוקים ודורשים אותם מילה במילה: "וַיֵּרֶד מִצְרַיְמָה", "וַיָּרֵעוּ אֹתָנוּ הַמִּצְרִים", "וַנִּצְעַק", "וַיּוֹצִאֵנוּ ה' מִמִּצְרַיִם". שוב ארבע.</p>
+      <p>והפסוקים האלה לקוחים מפרשת כי תבוא, פרשת הביכורים. למה בחר מחבר ההגדה דווקא בהם, ולא בפסוקים מחומש שמות? הרב הסביר: בחומש שמות הסיפור מסופר כהווה – מה שקורה עכשיו. ואילו בפרשת הביכורים, האדם שמביא ביכורים מספר על העבר, "ארמי אובד אבי", עד שהגיע לארץ. וזו בדיוק הדוגמה לליל הסדר: אני מספר על העבר.</p>
+      <p>ויש כאן שאלה גדולה: המשנה אמרה "עד שיגמור כל הפרשה כולה", והפסוק הבא הוא "וַיְבִאֵנוּ אֶל הַמָּקוֹם הַזֶּה". ואילו בהגדה שלנו עוצרים אחרי ארבעה פסוקים. הרב אמר שזו קושיה שאולי יעסוק בה בזמן אחר. ואחרי הדרשות – חשבון המכות, ואחריו שבח והודאה: "כמה מעלות טובות למקום עלינו", "דיינו".</p>
+      <p class="bold-para">החלק השלישי הוא דרשה של ארבעה פסוקים מפרשת הביכורים, ומסתיים ב"דיינו".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארבעה חלקים לארבעה בנים</div>
+      <h3 class="story-title">🙏 "דיינו" – בלי תורה?</h3>
+      <p>הרב שאל: "אילו קרבנו לפני הר סיני ולא נתן לנו את התורה – דיינו". מה פירוש? היינו מסתפקים בלי תורה? מה היה שווה בלי תורה?</p>
+      <p>והוא סיפר סיפור על עובד זר מן הפיליפינים, שעבד שנים רבות אצל זקן יהודי שומר מצוות, ואחר כך עבר לעבוד אצל אדם אחר, במשפחה יהודית שאינה שומרת מצוות. היו לו שם בית גדול ותנאים טובים. ויום אחד התקשר למשפחה הקודמת ואמר: לא טוב לי כאן. מה לא טוב? אמר: הם יהודים? אני לא מבין. איפה שבת? איפה תפילה? הכל יבש, כל יום אותו דבר. יש כסף, אבל אין שמחה, אין רוחניות.</p>
+      <p>אם כן, אמר הרב, מה פירוש "דיינו" בלי תורה? אנחנו לא פיליפינים. אלא "דיינו" פירושו: דיינו להודות. גם אילו לא נתן לנו את התורה, היינו חייבים להודות לו על כל מה שכבר עשה. לא שהיינו מסתפקים בכך חלילה. ועל אחת כמה וכמה טובה כפולה ומכופלת למקום עלינו, שעשה גם את זה וגם את זה.</p>
+      <p>ובזה נגמר חלק ג': שאלה, דרשות, ושבח והודאה.</p>
+      <p class="bold-para">"דיינו" אין פירושו שהיה מספיק לנו בלי תורה, אלא שהיה די לנו כדי להודות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארבעה חלקים לארבעה בנים</div>
+      <h3 class="story-title">🥬 חלק ד': פסח, מצה ומרור</h3>
+      <p>חלק ד' של ההגדה: "פֶּסַח שֶׁהָיוּ אֲבוֹתֵינוּ אוֹכְלִים... עַל שׁוּם מָה? מַצָּה זוֹ... עַל שׁוּם מָה? מָרוֹר זֶה... עַל שׁוּם מָה?". שוב פותחים בשאלות. ואחר כך התשובות לכל אחת.</p>
+      <p>ואיך זה מסתיים? "לְפִיכָךְ אֲנַחְנוּ חַיָּבִים לְהוֹדוֹת, לְהַלֵּל, לְשַׁבֵּחַ...", ומיד פותחים בחצי ההלל: "הַלְלוּיָהּ, הַלְלוּ עַבְדֵי ה'". הודאה.</p>
+      <p>הרב חילק בשיעור דפים עם תרשים של המבנה כולו. חלק א' – ההגדה של שמואל, הגאולה הגשמית: "מה נשתנה", "עבדים היינו", "ויוציאנו", "ברוך המקום". חלק ב' – ההגדה של רב, הגאולה הרוחנית: "חכם מה הוא אומר", "מתחילה עובדי עבודה זרה", "ועכשיו קרבנו המקום", "ברוך שומר הבטחתו" ו"והיא שעמדה". חלק ג' – "צא ולמד", דרשת "ארמי אובד אבי", ו"דיינו". חלק ד' – "פסח על שום מה", התשובות, והלל.</p>
+      <p>ועכשיו נשאלת השאלה: למה ארבעה חלקים? מה הם מייצגים?</p>
+      <p class="bold-para">החלק הרביעי שואל "על שום מה" על פסח, מצה ומרור, ומסתיים בהלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ארבעה חלקים לארבעה בנים</div>
+      <h3 class="story-title">👨‍👩‍👦‍👦 כנגד ארבעה בנים</h3>
+      <p>התשובה, אמר הרב, היא "כנגד ארבעה בנים דיברה תורה". זה לא רק ארבעה ילדים, אלא ארבעה סוגים של תפיסה. בליל הסדר יש אנשים שונים, ואחד ההגדה רוצה לתפוס את כולם.</p>
+      <p>יש אנשים חכמים, שאוהבים עיון. בחור ישיבה, אם תתחיל ללמד אותו הלכה פשוטה, עוד הלכה ועוד הלכה – אחרי חצי שעה יאמר: די. מה הוא אוהב? שאלה, קושיה, תשובה, ולמדנות. יש אנשים שאוהבים סיפורים: הרב סיפר שמרצה ותיק אמר לו שפעם הרצאות היו שמונים אחוז חומר ועשרים אחוז סיפורים, והיום זה הפוך. ויש אנשים שצריכים אמצעי המחשה: שיראו, ימששו, יטעמו.</p>
+      <p>הרב סיפר שבאותו שבוע הגיעה אליו כיתה ב' לברך את ברכת האילנות. הוא לא הסתפק בברכה: הילדים חיפשו את הפריחה בעצים, טיפסו בסולם, קטפו פירות, ניקו אותם, הפרישו מהם תרומות ומעשרות, קילפו ואכלו בהתלהבות. כל החושים השתתפו – גם הראייה, גם המישוש, גם הריח הטוב של התפוז שנקטף מן העץ. ילדים כאלה לא ישכחו את הברכה.</p>
+      <p>וכך ההגדה: חלקים א' ו-ב' הם סיפור – לפי שמואל ולפי רב. חלק ג' הוא למדנות – דרשות, דיוקים וחשבונות מכות, לבן החכם; ולכן הוא הארוך ביותר, כי שיעור עיון לוקח הכי הרבה זמן. וחלק ד' הוא המחשה: "מרור זה" – תראה, תטעם, תרגיש. ולכן רבן גמליאל אומר שמי שלא אמר פסח, מצה ומרור לא יצא ידי חובתו.</p>
+      <p class="bold-para">יש אנשים של סיפור, יש אנשים של למדנות, ויש שצריכים המחשה; ההגדה מדברת אל כולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · אחרי ההגדה</div>
+      <h3 class="story-title">🏠 להוסיף את הגאולה שלנו</h3>
+      <p>בסוף השיעור הביא הרב רעיון של הרב שמואל אליהו: האם בדורנו צריך להוסיף להגדה עוד חלק? בהגדה מובאת מחלוקת: "להביא לימות המשיח". בן זומה סבר שלעתיד לבוא לא יזכירו את יציאת מצרים, כי נאמר "וְלֹא יֹאמְרוּ עוֹד חַי ה' אֲשֶׁר הֶעֱלָה אֶת בְּנֵי יִשְׂרָאֵל מֵאֶרֶץ מִצְרָיִם, כִּי אִם חַי ה' אֲשֶׁר הֶעֱלָה... מֵאֶרֶץ צָפוֹן וּמִכֹּל הָאֲרָצוֹת". וחכמים אמרו שיזכירו גם את מצרים, אבל העיקר יהיה הגאולה האחרונה.</p>
+      <p>ומכאן למד הרב שמואל אליהו: לפי שתי הדעות, צריך להזכיר את הגאולה שבה הקדוש ברוך הוא קיבץ אותנו מכל הארצות לארץ ישראל. ולכן כתב, להלכה למעשה, שכל אחד יכין סיפור: איך הוא או הוריו זכו לעלות לארץ – גם הוא מתחיל בגנות ומסיים בשבח, כמה קשה היה פעם וכמה טוב עכשיו.</p>
+      <p>הרב אמר שאפשר לפקפק בהוכחה, כי ייתכן שבן זומה דיבר על ההזכרה של כל השנה ולא על ליל הסדר, שבו תמיד מתחילים מן ההתחלה. אבל הרעיון עצמו נכון, וההגדה עצמה מראה זאת.</p>
+      <p class="bold-para">הרב שמואל אליהו כתב שראוי לספר בליל הסדר גם על הגאולה של דורנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · אחרי ההגדה</div>
+      <h3 class="story-title">🎶 "אחד מי יודע"</h3>
+      <p>אחרי ההלל ו"נשמת כל חי", ההגדה הייתה אמורה להיגמר. וכנראה בתקופת התנאים כך היה: "חסל סידור פסח". אבל אחר כך נוספו פיוטים: "ויהי בחצי הלילה", "ואמרתם זבח פסח", "כי לו נאה", "אחד מי יודע", "חד גדיא". הרב הביא שאחד הפיוטים מיוחס למאה השישית לספירה.</p>
+      <p>מה הקשר של "אחד מי יודע" לפסח? אין בו בכלל אזכור של פסח! התשובה: כשאדם נפתח לבו, והוא מתחיל להודות לבורא עולם, הוא אינו מצטמצם בדבר אחד. כמו מי שקרה לו נס במקום מסוים, שכשהוא מודה, הוא נזכר גם בכל הניסים האחרים שקרו לו. הלב נפתח, ומודים על הכל: אחד אלוקינו, שני לוחות הברית, שלושה אבות.</p>
+      <p>והרב השווה ל"מעוז צור" בחנוכה, שמזכיר את כל ההיסטוריה – בבל, פרס, "כורת קומת ברוש" – ולא רק את נס החנוכה. כשהלב פתוח להודיה, נזכרים בכל.</p>
+      <p>ולכן, אמר הרב, ראוי לכל אחד: כשגמרת לספר את יציאת מצרים, תמשיך לספר כמה ניסים קרו לך, כמה דברים טובים.</p>
+      <p class="bold-para">כשהלב נפתח להודות, ממשיכים להודות על הכל – ולכן אחרי ההלל באים שירים נוספים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · אחרי ההגדה</div>
+      <h3 class="story-title">🚪 תחפש את המצרים שלך</h3>
+      <p>הרב סיפר שהוא יודע על אדם, אביו של מכר שלו, שהיה מספר בכל ליל סדר, אחרי שגמר את ההגדה, את הניסים שעברו עליו בתקופות הקשות באירופה. ולימים אספו תלמידיו את הסיפורים שסיפר בלילות הסדר, והוציאו אותם בספר.</p>
+      <p>למה? כי, כפי שאמרנו, כשהלב נפתח, אפשר ורצוי לספר גם את כל זה. אם באים הנכדים, ספר להם לא רק על יציאת מצרים שהייתה פעם, אלא גם על "יציאת מצרים" הפרטית שלנו.</p>
+      <p>והרב הביא עוד רעיון שמובא בשם אחד מגדולי החסידות: במשנה נאמר "חייב אדם לראות את עצמו כאילו הוא יצא ממצרים". איך אפשר? זה לא קל. ואמר: תחפש את המצרים שלך – את המקום שבו היית משועבד, את הקושי שבו היית – ותראה איך יצאת ממנו. ואז תרגיש כאילו אתה יצאת ממצרים.</p>
+      <p>ובזה נשלם המבנה כולו: שאלה, גנות, שבח והודאה – ארבע פעמים, כנגד כל סוגי בני האדם, ובסוף הלב נפתח ומודה על הכל. ויהי רצון שנזכה כולנו בעזרת ה'.</p>
+      <p class="bold-para">כל אחד יכול לספר על "מצרים" הפרטית שלו, ולהרגיש באמת כאילו יצא ממצרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/wEuJT3B3ImE · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"למה \"ליל הסדר\"","icon":"🍷","color":"#c62b6b","stories":[{"id":1,"title":"לילה של בלגן?","icon":"🍷"},{"id":2,"title":"עיתון או סיפור","icon":"📰"},{"id":3,"title":"הגדות עתיקות","icon":"🏺"}]},{"id":2,"name":"ההגדה על רגל אחת","icon":"📜","color":"#6d28d9","stories":[{"id":4,"title":"כל ההגדה במשנה אחת","icon":"📜"},{"id":5,"title":"רב ושמואל","icon":"⚖️"},{"id":6,"title":"קודם גוף, אחר כך נשמה","icon":"🌱"},{"id":7,"title":"קומה אחרי קומה","icon":"🏗️"}]},{"id":3,"name":"שאלה, סיפור, שבח והודאה","icon":"🔢","color":"#e08e00","stories":[{"id":8,"title":"שאלה","icon":"❓"},{"id":9,"title":"להזכיר או לספר","icon":"📖"},{"id":10,"title":"והחלק הרביעי: הודאה","icon":"🙌"},{"id":11,"title":"חלק א' וחלק ב'","icon":"🧩"}]},{"id":4,"name":"\"השתא עבדי\"","icon":"⛓️","color":"#1e88b8","stories":[{"id":12,"title":"קטע שיוצא מן הכלל","icon":"🍞"},{"id":13,"title":"\"השתא עבדי\" בבסיס צבאי","icon":"🎖️"},{"id":14,"title":"עבדים לתרבויות ולתאוות","icon":"📱"}]},{"id":5,"name":"ארבעה חלקים לארבעה בנים","icon":"👨‍👩‍👦‍👦","color":"#c62b6b","stories":[{"id":15,"title":"חלק ג': ארמי אובד אבי","icon":"🔍"},{"id":16,"title":"\"דיינו\" – בלי תורה?","icon":"🙏"},{"id":17,"title":"חלק ד': פסח, מצה ומרור","icon":"🥬"},{"id":18,"title":"כנגד ארבעה בנים","icon":"👨‍👩‍👦‍👦"}]},{"id":6,"name":"אחרי ההגדה","icon":"🎶","color":"#6d28d9","stories":[{"id":19,"title":"להוסיף את הגאולה שלנו","icon":"🏠"},{"id":20,"title":"\"אחד מי יודע\"","icon":"🎶"},{"id":21,"title":"תחפש את המצרים שלך","icon":"🚪"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
