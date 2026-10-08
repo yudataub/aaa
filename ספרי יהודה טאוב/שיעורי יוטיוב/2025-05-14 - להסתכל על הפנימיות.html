@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 להסתכל על הפנימיות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 להסתכל על הפנימיות</h1>
+  <p>השורש המשותף למחלוקות רבי יהודה ורבי שמעון – בהלכות שבת, ביחס לרומאים ובעבודת העולם – ואור הפנימיות של רבי שמעון בר יוחאי בל"ג בעומר</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ להסתכל על הפנימיות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/zNfC0ykNuzM?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/zNfC0ykNuzM/hqdefault.jpg" alt="להסתכל על הפנימיות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=zNfC0ykNuzM" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מחלוקת בהלכות שבת</div>
+      <h3 class="story-title">🔍 גמרא שמתבארת רק בפנימיות</h3>
+      <p>השיעור נאמר סמוך לל"ג בעומר, היום שבו שמחים בכל ארץ ישראל ובמקומות רבים בעולם. אבל הוא אינו עוסק בפשט של סיפורי רבי שמעון בר יוחאי, אלא בפנימיות שלו. הרב הבטיח להראות גמרא אחת, שקשה מאוד להסביר אותה בדרך הפשט, ומתבארת היטב לאורו של רבי שמעון.</p>
+      <p>ההקדמה: רבי יהודה ורבי שמעון נחלקו פעמים רבות מאוד. השאלה שהשיעור מנסה לענות עליה היא אם יש שורש אחד שעובר בכל המחלוקות האלה – בהלכה, בהשקפה, ואפילו בסיפור המפורסם שבעקבותיו נאלץ רבי שמעון לברוח למערה.</p>
+      <p>התשובה, כפי שתתברר, היא שרבי יהודה הולך אחרי המעשה, אחרי מה שנראה בחוץ, ורבי שמעון הולך אחרי הכוונה, אחרי מה שבפנים. ומכאן נגיע גם להבנת היום של רבי שמעון, ל"ג בעומר.</p>
+      <p>נתחיל בהלכות שבת, שם המחלוקת הזאת חוזרת שוב ושוב בצורות שונות. ונראה שבכל אחת מהן, אותו יסוד עצמו מכריע את הדעה של כל אחד מהם.</p>
+      <p class="bold-para">יש שורש אחד שעובר בכל המחלוקות בין רבי יהודה לרבי שמעון: מעשה מול כוונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מחלוקת בהלכות שבת</div>
+      <h3 class="story-title">⛏️ מלאכה שאינה צריכה לגופה</h3>
+      <p>המחלוקת הראשונה היא "מלאכה שאינה צריכה לגופה". אדם עושה בשבת בדיוק את הפעולה שחייבים עליה, אבל לא לשם המטרה שלשמה נעשתה במשכן.</p>
+      <p>דוגמה: אדם חופר גומה. הוא אינו צריך את הבור, הוא צריך את העפר. הוא עושה חפירה, אבל אין לו עניין בבור. או דוגמה מוכרת יותר: במשכן כיבו אש כדי ליצור פחמים. אדם שמכבה אור בשבת אינו צריך פחמים, הוא רוצה לישון. ויש גם מקרה מוזר שמופיע בגמרא: אדם שמוציא מת מביתו בשבת, לא כי הוא צריך את המת במקום אחר, אלא כי אינו רוצה שיהיה כאן.</p>
+      <p>בכל המקרים האלה נחלקו: רבי יהודה אומר חייב, ורבי שמעון אומר פטור. רבי יהודה הולך אחרי הפעולה: מה אכפת לי למה כיבה? הוא כיבה. הוא הוציא מרשות לרשות. חייב.</p>
+      <p>רבי שמעון הולך אחרי הכוונה הפנימית: מה מעניין את האדם? הוא אינו צריך בור, הוא צריך עפר. הוא אינו צריך פחם, הוא רוצה חושך. לכן המלאכה, במובן התורה, לא נעשתה.</p>
+      <p class="bold-para">רבי יהודה מחייב על מעשה המלאכה עצמו, ורבי שמעון פוטר כשהאדם אינו צריך את תכליתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מחלוקת בהלכות שבת</div>
+      <h3 class="story-title">🪟 דבר שאינו מתכוון</h3>
+      <p>המחלוקת השנייה שכיחה עוד יותר: "דבר שאינו מתכוון". אדם עושה פעולה מותרת, והיא עלולה לגרום לתוצאה אסורה שאינו מתכוון אליה. למשל, אדם סוגר את דלת ביתו, ואולי נמצא בבית בעל חיים שנלכד בכך. או אדם פותח חלון כי חם לו, ואולי הרוח תכבה את נרות השבת.</p>
+      <p>רבי יהודה אוסר: יש סיכוי ניכר שהנרות יכבו, וזה כיבוי בשבת. רבי שמעון מתיר: מה האדם רוצה? אוויר. אין לו שום עניין שהנרות יכבו, אדרבה, הוא רוצה שידלקו. דבר שאינו מתכוון מותר.</p>
+      <p>אבל יש גבול: אם התוצאה ודאית במאה אחוז, "פסיק רישיה", זה כמו פעולה ודאית ואסור. אי אפשר לפתוח מקרר שהנורה בו דולקת ולומר "איני מתכוון לאור". אבל כשהתוצאה אינה ודאית, אין בעיה.</p>
+      <p>ושוב רואים: רבי יהודה מסתכל על המציאות החיצונית, על מה שעלול לקרות. רבי שמעון מסתכל על הכוונה הפנימית, על מה שהאדם רוצה.</p>
+      <p class="bold-para">רבי שמעון מתיר פעולה שהאדם אינו מתכוון לתוצאה האסורה שבה, כל עוד אין זה "פסיק רישיה".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מחלוקת בהלכות שבת</div>
+      <h3 class="story-title">💡 האור שנדלק בדרך</h3>
+      <p>הרב הביא דוגמה מעשית שעלתה באותה שבת. ליד אחד המבנים בעיר נדלקת בלילה תאורה אוטומטית לכל מי שעובר. מה עושה מי שהולך שם בליל שבת? אילו פסקנו כרבי יהודה, הייתה בעיה גדולה.</p>
+      <p>הרב אמר שהפוסקים כתבו להלכה שמותר ללכת שם, אפילו אם ודאי יידלק האור, כשאין דרך אחרת. והסביר שיש כאן כמה צירופים. ראשית, האדם עושה פעולה שהיה עושה בכל מקרה: הוא הולך כדרכו, בלי קשר למנורה. שנית, אין לו בזה שום עניין ושום תועלת. שלישית, אין קשר ישיר שכל אחד רואה בין המעשה לתוצאה, כמו בין פתיחת חלון לכיבוי נר. מישהו התקין מערכת שמגיבה לתנועה, והאדם רק הולך.</p>
+      <p>ונשאלה שאלה: מה עם מי שפתח מקרר ולא ידע שהנורה לא כובתה? הרב השיב שאין כאן עבירה כלל. בשבת התורה אסרה "מלאכת מחשבת". שוגג פירושו שאדם התכוון למלאכה ושכח שהיום שבת. אבל מי שלא התכוון למלאכה כלל, כמו מי שנשען על מתג בלי לדעת, לא עשה דבר. וכמובן, בשאלה מעשית כל אחד ישאל את רבו.</p>
+      <p class="bold-para">לפי הפוסקים מותר ללכת כדרכו גם כשנדלק אור אוטומטי, כשאין דרך אחרת – כי אין כאן כוונה ולא מעשה ישיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בני מלכים</div>
+      <h3 class="story-title">🌹 שמן ורד לכל ישראל</h3>
+      <p>המחלוקת השלישית מופיעה במסכת שבת. חכמים אסרו רפואה בשבת, ולכן אסור לסוך שמן שמשמש רק לרפואה. שמן רגיל, שכולם סכים בו, חולים ובריאים, מותר, כי אינו ניכר כרפואה.</p>
+      <p>ומה עם שמן ורד? הגמרא אומרת שבדרך כלל רק חולים סכים בו, ולכן הוא ניכר כרפואה ואסור. אבל בני מלכים סכים בו גם כשהם בריאים, כדרך תענוג, ולכן להם מותר.</p>
+      <p>ובא רבי שמעון ואומר: "כָּל יִשְׂרָאֵל בְּנֵי מְלָכִים הֵם". לכן מותר לכל יהודי לסוך שמן ורד בשבת. אולי מעולם לא ראית שמן ורד, אולי אתה עני מרוד. לא משנה: רבי שמעון רואה אותך כבן מלך.</p>
+      <p>והגמרא מביאה שאחד האמוראים פסק כרבי שמעון בעניין זה, ומיד שואלת: האם הוא סובר כרבי שמעון גם בדבר שאינו מתכוון? הגמרא מקשרת בין שני הנושאים, וכאן מתעוררת השאלה הגדולה.</p>
+      <p class="bold-para">רבי שמעון מתיר לכל יהודי לסוך שמן ורד בשבת, כי "כל ישראל בני מלכים הם".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בני מלכים</div>
+      <h3 class="story-title">👑 לראות בן מלך</h3>
+      <p>"כל ישראל בני מלכים" אינו רק היתר לסוך שמן ורד. זו דרך להסתכל על בני אדם. כשאדם פוגש יהודי אחר, הוא יכול לראות את מה שבחוץ: את הלבוש, את המעמד, את החסרונות. והוא יכול לראות את מה שבפנים: נשמה, חלק אלוק ממעל, בן של מלך.</p>
+      <p>רבי שמעון לימד שהמבט השני הוא האמיתי. גם העני ביותר, גם מי שנראה רחוק, הוא בפנימיותו בן מלך. וכשמתייחסים אליו כך, גם הוא מתחיל לראות את עצמו כך.</p>
+      <p>וזה נוגע גם ליחס של אדם לעצמו. מי שמכיר בכך שהוא בן מלך, אינו מסתפק בחיים קטנים. הוא יודע שיש בו כוחות גדולים, ושהקדוש ברוך הוא מצפה ממנו לדברים גדולים.</p>
+      <p>ולכן ההלכה הזאת, שנראית טכנית, מבטאת עולם שלם: עולם שבו מודדים את האדם לפי מה שהוא באמת, ולא לפי מה שהוא נראה.</p>
+      <p class="bold-para">המבט של רבי שמעון אינו רק הלכה; הוא דרך להסתכל על כל אדם שפוגשים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בני מלכים</div>
+      <h3 class="story-title">❓ מה הקשר?</h3>
+      <p>הראשונים שואלים: מה הקשר? אם אמורא פסק כרבי שמעון שמותר לסוך שמן ורד, למה זה מחייב אותו לפסוק כרבי שמעון גם בדבר שאינו מתכוון? מה הקשר בין שמן ורד לאור שנדלק ליד בית? בפשטות, אין שום קשר בין הנושאים. למה הגמרא מקשרת ביניהם?</p>
+      <p>כאן, אמר הרב, יש פשט יפה מאוד. זו אינה הדרך המקובלת להסביר גמרא, אבל אם נכנסים לפנימיות הדברים, רואים איך הגמרא מתבארת להפליא.</p>
+      <p>כדי להבין, צריך קודם להבין למה רבי שמעון פוסק כך בכל מקום, ומה השורש של שיטתו. לשם כך נלך לסיפור המפורסם ביותר על רבי שמעון: הוויכוח על מעשי הרומאים, והבריחה למערה. ואחר כך נחזור לגמרא, ונראה איך הכל מתחבר.</p>
+      <p>רמז קטן כבר עכשיו: גם "כל ישראל בני מלכים" וגם "דבר שאינו מתכוון" עוסקים באותה שאלה – האם שופטים אדם לפי מה שנראה מבחוץ, או לפי מה שהוא באמת בפנים.</p>
+      <p class="bold-para">הראשונים שואלים מה הקשר בין שמן ורד ובין דבר שאינו מתכוון, והתשובה נמצאת בפנימיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרומאים והמערה</div>
+      <h3 class="story-title">🌉 "כמה נאים מעשיהם"</h3>
+      <p>הגמרא במסכת שבת מספרת: ישבו רבי יהודה, רבי יוסי ורבי שמעון. פתח רבי יהודה ואמר: כמה נאים מעשיהם של אומה זו! תיקנו שווקים, תיקנו גשרים, תיקנו מרחצאות. רבי יוסי שתק. נענה רבי שמעון ואמר: כל מה שתיקנו, לא תיקנו אלא לצורך עצמם. תיקנו שווקים להושיב בהם זונות, מרחצאות לעדן בהם את עצמם, גשרים ליטול מהם מכס.</p>
+      <p>הדברים הגיעו לשלטון. רבי יהודה, ששיבח, הועלה לגדולה. ורבי שמעון, שגינה, נגזר עליו מוות, והוא נאלץ לברוח ולהסתתר במערה.</p>
+      <p>על מה נחלקו? האם מישהו מהם לא הכיר את המציאות? הרי כולם ידעו שהרומאים בנו גשרים ומרחצאות. המחלוקת הייתה איך מתייחסים למציאות.</p>
+      <p>הרב המחיש זאת: רבי יהודה אומר, זכור איך נראתה הארץ לפני כן. לא היו גשרים, נסעו בעגלה על אבנים. עכשיו אתה נוסע בדרך סלולה ונהנה. תודה! ורבי שמעון כועס: מה הייתה כוונתם? הם לא רצו לעזור לך. הם רצו להרוויח ממך. אין כאן שום דבר שמחייב הכרת טובה.</p>
+      <p>שוב אותה מחלוקת: רבי יהודה הולך אחרי המעשה, ורבי שמעון אחרי הכוונה.</p>
+      <p class="bold-para">רבי יהודה שיבח את הרומאים על מעשיהם, ורבי שמעון גינה אותם בגלל כוונתם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרומאים והמערה</div>
+      <h3 class="story-title">🕳️ שתים עשרה שנה במערה</h3>
+      <p>רבי שמעון ובנו ברחו למערה, וניתקו כל קשר עם העולם החיצון. שתים עשרה שנה עסקו בתורה יומם ולילה. שם התקדש רבי שמעון, והגיע לדרגות עליונות ונפלאות.</p>
+      <p>יום אחד יצאו מן המערה, וראו אנשים חורשים וזורעים. אמר רבי שמעון: מניחים חיי עולם ועוסקים בחיי שעה? וכל מקום שנתנו בו את עיניהם, נשרף מיד. הוא לא היה מסוגל לראות אנשים שאינם עוסקים בתורה.</p>
+      <p>ואז יצאה בת קול ואמרה: "לְהַחֲרִיב עוֹלָמִי יְצָאתֶם? חִזְרוּ לִמְעָרַתְכֶם". הקדוש ברוך הוא לא הסכים איתו. למה? כי אי אפשר לקיים עולם שבו כולם כמו רבי שמעון בר יוחאי. הרב אמר, בזהירות, שגם מדינה אי אפשר להחזיק רק בלימוד, כל עוד איננו בימות המשיח וכל עוד אין ניסים גלויים: צריך צבא, צריך כלכלה, צריך אנשים שעוסקים בעולם.</p>
+      <p>והרב הביא את דברי הרמב"ם, שכינה בלשון חריפה את מי שעוסק בבניין העולם בלי לדעת למה: אלמלא הם, היה העולם חרב. גם מי שאינו מתכוון לשם שמיים, מקיים את העולם. רבי שמעון היה צריך ללמוד זאת.</p>
+      <p class="bold-para">במערה התעלה רבי שמעון לדרגה כזו שלא יכול היה לסבול את העיסוק בחיי שעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרומאים והמערה</div>
+      <h3 class="story-title">🌿 שני ההדסים</h3>
+      <p>חזרו רבי שמעון ובנו למערה לעוד שנה, שנה שלמה, כדי ללמוד איך צריך להתייחס לעולם. כשיצאו, עדיין בנו של רבי שמעון היה מכה במקום שנתן בו עיניו, ורבי שמעון היה מרפא. רבי שמעון כבר הבין שצריך להכיר בכך שלא כולם יכולים לחיות כמותו, ושיש מציאות שונה.</p>
+      <p>ומה הרגיע אותו לגמרי? בערב שבת ראה זקן רץ בין השמשות ובידו שני הדסים. שאל אותו: למה לך שניים? למה לא אחד? אמר לו הזקן: אחד כנגד "זָכוֹר" ואחד כנגד "שָׁמוֹר". כששמע זאת רבי שמעון, נתיישבה דעתו.</p>
+      <p>מה קרה? הוא ראה שיש אנשים שעוסקים בעולם הזה, בדברים פשוטים, אבל בכוונה לשם שמיים. זקן פשוט, בערב שבת, רץ עם הדסים, וכל ליבו בשבת. רבי שמעון, שתמיד הסתכל על הכוונה, ראה שגם בתוך העולם הזה יש פנימיות.</p>
+      <p>ומכאן המסקנה: העולם אינו צריך להיות כולו מערה. אבל גם בתוך העולם, המעשים מקבלים את ערכם מן הכוונה שבהם.</p>
+      <p class="bold-para">רבי שמעון נרגע כשראה שגם בעולם הזה יש מי שעושה מעשים פשוטים בכוונה לשם שמיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הרומאים והמערה</div>
+      <h3 class="story-title">🌾 ואספת דגנך</h3>
+      <p>גם במסכת ברכות נחלקו רבי ישמעאל ורבי שמעון בשאלה איך מתנהגים בעולם. הפסוק אומר "וְאָסַפְתָּ דְגָנֶךָ". רבי ישמעאל אומר: הנהג בהם מנהג דרך ארץ. יש זמן שעובדים ויש זמן שלומדים. רבי שמעון אומר: אפשר אדם חורש בשעת חרישה וזורע בשעת זריעה, תורה מה תהא עליה? אלא בזמן שישראל עושים רצונו של מקום, מלאכתם נעשית על ידי אחרים.</p>
+      <p>שוב רואים: רבי שמעון רואה את העולם כולו כאילו כבר הגענו לעולם הבא. בעיניו, כשהעם עושה רצון ה', הוא אינו צריך לעסוק בעולם כלל.</p>
+      <p>והגמרא מסכמת: הרבה עשו כרבי ישמעאל ועלתה בידם. כרבי שמעון בר יוחאי – ולא עלתה בידם. הדרך של רבי שמעון אמיתית, אבל אינה מתאימה לרוב בני האדם. מי שינסה לחיות כך, בלי לחשוב איך יתפרנס, עלול להגיע למצוקה ולא יעמוד בכך.</p>
+      <p>ההבנה הזאת חשובה: רבי שמעון אינו טועה. הוא רואה את האמת הפנימית. אבל לא כל אחד מסוגל לחיות בה כבר עכשיו.</p>
+      <p class="bold-para">גם במחלוקת על הפרנסה רבי שמעון ראה את העולם כבר במדרגת העולם הבא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · השורש והפסק</div>
+      <h3 class="story-title">✨ "שם" משמעון</h3>
+      <p>ועכשיו אפשר לחזור לגמרא. רבי שמעון אומר: כל ישראל בני מלכים הם. אפשר לשאול: איזה בן מלך? הרי האדם הזה עני, מקבץ נדבות. ורבי שמעון עונה: מה מעניין אותי המבט החיצוני? אני מסתכל על המהות, על הפנימיות. בפנימיותו הוא בן מלך.</p>
+      <p>ואותו דבר בשבת. מה אכפת לי שהאור נדלק? מה התכוונת? זה מה שמעניין את רבי שמעון. בשני המקרים הוא מסתכל על הפנים ולא על החוץ.</p>
+      <p>ולכן מובנת הגמרא: אם אתה פוסק כרבי שמעון בשמן ורד, כלומר שמסתכלים על המהות הפנימית של האדם, אזי באופן עקבי אתה צריך להסתכל כך גם על המטרה הפנימית של מעשיו. שני הדינים יונקים מאותו שורש.</p>
+      <p>הרב הוסיף רמז בשמו: חז"ל דורשים "כותב שם משמעון", ויש אף ספר בשם "שם משמעון". רבי שמעון חי בעולם הזה, אבל בצורה של "שם": הוא ראה את העולם כולו כפי שיראו אותו בעולם הבא, כפי שהוא באמת.</p>
+      <p class="bold-para">רבי שמעון חי בעולם הזה כמו בעולם הבא, ולכן ראה בכל יהודי בן מלך ושפט לפי הכוונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · השורש והפסק</div>
+      <h3 class="story-title">⚖️ הלכה כרבי יהודה, ובשבת כרבי שמעון</h3>
+      <p>מה ההלכה? בעצם, אמר הרב, אין כאן מחלוקת של אמת ושקר. גם מה שאומר רבי שמעון נכון, וגם מה שאומר רבי יהודה נכון. כמו שאמרו חכמים "אלו ואלו דברי אלוקים חיים", כל אחד מדבר משורש נשמתו, וכל אחד רואה צד אחר של האמת: רבי שמעון רואה את הפנימיות, ורבי יהודה רואה את מה שצריך לפעול בעולם הזה. הרב העיר שגם המחלוקת הציבורית של ימינו על לימוד תורה ושירות מזכירה במידה מסוימת את המחלוקת הזאת.</p>
+      <p>ולהלכה, בדרך כלל, במחלוקת רבי יהודה ורבי שמעון הלכה כרבי יהודה. למה? כי אי אפשר להנהיג את העולם באופן רגיל לפי דרכו של רבי שמעון. רוב בני האדם אינם יכולים לחיות בעולם הזה כמו בעולם האמת.</p>
+      <p>אבל בהלכות שבת משתנים הדברים. בדבר שאינו מתכוון ההלכה כרבי שמעון. לכן מותר לעבור במקום שנדלק בו אור, כשאינך מתכוון. למה דווקא בשבת? כי שבת היא "מֵעֵין עוֹלָם הַבָּא", "יוֹם שֶׁכֻּלּוֹ שַׁבָּת וּמְנוּחָה". שם שייכת תורתו של רבי שמעון. בשבת הולכים אחרי הכוונה, אחרי הפנימיות.</p>
+      <p>ויש יחידי סגולה, שאפילו ימות החול שלהם הם כמו שבת. הם המעטים שיכולים לחיות כך כל ימיהם.</p>
+      <p class="bold-para">בדרך כלל הלכה כרבי יהודה, אבל בשבת, מעין עולם הבא, ההלכה כרבי שמעון בדבר שאינו מתכוון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · השורש והפסק</div>
+      <h3 class="story-title">🌍 גם דרכו של רבי יהודה אמת</h3>
+      <p>חשוב לא להחמיץ את הצד של רבי יהודה. דרכו אינה "פחותה". היא הדרך שבה מתנהג העולם, ולכן ההלכה בדרך כלל כמותו.</p>
+      <p>רבי יהודה מלמד להכיר בטוב שנעשה בפועל. גם אם מי שבנה את הגשר לא חשב עליך, אתה נוסע עליו ונהנה. יש מקום להכיר בזה, להודות על התועלת, ולא לבטל אותה רק משום שהכוונה לא הייתה טהורה.</p>
+      <p>וגם בהלכות שבת: המעשה עצמו חשוב. אי אפשר לומר על כל דבר "לא התכוונתי". העולם הזה פועל לפי מעשים, ובני אדם נשפטים לפי מה שהם עושים.</p>
+      <p>לכן אין כאן אמת מול שקר, אלא שני מבטים. רבי יהודה רואה את העולם כפי שהוא פועל עכשיו, ורבי שמעון רואה אותו כפי שהוא באמת, בפנים. מי שלומד את שניהם, יודע מתי להשתמש בכל אחד.</p>
+      <p class="bold-para">רבי יהודה מלמד להכיר בטוב שנעשה בפועל, גם כשהכוונה אינה טהורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · השורש והפסק</div>
+      <h3 class="story-title">🤝 "דייך שאני ובוראך"</h3>
+      <p>רבי שמעון היה מתלמידיו המובהקים של רבי עקיבא. ומסופר שרבי עקיבא אמר לו: דייך שאני ובוראך מכירים כוחך.</p>
+      <p>אנשים לא הבינו מי הוא האדם הזה. הוא צועק על הרומאים ומרגיז את כולם, אינו מסכים לראות אנשים עובדים, רוצה שכולם ילמדו. זה לא מתאים לרוב האנשים. אבל רבי עקיבא אמר לו: אני מבין היכן אתה נמצא. אתה רואה את העולם כולו ברובד של פנימיות גבוהה מאוד. רק אני והבורא מכירים את כוחך.</p>
+      <p>ולכן רבי שמעון אכן הסתגר מן העולם החיצוני, שקע לגמרי בתורה, ושלוש עשרה שנה במערה נהפך לאדם רוחני לגמרי. ומשם השאיר לנו את הספר הנפלא, ספר הזוהר.</p>
+      <p>גם זה יסוד: לא כל אחד צריך להיות כרבי שמעון. אבל צריך להכיר בכך שיש מדרגה כזו, ולכבד את מי שעומד בה, גם כשדרכו נראית לנו קיצונית או בלתי מובנת.</p>
+      <p class="bold-para">רבי עקיבא הבין את גדלותו של רבי שמעון, שרבים לא הבינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אור הזוהר</div>
+      <h3 class="story-title">📜 ספר הזוהר</h3>
+      <p>מה עושה ספר הזוהר? הוא מגלה את פנימיות התורה והעולם. הוא עוסק בסודות הבריאה ובקשר העמוק שבין הבורא לנבראים. הוא מלמד איך כל פעולה שאדם עושה כאן משפיעה על העולמות העליונים. על התורה יש פשט, יש רמז ויש דרש. רבי שמעון מגלה את הסוד, את העומק שבעומק.</p>
+      <p>האם רבי שמעון נפטר בל"ג בעומר? זה אינו ברור, אמר הרב. אבל ודאי שהכוח של רבי שמעון קשור ליום הזה, וביום הזה שמחים שקיבלנו אור אדיר כזה. השמחה הגדולה של ל"ג בעומר אינה רק על אדם גדול שחי לפני דורות, אלא על האור שהשאיר לנו, שמאיר עד היום.</p>
+      <p>הזוהר התגלה במאה השלוש עשרה, ואחר כך בא האר"י, סידר את הדברים והעמיק בהם. האור הזה אינו רק הספר עצמו: החסידות, תורת ברסלב, ועוד דברים רבים מאוד בנויים על פי היסודות האלה.</p>
+      <p>הרב סיפר על חוקר כתבי יד מומחה, שעבודתו לקבוע את זמנם ומחבריהם של כתבים עתיקים, עבודה שיכולה להפוך כתב יד מחסר ערך לבעל ערך רב או להפך. הרב שאל אותו מה דעתו על מקורו של הזוהר. והוא השיב: האר"י שמח בו, הגאון מווילנה שמח בו, ועוד גדולים שמחו בו. זה מספיק לי.</p>
+      <p class="bold-para">ספר הזוהר מגלה את פנימיות התורה והעולם, ועליו נבנו החסידות ועולם הקבלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אור הזוהר</div>
+      <h3 class="story-title">🍋 הלכות מן הזוהר</h3>
+      <p>הרב הדגיש שאיננו תופסים כמה הלכות מקורן בזוהר. הבית יוסף והאר"י חיו באותו דור ובאותה עיר, ובשולחן ערוך יש הלכות רבות שמקורן בזוהר.</p>
+      <p>דוגמה ראשונה: בתפילין מקפידים שהיו"ד של הקשר לא תזוז מן הבית, ולכן קושרים אותה בגיד. איפה זה כתוב בגמרא? אין. זה מן הזוהר. המשמעות: מחברים את השפע האלוקי אל העולם הזה.</p>
+      <p>דוגמה שנייה: בסוכות לוקחים את שלושת המינים ביד ימין ואת האתרוג ביד שמאל, ומחברים אותם יחד. גם זה אינו מן הגמרא, אלא מן הזוהר, ומבואר בבית יוסף. האתרוג מסמל את כנסת ישראל, והחיבור מבטא את חיבור השפע האלוקי לעם ישראל.</p>
+      <p>ועוד הביא הרב: מה שאדם מקדים את יד ימין, כי ימין היא מידת החסד ושמאל מידת הדין, ורוצים להגביר את החסד על הדין. אין ספור הלכות ומנהגים שבלי אורו של רבי שמעון לא היינו מבינים.</p>
+      <p class="bold-para">הלכות רבות שאנו נוהגים בהן, בתפילין ובארבעת המינים, מקורן בזוהר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · יום הפנימיות</div>
+      <h3 class="story-title">🔥 מירון ורימון</h3>
+      <p>ועכשיו מובן מה קורה בל"ג בעומר. ביום של רבי שמעון, כביכול, הקדוש ברוך הוא מסתכל על העולם בדרכו של רבי שמעון. ואיך הסתכל רבי שמעון? הוא ראה בכל אדם, גם בחוטא, בן מלך. הוא לא הסתכל על החיצוניות, אלא על הפנימיות.</p>
+      <p>הרב הביא רמז: רבי שמעון קבור במירון, ו"מירון" הוא אותיות "רימון". מה המיוחד ברימון? את הקליפה זורקים, ואוכלים את התוך. כך רבי שמעון: אינו מסתכל על הקליפה של האדם, אלא על תוכו.</p>
+      <p>ולכן ביום הזה מסתכלים משמיים על כל יהודי לפי עומקו. וכל יהודי, בפנימיותו, רוצה לעשות את רצון ה'. רק מה לעשות, יש הרבה דברים שמפריעים לו. כמו שאמרה כנסת ישראל: "אַל תִּרְאוּנִי שֶׁאֲנִי שְׁחַרְחֹרֶת שֶׁשְּׁזָפַתְנִי הַשָּׁמֶשׁ". אל תסתכלו על החוץ. השמש שזפה אותי, אבל בתוכי אני לבנה.</p>
+      <p class="bold-para">בל"ג בעומר מסתכלים משמיים על כל יהודי כפי שרבי שמעון הסתכל – על פנימיותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · יום הפנימיות</div>
+      <h3 class="story-title">🕍 יוסף משיתא</h3>
+      <p>הרב הביא דוגמה מפורסמת לפנימיות של יהודי. המדרש מספר על יוסף משיתא, יהודי שהרומאים שלחו להיכנס ראשון לבית המקדש ולהוציא ממנו כלים. נכנס והוציא את המנורה.</p>
+      <p>אמרו לו הרומאים: כלי כזה אינו ראוי להדיוט. היכנס שוב וקח לעצמך. אמר להם: לא די לי שהכעסתי את בוראי פעם אחת, שאכעיסנו שוב? ניסו לפתות אותו בטוב, ניסו להכריח אותו ברע, ולא עזר כלום. הוא עמד בסירובו עד מוות.</p>
+      <p>מה קרה? במקום כזה קדוש, התגלתה פנימיותו. הוא יהודי, ובתוכו, עמוק, יש רצון עצום לעשות את רצון ה'. רק צריך לעורר אותו. על כך דרשו חז"ל את הפסוק "וַיָּרַח אֶת רֵיחַ בְּגָדָיו" – אל תקרי בגדיו אלא בוגדיו: גם מי שנראה בוגד, יש בו ריח טוב.</p>
+      <p>וזה מה שקורה בל"ג בעומר: בכל יהודי מתגלה פנימיותו. מסתכלים על כל אחד כפי שהוא באמת, כאור עצום, שיש בו דבר נפלא שקשה לתאר.</p>
+      <p class="bold-para">גם יהודי שנראה רחוק, כשמתעוררת פנימיותו, מוכן למסור את נפשו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · יום הפנימיות</div>
+      <h3 class="story-title">🕯️ לחיות באור של רבי שמעון</h3>
+      <p>מה אפשר לקחת מכל זה לחיים? ראינו שלהלכה, בדרך כלל, איננו נוהגים כרבי שמעון, כי רוב בני האדם אינם יכולים לחיות בעולם הזה כבעולם הבא. אבל ראינו גם שבשבת הולכים בדרכו, ושיש ימים ורגעים שבהם האור שלו מאיר במיוחד.</p>
+      <p>ל"ג בעומר הוא יום כזה. ביום הזה אפשר ללמוד ממנו את המבט: להסתכל על עצמנו ועל אחרים לפי הפנימיות. לא לשפוט אדם לפי מעשה אחד שנראה מבחוץ, אלא לשאול מה הוא רוצה באמת, מה הכוונה שבליבו.</p>
+      <p>וגם להפך: לבדוק את המעשים שלנו לפי הכוונה. האם אנחנו עושים את מה שאנחנו עושים לשם שמיים, כמו הזקן עם שני ההדסים? אפשר לעסוק בעולם הזה, בפרנסה ובבית, ובכל זאת להכניס בהם כוונה פנימית.</p>
+      <p>כך מתחברים שני הצדדים: חיים בעולם הזה, כרבי יהודה, ורואים בו את הפנימיות, כרבי שמעון. וזה אולי השיעור הגדול של היום הזה.</p>
+      <p class="bold-para">גם מי שאינו יכול לחיות כרבי שמעון כל ימיו, יכול ביום הזה לקחת מאורו את המבט הפנימי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · יום הפנימיות</div>
+      <h3 class="story-title">🙏 יום של תפילה ואחדות</h3>
+      <p>לכן היום הזה מסוגל מאוד לישועות. כשמסתכלים עליך משמיים כאדם קדוש וטהור, כפי שאתה בפנימיותך, אפשר לפתוח הכל.</p>
+      <p>וביום הזה יכול אדם לבקש: ריבונו של עולם, באמת אני רוצה לעשות את רצונך. רק כל מיני דברים מפריעים לי. עזור לי, שהרצון הפנימי שלי יתגלה, ושאזכה להתחבר לרצונך. כל יהודי יכול לבקש ביום הזה שה' יסיר ממנו את המעכבים.</p>
+      <p>הרב העיר שהזוהר, שבעבר היה נחלת יחידים, נלמד כיום בכל מקום, ברמות שונות. ול"ג בעומר הוא גם זמן טוב לאחדות: מי שמסתכל על הפנימיות אינו רואה אשכנזי או ספרדי, חסיד או ליטאי. הוא רואה את החלק הנפלא שבכל יהודי.</p>
+      <p>ורבי שמעון גילה שהגאולה תבוא על ידי התגלות הטוב האמיתי שבכל יהודי. יהי רצון שנזכה לחיות כבר בעולם הזה באורו של רבי שמעון, ושכל התפילות ביום הזה יתקבלו לטובה.</p>
+      <p class="bold-para">ל"ג בעומר מסוגל לישועות, לבקשה שהרצון הפנימי יתגלה, ולאחדות בין כל חלקי העם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/zNfC0ykNuzM · 2025-05-14 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מחלוקת בהלכות שבת","icon":"🕯️","color":"#c62b6b","stories":[{"id":1,"title":"גמרא שמתבארת רק בפנימיות","icon":"🔍"},{"id":2,"title":"מלאכה שאינה צריכה לגופה","icon":"⛏️"},{"id":3,"title":"דבר שאינו מתכוון","icon":"🪟"},{"id":4,"title":"האור שנדלק בדרך","icon":"💡"}]},{"id":2,"name":"בני מלכים","icon":"👑","color":"#6d28d9","stories":[{"id":5,"title":"שמן ורד לכל ישראל","icon":"🌹"},{"id":6,"title":"לראות בן מלך","icon":"👑"},{"id":7,"title":"מה הקשר?","icon":"❓"}]},{"id":3,"name":"הרומאים והמערה","icon":"🏞️","color":"#e08e00","stories":[{"id":8,"title":"\"כמה נאים מעשיהם\"","icon":"🌉"},{"id":9,"title":"שתים עשרה שנה במערה","icon":"🕳️"},{"id":10,"title":"שני ההדסים","icon":"🌿"},{"id":11,"title":"ואספת דגנך","icon":"🌾"}]},{"id":4,"name":"השורש והפסק","icon":"⚖️","color":"#1e88b8","stories":[{"id":12,"title":"\"שם\" משמעון","icon":"✨"},{"id":13,"title":"הלכה כרבי יהודה, ובשבת כרבי שמעון","icon":"⚖️"},{"id":14,"title":"גם דרכו של רבי יהודה אמת","icon":"🌍"},{"id":15,"title":"\"דייך שאני ובוראך\"","icon":"🤝"}]},{"id":5,"name":"אור הזוהר","icon":"📜","color":"#c62b6b","stories":[{"id":16,"title":"ספר הזוהר","icon":"📜"},{"id":17,"title":"הלכות מן הזוהר","icon":"🍋"}]},{"id":6,"name":"יום הפנימיות","icon":"🔥","color":"#6d28d9","stories":[{"id":18,"title":"מירון ורימון","icon":"🔥"},{"id":19,"title":"יוסף משיתא","icon":"🕍"},{"id":20,"title":"לחיות באור של רבי שמעון","icon":"🕯️"},{"id":21,"title":"יום של תפילה ואחדות","icon":"🙏"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
