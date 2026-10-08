@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ארמון המלך</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ארמון המלך</h1>
+  <p>הלכות דיבת הארץ חלק ב: מה נחשב דיבה על הארץ, שלושה טעמים לאיסור שאין כמותו בשום מצווה אחרת, וכמה חמור הדבר בעיני הקדוש ברוך הוא</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ארמון המלך" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/2M2We3Bqhqk?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/2M2We3Bqhqk/hqdefault.jpg" alt="ארמון המלך" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=2M2We3Bqhqk" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המזמור של הדור שלנו</div>
+      <h3 class="story-title">🌅 יום שאינו יום ואינו לילה</h3>
+      <p>השיעור פתח בחזרה קצרה על מה שנלמד בשיעורים הקודמים. מובא בספורנו, וכבר במאירי לפניו, שיש בספר תהלים מזמור שנכתב במיוחד לדור שלנו. זהו המזמור "לְכוּ נְרַנְּנָה לַה'", פרק צ"ה, שפותח את רצף מזמורי הגאולה ושאומרים אותו בקבלת שבת.</p>
+      <p>המזמורים האלה מדברים על תקופה מיוחדת, שהנביא מתאר אותה כ"יוֹם... לֹא יוֹם וְלֹא לָיְלָה". את הביטוי הזה כולנו מכירים מן הפיוט שבליל הסדר: "קָרֵב יוֹם אֲשֶׁר הוּא לֹא יוֹם וְלֹא לַיְלָה".</p>
+      <p>מה פירוש יום שאינו יום ואינו לילה? הרבה מפרשים מסבירים שזו תקופה שבה עדיין אין "יום" במלוא מובנו: אין בית מקדש, לא כל העם חזר בתשובה, הגאולה השלמה עוד לא באה. אבל גם אין "לילה": אין שעבוד, אין אומה זרה ששולטת בנו ואומרת לנו מה לעשות, ועם ישראל יושב בארצו.</p>
+      <p>מי שיושב בליל הסדר ושר את הפיוט הזה, יכול להצביע על עצמו. זו התקופה שלנו. ואנחנו מבקשים מה' שיקרב את היום השלם, שבו נראה את הגאולה במלואה.</p>
+      <p class="bold-para">התקופה שלנו היא "לא יום ולא לילה": עוד אין גאולה שלמה, אבל כבר אין שעבוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המזמור של הדור שלנו</div>
+      <h3 class="story-title">📜 מה מוטל על הדור הזה</h3>
+      <p>הספורנו מסביר שהמזמור "לכו נרננה" עוסק בקיבוץ הגלויות שלפני ביאת המשיח. ומעניין מאוד איך המזמור מסתיים. אחרי ההתחלה השמחה הוא עובר לאזהרה: "אַל תַּקְשׁוּ לְבַבְכֶם כִּמְרִיבָה... אַרְבָּעִים שָׁנָה אָקוּט בְּדוֹר... אֲשֶׁר נִשְׁבַּעְתִּי בְאַפִּי אִם יְבֹאוּן אֶל מְנוּחָתִי".</p>
+      <p>על איזה חטא נאמרו ארבעים השנים? לא על חטא העגל. העונש של ארבעים שנה במדבר, והשבועה שהדור לא ייכנס לארץ, נאמרו רק על חטא המרגלים. אם כן, המזמור שנכתב לדורנו מזהיר אותנו בדיוק מן החטא הזה.</p>
+      <p>ומכאן היסוד שעליו עומד כל הלימוד: אם אנחנו רוצים גאולה, אחד הדברים החשובים ביותר שעלינו לתקן הוא חטא המרגלים. החטא שגרם לבכייה לדורות הוא דיבת הארץ, ותיקונו הוא לדבר על הארץ טוב ולאהוב אותה.</p>
+      <p>לכן אין זה לימוד צדדי של הלכות שוליות. אלה הלכות שנוגעות ללב התפקיד של הדור. מי שנזהר בהן, משתתף בתיקון החטא שעיכב את הכניסה לארץ, ומקרב את הגאולה.</p>
+      <p class="bold-para">המזמור של דורנו מסתיים באזהרה אחת: לא לחזור על חטא המרגלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה נחשב דיבת הארץ</div>
+      <h3 class="story-title">🗣️ הגדרת האיסור</h3>
+      <p>בשיעור נלמדה חוברת הלכות מסודרת על דיבת הארץ. ההגדרה שפותחת אותה חשובה מאוד: דיבת הארץ היא דיבור, אפילו של אמת, הגורם לבני אדם חוסר אהבה וחיבה לאדמת ארץ ישראל.</p>
+      <p>שימו לב: לא נאמר דיבור של שקר. גם דבר אמת, אם הוא מקרר את אהבת הארץ, הוא בכלל האיסור. כמו בלשון הרע על אדם, שם כידוע האיסור הוא דווקא על אמת.</p>
+      <p>ועוד: גם מול תושב הארץ אסור לדבר כך. אפשר היה לחשוב שהאיסור הוא רק מול מי שגר בחוץ לארץ, שמא יימנע מלעלות. אבל לא. גם מי שגר כאן, כשהוא שומע כל הזמן דברים רעים על הארץ שלו, מתחיל לאהוב אותה פחות.</p>
+      <p>ובספרים מובא שכל דיבור הגורם לגנות אפילו דבר אחד מארץ ישראל, בכלל הדיבה: בין מצד האוויר, בין מצד הקור והחום, בין מצד הפירות ובין מצד הבניינים. ואפילו בזמן חורבנה, כשהארץ ביד גויים והבתים שלהם, גם אז הדיבור הרע עליה בכלל הדיבה.</p>
+      <p class="bold-para">דיבת הארץ היא כל דיבור, אפילו אמיתי, שגורם לבני אדם לאהוב פחות את ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה נחשב דיבת הארץ</div>
+      <h3 class="story-title">🏗️ אז והיום</h3>
+      <p>עלתה בשיעור שאלה: האם באמת היה האיסור הזה תקף גם בתקופה שהארץ הייתה חרבה? עד לפני זמן לא רב הארץ באמת הייתה שוממה. האם אסור היה לומר זאת?</p>
+      <p>התשובה שהובאה היא חילוק. לומר שהארץ חרבה, באותם ימים, היה תיאור של מציאות. אין בזה איסור. אבל לומר שהארץ אינה טובה, שחם בה מדי, שאינה ראויה – זה היה אסור גם אז. ההבדל הוא בין תיאור של מצב לבין גנות של הארץ עצמה.</p>
+      <p>והיום, כשהקדוש ברוך הוא בונה את ירושלים ומקבץ נדחי ישראל, הדבר חמור עוד יותר. כל דיבור רע על ארץ ישראל בימינו, שאינו לתועלת מסוימת וברורה, אסור.</p>
+      <p>כלל חשוב נוסף: אין המדבר צריך להתכוון לגנות את הארץ. מי שמדבר סתם, למשל על יוקר המחיה או על התושבים, ומקשר זאת אל הארץ, כבר נכנס לגדר דיבת הארץ. הכוונה הטובה אינה מכשירה את הדיבור, כי התוצאה היא שאהבת הארץ נפגעת.</p>
+      <p class="bold-para">פעם מותר היה לומר שהארץ חרבה, כי זו עובדה; היום, כשה' בונה את ירושלים, כל דיבור רע עליה אסור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה נחשב דיבת הארץ</div>
+      <h3 class="story-title">🏠 דירה יקרה או ארץ יקרה</h3>
+      <p>הדוגמה שהובאה פשוטה ושכיחה מאוד. אדם אומר: הדירה הזאת יקרה. אין שום בעיה. הוא יכול לומר כמה שהוא רוצה שהדירה יקרה. אבל אם הוא אומר: כמה יקרות הדירות בארץ ישראל, כאן כבר הוא מייחס את היוקר אל הארץ.</p>
+      <p>וזה העיקרון שחוזר בכל ההלכות האלה: לא הקושי עצמו אסור לתאר, אלא החיבור שלו אל ארץ ישראל. מי שאומר שדירות יקרות במקום מסוים, מדבר על המחירים. מי שאומר שבארץ הכל יקר, מדבר על הארץ.</p>
+      <p>אחד המשתתפים העיר שיש הבדל בין האנשים שבארץ ובין הארץ עצמה. והתשובה: נכון, הקדוש ברוך הוא הבטיח לנו את הארץ, ולא הבטיח לנו את כל האנשים. אבל גם בדיבור על התושבים יש גבול, כפי שנראה מיד.</p>
+      <p>מי שמתרגל לשים לב לנקודה הזאת, יגלה כמה פעמים ביום עולים משפטים כאלה בשיחה רגילה. מספיק לשנות מעט את הניסוח – לדבר על הדבר עצמו ולא על הארץ – וכבר יוצאים מן האיסור.</p>
+      <p class="bold-para">הבעיה אינה בתיאור הקושי, אלא בייחוס שלו אל הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה נחשב דיבת הארץ</div>
+      <h3 class="story-title">👥 כבוד יושביה הוא כבודה</h3>
+      <p>ההלכה הבאה בחוברת: גם לדבר על תושבי ארץ ישראל בצורה שגורמת ריחוק מן הארץ – אסור. והטעם: כבוד יושביה הוא כבודה, ובקלונם יש ביזיון וצער לארץ הקודש.</p>
+      <p>אמנם, מי שמדבר על אנשים מסוימים שבמקרה גרים בארץ, ולא על האוכלוסייה בכלל, אין בזה דיבת הארץ. אם אדם מזהיר: יש פלוני ופלוני שאינם הגונים, היזהר מהם – אין לזה קשר לארץ. אנשים כאלה יכולים לגור בכל מקום.</p>
+      <p>אבל כשאדם אומר: זו ההתנהגות הישראלית, ככה מתנהגים כאן – הוא כבר מייחס את הדבר אל הארץ ואל יושביה בכלל.</p>
+      <p>הדוגמה שהובאה: אדם חוזר מחופשה בחוץ לארץ, נכנס לסניף הדואר ומספר לכולם: שם אף אחד לא עוקף בתור, כולם עומדים כמו חיילים, ופה? מה הוא עשה? הוא לא אמר לאדם מסוים: למה עקפת? הוא אמר: שם טוב ופה רע. הוא שייך את הדבר לאוכלוסייה הישראלית כולה, וזו בדיוק דיבת הארץ.</p>
+      <p class="bold-para">דיבור כללי על תושבי הארץ פוגע בארץ עצמה; דיבור על אנשים מסוימים שבמקרה גרים בה – אינו דיבת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה נחשב דיבת הארץ</div>
+      <h3 class="story-title">😊 מי האיש החפץ חיים</h3>
+      <p>מכאן עבר הרב לנקודה רחבה יותר. אנשים לפעמים אינם חושבים פעמיים ואומרים: קשה מאוד לחיות בארץ. אבל הם אינם יודעים כמה טוב לחיות במקום שבו כולם מדברים טוב.</p>
+      <p>וכבר אמר דוד המלך: "מִי הָאִישׁ הֶחָפֵץ חַיִּים אֹהֵב יָמִים לִרְאוֹת טוֹב". מי שרוצה חיים ארוכים וטובים, מה עליו לעשות? לראות טוב. מי שמתרגל לראות טוב בכל דבר, מחכים לו חיים מאושרים.</p>
+      <p>החיים אינם נקבעים לפי המציאות, אלא לפי איך שאדם מסתכל עליה. נאמר פעם בהלצה שאדם אינו מקבל כיב קיבה ממה שהוא אוכל, אלא ממה שאוכל אותו. מי שחושב כל הזמן על דברים לא טובים, הורס את עצמו מבפנים.</p>
+      <p>ולכן התפקיד שלנו הוא ללמוד לראות טוב, להיות כמו יהושע וכלב שאמרו: "טוֹבָה הָאָרֶץ מְאֹד מְאֹד". אין זו מצווה קשה. זו אחת המצוות המתוקות ביותר שיכולות להיות, וברכתה מורגשת מיד.</p>
+      <p class="bold-para">החיים אינם לפי המציאות אלא לפי איך שמסתכלים עליה; מי שמתרגל לראות טוב זוכה לחיים מאושרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה נחשב דיבת הארץ</div>
+      <h3 class="story-title">🌍 אין כמו הארץ שלנו</h3>
+      <p>ההלכה הבאה: אסור אפילו להשוות מקום אחר לארץ ישראל, ולומר על ארץ אחרת שהיא טובה כארץ ישראל.</p>
+      <p>המקור לכך בגמרא במסכת סנהדרין. מסופר שם שעשרת השבטים, כשגלו, הגיעו למקום מסוים ונתנו לו שם שמשמעו שהוא דומה לארץ ישראל. כמו שנאמר על ירושלים "יְפֵה נוֹף מְשׂוֹשׂ כָּל הָאָרֶץ", כך קראו לאותו מקום בשם שמזכיר את היופי הזה. והגמרא רואה בכך דבר חמור מאוד.</p>
+      <p>שימו לב מה היה החטא. הם לא אמרו שארץ ישראל רעה. הם רק אמרו שיש מקום שהוא כמוה. וכבר זה נחשב לגנות הארץ.</p>
+      <p>מכאן שאדם צריך לחיות עם ההרגשה שהארץ שלו היא הארץ הטובה ביותר שיכולה להיות. אין כמו הארץ שלנו. לא מתוך זלזול בעולם, אלא מתוך אהבה. מי שאוהב באמת אינו עורך השוואות. אדם אינו אומר על אמו שיש אחרות טובות כמוה, וכך צריך להרגיש כלפי ארץ ישראל.</p>
+      <p class="bold-para">אסור לומר על ארץ אחרת שהיא טובה כארץ ישראל – אפילו רק להשוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלושה טעמים לאיסור</div>
+      <h3 class="story-title">✨ חידוש שאין כמותו</h3>
+      <p>הנקודה העיקרית בכל הדף שנלמד היא המשפט הבא: אף שאיסור לשון הרע נאמר רק על הוצאת גנאי על אנשים, ולא על חפצים דוממים, על ארץ ישראל יש איסור לשון הרע.</p>
+      <p>זה חידוש שאינו מופיע באף מצווה אחרת. אין איסור לשון הרע על תפילין, לא על בית הכנסת, לא על בית המדרש, לא על טלית ולא על שבת. מעולם לא שמענו על איסור לשון הרע על מצווה. אולי יש בדיבור כזה חילול ה', אולי ביזוי של דבר שבקדושה, אבל לא איסור לשון הרע.</p>
+      <p>אדם שאומר שמסכת מסוימת קשה מאוד ואינה מובנת – אולי אין זה יפה, אבל אין זה לשון הרע. הדבר היחיד בעולם, מלבד אדם, שיש עליו איסור לשון הרע, הוא ארץ ישראל.</p>
+      <p>זה חידוש עצום שהתורה חידשה. ונשאלת השאלה: למה? מה מיוחד בארץ ישראל, שבגללו הדיבור עליה נחשב כדיבור על אדם חי? המפרשים אמרו בזה כמה טעמים, והרב ניסה לסכם אותם בשלושה.</p>
+      <p class="bold-para">אין איסור לשון הרע על שום חפץ של מצווה – רק על ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלושה טעמים לאיסור</div>
+      <h3 class="story-title">❤️ הטעם הראשון: כנגד מצוות האהבה</h3>
+      <p>הטעם הראשון: איסור לשון הרע על אדם עומד כנגד המצווה "וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ". התורה מצווה לאהוב כל יהודי, ולכן אסור לדבר עליו רע. כשמדברים רע על אדם, מפסיקים לאהוב אותו. הדיבור משפיע מאוד: מדבר טוב על אדם – אוהבים אותו; מדבר רע – שונאים אותו.</p>
+      <p>זו גם השיטה העתיקה של שונאי ישראל. נאמר: "וַיָּרֵעוּ אֹתָנוּ הַמִּצְרִים". המצרים לא קמו יום אחד והכריזו שמשעבדים את היהודים. איש לא היה שומע להם. קודם הם עשו אותנו רעים בעיני העם: דיברו וסיפרו כמה היהודים רעים. ורק אחרי שכולם האמינו, השעבוד נראה מוצדק. כך פעלו שונאי ישראל גם בדורות מאוחרים יותר.</p>
+      <p>וכך גם בארץ ישראל. התורה מצווה לאהוב את הארץ, ולכן במקביל יש איסור להוציא דיבה עליה. גם כאן הכלל פועל: כל פעם שמספרים לאדם דבר רע על הארץ, הוא אוהב אותה פחות. וכל פעם שמספרים לו כמה אנשים טובים גרים בה, כמה מפעלי חסד וכמה ישיבות יש בה, הוא אוהב אותה יותר. כך המציאות.</p>
+      <p>הטעם הזה מובא בשם ראש ישיבה ידוע מדורנו.</p>
+      <p class="bold-para">כמו שלשון הרע על אדם עומד כנגד "ואהבת לרעך כמוך", כך דיבת הארץ עומדת כנגד מצוות אהבת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלושה טעמים לאיסור</div>
+      <h3 class="story-title">🧷 "ידבקו" ולא "יגורו"</h3>
+      <p>מניין שיש מצווה לאהוב את הארץ, ולא רק לגור בה? נאמר בתורה: "אִישׁ בְּנַחֲלַת מַטֵּה אֲבֹתָיו יִדְבְּקוּ בְּנֵי יִשְׂרָאֵל". לא נאמר "יגורו" בני ישראל, אלא "ידבקו". המצווה היא לדבוק בארץ ולאהוב אותה.</p>
+      <p>על כמה רחוק מגיעה האהבה הזאת, הובא סיפור שסיפר הרב מימון בספרו. בימי השלטון הטורקי, כשפרצה מלחמת העולם הראשונה, החליטו הטורקים לגרש מן הארץ כל מי שאינו אזרח טורקי. יהודים רבים מאוד גורשו אז, והיישוב היהודי הצטמק.</p>
+      <p>הרב מימון וחבר שלו רצו להישאר. הם ניגשו לבקש אזרחות טורקית, ונאמר להם שאזרחות ניתנת רק למי שמצהיר שנולד בארץ. הם לא ידעו מה לעשות: האם מותר להצהיר דבר שאינו נכון?</p>
+      <p>הם שלחו את השאלה אל בעל האור שמח. והוא השיב להם מן הפסוק "וּלְצִיּוֹן יֵאָמַר אִישׁ וְאִישׁ יֻלַּד בָּהּ". מה פירוש הכפילות "איש ואיש"? אחד שנולד בה, ואחד שמצפה לראותה – שניהם נחשבים כילידי ציון. אתם אוהבים את ארץ ישראל, כתב להם, ולכן אתם נחשבים כאילו נולדתם בה. אין זה שקר.</p>
+      <p>רואים מכאן כמה גדולה אהבת הארץ: מי שאוהב אותה באמת, נחשב כאילו נולד בה.</p>
+      <p class="bold-para">המצווה אינה רק לגור בארץ אלא לדבוק בה ולאהוב אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלושה טעמים לאיסור</div>
+      <h3 class="story-title">🏰 הטעם השני: ביתו של המלך</h3>
+      <p>הטעם השני: לשון הרע על ארץ ישראל נחשב כלשון הרע כלפי הקדוש ברוך הוא כביכול.</p>
+      <p>אפשר להקשות: הרי כל הארץ שייכת לה'. "לַה' הָאָרֶץ וּמְלוֹאָהּ תֵּבֵל וְיֹשְׁבֵי בָהּ". אם כך, גם כל ארץ אחרת היא שלו, ומדוע אין איסור לשון הרע עליה? התשובה: ארץ ישראל היא חפצא של קדושה, ושם בעליה יתברך נקרא עליה במיוחד. נאמר "כִּי לִי הָאָרֶץ", ומסביר הספורנו: היא ארץ ה' באופן מיוחד, לא כמו שאר הארצות שנתן לבני אדם.</p>
+      <p>זו ארץ ש"עֵינֵי ה' אֱלֹקֶיךָ בָּהּ" תמיד. זו הארץ שה' חמד מכל הארצות, כמו שאנו אומרים: "כִּי בָחַר ה' בְּצִיּוֹן אִוָּהּ לְמוֹשָׁב לוֹ". ארץ ישראל היא כביכול ביתו של הקדוש ברוך הוא.</p>
+      <p>ממילא, מי שמדבר רע על ארץ ישראל, מדבר כביכול על בורא עולם. הוא דומה לאורח שנכנס לארמון המלך ומתלונן על הארמון. על מי הוא מדבר באמת? על המלך.</p>
+      <p class="bold-para">כל העולם של ה', אבל ארץ ישראל היא ביתו המיוחד, ולכן דיבור עליה הוא כביכול דיבור על בורא עולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלושה טעמים לאיסור</div>
+      <h3 class="story-title">📖 הטעם השלישי: התורה שיבחה אותה</h3>
+      <p>הטעם השלישי: התורה שיבחה את ארץ ישראל. "אֶרֶץ אֲשֶׁר לֹא בְמִסְכֵּנֻת תֹּאכַל בָּהּ לֶחֶם לֹא תֶחְסַר כֹּל בָּהּ". מי שמוצא בה חסרונות, הולך נגד השבח של התורה. מקומות אחרים התורה לא שיבחה, ולכן אין בהם איסור לשון הרע. מי שאומר על ארץ אחרת שאינה יפה – התורה לא אמרה עליה דבר.</p>
+      <p>מישהו כתב פעם משפט נאה מאוד: הספר שמשבח את ארץ ישראל יותר מכל הספרים שנכתבו עליה, הוא ספר התורה. אין ספר בעולם ששיבח אותה כל כך. והתורה גם מסתיימת בה: הקדוש ברוך הוא לוקח את משה רבנו ומראה לו את הארץ – "זֹאת הָאָרֶץ אֲשֶׁר נִשְׁבַּעְתִּי".</p>
+      <p>ומה היה העונש הגדול של משה רבנו על מי מריבה? שלא ייכנס לארץ ישראל. יש היום מי שצריך להסביר לו למה זה עונש כל כך נורא. אבל אצל משה רבנו זה היה הדבר הקשה ביותר, עד שהתחנן עליו תפילות רבות.</p>
+      <p>לסיכום שלושת הטעמים: הראשון – כנגד מצוות אהבת הארץ, כמו לשון הרע כנגד "ואהבת לרעך כמוך". השני – זו ארץ ה', וגנותה היא כביכול גנות בורא עולם. השלישי – התורה שיבחה אותה, ומי שמגנה אותה הולך נגד דבר התורה.</p>
+      <p class="bold-para">התורה שיבחה את ארץ ישראל בלי סוף, ולכן מי שמגנה אותה הולך נגד דבר התורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלושה טעמים לאיסור</div>
+      <h3 class="story-title">✈️ ומה עם טיול בחוץ לארץ?</h3>
+      <p>עלתה שאלה: אנשים נוסעים לטייל בחוץ לארץ במקומות יפים. האם יש בזה משום דיבת הארץ?</p>
+      <p>הרב הבחין בין שני דברים. הרבה מאוד פוסקים דנים אם מותר לצאת מן הארץ לטיול, אבל רובם דנים מצד אחר: מי שיוצא מפסיד את מצוות ישיבת הארץ, שבכל רגע שאדם נמצא בארץ הוא מקיים אותה. אבל יש שיטה מיוחדת של מעטים מן הפוסקים, שעצם הטיול בחוץ לארץ, מפני שהוא אומר כביכול שיש מקום יפה יותר, מהווה הוצאת דיבה על הארץ. זו שיטה נדירה.</p>
+      <p>כדי להבין את הגבול, הובאה הלכה דומה. התורה אומרת "לֹא תְחָנֵּם", ונפסק שאסור לומר כמה גוי מסוים יפה. ומצד שני, הרואה בריות נאות, אפילו גוי, מברך "שֶׁכָּכָה לּוֹ בְּעוֹלָמוֹ". איך מתיישבות שתי ההלכות? כשאדם אומר זאת לעצמו, כהודאה לבורא – אין בעיה. כשמתחיל לספר לאחרים ולהתלהב – כאן הבעיה.</p>
+      <p>וכך גם בחוץ לארץ: אדם רואה מראה נפלא ואומר "מָה רַבּוּ מַעֲשֶׂיךָ ה'" – אין בזה בעיה. אבל כשהוא חוזר ומתחיל לספר ולהתלהב כמה שם יפה יותר מכאן, זה כבר עלול להיות דיבת הארץ.</p>
+      <p class="bold-para">יש פוסקים מעטים שראו ביציאה לטיול עצמה דיבה על הארץ; ההבדל הוא בין התפעלות בלב לבין התלהבות בפני אחרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · חומרת האיסור</div>
+      <h3 class="story-title">⚖️ יותר מעל כבודו</h3>
+      <p>החוברת עוברת לחומרת האיסור. איסור לשון הרע על ארץ ישראל חמור מאוד, כמו שכתב בעל האור שמח במכתבו: הקפיד ה' יתברך על כבוד הארץ יותר מעל כבודו כביכול.</p>
+      <p>והראיה: בחטא העגל דיברו נגד הקדוש ברוך הוא עצמו. אמרו "אֵלֶּה אֱלֹקֶיךָ יִשְׂרָאֵל". ובכל זאת עשו תשובה, משה רבנו התפלל, וביום הכיפורים נמחל להם. אבל על הוצאת דיבת הארץ, שמאסו בארץ חמדה, נשבע ה' ולא ניחם. הדור כולו לא נכנס לארץ, וארבעים שנה הלכו במדבר.</p>
+      <p>הרב אמר בכנות שהוא אינו יכול להבין זאת עד הסוף. אבל דבר אחד רואים מכאן בבירור: בעיני בורא עולם, הדיבור על ארץ ישראל הוא דבר חמור באופן שקשה לתפוס. כמה שאפשר לדמיין – זה חמור יותר.</p>
+      <p>וזה צריך לעורר כל אחד מאיתנו. אם על דיבור נגד הארץ ה' הקפיד יותר מעל דיבור נגדו עצמו, ודאי שראוי לנו להיזהר בכל מילה שאנו אומרים עליה.</p>
+      <p class="bold-para">הקדוש ברוך הוא הקפיד על כבוד הארץ יותר מעל כבודו – חטא העגל נמחל, וחטא המרגלים לא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · חומרת האיסור</div>
+      <h3 class="story-title">📜 עשרת השבטים</h3>
+      <p>ראיה נוספת לחומרת הדבר הובאה מדברי רש"י במסכת סנהדרין. נאמר שם שעשרת השבטים שגלו מן הארץ אין להם חלק לעולם הבא. מה הם עשו? לא נאמר שם שחיללו שבת או עבדו עבודה זרה.</p>
+      <p>רש"י מסביר: משום שסיפרו בגנות ארץ ישראל, ולכן דינם כדור המרגלים, שאין להם חלק לעולם הבא. לא כל המפרשים מסבירים כך, אבל זו דעת רש"י.</p>
+      <p>תראו כמה חמור הדבר: על דיבור בגנות הארץ אדם עלול להפסיד את עולמו. ומכאן גם לימינו. מי שאומר על הארץ "איזו ארץ רעה", או "איזו מדינה רעה" כשכוונתו למקום ולארץ עצמה, נכנס לחומרה הזאת.</p>
+      <p>אם יש לאדם ביקורת על אנשים מסוימים או על דרכם, זה עניין אחר, ועל כך כבר נאמרו ההלכות של דיבור על תושבים. אבל לגנות את הארץ עצמה, את המקום שה' בחר בו, זה דבר שצריך להתרחק ממנו מאוד.</p>
+      <p class="bold-para">לדעת רש"י, עשרת השבטים אבדו את חלקם לעולם הבא משום שדיברו בגנות ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · חומרת האיסור</div>
+      <h3 class="story-title">👑 "וכל מנאצי"</h3>
+      <p>חזרה למזמור "לכו נרננה". הרב הביא שהמזמור הזה מיוחס למשה רבנו, שראה ברוח הקודש את הדור שלנו וכתב לו: התפקיד שלכם הוא "לְכוּ נְרַנְּנָה לַה'", ולא לקטר. "אַל תַּקְשׁוּ לְבַבְכֶם כִּמְרִיבָה כְּיוֹם מַסָּה בַּמִּדְבָּר". אל תהיו כמו דור המדבר, שבכל שבוע מצאו תלונה חדשה.</p>
+      <p>ועוד הובאו דברי המהר"ם חגיז, שחי לפני כשלוש מאות שנה. הוא דייק בפסוק שנאמר על המרגלים: "כִּי כָל הָאֲנָשִׁים הָרֹאִים אֶת כְּבֹדִי... אִם יִרְאוּ אֶת הָאָרֶץ אֲשֶׁר נִשְׁבַּעְתִּי לַאֲבֹתָם וְכָל מְנַאֲצַי לֹא יִרְאוּהָ". מה מוסיף "וכל מנאצי"? לדבריו, יצאה גזרה מלפני ה' לדורות: כמו שנענשו המרגלים, כך כל מי שיוציא שם רע על הארץ בעתיד, נכנס באותו עונש.</p>
+      <p>ותראו את הביטוי. התורה אינה אומרת "המוציאים דיבה על הארץ". היא אומרת "מנאצי" – אלה שמבזים אותי. מי שמדבר רע על הארץ, על החניה, על הכביש, מבזה כביכול את ה'.</p>
+      <p>ולכן אדם צריך לחיות בהרגשה שהוא נמצא בארמון המלך. מי שאומר שארמון המלך מקולקל, על המלך הוא מדבר.</p>
+      <p class="bold-para">מי שמדבר רע על הארץ, הקדוש ברוך הוא מגדיר אותו כ"מנאץ" – כמי שמבזה אותו עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · בחיים עצמם</div>
+      <h3 class="story-title">☀️ חם כאן או חם בארץ</h3>
+      <p>החוברת מסיימת בכמה הלכות מעשיות. העיקרון החשוב ביותר: האיסור הוא רק כשמזכירים את ארץ ישראל. למשל, כשאומרים: חם בארץ ישראל, הכבישים בארץ מקולקלים, וכדומה. וקל וחומר כשמשווים את הארץ למקומות אחרים טובים יותר.</p>
+      <p>אבל מי שאומר רק: חם כאן היום, הכביש כאן מקולקל, אין כאן חניה – אין בזה איסור. הוא מתאר מצב רגעי ומקומי.</p>
+      <p>ההבדל הוא ההכללה. כשאדם אומר "בארץ הזאת אין חניות", הוא עושה הכללה ומקשר את הקושי אל הארץ. כשאומר "חם לי היום", הוא מתאר את מה שהוא מרגיש. כשאומר "איזו ארץ חמה, מה זה כל כך חם פה", הוא כבר מקשר את החום אל הארץ.</p>
+      <p>וכך בכל תחום. "האיש הזה אינו טוב" – זו אינה דיבת הארץ. "האנשים בארץ אינם טובים" – זו כבר דיבת הארץ. השינוי במילים קטן מאוד, אבל ההבדל במשמעות גדול. ומי שמתרגל בזה, מגלה שאפשר לומר כמעט כל דבר בלי לפגוע באהבת הארץ.</p>
+      <p class="bold-para">האיסור הוא רק כשמזכירים את הארץ; "חם היום" מותר, "איזו ארץ חמה" אסור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · בחיים עצמם</div>
+      <h3 class="story-title">🌳 מן השמש אל הצל</h3>
+      <p>הגמרא במסכת כתובות מספרת על רבי אמי ורבי אסי, שהיו מלמדים את תלמידיהם בחוץ. בבוקר ישבו בצל, ולאט לאט השמש התקדמה והגיעה אל התלמידים.</p>
+      <p>לתלמידים, כנראה, זה לא הפריע. הם היו שקועים בלימוד, והיו יכולים להמשיך. אבל רבי אמי ורבי אסי חששו: אם נמשיך לשבת בשמש עד אחר הצהריים, התלמידים יאמרו לבסוף "כמה חם בארץ ישראל", ויתרעמו על ישיבת הארץ. לכן עשו הפסקה, וכולם עברו מן השמש אל הצל, ומן הצל אל השמש.</p>
+      <p>הרב ניסה לדמיין זאת: היום אולי היו אומרים שלא כדאי להפסיק את השיעור, שאיש אינו מתלונן. אבל רבי אמי ורבי אסי לא חיכו לתלונה. הם מנעו אותה מראש.</p>
+      <p>וזה הלימוד: לא די שלא לדבר רע על הארץ. ראוי גם לדאוג מראש שלא יגיעו לידי תרעומת עליה, ולהקל על עצמנו ועל אחרים כדי שאהבת הארץ לא תיפגע.</p>
+      <p class="bold-para">רבי אמי ורבי אסי עברו עם תלמידיהם מן השמש לצל ומן הצל לשמש, כדי שלא יתרעמו על ישיבת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · בחיים עצמם</div>
+      <h3 class="story-title">❄️ המזגן של רבי אמי ורבי אסי</h3>
+      <p>השיעור הסתיים בסיפור שמסופר על הרב זילברשטיין. יום אחד נכנס לבית מסוים וראה שעל המזגן תלוי שלט, ועליו כתוב: "מזגן דרבי אמי ורבי אסי".</p>
+      <p>הוא תמה: רבי אמי ורבי אסי חיו לפני כאלפיים שנה, מה להם ולמזגן? אמר לו בעל הבית: אתה מכיר את הגמרא בכתובות, על רבי אמי ורבי אסי שעברו מן השמש לצל כדי שלא יתרעמו על ישיבת הארץ? אני אדם שחם לו מאוד. לפני שנים רבות, כשמזגנים היו עוד יקרים מאוד, הלכתי וקניתי מזגן. אבל לא קניתי אותו סתם. קניתי אותו כדי שלא אבוא לידי תרעומת על החום בארץ ישראל. וכדי לזכור את זה, תליתי עליו את השלט.</p>
+      <p>הרב הוסיף בחיוך שהתמונה של המזגן הזה עם השלט נפוצה, ומי שמחפש את המילים "דיבת הארץ" עשוי להיתקל בה.</p>
+      <p>יזכנו ה' לדבר רק דברים טובים על ארץ ישראל, לראות את הטוב שבה, ולתקן בכך את חטא המרגלים ולקרב את הגאולה.</p>
+      <p class="bold-para">אפשר להפוך גם קושי פשוט, כמו החום, לתזכורת לאהבת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/2M2We3Bqhqk · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"המזמור של הדור שלנו","icon":"🌅","color":"#c62b6b","stories":[{"id":1,"title":"יום שאינו יום ואינו לילה","icon":"🌅"},{"id":2,"title":"מה מוטל על הדור הזה","icon":"📜"}]},{"id":2,"name":"מה נחשב דיבת הארץ","icon":"🗣️","color":"#6d28d9","stories":[{"id":3,"title":"הגדרת האיסור","icon":"🗣️"},{"id":4,"title":"אז והיום","icon":"🏗️"},{"id":5,"title":"דירה יקרה או ארץ יקרה","icon":"🏠"},{"id":6,"title":"כבוד יושביה הוא כבודה","icon":"👥"},{"id":7,"title":"מי האיש החפץ חיים","icon":"😊"},{"id":8,"title":"אין כמו הארץ שלנו","icon":"🌍"}]},{"id":3,"name":"שלושה טעמים לאיסור","icon":"💡","color":"#e08e00","stories":[{"id":9,"title":"חידוש שאין כמותו","icon":"✨"},{"id":10,"title":"הטעם הראשון: כנגד מצוות האהבה","icon":"❤️"},{"id":11,"title":"\"ידבקו\" ולא \"יגורו\"","icon":"🧷"},{"id":12,"title":"הטעם השני: ביתו של המלך","icon":"🏰"},{"id":13,"title":"הטעם השלישי: התורה שיבחה אותה","icon":"📖"},{"id":14,"title":"ומה עם טיול בחוץ לארץ?","icon":"✈️"}]},{"id":4,"name":"חומרת האיסור","icon":"⚖️","color":"#1e88b8","stories":[{"id":15,"title":"יותר מעל כבודו","icon":"⚖️"},{"id":16,"title":"עשרת השבטים","icon":"📜"},{"id":17,"title":"\"וכל מנאצי\"","icon":"👑"}]},{"id":5,"name":"בחיים עצמם","icon":"☀️","color":"#c62b6b","stories":[{"id":18,"title":"חם כאן או חם בארץ","icon":"☀️"},{"id":19,"title":"מן השמש אל הצל","icon":"🌳"},{"id":20,"title":"המזגן של רבי אמי ורבי אסי","icon":"❄️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
