@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 גאולה מבפנים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 גאולה מבפנים</h1>
+  <p>"עולם כמנהגו נוהג" לפי הרמב"ם: למה הגאולה האחרונה באה בדרך הטבע, ואיך הנבואות יכולות להתקיים בכל זאת כפשוטן</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ גאולה מבפנים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/uaEu_wd9eoY?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/uaEu_wd9eoY/hqdefault.jpg" alt="גאולה מבפנים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=uaEu_wd9eoY" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · עולם כמנהגו נוהג</div>
+      <h3 class="story-title">📘 יסוד מפורש ברמב"ם</h3>
+      <p>השיעור עוסק בדברי הרמב"ם על ימות המשיח, ובחידוש גדול שאפשר להבין מתוכם: לאן העולם הולך, ואיך תיראה הגאולה. בדרך הוא משווה בין ניסי יציאת מצרים, שנקראים בפרשת השבוע, לבין ניסי הגאולה האחרונה, שהם ניסים מסוג אחר לגמרי.</p>
+      <p>הרמב"ם כותב במפורש בהלכותיו: בימות המשיח "עולם כמנהגו נוהג". זה יסוד. לא יהיה שינוי במעשה בראשית, העולם לא יתהפך, ולא יירדו דברים פלאיים מן השמיים.</p>
+      <p>לפי זה, איך מבינים את מה שאנו מבקשים בכל יום: "תְּקַע בְּשׁוֹפָר גָּדוֹל לְחֵרוּתֵנוּ"? לא שיישמע פתאום קול שופר מקצה העולם ועד קצהו, כמו שמתארים בשירים, שהרי אין שופר כזה בדרך הטבע. אלא שהקדוש ברוך הוא יעשה קול בעולם כולו, שכולם ישמעו שהגיע הזמן לעלות לארץ ישראל.</p>
+      <p>והרב מוסיף: ייתכן מאוד שזה כבר קרה. האם יש אדם בעולם, יהודי או גוי, שלא שמע שעם ישראל שב לארצו, ושכל יהודי שרוצה יכול לעלות? גם מי שאינו רוצה לשמוע – הקול נשמע.</p>
+      <p class="bold-para">הרמב"ם קובע שבימות המשיח עולם כמנהגו נוהג: העולם לא יתהפך, ולא יירדו דברים מן השמיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · עולם כמנהגו נוהג</div>
+      <h3 class="story-title">❓ למה נלחם הרמב"ם על גאולה טבעית?</h3>
+      <p>הרמב"ם עצמו מכיר בקושי. יש אינספור פסוקים שנראה מהם אחרת: ניסים ונפלאות, "וְגָר זְאֵב עִם כֶּבֶשׂ", ועוד דברים רבים. ובכל זאת הוא עומד על דעתו. ולא רק הוא נאבק על כך – רבים מן הראשונים חלקו עליו.</p>
+      <p>לפני שנבין איך הרמב"ם מתיישב עם הפסוקים, צריך להבין מה היה כל כך חשוב לו. מה רע בניסים? למה שהגאולה לא תבוא עם ניסים גלויים, הכל יצמח והכל יתהפך?</p>
+      <p>הרי ביציאת מצרים ראינו ניסים עצומים: היאור הפך לדם בבת אחת בכל ארץ מצרים, ערוב של כל חיות הארץ, ועוד ועוד. ובגאולה האחרונה אנחנו מצפים לניסים גדולים פי כמה. למה, אם כן, סובר הרמב"ם שתיקון האנושות חייב לבוא דווקא בדרך הטבע?</p>
+      <p>כדי להבין את עומק השיטה, הרב מביא משל. המשל הזה מבהיר את ההבדל בין שני סוגי גאולה, ומראה למה דווקא הדרך הטבעית היא הגבוהה יותר.</p>
+      <p class="bold-para">הרמב"ם התעקש על גאולה בדרך הטבע למרות פסוקים רבים שנראה מהם אחרת – ולמה זה היה חשוב לו כל כך?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי דרכים לקיים הבטחה</div>
+      <h3 class="story-title">🏚️ המשל: יהודה וישראל</h3>
+      <p>בקצה העולם, בעיר קטנה, חי אדם בשם ישראל. מעולם לא יצא מעירו, והיה חולה וחלש. יום אחד פגש בו יהודה, איש חזק ומלא ביטחון, ואמר לו: ישראל, מחר בשבע בבוקר תגיע לירושלים, ותבנה שם בית מפואר.</p>
+      <p>ישראל צחק בליבו. אני לירושלים? איך ייתכן? מעולם לא יצאתי אפילו מן העיר שלי. והוא מנה בליבו את כל הסיבות שהדבר בלתי אפשרי: אני חולה, אני חלש, אין לי כוח לבנות. אפילו גיבור גיבורים לא היה יכול לעשות דבר כזה בבוקר אחד.</p>
+      <p>והנה הגיע הבוקר. ויש שתי אפשרויות שבהן יכולה ההבטחה של יהודה להתקיים.</p>
+      <p>האפשרות הראשונה היא בכוח הזרוע. האפשרות השנייה היא מתוך בחירה. בשתיהן, בסוף היום ישראל יעמוד בירושלים ליד בית בנוי, וההבטחה תתקיים במדויק. אבל ההבדל ביניהן הוא כל ההבדל שבין יציאת מצרים לבין הגאולה האחרונה.</p>
+      <p class="bold-para">ההבטחה נשמעת בלתי אפשרית: אדם חולה וחלש, שלא יצא מעולם מעירו, יבנה מחר בית בירושלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי דרכים לקיים הבטחה</div>
+      <h3 class="story-title">⛓️ הדרך הראשונה: בכוח</h3>
+      <p>בדרך הראשונה, בשבע בבוקר מגיע יהודה עם כוחות משטרה. הוא תופס את ישראל בכוח, דוחף אותו למטוס, מביא אותו לירושלים בעל כורחו, מחזיק לו את הידיים ומכריח אותו להניח לבנה אחר לבנה, עד שהכל מתקיים בדיוק כפי שאמר.</p>
+      <p>כך בדיוק הייתה גאולת מצרים. פרעה אמר: "מִי ה' אֲשֶׁר אֶשְׁמַע בְּקֹלוֹ לְשַׁלַּח אֶת יִשְׂרָאֵל". מה עשה הקדוש ברוך הוא? היכה בו מכה אחר מכה, עד שפרעה עצמו אמר: קומו צאו, ומהר. לא הייתה לפרעה ברירה.</p>
+      <p>הנבואה התקיימה, אבל באופן חיצוני וכפוי. ויש לכך מחיר: מה שנעשה בכפייה אינו משנה את מי שנכפה. ברגע שמפסיקים לכפות, הוא חוזר למה שהיה. וכך באמת קרה לפרעה: מיד כשחלפה המכה, חזר לסורו, ורדף אחרי ישראל.</p>
+      <p>ניסים גלויים כופים על העולם להכיר בקדוש ברוך הוא. אבל הכרה כפויה אינה הכרה של הלב. היא מחזיקה רק כל עוד הכוח פועל.</p>
+      <p class="bold-para">כך הייתה יציאת מצרים: פרעה לא רצה, והקדוש ברוך הוא הכריח אותו במכה אחר מכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי דרכים לקיים הבטחה</div>
+      <h3 class="story-title">💡 הדרך השנייה: מבפנים</h3>
+      <p>בדרך השנייה, ישראל קם בשבע בבוקר מעצמו. משהו בתוכו השתנה. הוא מרגיש כוח חדש ותקווה חדשה. בלי שאיש יכריח אותו, הוא קונה בעצמו כרטיס טיסה, מגיע לירושלים ובונה את הבית בכוחותיו.</p>
+      <p>כל מה שאמר יהודה מתקיים במדויק, אבל מתוך בחירה חופשית ורצון פנימי. יהודה הצליח לשכנע אותו, להסביר לו כמה הדבר חשוב, עשה כל מיני דברים – עד שישראל עצמו השתכנע כמה זה כדאי. נוצרה אווירה אחרת, והוא הלך ועשה הכל בעצמו.</p>
+      <p>זו הגאולה האחרונה, שבתוכה אנחנו נמצאים. וכאן מתגלה עומק מופלא: בדרך הראשונה הנבואה התקיימה מבחוץ. בדרך השנייה התהליך כולו נובע מתוך שינוי פנימי, מתוך בחירה והתפתחות טבעית.</p>
+      <p>והעוצמה האמיתית היא דווקא בדרך השנייה. הרבה יותר חזק לגרום לאדם שירצה בעצמו, מאשר להכריח אותו. שינוי שנובע מהכרה והבנה יש לו קיום יציב ומתמשך. הוא אינו מתפוגג כשהלחץ נעלם, כי לא היה כאן לחץ מלכתחילה.</p>
+      <p class="bold-para">בגאולה הטבעית האדם משתכנע מעצמו, והשינוי הפנימי הוא שנותן לה קיום יציב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי דרכים לקיים הבטחה</div>
+      <h3 class="story-title">🧳 כך קרה קיבוץ הגלויות</h3>
+      <p>הרב מביא דוגמה ממה שכבר ראינו בעינינו. קיבוץ גלויות יכול היה להתרחש בדרך הראשונה: הקדוש ברוך הוא היה עושה קול שופר, וכל היהודים היו באים מיד. מי יכול להישאר מול אותות ומופתים כאלה?</p>
+      <p>אבל הקדוש ברוך הוא בחר אחרת. לא היה קול שופר ולא בת קול שהכריחה איש. הנסיבות, לאט לאט, גרמו ליהודים להחליט בעצמם שאין להם מה לחפש בחוץ לארץ. הם עברו תהליכים שונים, ומעצמם עלו לארץ ישראל. ודאי שהקדוש ברוך הוא סובב את הכל מאחורי הקלעים, אבל הבחירה הייתה שלהם.</p>
+      <p>כך גם בבניין הארץ. הקדוש ברוך הוא הבטיח שארץ ישראל תיבנה, ולא נחתו בניינים מן השמיים. עם ישראל בנה, לאט לאט, עוד דבר ועוד דבר.</p>
+      <p>וכך בתשובה. הקדוש ברוך הוא הבטיח שעם ישראל יחזור בתשובה, ואנחנו רואים שזה קורה לאט לאט, בלי שאיש כופה. ובגאולה הטבעית, כביכול, אין כפייה על המציאות להשתנות: המציאות עצמה מתפתחת ומתעלה, והשינוי בא מתוכה.</p>
+      <p class="bold-para">לא נשמע קול שופר שהכריח את היהודים לעלות; הנסיבות גרמו להם לבחור בכך בעצמם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי דרכים לקיים הבטחה</div>
+      <h3 class="story-title">🌐 "מלאה הארץ דעה את ה'"</h3>
+      <p>לאן כל זה מוביל? הנביאים אומרים במפורש שלעתיד לבוא "מָלְאָה הָאָרֶץ דֵּעָה אֶת ה' כַּמַּיִם לַיָּם מְכַסִּים". הרב מתאר זאת כך: לא יהיה לאנושות עיסוק אחר. העיסוק היחיד יהיה לבוא ולהכיר את רצון ה'.</p>
+      <p>ואיפה יעשו זאת? בארץ ישראל, "כִּי מִצִּיּוֹן תֵּצֵא תוֹרָה וּדְבַר ה' מִירוּשָׁלִָם". כל הגויים יבואו ויאמרו: למדו אותנו את דרכי ה'. זה נשמע היום כמעט דמיוני, אבל הרב אומר שהוא כבר רואה כאן תהליכים שעשויים להביא לכך.</p>
+      <p>הוא מביא דוגמה מן ההתפתחות הטכנולוגית. אדם יכול לומר לעצמו: המחשב כבר יותר חכם ממני בהרבה תחומים. מה נשאר לי שאין לו? דבר אחד: אני יכול להכיר את בורא עולם ולאהוב אותו. את זה שום טכנולוגיה אינה יכולה לעשות.</p>
+      <p>לכן, לדבריו, ההתפתחויות של דורנו אינן סתם התקדמות. העולם מתפתח מתוך עצמו לקראת שלמותו, עד שהאנושות כולה תגיע למצב שבו תרצה מעצמה במה שהנביאים הבטיחו.</p>
+      <p class="bold-para">גם התכלית האחרונה תבוא מבפנים: האנושות כולה תרצה להכיר את בורא עולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הנבואות – משל או פשוטן</div>
+      <h3 class="story-title">🐑 "משל וחידה"</h3>
+      <p>ועכשיו לשאלה שהרמב"ם התקשה בה: מה עושים עם כל הנבואות? הרמב"ם כותב בעצמו שהדברים האלה הם משל וחידה. מה פירוש "וְגָר זְאֵב עִם כֶּבֶשׂ"? משל לשלום בין העמים. הזאב לא יגור באמת עם הכבש, כי זה נגד הטבע. אלא העמים, שנמשלו לחיות טורפות, יחיו בשלום עם ישראל. לא יהיה חמס, והגויים יאהבו את היהודים.</p>
+      <p>אבל רבים מן הראשונים חלקו על הרמב"ם, ולא הסכימו בשום אופן לומר שכל הפסוקים האלה הם משל בלבד. יש עשרות פסוקים בתנ"ך על דברים רבים כל כך, ואיך ייתכן שכולם משל?</p>
+      <p>כבר בימי הרמב"ם הוציאו עליו דיבה שאינו מאמין בתחיית המתים. הטענה הייתה: אם עולם כמנהגו נוהג, איך תהיה תחיית המתים? והרמב"ם כתב את "מאמר תחיית המתים", שבו הבהיר שהוא מאמין בה בוודאות.</p>
+      <p>הרב מבאר את דעת הרמב"ם בפשטות: ודאי יש שלב שבו יתרחשו ניסים, אבל בשלבים מאוחרים יותר. בשלבים הראשונים של הגאולה, הכל יהיה בדרך הטבע.</p>
+      <p class="bold-para">הרמב"ם מסביר שהנבואות על שינוי הטבע הן משל, וחכמים רבים חלקו עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הנבואות – משל או פשוטן</div>
+      <h3 class="story-title">🍞 לחם שגדל על העצים</h3>
+      <p>דוגמה לכך היא דברי הגמרא שלעתיד לבוא תוציא הארץ גלוסקאות, כלומר לחם מוכן. איך זה ייתכן? עץ שמצמיח כיכרות לחם?</p>
+      <p>הפירוש שהרב מביא הוא שיבוא יום וישיגו לחם בקלות כזאת, כאילו קוטפים אותו מן העץ. והוא ממחיש: לפני דורות לא רבים, מי שרצה שיהיה לחם בבית כשהאב חוזר מתפילת שחרית, היה צריך לקום בארבע לפנות בוקר. בחנות היה לכל היותר קמח. צריך היה ללוש, לחכות, לאפות – והלחם התקלקל מהר.</p>
+      <p>והיום? בדרך חזרה מבית הכנסת עוברים בחנות ושולפים כיכר ארוזה שמחזיקה כמה ימים. מה ההבדל בין זה לבין קטיפה מן העץ? אולי רק במהירות, ואולי אפילו לא בה.</p>
+      <p>מי שלא חי בעולם הישן, אינו מרגיש כמה הנבואה הזאת כבר נראית מתקיימת. הדברים שנראו פעם כנס, נעשו בדרך הטבע לחלק רגיל מן החיים.</p>
+      <p class="bold-para">חז"ל אמרו שהעתיד שתוציא הארץ גלוסקאות; כיום ברור שאפשר להבין זאת כשפע שבא בקלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הנבואות – משל או פשוטן</div>
+      <h3 class="story-title">🕍 בתי כנסיות שיעלו לארץ ישראל</h3>
+      <p>עוד מאמר חז"ל: עתידים בתי כנסיות ובתי מדרשות שבבבל שייקבעו בארץ ישראל. בחוץ לארץ היו שהבינו זאת כפשוטו: שבית הכנסת עצמו יתעופף לארץ ישראל.</p>
+      <p>מסופר על דרשן שהגיע לעיירה, וראה שבבית הכנסת אין רצפה, רק חול, כמו שהיה מקובל במקומות רבים לפני כמאה שנה. הוא דרש לפני הקהל: כשעם ישראל יעלה לארץ ישראל, אתם תישארו כאן. ולמה? כי כל יהודי העיירה ייכנסו לבית הכנסת, ובית הכנסת יתרומם ויעוף לארץ ישראל. אבל אצלכם אין רצפה – בית הכנסת יעוף, ואתם תישארו למטה. הדרשה עזרה, ומיד בנו רצפה.</p>
+      <p>אבל מה פירוש הגמרא באמת? החזון איש הסביר: ראו איך עלו יהודים לארץ ישראל. כל קבוצה שמרה אפילו על שמה. יש כאן חסידויות ששמותיהן הם שמות של עיירות קטנות באירופה, וישיבות כמו סלבודקה ופוניבז' – שמות של מקומות מן הגולה, שעלו כולם לארץ ישראל. זה קיום הגמרא, בדרך הטבע.</p>
+      <p class="bold-para">החזון איש הסביר שבתי הכנסיות והישיבות של הגולה "עלו" לארץ ישראל עם שמותיהם וקהילותיהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הנבואות – משל או פשוטן</div>
+      <h3 class="story-title">🌳 אילני סרק שיעשו פירות</h3>
+      <p>הגמרא אומרת עוד: עתידים כל אילני סרק שבארץ ישראל שיטענו פירות. איך מתיישב הדבר עם שיטת הרמב"ם?</p>
+      <p>לפי דרך המשל הסבירו כך: בתהילים הצדיק נמשל לעץ פורה, "וְהָיָה כְּעֵץ שָׁתוּל עַל פַּלְגֵי מָיִם אֲשֶׁר פִּרְיוֹ יִתֵּן בְּעִתּוֹ וְעָלֵהוּ לֹא יִבּוֹל". ומי שרחוק נמשל לאילן סרק, שאינו עושה פירות. הבטחת הגמרא היא שאפילו הרחוקים שבארץ ישראל יחזרו בתשובה ויעשו מצוות רבות, כי האווירה בארץ ישראל טובה כל כך.</p>
+      <p>אבל הרב מוסיף: לך תדע. לפי מה שאנחנו רואים היום, ייתכן שגם הדבר הזה יתקיים כפשוטו. אולי יום אחד יפתחו טכנולוגיה שבה גם אילנות סרק יעשו פירות. ואז יתקיימו שני הדברים יחד: הפסוק כפשוטו, ועולם כמנהגו נוהג.</p>
+      <p>כאן מתחיל החידוש שהרב רוצה להציע – דרך שלישית, בין הרמב"ם לבין החולקים עליו.</p>
+      <p class="bold-para">לפי דרך המשל, אף מי שרחוק יחזור בתשובה בארץ ישראל; ואולי יום אחד יתקיים הדבר גם כפשוטו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הטבע עצמו מתעלה</div>
+      <h3 class="story-title">🧬 דרך שלישית</h3>
+      <p>הרמב"ם התקשה, ולכן אמר שהנבואות הן משל. הראשונים והאחרונים לא הסכימו להוציא כל כך הרבה פסוקים מפשוטם, וחלקו עליו. הרב מציע דרך שלישית, שעד שלא ראו אותה מתחילה לקרות, איש לא היה מאמין שהיא אפשרית.</p>
+      <p>ייתכן שהנבואות יתקיימו כפשוטן ממש, ובכל זאת יהיה עולם כמנהגו נוהג. העולם יישאר כפי שהוא, והנבואות יתקיימו בכל זאת. איך? העולם הולך ומתפתח, ומתפתח עוד, עד שיגיע למצב שהנביאים תיארו.</p>
+      <p>הרב מודה שאינו יודע איך בדיוק זה יקרה, ומביא את הדברים בדרך של "אולי". אולי בעזרת מחקר והתפתחות מדעית יצליחו לשנות את טבעם של בעלי חיים. אולי יתקיים מה שאמר הרמב"ם, שבימות המשיח יהיו המעדנים מצויים כעפר והכל יהיה בשפע גדול. כבר היום רואים דברים שבעבר נראו כנס, ועכשיו קורים מתוך הטבע עצמו.</p>
+      <p>העומק הרעיוני של שיטת הרמב"ם הוא שהעולם לא עומד להתפוצץ. אין סתירה בין טבע לנס: הטבע עצמו מתפתח לרמה גבוהה יותר, והעולם כולו הולך להגיע לשלמות גדולה מתוך עצמו.</p>
+      <p class="bold-para">ייתכן שהנבואות יתקיימו כפשוטן, ובכל זאת עולם כמנהגו נוהג: הטבע עצמו יתפתח עד שיגיע לשם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הטבע עצמו מתעלה</div>
+      <h3 class="story-title">🏛️ בלי כפייה</h3>
+      <p>לרעיון הזה יש גם השלכה מעשית: בית המקדש. רבים מדמיינים שהוא ייבנה רק כאשר יבוא המשיח ויכריח את כל המתנגדים לפנות את המקום. אבל לפי הדרך שהרב מציע, ייתכן שגם זה יקרה בתהליך טבעי, בלי שאיש יכריח איש.</p>
+      <p>הרב מתאר בדרך של דמיון תהליך מדיני והסכמי, שבסופו המקום נמסר מרצון, ואז הציבור והרבנות עומדים לפני בחירה מה לבנות בו. הוא מדגיש שזו רק המחשה של אפשרות, ולא תחזית: הכוונה היא שהדבר יכול להתרחש בלי שבירה ובלי מלחמה.</p>
+      <p>וכך גם שאר הדברים, כמו פרה אדומה וכל מה שנראה היום בלתי אפשרי. אנחנו לא יכולים לדמיין איך הם יקרו, כי עד שהם לא קורים, קשה לדמיין אותם. ממש כמו שלפני דורות אי אפשר היה לדמיין עולם שבו יש פרנסה ושפע לכולם בקלות כזאת.</p>
+      <p>אבל זו הדרך שבה הקדוש ברוך הוא מוביל את העולם כולו, בצורה מדהימה, אל הדברים שנראו פעם כניסים.</p>
+      <p class="bold-para">גם הדברים שנראים היום רחוקים מאוד עשויים לקרות בתהליך טבעי, בלי שאיש יכריח איש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הטבע עצמו מתעלה</div>
+      <h3 class="story-title">🔬 תורה ומדע זה לצד זה</h3>
+      <p>בשיעור הוצגה תמונה של בחור ישיבה במעבדה, בחלוק לבן מעל בגדיו – המחשה לחיבור בין התורה לבין ההתפתחות המדעית. ותמונה נוספת: בית המקדש עומד, ולצידו בית מחקר. עולם שבו גם החול מתחבר אל הקודש, ומבינים איך הטבע כולו מתחבר ומתכוון לקראת הגאולה.</p>
+      <p>כל מה שכתוב בחזון אחרית הימים עתיד להתקיים, אבל לא דרך דבר שבא מבחוץ וכופה. אלא כמו בסיפור: ישראל החליט בבוקר מעצמו שאין לו מה לחפש עוד בעיר הרחוקה, לקח את המטוס ועלה לארץ ישראל. כך יהיה גם בעולם כולו: האנושות תרגיש שאין דבר אחר שכדאי לחפש בעולם, מלבד להכיר את הקדוש ברוך הוא ולאהוב אותו.</p>
+      <p>וזה הסיכום: ביציאת מצרים הכריחו את הטבע, וממילא אחר כך הוא חזר לקדמותו. בגאולה האחרונה הטבע עצמו רוצה, הכל מתפתח, והנבואות מתקיימות במלואן – וגם דברי הרמב"ם שעולם כמנהגו נוהג. הרב סיים בתפילה שנזכה בקרוב לראות את הדברים בעינינו.</p>
+      <p class="bold-para">ביציאת מצרים הטבע הוכרח וחזר לקדמותו; בגאולה הטבע עצמו רוצה ומתעלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/uaEu_wd9eoY · 2025-01-23 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"עולם כמנהגו נוהג","icon":"📘","color":"#c62b6b","stories":[{"id":1,"title":"יסוד מפורש ברמב\"ם","icon":"📘"},{"id":2,"title":"למה נלחם הרמב\"ם על גאולה טבעית?","icon":"❓"}]},{"id":2,"name":"שתי דרכים לקיים הבטחה","icon":"✈️","color":"#6d28d9","stories":[{"id":3,"title":"המשל: יהודה וישראל","icon":"🏚️"},{"id":4,"title":"הדרך הראשונה: בכוח","icon":"⛓️"},{"id":5,"title":"הדרך השנייה: מבפנים","icon":"💡"},{"id":6,"title":"כך קרה קיבוץ הגלויות","icon":"🧳"},{"id":7,"title":"\"מלאה הארץ דעה את ה'\"","icon":"🌐"}]},{"id":3,"name":"הנבואות – משל או פשוטן","icon":"🐑","color":"#e08e00","stories":[{"id":8,"title":"\"משל וחידה\"","icon":"🐑"},{"id":9,"title":"לחם שגדל על העצים","icon":"🍞"},{"id":10,"title":"בתי כנסיות שיעלו לארץ ישראל","icon":"🕍"},{"id":11,"title":"אילני סרק שיעשו פירות","icon":"🌳"}]},{"id":4,"name":"הטבע עצמו מתעלה","icon":"🌿","color":"#1e88b8","stories":[{"id":12,"title":"דרך שלישית","icon":"🧬"},{"id":13,"title":"בלי כפייה","icon":"🏛️"},{"id":14,"title":"תורה ומדע זה לצד זה","icon":"🔬"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
