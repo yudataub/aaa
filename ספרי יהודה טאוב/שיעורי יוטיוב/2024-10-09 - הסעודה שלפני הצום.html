@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 הסעודה שלפני הצום</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 הסעודה שלפני הצום</h1>
+  <p>מצוות האכילה בערב יום הכיפורים: למה היא שקולה לצום של יומיים, ואיך השמחה מעלה את התשובה לשמיים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ הסעודה שלפני הצום" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/3RQGDM-gjxk?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/3RQGDM-gjxk/hqdefault.jpg" alt="הסעודה שלפני הצום" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=3RQGDM-gjxk" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מצווה מוזרה</div>
+      <h3 class="story-title">📖 "בתשעה לחודש"</h3>
+      <p>התורה אומרת על יום הכיפורים: "וְעִנִּיתֶם אֶת נַפְשֹׁתֵיכֶם בְּתִשְׁעָה לַחֹדֶשׁ בָּעֶרֶב". לכאורה יש כאן קושי. מתי צמים? בעשירי בתשרי. למה לא כתוב בפשטות "בעשירי"? למה התורה מזכירה דווקא את התשיעי?</p>
+      <p>מכאן למדו חז"ל חידוש מעניין מאוד. אומרת הגמרא: "כָּל הָאוֹכֵל וְשׁוֹתֶה בַּתְּשִׁיעִי, מַעֲלֶה עָלָיו הַכָּתוּב כְּאִלּוּ הִתְעַנָּה תְּשִׁיעִי וַעֲשִׂירִי". התורה רמזה כאן מצווה: מצווה לאכול ולשתות בערב יום הכיפורים.</p>
+      <p>המפרשים שואלים: מה פירוש "כאילו" התענה תשיעי ועשירי? בתשיעי הוא הרי אוכל, ונחשב לו כאילו צם, ניחא. אבל בעשירי הוא צם באמת! מה פירוש "כאילו" לגבי יום שבו הוא באמת צם? מה מוסיפה האכילה לצום שהוא עושה ממילא?</p>
+      <p>התשובה שמובאת במפרשים: מי שמתענה שני ימים ברציפות, התענית ביום השני קשה עליו כפליים מתענית של יום רגיל. לכן "כאילו התענה תשיעי ועשירי" אין פירושו שני צומות נפרדים, אלא צום אחד רצוף של יומיים, שהוא דבר אדיר.</p>
+      <p>כמעט איש מאיתנו לא ניסה לצום יומיים רצופים. זה קשה מאוד. רואים זאת גם מן ההלכה: בחוץ לארץ עושים שני ימים טובים בכל החגים, אבל יום הכיפורים לא תוקן בשני ימים. חכמים לא העזו לתקן צום של יומיים, כי רוב הציבור אינו יכול לעמוד בו.</p>
+      <p>ובאה התורה ואומרת: מי שאוכל ושותה בתשיעי – נחשב לו כאילו צם יומיים רצופים. ומובא בספרים שתענית רצופה של יומיים שקולה לתעניות רבות מאוד. מי שצריך לתקן משהו בנפשו ומחפש תעניות של תשובה, יכול לקבל את השכר הזה דרך הסעודה של ערב יום הכיפורים.</p>
+      <p class="bold-para">מן המילים "בתשעה לחודש" למדו חז"ל שהאוכל בערב יום הכיפורים כאילו התענה תשיעי ועשירי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מצווה מוזרה</div>
+      <h3 class="story-title">❓ לאכול – יותר מלצום?</h3>
+      <p>יוצא דבר מפליא. אדם צם ביום הכיפורים – יש לו שכר של יום צום אחד. אדם אוכל בערב יום הכיפורים – נחשב לו כאילו צם יומיים רצופים. כלומר, המצווה לאכול גדולה, מבחינת השכר, מן המצווה לצום! איך ייתכן?</p>
+      <p>עוד לפני שמבינים את הטעם, עולות שאלות מעשיות. מה בדיוק המצווה? האם מספיק לכרסם משהו לאורך היום, כמו שאוכלים חטיף בין עיסוק לעיסוק? האם המצווה היא לאכול כמה שיותר, כאילו ממלאים מלאי לקראת הצום? או שהמצווה היא דווקא לעשות סעודה של ממש, משהו מיוחד ומכובד?</p>
+      <p>התשובות לשאלות האלה תלויות בטעם המצווה. כשנבין למה ציוותה התורה לאכול, נבין גם איך לאכול. ונראה שהטעם משנה הרבה מאוד בהבנת המצווה, ויש לו גם השלכות להלכה ולמנהג.</p>
+      <p class="bold-para">יוצא שהאכילה בערב יום הכיפורים שכרה גדול משכר הצום עצמו, ויש להבין למה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מצווה מוזרה</div>
+      <h3 class="story-title">🐟 הדג של המלך</h3>
+      <p>יש סיפור מפורסם, שמופיע במדרש עתיק. יהודי אחד בחוץ לארץ הלך לשוק בערב יום הכיפורים לקנות דג, מאכל שמכבד מאוד את הסעודה. נשאר בשוק רק דג אחד. באותו רגע הגיע גם משרתו של המלך, שנשלח לקנות דג לשולחן המלך.</p>
+      <p>התחילה תחרות. המשרת הציע מחיר, היהודי הציע יותר. המשרת הכפיל, והיהודי הכפיל שוב. המחיר עלה ועלה, עד שהמשרת אמר: יש גבול. המלך לא ירצה דג שעולה סכום כזה. והיהודי קנה את הדג.</p>
+      <p>בסעודה שאל המלך: איפה הדג? סיפר לו המשרת מה היה. המלך כעס, ציווה להביא את היהודי ושאל אותו: איך העזת לקחת את הדג שלי? ענה היהודי: אדוני המלך, אנחנו איננו בעלי תאווה. יש לנו יום אחד בשנה, יום קדוש מאוד, שבו ציווה אותנו ה' לצום, כי הוא מטהר אותנו מכל העוונות. ויום לפני כן אנחנו עושים סעודה של שמחה לכבוד היום. כמעט אין בשנה פעם אחרת שבה ה' ציווה עליי במפורש לשבת ולאכול. איך לא אשקיע בזה?</p>
+      <p>המלך שמע, ושחרר אותו לשלום. ובעקבות הסיפור הזה נוהגים בקהילות רבות לאכול דגים בסעודת הבוקר של ערב יום הכיפורים.</p>
+      <p class="bold-para">יהודי שילם הון על הדג האחרון בשוק, כי זו הפעם היחידה בשנה שה' ציווה עליו לאכול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי כנפיים</div>
+      <h3 class="story-title">🍽️ סעודה ולא כרסום</h3>
+      <p>שימו לב מה עשה אותו יהודי. אילו היה צריך רק "לאכול", היה יכול להסתפק בכל דבר. לא היה חסר לו מה לאכול – לחם, תבשיל פשוט, כל מה שיש בבית. ובכל זאת שילם הון עתק על דג אחד. למה? כי הבין שהמצווה איננה למלא את הבטן, אלא לעשות סעודה רצינית, מכובדת, משמחת.</p>
+      <p>וכך באמת כותבים הספרים. השל"ה הקדוש מביא בשם רבי משה קורדובירו, בעל "תומר דבורה", שהיה מגדולי המקובלים בצפת: דרך כל ישראל לשמוח בערב יום הכיפורים ולתקן סעודה יפה, וכן הדין. לא אכילה בחטף, אלא שמחה וסעודה.</p>
+      <p>ומה הטעם? כאן מגיע יסוד גדול מספר הזוהר, שמסביר מה התפקיד של השמחה בכל מצווה, ולמה יום הכיפורים זקוק לה במיוחד.</p>
+      <p class="bold-para">מן הסיפור רואים שהמצווה היא סעודה של כבוד ושמחה, לא סתם מילוי הבטן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי כנפיים</div>
+      <h3 class="story-title">🕊️ ציפור עם כנף אחת</h3>
+      <p>הזוהר מסביר שכדי שמצווה תעלה לשמיים, היא צריכה שתי כנפיים. ציפור אינה יכולה לעוף עם כנף אחת. אין לה שיווי משקל, והיא נופלת. כך גם מצווה: היא צריכה שתי כנפיים – יראה ואהבה. והאהבה באה לידי ביטוי בשמחה. אם אין שמחה, המצווה אינה יכולה לפרוח לשמיים.</p>
+      <p>ושואל הזוהר: מה נעשה עם מצוות התשובה ביום הכיפורים? האדם עומד כל היום ואומר "חטאתי, עוויתי, פשעתי". הוא מודאג, עצוב, מתחרט. איך יפרחו המצוות של יום כזה לשמיים, אם חסרה להן כנף השמחה?</p>
+      <p>התשובה שמובאת בשל"ה: יום הכיפורים הוא יום של דאגה. כל ישראל תלויים באביהם שבשמיים, ומחכים לראות שיוציא לאור משפטם. ביום עצמו קשה לשמוח. לכן הקדימו את השמחה אל המצווה. ציווה עלינו בוראנו לעשות שמחה גדולה בערב יום הכיפורים, כדי שתהיה גם כנף של שמחה לכל העבודה של היום הקדוש.</p>
+      <p class="bold-para">מצווה עולה לשמיים בשתי כנפיים, יראה ואהבה; בלי שמחה היא אינה יכולה לפרוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי כנפיים</div>
+      <h3 class="story-title">😊 שמחה שמחר ניטהר</h3>
+      <p>על מה שמחים? על כך שמחר, בעזרת ה', הקדוש ברוך הוא מטהר אותנו מכל העוונות. האדם נעשה טהור, עם לב חדש. זו סיבה גדולה מאוד לשמחה, וזו השמחה שבסעודה.</p>
+      <p>בזה הפך השל"ה את מצוות האכילה למצוות שמחה. ולפי זה מובנות התשובות לשאלות ששאלנו קודם. המצווה איננה להכניס לגוף כמה שיותר, ולא לכרסם לאורך היום. המצווה היא לעשות סעודה שמשמחת. כמו אותו יהודי שרצה דג, כל אדם לפי עניינו: מה שמשמח אותו ומכבד את היום.</p>
+      <p>מן הטעמים גם עולות שאלות להלכה, למשל לגבי מי שאינו יכול לצום מסיבה רפואית. האם גם הוא מקיים את מצוות הסעודה, ובאיזה אופן? הדבר תלוי בהבנת טעם המצווה, ובשאלות כאלה צריך לברר את ההלכה למעשה עם רב. העיקר לענייננו: הסעודה היא חלק מעבודת היום, ולא רק הכנה גופנית לצום.</p>
+      <p class="bold-para">הסעודה של ערב יום הכיפורים היא שמחה על כך שמחר ה' מטהר אותנו מכל העוונות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שתי כנפיים</div>
+      <h3 class="story-title">📅 להקדים את השמחה</h3>
+      <p>הרב סיפר שפעם היו צריכים להקדים סעודת בר מצווה, כי מסיבה מסוימת לא היה אפשר לעשות אותה ביום שבו נעשה הנער בר מצווה. ורב אחד אמר שיש לו מקור מפורש לכך שאם אי אפשר לעשות סעודת מצווה בזמנה, מותר להקדים אותה.</p>
+      <p>והראיה: כאן. יום הכיפורים צריך סעודה של שמחה, אבל ביום עצמו אי אפשר לאכול. מה עושים? מקדימים את הסעודה לערב יום הכיפורים. הנה לנו מפורש שאם אי אפשר בזמן, אפשר גם להקדים את שמחת המצווה.</p>
+      <p>וממשיך השל"ה ואומר שראוי לתקן את הבית בערב יום הכיפורים, בשולחן מלא בברכת ה', לשמוח בו שמחת מצווה. לפרוש מפה לבנה, להביא חלה כמו בסעודת חג, ולהכין מטעמים: דגים, בשר ומה שמשמח. לא לאכול סתם על השולחן, אלא לעשות סעודה של ממש.</p>
+      <p class="bold-para">כשאי אפשר לעשות סעודה בזמנה, אפשר להקדים אותה – כפי שמקדימים את שמחת יום הכיפורים לערבו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שמחת הכפרה</div>
+      <h3 class="story-title">🎁 שמחה שמביאה לקבלת הצום</h3>
+      <p>ועכשיו מובן גם הפירוש של "כאילו התענה תשיעי ועשירי". השל"ה מבאר: הצום של יום העשירי לבדו אינו נרצה כל צורכו, משום שהוא דאגה על גבי דאגה. אבל מי ששמח בתשיעי, הצום שלו בעשירי מתקבל. נמצא שהשמחה של התשיעי היא שגורמת שהצום של העשירי יתקבל.</p>
+      <p>לכן מעלה עליו הכתוב כאילו התענה תשיעי ועשירי. האכילה בתשיעי איננה רק תוספת לצום, היא חלק ממנו. בזכותה הצום עולה לשמיים בשתי כנפיים. בלעדיה, כביכול, הצום חסר והתשובה אינה מתקבלת במלואה.</p>
+      <p>זה יסוד יפה מאוד: יש מצוות שהשמחה איננה קישוט שלהן, אלא התנאי שלהן. ויום הכיפורים, דווקא משום שהוא יום של יראה ודאגה, צריך את השמחה יותר מכל יום אחר. ומפני שביום עצמו אי אפשר לשמוח בסעודה, נותנים לו את השמחה בערבו.</p>
+      <p class="bold-para">השל"ה מבאר: רק מי ששמח בתשיעי, צום העשירי שלו מתקבל, ולכן נחשב לו כאילו התענה שניהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שמחת הכפרה</div>
+      <h3 class="story-title">📜 רבנו יונה: מחכה לכפרה</h3>
+      <p>רבנו יונה, בספרו שערי תשובה, כותב גם הוא על האכילה בערב יום הכיפורים, ובצורה מעניינת מאוד. הוא מתאר אדם שעבר עבירה ועשה תשובה. הוא דואג על עוונו, ומחכה שיגיע יום הכיפורים, כדי שיתרצה לה'. כמו אדם שחייב חוב גדול ומחכה ליום שבו ימחלו לו.</p>
+      <p>למה הוא מחכה כל כך? כי רצונו של בורא עולם הוא חיי הנפש, כמו שנאמר: "חַיִּים בִּרְצוֹנוֹ". ביום הכיפורים זוכה האדם שה' אוהב אותו מחדש, שמח בו ומרוצה ממנו.</p>
+      <p>ויש כאן נקודה עדינה. לפעמים תשובה מביאה רק מחילה. כמו שני אנשים שאחד אומר לשני: "מחלתי לך", אבל עדיין אין ביניהם אהבה. אדם צריך לא רק כפרה, אלא גם טהרה – כאילו לא היה כלום, ומתחילים אהבה מחדש. זה מה שיום הכיפורים נותן: לא רק סגירת חשבון, אלא חידוש של קרבה ואהבה.</p>
+      <p class="bold-para">בעל התשובה מחכה ליום הכיפורים כמו מי שמחכה למחילת חוב, ושמח כשמגיע זמן כפרתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שמחת הכפרה</div>
+      <h3 class="story-title">❤️ אהבה שמתגלה</h3>
+      <p>יש זמנים שבהם אדם מרגיש את אהבת בורא עולם בצורה גלויה. הרב הביא התבטאות של אדם חשוב, אחרי מתקפת הטילים מאיראן: הוא אמר שלא ראה בחייו גילוי כזה של אהבת ה' לעם ישראל כמו בתקופה הזאת. ניסים יום אחרי יום, דברים שאיש לא דמיין.</p>
+      <p>גם המלחמה בלבנון הובאה כדוגמה. במשך חודשים חששו להיכנס לשם, פחדו להסתבך לשנים ארוכות. ובסוף נכנסו, ברוך ה', וראו ניסים שקשה לתאר. כך נראית אהבה של בורא עולם כשהיא מתגלה.</p>
+      <p>וזה מה שקורה לכל יחיד ביום הכיפורים: הקדוש ברוך הוא מגלה לו את אהבתו. לכן, אומר רבנו יונה, אמרו שהקובע סעודה בערב יום הכיפורים כאילו נצטווה להתענות תשיעי ועשירי והתענה בהם. כי הוא מראה את שמחתו בהגיע זמן כפרתו. והשמחה הזאת עצמה מעידה על דאגתו לאשמתו ועל רצונו האמיתי להיטהר.</p>
+      <p class="bold-para">יש תקופות שבהן מרגישים במיוחד את אהבת ה', ויום הכיפורים הוא זמן כזה לכל יחיד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שמחת הכפרה</div>
+      <h3 class="story-title">🌟 "יגדל וישגא מאוד"</h3>
+      <p>רבנו יונה מוסיף טעם שני: בשאר הימים טובים קובעים סעודה לשמחת המצווה, כי שכר השמחה במצוות גדול מאוד. וכך נאמר בתוכחה: "תַּחַת אֲשֶׁר לֹא עָבַדְתָּ אֶת ה' אֱלֹקֶיךָ בְּשִׂמְחָה וּבְטוּב לֵבָב". ומפני שביום הכיפורים חייבים לצום, ואי אפשר לקבוע בו סעודה, קובעים סעודת שמחת המצווה בערבו.</p>
+      <p>הביטוי שלו חזק: שכר השמחה במצוות "יגדל וישגא מאוד". השמחה יכולה להציל אדם מצרות רבות.</p>
+      <p>ובעל התניא מבאר רעיון דומה בפסוק "עַל כָּל פְּשָׁעִים תְּכַסֶּה אַהֲבָה". כשיש אהבה בין שניים, שוכחים הרבה פגמים. כך כשיהודי עושה מצוות בשמחה, גם אם יש לו דברים רבים שאינם בדיוק בסדר, השמחה מכסה על הכל, כי יש אהבה. אבל כשאין שמחה, נפרעים על כל מה שהיה.</p>
+      <p>לכן רצה הקדוש ברוך הוא שביום הכיפורים תהיה לנו שמחה במצוות, ותיקן לאכול בערב יום הכיפורים, כדי שאדם ישמח מאוד מאוד.</p>
+      <p class="bold-para">רבנו יונה מלמד ששכר השמחה במצוות גדול מאוד, ולכן מקדימים לצום סעודה של שמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום של טהרה</div>
+      <h3 class="story-title">💃 הריקוד לפני נעילה</h3>
+      <p>ומכאן שאלה: האם יש מצווה לשמוח גם ביום הכיפורים עצמו? בדרך כלל קשה. הגוף חלש, אין אוכל. אבל זה יום גדול מאוד, שבו האדם נעשה קרוב לבורא עולם וטהור. מסופר על המשגיח רבי יחזקאל לוינשטיין, שהיה ירא שמיים עצום – בישיבת מיר בגלותה בשנחאי, ואחר כך משגיח בישיבת פוניבז' שנים רבות.</p>
+      <p>פעם, ביום הכיפורים, בהפסקה הקצרה שבין מנחה לנעילה, ראו אותו עוזב את היכל הישיבה והולך לחדרו. כמה בחורים סקרנים תמהו: מה יש למשגיח לעשות בחדר לפני נעילה? הלכו והציצו. וראו שהעמיד כיסא באמצע החדר והתחיל לרקוד סביבו בהתלהבות עצומה, ושר: "אַשְׁרֵיכֶם יִשְׂרָאֵל, לִפְנֵי מִי אַתֶּם מִטַּהֲרִין וּמִי מְטַהֵר אֶתְכֶם".</p>
+      <p>אחרי יום הכיפורים שאלו אותו. הוא ענה: אתם יודעים מה זה חטא? זה דבר נורא, אי אפשר לדמיין כמה עבירה חמורה. והנה מגיע יום שבו הקדוש ברוך הוא מוחל וסולח על דברים כאלה, ועושה את האדם טהור. איך אפשר לא לשמוח ביום כזה? לא יכולתי להתאפק. בתוך הישיבה לא היה נעים לי, אז יצאתי לחדר.</p>
+      <p class="bold-para">המשגיח רבי יחזקאל לוינשטיין רקד לבדו בחדרו לפני נעילה, מרוב שמחה על הטהרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום של טהרה</div>
+      <h3 class="story-title">⌛ לא לספור את השעות</h3>
+      <p>בספר יסוד ושורש העבודה יש מאמר מעניין מאוד, שמתאר איך אדם צריך לעבור את הצום. אדם רגיל, כשהוא צם, סופר את השעות: מתי כבר ייגמר? מתי זה ייגמר? הלשון של המאמר מדהימה, וכדאי מאוד לקרוא אותו בפנים.</p>
+      <p>הוא כותב שראוי לאדם במהלך הצום לרצות, להפך, שהצום יימשך, שיזכה לעוד זמן של עבודה. אדם ששמח בצום – הצום שלו שווה עד אין ערוך. ואדם שמחכה "מתי זה כבר ייגמר" וסופר את הרגעים – מאבד הרבה מאוד.</p>
+      <p>יש מי שנהגו לפי זה גם אחרי הצום. בישיבות היו קבוצות של בחורים שאחרי נעילה לא רצו מיד לאכול. הם הלכו לחדר צדדי, חיכו מעט, שרו כמה שירים והתפעלו מן היום שעבר. לא ריקוד סתמי, אלא שמחה על הטהרה שזכו לה.</p>
+      <p>ובאמת, מי שמבין מה קורה ביום הכיפורים, מבין שאין זה רק יום של רעב, אלא יום של מתנה. מי שמקבל מתנה יקרה אינו ממהר לסיים את הרגע שבו היא ניתנת לו. הוא רוצה להאריך בו, ליהנות ממנו, להרגיש אותו. כך גם בצום: כל שעה נוספת היא עוד שעה של קרבה, עוד הזדמנות לבקש, עוד רגע של טהרה. מי שמסתכל כך על היום, מגלה שגם הרעב נעשה קל יותר.</p>
+      <p class="bold-para">מי שמחכה שהצום ייגמר מאבד הרבה; צריך לשמוח בצום ואף לרצות שיימשך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום של טהרה</div>
+      <h3 class="story-title">💧 "ומי מטהר אתכם"</h3>
+      <p>יש פירוש נוסף ויפה למילים "לפני מי אתם מיטהרין ומי מטהר אתכם". יש דברים שאדם יכול לשנות בעצמו בתשובה. אבל יש דברים שקשה לו מאוד לשנות. לכל אדם יש משהו שתוקע אותו: יש מי שקשה לו לאהוב, יש מי שקשה לו להתרכז ולכוון בתפילה, יש מי שמלא דאגות ופחדים. כל אדם היה רוצה לב רחב, אוהב, רגוע, שמח, בלי פחד.</p>
+      <p>"לפני מי אתם מיטהרין" – זו העבודה של האדם. "ומי מטהר אתכם" – זה הקדוש ברוך הוא. ביום הכיפורים הוא עושה טהרה לאדם, והופך אותו לבעל מידות אחרות. יש אנשים שעשו בחייהם מהפך שקשה להבין – מאנשים רחוקים לגמרי נעשו לומדי תורה ויראי שמיים. וגם אדם רגיל, שאינו רחוק, יכול לעשות שינוי של ממש בחייו.</p>
+      <p>ביום הכיפורים הלב נעשה טהור. האדם יכול לקבל תכונות חדשות, לב חדש, כמו שנאמר: "לֵב טָהוֹר בְּרָא לִי אֱלֹקִים". ואחד הדברים שעוזרים לטהרה הזאת הוא השמחה: כשאדם שמח ביום הכיפורים, היום יכול לטהר אותו הרבה יותר.</p>
+      <p class="bold-para">ביום הכיפורים ה' מטהר את המידות, ונותן לאדם לב חדש – וזו סיבה גדולה לשמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום של טהרה</div>
+      <h3 class="story-title">⚖️ "עיצומו של יום מכפר"</h3>
+      <p>המשנה מביאה מחלוקת: האם יום הכיפורים צריך תשובה? רבי אומר: עיצומו של יום מכפר, אפילו לא עשה אדם תשובה. וחכמים אומרים: בלי תשובה, יום הכיפורים אינו מכפר.</p>
+      <p>המשגיח ביאר שאין להבין את המחלוקת בצורה קיצונית, כאילו חכמים דורשים תשובה שלמה בכל פרטיה – וידוי, חרטה, קבלה לעתיד. גם חכמים מודים שעיצומו של יום מכפר. רק מה? אם האדם אינו רוצה לחזור בתשובה כלל, הרי הוא כמו טובל ושרץ בידו, ואי אפשר לטהר אותו. אבל אם הוא רוצה מעט – רוצה להתקרב, רוצה להיות אדם אחר, גם אם עדיין קשה לו – זה כבר מספיק כדי שהיום יכפר.</p>
+      <p>ולכן, ככל שאדם שמח יותר ביום הכיפורים, שמח שמגיע לו יום כזה של טהרה, כך הטהרה מסוגלת לפעול בו יותר.</p>
+      <p class="bold-para">גם לשיטת חכמים, מספיק רצון אמיתי להשתנות כדי שהיום יכפר, וככל שהאדם שמח – הטהרה גדולה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום של טהרה</div>
+      <h3 class="story-title">🌈 צער ושמחה ביחד</h3>
+      <p>יש שני מאמרים שנראים כסותרים. נאמר: טוב אחד בצער ממאה שלא בצער. ונאמר גם: טוב אחד בשמחה מאלף שלא בשמחה. איך שניהם נכונים? צריך להבין ש"בצער" אין פירושו בעצבות, אלא במאמץ: מצווה שאדם התאמץ בשבילה, שכרה גדול הרבה יותר.</p>
+      <p>ביום הכיפורים אדם יכול לזכות בשני הדברים יחד. הוא צם, וזו מצווה שיש בה מאמץ וצער. והוא גם שמח, כי הוא מבין מה הוא זוכה ביום הזה: איזו טהרה אדירה, איזו דבקות בה'. הצום איננו צער לשם צער. המטרה היא שעל ידי הצום אדם שוכח את הדברים הגשמיים ונדבק בבורא עולם.</p>
+      <p>מי שצם מתוך שמחה – זוכה לשתי המעלות. ונזכה שיתקיים בנו הפסוק: "וְזָרַקְתִּי עֲלֵיכֶם מַיִם טְהוֹרִים וּטְהַרְתֶּם". הנבואה הזאת של יחזקאל נאמרה על הגאולה, על התקופה שלנו, שבה נראה איך כולם רוצים את בורא עולם וחוזרים אליו, ונזכה לניסים ולנפלאות ולטהרה שלמה.</p>
+      <p class="bold-para">ביום הכיפורים אפשר לזכות גם במעלת המצווה שבצער וגם במעלת המצווה שבשמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/3RQGDM-gjxk · 2024-10-09 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מצווה מוזרה","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"\"בתשעה לחודש\"","icon":"📖"},{"id":2,"title":"לאכול – יותר מלצום?","icon":"❓"},{"id":3,"title":"הדג של המלך","icon":"🐟"}]},{"id":2,"name":"שתי כנפיים","icon":"🕊️","color":"#6d28d9","stories":[{"id":4,"title":"סעודה ולא כרסום","icon":"🍽️"},{"id":5,"title":"ציפור עם כנף אחת","icon":"🕊️"},{"id":6,"title":"שמחה שמחר ניטהר","icon":"😊"},{"id":7,"title":"להקדים את השמחה","icon":"📅"}]},{"id":3,"name":"שמחת הכפרה","icon":"✨","color":"#e08e00","stories":[{"id":8,"title":"שמחה שמביאה לקבלת הצום","icon":"🎁"},{"id":9,"title":"רבנו יונה: מחכה לכפרה","icon":"📜"},{"id":10,"title":"אהבה שמתגלה","icon":"❤️"},{"id":11,"title":"\"יגדל וישגא מאוד\"","icon":"🌟"}]},{"id":4,"name":"יום של טהרה","icon":"💧","color":"#1e88b8","stories":[{"id":12,"title":"הריקוד לפני נעילה","icon":"💃"},{"id":13,"title":"לא לספור את השעות","icon":"⌛"},{"id":14,"title":"\"ומי מטהר אתכם\"","icon":"💧"},{"id":15,"title":"\"עיצומו של יום מכפר\"","icon":"⚖️"},{"id":16,"title":"צער ושמחה ביחד","icon":"🌈"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
