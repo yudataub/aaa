@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 תורה אחת לעם אחד</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 תורה אחת לעם אחד</h1>
+  <p>שני דרכים לשיתוף פעולה בין ציבורים שונים: המכנה המשותף הנמוך והמכנה המשותף הגבוה, מצוות "לא תסור" בדברי הרמב"ן והר"ן, וכוחה של הסכמת חכמי ישראל גם בימינו</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ תורה אחת לעם אחד" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/tphYHGRiVHU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/tphYHGRiVHU/hqdefault.jpg" alt="תורה אחת לעם אחד" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=tphYHGRiVHU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ציבורים שונים בבית אחד</div>
+      <h3 class="story-title">🥜 בוטנים, שקדים ורימונים</h3>
+      <p>השיעור עוסק בשאלה שמטרידה רבים: איך אפשר ליצור כאן, בארץ ישראל, שיתוף פעולה בין כולם? האם יש לכך אפשרות בכלל?</p>
+      <p>הקושי ברור. יש לנו ציבורים שונים לחלוטין. אלה חושבים כך, ואלה חושבים אחרת. אלה בוטנים, אלה שקדים, אלה אגוזים ואלה רימונים. כל ציבור עם השקפת עולם משלו, אורח חיים משלו וסדר עדיפויות משלו. איך אפשר ליצור אחדות, לפחות בנושאים מסוימים, בין כולם?</p>
+      <p>הרב הציג בשיעור שני מודלים של שיתוף פעולה. האחד מוכר מן השיח הציבורי, והוא בנוי על הבסיס הנמוך ביותר שכולם מסכימים עליו. השני הפוך לו לגמרי, והוא בנוי על המטרה הגבוהה ביותר שכולם שותפים לה.</p>
+      <p>את המודל השני הוא מצא בתורה עצמה, במצווה לשמוע לבית הדין הגדול, ובדרך שבה ביארו אותה הראשונים. ומשם הגיע לשאלה מעשית: האם יש דרך גם בימינו, בלי סנהדרין, להגיע להכרעה אחת שתאחד את הציבור.</p>
+      <p class="bold-para">בארץ חיים יחד ציבורים שונים לחלוטין, והשאלה היא אם אפשר ליצור ביניהם שיתוף פעולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ציבורים שונים בבית אחד</div>
+      <h3 class="story-title">🏛️ ארבעת השבטים</h3>
+      <p>הרב הביא נאום ידוע של אחד מנשיאי המדינה, שנקרא "נאום השבטים". הנשיא תיאר את השינוי שעברה החברה הישראלית. בעבר היה בה רוב ברור, ולצדו מיעוטים קטנים: קצת דתיים, קצת חרדים, קצת ערבים. הרוב הסתדר איתם, פעם יותר ופעם פחות.</p>
+      <p>היום, לפי התיאור, החברה מורכבת מכמה ציבורים שהולכים ומשתווים בגודלם. אין עוד רוב אחד ששולט וקובע. כל ציבור גדול מספיק כדי להשפיע, ואף אחד אינו גדול מספיק כדי להכריע לבדו.</p>
+      <p>הנשיא חילק את החברה לארבעה "שבטים". הרב העיר שהחלוקה הזאת אינה מדויקת לגמרי, ושרבים אינם מסכימים עמה. אבל התיאור הכללי נכון: אנחנו חיים בחברה של ציבורים שונים, בגדלים דומים, עם פערים תרבותיים ודתיים עמוקים ביניהם.</p>
+      <p>והשאלה עולה מעצמה: איך מנהלים מדינה כזאת? איך יוצרים שותפות כשאין רוב שיכול לכפות, וכשהפערים כל כך גדולים?</p>
+      <p class="bold-para">החברה בארץ השתנתה: במקום רוב ברור ומיעוטים קטנים, יש היום כמה ציבורים גדולים בגודל דומה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ציבורים שונים בבית אחד</div>
+      <h3 class="story-title">🏢 מודל ועד הבית</h3>
+      <p>ההצעה שעלתה מתוך אותו נאום הייתה תוכנית לחיזוק השותפות בין הציבורים. בקיצור: בואו ניצור שיתוף פעולה במה שמשותף לכולם. כולם רוצים חינוך, כולם רוצים ביטחון, כולם רוצים תעסוקה וספורט. נשים את כל הדעות שלנו בצד, ונשתף פעולה בדברים שכולנו רוצים.</p>
+      <p>הרב קרא לזה "מודל ועד הבית", או "שיתוף פעולה על הבסיס המשותף הנמוך". הנה בניין, ובו גרים דתי, חרדי, ערבי וחילוני. איך הם מסתדרים בוועד הבית? פשוט מאוד. כולם רוצים שהבניין יהיה נקי. כולם רוצים מעלית. אולי כולם רוצים גם מצלמות.</p>
+      <p>מה זה משנה מה אתה חושב על מלחמה ושלום, או על כל שאלה גדולה אחרת? מה זה קשור לבניין שלנו? בוועד הבית לא דנים בהשקפות. משתפים פעולה בדבר אחד, ניקיון ומעלית, וגמרנו.</p>
+      <p>הרעיון הזה, אמר הרב, יכול להיות נחמד מאוד. יש בו נגיעה יפה של רצון לחיות יחד. אבל יש בו כמה בעיות, ובינתיים גם לא הצליח. לפני שמבינים את המודל השני, צריך להבין למה הראשון נתקע.</p>
+      <p class="bold-para">ההצעה הראשונה: לשים את הדעות בצד ולשתף פעולה רק במה שמשותף לכולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גבולות המכנה הנמוך</div>
+      <h3 class="story-title">🔍 מה עיקר ומה טפל</h3>
+      <p>הבעיה הראשונה של מודל ועד הבית היא השאלה מה עיקר ומה טפל. בבניין זה פשוט: ניקיון ומעלית. אבל בחיים של עם, יש דברים שקשה מאוד לדעת אם הם עיקר או טפל. אצל אחד זה העיקר, ואצל השני זה הטפל.</p>
+      <p>למשל, האם זהותה היהודית של המדינה היא "השקפה" שאפשר לשים בצד, או בסיס שאין בלעדיו? מי שרואה בה טפל יאמר: נשאיר את זה בחוץ, ונעסוק בתקציב ובביטחון. ומי שרואה בה עיקר יאמר: בלי זה, על מה בכלל אנחנו משתפים פעולה?</p>
+      <p>כאן נוצרת בעיה נוספת. כשמחליטים לשמור רק על המכנה המינימלי, מה שנשאר בדרך כלל הם הנושאים שמעניינים את כולם, כמו כלכלה וביטחון. ממילא, כל מה שקשור לזהות, למסורת ולדת נדחק החוצה. במקום שותפות של כולם, עלולה לצאת מדינה שמוותרת על הרבה ממה שחשוב לחלק גדול מאזרחיה.</p>
+      <p class="bold-para">במודל המכנה הנמוך תמיד יתעורר ויכוח מה נחשב עיקר משותף ומה נחשב טפל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גבולות המכנה הנמוך</div>
+      <h3 class="story-title">💬 מי אמר שוויכוח אינו טוב?</h3>
+      <p>בעיה שנייה: מי אמר שלא טוב שיש ויכוחים? מודל ועד הבית אומר: נשים את המחלוקות בצד. אבל לפעמים דווקא הוויכוח הוא שמביא את התוצאה הטובה.</p>
+      <p>אם אנשים יודעים לנהל ויכוח, כדאי לשמוע עוד דעות. לא כדאי שתהיה רק דעה אחת. הרב הזכיר שבמערכת הביטחון הייתה פעם יחידה שתפקידה היה לבדוק את ההערכות המקובלות ולהציג את הצד השני. לא כדי להחליט לפיה, אלא כדי לשמוע אותה. לפעמים, כשכל הצדדים נשמעים יחד, יוצא דבר טוב באמת.</p>
+      <p>ובדרך כלל, מי שמצליח ליצור דבר טוב באמת הוא אחד ששמע גם את הדעה שחולקת עליו, וחשב מה הוא משיב לה. על ידי זה הוא חידד את עצמו הרבה יותר. אדם שהחליט רק משום שהחליט, בדרך כלל חסר לו הרבה מאוד. ואם שמע את החולק וחשב מה הוא עונה, הוא מבין את הדברים לעומק.</p>
+      <p>לכן לוותר על הוויכוח לגמרי, רק כדי לשמור על השקט, אינו תמיד הפתרון הנכון.</p>
+      <p class="bold-para">ויכוח שמתנהל נכון מחדד את הדברים, ומי ששמע את החולק עליו יודע טוב יותר מה הוא חושב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גבולות המכנה הנמוך</div>
+      <h3 class="story-title">🚫 קווים אדומים</h3>
+      <p>הרב הזכיר שבשנים האחרונות קמה ממשלה שניסתה לפעול בדיוק לפי המודל הזה: לשים את כל הוויכוחים בצד, ולפעול רק על הבסיס המינימלי. ביטחון, תקציב, ולא לדון בשום דבר מהותי. והממשלה הזאת התפרקה, ובין הגורמים לכך היו שאלות של זהות ודת.</p>
+      <p>אחת השאלות הייתה הכנסת חמץ לבתי החולים בפסח. בעבר נהגו לבקש ממי שנכנס לבית החולים שלא יכניס חמץ, ובעקבות שינוי שנעשה אז כבר לא היה אפשר לעשות זאת. למה זה כל כך חשוב? כל עוד אדם עושה מה שהוא רוצה בביתו, אין בעיה. אבל בית חולים הוא מקום של כולם, עם כלים של כולם. מי שמכניס חמץ למטבח של פסח, פוגע בכלים של כולם, ואי אפשר עוד לאכול שם בפסח.</p>
+      <p>ומי שעמדה על כך אמרה, בתוכן הדברים: לכל אחד יש קווים אדומים. אנחנו מכבדים אחרים, ולא נכניס נעליים למקום קדוש של דת אחרת. אז למה שלא יכבדו גם אותנו? אני לא יכול לאכול חמץ בפסח – תביא משהו אחר. ועל זה אמרה שאינה יכולה למכור את עולמה הבא.</p>
+      <p>וגם לציבורים אחרים היו קווים אדומים משלהם, שעליהם לא הסכימו לוותר בשום מחיר.</p>
+      <p class="bold-para">ניסיון לשתף פעולה רק על המינימום נשבר, כי לכל ציבור יש קווים אדומים שאינו יכול לוותר עליהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גבולות המכנה הנמוך</div>
+      <h3 class="story-title">🧱 המינימום לא מחזיק</h3>
+      <p>המסקנה שהרב הסיק מכל זה: לקחת את המינימום שכולם רוצים, להסכים על תקציב וביטחון ולהשאיר את השאר בחוץ – זה לא הצליח כאן. אולי במקום אחר בעולם זה היה עובד. במדינת ישראל, קשה מאוד להקים שותפות כזאת.</p>
+      <p>הסיבה אינה רק פוליטית. היא נוגעת למהות. לכל ציבור כאן יש קווים אדומים שנוגעים לליבת הזהות שלו. אצל אחד זה החמץ בפסח, אצל אחר זה שאלה לאומית. אלה אינם דברים שאפשר לשים בצד "עד שנסיים לדון בתקציב". הם נוגעים בדיוק במה שהאדם הוא.</p>
+      <p>והרב הוסיף הערה: פעם, אנשים מקצוות שונים לגמרי ידעו לשבת יחד שנים ארוכות, כי הייתה להם מטרה משותפת. כנראה הייתה אז תחושה חזקה יותר של שליחות משותפת. וזה כבר רומז על המודל השני.</p>
+      <p class="bold-para">בארץ ישראל קשה מאוד לבנות שותפות על המינימום, כי לכל ציבור יש דברים שאינם "מינימום" בעיניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המכנה המשותף הגבוה</div>
+      <h3 class="story-title">⛰️ מודל הפוך</h3>
+      <p>עכשיו עוברים לאפשרות השנייה. אם הקודמת נקראה "שיתוף פעולה על הבסיס המשותף הנמוך", זו נקראת "שיתוף פעולה על המכנה המשותף הגבוה". לא מוותרים על הדברים החשובים ונשארים עם המינימום, אלא להפך: מחפשים את הדבר הגבוה והחשוב ביותר ששני הצדדים רוצים בו, ובונים סביבו.</p>
+      <p>כדי להבין איך זה עובד, הרב לקח דוגמה מחיי המשפחה. בכל משפחה יש לפעמים ויכוחים. השאלה היא מה עושים כשהוויכוח אמיתי, ושני הצדדים בטוחים שהם צודקים.</p>
+      <p>הדרך הראשונה המוכרת היא לוותר. ויתור הוא דבר טוב מאוד, והוא פותר הרבה מאוד בעיות. אבל לא כל דבר אפשר לפתור בוויתור, ויש מצבים שבהם צריך משהו אחר לגמרי. במצבים כאלה, אם צד אחד מוותר בכל פעם, הוא מרגיש שהוא מאבד את עצמו. ואם אף אחד אינו מוותר, הבית הופך לשדה מאבק. המודל השני מציע דרך שלישית: לעלות מעל השאלה המסוימת, ולשאול מה המטרה ששנינו רוצים בה.</p>
+      <p class="bold-para">שיתוף פעולה יכול לקום גם סביב הדבר הגבוה ביותר ששני הצדדים רוצים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המכנה המשותף הגבוה</div>
+      <h3 class="story-title">🙂 "העצה הכי טובה היא לוותר"</h3>
+      <p>הרב סיפר מעשה משעשע. אדם בא לאחד מגדולי הדור ואמר לו שיש לו הרבה בעיות בשלום הבית. ענה לו: העצה הכי טובה היא לוותר. אמר לו האיש: הרב, אני כבר פעמים רבות אומר לאשתי שהרב אמר שצריך לוותר...</p>
+      <p>מאחורי החיוך יש יסוד אמיתי. ויתור הוא דבר נפלא. אם ארוחת הצהריים לא תהיה בדיוק כפי שרציתי, או נלך לבקר את הקרובים של הצד השני – אפשר לוותר, וזה טוב ונכון. בדרך כלל, מי שיודע לוותר על דברים קטנים זוכה לבית שקט ושמח.</p>
+      <p>אבל יש דברים שהם עקרוניים מדי. במצבים כאלה הוויתור לא הולך, כי כל צד מרגיש שהוא מוותר על משהו שאסור לו לוותר עליו. כאן נכנס המודל השני: לא ויתור על העיקר, אלא מציאת עיקר גבוה יותר, ששני הצדדים שותפים לו.</p>
+      <p class="bold-para">ויתור פותר הרבה, אבל רק בדברים שאינם עקרוניים מדי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המכנה המשותף הגבוה</div>
+      <h3 class="story-title">👦 טובת הילד</h3>
+      <p>הרב תיאר מקרה שראה: זוג נחמד מאוד, משפחה לתפארת. יום אחד פרץ ביניהם ויכוח לא פשוט: לאיזה מוסד חינוכי לשלוח את הבן. האב התחזק מאוד ברבות השנים ורצה מוסד מסוים, והאם רצתה מוסד אחר, כמו שהיה מקובל בבית כשהתחתנו. ויכוח עקרוני, שאי אפשר לפתור בוויתור פשוט.</p>
+      <p>מה עושים? ראשית, כל צד שואל את עצמו: מה האחר רוצה באמת? האם הוא רוצה לרעת הילד או לטובתו? בדרך כלל, התשובה היא ששניהם רוצים את טובת הילד. הם רק חלוקים מה טוב לו.</p>
+      <p>ושנית, שואלים: מה באמת טוב לילד? האם עדיף לו מוסד שנראה בעיני האב טוב יותר, במחיר של מתח ופירוד בבית? או שעדיף לו לגדול עם שני הורים יחד, בבית שלם, גם אם המוסד אינו בדיוק מה שהאב רצה? הרב אמר שבדרך כלל ילד צומח בריא יותר בנפשו וברוחו כשיש לו בית שלם ושני הורים יחד. ומה יועיל המוסד הטוב ביותר, אם בסוף הילד יתגלגל ברחובות?</p>
+      <p class="bold-para">כששני ההורים חולקים על חינוך הילד, המטרה הגבוהה המשותפת – טובת הילד – יכולה להכריע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המכנה המשותף הגבוה</div>
+      <h3 class="story-title">🎯 לא למטה, למעלה</h3>
+      <p>כך יוצא שבשביל טובת הילד עדיף לפעמים להמשיך יחד, גם אם הדרך אינה בדיוק מה שאחד הצדדים רצה. אבל זה אינו ויתור על העיקר. העיקר הוא ילד בריא בגופו ובנפשו, והוא בדיוק מה שמושג.</p>
+      <p>זה ההבדל בין שני המודלים. במודל ועד הבית לוקחים את הנמוך, את מה שאין עליו ויכוח כי הוא לא חשוב מספיק כדי להתווכח עליו. כאן לוקחים את הדבר הגבוה ביותר, החשוב ביותר, ועל ידו יוצרים שיתוף פעולה.</p>
+      <p>הרב אמר שאפשר להביא דוגמאות רבות לכך. כששני צדדים רוצים יחד דבר גבוה, הם מסוגלים לוותר על הדרכים כדי להגיע אליו. והשאלה הגדולה היא: איפה מופיע הרעיון הזה בתורה? והתשובה נמצאת במצווה מפורשת.</p>
+      <p class="bold-para">השאיפה הגבוהה המשותפת מאפשרת לוותר על דרך מסוימת בלי לוותר על העיקר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "לא תסור"</div>
+      <h3 class="story-title">📜 המצווה לשמוע לבית הדין</h3>
+      <p>בתורה יש מצווה: כשיש ספק בהלכה, עולים לבית הדין הגדול, הסנהדרין של שבעים ואחד. שם דנים, לפעמים זמן רב, עד שמכריעים. ונאמר: "עַל פִּי הַתּוֹרָה אֲשֶׁר יוֹרוּךָ וְעַל הַמִּשְׁפָּט אֲשֶׁר יֹאמְרוּ לְךָ תַּעֲשֶׂה, לֹא תָסוּר מִן הַדָּבָר אֲשֶׁר יַגִּידוּ לְךָ יָמִין וּשְׂמֹאל".</p>
+      <p>ובקבלה ידוע מה שאמרו חז"ל: אפילו מראים בעיניך על ימין שהוא שמאל ועל שמאל שהוא ימין, שמע להם. כלומר, גם אם ברור לך שהאמת אינה כדבריהם, צריך לשמוע להם.</p>
+      <p>וכאן שאלו הראשונים שאלה חריפה: מה אתה עושה כשבית הדין החליט דבר שאתה בטוח שהוא חילול שבת? או שאכילת דבר מסוים, שאתה בטוח שהוא אסור, מותרת? איך אפשר לעשות כזה דבר? זו אינה שאלה של מי שרוצה להקל, אלא של מי שבאמת סבור שהדין אחרת.</p>
+      <p class="bold-para">התורה מצווה לשמוע לבית הדין הגדול גם כשנראה לאדם שהם טועים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "לא תסור"</div>
+      <h3 class="story-title">🌅 רבנו תם והגאונים</h3>
+      <p>הרב הביא דוגמה מן המחלוקת הידועה בעניין זמן צאת השבת וכניסת הלילה: לפי רבנו תם, הלילה מתחיל זמן רב אחרי השקיעה, ולפי הגאונים הוא מתחיל זמן קצר אחריה.</p>
+      <p>נניח שיהודי שסובר כרבנו תם הגיע לבית הדין הגדול, ובית הדין פסק כדעת הגאונים, כמו שנוהגים היום ברוב המקומות. נולד לו בן ביום שישי בשעה מסוימת, שלפי דעתו היא עדיין יום שישי גמור, ולפי הגאונים כבר שבת. אם כן, לפי בית הדין, את הילד מלים בשבת הבאה. והוא אומר: איך אפשר? בעיניי, למול בשבת ילד שנולד ביום שישי זה חילול שבת.</p>
+      <p>זו בדיוק השאלה של הראשונים. ואין מדובר במי שמחמיר לעצמו, אלא במי שבאמת סבור שכך הדין. איך הוא יעשה דבר שהוא בטוח שהוא טעות? וזו אינה שאלה תיאורטית. בכל דור יש מחלוקות רבות בהלכה, ובכל אחת מהן יש מי שבטוח בדעתו. השאלה היא איך עם שלם יכול לנהוג באופן אחד, כשיש בו אנשים שבטוחים בדברים שונים.</p>
+      <p>על השאלה הזאת נאמרו שני ביאורים שונים מאוד. האחד בדברי הרמב"ן, והשני בדרשות הר"ן.</p>
+      <p class="bold-para">דוגמה מוחשית: מי שסבור כרבנו תם, ובית הדין פסק כגאונים, איך ימול ביום שהוא בעיניו שבת?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "לא תסור"</div>
+      <h3 class="story-title">📖 ביאור הרמב"ן</h3>
+      <p>הרמב"ן כותב על המצווה הזאת: "והצורך במצוה הזאת גדול מאד, כי התורה ניתנה לנו בכתב, וידוע הוא שלא ישתוו הדעות בכל הדברים הנולדים, והנה ירבו המחלוקות ותעשה התורה כמה תורות".</p>
+      <p>כלומר, אי אפשר שכל אחד יעשה כפי שהוא מבין. אילו כך היה, הייתה התורה מתפצלת לתורות רבות. לכן גזרה התורה שישמעו לבית הדין הגדול בכל מה שיאמרו בפירוש התורה, בין שקיבלו זאת בקבלה ובין שאמרו לפי שכלם.</p>
+      <p>ומה עם מי שבטוח שהם טועים? לפי הרמב"ן, מה אכפת לך? כך רוצה הקדוש ברוך הוא. כמו שהוא ציווה אותך למול, הוא ציווה אותך לשמוע לסנהדרין. הוא נתן את התורה כדי שתהיה תורה אחת, ולכן ציווה שבמקום מחלוקת יכריע בית הדין, ואתה עושה את רצונו גם כשאתה חושב שהם טעו.</p>
+      <p class="bold-para">הרמב"ן: בלי המצווה הזאת התורה הייתה נעשית כמה תורות, וכך רצה ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "לא תסור"</div>
+      <h3 class="story-title">🥚 התרנגולת והביצה</h3>
+      <p>הר"ן בדרשותיו מבאר אחרת לגמרי. הוא אומר: אילו היינו סוברים שאין טעם במצוות כלל, אלא רק רצון המצווה, היה הכל פשוט. פעם המפקד ציווה למול בשבת, פעם ציווה לשמוע לחכמים – ומה אכפת לי. אבל אנחנו איננו בוחרים בדעה הזאת.</p>
+      <p>אנחנו מאמינים, כותב הר"ן, שכל מה שהתורה מנעה ממנו מזיק לנו באמת ומוליד רושם רע בנפש, אף שאיננו יודעים את סיבתו. הרב הציג זאת כשאלה של תרנגולת וביצה: האם מאכל אסור מטמטם את הלב משום שה' אסר אותו, או שה' אסר אותו משום שהוא מטמטם את הלב מטבעו? הר"ן סובר בפירוש כדרך השנייה: הדבר רע בעצמו, ולכן נאסר.</p>
+      <p>הרב הוסיף הערה: אפשר לראות שכמעט כל הבהמות הכשרות אינן טורפות, ורוב הבהמות האסורות הן טורפות. אולי יש בכך רמז לטבע שעלול לעבור לאדם האוכל אותן. אמנם לא בכל המקרים זה כך, אבל זה מראה את הרעיון.</p>
+      <p>ואם כך, השאלה מתחזקת: אם המאכל מזיק בעצמו, מה יועיל שבית הדין התיר אותו? הנזק עדיין שם.</p>
+      <p class="bold-para">הר"ן סובר שהאיסורים מזיקים לנפש בעצמם, ולכן קשה לו יותר: מה יועיל שבית הדין התיר?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "לא תסור"</div>
+      <h3 class="story-title">🍼 המיניקה והמאכל</h3>
+      <p>לשיטת הר"ן יש השלכה להלכה, והרב הביא אותה מן הרמ"א. כשאישה נאלצת לאכול מאכל לא כשר, משום שהרופא הורה כך לטובת בריאותה, היתר גמור. ובכל זאת פוסק הרמ"א שאם היא מניקה, תשתדל שאחרת תניק את הילד.</p>
+      <p>פעם לא היו תחליפי חלב, והאפשרות היחידה הייתה מיניקה אחרת. ולמה? כי גם כשמותר לאכול, המאכל עדיין משפיע. הדבר עובר לילד בטבע. זה דבר רוחני, ולא רק עניין של רשות ואיסור. וגם הובא בשיעור הסיפור הידוע על רבי ואנטונינוס, שממנו רואים שיש למאכל השפעה, גם אם הבחירה נשארת בידי האדם.</p>
+      <p>ואם כן, שואל הר"ן: אם חכמים יסכימו שדבר טמא הוא טהור, הרי הדבר עדיין יזיק ויפעל את פעולתו בנפש. הוא מדמה זאת לרופאים שהסכימו שסם מסוים בריא: אם הוא באמת רעל, ההסכמה שלהם לא תשנה את טבעו.</p>
+      <p>אז איך אפשר לשמוע לחכמים במקום כזה? אולי צריך נביא שיודע את האמת?</p>
+      <p class="bold-para">הרמ"א פוסק שגם כשמותר לאישה לאכול מאכל אסור מפני בריאותה, עדיף שלא תניק, כי הדבר משפיע בטבע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "לא תסור"</div>
+      <h3 class="story-title">🧩 תשובת הר"ן: אחדות שמתקנת</h3>
+      <p>הר"ן משיב במשל. כוח הבליעה שברא ה' באדם נועד לבלוע מזון טוב. אבל הוא בולע כל דבר, גם מה שאינו טוב. מה לעשות? עיקר הכוונה הייתה לתיקון הכללי, ולא מקפידים על הנזק הנדיר שעלול לבוא ממנו.</p>
+      <p>כך גם בתורה. התורה השגיחה לתקן קלקול שעלול היה ליפול תמיד: פירוד הדעות והמחלוקת, שהתורה תיעשה כשתי תורות. בלי בית דין שמכריע, יהיה כל אחד נוהג אחרת, ולא יהיה עם אחד. הרב הזכיר שהייתה תקופה בהיסטוריה שבה היו שמנו את שנות השמיטה במניין שונה, עד שהתקבצו חכמים והחליטו מניין אחד שכולם נוהגים לפיו.</p>
+      <p>לכן, אומר הר"ן, אולי באמת אתה אוכל עכשיו דבר אסור, ואולי באמת זה חילול שבת. אבל יש ערך עליון: שיהיה עם אחד עם תורה אחת. כדאי לוותר על נזק בודד בשביל העיקרון הזה.</p>
+      <p>והוא מוסיף דבר מדהים: עצם זה שאדם שומע לחכמים משפיע על נפשו לטובה, כמו שנאמר: "הִנֵּה שְׁמֹעַ מִזֶּבַח טוֹב". המצווה שעשה בכך שיש כנגד הקלקול, ומתקנת אותו.</p>
+      <p class="bold-para">הר"ן משיב שהתורה העדיפה את התיקון הכללי של תורה אחת על פני הנזק הנדיר, ושעצם השמיעה לחכמים מתקנת את הנפש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "לא תסור"</div>
+      <h3 class="story-title">🌟 מכנה משותף גבוה – בתורה</h3>
+      <p>עכשיו אפשר לחזור לשאלה שבה פתח השיעור. דברי הר"ן הם בדיוק המודל של המכנה המשותף הגבוה. אין כאן ויתור על המינימום, ואין כאן הסכמה רק על מה שלא חשוב. יש כאן ערך עליון אחד, שכולם שותפים לו: שתהיה לעם ישראל תורה אחת והלכה אחת.</p>
+      <p>אם יהיה מצב שבו כולם יבינו כמה חשוב שתהיה אחדות בעם, שתהיה תורה אחת, אז גם כשיש מחלוקות, זה חושב כך וזה חושב אחרת, תהיה אפשרות ליצור גוף משותף שיכריע. ומי שדעתו לא התקבלה יוותר עליה, לא משום שאינה חשובה בעיניו, אלא משום שהאחדות חשובה בעיניו עוד יותר.</p>
+      <p>וכמו בדוגמה של ההורים: לא ויתור על העיקר, אלא מציאת עיקר גבוה ממנו. כשהמטרה המשותפת גבוהה מספיק, אפשר לוותר על הדרכים. זה מה שמבדיל בין מי שמוותר מתוך עייפות או אדישות, לבין מי שמוותר מתוך אהבה. הראשון מוותר משום שלא אכפת לו. השני מוותר משום שאכפת לו מאוד, מן הדבר הגדול מכולם.</p>
+      <p class="bold-para">לפי הר"ן, הערך העליון של תורה אחת לעם אחד הוא שמאפשר לכל צד לוותר על דעתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הסכמה גם בימינו</div>
+      <h3 class="story-title">⚖️ בלי סנהדרין</h3>
+      <p>אבל היום אין סנהדרין. יש מי שחולמים להקים אותה, ובינתיים היא אינה קיימת. ממילא קשה מאוד להכריע. במצב כזה צריך לכבד כל דעה שיש לה בסיס בתורה. אי אפשר לומר על דעתו של תלמיד חכם שהיא פסולה לגמרי.</p>
+      <p>ובכל זאת, יש גבול. הרב הזכיר את הקראים, שנשארו מהם מעטים עד היום, ואת הצדוקים והבייתוסים שבימי בית שני. למה יצאו מכלל ישראל? כי לא רצו לשמוע להסכמת החכמים. זה היה חמור כל כך בעיני חכמים, עד שהוציאו אותם מכלל העם.</p>
+      <p>כמובן, תמיד תעלה השאלה: מי הם החכמים שצריך לשמוע להם? מי שייך לכלל הזה ומי לא? זו בעיה שתמיד תהיה. אבל העיקרון ברור: מדובר בחכמי התורה הנאמנים לתורה ולמצוות. ויהיו מקרים קשים, אבל אין בהם כדי לבטל את העיקרון.</p>
+      <p class="bold-para">היום אין סנהדרין, ולכן קשה להכריע ויש לכבד כל דעה שיש לה בסיס בתורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הסכמה גם בימינו</div>
+      <h3 class="story-title">📚 כוחה של הסכמה</h3>
+      <p>האם יש משהו בימינו שיכול למלא את מקומה של הסנהדרין? הרב הביא את דברי הרמב"ם בהקדמה למשנה תורה. הרמב"ם כותב שבית דין שעמד אחרי חתימת הגמרא, במדינה מסוימת, וגזר או תיקן – אין דבריו מחייבים את כל ישראל, כי אין בית דין גדול שיכול להכריע לכולם.</p>
+      <p>ואז הוא שואל: אם כן, למה כל מה שבתלמוד הבבלי מחייב את כל ישראל? למה בית דין של היום אינו יכול לחייב אותי, והגמרא כן יכולה? ומשיב: משום שכל הדברים שבגמרא הסכימו עליהם כל ישראל. החכמים שתיקנו וגזרו בגמרא הם כל חכמי ישראל או רובם, והם שמעו את הקבלה בעיקרי התורה דור אחר דור עד משה רבנו.</p>
+      <p>כלומר, גם בלי סנהדרין, כשיש הסכמה כללית של כל חכמי ישראל או רובם, יש לה כוח מחייב. וכך כתבו גם פוסקים נוספים: הסכמת חכמי ישראל או רובם יש לה כוח של בית דין גדול, וכל ישראל חייבים לשמוע להם, ודין זה נוהג גם היום.</p>
+      <p class="bold-para">הרמב"ם מסביר שהתלמוד מחייב את כל ישראל משום שכל חכמי ישראל הסכימו עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הסכמה גם בימינו</div>
+      <h3 class="story-title">🕯️ זמן השבת בארץ</h3>
+      <p>הרב חזר לדוגמה של רבנו תם והגאונים. מי שרוצה להחמיר כרבנו תם בצאת השבת – אין בכך שום בעיה, הוא רשאי להחמיר. אבל מי שרוצה לנהוג כרבנו תם לקולא, ולהמשיך לעשות מלאכה אחרי שכבר נכנסה השבת לפי הגאונים, אינו רשאי. למה? כי הוא יחיד, וחכמי ישראל בארץ, כולם או רובם המכריע, הסכימו שכאן נוהגים כגאונים.</p>
+      <p>אף אחד בארץ ישראל אינו רוצה שיהיו כאן חילולי שבת: שאחד ייסע ברכב בשעה שאצל כולם כבר שבת, או ידליק נרות כשאצל אחרים כבר אסור. אי אפשר לנהל ציבור כך.</p>
+      <p>הרב סיפר שהיה פעם אדמו"ר שהגיע מחוץ לארץ, ושם נהג כרבנו תם לגמרי, גם לקולא. כשהגיע לארץ באה אליו קבוצה של חכמים ואמרו לו: כבוד האדמו"ר, בחוץ לארץ תנהג כמנהגך. אבל כאן, בארץ ישראל, אנחנו לא יכולים שיהיה מי שנוהג אחרת. זה יהרוס את הכל. אנחנו חייבים שבמדינה כולם יידעו מתי נכנסת שבת. והוא הבין, וקיבל. מאז, כך סיפר הרב, נהג בארץ כמו כולם. זו דוגמה חיה לכוחה של הסכמה: אדם גדול, שבטוח בדעתו, מוותר עליה מפני הערך של ציבור אחד שנוהג באופן אחד.</p>
+      <p class="bold-para">בארץ ישראל הסכימו חכמי ישראל לנהוג כגאונים, ולכן יחיד אינו יכול להקל כרבנו תם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הסכמה גם בימינו</div>
+      <h3 class="story-title">🚲 אופניים בשבת</h3>
+      <p>הרב הביא עוד דוגמה. אדם שואל: איפה כתוב שאסור לרכוב על אופניים בשבת? מה כתוב על זה בשולחן ערוך? התשובה היא שיש הסכמה של חכמי ישראל בארץ, מכמה וכמה סיבות, לאסור זאת. ולכן אסור.</p>
+      <p>ויש עוד דברים רבים כאלה. דברים שאין עליהם סעיף מפורש, אבל יש עליהם הסכמה כללית. ולפי מה שהביא הרב מן הרמב"ם, הסכמה כללית כזאת נוהגת גם היום, להלכה למעשה.</p>
+      <p>וזה ההבדל מימי הסנהדרין: בית הדין של שבעים ואחד לא היה צריך לשאול את כל החכמים. הוא החליט, וזה היה הכוח שנתנה לו התורה. היום אין לנו את זה. אבל כשכל חכמי ישראל או רובם מסכימים, יש לדבר כוח מחייב. וכמו שאמרו חז"ל: "אין לך אלא שופט שבימיך".</p>
+      <p class="bold-para">יש דברים רבים שאסורים בארץ לא מכוח פסוק מפורש בשולחן ערוך, אלא מכוח הסכמת חכמי ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הסכמה גם בימינו</div>
+      <h3 class="story-title">🤝 רבנים מכל הציבורים</h3>
+      <p>לכן, אמר הרב, עקרונית זה הפתרון. יש הרבה מאוד דברים שצריך להכריע בהם בדורנו. אם תהיה הסכמה שחשוב מאוד שתהיה תורה אחת והלכה אחת, ויבינו כולם שגם אם יצטרכו לפעמים לקבל הכרעה שאינה כפי שרצו, זה בשביל העיקרון העליון – אפשר כבר היום ליצור דבר מחייב.</p>
+      <p>יש בארץ ציבורים שונים: המחמירים מצד אחד, המקלים מצד שני, ורבים באמצע. הפתרון אינו שכל אחד ינהג כרצונו. הפתרון הוא שרבנים מכל הציבורים, מכל הזרמים, ובלי פוליטיקה, ישבו יחד.</p>
+      <p>ואם ילכו לפי העיקרון של הר"ן, שיש מטרה עליונה של תורה אחת והלכה אחת, ויזכרו שעדיף שיהיו פה ושם טעויות ובלבד שכולם יהיו מאוחדים בתורה אחת, תהיה אפשרות ליצור כבר היום הכרעה אחת בהרבה דברים.</p>
+      <p class="bold-para">הפתרון שהרב הציע: כינוס של רבנים מכל הציבורים, הרחק מפוליטיקה, מתוך ערך עליון של תורה אחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הסכמה גם בימינו</div>
+      <h3 class="story-title">🏘️ בית דין של העיר</h3>
+      <p>הרב הוסיף שני דברים כדי להשלים את התמונה. הראשון: לבית דין של עיר יש כוח להכריע על העיר עצמה. ההסכמה של כל חכמי ישראל נדרשת רק להכרעה שתחייב את כל עם ישראל. אבל בעיר אחת, כשיש בה בית דין, יש לו כוח על בני העיר.</p>
+      <p>ובתנאי: צריך שרוב אנשי העיר יסכימו לו. לא שהרב משתלט על העיר, אלא שרוב העיר קיבלו אותו עליהם. כשיש הסכמה כזאת, יש לבית הדין כוח של ממש.</p>
+      <p>כך יוצא שגם בלי סנהדרין יש דרכים ליצור הכרעה מחייבת: הסכמה של כלל חכמי ישראל לכלל העם, והסכמה של רוב בני העיר לבית הדין שלהם. בשני המקרים, הכוח נובע מן ההסכמה, ומן הרצון המשותף לחיות לפי תורה אחת. זה בדיוק ההפך ממודל ועד הבית: לא הסכמה על המעט שאינו חשוב, אלא הסכמה על הדבר החשוב מכולם, שהתורה תהיה אחת.</p>
+      <p class="bold-para">גם לבית דין של עיר יש כוח על בני העיר, כשרוב תושביה מסכימים לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הסכמה גם בימינו</div>
+      <h3 class="story-title">🌤️ סייעתא דשמיא</h3>
+      <p>הדבר השני: אנחנו מאמינים שכאשר יש הסכמה כללית, הקדוש ברוך הוא עוזר. הוא נותן סייעתא דשמיא מיוחדת לאותם חכמים, כדי שיכריעו בצורה נכונה.</p>
+      <p>הרב סיים בדברי החזון איש, בתוכן הדברים: השגחתו יתברך היא בכל דור ודור על היחידים שהוא שם בדור להורות לישראל. וכשהם מעמיקים בהלכה, הם באותה שעה כמלאכים, ורוח ממרום שורה עליהם, ועל פיהם נקבעות הלכות חמורות, באיסורים חמורים ובשבת.</p>
+      <p>כלומר, כאשר יש מי שהציבור מינה והסכים עליו, יש לכך כוח מיוחד להכריע, ובורא עולם עוזר לו. ההכרעה אינה רק תוצאה של חכמה אנושית, אלא של חכמה שזוכה לסיוע מלמעלה.</p>
+      <p>ואנו צריכים להתפלל שהקדוש ברוך הוא יעזור, ונזכה בקרוב, במהרה, לדבר כזה: הכרעה אחת שמאחדת את העם, ותורה אחת לעם אחד.</p>
+      <p class="bold-para">כשהציבור מסכים וממנה את חכמיו, הקדוש ברוך הוא מסייע להם להכריע נכון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/tphYHGRiVHU · 2024-11-27 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ציבורים שונים בבית אחד","icon":"🏢","color":"#c62b6b","stories":[{"id":1,"title":"בוטנים, שקדים ורימונים","icon":"🥜"},{"id":2,"title":"ארבעת השבטים","icon":"🏛️"},{"id":3,"title":"מודל ועד הבית","icon":"🏢"}]},{"id":2,"name":"גבולות המכנה הנמוך","icon":"🚧","color":"#6d28d9","stories":[{"id":4,"title":"מה עיקר ומה טפל","icon":"🔍"},{"id":5,"title":"מי אמר שוויכוח אינו טוב?","icon":"💬"},{"id":6,"title":"קווים אדומים","icon":"🚫"},{"id":7,"title":"המינימום לא מחזיק","icon":"🧱"}]},{"id":3,"name":"המכנה המשותף הגבוה","icon":"⛰️","color":"#e08e00","stories":[{"id":8,"title":"מודל הפוך","icon":"⛰️"},{"id":9,"title":"\"העצה הכי טובה היא לוותר\"","icon":"🙂"},{"id":10,"title":"טובת הילד","icon":"👦"},{"id":11,"title":"לא למטה, למעלה","icon":"🎯"}]},{"id":4,"name":"\"לא תסור\"","icon":"⚖️","color":"#1e88b8","stories":[{"id":12,"title":"המצווה לשמוע לבית הדין","icon":"📜"},{"id":13,"title":"רבנו תם והגאונים","icon":"🌅"},{"id":14,"title":"ביאור הרמב\"ן","icon":"📖"},{"id":15,"title":"התרנגולת והביצה","icon":"🥚"},{"id":16,"title":"המיניקה והמאכל","icon":"🍼"},{"id":17,"title":"תשובת הר\"ן: אחדות שמתקנת","icon":"🧩"},{"id":18,"title":"מכנה משותף גבוה – בתורה","icon":"🌟"}]},{"id":5,"name":"הסכמה גם בימינו","icon":"🕯️","color":"#c62b6b","stories":[{"id":19,"title":"בלי סנהדרין","icon":"⚖️"},{"id":20,"title":"כוחה של הסכמה","icon":"📚"},{"id":21,"title":"זמן השבת בארץ","icon":"🕯️"},{"id":22,"title":"אופניים בשבת","icon":"🚲"},{"id":23,"title":"רבנים מכל הציבורים","icon":"🤝"},{"id":24,"title":"בית דין של העיר","icon":"🏘️"},{"id":25,"title":"סייעתא דשמיא","icon":"🌤️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
