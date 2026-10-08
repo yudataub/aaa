@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 עוד יוסף חי</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 עוד יוסף חי</h1>
+  <p>משיח בן יוסף מן הגמרא ועד הגר"א: מי הוא, מה תפקידו, והאם הגזירה שייהרג עדיין עומדת</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ עוד יוסף חי" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/42iOFYnKsyE?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/42iOFYnKsyE/hqdefault.jpg" alt="עוד יוסף חי" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=42iOFYnKsyE" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הגמרא החתומה</div>
+      <h3 class="story-title">📜 "עד כי יבא שילה"</h3>
+      <p>בברכותיו של יעקב אבינו נאמר: "לֹא יָסוּר שֵׁבֶט מִיהוּדָה... עַד כִּי יָבֹא שִׁילֹה". ורש"י מפרש: זה מלך המשיח. מן הפסוק הזה יצא השיעור אל סוגיה שלמה, שרבים שמעו עליה ומעטים מכירים אותה לעומק: סוגיית המשיח, ובפרט משיח בן יוסף.</p>
+      <p>יש משיח בן דוד, ויש משיח בן יוסף. מי הוא משיח בן יוסף? מה הוא עושה? ומה פירוש מה שנאמר עליו שייהרג? האם זו גזירה שאין ממנה מנוס? ואולי היא כבר התבטלה?</p>
+      <p>השיעור עובר בשלושה שלבים. בשלב הראשון נראה את מה שנאמר בגמרא, ובו כמעט כלום. בשלב השני נראה את חידושו של האר"י הקדוש, שגילה שהגזירה אינה מוחלטת. ובשלב השלישי נלמד את דברי הגאון מווילנא, כפי שמסרו תלמידיו, שמתוך הגמרא החתומה הוציא תמונה שלמה ומפליאה.</p>
+      <p>בדרך נעבור גם בברכות שאנו אומרים בכל יום בתפילה ובברכת המזון, ונגלה שהסוגיה הזאת אינה רחוקה מאיתנו. היא נוגעת במילים שאנו אומרים שלוש פעמים ביום, ואולי גם בימים שאנו עצמנו חיים בהם.</p>
+      <p>ההצגה כאן נאמנה לדעות כפי שהובאו בשיעור, בלי להכריע ביניהן מעבר למה שנאמר בו.</p>
+      <p class="bold-para">השיעור יוצא מן הברכה ליהודה אל שאלה גדולה: מיהו משיח בן יוסף, והאם הוא ימות?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הגמרא החתומה</div>
+      <h3 class="story-title">😢 המספד של לעתיד לבוא</h3>
+      <p>משיח בן יוסף נזכר בגמרא פעם אחת בלבד, במסכת סוכה. הסוגיה עוסקת בשמחת בית השואבה, ובשאלה אם צריך לעשות בבית המקדש מחיצה בין אנשים לנשים. בבית המקדש אין עושים מבנים סתם; מה שאינו מחויב, אסור להוסיף. לכן השאלה היא אם זו חובה מן התורה.</p>
+      <p>והגמרא מביאה ראיה מן הנביא זכריה: "וְסָפְדָה הָאָרֶץ מִשְׁפָּחוֹת מִשְׁפָּחוֹת לְבָד, מִשְׁפַּחַת בֵּית דָּוִד לְבָד וּנְשֵׁיהֶם לְבָד". ואמרו: והלא דברים קל וחומר. ומה לעתיד לבוא, שעוסקים בהספד ואין יצר הרע שולט בהם, אמרה תורה אנשים לבד ונשים לבד, עכשיו שעוסקים בשמחה ויצר הרע שולט בהם, על אחת כמה וכמה. מכאן שיש לעשות מחיצה.</p>
+      <p>ואגב כך שואלת הגמרא: המספד הזה, על מה הוא? הנביא מתאר בכי גדול, כמו על בכור, כמו על בן יחיד. ומביאה מחלוקת: חד אמר, על משיח בן יוסף שנהרג. וחד אמר, על יצר הרע שנהרג.</p>
+      <p>על הדעה השנייה הגמרא עצמה תמהה: אם יצר הרע נהרג, למה בוכים? זו קושיה בפני עצמה, ואינה ענייננו כאן. ענייננו הוא הדעה הראשונה: יבוא זמן שבו ייהרג משיח בן יוסף, ויהיה עליו מספד גדול.</p>
+      <p class="bold-para">הגמרא במסכת סוכה מביאה מחלוקת על מה יהיה המספד הגדול שעליו ניבא זכריה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הגמרא החתומה</div>
+      <h3 class="story-title">🔍 גמרא שאינה מספרת</h3>
+      <p>וזו כל הגמרא. מכאן תבין, שאם תשאל אדם שלומד גמרא מי הוא משיח בן יוסף, לא יוכל לומר הרבה. אולי כבר מת? אולי כבר נהרג? אולי עדיין חי? מה הוא עושה, למה הוא בא, ולמה הורגים אותו? הגמרא אינה מספרת. רק משפט אחד: משיח בן יוסף שנהרג.</p>
+      <p>אבל הגאון מווילנא ידע להוציא מן הגמרא דברים שאדם לא היה מעלה על דעתו. הוא, כידוע, לא השאיר הרבה בכתב בעצמו, אבל תלמידיו העלו את דבריו על הכתב, ומתוכם אפשר לבנות תמונה שלמה.</p>
+      <p>לפני שנגיע אליו, נעבור בתחנת ביניים חשובה: דברי האר"י הקדוש. כי בעניין הזה יש בפינו בכל יום תפילה, שרבים אומרים בלי לדעת מה מונח בה.</p>
+      <p>הדרך שבה נלמד את הסוגיה מלמדת גם דבר על התורה כולה. משפט קצר בגמרא, שנראה כמעט סתום, יכול להיפתח בידי גדולי הדורות לעולם שלם. מה שנראה כחסר, הוא לפעמים רק מחכה לדור שיבין אותו.</p>
+      <p>ולכן, אם נשאלת שאלה שאין לה תשובה בגמרא עצמה, אין לומר מיד שאין תשובה. צריך לחפש איך הבינו אותה הגדולים.</p>
+      <p class="bold-para">הגמרא אינה מגלה מיהו משיח בן יוסף, מה תפקידו ולמה ייהרג – ודווקא מכאן יצא חידושו של הגר"א.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כסא דוד – ההכנה</div>
+      <h3 class="story-title">🕯️ הכוונה של האר"י</h3>
+      <p>בסידורים רבים לפי נוסח הספרדים ועדות המזרח מופיעה הערה בברכת "בונה ירושלים". כשאומר "וְכִסֵּא דָוִד עַבְדְּךָ מְהֵרָה לְתוֹכָהּ תָּכִין", יכוון להתפלל על משיח בן יוסף, שיחיה ולא ימות על ידי ארמילוס הרשע. ספרדים רבים מכירים את ההערה הזאת; אשכנזים פחות.</p>
+      <p>מי תיקן זאת? האר"י הקדוש. ומה החידוש? האר"י גילה שמה שנאמר בגמרא, שמשיח בן יוסף ייהרג, אינו גזירה מוחלטת. זו גזירה שאפשר לבטל. אין זה מוכרח שכך יהיה. ולכן לימד להתפלל הרבה על משיח בן יוסף, שלא ימות.</p>
+      <p>וזה כבר שלב שני: בגמרא נראה כאילו הדבר קבוע. האר"י בא ואמר: לא. יש בידינו לשנות, בתפילה.</p>
+      <p>וכאן נשאלות שתי שאלות. הראשונה: אם מתפללים על משיח בן יוסף, למה הכוונה הזאת נמצאת דווקא במילים "וכסא דוד"? הרי יוסף אינו דוד. אתה אומר "דוד", ומכוון על "יוסף"? והשנייה, שנוגעת לכל המתפללים, ספרדים ואשכנזים: למה "וכסא דוד" נמצא בברכת "בונה ירושלים"? הרי הברכה הבאה היא "את צמח דוד". שם היה המקום להתפלל על כסא דוד.</p>
+      <p class="bold-para">האר"י לימד לכוון בברכת "בונה ירושלים" על משיח בן יוסף שלא ייהרג, כי הגזירה ניתנת לביטול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כסא דוד – ההכנה</div>
+      <h3 class="story-title">🛠️ כל דבר צריך הכנה</h3>
+      <p>את שתי השאלות מיישב בעל "קדושת לוי". הוא פותח בכלל: לכל דבר צריך הכנה. ולכן אמרו חז"ל: אלמלא שמרו ישראל שתי שבתות, מיד נגאלים. למה שתיים ולא אחת? כי השבת הראשונה היא ההכנה לשנייה. אין קדושה בלי הכנה.</p>
+      <p>ולא רק זה, אלא שההכנה צריכה להיות מאותו דבר עצמו. השבת מכינה לשבת. ולכן, גם לפני משיח בן דוד צריך לבוא משיח שיכין את הדרך: משיח בן יוסף. אי אפשר שמשיח בן דוד יבוא ישר, בלי הכנה.</p>
+      <p>ולמה דווקא "בן יוסף"? כי זה בדיוק מה שעשה יוסף. הוא ירד למצרים לפני אחיו, והכין להם את הקרקע. אילולי יוסף, לאן היו מגיעים בני יעקב? היו מפוזרים לכל הרוחות, ומשועבדים מיד. יוסף הכין להם מקום, נתן להם את ארץ גושן, ודאג להם לפרנסה. יוסף הוא המכין.</p>
+      <p>וזה, אומר ה"קדושת לוי", פירוש הכוונה של האר"י. "וכסא דוד עבדך מהרה לתוכה תכין" – אנו מבקשים שה' יכין את כסא דוד. לא את דוד עצמו, אלא את הכסא שלו. ואיך מכינים את הכסא? על ידי משיח בן יוסף. לכן מכוונים כאן עליו, שלא ייהרג, שההכנה לא תתבטל.</p>
+      <p class="bold-para">בעל "קדושת לוי" מסביר שכל דבר שבקדושה צריך הכנה מאותו סוג, ולכן משיח בן יוסף בא לפני משיח בן דוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כסא דוד – ההכנה</div>
+      <h3 class="story-title">🏗️ להכין את ירושלים</h3>
+      <p>ומכאן מתורצת גם השאלה השנייה: מה עושה "כסא דוד" בברכת "בונה ירושלים"? התשובה: בברכה הזאת אנו מבקשים שה' יבנה את ירושלים בצורה כזאת, שתתאים שדוד יבוא לתוכה. "לתוכה" – לתוך ירושלים. לפני שדוד בא, צריך שירושלים תהיה מוכנה לקבל אותו.</p>
+      <p>תארו לעצמכם, אמר הרב, שמשיח בן דוד היה בא לפני כשמונים שנה. את מי היה פוגש? קומץ יהודים. אולי עשרות אלפים בכל העיר. כמה בתי כנסת היה מוצא? כמה ישיבות? אפשר היה לספור אותן על כף היד.</p>
+      <p>והיום, ברוך ה', ירושלים היא העיר שיש בה יהודים יותר מכל עיר אחרת בעולם. מאות אלפי יהודים, בתי כנסת וישיבות בלי מספר. להודות לה' כי טוב. זה נקרא "וכסא דוד עבדך מהרה לתוכה תכין".</p>
+      <p>ואפשר לראות זאת גם בדברים הפשוטים ביותר. מתכננים דרכי גישה לירושלים, מתחת לאדמה ומעליה, כדי שאפשר יהיה להגיע אליה במהירות מכל מקום. כשיבוא דוד, וכל העולם יבוא לירושלים, צריך שהכל יהיה מוכן. הקדוש ברוך הוא מכין את כסא דוד, ברכבות ובכבישים, בבתים ובבתי כנסת.</p>
+      <p>כך כבר הבנו משהו על משיח בן יוסף: הוא ההכנה למשיח בן דוד. וכמו שיוסף הכין לאחיו את ארץ גושן לפני שירדו, כך משיח בן יוסף מכין את הארץ ואת ירושלים לפני שיבוא דוד. וכל מה שנבנה כאן היום, הוא חלק מן ההכנה הזאת.</p>
+      <p class="bold-para">"וכסא דוד" נמצא בברכת ירושלים, כי צריך לבנות את ירושלים כך שתהיה מוכנה לבואו של דוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה הם ימות המשיח</div>
+      <h3 class="story-title">✨ "עין לא ראתה"</h3>
+      <p>ועכשיו לסוגיה נוספת, במסכת ברכות. אמר רבי חייא בר אבא אמר רבי יוחנן: כל הנביאים כולן לא נתנבאו אלא לימות המשיח, אבל לעולם הבא "עַיִן לֹא רָאָתָה אֱלֹקִים זוּלָתְךָ".</p>
+      <p>מה פירוש "עין לא ראתה"? יש דברים שאין שום אפשרות לתאר אותם. אין להם מילים. הרב הביא לכך המחשה מעדויות של אנשים רבים שעברו חוויה של מוות קליני וחזרו. הם מתארים אור גדול לאין שיעור, "פי מאה מהשמש", אבל על השמש אי אפשר להסתכל, ואת האור הזה אפשר. אור שעוטף ומלטף, מלא אהבה. וכשמנסים לתאר, אין מילים. לכן גם מעט מאוד נכתב על כך.</p>
+      <p>ויש בעדויות האלה פרט שהרשים במיוחד את הרופאים: אנשים שגופם היה כמת לגמרי בזמן ניתוח, סיפרו אחר כך בדיוק מה עשה כל אחד מן המנתחים, ומה אמר כל אחד מהם, ואפילו מי אמר שלא יקומו עוד. ובכל זאת, כשהם מגיעים לתאר את האור עצמו, נגמרות להם המילים. וזו רק ההתחלה, הפתח בלבד.</p>
+      <p>וזה מה שאומר רבי יוחנן. הנביאים ניבאו נבואות רבות, אבל לא על העולם הבא. כי אותו אי אפשר לתאר. כל הנבואות המפורסמות של ישעיהו, זכריה ויחזקאל, "וְגָר זְאֵב עִם כֶּבֶשׂ וְנָמֵר עִם גְּדִי יִרְבָּץ", "וְהָיוּ מְלָכִים אֹמְנַיִךְ וְשָׂרוֹתֵיהֶם מֵינִיקֹתַיִךְ", כולן לפי רבי יוחנן נאמרו על ימות המשיח.</p>
+      <p>נמצא שלפי רבי יוחנן, ימות המשיח הם עולם שונה מאוד מעולמנו: עולם של שלום מוחלט, שבו גם הטבע משתנה, והגויים משרתים את ישראל.</p>
+      <p class="bold-para">לפי רבי יוחנן, כל הנבואות נאמרו על ימות המשיח, אבל העולם הבא נעלה מכל תיאור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה הם ימות המשיח</div>
+      <h3 class="story-title">⛓️ "אלא שעבוד מלכויות בלבד"</h3>
+      <p>ועל כך חולק שמואל: אין בין העולם הזה לימות המשיח אלא שעבוד מלכויות בלבד. כלומר, ימות המשיח אינם עולם אחר. העולם ימשיך כמנהגו. ההבדל היחיד הוא שעם ישראל לא יהיה משועבד לגויים.</p>
+      <p>מה הוא "שעבוד מלכויות"? אנו אומרים בברכת המזון: "הָרַחֲמָן הוּא יִשְׁבּוֹר עֻלֵּנוּ מֵעַל צַוָּארֵנוּ, וְהוּא יוֹלִיכֵנוּ קוֹמְמִיּוּת לְאַרְצֵנוּ". עול הגויים הוא מצב שבו הגויים אינם נותנים ליהודים לקיים את התורה.</p>
+      <p>וזה לא היה רק בימים קדומים. לפני עשרות שנים בלבד, בברית המועצות, לא נתנו ליהודים ללמוד תורה, להתפלל, לקיים מצוות. ולפני כן, באירופה, היה פחד לקיים מצוות בפרהסיה. מסופר על הגאון מבריסק שבעירו היה האדם היחיד שהדליק נרות חנוכה בחוץ, כי כולם פחדו. וגם היום יש מדינות שבהן אסור לשחוט כדין, או שקשה מאוד לקיים מצוות מסוימות.</p>
+      <p>לפי שמואל, ימות המשיח הם הזמן שבו העול הזה נשבר. עם ישראל חופשי לקיים את תורתו, בארצו, בלי שעבוד. אבל השמש זורחת כרגיל, והעולם מתנהל כרגיל.</p>
+      <p class="bold-para">לפי שמואל, ההבדל היחיד בין העולם הזה לימות המשיח הוא שישראל לא יהיו משועבדים לאומות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה הם ימות המשיח</div>
+      <h3 class="story-title">📖 כמו מי פוסק הרמב"ם?</h3>
+      <p>מה ההלכה? הרמב"ם בהלכות תשובה כותב על העולם הבא שטובתו אין כוח באדם להשיגה, ושכל הטובות שניבאו הנביאים לישראל הן דברים שבגוף, שנהנים בהם ישראל לימות המשיח. ומביא: אמרו חכמים, כל הנביאים כולן לא נתנבאו אלא לימות המשיח, אבל העולם הבא עין לא ראתה אלוקים זולתך. משמע שהוא פוסק כרבי יוחנן.</p>
+      <p>ובפרק הבא הרמב"ם מתאר את ימות המשיח: מתאווים להם כדי שינוחו ממלכויות שאינן מניחות להם לעסוק בתורה ובמצוות כהוגן, וירבו בחכמה. באותם ימים תרבה הדעה והחכמה והאמת, שנאמר "כִּי מָלְאָה הָאָרֶץ דֵּעָה אֶת ה'". והמלך שיעמוד מזרע דוד יהיה בעל חכמה יותר משלמה, ונביא גדול קרוב למשה רבנו.</p>
+      <p>אבל באותו חיבור, בפרק שאחרי כן, מסיים הרמב"ם: ימות המשיח הוא העולם הזה, ועולם כמנהגו הולך, אלא שהמלכות תחזור לישראל. וכבר אמרו חכמים הראשונים: אין בין העולם הזה לימות המשיח אלא שעבוד מלכויות בלבד. וזה בדיוק כשמואל. ועוד כתב הרמב"ם במקום אחר שאל יעלה על הלב שבימות המשיח יבטל דבר ממנהגו של עולם.</p>
+      <p>וזה מפליא, כי הרמב"ם ידוע בפסקיו החותכים. אין אצלו "יש אומרים כך ויש אומרים כך". הוא מכריע בכל דבר. ובכל זאת, כאן נראה שבמקום אחד פסק כרבי יוחנן, ובמקום אחר כשמואל.</p>
+      <p class="bold-para">בפרק אחד בהלכות תשובה נראה שהרמב"ם פוסק כרבי יוחנן, ובפרק שאחריו – כשמואל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה הם ימות המשיח</div>
+      <h3 class="story-title">❓ "צריך עיון"</h3>
+      <p>הסתירה הזאת לא נעלמה מעיני המפרשים. הכסף משנה, הוא מרן הבית יוסף, עומד עליה בפירושו לרמב"ם. הוא מביא שרבי יוחנן ושמואל חולקים, ושהרמב"ם כתב תחילה כרבי יוחנן, ואחר כך כשמואל. וכיצד ייתכן? ומסיים: צריך עיון.</p>
+      <p>שימו לב איזו ענווה. מרן הבית יוסף, מגדולי הפוסקים בכל הדורות, אינו מתבייש לכתוב שאינו יודע. ועברו מאז מאתיים ושלוש מאות שנה, והקושיה עמדה בעינה.</p>
+      <p>ואז, אומר הרב, ירד לעולם אור גדול, וקראו לו "הגאון". לא אנשים רבים זכו לתואר הזה. בתקופת הגאונים כל ראשי הישיבות נקראו כך, אבל אחרי אותה תקופה, אדם אחד בדור זכה שיקראו לו פשוט "הגאון": הגאון מווילנא. והיום, כשכל אחד נקרא "גאון", יש מעין אינפלציה בתארים, אבל אז לא חילקו תארים בקלות.</p>
+      <p>והגאון מווילנא בא ואמר חידוש עצום, שמיישב את הסתירה ברמב"ם, ופותח גם את הגמרא על משיח בן יוסף.</p>
+      <p>ודווקא מתוך ה"צריך עיון" של הבית יוסף אפשר להבין עד כמה גדול היה החידוש.</p>
+      <p class="bold-para">ה"כסף משנה" עמד על הסתירה ברמב"ם, וסיים במילה "צריך עיון".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שני משיחים, שתי תקופות</div>
+      <h3 class="story-title">🌗 "אלו ואלו דברי אלוקים חיים"</h3>
+      <p>בחידושי אגדות כתב הגר"א: אלו ואלו דברי אלוקים חיים, כי שני ימות המשיח הם. ותלמידו מבאר: רבנו הגר"א אמר שיש שתי תקופות של ימות המשיח.</p>
+      <p>התקופה הראשונה היא ימות משיח בן יוסף. עליה נאמר "אין בין העולם הזה לימות המשיח אלא שעבוד מלכויות בלבד". העולם כמנהגו. יש עדיין יצר הרע, עדיין יש כל הפיתויים והטכנולוגיות, והאדם צריך להתמודד. ההבדל הוא שישראל אינם משועבדים עוד לגויים.</p>
+      <p>והתקופה השנייה היא כשיבוא משיח בן דוד. עליה נאמר "בִּלַּע הַמָּוֶת לָנֶצַח", והכל יחיו, ולא יהיה יצר הרע, וכל מה שניבאו הנביאים יתקיים. וזה נקרא "לעתיד לבוא".</p>
+      <p>ועכשיו מתורצת הקושיה ברמב"ם. כשהרמב"ם כתב שכל הנביאים ניבאו לימות המשיח, וזאב יגור עם כבש, דיבר על ימות משיח בן דוד. וכשכתב שעולם כמנהגו נוהג, ורק שעבוד המלכויות מתבטל, דיבר על ימות משיח בן יוסף. אין סתירה. יש שני שלבים.</p>
+      <p>ומתוך כך מתברר גם מה שהגמרא לא אמרה. מי הוא משיח בן יוסף? זה מי שבזמנו מתבטל שעבוד המלכויות. התקופה שבה עם ישראל משתחרר מעול הגויים, וחוזר לארצו בדרך הטבע.</p>
+      <p class="bold-para">לפי הגר"א, רבי יוחנן ושמואל אינם חולקים: יש שתי תקופות של ימות המשיח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שני משיחים, שתי תקופות</div>
+      <h3 class="story-title">🕊️ תם שעבוד הגלויות</h3>
+      <p>ומכאן לחידוש שקשה לעכל. בהערות לספר שמביא את דברי תלמידי הגר"א נכתב: מפורש בדברי הגר"א שהימים שבהם מתבטל שעבוד הגלויות נקראים ימות משיח בן יוסף.</p>
+      <p>והרב שואל: איפה יש היום שעבוד גלויות? בשנים האחרונות של המאה הקודמת נפלה ברית המועצות, שהייתה השעבוד הגדול האחרון של יהודים בעולם, ונפתחו השערים. מאז, כמעט אין מקום בעולם שבו יהודי שרוצה לעלות לארץ ישראל אינו יכול לעלות.</p>
+      <p>מי שנשאר היום בגולה, אינו יכול לומר שהוא משועבד. כל יהודי שרוצה, יכול לקום ולעלות. וגם ממקומות קשים ביותר הגיעו יהודים, לעתים בדרכים נסתרות, ורק אחרי שהגיעו בשלום הותר לספר. יהודים באו לארץ ישראל מעשרות רבות של מדינות, יותר ממאה.</p>
+      <p>לפי זה, אנחנו חיים בתוך ימות משיח בן יוסף. לא בעתיד רחוק, אלא בימים אלה ממש. הרב הודה שזה חידוש שקשה לקבל, ושצריך ללמוד את הסוגיה כדי שיתיישב על הלב. אבל אז נשאלת שאלה עצומה: אם כן, איפה הוא, משיח בן יוסף? מי הוא? הרי אם אנחנו בימיו, הוא צריך להיות כאן.</p>
+      <p class="bold-para">תלמידי הגר"א כתבו שהימים שבהם מתבטל שעבוד הגלויות נקראים ימות משיח בן יוסף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שני משיחים, שתי תקופות</div>
+      <h3 class="story-title">🌱 טבע ונס</h3>
+      <p>כדאי לעמוד על ההבדל בין שתי התקופות, כפי שעולה מדברי תלמידי הגר"א. בתקופה של משיח בן יוסף, הכל קורה בדרך הטבע. יהודים עולים לארץ באוניות ובמטוסים, בונים בתים, נוטעים, מקימים יישובים. אין כאן מופתים גלויים, ומי שאינו מתבונן, יכול לחשוב שזה סתם תהליך היסטורי.</p>
+      <p>ובתקופה של משיח בן דוד, הגאולה היא ניסית. "בִּלַּע הַמָּוֶת לָנֶצַח", יצר הרע מתבטל, והעולם משתנה מן היסוד. זו גאולה שאיש לא יוכל לטעות בה.</p>
+      <p>ולכן מובן למה צריך את שניהם, ולמה אין די במשיח אחד שיעשה הכל. הגאולה הניסית צריכה הכנה, כמו שבת שנייה שצריכה שבת ראשונה לפניה. ומי שמכין, עושה זאת בכלים של העולם הזה: בעבודה, בבנייה, בקיבוץ.</p>
+      <p>ומכאן גם האחריות. דווקא מפני שהתקופה הראשונה באה בדרך הטבע, היא תלויה במעשיהם של ישראל ובזכויותיהם. היא יכולה להתקדם, וחלילה גם להיעצר. ולכן היא דורשת מאיתנו להשתתף בה, ולא רק לחכות.</p>
+      <p class="bold-para">גאולת משיח בן יוסף באה בדרך הטבע ובהדרגה, וגאולת משיח בן דוד – בגלוי ובדרך נס.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שני משיחים, שתי תקופות</div>
+      <h3 class="story-title">🎭 "והם לא הכרהו"</h3>
+      <p>תלמידי הגר"א כותבים כמה תשובות. התשובה הראשונה: אף שאין רואים אותו, מכל מקום הוא קיים, אלא שהוא נסתר ואינו ניכר. כמו שנאמר על יוסף: "וַיַּכֵּר יוֹסֵף אֶת אֶחָיו, וְהֵם לֹא הִכִּרֻהוּ".</p>
+      <p>והגר"א אמר: "יוסף" בגימטריה "ציון". מכל מה שקרה ליוסף אפשר ללמוד על מה שיקרה לציון. יוסף חלם שימלוך על אחיו, והאחים לא הסכימו, ואמרו "הֲמָלֹךְ תִּמְלֹךְ עָלֵינוּ". ובסוף, מה קרה? הם השתחוו לו. אבל לא ידעו שזה יוסף. הם השתחוו למשנה למלך מצרים, ולא הבינו שהוא אחיהם.</p>
+      <p>כך גם משיח בן יוסף. הוא נמצא, הוא פועל, הכל קורה, אבל לא יודעים שזה הוא. לא מזהים אותו. רק בסוף, כשיתגלה, יבינו כולם מה היה כאן כל הזמן.</p>
+      <p>התשובה הזאת מלמדת דבר חשוב על דרכה של הגאולה. היא אינה מגיעה תמיד באופן גלוי ומכריז. לעתים היא מתרחשת לנגד עינינו, ואנו עומדים מולה כמו האחים מול יוסף, ואיננו מכירים. צריך עיניים כדי לראות.</p>
+      <p class="bold-para">משיח בן יוסף יכול להיות קיים ונסתר, כמו יוסף שאחיו השתחוו לו ולא ידעו שהוא יוסף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שני משיחים, שתי תקופות</div>
+      <h3 class="story-title">✨ ניצוצות של משיח בן יוסף</h3>
+      <p>והתשובה השנייה של תלמידי הגר"א מפליאה עוד יותר. משיח בן יוסף, כך כתבו, יכול להתנוצץ באנשים רבים מאוד. כל מי שזוכה, לפי מעשיו, לעשות את הפעולות שמשיח בן יוסף עושה, הרי הוא ניצוץ מנשמת משיח בן יוסף. כל אחד לפי דרגת מעשיו.</p>
+      <p>כלומר, משיח בן יוסף אינו בהכרח אדם אחד. הוא יכול להיות הרבה מאוד אנשים. כל מי שעוסק בקיבוץ גלויות, ביישוב הארץ, בבניין ירושלים, נושא ניצוץ ממנו.</p>
+      <p>הרב הזכיר שהיו מגדולי ישראל שהרחיקו לכת בעניין זה, וראו ניצוץ כזה גם באנשים שלא נראו כלל כצדיקים, ויש שחלקו על כך מכל וכל. הוא הדגיש שאינו נכנס למחלוקת הזאת, ושאין בידינו לדעת מי נושא ניצוץ כזה ומי לא. אפשר שזה מישהו מן הגדולים, ואפשר שזה מישהו שנמצא בינינו.</p>
+      <p>מה שחשוב לנו הוא היסוד: כל יהודי שעושה מעשה של בניין הארץ וקיבוץ ישראל, יכול להיות חלק ממשיח בן יוסף. זו אינה רק תקופה שקורית לנו מבחוץ; זו תקופה שאנו שותפים בה.</p>
+      <p class="bold-para">לפי תלמידי הגר"א, משיח בן יוסף יכול להתנוצץ באנשים רבים, וכל אחד לפי מעשיו נושא ניצוץ ממנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עוד יוסף חי</div>
+      <h3 class="story-title">🌾 קיבוץ גלויות ויישוב הארץ</h3>
+      <p>אבל נשארה קושיה גדולה. הגמרא אמרה שמשיח בן יוסף ייהרג. ואם הוא אינו אדם אחד, אלא אנשים רבים, מה פירוש שייהרג?</p>
+      <p>על זה כתבו תלמידי הגר"א, וזה יסוד דבריו: "עוד יוסף חי". כלומר, משיח בן יוסף חי ויחיה, ותתבטל הגזירה שנגזרה עליו שייהרג.</p>
+      <p>ומבארים: מלחמת גוג ומגוג היא מלחמת האומות שבאות לבטל את קיבוץ גלויות ישראל ואת יישוב ארץ ישראל. שהרי זה תפקידו של משיח בן יוסף: ניתן לו כוח מן השמים לקבץ את גלויות ישראל וליישב את הארץ. וזו התחלת הגאולה, וכל זה בדרך הטבע.</p>
+      <p>וזה רמוז ביוסף עצמו. מה חלם יוסף? "וְהִנֵּה אֲנַחְנוּ מְאַלְּמִים אֲלֻמִּים". אלומות הן קיבוץ של שיבולים יחד, כמו קיבוץ הגלויות. "וְהִנֵּה קָמָה אֲלֻמָּתִי וְגַם נִצָּבָה" – זו המלכות, ההתבססות. יוסף מקבץ ובונה, וכך גם משיח בן יוסף.</p>
+      <p>ועכשיו מובן מה פירוש "משיח בן יוסף ייהרג". הגזירה הייתה שגוג ומגוג יצליחו במלחמתם נגדו, כלומר שיעלה בידם לבטל את התחלת הגאולה. אז כל מה שנבנה, הקיבוץ והיישוב, היה נעקר. זה "מיתתו" של משיח בן יוסף.</p>
+      <p class="bold-para">תפקידו של משיח בן יוסף הוא לקבץ את הגלויות וליישב את הארץ, בדרך הטבע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עוד יוסף חי</div>
+      <h3 class="story-title">🌑 חושך מוחלט עד הסוף</h3>
+      <p>ומה היה קורה אילו הצליחו? תלמידי הגר"א כותבים: אילו עלה בידם להרוג את משיח בן יוסף, כלומר לבטל את כל פעולות התחלת הגאולה בדרך הטבע, הרי שהייתה חוזרת, חס ושלום, ההנהגה הקודמת. ישראל היו צריכים לעמוד בחושך מוחלט, עד להופעתה הפתאומית של הגאולה האחרונה, הניסית, על ידי משיח בן דוד.</p>
+      <p>בלשון פשוטה: אם "ארמילוס הרשע", כפי שנקרא בכוונת האר"י, היה מצליח, עם ישראל היה נשאר בגלות עד שיבוא משיח בן דוד. כל מה שאנו רואים היום, השיבה לארץ, קיבוץ הגלויות, היישוב, כל זה לא היה. היינו נשארים עד היום בארצות שבהן ישבו אבותינו, עם כל הגזירות והקשיים.</p>
+      <p>ימות משיח בן יוסף הם תקופת מעבר: באמצע בין תקופת הגלות לבין הגאולה הניסית של משיח בן דוד. וקיומה של התקופה הזאת תלוי בזכויותיהם של ישראל. לכן בזמן הגמרא חשבו שייהרג. האר"י אמר שאפשר להתפלל עליו ולבטל זאת. והגר"א אמר שלב שלישי: הגזירה כבר התבטלה.</p>
+      <p>שלושה שלבים בהבנת אותו משפט קצר, וכל שלב מגלה עוד אור.</p>
+      <p class="bold-para">אילו נהרג משיח בן יוסף, היו ישראל נשארים בחושך הגלות עד שתופיע פתאום הגאולה הניסית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עוד יוסף חי</div>
+      <h3 class="story-title">🔭 "ראו מן השמים"</h3>
+      <p>תלמידי הגר"א כותבים שרבנו ראה במחזה נשגב שהראו לו מן השמים: אריכות הגלות, ועוד יותר מכך, זכותם של אלה שעסקו בסוד התורה, בזוהר ובתורת האר"י, הועילו לבטל את גזירת מיתתו של משיח בן יוסף. התפילות והכוונות של האר"י, הלימוד והעסק בתורה, ביטלו את הגזירה.</p>
+      <p>ומה הנפקא מינה? שלא יירא אדם לפתוח בהתחלת הגאולה, כי הפעולות לא יתבטלו עוד. וזה הבדל עצום. לפני כן, כל מה שבנו בארץ ישראל נחרב. בימי האר"י בנו את צפת, ובסוף נחרבה. בנו בטבריה, ונחרבה. בנו בחברון, והכל נחרב. אדם היה יכול לשאול: למה לשלוח תלמידים לארץ ישראל, אם הכל ייחרב?</p>
+      <p>אבל הגר"א קיבל שהגזירה התבטלה. ועניין זה רמוז בתורה במילים "עוד יוסף חי". כשיעקב אבינו חשב "טָרֹף טֹרַף יוֹסֵף", ושכל חלומותיו של יוסף בטלו, התברר שלא כך: "עוד יוסף חי", וחלומותיו מתקיימים. כך גם במשיח בן יוסף: חשבו שייהרג, ובסוף מתגלה לכולם שעוד יוסף חי.</p>
+      <p>ולכן, על פי הבטחה זו, הורה הגר"א לתלמידיו לעלות לארץ ולפתוח בפעולות התחלת הגאולה. והם עלו, בנו, נטעו ויישבו. והיישוב עומד חי וקיים, למרות כל התלאות שעברו עליו.</p>
+      <p class="bold-para">הגר"א ראה שבזכות לימוד סודות התורה בדורות הגלות התבטלה הגזירה על משיח בן יוסף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עוד יוסף חי</div>
+      <h3 class="story-title">⚔️ ארמילוס ורומל</h3>
+      <p>ובדור האחרון קמו מקובלים שאמרו שאפשר אף לזהות מתי בא "ארמילוס הרשע", ואיך ניצל משיח בן יוסף. לפי המדרש, משיח בן יוסף עתיד להיהרג בידי ראש צבא רומי, ארמילוס. ויש שפירשו שהשם "ארמילוס" קשור לרומי. כלומר, המדרש מספר שתהיה מלחמה בין רומי לישראל, ובה ייהרג משיח בן יוסף בידי ראש צבא רומי.</p>
+      <p>המקובל הירושלמי רבי חיים שבילי, יליד גרוזיה, כתב בספרו "חשבונות הגאולה" שדווקא בדורנו, במלחמת העולם השנייה, הייתה סכנה של חורבן היישוב בידי צבאות גרמניה ואיטליה. ובראש אותם צבאות עמד מצביא בשם רומל. רבי חיים שבילי ראה ברמז השם, וכתב שייתכן כי הסכנה למשיח בן יוסף התגלתה באותה תקופה.</p>
+      <p>אילו הצליח אותו צבא להגיע לארץ, היה נהרג כל היישוב, וכל התחלת הגאולה הייתה נעקרת. אבל הקדוש ברוך הוא הציל, ואותו צבא נעצר. וכתב רבי חיים שבילי שניצלו מן הסכנה בזכות אלפיים שנות תפילה, על פי אותה כוונה של המקובלים, שמשיח בן יוסף יחיה ולא ימות.</p>
+      <p>כך נסגר המעגל: הכוונה שהאר"י תיקן בברכת "בונה ירושלים", ושאמרו אותה דורות על דורות, היא שעמדה לנו בשעת הסכנה.</p>
+      <p class="bold-para">המקובל רבי חיים שבילי ראה בסכנת היישוב במלחמת העולם השנייה את מלחמת ארמילוס במשיח בן יוסף, שבזכות התפילות לא התממשה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · עוד יוסף חי</div>
+      <h3 class="story-title">🌅 שלוש תקופות, ותפילה אחת</h3>
+      <p>נסכם את שלושת השלבים. בגמרא במסכת סוכה למדנו על משיח בן יוסף שנהרג, ועל המספד הגדול עליו, כמו שאמר יעקב "טרף טורף יוסף". בא האר"י ולימד שהגזירה אינה מוחלטת, ושאפשר לבטל אותה בתפילה, ותיקן לכוון על כך בכל יום ב"וכסא דוד עבדך מהרה לתוכה תכין". ובא הגר"א ואמר שהגזירה כבר התבטלה, ו"עוד יוסף חי".</p>
+      <p>ובדרך למדנו מהו משיח בן יוסף: ההכנה למשיח בן דוד, מי שמקבץ את הגלויות, מיישב את הארץ, ומבטל את שעבוד המלכויות, הכל בדרך הטבע. ולמדנו שהוא יכול להיות נסתר, ושניצוצות ממנו יכולים להיות באנשים רבים.</p>
+      <p>וכל זה רמוז בפרשיות של יוסף: האלומות שמתקבצות, האחים שמשתחווים ואינם מכירים, ו"עוד יוסף חי" שבסוף הדרך.</p>
+      <p>ואנחנו זוכים לראות בעינינו איך עוד יוסף חי: ירושלים נבנית, הגלויות מתקבצות, והיישוב עומד. יזכנו ה' להמשיך ולראות עוד ועוד, עד שנזכה לגאולה השלמה בביאת משיח בן דוד, במהרה בימינו.</p>
+      <p>ובינתיים, כל אחד יכול לקחת לעצמו משהו מן הסוגיה הזאת: לומר בכוונה את "וכסא דוד עבדך מהרה לתוכה תכין", ולהיות שותף, כל אחד לפי כוחו, במעשים של בניין הארץ.</p>
+      <p class="bold-para">מן הגמרא, דרך האר"י ועד הגר"א, מתברר שעוד יוסף חי – ואנו זוכים לראות זאת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/42iOFYnKsyE · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הגמרא החתומה","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"\"עד כי יבא שילה\"","icon":"📜"},{"id":2,"title":"המספד של לעתיד לבוא","icon":"😢"},{"id":3,"title":"גמרא שאינה מספרת","icon":"🔍"}]},{"id":2,"name":"כסא דוד – ההכנה","icon":"🪑","color":"#6d28d9","stories":[{"id":4,"title":"הכוונה של האר\"י","icon":"🕯️"},{"id":5,"title":"כל דבר צריך הכנה","icon":"🛠️"},{"id":6,"title":"להכין את ירושלים","icon":"🏗️"}]},{"id":3,"name":"מה הם ימות המשיח","icon":"⚖️","color":"#e08e00","stories":[{"id":7,"title":"\"עין לא ראתה\"","icon":"✨"},{"id":8,"title":"\"אלא שעבוד מלכויות בלבד\"","icon":"⛓️"},{"id":9,"title":"כמו מי פוסק הרמב\"ם?","icon":"📖"},{"id":10,"title":"\"צריך עיון\"","icon":"❓"}]},{"id":4,"name":"שני משיחים, שתי תקופות","icon":"🌗","color":"#1e88b8","stories":[{"id":11,"title":"\"אלו ואלו דברי אלוקים חיים\"","icon":"🌗"},{"id":12,"title":"תם שעבוד הגלויות","icon":"🕊️"},{"id":13,"title":"טבע ונס","icon":"🌱"},{"id":14,"title":"\"והם לא הכרהו\"","icon":"🎭"},{"id":15,"title":"ניצוצות של משיח בן יוסף","icon":"✨"}]},{"id":5,"name":"עוד יוסף חי","icon":"🌾","color":"#c62b6b","stories":[{"id":16,"title":"קיבוץ גלויות ויישוב הארץ","icon":"🌾"},{"id":17,"title":"חושך מוחלט עד הסוף","icon":"🌑"},{"id":18,"title":"\"ראו מן השמים\"","icon":"🔭"},{"id":19,"title":"ארמילוס ורומל","icon":"⚔️"},{"id":20,"title":"שלוש תקופות, ותפילה אחת","icon":"🌅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
