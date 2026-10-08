@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 למה בחרת לגור כאן?</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 למה בחרת לגור כאן?</h1>
+  <p>חלק א: השינוי הגדול בבחירת מקום המגורים, בני גד ובני ראובן שבחרו לפי המקנה, ורבי יוסי בן קסמא שלא ויתר על מקום תורה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ למה בחרת לגור כאן?" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/HvI9_5P4Uas?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/HvI9_5P4Uas/hqdefault.jpg" alt="למה בחרת לגור כאן?" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=HvI9_5P4Uas" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהפך שקרה בתוך שנים ספורות</div>
+      <h3 class="story-title">🕯️ שיעור לזכרו של בונה מקום תורה</h3>
+      <p>השיעור נפתח בהקדשה. הוא נאמר לעילוי נשמתו של אחד מתושבי המקום, שנפטר זמן קצר לפני כן, ושכל מה שעשה במשך כחמישים שנה היה בשביל להקים מקום של תורה בעירו.</p>
+      <p>הוא לא היה צריך לעשות זאת. היו ישיבות בערים הסמוכות, והיה אפשר להסתפק בהן. אבל הוא רצה שגם במקום שבו הוא גר תהיה תורה, שגם שם יהיה בית מדרש, שגם שם יגדלו בני תורה. הרב זוכר איך היה מתחנן בפני זוגות צעירים שיישארו ויבואו, ואיך היה כואב לו כשעזבו.</p>
+      <p>ההקדשה הזאת איננה מקרית. הנושא של השיעור קשור ישירות למה שהוא פעל כל ימיו: היכן אדם בוחר לגור, ומה קורה למקום כשכולם עוזבים אותו או כשאנשים באים אליו.</p>
+      <p>הרב מקדים ואומר שזה נושא לא פשוט. יהיו בו שאלות רבות, ולא תמיד תהיה תשובה חד משמעית. אבל דווקא משום כך כדאי לעסוק בו ברצינות, מן המקורות, ולא רק מן התחושות.</p>
+      <p class="bold-para">השיעור מוקדש לזכרו של אדם שמסר את נפשו עשרות שנים כדי להקים מקום תורה בעירו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהפך שקרה בתוך שנים ספורות</div>
+      <h3 class="story-title">📊 סקר שמספר על מהפך</h3>
+      <p>הרעיון לשיעור עלה בעקבות סקר שהתפרסם באותו שבוע. הסקר מתאר מהפך של ממש בציבור החרדי, וכל זאת בתוך כחמש שנים בלבד.</p>
+      <p>בעבר, כך עולה מן הסקר, רוב גדול מאוד של הציבור החרדי אמר שהוא רוצה לגור רק באחת הערים החרדיות הגדולות. הרעיון לגור בעיר מעורבת, בשכונה שיש בה גם חילונים, לא היה עולה על הדעת עבור רבים. וגם הבעלות על דירה הייתה כמעט מובנת מאליה – זוג צעיר היה קונה דירה זמן קצר אחרי החתונה.</p>
+      <p>ובתוך שנים ספורות התמונה השתנתה מן הקצה אל הקצה. חלק ניכר מן הציבור כבר מוכן, ואף רוצה, לגור מחוץ לערים החרדיות. רבים כבר אינם קונים דירה אלא שוכרים. ומשפחות רבות קונות היום בערי הפריפריה.</p>
+      <p>הרב מדגיש שהוא לא בא להקריא סקרים או לעסוק בנדל"ן. אבל כדי לדון בשאלה, צריך להבין קודם מה קורה בפועל. והמציאות היא שזה איננו שינוי קטן; זה מהפך שנוגע במשפחות רבות מאוד.</p>
+      <p class="bold-para">סקר שפורסם לאחרונה מתאר שינוי דרמטי, בתוך שנים ספורות, בנכונות של משפחות חרדיות לגור מחוץ לערים החרדיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהפך שקרה בתוך שנים ספורות</div>
+      <h3 class="story-title">🚪 שנים שבהן כולם עזבו</h3>
+      <p>כדי להבין את גודל השינוי, הרב מתאר את המצב בעירו לאורך השנים. במשך עשרות שנים, כמעט כל מי שהתחתן עזב. הילדים גדלו, הלכו לישיבות, התחתנו – ולא חזרו. כמעט אף אחד לא נשאר.</p>
+      <p>וזה לא היה רק בציבור החרדי. גם בציבור הדתי התופעה הייתה דומה: מעט מאוד משפחות שילדיהן נשארו לגור במקום. כולם עברו למרכז, לירושלים, לבני ברק, או ליישובים.</p>
+      <p>הרב זוכר את אותו אדם שהשיעור מוקדש לזכרו, איך היה בוכה: למה עוזבים? למה לא באים? הוא התחנן שיבואו, ואף אחד לא בא. אם שואלים זוג צעיר למה אינו נשאר, היו לו תשובות מוכנות: אין כאן מספיק, אין חברה, אין מוסדות.</p>
+      <p>אחד המשתתפים העיר שהסיבה הייתה גם שלא היו לצעירים מקורות פרנסה מספיקים. הרב הסכים שיש בזה משהו, ושגם תחום העבודה משפיע מאוד – למשל, מי שעוסק בהוראה ימצא כאן ביקוש גדול. אבל הסיבה העיקרית, אמר, איננה זו. והוא עבר להסביר מה גרם למהפך.</p>
+      <p class="bold-para">במשך עשרות שנים כמעט כל מי שהתחתן עזב את הערים הקטנות לטובת המרכז.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהפך שקרה בתוך שנים ספורות</div>
+      <h3 class="story-title">🏠 המחירים שקפצו</h3>
+      <p>הסיבה הראשונה שהסקר מביא היא המחירים. בשנים האחרונות עלו מחירי הדירות בכל הארץ, אבל בערים החרדיות העלייה הורגשה במיוחד. הציבור החרדי גדל בקצב מהיר מאוד, הרבה יותר מן הציבור הכללי, והביקוש לדירות גדל איתו.</p>
+      <p>הרב מבקש לחשוב על זוג צעיר. נניח שההורים הצליחו לתת סכום גדול – מה הוא יעשה איתו? המחירים בערים החרדיות הגיעו לסכומים שבהם גם עזרה נדיבה מן ההורים אינה מספיקה. הוא יצטרך משכנתא גדולה מאוד.</p>
+      <p>ומי יאשר לו משכנתא כזאת? הבנק בודק כמה המשפחה מרוויחה, ויש גבול לגובה ההחזר החודשי ביחס להכנסה. לאברך שלומד בכולל, גם אם אשתו עובדת בעבודה טובה, קשה מאוד לקבל משכנתא בסכום כזה.</p>
+      <p>ובנוסף, רבים מן ההורים כבר אינם יכולים לסייע כמו בעבר. ממילא, זוגות רבים כבר אינם קונים דירה, אלא שוכרים. הרב נזכר שבדור שלו, כשהתחתן, רוב החברים קנו דירה כבר בשנה הראשונה, במחירים שהיום נראים כמעט דמיוניים. היום זה פשוט לא אפשרי עבור רבים.</p>
+      <p class="bold-para">מחירי הדירות בערים החרדיות עלו בשנים האחרונות עד שזוג צעיר כמעט אינו יכול לעמוד בהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהפך שקרה בתוך שנים ספורות</div>
+      <h3 class="story-title">🔑 השכירות שמכריעה</h3>
+      <p>הרב מסביר איך השכירות משנה את כל החשבון. כשאדם קונה דירה, גם אם היא יקרה, הוא מרגיש שהוא בונה משהו. בסוף הדרך יהיה לו נכס. אבל כשהוא שוכר, הוא אומר לעצמו: למה לשלם בכל חודש עוד סכום ניכר רק כדי לגור כאן, בלי לקבל בעד זה כלום?</p>
+      <p>זוג צעיר שמשלם שכר דירה גבוה בעיר חרדית גדולה, מתחיל לחשוב: אם אעבור לעיר בפריפריה, אשלם הרבה פחות. ההפרש יישאר אצלי בכל חודש. ומה אני מפסיד? הרי בכל מקרה איני בונה כאן נכס.</p>
+      <p>אחד המשתתפים הוסיף נקודה: רבים מן ההורים של הדור הקודם באו מבתים שבהם עבדו והרוויחו, והם יכלו לעזור לילדיהם. היום, הורים רבים בעצמם לא התפרנסו בשפע, ואינם יכולים לתת לילדיהם דירה. הרב הסכים שגם זה חלק מן התמונה.</p>
+      <p>כך, צעד אחר צעד, הכסף עצמו דוחף משפחות רבות החוצה מן הערים הגדולות. לא אידיאולוגיה התחילה את המהפך, אלא המציאות הכלכלית.</p>
+      <p class="bold-para">כשזוג צעיר משלם שכר דירה ואינו בונה בה דבר, ההבדל במחיר בין עיר לעיר נעשה מכריע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מהפך שקרה בתוך שנים ספורות</div>
+      <h3 class="story-title">🌐 העולם נפתח</h3>
+      <p>הסיבה השנייה שהסקר מביא מעניינת יותר. לטענתו, תקופת הקורונה שינתה דבר מהותי: חלק מן הציבור החרדי התחיל להשתמש יותר באמצעים דיגיטליים, ומשם החלו להגיע אליו ידיעות שלא היו מגיעות קודם.</p>
+      <p>הרב מסביר: כשאדם חי בתוך הסביבה הקרובה שלו בלבד, הוא תלוי במה שאומרים החברים והשכנים. אין לו מושג על מחירים במקומות אחרים, על מגמות, על אפשרויות. הוא נמצא כאן, וזהו. כולם גרים כאן, אז גם הוא יגור כאן.</p>
+      <p>וכשהעולם נפתח, פתאום הוא רואה שיש קבוצות של משפחות שעוברות למקום חדש, שיש קהילות שמתארגנות, שיש מקומות שמחפשים תושבים. פתאום עולה השאלה: למה לא?</p>
+      <p>ועוד גורם אחד: הציבור גדל, והמקום בערים הקיימות פשוט נגמר. כל הגורמים האלה יחד – המחירים, השכירות, המידע, הצפיפות – יצרו את המהפך. בתוך שנים ספורות, מה שהיה כמעט בלתי נתפס הפך לדבר שגרתי.</p>
+      <p>הרב מוסיף שגם גדולי ישראל, בחלק מן החצרות, שולחים היום משפחות אל הפריפריה. זה כבר איננו רק עניין של הכרח.</p>
+      <p class="bold-para">לפי הסקר, גם השינויים בתקופת הקורונה פתחו בפני רבים מידע על אפשרויות שלא הכירו קודם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השאלה האמיתית</div>
+      <h3 class="story-title">❓ השאלה ששאלו את הרב</h3>
+      <p>ועכשיו לעיקר. הרב לא בא לדבר על נדל"ן. הוא מספר שכאשר הביא את הסקר, שאלו אותו שאלה ישירה: אתה גר בעיר בפריפריה, ואתה דורש ומקיים. אז תגיד לנו: האם אין כאן סכנה חינוכית? האם לא צדקו אלה שהיו נוהגים אחרת? אולי מה שהיה עד לפני שנים ספורות עדיף? אולי זה קורבן שמקריבים מחוסר ברירה?</p>
+      <p>זו השאלה שבה עוסק השיעור. האם המהפך הזה הוא דבר חיובי או שלילי? האם יש לראות בו הזדמנות, או לחשוש ממנו?</p>
+      <p>הרב מודה שהשאלה אינה קלה, ושהוא עצמו אינו יודע תמיד איך להסתכל עליה. היא נוגעת לחינוך הילדים, לאופי הקהילה, להשפעת הסביבה, ולמה שאדם רוצה להיות.</p>
+      <p>אחד המשתתפים טען שגם אדם שגר בעיר חרדית גדולה אינו מנותק לגמרי – הוא יוצא, נוסע, פוגש. הרב השיב שיש הבדל עצום בין מי שיוצא לכמה דקות לבין מי שחי בתוך הסביבה ושולח אליה את ילדיו. וכדי להתקדם, הוא מציע ללמוד את הנושא מן המקורות, אחד אחד.</p>
+      <p>וחשוב לו להבהיר: השיעור עוסק בשאלת מקום המגורים בלבד, ולא בכל השאלות של אורח החיים. הוא אינו בא לשפוט קהילות או ציבורים, אלא לברר מה אומרים המקורות למי שעומד לפני ההחלטה היכן לבנות את ביתו.</p>
+      <p class="bold-para">האם המהפך הזה טוב או רע? האם אין כאן סכנה חינוכית? זו השאלה שהשיעור מבקש לברר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השאלה האמיתית</div>
+      <h3 class="story-title">⚖️ השפעת הסביבה – לשני הכיוונים</h3>
+      <p>הרב מביא דוגמה שממחישה עד כמה הסביבה משפיעה. אברך שהולך לגור באחת הערים החרדיות הגדולות, בדרך כלל ימשיך ללמוד בכולל שנים רבות. שם כולם לומדים, וזה המקובל. אם יצא לעבוד, ירגיש שהוא חריג.</p>
+      <p>לעומת זאת, אברך שמגיע לעיר מעורבת בפריפריה, יש סיכוי גדול הרבה יותר שבתוך כמה שנים ייצא לעבוד. שם זה מקובל, וכמעט כל המשפחות סביבו עובדות במקצועות שונים. אין בזה בושה ואין בזה חריגה.</p>
+      <p>ומה עדיף? כאן הרב אומר בכנות שהוא אינו יודע. מצד אחד, יש ערך עצום בתורה, וכל שנה נוספת של לימוד היא אוצר. מצד שני, פרנסה בכבוד היא גם ערך, ולפעמים היא מביאה שלווה לבית.</p>
+      <p>הרב מבקש להסתכל על השאלה לא מבחינת העולם בכלל, אלא מבחינת עולמו של האדם עצמו. אדם שרואה את התורה כאידיאל של חייו, צריך לדעת שהסביבה תשפיע על הבחירות שלו, גם אם אינו מרגיש זאת. ולכן, כשהוא בוחר מקום מגורים, הוא בוחר גם במידה רבה את הדרך שבה יחיה.</p>
+      <p class="bold-para">הסביבה משפיעה על האדם גם בשאלות של לימוד ועבודה, ולפעמים אי אפשר לדעת מראש מה עדיף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בני גד ובני ראובן</div>
+      <h3 class="story-title">🐑 "ומקנה רב היה לבני ראובן"</h3>
+      <p>הרב רוצה לקשר את הנושא לפרשת השבוע. בפרשת מטות רואים שלמקום המגורים יש השפעה אדירה. בני גד ובני ראובן באו אל משה ואמרו: אנחנו רוצים לגור בעבר הירדן. למה? "וּמִקְנֶה רַב הָיָה לִבְנֵי רְאוּבֵן וְלִבְנֵי גָד". הם ראו שם ארץ מקנה, שטחי מרעה, שפע. שם הם רצו לגור.</p>
+      <p>והשאלה היא: האם זה היה חיובי או שלילי? בואו נסתכל בחומש. משה רבנו כועס עליהם. אבל על מה הוא כועס? "הַאַחֵיכֶם יָבֹאוּ לַמִּלְחָמָה וְאַתֶּם תֵּשְׁבוּ פֹה?" הוא כועס שהם אינם באים להילחם יחד עם אחיהם. זה הנושא שבו הוא עוסק.</p>
+      <p>אבל שימו לב: משה רבנו אינו אומר להם מילה אחת על כך שהם אינם רוצים לגור בארץ ישראל שמעבר לירדן. הוא אינו שואל: איך אתם מוותרים על ארץ ישראל?</p>
+      <p>וזה מפליא, כי כשיתרו אמר שהוא רוצה ללכת לארצו, משה רבנו ניסה לשכנע אותו להישאר: "וְהָיָה הַטּוֹב הַהוּא אֲשֶׁר יֵיטִיב ה' עִמָּנוּ וְהֵטַבְנוּ לָךְ". איך אתה רוצה להפסיד את הטוב של ארץ ישראל? ואילו כאן, אצל בני גד ובני ראובן, הוא אינו אומר דבר כזה.</p>
+      <p class="bold-para">בני גד ובני ראובן ביקשו לגור בעבר הירדן בגלל המקנה – ומשה רבנו לא כעס עליהם על עצם הבחירה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בני גד ובני ראובן</div>
+      <h3 class="story-title">📖 רש"י בברכת גד</h3>
+      <p>למה משה רבנו אינו מוחה על עצם הבחירה? התשובה היא שעבר הירדן גם הוא ארץ ישראל. וזה מפורש ברש"י.</p>
+      <p>בפרשת וזאת הברכה, כשמשה מברך את השבטים, הוא אומר על גד: "בָּרוּךְ מַרְחִיב גָּד... וַיַּרְא רֵאשִׁית לוֹ, כִּי שָׁם חֶלְקַת מְחֹקֵק סָפוּן". ורש"י מפרש: "ויַרא ראשית לו" – ראה ליטול לו חלק בארץ סיחון ועוג, שהיא ראשית כיבוש הארץ. "כי שם חלקת מחוקק ספון" – כי ידע אשר שם בנחלתו חלקת קבורת מחוקק, הוא משה.</p>
+      <p>הרב קורא לזה פלא פלאים. משה רבנו משבח את גד על כך שבחר לגור בעבר הירדן! לא רק שאינו כועס על עצם הבחירה, אלא שהוא רואה בה מעלה: שם נמצאת חלקת קבורתו של משה עצמו.</p>
+      <p>אם כן, משה רבנו אינו כועס עליהם על שבחרו לגור בעבר הירדן. עבר הירדן הוא ארץ ישראל, אמנם בדרגה נמוכה יותר. אז מה כן כואב לו? מה הבעיה בבקשה שלהם?</p>
+      <p>ויש כאן לימוד חשוב: לפני שמבקרים בחירה של אדם, צריך לדייק מה בדיוק לא טוב בה. לא כל מעבר ממקום של קדושה למקום אחר הוא פגם. לפעמים הבחירה עצמה ראויה ואף משובחת, והשאלה היא רק מה הניע אותה. זה בדיוק מה שנראה עכשיו.</p>
+      <p class="bold-para">רש"י מלמד שמשה רבנו שיבח את גד על שבחר בארץ סיחון ועוג, ששם חלקת קבורתו של משה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בני גד ובני ראובן</div>
+      <h3 class="story-title">💰 כשהמקנה קודם לילדים</h3>
+      <p>התשובה היא שמשה רבנו כואב על סדר העדיפויות. בני גד ובני ראובן אמרו: "גִּדְרֹת צֹאן נִבְנֶה לְמִקְנֵנוּ פֹּה וְעָרִים לְטַפֵּנוּ". הם הקדימו את הצאן לילדים. ומשה רבנו הפך את הסדר בתשובתו: "בְּנוּ לָכֶם עָרִים לְטַפְּכֶם וּגְדֵרֹת לְצֹנַאֲכֶם". קודם הילדים, ואחר כך הרכוש.</p>
+      <p>מה שכואב למשה רבנו הוא שהם בוחרים מקום מגורים לא לפי השאלה: איפה אהיה יהודי טוב יותר? איפה אתקרב יותר לבורא עולם? איפה ילדיי יגדלו טוב יותר? אלא לפי שאלה אחת בלבד: איפה יש יותר כסף?</p>
+      <p>אין כאן איסור. מותר לגור בעבר הירדן, ומותר להתחשב בפרנסה. אבל כשהשיקול הכלכלי הוא הקריטריון היחיד, זה כואב. ומכאן לומדים שאדם אינו אמור לבחור מקום מגורים רק לפי שיקול כלכלי. אפשר שיהיה זה שיקול נוסף, אבל לא העיקר.</p>
+      <p>והמדרש מוסיף שבני גד ובני ראובן נענשו בעקבות זה: הם היו הראשונים שגלו מארץ ישראל. הכסף שבגללו בחרו את המקום, הוא שגרם בסוף שיהיו הגולים הראשונים.</p>
+      <p class="bold-para">מה שכאב למשה רבנו הוא שבחירת מקום המגורים נעשתה לפי שיקול כלכלי בלבד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בני גד ובני ראובן</div>
+      <h3 class="story-title">🤝 להיות חלק מאחיך</h3>
+      <p>הרב מתעכב על הקשר בין שתי הטענות של משה רבנו. במבט ראשון יש כאן שתי טענות נפרדות: האחת, שהם אינם באים יחד עם אחיהם; והשנייה, שהם הקדימו את המקנה לילדים. אבל בעצם יש להן שורש אחד.</p>
+      <p>משה רבנו אומר להם, כביכול: אתם שמים בראש הדאגות שלכם את הרכוש, על פני להיות חלק מאחיכם. כשהכסף הוא השיקול הראשון, אדם מתחיל לחשוב רק על עצמו. מה טוב לי, איפה אני ארוויח, איפה יהיה לי נוח. והשאלה מה טוב לכלל, איפה אני נחוץ, איפה אוכל לעזור – נדחקת הצידה.</p>
+      <p>ולמה משה רבנו אינו מוסיף ואומר גם "איך אתם מוותרים על ארץ ישראל"? הרב מציע עצה חינוכית: מי שבא להוכיח, טוב שיתמקד בטענה אחת ויחדור איתה עד הסוף, ולא יפצל את דבריו לכמה כיוונים. אבל התשובה העיקרית היא מה שראינו ברש"י: עבר הירדן הוא ארץ ישראל, ולכן לא הייתה כאן טענה כזאת בכלל.</p>
+      <p>וזה מלמד אותנו גם על ימינו. כשאדם בוחר היכן לגור, השאלה איננה רק מה ייטב לו, אלא גם במה הוא קשור לכלל, ואיפה הוא חלק מן הציבור שסביבו.</p>
+      <p class="bold-para">הטענה של משה רבנו נוגעת לאותו שורש: מי ששם את הרכוש בראש, מתרחק מן השותפות עם אחיו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בני גד ובני ראובן</div>
+      <h3 class="story-title">🎯 הכל תלוי למה</h3>
+      <p>אחד המשתתפים העלה רעיון: אולי בני גד ובני ראובן דווקא עשו טובה? אם כל השבטים היו נכנסים לארץ שמעבר לירדן, השטח היה מתחלק בין יותר שבטים, וכל אחד היה מקבל פחות. כשהם נשארו בעבר הירדן, השאר קיבלו יותר.</p>
+      <p>הרב השיב שזו נקודה חשובה מאוד, ואולי אחת החשובות בכל השיעור. אילו בני גד ובני ראובן היו בוחרים בעבר הירדן מתוך מטרה כלל ישראלית – כדי שלא יהיה צפוף, כדי לעזור לאחיהם – ייתכן מאוד שמשה רבנו היה מסכים בשמחה. הבעיה היא איך הפרשה מתחילה: "וּמִקְנֶה רַב". הם ראו כסף, הם ראו שדות מרעה.</p>
+      <p>ומכאן יסוד שילווה את כל השיעור: בשאלת מקום המגורים לא תהיה תשובה חד משמעית אחת לכולם. התשובה תהיה פעמים רבות תלויה בשאלה: למה הלכת לשם? האם בגלל שראית כסף? או בגלל שראית עזרה לזולת, גרעין תורני, יישוב הארץ, אידיאל?</p>
+      <p>אותו מעבר בדיוק יכול להיות מעשה טוב מאוד או מעשה שכואב עליו, לפי הכוונה שמאחוריו. וכדאי שכל אדם ישאל את עצמו את השאלה הזאת בכנות.</p>
+      <p class="bold-para">אותה בחירה עצמה יכולה להיות טובה או רעה, לפי הסיבה שבגללה אדם בוחר בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בני גד ובני ראובן</div>
+      <h3 class="story-title">📝 שאלות שכדאי לשאול לפני מעבר</h3>
+      <p>מתוך הפרשה של בני גד ובני ראובן אפשר לגזור כמה שאלות פשוטות, שכל משפחה יכולה לשאול את עצמה לפני שהיא מחליטה היכן לגור.</p>
+      <p>השאלה הראשונה: מה עומד בראש הרשימה שלי? האם המחיר והנוחות הם השיקול היחיד, או שיש לצידם גם שיקולים של תורה, של חינוך, של קהילה? מותר שהמחיר יהיה שיקול, אבל ראינו שמשה רבנו כאב כשהוא היה השיקול היחיד.</p>
+      <p>השאלה השנייה: איפה הילדים יגדלו? "בְּנוּ לָכֶם עָרִים לְטַפְּכֶם" – קודם הילדים. אילו מוסדות יש במקום, מי יהיו חבריהם, איזו אווירה תקיף אותם.</p>
+      <p>השאלה השלישית: מה אני מביא למקום? האם אני בא רק לקבל – דירה זולה, מרחב, שקט – או שאני בא גם לתת? האם יש לי מה להוסיף לקהילה, לחזק בית כנסת, להשפיע על הסביבה?</p>
+      <p>והשאלה הרביעית, שאולי היא החשובה מכולן: איזה אדם אני רוצה להיות, ואיך הסביבה החדשה תשפיע על כך? כפי שראינו, הסביבה משפיעה על האדם יותר משהוא מרגיש. מי שעונה על השאלות האלה בכנות, יידע הרבה יותר טוב אם הבחירה שלו נכונה.</p>
+      <p class="bold-para">מן הפרשה עולות שאלות שכל משפחה יכולה לשאול את עצמה לפני שהיא בוחרת מקום מגורים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בני גד ובני ראובן</div>
+      <h3 class="story-title">🏔️ דרגות בארץ ישראל</h3>
+      <p>בהמשך עלתה שאלה מעשית: האם מי שגר במקום שקדושתו פחותה, כמו עבר הירדן, עושה דבר פחות טוב? הרב מסביר שההגדרה היא שעבר הירדן הוא ארץ ישראל, אבל בדרגה נמוכה יותר. כמו שבבית המקדש יש דרגות של קדושה, כך גם בארץ ישראל.</p>
+      <p>וכך גם ירושלים. חז"ל אמרו "הכל מעלין לירושלים", כי היא מקודשת יותר משאר הארץ. האם מכאן שיש חובה לגור בירושלים? לא. אין חובה לאדם לגור בירושלים. רק כשיש מחלוקת בין בני זוג, כשאי אפשר להכריע ביניהם בדרך אחרת, הקדושה מכריעה.</p>
+      <p>והרב מוסיף שיש מי שאומרים שבימינו הדין הזה אינו פשוט כל כך. בעבר, כל יהודי שבא לירושלים חיזק אותה; היום ירושלים מלאה ברוך ה', ואילו במקומות אחרים כל משפחה שבאה היא חיזוק של ממש ליישוב הארץ. לכן יש הסוברים שאם יהיה ויכוח כזה בימינו, אין להכריע אוטומטית לטובת ירושלים.</p>
+      <p>המסקנה: קדושת המקום היא שיקול חשוב, אבל יש עוד מרכיבים רבים, ולא תמיד היא מכריעה לבדה.</p>
+      <p class="bold-para">עבר הירדן הוא ארץ ישראל בדרגה נמוכה יותר, וגם ירושלים מקודשת יותר משאר הארץ – אך אין חובה לגור בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איני דר אלא במקום תורה</div>
+      <h3 class="story-title">📜 המשנה שכולם הביאו</h3>
+      <p>עכשיו הרב עובר למקור המרכזי ביותר בנושא. במשך עשרות שנים, כמעט כל הזוגות הצעירים שהתחתנו עזבו את העיר. ואם שאלו אותם למה אינם נשארים, כולם ענו אותה תשובה: המשנה באבות.</p>
+      <p>"אמר רבי יוסי בן קסמא: פעם אחת הייתי מהלך בדרך, ופגע בי אדם אחד ונתן לי שלום, והחזרתי לו שלום. אמר לי: רבי, מאיזה מקום אתה? אמרתי לו: מעיר גדולה של חכמים ושל סופרים אני. אמר לי: רבי, רצונך שתדור עמנו במקומנו, ואני אתן לך אלף אלפים דינרי זהב ואבנים טובות ומרגליות? אמרתי לו: אם אתה נותן לי כל כסף וזהב ואבנים טובות ומרגליות שבעולם, איני דר אלא במקום תורה".</p>
+      <p>הרב מציע לחשוב על זה במונחים של היום: מציעים לך משכורת גבוהה מאוד, כפולה ומשולשת. והוא אומר: לא. איני דר אלא במקום תורה.</p>
+      <p>וזו הייתה הראיה של כל אותם זוגות. גם אם הדירות יקרות יותר – עדיף לשלם פי שניים על דירה במקום תורה מאשר לגור בזול במקום שאינו מקום תורה. כך אמרו במשך שנים רבות, וכך עשו.</p>
+      <p class="bold-para">במשך עשרות שנים, מי שעזב את העיר הקטנה נימק זאת בדברי רבי יוסי בן קסמא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איני דר אלא במקום תורה</div>
+      <h3 class="story-title">🌱 ולמה לא להקים גרעין?</h3>
+      <p>אחד המשתתפים שאל: ולמה לא הלכו עשרה זוגות יחד, לכל יישוב קטן, והקימו שם גרעין תורני? כך היה גם מקום תורה וגם יישוב הארץ.</p>
+      <p>הרב השיב שהמשנה מדברת על יסוד עמוק: יש עניין גדול מאוד לגור במקום תורה ובאווירה של תורה. הרמב"ם כותב בהלכות דעות: "דרך ברייתו של אדם להיות נמשך בדעותיו ובמעשיו אחר ריעיו וחביריו, ונוהג כמנהג אנשי מדינתו". האדם מושפע מאוד מן הסביבה שלו.</p>
+      <p>והרב מבהיר שאין כאן שאלה של עבודה או לימוד. גם גדולי ישראל רבים עבדו לפרנסתם. השאלה היא אחרת: מה האווירה במקום שבו אדם חי, ומה היא עושה לו ולילדיו.</p>
+      <p>הוא מביא דוגמה: אילו באה אליו משפחה ממגזר אחר ושאלה אם לגור בעיר מסוימת או ביישוב קהילתי שבו המוסדות חזקים, הוא היה אומר בלי היסוס: לכו למקום שבו המוסדות חזקים והקהילה מגובשת. למה? כי הוא מכיר מקרוב את ההשפעה של סביבה חלשה על ילדים, ויודע כמה קשה להם להחזיק מעמד כשהמגמה סביבם הולכת לכיוון אחר.</p>
+      <p>זה לא אומר דבר רע על אף אחד. זה רק אומר שהסביבה חזקה מאוד, ושמי שבוחר מקום מגורים צריך לקחת אותה ברצינות, במיוחד כשמדובר בילדים צעירים שעוד מעצבים את דרכם.</p>
+      <p class="bold-para">עלתה השאלה למה לא הלכו קבוצות להקים מקום תורה חדש, והרב הסביר את עוצמת השפעת הסביבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איני דר אלא במקום תורה</div>
+      <h3 class="story-title">💎 מחיר שכדאי לשלם</h3>
+      <p>הרב מספר על מחנך מן הדור הקודם, שעבד כמנהל בית ספר באותה עיר. הוא ראה שהמוסדות המקומיים חלשים, והחליט לשלוח את בנותיו למוסד חזק יותר במקום אחר. הוא ידע שזה לא יתקבל בעין יפה, ובכל זאת עשה זאת.</p>
+      <p>והוא שילם על זה מחיר כבד. בסופו של דבר פוטר מתפקידו. אבל הוא לא נשבר. הוא המשיך ללמד במקומות אחרים, הכשיר מורים והדריך דורות של תלמידים.</p>
+      <p>והקדוש ברוך הוא עזר לו בדרכים שלא שיער. אפילו הדברים הרעים שנכתבו עליו כדי לפטר אותו, התהפכו בסוף לטובתו. הרב מסיק מכך: אתם רואים איך הרע עצמו יכול להפוך לטובה.</p>
+      <p>ואחד מגדולי התורה שהכיר אותו אמר לו פעם: דע לך, מסרת נפשך כדי שבנותיך ילמדו במקום כמו שצריך, ובזכות זה זכית שכל חתניך הם בני תורה. בתקופה ההיא ובסביבה ההיא זה היה דבר נדיר מאוד.</p>
+      <p>הסיפור הזה ממחיש את דברי רבי יוסי בן קסמא: יש דברים שכדאי לשלם עליהם הרבה, כי הם שווים יותר מכל כסף וזהב.</p>
+      <p class="bold-para">מחנך שוויתר על נוחות ושילם מחיר כבד כדי שבנותיו ילמדו במוסד חזק, זכה לראות את פירות בחירתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איני דר אלא במקום תורה</div>
+      <h3 class="story-title">🧱 עמוד השדרה</h3>
+      <p>אחד המשתתפים העיר: צריך לבחון כל דבר לגופו. הוא סיפר שבביתו לא הקפידו על כל הדברים, ובכל זאת ילדיו גדלו והמשיכו לשמור תורה ומצוות, ובבתים שלהם היום ההקפדה גדולה עוד יותר.</p>
+      <p>הרב השיב שזה תלוי בעמוד השדרה של כל אחד. יש אנשים שיש להם עמוד שדרה חזק, והם מחזיקים מעמד גם בסביבה שאינה תומכת. אבל אין להסיק מכך שהסביבה אינה משפיעה. אילו גדלו אותם ילדים בסביבה אחרת, אולי היה להם קל יותר. ואילו גדלו בסביבה חלשה עוד יותר, אולי היה קשה מנשוא.</p>
+      <p>הרב אינו אומר שמי שגר בסביבה מעורבת בהכרח ייכשל. הוא אומר שהדרך קשה יותר. לא מוכרח שיקרה משהו רע, אבל הסיכון גדול יותר, והמאמץ הנדרש גדול יותר.</p>
+      <p>ולכן, הוא אומר, השאלה ששאלו אותו איננה פשוטה. יש כאן שני צדדים אמיתיים, ושניהם נשענים על מקורות. כדי להתקדם, צריך לראות עוד מקור – גמרא שנראית כאילו היא מכריעה את השאלה.</p>
+      <p class="bold-para">יש מי שמחזיק מעמד גם בסביבה קשה, אבל הסביבה הופכת את הדרך לקשה בהרבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איני דר אלא במקום תורה</div>
+      <h3 class="story-title">🏛️ "מפני שיש בה ישיבות"</h3>
+      <p>המקור השלישי הוא גמרא במסכת כתובות: "כשם שאסור לצאת מארץ ישראל לבבל, כך אסור לצאת מבבל לשאר ארצות".</p>
+      <p>לכאורה זה מפתיע. איזו קדושה יש בבבל? מה יש שם שאין במקומות אחרים? מסביר רש"י: מפני שיש בה ישיבות המרביצות תורה תמיד. בימי הגמרא, הישיבות הגדולות היו רק בבבל. לא בספרד, לא באשכנז, לא בשום מקום אחר. מי שהיה עוזב את בבל ועובר לגור במקום רחוק, לא היה מוצא שם כלום.</p>
+      <p>ולכן, אומרת הגמרא, אסור לעזוב את בבל, את מקום התורה, ולעבור לגור במקום שאין בו תורה. המקום עצמו אינו קדוש, אבל התורה שיש בו עושה אותו למקום שאסור לעזוב.</p>
+      <p>ועכשיו נשאלת השאלה: האם אפשר ללמוד מכאן הלכה לימינו? האם אסור לעזוב את הערים הגדולות של תורה, שיש בהן ישיבות רבות, ולעבור לעיר קטנה בפריפריה? לכאורה זו ראיה ברורה.</p>
+      <p>הרב עוצר כאן ומבטיח לחזור לשאלה בחלק השני של השיעור. שם יסביר, לדבריו, למה אין הכרח ללמוד מן הגמרא הזאת את מה שנראה במבט ראשון, ומה כן אפשר ללמוד ממנה.</p>
+      <p class="bold-para">הגמרא אוסרת לצאת מבבל לשאר ארצות, ורש"י מסביר: מפני שיש בה ישיבות המרביצות תורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · איני דר אלא במקום תורה</div>
+      <h3 class="story-title">🗂️ מה ראינו עד כאן</h3>
+      <p>לפני ההפסקה כדאי לסכם את מה שראינו בחלק הראשון של השיעור.</p>
+      <p>ראינו שהציבור החרדי עובר מהפך גדול בתוך שנים ספורות. המחירים בערים הגדולות עלו מאוד, זוגות צעירים רבים כבר אינם יכולים לקנות דירה, השכירות מכבידה, והמידע על אפשרויות אחרות נעשה נגיש. כך החלו משפחות רבות לעבור אל ערי הפריפריה ואל ערים מעורבות.</p>
+      <p>ראינו בפרשת מטות שמשה רבנו לא כעס על בני גד ובני ראובן על עצם בחירתם בעבר הירדן, שהיא ארץ ישראל, ואף שיבח את גד על כך. מה שכאב לו הוא שהשיקול הכלכלי היה העיקר, ושהמקנה הוקדם לילדים. ומכאן שהשאלה העיקרית היא למה אדם בוחר במקום.</p>
+      <p>וראינו את הצד השני: המשנה של רבי יוסי בן קסמא, שאינו דר אלא במקום תורה; דברי הרמב"ם על כך שהאדם נמשך אחר סביבתו; והגמרא בכתובות שאוסרת לעזוב את בבל, מפני שיש בה ישיבות.</p>
+      <p>השאלה נשארת פתוחה: האם המהפך הזה הוא סכנה או הזדמנות? בחלק השני של השיעור ינסה הרב לברר מה ההלכה אומרת, ואילו גדרים צריך לשמור כדי שהמעבר יהיה לטובה.</p>
+      <p class="bold-para">החלק הראשון של השיעור מציג את שני הצדדים: חשיבות מקום התורה מול השינוי שמביא את המשפחות אל הפריפריה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/HvI9_5P4Uas · 2025-07-23 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מהפך שקרה בתוך שנים ספורות","icon":"🔄","color":"#c62b6b","stories":[{"id":1,"title":"שיעור לזכרו של בונה מקום תורה","icon":"🕯️"},{"id":2,"title":"סקר שמספר על מהפך","icon":"📊"},{"id":3,"title":"שנים שבהן כולם עזבו","icon":"🚪"},{"id":4,"title":"המחירים שקפצו","icon":"🏠"},{"id":5,"title":"השכירות שמכריעה","icon":"🔑"},{"id":6,"title":"העולם נפתח","icon":"🌐"}]},{"id":2,"name":"השאלה האמיתית","icon":"❓","color":"#6d28d9","stories":[{"id":7,"title":"השאלה ששאלו את הרב","icon":"❓"},{"id":8,"title":"השפעת הסביבה – לשני הכיוונים","icon":"⚖️"}]},{"id":3,"name":"בני גד ובני ראובן","icon":"🐑","color":"#e08e00","stories":[{"id":9,"title":"\"ומקנה רב היה לבני ראובן\"","icon":"🐑"},{"id":10,"title":"רש\"י בברכת גד","icon":"📖"},{"id":11,"title":"כשהמקנה קודם לילדים","icon":"💰"},{"id":12,"title":"להיות חלק מאחיך","icon":"🤝"},{"id":13,"title":"הכל תלוי למה","icon":"🎯"},{"id":14,"title":"שאלות שכדאי לשאול לפני מעבר","icon":"📝"},{"id":15,"title":"דרגות בארץ ישראל","icon":"🏔️"}]},{"id":4,"name":"איני דר אלא במקום תורה","icon":"📚","color":"#1e88b8","stories":[{"id":16,"title":"המשנה שכולם הביאו","icon":"📜"},{"id":17,"title":"ולמה לא להקים גרעין?","icon":"🌱"},{"id":18,"title":"מחיר שכדאי לשלם","icon":"💎"},{"id":19,"title":"עמוד השדרה","icon":"🧱"},{"id":20,"title":"\"מפני שיש בה ישיבות\"","icon":"🏛️"},{"id":21,"title":"מה ראינו עד כאן","icon":"🗂️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
