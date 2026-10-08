@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 להיות כאן במצווה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 להיות כאן במצווה</h1>
+  <p>מה שהמדע מגלה על "כאן ועכשיו", ואיך התורה ציוותה עליו מזמן: בכל לבבכם, בכל נפשכם, ובחרת בחיים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ להיות כאן במצווה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/7ioFIlDPe_I?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/7ioFIlDPe_I/hqdefault.jpg" alt="להיות כאן במצווה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=7ioFIlDPe_I" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מה המדע גילה</div>
+      <h3 class="story-title">🧘 מושג שכולם מדברים עליו</h3>
+      <p>השיעור עוסק במה שאפשר לקרוא לו "מינדפולנס יהודי": איך אדם נעשה חי, חווה ומתענג מן המצוות ומן הפעולות שהוא עושה. הרב פתח במה שהמדע והפסיכולוגיה החיובית אומרים היום, ומשם עבר אל מקורות התורה, כדי להראות שאותו רעיון בדיוק נמצא אצלנו מאז ומעולם.</p>
+      <p>בשנים האחרונות נפוץ מאוד מושג שנקרא באנגלית "מינדפולנס", ובעברית "קשיבות". זו שיטת תרגול שבה מפנים את הקשב באופן מכוון, ובלי לשפוט, אל מה שמתרחש ברגע הזה. מודעות מלאה, בלי ביקורת.</p>
+      <p>איך עושים את זה? בדרך כלל יושבים בשקט ומתרכזים בנשימות: שואפים, נושפים, שואפים, נושפים. אבל העניין אינו הנשימה עצמה. המטרה היא להיות מרוכז, לא בכל הבלגן, לא בחדשות, לא במה שצריך לעשות מחר. להיות נוכח בהווה.</p>
+      <p>ואנשים עושים זאת בעיקר כדי להיות רגועים יותר, מאושרים יותר ומוצלחים יותר: לחיות, לחוות, להיות אדם שמח. והדבר מצליח מאוד. יתרה מזו, אין צורך לשבת דווקא ולנשום. אפשר לעשות זאת גם בתוך פעולות רגילות של היום, כמו שטיפת כלים או מלאכת יד: אדם שוטף כלים ושם לב למה שהוא עושה, ממוקד רק בזה, ואינו נותן למחשבות לנדוד.</p>
+      <p class="bold-para">קשיבות פירושה להיות נוכח במה שאתה עושה עכשיו, בלי לנדוד למקום אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מה המדע גילה</div>
+      <h3 class="story-title">🍇 צימוק אחד</h3>
+      <p>יש תרגיל מוכר שבו מתחילים בדרך כלל את לימוד הקשיבות, ואפשר לנסות אותו בבית. אדם רגיל אוכל צימוקים כך: מכניס חמישה לפה, ותוך שנייה הם כבר נבלעו. הוא אכל, אבל כמעט לא טעם.</p>
+      <p>עכשיו נסו אחרת. קחו צימוק אחד בלבד. רק אחד. לעסו אותו לאט, לאט, לאט, ושימו לב: מה הלשון עושה, מה השיניים עושות, איזה טעם מרגישים, מה משתנה מרגע לרגע. מי שעושה זאת מגלה חוויה מפתיעה. צימוק אחד, כשאוכלים אותו בתשומת לב, נותן הנאה גדולה יותר מחבילה שלמה של צימוקים שנאכלה בלי לשים לב.</p>
+      <p>וזה לא נכון רק לצימוקים. כל דבר יכול להיות חוויה, אם אדם נמצא בו באמת. ההבדל אינו בצימוק, אלא באדם שאוכל אותו: האם הוא שם, או שהוא נמצא במקום אחר לגמרי.</p>
+      <p>אבל למה זה כך? מה בדיוק קורה כאן, מעבר לטעם של הצימוק? כדי להבין, צריך להכיר מה גילו החוקרים על נדידת המחשבה, ומה הם גילו על מקורו של האושר.</p>
+      <p class="bold-para">צימוק אחד שאוכלים בתשומת לב מעניק יותר הנאה מחבילה שלמה שנבלעת בלי לשים לב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מה המדע גילה</div>
+      <h3 class="story-title">🔬 חצי מהזמן במקום אחר</h3>
+      <p>הרב הביא מחקר של פסיכולוגים מאוניברסיטת הרווארד. הם גילו שכמעט חצי מן הזמן אנחנו נמצאים בכל מקום חוץ מן המקום שבו אנחנו נמצאים. לא רק מורים רוחניים מן המזרח הרחוק טוענים זאת. גם חוקרים שבדקו ומדדו הגיעו לאותה מסקנה.</p>
+      <p>רוב הזמן בני האדם מרחפים. הם נמצאים בחדשות, בקניות, במה שיקרה מחר, במה שקרה אתמול. רק מעט מאוד מן הזמן אדם נמצא באמת עם עצמו, במה שהוא עושה עכשיו. לפי המחקר, התודעה שלנו נמצאת במצב מפוזר בכ-49% מן הזמן: חלומות בהקיץ, הרהורים על העבר, מחשבות על העתיד.</p>
+      <p>זה לא היה נורא כל כך, אלא שהתברר דבר נוסף: המחשבות הנודדות האלה גורמות לנו להיות אומללים. הרגעים שבהם התודעה מפוזרת הם בדיוק הרגעים שבהם אנחנו הכי פחות מאושרים. ולהפך: הרגעים המהנים ביותר בחיים הם אלה שבהם אנחנו שקועים לגמרי בדבר שאנחנו עושים באותו רגע.</p>
+      <p>החוקרים כתבו שהיכולת המיוחדת של האדם להתבונן בעברו ולחשוב על עתידו היא ברכה, אבל יש לה גם מחיר. ומסקנתם: התודעה האנושית היא בדרך כלל תודעה נודדת, ותודעה נודדת היא תודעה שאינה מאושרת.</p>
+      <p class="bold-para">המחקר מצא שהתודעה נודדת כמעט חצי מהזמן, ושתודעה נודדת היא תודעה שאינה מאושרת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מה המדע גילה</div>
+      <h3 class="story-title">🔗 עונג הוא חיבור</h3>
+      <p>דבר מפתיע עוד יותר עלה מן המחקר. אפילו מחשבות נעימות, כמו להיזכר בטיול נפלא או לחלום על חוויה משמחת, גורמות בדרך כלל פחות אושר מאשר להיות פשוט כאן ועכשיו. אדם לא היה מעלה על דעתו שזה מה שמשמח אותו: לא דווקא פעולה מרגשת, אלא הנוכחות עצמה.</p>
+      <p>החוקרים גם מצאו שיש פעולות שבהן התודעה נודדת יותר, כמו מנוחה סתמית, עבודה שגרתית או ישיבה מול מסך, ויש פעולות שמחזיקות את האדם נוכח יותר. הכול תלוי במידה שבה האדם מעורב בדבר.</p>
+      <p>איך אפשר להסביר זאת? הרב הסביר: עונג הוא תחושה של חיבור. כאשר אדם מחובר לדבר, לחבר, למשימה, לרגע, הוא חש עונג. כאשר הוא חווה את עצמו בתוך מה שהוא עושה, יש לו תחושה טובה מאוד, והוא נעשה מאושר. וכאשר הוא מפוזר, אין חיבור, ולכן גם אין עונג.</p>
+      <p>מה עושה העולם עם הגילוי הזה? לומד שיטות של ריכוז ונשימות, ויש על כך קורסים רבים. אבל השיעור אינו בא ללמד את השיטות האלה. הוא בא להראות שהיהדות נותנת לנו את אותו רעיון בדיוק, ועמוק הרבה יותר, מתוך התורה עצמה.</p>
+      <p class="bold-para">האושר אינו תלוי בפעולה מרגשת, אלא בכך שאדם מחובר למה שהוא עושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בכל לבבכם ובכל נפשכם</div>
+      <h3 class="story-title">❤️ "בכל לבבכם": מצווה לכוון</h3>
+      <p>בקריאת שמע אנו אומרים בכל יום: "לְאַהֲבָה אֶת ה' אֱלֹקֵיכֶם וּלְעָבְדוֹ בְּכָל לְבַבְכֶם וּבְכָל נַפְשְׁכֶם". יש כאן מצווה מן התורה לא רק לקיים מצוות, אלא לעבוד את הקדוש ברוך הוא בכל הלב ובכל הנפש. מה פירוש הדבר?</p>
+      <p>ידועה המחלוקת בגמרא, המופיעה כמה פעמים, האם מצוות צריכות כוונה. והשולחן ערוך פוסק שמצוות צריכות כוונה. ומה המקור לכך? בספר חרדים מובא שהמקור הוא מן הפסוק "וּלְעָבְדוֹ בְּכָל לְבַבְכֶם": מכאן שמצווה על האדם לכוון שהוא עושה מצווה. אם לא כיוון, הוא עשה פעולה, אבל לא עבד בלב.</p>
+      <p>לפי הדעה שמצוות צריכות כוונה, מי שלא כיוון לא יצא ידי חובה כלל. אבל גם לפי הדעה שמצוות אינן צריכות כוונה, נראה שמי שלא כיוון ביטל לכל הפחות את מצוות "ולעבדו בכל לבבכם".</p>
+      <p>דוגמה מצויה: אדם מגיע בקריאת שמע לסוף פרשת ציצית, ואינו חושב כלל על המצווה לזכור את יציאת מצרים. הוא קורא, כמו שקורא סתם קטע מן הסידור. הוא עשה את הפעולה, אבל הלב שלו לא היה שם.</p>
+      <p class="bold-para">התורה ציוותה לא רק לעשות מצוות, אלא לעבוד את ה' בכל הלב, כלומר לדעת ולכוון מה עושים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בכל לבבכם ובכל נפשכם</div>
+      <h3 class="story-title">📖 כשהלב לא היה שם</h3>
+      <p>כאן עולה שאלה הלכתית מעניינת, שדנים בה בחיי אדם ובמשנה ברורה. מה הדין באדם שיודע היטב שיש מצווה לזכור את יציאת מצרים, אבל לא זכה לכוון באותו רגע? אם תשאל אותו "למה קראת עכשיו את פרשת ציצית?", הוא יענה מיד: "כי יש מצוות עשה לזכור את יציאת מצרים". הוא יודע, אבל לא חשב על זה בשעת מעשה.</p>
+      <p>לגבי היציאה ידי חובה מובא שזה מספיק: הידיעה הזאת, שאם ישאלו אותו יידע לענות, נחשבת כוונה. אבל האם קיים את "ולעבדו בכל לבבכם"? כאן כבר קשה לומר שקיים בשלמות, כי סוף סוף הלב שלו לא היה כאן.</p>
+      <p>הרב הזכיר שבסידורים של עדות המזרח נוהגים לכתוב לפני קריאת שמע ולפני "אני ה' אלוקיכם אשר הוצאתי אתכם מארץ מצרים" תזכורת: לכוון לקיים מצוות עשה של קריאת שמע, לכוון לזכור את יציאת מצרים. כך דאגו שהמתפלל יזכור, ושהלב יהיה נוכח. זו עצה טובה לכל אחד.</p>
+      <p>זהו "מינדפולנס" בלשון התורה: לא רק לעשות, אלא להיות שם בזמן שעושים. לדעת מה אני עושה עכשיו, ולמה. המצווה שהעולם מגלה היום כדרך לאושר, התורה ציוותה עליה כחלק מעבודת ה'.</p>
+      <p class="bold-para">גם מי שיודע למה הוא עושה מצווה, עדיין צריך שהלב יהיה נוכח בה כדי לעבוד בכל הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בכל לבבכם ובכל נפשכם</div>
+      <h3 class="story-title">🔥 "בכל נפשכם": לעשות מתוך רצון</h3>
+      <p>ומה פירוש "בכל נפשכם"? רש"י בפרשת חיי שרה, על הפסוק "אִם יֵשׁ אֶת נַפְשְׁכֶם", מפרש: אם יש את רצונכם. נפש פירושה רצון. אם כן, התורה מצווה שכאשר אדם עושה מצווה, יעשה אותה עם רצון.</p>
+      <p>מה פירוש לעשות מצווה בלי רצון? יש אדם שעושה פעולה כי כך הוא רגיל, "מצוות אנשים מלומדה". הוא אינו חושב, אינו נמצא בפעולה, ובוודאי אינו רוצה אותה ואינו מחפש אותה. הוא עושה אותה כי כך מקובל, כי כך סדר היום שלו. אם תשאל אותו באותו רגע "מה בא לך עכשיו?", הוא לא יענה "בא לי להתפלל" או "בא לי ללמוד". הוא יזכיר משהו אחר לגמרי.</p>
+      <p>ויש אדם אחר, שמתפלל ולומד כי זה באמת מה שהוא רוצה. כלפי חוץ שניהם עושים אותה פעולה, אבל בפנים יש הבדל של שמים וארץ.</p>
+      <p>התורה מצווה שהאדם יעשה את המצווה בצורה שהוא רוצה בה. לא די שהגוף עושה. צריך שהנפש, הרצון, תהיה שותפה. וזה בדיוק החיבור שהמחקר מדבר עליו: מי שרוצה במה שהוא עושה, נמצא בו.</p>
+      <p class="bold-para">נפש פירושה רצון: התורה רוצה שהמצווה תיעשה מתוך רצון ולא מתוך שגרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בכל לבבכם ובכל נפשכם</div>
+      <h3 class="story-title">⛺ אברהם ולוט: אותו מעשה, לב אחר</h3>
+      <p>בתורה יש דוגמה קלאסית לכך. התורה מספרת על אברהם אבינו שהכניס אורחים ועשה עמהם חסד. מיד אחר כך היא מספרת על לוט, שגם הוא הכניס אורחים, ואפילו במסירות נפש, כי בסדום הדבר היה מסוכן. ובכל זאת, בשום מקום התורה אינה משבחת את לוט. גם כשהוא ניצל נאמר: "וַיִּזְכֹּר אֱלֹקִים אֶת אַבְרָהָם", כאילו ניצל בזכות אברהם ולא בזכות עצמו.</p>
+      <p>ויותר מזה. כשאנשי סדום מקיפים את ביתו ודורשים את האורחים, לוט מציע להם את שתי בנותיו. כל מי שקורא את התורה תמה: מאיפה הגיע רעיון מופרך כזה? וכי האורחים חשובים לו יותר מבנותיו?</p>
+      <p>התשובה יפה מאוד. אברהם אבינו עשה חסד כדי לעשות טוב לזולת. הוא רצה ללכת בדרכי ה': מה הוא רחום, אף אתה רחום. הוא חיפש איך להיטיב, ולכן החסד שלו היה מלא חיים ושמחה, והוא קירב את כולם.</p>
+      <p>לוט, לעומתו, לא היה מחובר לרעיון. הוא עשה זאת כי כך הורגל, כפי שמביא רש"י שבבית אברהם למד להכניס אורחים. זה היה מנהג הבית, כמעט טקס. ומי שמקיים מנהג בלי להבין את פנימיותו, עלול להחזיק בו גם כשהוא מגיע לקיצוניות מעוותת. הלב לא היה שם, ולכן המעשה לא בנה אותו.</p>
+      <p class="bold-para">לוט הכניס אורחים כמו אברהם, אך כיוון שעשה זאת מתוך הרגל ולא מתוך חיבור, המעשה לא שינה אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בכל לבבכם ובכל נפשכם</div>
+      <h3 class="story-title">⚖️ שלמות הלב</h3>
+      <p>במסילת ישרים, בהקדמה, מובא שאחד מיסודות העבודה הוא שלמות הלב: שתהיה העבודה לפניו יתברך בתום הכוונה, לשם העבודה בלבד ולא לשום פנייה אחרת. ונכלל בזה שיהיה האדם שלם בעבודתו, ולא כפוסח על שתי הסעיפים. לא חצי כאן וחצי שם, אלא כל הלב נתון לדבר.</p>
+      <p>זו בדיוק הנקודה. אדם יכול להתפלל כשרגל אחת בבית הכנסת ורגל אחת בעסקיו. הגוף עומד, הפה מדבר, אבל הלב מפוזר. מה שהפסיכולוגים קוראים "תודעה נודדת", ספרי המוסר קוראים לו חוסר שלמות הלב.</p>
+      <p>הרב הדגיש שאין הכוונה לדרוש מעצמנו שלמות בכל רגע. אבל מי שמבין שהעבודה צריכה להיות בכל הלב, מתחיל לשים לב: האם אני כאן? האם אני רוצה במה שאני עושה? האם הלב שלי נתון לזה, ולו מעט?</p>
+      <p>והשאלה הזאת לבדה כבר מקרבת את האדם אל המצווה. כי ברגע שאדם שואל את עצמו היכן הוא נמצא, הוא כבר חוזר אל המקום שבו הוא אמור להיות.</p>
+      <p class="bold-para">שלמות הלב היא שכל ליבו של האדם נתון לעבודה, ולא שהוא עושה אותה בחצי לב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בכל לבבכם ובכל נפשכם</div>
+      <h3 class="story-title">🍎 הברכה ששמה לב לאוכל</h3>
+      <p>הרב הביא דוגמה מוחשית מספר הכוזרי. שם מובא שהקדוש ברוך הוא נתן לנו ברכות על אכילה ושתייה, ואחת מתועלותיהן היא שעל ידן אנחנו נהנים הרבה יותר ממה שאנו אוכלים. כשאדם מברך, הוא שם לב למה שהוא הולך לאכול, מתבונן בו, וההנאה גדלה. בלשון של ימינו: הברכה היא "מינדפולנס". היא מרכזת את האדם במה שהוא עושה.</p>
+      <p>חשבו על אדם שיושב מול מסך עם צלחת מלאה גלידה או קערה של פיצוחים. הוא גמר את כל הצלחת, ואולי בכלל לא נהנה. הפה היה עסוק, אבל הוא עצמו לא היה שם. בסוף נשארה ערמת קליפות, והוא אינו יודע אפילו כמה אכל.</p>
+      <p>אבל כדי שהברכה תפעל, צריך שהלב יהיה בה. יש בדיחה ידועה על יהודי ששאלו אותו כמה זמן לוקחת לו ברכה. ענה: בדיוק כאורך הדרך של היד מן הצלחת אל הפה. מי שממלמל כמה מילים בדרך, לא נתן לברכה אפילו טיפת לב. הוא לא חשב "אני רוצה עכשיו להודות לקדוש ברוך הוא על הדבר היפה שברא".</p>
+      <p>ככל שאדם מרוכז יותר בדבר ושם אליו לב, כך הוא נהנה ממנו יותר.</p>
+      <p class="bold-para">הברכה עוצרת את האדם, מכוונת אותו אל המאכל ואל מי שברא אותו, וכך מגדילה את ההנאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בכל לבבכם ובכל נפשכם</div>
+      <h3 class="story-title">📦 פלאי התפוח</h3>
+      <p>הרב הביא סיפור על הרב אביגדור מילר. לפני שבירך על תפוח, היה מתבונן בו ואומר: ראו כמה פלאים יש בתפוח הזה. ראו את האריזה. איזה מפעל הצליח לייצר אריזה שעוברת את כל הדרך מן העץ ועד השולחן, שומרת על המוצר טרי ושלם, ובסוף אפשר לאכול גם אותה?</p>
+      <p>כך היה רגיל להתבונן בכל דבר, להתפעל ממנו, ורק אחר כך לברך. ספריו מלאים בהתבוננויות כאלה.</p>
+      <p>כאשר אדם מתבונן, הוא מרוכז בדבר, ואז הוא נהנה ממנו הרבה יותר. הוא חווה את המצווה, ויש לו שמחה גדולה הרבה יותר. התפוח לא השתנה. האדם השתנה: הוא נכח בתפוח, וראה בו מתנה מיד ה'.</p>
+      <p>וזו עצה מעשית לכל אחד: לפני ברכה, לעצור לשנייה. להסתכל במה שבידי. לחשוב מי נתן לי את זה, כמה טרחה ופלא יש בו. ואז לברך מתוך שמחה. כך הברכה עצמה הופכת לחוויה, והאכילה נעשית עבודת ה' של ממש.</p>
+      <p class="bold-para">התבוננות לפני הברכה הופכת אכילה פשוטה לחוויה של התפעלות ושמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בכל לבבכם ובכל נפשכם</div>
+      <h3 class="story-title">✨ תשוקה מרחיבה את הכוחות</h3>
+      <p>הרב הביא עוד דברים מן הספרים: מצווה שנעשית בתשוקה לעומת מצווה שנעשית בלי תשוקה, כמעט כמו מעשה לעומת לא-מעשה. ואילו היה האדם עושה הכול בתשוקה, מי יודע לאיזו מדרגה היה מגיע. כי התשוקה מרחיבה את כוחותיו, מרוממת את דעתו ומסירה ממנו את העצלות. ולכן הקפידה התורה מאוד על השמחה, כי השמחה והתשוקה הן דבר אחד, וכל מה שמוסיפים בתשוקה מוסיפים בהצלחה.</p>
+      <p>הכלל הוא: אדם שמשתוקק לדבר, חולם עליו, מדמיין מה יהיה כשיזכה לו, נהנה ממנו הרבה יותר. מי שלא רק עושה מצווה, אלא משתוקק אליה, מחכה לה, ומתבונן מה מונח בה ולמה היא חשובה כל כך, אי אפשר כלל להשוות את שמחתו לשמחה של מי שעשה אותה בלי הכנה.</p>
+      <p>דוגמאות: אדם שמתכונן לסדר ט"ו בשבט ולומד למה הוא חשוב, ייהנה מן הסדר הרבה יותר. אדם שלמד על ברית מילה לפני שהלך אליה, ירגיש בה הרבה יותר. ככל שאדם מונח יותר בדבר, כך הוא נהנה יותר מן המצווה.</p>
+      <p class="bold-para">ככל שאדם משתוקק יותר למצווה ומתבונן בה לפני כן, כך שמחתו בה גדולה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ובחרת בחיים</div>
+      <h3 class="story-title">🌱 וכי יש מי שבוחר במוות?</h3>
+      <p>בפרשת ניצבים אומרת התורה: "רְאֵה נָתַתִּי לְפָנֶיךָ הַיּוֹם אֶת הַחַיִּים וְאֶת הַטּוֹב וְאֶת הַמָּוֶת וְאֶת הָרָע". ובהמשך: "הַחַיִּים וְהַמָּוֶת נָתַתִּי לְפָנֶיךָ הַבְּרָכָה וְהַקְּלָלָה, וּבָחַרְתָּ בַּחַיִּים לְמַעַן תִּחְיֶה אַתָּה וְזַרְעֶךָ. לְאַהֲבָה אֶת ה' אֱלֹקֶיךָ לִשְׁמֹעַ בְּקֹלוֹ וּלְדָבְקָה בוֹ, כִּי הוּא חַיֶּיךָ".</p>
+      <p>יש כאן מצוות עשה מן התורה: לבחור בחיים. והשאלה מתבקשת: האם ראית פעם אדם בריא בנפשו שבוחר במוות? כולם רוצים לחיות. למה צריך לצוות על כך?</p>
+      <p>היה אפשר לומר שהכוונה היא "בחר בטוב, בחר במצוות, בחר באהבת ה'". אבל התורה לא אמרה "ובחרת בטוב". היא אמרה "ובחרת בחיים". מה פירוש לבחור בחיים?</p>
+      <p>כדי להבין זאת, הרב סיפר סיפור שהוא, בלשונו, אינו יכול לשכוח. סיפור על שני סוגי בחורים שישבו מול אותה גמרא, וחוו אותה בצורה הפוכה לגמרי.</p>
+      <p class="bold-para">המצווה "ובחרת בחיים" אינה מובנת מאליה, שהרי כל אדם רוצה לחיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ובחרת בחיים</div>
+      <h3 class="story-title">📚 שני בחורים מול אותה גמרא</h3>
+      <p>לפני שנים רבות, בכל ערב היו מגיעים לבית מדרש בעיר בחורים צעירים משכונה חילונית, תלמידי כיתות י"א וי"ב, כדי ללמוד תורה. נפשם השתוקקה ללמוד. הם היו רבים, והרב למד איתם נושאים שונים. היה להם רצון גדול, חלקם התקדמו מאוד, ובהמשך הלכו ללמוד בישיבות.</p>
+      <p>יום אחד פגש הרב בחור מתיכון דתי, וסיפר לו: בכל ערב באים בחורים ללמוד גמרא, וזה עושה להם טוב, הם נהנים מאוד. הבחור השיב: אני לא מבין. אני לומד גמרא ולא מרגיש שום הנאה. הרב הציע לו לבוא ולראות בעצמו.</p>
+      <p>הבחור אכן הגיע, התיישב ליד השולחן ושאל אותם: למה אתם באים? הם ענו: כי זה אושר עצום. זה נותן לנו שמחת חיים. אנחנו לומדים ומרגישים כל כך נפלא, גמרא אלוקית.</p>
+      <p>ומה ראה הרב? שני צדדים של אותו שולחן, ואף צד אינו מבין את השני. כאילו הם מדברים בשתי שפות. איך ייתכן? אותה גמרא, אותו שולחן. לאלה יש חיים בתוך הלימוד, ולזה אין. וזה בדיוק מה שהתורה ציוותה: ובחרת בחיים.</p>
+      <p>ומה עלה בסוף? רבים מאותם בחורים ממשיכים ללמוד עד היום, חלקם בכוללים. הלימוד שבחרו בו בעצמם נעשה להם חיים.</p>
+      <p class="bold-para">אותה גמרא הייתה לאחד מקור של אושר עצום ולשני עול ריק, והכול תלוי בשאלה אם בחר בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ובחרת בחיים</div>
+      <h3 class="story-title">🗝️ בחירה מול כפייה</h3>
+      <p>מה היה ההבדל? הבחורים מן השכונה החילונית לא קיבלו ציווי מאף אחד ללכת ללמוד בערב. אף אחד לא כפה עליהם. אדרבה, לחלקם הייתה התנגדות בבית, והם היו צריכים ממש להתחמק כדי להגיע. הם באו מרצונם החופשי, נטו.</p>
+      <p>וכאשר אדם מגיע מרצונו, הוא נמצא כולו בדבר. הוא לא בא כדי ללכת, ולא כדי לסמן וי. הוא בא כדי להיות כאן. והגמרא, מטבעה, כשאדם בא אליה מרצונו ובראש פתוח, נותנת לו המון שמחה. השכל מתפתח, דבר נבנה על גבי דבר, יש בה המון תובנות לחיים. אדם כזה מרגיש באופן טבעי אושר גדול מן הלימוד.</p>
+      <p>לעומת זאת, הבחור מן התיכון לא קיבל אפילו הזדמנות כזו. מכיתה ז' פתחו לו גמרא כי צריך: יש מבחן בסוף השבוע, מי שלא יצליח לא יקבל ציון טוב, לא יעבור בגרות. מלא איומים. לא נתנו לו אפילו לבחור. מעולם לא חווה את הדבר ולא הרגיש מה יש בו.</p>
+      <p>וזה מסוכן, כי לימוד כפוי כזה עלול להשאיר רושם קשה לשנים ארוכות. מי שלא בחר, לא חי את מה שהוא עושה.</p>
+      <p class="bold-para">מי שבא ללמוד מרצונו החופשי נמצא כולו בלימוד, ומי שנכפה עליו אינו זוכה אפילו לחוות אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ובחרת בחיים</div>
+      <h3 class="story-title">🧠 לבחור בעומק הדעת</h3>
+      <p>עכשיו מובן הציווי. אומרת התורה: ראה, נתתי לפניך את החיים ואת הטוב, את המוות ואת הרע. החיים האמיתיים, החיים הנפלאים, הם הטוב. והתורה מצווה: תרגיש, תחיה את זה. כאשר אתה עושה מצוות, כאשר אתה לומד תורה, דע שאלה החיים האמיתיים. כאן העונג האמיתי, כאן האושר האמיתי.</p>
+      <p>הרב הביא מן המפרשים: הרי הכול יודעים שחיים טובים ממוות וטוב עדיף מרע, ומה הציווי בזה? אלא הציווי הוא להכיר בזה בעומק הדעת, כי יש כמה דברים שנראים כחיים והם מוות, ונראים כטוב והם רע. ו"ובחרת בחיים" היא בחירה שכלית דווקא. בהמה שבורחת ממה שמזיק לה ומחפשת מה שטוב לה, אין זו בחירה. תרנגולת שבורחת מאש אינה "בוחרת".</p>
+      <p>אם כן, הציווי הוא שתגיע למצב שזה מה שאתה בוחר, וזה מה שאתה רוצה. כאן אתה מרגיש את השמחה, כאן את העונג, כאן את האהבה. שתהיה מונח במצווה, ותבין בלב שבמקום הזה טמונים החיים הטובים. לא "קפצו עליי עם משהו", אלא: זה החיים שלי.</p>
+      <p class="bold-para">"ובחרת בחיים" פירושו להכיר בעומק הלב שבמצוות טמונים החיים האמיתיים, ולרצות בהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ובחרת בחיים</div>
+      <h3 class="story-title">🥛 לקנות חלב</h3>
+      <p>איך עושים זאת בפועל? יש דברים רבים, אבל הכלל העיקרי הוא: כשאדם עושה מצווה, שיהיה מונח בה. אתה עושה חסד? אל תעשה אותו כי "אני חייב", "מה יגידו", "אני חייב לו". עשה אותו כי אתה רוצה שיהיה טוב לשני.</p>
+      <p>הרב הביא דוגמה פשוטה. אדם מתבקש לקנות חלב לביתו. אפשר ללכת לקנות כי "אם לא, יהיו טענות". ואפשר ללכת לקנות כי "אני רוצה שיהיה לה טוב, שתוכל לשתות קפה נחמד, שיהיה לה נעים". ההבדל בין שתי הפעולות האלה הוא שמים וארץ.</p>
+      <p>שניהם הלכו, שניהם קנו, שניהם חזרו עם אותו בקבוק. אבל איזו הרגשה! האחד עשה מטלה, והשני עשה חסד ונהנה ממנו. ככל שאדם מונח בדבר, כך הוא נהנה ממנו הרבה יותר.</p>
+      <p>וכך כמעט בכל פעולה בחיים. ככל שאדם מחובר יותר למה שהוא עושה, חי אותו ומרגיש אותו, כך הוא מאושר ממנו יותר. אין צורך לשנות את המעשים. מספיק לשנות את הסיבה שבגללה עושים אותם, ולהיות נוכח בהם.</p>
+      <p class="bold-para">אותה פעולה עצמה יכולה להיעשות מתוך חובה או מתוך רצון להיטיב, וההבדל ביניהן הוא שמים וארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי המעשים נמשכים הלבבות</div>
+      <h3 class="story-title">🔄 דברי ספר החינוך</h3>
+      <p>יסוד נוסף, מפורסם מאוד, נוגע לאותו רעיון: "אחרי המעשים נמשכים הלבבות". כתב ספר החינוך: "דַּע כִּי הָאָדָם נִפְעָל כְּפִי פְּעֻלּוֹתָיו, וְלִבּוֹ וְכָל מַחְשְׁבוֹתָיו תָּמִיד אַחַר מַעֲשָׂיו שֶׁהוּא עוֹשֶׂה בָּהֶם, אִם טוֹב וְאִם רַע".</p>
+      <p>ועוד כתב שם, שאפילו רשע גמור בלבבו, שכל יצר מחשבות לבו רק רע כל היום, אם יערה רוחו וישים השתדלותו ועסקו בהתמדה בתורה ובמצוות, ואפילו שלא לשם שמים, מיד ינטה אל הטוב, ובכוח מעשיו ימית את היצר הרע, "כִּי אַחֲרֵי הַפְּעֻלּוֹת נִמְשָׁכִים הַלְּבָבוֹת".</p>
+      <p>בכך מסביר ספר החינוך למה התורה ציוותה על כל כך הרבה מצוות שחוזרות על עצמן, כמו זכירת יציאת מצרים. אדם שזוכר שוב ושוב את יציאת מצרים חי בסוף את ההרגשה שיש בורא לעולם, שמשגיח ומושיע.</p>
+      <p>וגם הרמב"ם כתב רעיון דומה, על פי המשנה "הכול לפי רוב המעשה": עדיף לתת צדקה פעמים רבות, מטבע אחד בכל פעם, מאשר לתת סכום גדול פעם אחת. כי עוד פעולה ועוד פעולה ועוד פעולה בונות את האדם, עד שבסוף הוא נעשה אדם טוב.</p>
+      <p class="bold-para">האדם נפעל כפי פעולותיו: מעשים טובים שחוזרים עליהם משנים בסוף את הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי המעשים נמשכים הלבבות</div>
+      <h3 class="story-title">🏇 שאלת החפץ חיים</h3>
+      <p>אבל על כך נשאלה שאלה. החפץ חיים, כך הביא הרב, שאל על החיילים בצבא הרוסי של תקופתו, שגייסו נערים צעירים ושירתו שנים ארוכות מאוד. הם נחשבו לגיבורים וזריזים, רצים לכל מקום במהירות של חץ מקשת. כל בוקר השכם קמו למסדר, הכול נעשה בריצה ובזריזות.</p>
+      <p>והנה, ברגע שהשתחררו לפנסיה, נעשו עצלים ביותר. ישנו עד שעה מאוחרת, ישבו כל היום בבית המרזח בלי לעשות דבר. קשה היה להאמין שזה אותו אדם, שרץ וזרז במשך עשרות שנים. ולכאורה, הרי "אחרי הפעולות נמשכים הלבבות". עשרות שנים של זריזות היו צריכות להפוך אותם לזריזים בטבעם!</p>
+      <p>ענה החפץ חיים: מאחר שהופעלו בעל כורחם, נוצר בהם כמו קפיץ שנלחץ נגד רצונו. וברגע שהשתחררו מתפקידם, השתחרר הקפיץ ועף בעוצמה לכיוון ההפוך. האדם הזה מעולם לא רצה לקום בשש בבוקר. הכריחו אותו. וכל אותן שנים הוא רק חלם: מתי כבר אזכה לקום מאוחר. וכשסוף סוף יכול היה, זה מה שעשה.</p>
+      <p>מכאן יסוד גדול: "אחרי הפעולות נמשכים הלבבות" נאמר רק כאשר האדם מחובר לפעולה, מונח בתוכה ורוצה בה. אז המעשה נקלט בטבעו.</p>
+      <p class="bold-para">מעשים שנעשו בכפייה אינם נקלטים בלב, ולכן כשהכפייה נפסקת האדם קופץ לצד ההפוך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי המעשים נמשכים הלבבות</div>
+      <h3 class="story-title">🩺 המניין הראשון והרופא העייף</h3>
+      <p>הרב הביא דוגמה הפוכה: יש בתי כנסת שבהם המניין הראשון, השכם בבוקר, מלא בפנסיונרים. הם כבר אינם צריכים לקום לעבודה, ובכל זאת קמים מוקדם מאוד בכל יום כדי להגיע למניין הראשון. למה? כי כשהיו צעירים, הם אהבו את הזריזות. הם היו מחוברים לכך שקמים מוקדם, נהנו להיות אנשים פעילים וחרוצים. ולכן זה נעשה טבעם.</p>
+      <p>ודוגמה נוספת: פעם אמר לרב רופא: אני לא מבין את דברי ספר החינוך. אני רואה רופאים שככל שעוברות השנים, נשחקים. כבר לא כל כך אכפת להם מן המטופל. הוא נכנס, הם מדפדפים בתיק, בקושי שמים לב. איפה "אחרי הפעולות נמשכים הלבבות"? הרי היה צריך להיות להם אכפת יותר ויותר!</p>
+      <p>התשובה זהה. אם רופא מגיע בבוקר ורק חולם מתי תגיע השעה ארבע ויוכל ללכת הביתה, הוא אינו מונח בדבר. הוא אינו שם. וכשאדם אינו נמצא במה שהוא עושה, הדבר גורם לו סבל, ומן הסבל הוא בורח. מעשה כזה לא ייקלט בלב. ואילו מי שעושה מתוך רצון, נהנה עכשיו, וגם המעשה משפיע עליו ומחבר אותו.</p>
+      <p class="bold-para">מעשה שנעשה מתוך רצון נעשה טבע, ומעשה שנעשה כמטלה שוחק את האדם במקום לבנות אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי המעשים נמשכים הלבבות</div>
+      <h3 class="story-title">🚂 בית הסוהר של הרב דסלר</h3>
+      <p>מסופר על הרב דסלר שנסע פעם ברכבת עם תלמידיו. לפתע הפסיק את הלימוד והפנה את תשומת לבם אל מבנה מרוחק שנראה כמין טירה. אמר להם: שם יש אנשים שקמים בשעה קבועה בכל בוקר, אוכלים בשעות קבועות, ואוכלים מעט מאוד, פת במלח ומים במשורה. אין להם כמעט שום תאוות העולם הזה.</p>
+      <p>ושאל אותם: מדוע הם אינם נעשים קדושים? הרי אדם שפורש מתענוגות העולם הזה, לאט לאט אמור להתקרב לקדושה. התשובה: כי זה בית הסוהר. אין להם ברירה. הם לא רצו את זה, לא היו מחוברים לזה, ואין להם רצון להפנים זאת. ולכן לא צמח מכך אצלם שום דבר.</p>
+      <p>הנה שוב אותו יסוד. לא המעשה החיצוני לבדו קובע, אלא האם האדם נמצא בו ורוצה בו. ועל כך אמר הרב: אין צורך לחפש לעשות כך מאה אחוז מן הפעולות ביום. די לפחות פה ושם, בכמה פעולות, לשאול את עצמך: למה אני עושה את זה? מה המטרה שלי?</p>
+      <p>כשאדם מחובר, הוא נהנה הרבה יותר, המצווה פועלת עליו הרבה יותר, וגם השכר גדול לאין ערוך. כפי שהביא הרב מספר אורחות צדיקים: מצווה אחת בשמחה שווה כמו אלף מצוות בלי שמחה.</p>
+      <p class="bold-para">פרישות בלי רצון אינה מקדשת: רק מה שהאדם בוחר בו משנה אותו מבפנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חג ה' לנו</div>
+      <h3 class="story-title">🎧 אבא עם אוזניות</h3>
+      <p>בסיכום השיעור הביא הרב דוגמה מן החיים. אדם נכנס הביתה עם אוזנייה באוזן. הוא שומע משהו, ובאותו רגע ילדתו הקטנה רצה אליו: "אבא, תראה מה הכנתי בגן! תראה איזה יופי!" והוא עונה בחצי פה: "כן, נחמד, יפה".</p>
+      <p>האם יש סיכוי שייהנה ממה שהילדה הכינה? הוא אינו נמצא שם בכלל. אולי ענה תשובה מנומסת, אבל אין לו אפשרות ליהנות. אי אפשר להיות בשני מקומות ולהתענג על אחד מהם. אולי אפשר לעשות שני דברים בבת אחת, אבל אי אפשר ליהנות משניהם.</p>
+      <p>זה כל המחקר במשפט אחד: כאשר התודעה האנושית נודדת, היא אינה מאושרת. כדי להיות מאושר, צריך להיות כאן ועכשיו. והילדה, שחיכתה לרגע הזה כל היום, הפסידה גם היא.</p>
+      <p>אבל אם האב היה מוריד את האוזנייה, מתכופף, מסתכל באמת בציור ושואל עליו, אותו רגע עצמו היה הופך לרגע של שמחה גדולה לשניהם. לא היה צריך דבר נוסף, רק להיות שם.</p>
+      <p class="bold-para">אי אפשר ליהנות מדבר כשהתודעה נמצאת במקום אחר, גם כשמדובר בציור של ילדה אהובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חג ה' לנו</div>
+      <h3 class="story-title">📝 מה למדנו</h3>
+      <p>נסכם את הדרך שעברנו. הפסיכולוגיה אומרת שמה שגורם לאדם אושר ושמחה הוא להיות כאן ועכשיו, ולא לעשות פעולה אחת כשהראש נמצא במקום אחר.</p>
+      <p>משם עברנו למצוות התורה. "וּלְעָבְדוֹ בְּכָל לְבַבְכֶם": שהאדם יחשוב על המצווה ויכוון אליה. "וּבְכָל נַפְשְׁכֶם": שירצה בה. אל תבוא כי הכריחו אותך, או כי כולם עושים, או כי זו השגרה. שים לב לאן אתה הולך, למה אתה רוצה את זה, ומה טוב מחכה לך שם.</p>
+      <p>אחר כך הגענו ליסוד "ובחרת בחיים": שהלב שלך יבחר בזה, שתרגיש שכאן מונחים החיים הטובים. לא משהו שנפל עליך, אלא החיים שלך.</p>
+      <p>ולבסוף, "אחרי המעשים נמשכים הלבבות". ראינו מקרים רבים שבהם מעשים טובים אינם פועלים על האדם, כי לא היה מחובר אליהם. להיות מחובר לדבר, להימצא בתוכו, נותן לאדם הרבה עונג, הרבה חוויה והרבה שמחה. כדי שדבר יהיה חוויה, צריך לחוות אותו. ומי שאינו חווה אותו, איך יהיה לו חוויה?</p>
+      <p class="bold-para">מן המדע ועד מצוות התורה: חיים מלאים פירושם להיות נוכח, לרצות ולבחור במה שעושים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חג ה' לנו</div>
+      <h3 class="story-title">🎉 "כי חג ה' לנו"</h3>
+      <p>הרב סיים בפסוקים מן הפרשה. משה רבנו מבקש מפרעה לשלח את העם, ועבדי פרעה לוחצים עליו להסכים. פרעה שואל: "מִי וָמִי הַהֹלְכִים?" ומשה עונה: "בִּנְעָרֵינוּ וּבִזְקֵנֵינוּ נֵלֵךְ, בְּבָנֵינוּ וּבִבְנוֹתֵנוּ". ופרעה מסרב: "לְכוּ נָא הַגְּבָרִים וְעִבְדוּ אֶת ה', כִּי אֹתָהּ אַתֶּם מְבַקְשִׁים". על מה בדיוק היה הוויכוח?</p>
+      <p>חשבו: כשאדם הולך להכנסת ספר תורה, לברית או לחתונה של קרובים, הוא לוקח איתו את הילדים. ומתי הוא לוקח את הילדים לעבודה? בדרך כלל לא. רק אם אין ברירה, אין מי שישמור עליהם. לעבודה לא לוקחים את כל המשפחה.</p>
+      <p>פרעה ראה בעבודת ה' "עבודה". לכן אמר: לכו הגברים. מי צריך את כולם? מי לוקח ילדים לעבודה? ענה לו משה: בנערינו ובזקנינו נלך, כולם, גם הילדים. למה? "כִּי חַג ה' לָנוּ". אצלנו עבודת ה' אינה עבודה. היא חגיגה. ולחגיגה הולכים כולם.</p>
+      <p>וזה סיכום השיעור כולו. מי שעובד את ה' כמטלה, נשאר עם עול. מי שנמצא במצווה, רוצה בה ובוחר בה, חי אותה כחג. יזכה אותנו ה' להיות נוכחים במצוות, לבחור בחיים, ולחוות את עבודתו כשמחה גדולה.</p>
+      <p class="bold-para">עבודת ה' אינה "עבודה" שמשאירים בשבילה את הילדים בבית, אלא חגיגה שכולם הולכים אליה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/7ioFIlDPe_I · 2024-01-16 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מה המדע גילה","icon":"🔬","color":"#c62b6b","stories":[{"id":1,"title":"מושג שכולם מדברים עליו","icon":"🧘"},{"id":2,"title":"צימוק אחד","icon":"🍇"},{"id":3,"title":"חצי מהזמן במקום אחר","icon":"🔬"},{"id":4,"title":"עונג הוא חיבור","icon":"🔗"}]},{"id":2,"name":"בכל לבבכם ובכל נפשכם","icon":"❤️","color":"#6d28d9","stories":[{"id":5,"title":"\"בכל לבבכם\": מצווה לכוון","icon":"❤️"},{"id":6,"title":"כשהלב לא היה שם","icon":"📖"},{"id":7,"title":"\"בכל נפשכם\": לעשות מתוך רצון","icon":"🔥"},{"id":8,"title":"אברהם ולוט: אותו מעשה, לב אחר","icon":"⛺"},{"id":9,"title":"שלמות הלב","icon":"⚖️"},{"id":10,"title":"הברכה ששמה לב לאוכל","icon":"🍎"},{"id":11,"title":"פלאי התפוח","icon":"📦"},{"id":12,"title":"תשוקה מרחיבה את הכוחות","icon":"✨"}]},{"id":3,"name":"ובחרת בחיים","icon":"🌱","color":"#e08e00","stories":[{"id":13,"title":"וכי יש מי שבוחר במוות?","icon":"🌱"},{"id":14,"title":"שני בחורים מול אותה גמרא","icon":"📚"},{"id":15,"title":"בחירה מול כפייה","icon":"🗝️"},{"id":16,"title":"לבחור בעומק הדעת","icon":"🧠"},{"id":17,"title":"לקנות חלב","icon":"🥛"}]},{"id":4,"name":"אחרי המעשים נמשכים הלבבות","icon":"🔄","color":"#1e88b8","stories":[{"id":18,"title":"דברי ספר החינוך","icon":"🔄"},{"id":19,"title":"שאלת החפץ חיים","icon":"🏇"},{"id":20,"title":"המניין הראשון והרופא העייף","icon":"🩺"},{"id":21,"title":"בית הסוהר של הרב דסלר","icon":"🚂"}]},{"id":5,"name":"חג ה' לנו","icon":"🎉","color":"#c62b6b","stories":[{"id":22,"title":"אבא עם אוזניות","icon":"🎧"},{"id":23,"title":"מה למדנו","icon":"📝"},{"id":24,"title":"\"כי חג ה' לנו\"","icon":"🎉"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
