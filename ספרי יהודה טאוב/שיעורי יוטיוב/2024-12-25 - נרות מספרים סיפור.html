@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 נרות מספרים סיפור</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 נרות מספרים סיפור</h1>
+  <p>נר איש וביתו והמהדרין: הבית מול האדם, הידור של יותר והידור של אחר, ומצווה שאין לה מינימום ואין לה מקסימום</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ נרות מספרים סיפור" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/3C9-bU7mpys?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/3C9-bU7mpys/hqdefault.jpg" alt="נרות מספרים סיפור" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=3C9-bU7mpys" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נר איש וביתו והמהדרין</div>
+      <h3 class="story-title">🕯️ יהודי אחד ונר אחד</h3>
+      <p>השיעור נפתח בתמונה: הלילה הראשון של חנוכה. יהודי עומד בביתו, בידו נר אחד ובלבו שאלה. האם ידליק נר אחד לכל הבית, או שמא יהדר במצווה? ומסביבו מרצדים אורות של דורות, וכל אחד מהם מספר סיפור.</p>
+      <p>הכול מתחיל בגמרא קצרה מאוד במסכת שבת. בכמה שורות בלבד טמון בה עולם שלם: "תָּנוּ רַבָּנַן: מִצְוַת חֲנֻכָּה נֵר אִישׁ וּבֵיתוֹ, וְהַמְהַדְּרִין נֵר לְכָל אֶחָד וְאֶחָד, וְהַמְהַדְּרִין מִן הַמְהַדְּרִין – בֵּית שַׁמַּאי אוֹמְרִים: יוֹם רִאשׁוֹן מַדְלִיק שְׁמֹנָה, מִכָּאן וְאֵילָךְ פּוֹחֵת וְהוֹלֵךְ; וּבֵית הִלֵּל אוֹמְרִים: יוֹם רִאשׁוֹן מַדְלִיק אַחַת, מִכָּאן וְאֵילָךְ מוֹסִיף וְהוֹלֵךְ".</p>
+      <p>זהו. כאן מסתיימת הברייתא. ועליה נכתבו ספרים רבים, ויש בה הרבה מאוד מה לדון.</p>
+      <p>דבר ראשון שמפתיע: אין עוד מצווה כזו. לא בתורה ולא בדרבנן, לא שמענו בשום מקום על דרגות כאלה – עיקר המצווה, מהדרין, ומהדרין מן המהדרין. מה פשרן של הדרגות האלה? ומי בדיוק הוא "המהדר"? כפי שנראה, השאלה הזו פשוטה פחות ממה שנדמה.</p>
+      <p class="bold-para">גמרא קצרה אחת על נרות חנוכה פותחת עולם שלם של דרגות, מנהגים ושאלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נר איש וביתו והמהדרין</div>
+      <h3 class="story-title">✨ מה זה הידור?</h3>
+      <p>לפני הכול צריך להבין מה פירוש המילה "הידור". בדרך כלל אנו מבינים: לעשות יותר ממה שצריך. אבל המשמעות המקורית עמוקה יותר.</p>
+      <p>בתורה נקרא האתרוג "פְּרִי עֵץ הָדָר" – פרי יפה. הידור הוא יופי והדר. הוא מבטא את הרצון לתת למצווה כבוד מיוחד, והוא נובע מאהבת המצווה ומן הרצון להתעלות בה.</p>
+      <p>ואם כן נשאלת שאלה. כשאני מדליק, וגם הילד שלי מדליק – האם המצווה נעשתה יפה יותר? מה בדיוק התייפה כאן? אפשר לומר: נהיה יותר אור. יש יותר נרות, הבית מואר יותר. ואפשר לומר: יש כאן שיתוף של דור העתיד, הילדים לוקחים חלק במצווה, וזה אולי החשוב מכול.</p>
+      <p>בשאלות האלה נגיע בהמשך. אבל כבר עכשיו ברור שה"הידור" של נרות חנוכה אינו דומה להידור הרגיל, של אתרוג נאה או תפילין יפות. יש כאן משהו אחר, ודרכי ההבנה שלו הולידו את ההבדלים בין המנהגים.</p>
+      <p class="bold-para">הידור הוא יופי וכבוד למצווה, ונובע מאהבת המצווה ומהרצון להתעלות בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נר איש וביתו והמהדרין</div>
+      <h3 class="story-title">🪟 שתי תמונות של חנוכה</h3>
+      <p>בואו נסתכל על בתים יהודיים בחנוכה. כבר מן הלילה הראשון אפשר לראות שתי דרכים.</p>
+      <p>בבתי אשכנזים רואים חנוכיות רבות. כל בן משפחה מדליק חנוכייה משלו. מי שהולך בערב ברחובות של ערים חרדיות רואה מרפסות וחלונות מלאים, עד שאי אפשר לספור. משפחה עם חמישה ילדים – שש או שבע חנוכיות דולקות. יש מקומות שבהם מעמידים אפילו מעין ארון מיוחד בחלון, ובו שורה ארוכה של חנוכיות. זהו מראה מרשים מאוד.</p>
+      <p>ובבתי ספרדים רואים חנוכייה מרכזית אחת. בעל הבית מדליק, וכל המשפחה מתכנסת סביבו. כך נוהגים אצל הספרדים כבר מימי הרמב"ם, ומן הרמב"ם עצמו אפשר לדעת שזה היה המנהג – כשמונה מאות שנה. ואצל האשכנזים המנהג קיים לפחות חמש מאות שנה.</p>
+      <p>מאחורי שתי התמונות האלה מסתתר דיון עמוק ומרתק. והשאלה הבסיסית היא: איך עושים את המצווה בצורה היפה והמהודרת ביותר? לפי הרמ"א, מנהג אשכנז – כל אחד מבני הבית מדליק בעצמו. לפי השולחן ערוך, מנהג ספרד – ראש המשפחה מדליק, ומוסיף נרות.</p>
+      <p class="bold-para">בבתי אשכנז כל אחד מדליק חנוכייה משלו, ובבתי ספרד ראש המשפחה מדליק חנוכייה אחת לכולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נר איש וביתו והמהדרין</div>
+      <h3 class="story-title">🎁 מתנה לזוג הצעיר</h3>
+      <p>כדי להבין את ההבדל, הובא בשיעור משל. משפחה עומדת לחתן את אחד מבניה. כל האחים רוצים להראות אהבה לחתן ולכלה, ויושבים לחשוב מה לתת לזוג החדש.</p>
+      <p>יש שתי אפשרויות. אפשרות אחת: כל אח כותב ברכה אישית ונותן מתנה אישית. המתנה קטנה יחסית, כי כמה כבר כל אחד יכול לתת? אבל היא שלו, והיא מבטאת את הקשר האישי שלו לזוג.</p>
+      <p>אפשרות שנייה: כל האחים מתאחדים וקונים יחד מתנה אחת גדולה ומפוארת יותר, מכולם.</p>
+      <p>וכדאי לשים לב: בשני המקרים אף אחד אינו חייב לתת מתנה גדולה. החובה הבסיסית היא לשמוח עם החתן והכלה. כל השאר הוא תוספת שבאה מן הלב, מן הרצון לבטא קשר ואהבה. כך גם בנר חנוכה. עיקר המצווה הוא נר אחד לכל הבית, וכל מה שמעבר לזה הוא ביטוי של חיבה. השאלה איננה אם להוסיף, אלא איך להוסיף: בהרבה קולות קטנים, כל אחד בשלו, או בקול אחד גדול ומלא, של כל המשפחה יחד.</p>
+      <p>שתי האפשרויות יפות, ושתיהן מבטאות אהבה. אבל הן שונות מאוד. הראשונה היא הדרך של אשכנז: כל אחד נותן את שלו, גם אם זה קטן. השנייה היא הדרך של ספרד: אחד עושה משהו גדול בשם כולם.</p>
+      <p>אבל השאלה האמיתית עמוקה יותר מן השאלה מה יפה יותר. היא תלויה בשאלה אחרת: על מי מוטלת בכלל החובה להדר? על הבית, או על כל אדם ואדם? כאן מתחיל עיקר הדיון.</p>
+      <p class="bold-para">אפשר להדר בהרבה מתנות אישיות קטנות, ואפשר במתנה אחת גדולה מכולם יחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הבית או האדם</div>
+      <h3 class="story-title">🏠 הבית כיחידה אחת</h3>
+      <p>הרמב"ם רואה את הבית כיחידה אחת. בדיוק כמו שלא שמים כמה מזוזות על אותה דלת, כך גם בנרות חנוכה – הבית הוא העיקר.</p>
+      <p>חשבו על מזוזה. אם אדם רוצה מזוזה מהודרת, מה הוא עושה? הוא לא שם שתי מזוזות. הוא לוקח מזוזה גדולה יותר, בכתב יפה יותר, על קלף משובח. שתי מזוזות אינן הידור, הן סתם תוספת שאין בה טעם.</p>
+      <p>ומכאן תמה הרמב"ם: מה פירוש שכל אחד ידליק חנוכייה משלו? הרי החובה היא "נר איש וביתו" – הבית חייב. אין כזה דבר עוד חנוכייה בבית, כמו שאין עוד מזוזה.</p>
+      <p>אז איך למד הרמב"ם את הגמרא? "נר לכל אחד ואחד" אין פירושו שכל אחד מדליק, אלא שבעל הבית מדליק כנגד כל אנשי ביתו. אם בביתו עשר נפשות, הוא מדליק עשרה נרות.</p>
+      <p>והמהדרין מן המהדרין? כותב הרמב"ם: מדליק כנגד כל אנשי הבית, ומוסיף בכל יום. בבית של עשר נפשות – ביום הראשון עשרה נרות, ביום השני עשרים, ועד שביום השמיני הוא מדליק שמונים נרות.</p>
+      <p class="bold-para">לפי הרמב"ם הבית חייב בנרות חנוכה כמו במזוזה, ולכן ההידור הוא שבעל הבית מוסיף נרות כנגד בני ביתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הבית או האדם</div>
+      <h3 class="story-title">⚖️ חפצא או גברא</h3>
+      <p>הספרדים, בעקבות השולחן ערוך, המשיכו בדרכו של הרמב"ם שרק בעל הבית מדליק. אבל הם הבינו את הגמרא כ"או זה או זה": במקום להוסיף נרות גם כנגד בני הבית וגם כנגד הימים, ההידור של "מהדרין מן המהדרין" בא במקום הקודם. בעל הבית מדליק נר אחד בלילה הראשון ומוסיף והולך.</p>
+      <p>ולמה סובר כך הרמב"ם? כאן נכנסת הבחנה ידועה, שבלשון הישיבות נקראת "חפצא וגברא". האם המצווה מוטלת על החפץ, או על האדם?</p>
+      <p>לפי הרמב"ם, נר חנוכה הוא חובה על הבית. לא שאנשי הבית אינם שייכים לה, אבל הבית הוא החייב. כמו מזוזה, וכמו בדיקת חמץ: צריך לבדוק חמץ בבית; מי שאין לו בית, אינו צריך לבדוק. ממילא אין מקום להדר באדם נוסף, כי הכול נמדד לפי הבית.</p>
+      <p>ההבנה הזו מסבירה את כל המנהג הספרדי. הבית מואר, החנוכייה עומדת בפתח, וכל בני הבית שותפים בה, כמו שכולם שותפים במזוזה שעל הדלת.</p>
+      <p class="bold-para">השאלה היא אם החובה מוטלת על הבית, כמו במזוזה ובבדיקת חמץ, או על האדם, כמו בתפילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הבית או האדם</div>
+      <h3 class="story-title">🙏 כל אחד ונרו</h3>
+      <p>לעומת זאת, הרמ"א מדגיש את האחריות האישית של כל אדם. כמו בתפילה, שכל אחד מתפלל בעצמו, כך גם בהדלקת הנרות: לכל אחד יש הזדמנות אישית להשתתף במצווה.</p>
+      <p>ומיד נשאלה שאלה טובה: אם כך, למה דווקא בנרות חנוכה? בקידוש לא מצאנו הידור כזה. אדרבה, אומרים שיפה יותר שכולם יוצאים יחד בקידוש של בעל הבית. מה מיוחד בחנוכה? זו שאלה שצריך לזכור, ונחזור אליה כשנבין מה מיוחד בנר הזה.</p>
+      <p>בשיעור הוזכר גם שההבדל הזה, אף שאין בו הכרח, מתאים מאוד לאופי של שתי העדות. אשכנזים אוהבים את היחידה האישית: שכל אדם ידאג לעצמו ויבנה את עצמו. גם בתפילה, אצל האשכנזים כל אחד אומר לעצמו, והחזן מסיים רק את סוף הקטע.</p>
+      <p>והספרדים אוהבים מאוד את המשפחתיות ואת הציבור. שליח הציבור מוציא את כולם, וכולם עונים אמן. החזן אומר, וכולם יחד איתו. ובתי הכנסת של הספרדים היו תמיד מפוארים, כי זה דבר ששייך לציבור. שתי דרכים, ושתיהן דרכים להתחבר לקדושה: יש מי שמתחבר דרך העשייה האישית, ויש מי שמתחבר דרך המשפחה והקהילה.</p>
+      <p class="bold-para">הרמ"א מדגיש את האחריות האישית: כמו שכל אחד מתפלל לעצמו, כך לכל אחד הזדמנות אישית להדליק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הבית או האדם</div>
+      <h3 class="story-title">🕯️ עוד נר לנרות שבת</h3>
+      <p>בשיעור נשאלה שאלה מעניינת. יש מנהג, בעיקר אצל אשכנזים, שבכל פעם שנולד ילד במשפחה מוסיפים עוד נר בנרות שבת. זה אינו חובה, אלא מנהג נפוץ. מאיפה הוא מגיע?</p>
+      <p>התשובה שהובאה מפתיעה: מן הרמב"ם בהלכות חנוכה. הרמב"ם כתב שבנרות חנוכה, המהדר מדליק כנגד כל אנשי ביתו. כמה ילדים יש לו – כך הוא מוסיף נרות. ואם נולד לו ילד נוסף, הוא מדליק עוד נר.</p>
+      <p>ומכאן אולי הגיע הדבר גם לנרות שבת. כמו שבחנוכה מוסיפים נר כנגד כל נפש בבית, כך גם בשבת: עוד ילד, עוד נר. כל נשמה נוספת בבית מוסיפה אור.</p>
+      <p>יש כאן רעיון יפה. הנרות אינם רק אמצעי להאיר את החדר. הם מבטאים את הבית עצמו, את האנשים שבו. כל אחד מבני הבית הוא עוד אור. וכשהמשפחה גדלה, גם האור גדל.</p>
+      <p>ואפשר ללמוד מכך גם על החיים עצמם. ילד שנולד אינו רק עוד אחריות ועוד דאגה. הוא עוד אור שנוסף לבית, וראוי לציין אותו בנר נוסף, בשמחה ובהודיה. כל שבת, כשמדליקים את הנרות וסופרים אותם, נזכרים במתנות שה' נתן למשפחה.</p>
+      <p>ושוב רואים: מי שמבין את נר החנוכה כשייך לבית, מבין שהבית כולו, על כל נפשותיו, עומד מאחורי הנרות.</p>
+      <p class="bold-para">המנהג להוסיף נר שבת על כל ילד שנולד שואב, לפי השיעור, מדברי הרמב"ם בנרות חנוכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רחוק מן הבית</div>
+      <h3 class="story-title">🧳 בנסיעת עסקים בחנוכה</h3>
+      <p>המחלוקת הזו אינה רק עיונית. יש לה השלכות מעשיות. אדם נמצא בנסיעת עסקים בעיר רחוקה, וחנוכה מגיע. הוא יודע שאשתו מדליקה נרות בבית. ובלבו מתעוררת שאלה: האם הוא רשאי להדליק נרות גם כאן, במקום שבו הוא נמצא?</p>
+      <p>הדבר מצוי מאוד. אנשים נוסעים לחוץ לארץ, והבית נשאר עם האישה והילדים. ופתאום, בערב חנוכה, אין לו נרות. מה יעשה?</p>
+      <p>חייב הוא לא. אשתו הדליקה בבית, והוציאה אותו ידי חובה – גם לפי האשכנזים וגם לפי הספרדים. השאלה היא אם הוא רשאי.</p>
+      <p>לפי הרמ"א – כן, הוא יכול להדליק ולברך, ואין בזה בעיה. ובשיעור הובאה גם השיטה החולקת, בשם המהרש"ל: אינך רשאי להדליק, כי אשתך כבר מדליקה עבורך. הבית שלך נמצא שם, והוא כבר מואר.</p>
+      <p>השיטה הזו דומה למזוזה. מספרים על אדם שהזמין מזוזה מסופר סת"ם, ובינתיים בא מישהו וקבע לו מזוזה בפתח. כשהגיעה המזוזה שהזמין, הוא כבר לא יכול לקבוע אותה בברכה. יש מזוזה בבית, והמצווה כבר התקיימה.</p>
+      <p class="bold-para">אדם שאשתו מדליקה בביתו פטור, אבל השאלה היא אם הוא רשאי להדליק בעצמו במקום שבו הוא נמצא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רחוק מן הבית</div>
+      <h3 class="story-title">✈️ בחורי ישיבה ונוסעים רחוקים</h3>
+      <p>מה יוצא למעשה? לפי הספרדים, ההלכה ברורה: כשהבית מדליק, אין לאדם הדלקה נוספת. מי שנוסע בחנוכה לארץ רחוקה, בזמן שאשתו מדליקה בבית, אינו מדליק בברכה.</p>
+      <p>בשיעור הוזכר שהדבר מורגש מאוד אצל בחורים ספרדים הלומדים בישיבות אשכנזיות. כל חבריהם מדליקים חנוכייה, והם עומדים בצד ורוצים גם כן להדליק. והגאון רבי עובדיה יוסף הורה שאינם רשאים להדליק בברכה, כי הם יוצאים בהדלקת הוריהם.</p>
+      <p>ומה עם מי שאין לו בית אחר? רווק שגר לבדו, או אדם שאין מי שיוציא אותו – אצלו ברור שהמקום שבו הוא נמצא הוא ביתו, והוא מדליק.</p>
+      <p>אצל האשכנזים הדבר תלוי במחלוקת. אם אדם מאוד רוצה להדליק בעצמו, המשנה ברורה מציע עצה: שיקדים להדליק לפני אשתו. אם הוא מדליק ראשון, אין בעיה.</p>
+      <p>אבל גם לעצה הזו יש קושי מעשי. לפי איזה שעון ידליק? מי שנמצא במדינה אחרת, באזור זמן אחר, צריך לחשוב היטב מתי השקיעה אצלו ומתי היא בביתו. וכך שאלה הלכתית אחת הופכת לחשבון של שעונים ושל מקומות.</p>
+      <p class="bold-para">לספרדים אי אפשר להדליק בברכה כשאשתו או הוריו מדליקים בבית, ולאשכנזים יש עצה: להקדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רחוק מן הבית</div>
+      <h3 class="story-title">🧭 מצוות של מקום ומצוות של אדם</h3>
+      <p>המסר העמוק כאן הוא שיש שני סוגים של מצוות.</p>
+      <p>יש מצוות שמטרתן ליצור אווירה וקדושה במקום מסוים. נרות שבת, למשל: מה מטרתם? שהבית יהיה מואר, שיהיה נעים, שתהיה בבית אווירה טובה. כמו שאמרו חז"ל, נר שבת הוא משום שלום בית. המטרה היא ליצור מקום טוב. וכך מזוזה – שהבית יהיה מקום קדוש ושמור. וכך בדיקת חמץ – שהבית יהיה נקי מחמץ. אלו מצוות של מקום.</p>
+      <p>ויש מצוות שמטרתן ליצור חיבור אישי בין האדם ובין בורא העולם. תפילה, תפילין – אלו מצוות שהאדם עצמו עומד בהן מול ה'. אי אפשר שאחד יניח תפילין בשביל כל הבית.</p>
+      <p>ונר חנוכה? הוא עומד באמצע, וזה מה שמעניין בו. מצד אחד הוא "נר איש וביתו", מצווה של בית, שמאירה את הפתח. ומצד שני יש בו משהו אישי מאוד, שכל אחד רוצה לקחת בו חלק.</p>
+      <p>הרמב"ם והשולחן ערוך שמו את הדגש על הצד הראשון, והרמ"א על הצד השני. ושתי הבחינות קיימות בנר החנוכה.</p>
+      <p class="bold-para">יש מצוות שבאות לעשות מקום קדוש, ויש מצוות שבאות לחבר את האדם לבוראו, ונר חנוכה עומד ביניהן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הידור של יותר והידור של אחר</div>
+      <h3 class="story-title">📦 שבעה נרות במתנה</h3>
+      <p>ועכשיו לסיפור. יהודי הדליק בחנוכה נר אחד בשמחה, כי זה מה שהיה לו. פתאום נשמעת דפיקה בדלת. השכן עומד שם, ובידו חבילת נרות חדשים ויפים: יש לי יותר מדי, אשמח שתיקח אותם.</p>
+      <p>והיה זה הלילה השמיני. האיש קיבל עוד שבעה נרות, וכעת יוכל להשלים את ההדלקה המהודרת. והוא בא אל רבי עקיבא איגר, מגדולי חכמי ישראל, ושאל: אני מדליק עכשיו את הנרות הנוספים. האם אני צריך לברך עליהם?</p>
+      <p>התשובה נראית פשוטה. מה פתאום לברך? כבר יצאת ידי חובה בנר הראשון. עכשיו אתה רק מהדר, ועל הידור אין מברכים. וכך ענה רבי עקיבא איגר: ודאי שלא.</p>
+      <p>האיש הלך לדרכו. אבל רבי עקיבא איגר התחיל לשאול את עצמו: רגע. הרי אצלנו, האשכנזים, כל בני הבית מברכים על ההדלקה. אני הדלקתי, ואחר כך גם בני הדליק – ובירך. ועיקר המצווה הוא שרק אחד ידליק בבית. אם כך, הנרות של הבן הם רק הידור. ולמה הוא מברך עליהם? מה ההבדל בינו ובין היהודי ששאל אותי?</p>
+      <p class="bold-para">מי שקיבל נרות נוספים אחרי שהדליק אינו מברך עליהם, כי אין מברכים על הידור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הידור של יותר והידור של אחר</div>
+      <h3 class="story-title">💡 מי שמתכוון לא לצאת</h3>
+      <p>רבי עקיבא איגר רצה לומר על כך חידוש גדול, בצורה מבריקה. מי שרוצה להדר ולהדליק בעצמו, כאילו אומר: אני רוצה לעשות את המצווה בעצמי. אני לא רוצה לצאת ידי חובה בנרות של בעל הבית, אלא בנרות שלי. הוא מכוון מראש שלא לצאת בהדלקה של אביו. וממילא ההדלקה שלו אינה עוד הידור על החובה של אחר. היא החובה שלו עצמו, ולכן הוא מברך.</p>
+      <p>ולעומת זאת, היהודי שקיבל נרות מן השכן כבר יצא ידי חובתו בנר הראשון שלו. הנרות הנוספים הם הידור על מצווה שכבר קיים. עליהם אין ברכה – ידליק את כולם בשמחה, אבל בלי ברכה.</p>
+      <p>אבל רבי עקיבא איגר עצמו הקשה על החידוש הזה. הרמ"א כתב שנוהגים שלא להדליק נר של חנוכייה אחת מנר של חנוכייה אחרת. אם האב הדליק והבן רוצה להדליק, הבן לא ייקח נר מן החנוכייה של אביו, אלא ידליק בגפרור.</p>
+      <p>ולמה? מסביר הרמ"א: כי הנר הראשון הוא חובה, והשאר הם הידור, פחותים בקדושתם. ולכן אין מדליקים מזה לזה. ואם כל אחד מכוון לצאת בעצמו, והכול חובה – למה לא? כאן נשארה השאלה.</p>
+      <p class="bold-para">רבי עקיבא איגר חידש שמי שמדליק בעצמו מתכוון מראש שלא לצאת בנרות של בעל הבית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הידור של יותר והידור של אחר</div>
+      <h3 class="story-title">🎨 הידור של יותר והידור של אחר</h3>
+      <p>בשיעור הוצע תירוץ יפה, שמגלה נקודה עמוקה במשמעות ההידור. יש שני סוגי הידור.</p>
+      <p>יש הידור של "יותר". אדם לוקח אתרוג יפה יותר, או מוסיף נרות לאותה חנוכייה. על זה אין מברכים ברכה חדשה. מי שקנה אתרוג נאה יותר אחרי שכבר נטל, אינו מברך שוב, כי כבר יצא. ההידור הזה משפר את המצווה, אבל אינו מצווה חדשה.</p>
+      <p>ויש הידור לא של "יותר" אלא של "אחר". כמו שכל אחד מתפלל בעצמו, כמו שכל אחד נוטל לולב משלו. בהידור הזה המצווה אינה נעשית גדולה יותר – אלא נעשית שוב, על ידי אדם נוסף. האדם הזה עצמו עושה את המצווה. ועל זה מברכים.</p>
+      <p>וזה מה שקורה כשכל אחד מבני הבית מדליק. אין זה עוד נר על אותה חנוכייה. זו הזדמנות אישית לחיבור רוחני. כל נר מייצג מסע אישי, דרך ייחודית להתחבר למצווה. כמו שכל אחד מתפלל בקולו שלו, כך גם האור של כל אחד הוא אישי ומיוחד.</p>
+      <p>ההבדל דומה להבדל בין מתנה גדולה יותר לבין מתנה אישית. שתיהן יפות, אבל משמעותן שונה לגמרי.</p>
+      <p class="bold-para">הידור של יותר אינו מצריך ברכה, אבל הידור שבו אדם נוסף עושה את המצווה בעצמו – עליו מברכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הידור של יותר והידור של אחר</div>
+      <h3 class="story-title">🏛️ נרות בבית הכנסת</h3>
+      <p>יש דוגמה פשוטה ויפה ליסוד הזה. הספרדים אינם מברכים על מנהג. לכן, למשל, הם אינם מברכים על הלל בראש חודש, שהוא מנהג.</p>
+      <p>ומכאן שאלה מפורסמת. גם הדלקת נרות חנוכה בבית הכנסת היא מנהג. בגמרא היא אינה מוזכרת. היא נהגה במשך הדורות, כי היו אנשים שלא היו להם נרות בבית, ולכן התחילו להדליק בבית הכנסת. ובכל זאת, הספרדים מברכים על ההדלקה בבית הכנסת. איך?</p>
+      <p>התשובה היא שיש שני סוגי מנהגים. יש מנהג שיצר דבר חדש, שלא היה קודם. עליו לא מברכים – כמו הלל בראש חודש. ויש מנהג שלא יצר שום דבר חדש, אלא לקח מצווה גמורה והכפיל אותה: לא רק בבית, אלא גם בבית הכנסת. המקור הוא מצווה שלמה, והמנהג רק הרחיב אותה למקום נוסף. על זה, לפי הספרדים, אפשר לברך.</p>
+      <p>וזה בדיוק היסוד: כשאדם מוסיף נרות על אותה הדלקה, זה הידור של "יותר", ואין מברכים. אבל כשהמצווה נעשית מחדש, במקום אחר או על ידי אדם אחר, זה הידור של "אחר", ויש בו ברכה.</p>
+      <p class="bold-para">הספרדים מברכים על הדלקת נרות בבית הכנסת, כי המנהג רק הכפיל מצווה גמורה ולא יצר דבר חדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אהבה בלי גבול</div>
+      <h3 class="story-title">💰 כמה מותר להשקיע במצווה?</h3>
+      <p>בואו נעבור לשאלה אחרת. בחורף קר בירושלים ישב תלמיד חכם בביתו והתבונן בחנוכייה מפוארת שקיבל במתנה, חנוכייה מכסף. ועלתה בלבו שאלה: כמה כסף מותר להשקיע במצווה?</p>
+      <p>השאלה הובילה אותו למסע מרתק בין דפי הגמרא, ושם גילה סתירה לכאורה. מצד אחד, הגמרא במסכת בבא קמא אומרת שיש גבול להידור מצווה: עד שליש. כלומר, מוסיפים עד שליש מעל מחיר המצווה הבסיסית, ולא יותר.</p>
+      <p>ומצד שני, בחנוכה – כמה מהדרים? ביום הראשון מדליקים נר אחד, וביום השמיני שמונה. זה לא שליש. זה פי שמונה! ולפי שיטת הרמב"ם, שמדליקים כנגד כל אנשי הבית בכל יום, ההידור עצום עוד יותר. אין כאן גבול שאפשר לספור.</p>
+      <p>איך מסתדרות שתי הגמרות? האם יש גבול להידור מצווה או אין? ואם יש, למה בחנוכה אין מתחשבים בו?</p>
+      <p>ובשיעור הובא משל: אדם נכנס לחנות תכשיטים כדי לקנות מתנה לאשתו. כמה הוא מוכן להשקיע? לפי היכולת, לפי המשכורת. אבל אם היה קונה מתנה לבתו שהחלימה ממחלה קשה – האם היה מסתכל על המחיר? כנראה שהיה משקיע הרבה יותר.</p>
+      <p class="bold-para">הגמרא מגבילה הידור מצווה עד שליש, ואילו בחנוכה מוסיפים עד פי שמונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אהבה בלי גבול</div>
+      <h3 class="story-title">🌟 מכאן ואילך משל הקדוש ברוך הוא</h3>
+      <p>הגמרא עצמה מספרת שרבי זירא לימד בארץ ישראל: בהידור מצווה, עד שליש – משלו. מכאן ואילך – משל הקדוש ברוך הוא. כלומר, כשאדם מוכן להשקיע מעבר ליכולתו הרגילה, בורא העולם משתתף איתו ופורע לו.</p>
+      <p>על בסיס זה הובא בשיעור תירוץ, בשם אחד מגדולי בית בריסק. בחנוכה, חכמים ידעו שיהודים מרגישים את גודל הנס. השמחה העצומה על הניצחון על היוונים, ועל פך השמן הקטן שדלק שמונה ימים, אינה מאפשרת לאדם לעצור. הוא רוצה לתת את כל כולו.</p>
+      <p>זה כמו הורה שקונה מתנה לבנו שהחלים ממחלה קשה. הוא אינו מסתכל על המחיר. כמו מי שניצל מסכנה גדולה ורוצה להודות לבורא עולם – הוא אינו שואל כמה זה יעלה.</p>
+      <p>לכן בנרות חנוכה פרצו את גבולות ההידור. מה שנוהגים בחנוכה אינו בגדר הרגיל. הוא מעבר לדין, משהו שהלב פורץ אליו. כשהדברים נעשים מתוך אהבה, אין גבול. וכתוב בגמרא במפורש: מי שרוצה להוסיף, מוסיף, והקדוש ברוך הוא משתתף איתו. הוא שמח בכל יהודי שרוצה להוסיף עוד ועוד אור לעולם.</p>
+      <p class="bold-para">בחנוכה הלב פורץ בהודיה על הנס, ולכן ההידור עובר את הגבולות הרגילים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אהבה בלי גבול</div>
+      <h3 class="story-title">📚 השיעור בבית המדרש הגדול</h3>
+      <p>את התירוץ האחרון לשאלה הזו אמר הגאון רבי אשר אריאלי, מגידי השיעורים בישיבת מיר בירושלים. ישיבת מיר היא הישיבה שבה לומדים הכי הרבה תלמידים בארץ, אלפים רבים. התורה דולקת בה יומם ולילה.</p>
+      <p>השיעור היומי של רבי אשר נחשב לאחד השיעורים בעלי מספר השומעים הגדול ביותר. בבית המדרש שבו הוא מוסר את השיעור יש כשמונה מאות מקומות, ואין מקום פנוי אחד. ומי שלא מצא מקום, צופה בשיעור במסכים במקום אחר בישיבה. ואלפים נוספים שומעים אותו בכל העולם.</p>
+      <p>בשיעור נמסר תיאור של דמותו. בשיעוריו הוא בהיר וחד, בלי פלפולים מיותרים. ועם כל גדולתו הוא בורח מן הכבוד, נוהג בפשטות, כמו אחד האברכים. בתפילה הוא מדקדק בכל מילה. הוא אוהב כל תלמיד, משקיע בכל אחד, ודואג לזולת.</p>
+      <p>יהודי מיוחד מאוד, שתלמידיו מעריצים אותו. ובאחד משיעוריו הוא הסביר את נרות החנוכה. השיעור נפתח בשאלה שנראית פשוטה, אבל טמון בה סוד עמוק של אהבה.</p>
+      <p class="bold-para">רבי אשר אריאלי, שבשיעורו בישיבת מיר יושבים מאות תלמידים, הסביר את נרות החנוכה בדרך מיוחדת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אהבה בלי גבול</div>
+      <h3 class="story-title">🧵 מצווה אחת עם שני רבדים</h3>
+      <p>כך פתח הרב: אדם קונה תפילין, והמוכר שואל אותו איזו רמת הידור הוא רוצה. יש רמה כזו ורמה כזו, והמחיר בהתאם. האם האדם עומד כאן מול שתי מצוות נפרדות – מצוות תפילין מצד אחד, ומצוות הידור מצד שני? או שזו מצווה אחת עם שני רבדים, החובה וההידור?</p>
+      <p>התשובה: זו מצווה אחת. יש מצוות תפילין מינימלית, ויש מצוות תפילין מהודרת. אבל ההידור אינו עוד מצווה. מצוות התפילין עצמה היא שמתהדרת.</p>
+      <p>וחשבו על מתנה להורים: האם אתם עושים שתי פעולות נפרדות, נתינת מתנה והידור המתנה? ודאי שלא. זו פעולה אחת של אהבה, שמתבטאת בכל הפרטים הקטנים.</p>
+      <p>ומכאן ראיה. איך קבעו חז"ל את שיעור ההידור? הם לא אמרו: השקע סכום קבוע, או אחוז מן ההכנסה שלך. הם אמרו: עד שליש – שליש מן המצווה עצמה. אילו ההידור היה מצווה בפני עצמה, היה צריך לקבוע לו סכום משלו. אבל כשהשיעור נמדד ביחס למחיר המצווה, רואים שההידור הוא חלק בלתי נפרד ממנה, כמו שהלב הוא חלק בלתי נפרד מן הגוף.</p>
+      <p class="bold-para">הידור המצווה אינו מצווה נוספת אלא חלק מן המצווה עצמה, ולכן שיעורו נקבע כשליש מן המצווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אהבה בלי גבול</div>
+      <h3 class="story-title">♾️ אין מינימום ואין מקסימום</h3>
+      <p>ועכשיו בא החילוק הגדול. במצוות רגילות, כמו תפילין או ציצית, יש שיעור. כמה אדם צריך להוציא כדי לקיים מצוות עשה? אמרו חז"ל: אין אדם חייב לבזבז יותר מחומש מנכסיו. יש מינימום של חובה, ויש גבול למה שנדרש ממנו. ולכן גם להידור יש גבול: עד שליש.</p>
+      <p>אבל בנר חנוכה, הרמב"ם כותב דבר מדהים: אפילו עני שאין לו מה לאכול, מתפרנס מן הצדקה, שואל או מוכר כסותו ולוקח שמן להדליק. אין כאן מינימום של השקעה. אין סכום שאחריו אדם פטור.</p>
+      <p>והרב הסביר זאת במשל. בכל בוקר הוא רואה אבא שמביא את בנו לתלמוד תורה. הילד מבקש כריך לארוחת עשר, והאבא תמיד מוסיף לו גם ממתק קטן. הילד שואל: למה, אבא? והאב עונה: כי אתה הבן שלי. האם יש גבול לאהבה של אב לבנו? אפשר למדוד אותה בסנטימטרים?</p>
+      <p>וזה היסוד: מצווה שאין לה מינימום, אין לה גם מקסימום. אם אדם מוכן למכור את כסותו כדי להדליק, איך אפשר להגביל את ההידור? לכן אין קושיה. נר חנוכה הוא ביטוי של אהבה אינסופית, ובאהבה אינסופית אין גבולות.</p>
+      <p class="bold-para">בנר חנוכה אין שיעור מינימום של השקעה, ולכן אין לו גם מקסימום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אהבה בלי גבול</div>
+      <h3 class="story-title">❤️ סיפור של אהבה שאין לה גבולות</h3>
+      <p>את הדברים האלה אמר הרב בשקט, והם הדהדו באולם הענק. מאות תלמידים ישבו בדממה, וכל אחד חשב על המשמעות העמוקה: יש מצוות שהן ביטוי של אהבה אינסופית, ובאהבה אינסופית אין גבולות.</p>
+      <p>ולקראת סוף השיעור חייך הרב ואמר: בחנוכה, כשאתם רואים את האור גדל והולך מיום ליום, תזכרו – זה לא סתם עוד נר. זה סיפור של אהבה שאין לה גבולות.</p>
+      <p>ויש בזה מסר לחיים כולם. לפעמים אנחנו שואלים: כמה מספיק? כמה צריך? מה המינימום? אבל יש דברים בחיים – אהבת הורים, אהבת התורה, אהבת ה' – שבהם השאלה הזו פשוט אינה קיימת. באהבה אמיתית הלב אינו שואל כמה, אלא רק איך אפשר לתת עוד.</p>
+      <p>עכשיו מובנת גם השאלה ששאלנו בתחילה: למה דווקא בחנוכה כל אחד רוצה להדליק בעצמו, ולמה דווקא בה יש "מהדרין מן המהדרין". כי זו מצווה של אהבה ושל הודיה, שפורצת מן הלב. כל אחד רוצה לתת בה את חלקו, וכל יום מוסיפים עוד אור.</p>
+      <p>נזכה כולנו להדליק את הנרות מתוך אהבה כזו, ולהוסיף בכל יום עוד אור, בבית ובלב.</p>
+      <p class="bold-para">האור שגדל מיום ליום בחנוכה מזכיר שבאהבת ה' הלב לא שואל כמה, אלא איך אפשר לתת עוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/3C9-bU7mpys · 2024-12-25 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"נר איש וביתו והמהדרין","icon":"🕯️","color":"#c62b6b","stories":[{"id":1,"title":"יהודי אחד ונר אחד","icon":"🕯️"},{"id":2,"title":"מה זה הידור?","icon":"✨"},{"id":3,"title":"שתי תמונות של חנוכה","icon":"🪟"},{"id":4,"title":"מתנה לזוג הצעיר","icon":"🎁"}]},{"id":2,"name":"הבית או האדם","icon":"🏠","color":"#6d28d9","stories":[{"id":5,"title":"הבית כיחידה אחת","icon":"🏠"},{"id":6,"title":"חפצא או גברא","icon":"⚖️"},{"id":7,"title":"כל אחד ונרו","icon":"🙏"},{"id":8,"title":"עוד נר לנרות שבת","icon":"🕯️"}]},{"id":3,"name":"רחוק מן הבית","icon":"🧳","color":"#e08e00","stories":[{"id":9,"title":"בנסיעת עסקים בחנוכה","icon":"🧳"},{"id":10,"title":"בחורי ישיבה ונוסעים רחוקים","icon":"✈️"},{"id":11,"title":"מצוות של מקום ומצוות של אדם","icon":"🧭"}]},{"id":4,"name":"הידור של יותר והידור של אחר","icon":"🎁","color":"#1e88b8","stories":[{"id":12,"title":"שבעה נרות במתנה","icon":"📦"},{"id":13,"title":"מי שמתכוון לא לצאת","icon":"💡"},{"id":14,"title":"הידור של יותר והידור של אחר","icon":"🎨"},{"id":15,"title":"נרות בבית הכנסת","icon":"🏛️"}]},{"id":5,"name":"אהבה בלי גבול","icon":"❤️","color":"#c62b6b","stories":[{"id":16,"title":"כמה מותר להשקיע במצווה?","icon":"💰"},{"id":17,"title":"מכאן ואילך משל הקדוש ברוך הוא","icon":"🌟"},{"id":18,"title":"השיעור בבית המדרש הגדול","icon":"📚"},{"id":19,"title":"מצווה אחת עם שני רבדים","icon":"🧵"},{"id":20,"title":"אין מינימום ואין מקסימום","icon":"♾️"},{"id":21,"title":"סיפור של אהבה שאין לה גבולות","icon":"❤️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
