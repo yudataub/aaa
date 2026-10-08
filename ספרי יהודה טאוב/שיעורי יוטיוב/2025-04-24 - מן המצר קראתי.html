@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מן המצר קראתי</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מן המצר קראתי</h1>
+  <p>סגולות ללידה קלה מספרו של הרב ארבס: יענך ה' ביום צרה, מן המצר, ויהי נועם ויושב בסתר, ולמה כל צרה היא הכנה לישועה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מן המצר קראתי" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/-BZjLJSejN0?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/-BZjLJSejN0/hqdefault.jpg" alt="מן המצר קראתי" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=-BZjLJSejN0" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ספר של סגולות ליולדת</div>
+      <h3 class="story-title">✍️ המחבר שמוצא קשר בין דבר לדבר</h3>
+      <p>השיעור הזה הוא החלק השני של לימוד על ספר מיוחד, ובו נלמדות הסגולות. הספר כולו, מתחילתו ועד סופו, עוסק בסגולות ללידה קלה. חיבר אותו הרב חיים שלום אליעזר ארבס, יהודי חסידי מיוחד במינו.</p>
+      <p>מה מיוחד בו? הוא יכול לקחת פרק אחד בתהילים, או ברכה אחת בתפילה, ולחבר עליה פירושים רבים מכל מיני כיוונים. על כל פסוק בפסוקי דזמרה כתב שלושה וארבעה פירושים, וחיבר על פסוקי דזמרה חלקים רבים. אחר כך חיבר שלושה ספרים על ברית המילה, ברכה אחר ברכה.</p>
+      <p>והוא אינו ממציא. הוא אוסף מכל מיני מקורות, ומצליח לקשר ביניהם. כשקבוצה אחת ביקשה ממנו חיבור על ברכת "אהבת עולם", הוציא להם חוברת שלמה מלאה פירושים.</p>
+      <p>פעם הציע לו הרב: אנשים אומרים מזמור לתודה עשרות פעמים. אולי תחבר עליו ספר, כדי שיהיה גיוון ויהיה משהו שמעורר? הוא שמח על הרעיון, ועבד עליו זמן רב. בסוף הביא ארבעים פרקים, כנגד ארבעים לחמי התודה.</p>
+      <p class="bold-para">הרב חיים שלום אליעזר ארבס יודע לקחת פרק אחד ולמצוא בו פירושים רבים, מכל הכיוונים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ספר של סגולות ליולדת</div>
+      <h3 class="story-title">👶 מתודה לתולדה</h3>
+      <p>איך הגיע ספר על מזמור לתודה לעסוק ביולדות? כאן מגיע דבר מפתיע. רבי נחמן מברסלב כתב שמזמור לתודה הוא סגולה ללידה קלה. ויש בזה רמז: "לתודה" באותיות "תולדה".</p>
+      <p>מכאן התחיל המחבר לשאול: אם מזמור לתודה מסוגל ללידה, אולי יש עוד דברים שמסוגלים לכך? הוא הוסיף עוד סגולה, ועוד אחת, ועוד כמה, עד שנעשה ספר שלם. הרב מכנה זאת "פרה ורבה": כל דבר שהוא נוגע בו מתרחב ונעשה לחיבור שלם.</p>
+      <p>ומה הקשר העמוק בין הודיה ללידה? כאשר אדם מודה לקדוש ברוך הוא מראש, עוד לפני שהגיעה הישועה, הוא מראה שהוא בוטח בה' כל כך, עד שכבר עכשיו הוא מודה. כמו שאומרים "נְרַנְּנָה בִּישׁוּעָתֶךָ" – שמחים בישועה שעוד לא באה.</p>
+      <p>ההודיה מראש היא עצמה סגולה שהישועה אכן תגיע. זהו הקשר הפשוט: אדם שבטוח בקדוש ברוך הוא, קל לו לקבל את הישועה. והשיעור לא עבר על כל הספר, אלא נתן טעימה קטנה מכמה מן הסגולות.</p>
+      <p class="bold-para">מכיוון שמזמור לתודה מסוגל ללידה, הפך הספר לאוסף שלם של סגולות ליולדת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ספר של סגולות ליולדת</div>
+      <h3 class="story-title">⏳ דווקא בשעת צרה</h3>
+      <p>לפני שלומדים את הסגולות, צריך להבין יסוד: למה יש עניין מיוחד להתפלל דווקא בשעת הלידה? התשובה היא שכאשר אדם נמצא בשעת צרה, זה זמן הפוך. דווקא אז הוא יכול לקבל ישועה הרבה יותר. זו שעת רצון גדולה מאוד.</p>
+      <p>הלב של אדם בצרה פתוח. הוא אינו מתפלל מתוך הרגל, אלא מתוך עומק. ולכן התפילה שלו עולה למעלה בכוח אחר. זו גם הכוונה בפסוק "מִן הַמֵּצַר קָרָאתִי יָּהּ": הקריאה האמיתית יוצאת דווקא מתוך המצר. מי שנמצא במרחב קורא לה' לפעמים בשפה רפה. מי שנמצא במצר קורא בכל כוחו.</p>
+      <p>ולכן אין להתייאש מן הקושי עצמו. הקושי הוא הזדמנות. דווקא ברגעים שבהם האדם מרגיש הכי חלש, הוא קרוב ביותר לקבל, אם רק ישכיל לפנות אל ה' באותו רגע.</p>
+      <p>צריך גם לזכור כמה הלידה הייתה פעם דבר מסוכן. היום, ברוך ה', זה נדיר יותר, אבל לפני מאה שנה זה היה דבר לא פשוט כלל. הרב הביא את דברי המשך חכמה, שהסביר מדוע מצוות פרו ורבו ניתנה לאיש ולא לאישה: התורה אינה מטילה על אדם חובה להיכנס למצב של סכנה וצער כזה.</p>
+      <p>ולכן מאז ומעולם היו יהודים מתפללים ואומרים פרקים מיוחדים בשעת הלידה. הלידה היא שעה של צער, וממילא גם שעה של תפילה עמוקה, ושם נכנסות הסגולות.</p>
+      <p class="bold-para">שעת צרה היא שעת רצון גדולה, שבה האדם יכול לקבל ישועה יותר מבכל זמן אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · יענך ה' ביום צרה</div>
+      <h3 class="story-title">🙏 אלוקי יעקב העונה ביום צרה</h3>
+      <p>הסגולה הראשונה היא פרק כ' בתהילים: "לַמְנַצֵּחַ מִזְמוֹר לְדָוִד. יַעַנְךָ ה' בְּיוֹם צָרָה, יְשַׂגֶּבְךָ שֵׁם אֱלֹקֵי יַעֲקֹב". כבר בקדמונים מובא שאת המזמור הזה היו אומרים בשעת הלידה.</p>
+      <p>המדרש שואל: למה דווקא "אלוקי יעקב"? למה לא אלוקי אברהם, לא אלוקי יצחק? ועונה: כי יעקב אמר "לָאֵל הָעֹנֶה אֹתִי בְּיוֹם צָרָתִי". יעקב הוא שהעיד שה' עזר לו בעת צרה. לכן כשמבקשים "יענך ה' ביום צרה", מזכירים את מי שענה ליעקב.</p>
+      <p>ועוד מובא במדרש: כשהייתה היולדת בוכה ושואלת "מה יהיה איתי?", היו אומרים לה: מי שענה לאמך, ומי שעזר לה כשילדה אותך, הוא יענה גם אותך. מי שענה את יעקב אבינו ביום צרתו, הוא יעזור לך בצרה שאת נמצאת בה.</p>
+      <p>מכאן שהמזמור מסוגל ליולדת. והרב הוסיף שלא ברור שדווקא היולדת עצמה צריכה לומר אותו. ייתכן שאפשר שיאמרו אותו גם העומדים עליה ומתפללים בשבילה.</p>
+      <p class="bold-para">"יענך ה' ביום צרה" מזכיר את יעקב, שאמר שה' ענה אותו ביום צרתו, ובזכותו נענית גם היולדת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · יענך ה' ביום צרה</div>
+      <h3 class="story-title">🔢 תשעה פסוקים ושבעים תיבות</h3>
+      <p>המדרש מביא רמז מופלא: תשעה פסוקים יש במזמור הזה, כנגד תשעה חודשים שהאישה מעוברת. מי שסופר מוצא עשרה פסוקים, אבל הפסוק הראשון, "למנצח מזמור לדוד", הוא כמו כותרת ואינו נמנה.</p>
+      <p>ועוד רמז: יש במזמור שבעים תיבות, כנגד שבעים קולות שהיולדת צועקת. הרב סיפר שבדק וספר, ואכן יש בו שבעים מילים.</p>
+      <p>מה הפירוש בשבעים הקולות? בשיעור שאל אחד המשתתפים: מי עשה את החשבון? והרב השיב שהדברים רומזים לעניינים עמוקים, וייתכן שכל צער פותח עוד פתח, עד שמגיעים לפנים.</p>
+      <p>אבל המסר פשוט: המזמור הזה כאילו נכתב בדיוק לשעה הזאת. כל חודש מחודשי ההריון יש לו פסוק, וכל קול של צער יש לו מילה. מי שאומר אותו מכניס את כל התקופה כולה, ואת כל רגעי הקושי, אל תוך התפילה.</p>
+      <p class="bold-para">תשעת פסוקי המזמור הם כנגד תשעה חודשי העיבור, ושבעים תיבותיו כנגד שבעים קולות היולדת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · יענך ה' ביום צרה</div>
+      <h3 class="story-title">🌙 תשעה ירחי לידה</h3>
+      <p>בשיעור עלתה שאלה מעניינת. בליל הסדר שרים "אחד מי יודע", ושם נאמר "תשעה מי יודע? תשעה ירחי לידה". כל השיר הזה אמור למנות דברים שישראל מיוחדים בהם: אחד אלוקינו, שני לוחות הברית, שלושה אבות, ארבע אמהות, חמישה חומשי תורה.</p>
+      <p>אבל תשעה חודשי לידה שייכים גם לגויים. מה מיוחד בזה לעם ישראל? הרבה חיפשו תירוצים לשאלה הזו.</p>
+      <p>תשובה אחת שנאמרה: אמנם ההריון קיים אצל כולם, אבל על בת ישראל יש השגחה מיוחדת בזמן ההריון. אצל ישראל אין זה תהליך טבעי בלבד. הקדוש ברוך הוא משגיח עליו בפרטות.</p>
+      <p>ועוד דרך הביא הרב: אצל יהודים, גם הדברים שיש לכולם נעשים קדושים. יהודים מביאים ילדים לעולם, ויש להם בזה מצווה. וכך תשעה ירחי לידה הופכים להיות מצווה. אותו דבר עצמו, שאצל אחרים הוא טבע, אצלנו הוא עבודת ה'. ומשום כך גם מקומו בשיר של ליל הסדר.</p>
+      <p class="bold-para">גם דבר שקיים אצל כל בני האדם נעשה אצל ישראל קדוש, ויש עליו השגחה מיוחדת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מן המצר אל המרחב</div>
+      <h3 class="story-title">🌅 "מן המצר קראתי יה"</h3>
+      <p>הסגולה הבאה היא הפסוק "מִן הַמֵּצַר קָרָאתִי יָּהּ, עָנָנִי בַמֶּרְחָב יָהּ". גם הסגולות האלה מופיעות כבר בראשונים. ועל הפסוק הזה, כמו על מזמור לתודה, אסף המחבר ארבעים פירושים.</p>
+      <p>הפירוש הפשוט: אדם בצרה מתפלל מתוך המצר, ומבקש לצאת למרחב. אבל יש בזה גם רמז עמוק יותר: ה' נמצא בתוך המצר עצמו. אור אלוקי מוסתר בתוך הצרה, והמצר עצמו הופך לישועה.</p>
+      <p>וכך יש לקרוא את הפסוק: "ענני במרחב" – ה' ענה לי כבר עכשיו במרחב. אתה חושב שאתה נמצא במצר. אבל אילו היית רואה את כל התמונה, ולאן הצרה מובילה אותך, היית רואה שאתה כבר במרחב. יש כאן דבר שהולך להביא לך אור גדול.</p>
+      <p>ובספרים מובא יסוד גדול: כל מצר אינו אלא הכנה לישועה. ולעתיד לבוא יתגלה כיצד הצרה עצמה הביאה את הישועה. והיולדת היא הדוגמה המובהקת לכך: הצער של הלידה מביא בסוף, ברוך ה', ילד לעולם, ושמחה גדולה.</p>
+      <p class="bold-para">מי שהיה רואה את כל התמונה, היה רואה שהוא נמצא כבר במרחב, ושהצרה מובילה לישועה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מן המצר אל המרחב</div>
+      <h3 class="story-title">🕊️ הצער שמביא את השמחה</h3>
+      <p>היולדת שימשה אצל גדולי ישראל פעמים רבות כמשל לכל הייסורים. כמו שאצל היולדת הצער הופך בסוף לדבר טוב, כך גם בכל צרה.</p>
+      <p>הצער של הלידה אינו דבר שעומד בפני עצמו. הוא חלק מן הדרך שמביאה את החיים החדשים. אי אפשר בלעדיו. ומי שמבין זאת, יכול לשאת את הצער אחרת: הוא יודע שזה לא סוף הדרך, אלא פתח.</p>
+      <p>ולעתיד לבוא יתגלה שכמעט כל צרה שעברנו הייתה הכנה לישועה גדולה מאוד. ומה שאנחנו רואים בבירור אצל היולדת, שבסוף השמחה עולה על הצער, נראה אז בכל דבר.</p>
+      <p>הרב הוסיף שגם בצרות הכלליות של עם ישראל אפשר לראות לפעמים, אחרי שנים, איך הקדוש ברוך הוא הכין מתוכן ישועות. והביע תקווה שנזכה בקרוב לספר גם איך התקופה הקשה של הימים האלה נהפכה לישועה גדולה לעם ישראל. מי שזוכה, רואה זאת כבר בעולם הזה.</p>
+      <p class="bold-para">גדולי ישראל השתמשו ביולדת כמשל לכל הייסורים: הצער עצמו הוא שמביא את השמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מן המצר אל המרחב</div>
+      <h3 class="story-title">🍷 סוד הכוס החמישית</h3>
+      <p>בשיעור הובא פירוש נפלא על ארבע הכוסות שבליל הסדר. כמה שנים נגזר על ישראל להיות בגלות מצרים? בברית בין הבתרים נאמר ארבע מאות שנה, ובמקום אחר שלושים וארבע מאות שנה. אבל כמה שנים עבדו בפועל בעבודה קשה? כתוב במדרש: שמונים ושש שנה בלבד, מאז שמתו כל האחים והדור ההוא, ואז החל פרעה למרר את חייהם.</p>
+      <p>עכשיו נחשב: "כוס" בגימטריה – שמונים ושש. וארבע מאות ושלושים הן חמש פעמים שמונים ושש. מתוך חמישה חלקים של גלות, הקדוש ברוך הוא הוריד לנו ארבעה, ורק חלק אחד היה בפועל עבודה קשה. כנגד ארבעת החלקים שהוריד, אנחנו שותים ארבע כוסות ומודים לו.</p>
+      <p>ומה עם הכוס החמישית? היא הכוס של אליהו הנביא. בעולם הזה, על הטובות מברכים "הטוב והמטיב", ועל הרעות "דיין האמת". אבל לעתיד לבוא יברכו על הכל "הטוב והמטיב", כי יראו בחוש איך הצרה הביאה את הישועה.</p>
+      <p>היום אי אפשר לשתות כוס על שמונים ושש שנות השעבוד, כי הן נראות רעות. כשיבוא אליהו הנביא, נוכל לשתות גם את הכוס החמישית, ולהודות לה' גם עליהן.</p>
+      <p class="bold-para">ארבע כוסות הן כנגד מה שה' קיצר מן השעבוד, והכוס החמישית – כנגד השעבוד עצמו, שנודה עליו לעתיד לבוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מן המצר אל המרחב</div>
+      <h3 class="story-title">🐓 כל מה דעביד רחמנא לטב עביד</h3>
+      <p>מי שזוכה, רואה כבר בעולם הזה איך הצרה הביאה ישועה. והרב הביא את הסיפור המפורסם על רבי עקיבא. הוא הלך בדרך, הגיע לעיר אחת, ולא נתנו לו מקום ללון. אמר: "כל מה דעביד רחמנא לטב עביד" – כל מה שעושה הקדוש ברוך הוא, לטובה הוא עושה. ולן בשדה.</p>
+      <p>היו איתו תרנגול, חמור ונר. באה רוח וכיבתה את הנר. בא חתול ואכל את התרנגול. בא אריה וטרף את החמור. ועל כל דבר אמר: כל מה שעושה ה', לטובה. באותו לילה באו גייסות ושבו את העיר. אמר לתלמידיו: לא אמרתי לכם? אילו היה הנר דולק, אילו היה התרנגול קורא או החמור נוער, היו מגלים אותי.</p>
+      <p>ושאל הרב: מה בא רבי עקיבא ללמד את תלמידיו? הרי ודאי שידעו את היסוד הזה. אלא בא לומר להם דבר נוסף: כאשר האדם אומר זאת בפועל, ומאמין בזה, זו סגולה שאכן יזכה לראות בחוש איך הצרה עצמה הצילה אותו.</p>
+      <p>לא תמיד, אבל פעמים רבות, מי שאומר ומאמין רואה. וזה בדיוק הפסוק "מן המצר קראתי יה, ענני במרחב יה".</p>
+      <p class="bold-para">האומר באמת שהכל לטובה, זוכה לראות בעיניו איך הצרה עצמה הצילה אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ויהי נועם ויושב בסתר</div>
+      <h3 class="story-title">✨ "ויהי נועם" – השראת שכינה</h3>
+      <p>סגולה נוספת היא הפסוק "וִיהִי נֹעַם ה' אֱלֹקֵינוּ עָלֵינוּ, וּמַעֲשֵׂה יָדֵינוּ כּוֹנְנָה עָלֵינוּ". על המשכן נאמר "וַיְבָרֶךְ אֹתָם מֹשֶׁה", ורש"י מפרש שאמר להם: יהי רצון שתשרה שכינה במעשה ידיכם, "ויהי נועם ה' אלוקינו עלינו". נועם ה' הוא השראת השכינה.</p>
+      <p>ומובא בספר פירוש שהרב אוהב מאוד: מהו הנועם הזה? כאשר אדם מרגיש נעימות, הנאה, שמחה וסיפוק במה שהוא עושה – זו השראת שכינה. בכל מקום שיהודי מרגיש תחושה טובה במעשיו, שם שורה השכינה. וכך אמרו חז"ל שאין השכינה שורה אלא מתוך שמחה. ואם אדם עצוב, אין דרך שתשרה עליו.</p>
+      <p>הרב הסביר שמשום כך נוהגים רבים לומר את הפסוק הזה לפני מצוות: שתהיה לי הנאה רוחנית ממנה. אני הולך להתפלל – שאהנה מן התפילה. אני הולך ללמוד – שארגיש שמחה. ו"מעשה ידינו כוננה" – שנעשה את הדבר כראוי, ושיתקבל למעלה באהבה.</p>
+      <p>ולכן מבקשים זאת בלידה: שתשרה נעימות אלוקית על היולדת ועל הוולד, שהיא תהיה כלי מוכן לקבל את השפע, ושהכל יעבור בשלום ובהצלחה.</p>
+      <p class="bold-para">כשאדם מרגיש נעימות ושמחה במעשיו, זו השראת שכינה, ולכן מבקשים נועם על הלידה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ויהי נועם ויושב בסתר</div>
+      <h3 class="story-title">🏠 שכינה ביניהם</h3>
+      <p>מהפירוש הזה עולה הבנה חדשה של מאמר חז"ל מפורסם: "איש ואישה, זכו – שכינה ביניהם". מה פירוש שכינה ביניהם? האם מישהו ראה פעם את השכינה בבית?</p>
+      <p>על פי מה שלמדנו, הדבר פשוט. השראת שכינה היא נעימות, שמחה והנאה. בית שבו האיש והאישה חיים בנעימות, שמחים זה בזה ומרגישים טוב יחד – בו השכינה שורה ביניהם. ובית שיש בו צעקות ומריבות, השכינה מסתלקת ממנו.</p>
+      <p>הרב הצביע על כך שבעולם רואים הרבה בתים שבורים, והבית היהודי נבחן בדיוק בנקודה הזאת: האם יש בו נעימות. אין צורך לחפש את השכינה במקומות רחוקים. היא נמצאת בתחושה הטובה שבין בני הזוג.</p>
+      <p>וזה מתחבר ללידה. ילד שנולד לתוך בית שיש בו נועם, נולד לתוך מקום שהשכינה שורה בו. והבקשה "ויהי נועם ה' אלוקינו עלינו" היא בקשה על הבית כולו: שיהיה בו נועם, ושתשרה בו שכינה.</p>
+      <p class="bold-para">בית שיש בו נעימות ושמחה הוא בית שהשכינה שורה בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ויהי נועם ויושב בסתר</div>
+      <h3 class="story-title">🛡️ "יושב בסתר עליון" – שיר של פגעים</h3>
+      <p>המזמור "יֹשֵׁב בְּסֵתֶר עֶלְיוֹן, בְּצֵל שַׁדַּי יִתְלוֹנָן" נקרא "שיר של פגעים". זו תפילה שמגינה מכל פגע רע, כמו שנאמר בו "כִּי הוּא יַצִּילְךָ מִפַּח יָקוּשׁ מִדֶּבֶר הַוּוֹת". ולכן הוא סגולה גדולה לשמירה על היולדת ועל התינוק, בלידה ואחריה.</p>
+      <p>המחבר לקח את כל הפרק ופירש אותו כך שכל פסוק מתאים ליולדת. "כִּי מַלְאָכָיו יְצַוֶּה לָּךְ לִשְׁמָרְךָ" – מלאכים מלווים ושומרים עליה. והרב הוסיף שהמלאך הוא רק שליח, כמו שאמר יעקב "הַמַּלְאָךְ הַגֹּאֵל אֹתִי מִכָּל רָע", ובאמת הקדוש ברוך הוא עצמו הוא השומר. "אֹמַר לַה' מַחְסִי וּמְצוּדָתִי" – ה' הוא המחסה שלי בשעת הלידה, ועצם האמונה הזו פותחת את השער.</p>
+      <p>"פח יקוש" הוא מלכודת: ה' יציל את היולדת והוולד מכל מוקש וסכנה שבדרך הלידה. "לֹא תִירָא מִפַּחַד לָיְלָה" – אדם פוחד בדרך כלל יותר בלילה, וה' מגן מכל הפחדים והדאגות. "לֹא תְאֻנֶּה אֵלֶיךָ רָעָה, וְנֶגַע לֹא יִקְרַב בְּאָהֳלֶךָ" – שמירה מכל נזק.</p>
+      <p class="bold-para">מזמור "יושב בסתר" נקרא שיר של פגעים, והמחבר פירש כל פסוק בו כשמירה על היולדת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ויהי נועם ויושב בסתר</div>
+      <h3 class="story-title">💫 כוחה של האמונה</h3>
+      <p>בסיום הדברים חוזר הכל אל יסוד אחד: כוחה של האמונה. יש לה כוח עצום לחולל פלאים. לפי מידת האמונה של אדם, כך מידת ההשגחה עליו. היא יכולה להביא רפואה וכל מיני ישועות. בכל מצר ובכל מצב הקדוש ברוך הוא יכול לעזור.</p>
+      <p>לכן אומרים את הפרקים האלה מתוך בקשה, ומכוונים על העובר ועל היולדת. מי שאומר אותם מתוך אמונה, ה' שומע את תפילתו.</p>
+      <p>כל הסגולות שנלמדו מתחברות זו לזו. מזמור לתודה – להודות מראש, מתוך ביטחון. "יענך ה' ביום צרה" – לזכור שמי שענה ליעקב ולאמהות יענה גם עכשיו. "מן המצר" – לדעת שהצרה עצמה היא הכנה לישועה. "ויהי נועם" – לבקש שתשרה שכינה ושמחה. ו"יושב בסתר" – להישען על השמירה העליונה.</p>
+      <p>יהי רצון שה' ימתיק את כל חבלי הלידה, ושמן המצר יצאו כולם אל המרחב, אל השמחה ואל הישועה.</p>
+      <p class="bold-para">לפי מידת האמונה של האדם, כך מידת ההשגחה עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/-BZjLJSejN0 · 2025-04-24 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ספר של סגולות ליולדת","icon":"📖","color":"#c62b6b","stories":[{"id":1,"title":"המחבר שמוצא קשר בין דבר לדבר","icon":"✍️"},{"id":2,"title":"מתודה לתולדה","icon":"👶"},{"id":3,"title":"דווקא בשעת צרה","icon":"⏳"}]},{"id":2,"name":"יענך ה' ביום צרה","icon":"🙏","color":"#6d28d9","stories":[{"id":4,"title":"אלוקי יעקב העונה ביום צרה","icon":"🙏"},{"id":5,"title":"תשעה פסוקים ושבעים תיבות","icon":"🔢"},{"id":6,"title":"תשעה ירחי לידה","icon":"🌙"}]},{"id":3,"name":"מן המצר אל המרחב","icon":"🌅","color":"#e08e00","stories":[{"id":7,"title":"\"מן המצר קראתי יה\"","icon":"🌅"},{"id":8,"title":"הצער שמביא את השמחה","icon":"🕊️"},{"id":9,"title":"סוד הכוס החמישית","icon":"🍷"},{"id":10,"title":"כל מה דעביד רחמנא לטב עביד","icon":"🐓"}]},{"id":4,"name":"ויהי נועם ויושב בסתר","icon":"🛡️","color":"#1e88b8","stories":[{"id":11,"title":"\"ויהי נועם\" – השראת שכינה","icon":"✨"},{"id":12,"title":"שכינה ביניהם","icon":"🏠"},{"id":13,"title":"\"יושב בסתר עליון\" – שיר של פגעים","icon":"🛡️"},{"id":14,"title":"כוחה של האמונה","icon":"💫"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
