@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 כעוף השמיים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 כעוף השמיים</h1>
+  <p>למה ביקש משה רבנו להיכנס לארץ אפילו כציפור או כדג, ומה זה מלמד על קדושתה העצמית של ארץ ישראל</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ כעוף השמיים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/dNyr9Rxjp_s?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/dNyr9Rxjp_s/hqdefault.jpg" alt="כעוף השמיים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=dNyr9Rxjp_s" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ביום ההילולא של משה רבנו</div>
+      <h3 class="story-title">🕯️ לדבר על הצדיק</h3>
+      <p>השיעור נאמר סמוך לז' באדר, יום פטירתו של משה רבנו. הרב הקדים שאף שהיום עצמו היה אתמול, נאמר שבתוך שלושה ימים מן ההילולא עדיין אפשר לעסוק בו. יש מנהגים שונים ליום כזה, כמו הדלקת נר, אבל העיקר הוא לדבר על האדם עצמו.</p>
+      <p>הרב הביא בשם האר"י ז"ל שבזמן ההילולא של צדיק, מה עושים בשמיים? מדברים על הצדיק, על תורתו ועל מעשיו. וכך גם אנחנו צריכים לעשות למטה: לדבר עליו, ללמוד ממנו, להזכיר את דרכו.</p>
+      <p>ומה נדבר היום על משה רבנו? נושא אחד מיוחד: משה רבנו וארץ ישראל. משה רבנו לא זכה להיכנס לארץ, והתפלל על כך תפילות רבות. ומתוך התפילות האלה אפשר ללמוד יסוד גדול על מהותה של ארץ ישראל, יסוד שיש לו השלכות רבות להלכה ולמעשה.</p>
+      <p class="bold-para">ביום ההילולא של צדיק העיקר הוא לדבר על תורתו ועל מעשיו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ביום ההילולא של משה רבנו</div>
+      <h3 class="story-title">💬 כוחה של ברכה פשוטה</h3>
+      <p>לפני שנכנס לנושא, עמד הרב על כוחו של הדיבור. אדם חושב לפעמים: מי אני, מה כבר יכולה מילה שלי לעשות? אבל אין לו מושג כמה השפעה יש לכל דיבור.</p>
+      <p>הביא הרב מה שמובא בחז"ל על מגילת רות. כשנולד הבן לבועז ולרות, באו השכנות, הנשים הזקנות, ואמרו לנעמי: "בָּרוּךְ ה' אֲשֶׁר לֹא הִשְׁבִּית לָךְ גֹּאֵל הַיּוֹם... וְהָיָה לָךְ לְמֵשִׁיב נֶפֶשׁ וּלְכַלְכֵּל אֶת שֵׂיבָתֵךְ". ושואלים: מה כל כך חשוב לכתוב בתנ"ך מה סיפרו כמה נשים זקנות? והתשובה מבהילה: בזכות אותה ברכה, כשעתליה הרגה את כל זרע המלוכה מבית דוד, נשאר אחד. הברכה שאמרו – שיישאר לה זרע – התקיימה ברגע הקשה ביותר.</p>
+      <p>תראו כמה שווה ברכה של יהודי. לכן כשמישהו מברך, צריך לענות אמן בכל הלב. ובברכה הזאת התחיל הרב את השיעור.</p>
+      <p class="bold-para">אסור לזלזל באף מילה טובה; ברכה של יהודי פשוט יכולה להציל דורות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התפילה על הירדן</div>
+      <h3 class="story-title">🕊️ "תן לי להיות כעוף השמיים"</h3>
+      <p>מובא במדרש: כשאמר הקדוש ברוך הוא למשה רבנו שאינו עובר את הירדן, התחיל משה לבקש. אמר: ריבונו של עולם, תן לי רשות שאהיה כעוף השמיים. אפרוש את שתי זרועותיי ככנפיים, ואפרח באוויר העולם למעלה מן הירדן, ואלך ואראה את הארץ. אם אינני יכול להיכנס כאדם, לפחות כציפור.</p>
+      <p>אמר לו הקדוש ברוך הוא: אם אתה עושה כן, הרי זה כאילו עברת את הירדן, ונמצאת שבועתי בטלה. נשבעתי שלא תיכנס, ואי אפשר.</p>
+      <p>אמר משה: ריבונו של עולם, אהיה כדג. אפרוש את זרועותיי כסנפירים, ואת שערות גופי כקשקשים, ואקפוץ לתוך הירדן ואעבור בתוך המים, ואראה את ארץ ישראל. הרב הוסיף בחיוך: אנחנו קרובים לפורים, ומשה רבנו מוכן להתחפש לדג, העיקר להיכנס לארץ. אבל גם כאן ענה לו הקדוש ברוך הוא: הרי זה כאילו עברת, ונמצאת שבועתי בטלה.</p>
+      <p class="bold-para">משה רבנו היה מוכן להיכנס לארץ ישראל בכל צורה, אפילו כציפור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התפילה על הירדן</div>
+      <h3 class="story-title">☁️ מעל לעננים</h3>
+      <p>משה לא ויתר. אמר: ריבונו של עולם, אמרת שאינני עובר את הירדן. יש לי רעיון אחר. הרכב אותי על כנפי העננים, והפרח אותי באוויר העולם, גבוה מעל הירדן, כך שיהיו העננים מלמטה ואני מלמעלה, ואראה את הארץ. כך לא אעבור את הירדן כלל. הרב כינה זאת בחיוך "כדור פורח".</p>
+      <p>וגם על זה ענה לו הקדוש ברוך הוא: אם אתה עושה כן, הרי זה כאילו עברת, ונמצאת שבועתי בטלה. אפילו באוויר שמעל הארץ אי אפשר.</p>
+      <p>כאן הביא הרב סיפור על אחד מגדולי הרבנים בירושלים, שבזקנותו לא היה יוצא לשמחות מחוץ לעיר. חתן אחד שהתחתן הרחק משם רצה מאוד שיבוא, והציע להביא אותו במסוק. הרב השיב: מעודי לא יצאתי מארץ ישראל מאז שעליתי, ואפילו באוויר לא הייתי. תמיד הייתי על עפר הארץ, ואינני רוצה לשנות את מנהגי. הרב אמר שאינו יודע אם הדברים נאמרו בדרך צחות, אבל הם מתאימים מאוד למה שנלמד על האוויר של ארץ ישראל.</p>
+      <p>ועוד מסופר ששאלו את הגאון רבי חיים קנייבסקי: אם ימציאו פעם אפשרות לגור באוויר, מעל ארץ ישראל, האם יקיים בכך מצוות ישוב הארץ? והשיב שיש מצווה ליישב את הקרקע, ואין מצווה ליישב את האוויר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התפילה על הירדן</div>
+      <h3 class="story-title">❤️ "מוטב שימות משה"</h3>
+      <p>במדרש יש המשך, שאינו קשור ישירות לארץ ישראל, אבל הרב הביא אותו כי הוא מדהים. אמר הקדוש ברוך הוא למשה: יש לי הצעה בשבילך. אתה ביקשת שתי בקשות. ביקשת "סְלַח נָא לַעֲוֹן הָעָם הַזֶּה" אחרי חטא העגל, וביקשת "אֶעְבְּרָה נָּא". אם תוותר על "סלח נא", אוותר לך על השבועה ותעבור. בחר אחת מהן.</p>
+      <p>ומה ענה משה רבנו? מוטב שימות משה ואלף כיוצא בו, ולא תינזק ציפורן אחת של אחד מישראל. משה רבנו היה מוכן להיות ציפור, להיות דג, להתחנן שוב ושוב. אבל להיכנס לארץ על חשבון יהודי אחר? זה לא. כמה שרצה בארץ ישראל, לא היה מוכן שבגללו יצטער יהודי אחד.</p>
+      <p>בסוף אמר משה: ריבונו של עולם, לפחות הראה לי אותה. אמר לו הקדוש ברוך הוא: בדבר הזה אני שומע לך, שנאמר "כִּי מִנֶּגֶד תִּרְאֶה אֶת הָאָרֶץ". באותה שעה הראה לו הקדוש ברוך הוא את כל ארץ ישראל, ונתן כוח בעיניו לראות אותה כולה: הנמוך והגבוה, הנסתר והגלוי, הרחוק והקרוב, בהבטה אחת.</p>
+      <p class="bold-para">משה רבנו היה מוכן להיות ציפור או דג, אבל לא להיכנס לארץ על חשבון יהודי אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה להיות ציפור?</div>
+      <h3 class="story-title">🤔 מה יועיל לו להיות ציפור?</h3>
+      <p>והגאון רבי משה פיינשטיין שואל שאלה גדולה: מה פשר בקשתו של משה רבנו להיכנס לארץ ישראל כחיות השדה או כעוף השמיים? הרי מצוות יש רק לבני אדם. בעלי חיים אינם מקיימים מצוות. מה יועיל לו להיכנס לארץ כציפור, אם לא יוכל לקיים בה אף מצווה?</p>
+      <p>כדי להמחיש עד כמה בעלי חיים אינם מקבלים שכר, הביא הרב סיפור מפורסם. אדם נסע בכרכרה, וכלבו רץ לפניו. פתאום עצר הכלב, ונבח ונבח ולא נתן לכרכרה להתקדם. האדון הכה אותו, ניסה להמשיך, והכלב המשיך לנבוח ולחסום. שעה שלמה. בסוף, כשחשב שהכלב השתגע, ירה בו.</p>
+      <p>הכלב הפצוע ברח, והאדון, סקרן לדעת לאן, נסע אחריו לפי טיפות הדם. הגיע למקום שבו מצא את הכלב מת. וכשהרים אותו, ראה מתחתיו ארנק מלא כסף. הארנק נפל מן הכרכרה, והכלב, שלא יכול לדבר, ניסה בנביחותיו לעצור אותו. וכשלא הצליח, רץ לשמור על הכסף עד שמת. האדון בכה: הכלב הזה מסר את נפשו בשבילי, ואני הרגתי אותו.</p>
+      <p>הסיפור נוגע ללב, ומראה נאמנות שקשה למצוא אפילו אצל בני אדם. אבל דווקא משום כך הוא מעורר את השאלה: האם על נאמנות כזאת מקבלים שכר? ואם לא, מה רצה משה רבנו כשביקש להיות כבעל חיים?</p>
+      <p class="bold-para">לבעלי חיים אין מצוות, ובכל זאת רצה משה להיכנס לארץ אפילו כבעל חיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה להיות ציפור?</div>
+      <h3 class="story-title">🐕 "כולו לב"</h3>
+      <p>שאלו את רבי אליהו לופיאן: האם יהיה לכלב הזה חלק לעולם הבא? הרי זו מסירות נפש שלא שמענו כמותה! הכו אותו, ירו בו, והוא המשיך לשמור על רכוש אדונו עד מותו.</p>
+      <p>ענה רבי אליהו: אין לו שום דבר. למה? כי זו לא בחירה. כל מה שעשה הוא מה שנברא בו, האינסטינקט של הכלב להיות מסור לאדונו. לא בכדי נקרא "כלב" – כולו לב. לא משנה מה האדון עושה לו, הוא נשאר מסור. כך נברא.</p>
+      <p>ומכאן היה רבי אליהו קורא: מה שאתה עושה בלי עבודה, מתוך הטבע שלך, זה לא חכמה. החכמה היא כשלא הרגשת טוב, כשהיה לך קשה להגיע לשיעור, והתגברת. סגרת את החדשות, לא בדקת שוב ושוב מה קורה, ובאת לבית המדרש ללמוד תורה. על ההתגברות הזאת מקבלים שכר. מה שקל לך, מה שבטבע שלך – את זה גם הכלב עושה.</p>
+      <p>ואם כן, חוזרת השאלה בתוקף: אין שכר לא לציפורים, לא לכלבים ולא לדגים. לשם מה רצה משה רבנו להיות ציפור או דג?</p>
+      <p class="bold-para">מה שבא לאדם בטבעו אינו חכמה; השכר הוא על ההתגברות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה להיות ציפור?</div>
+      <h3 class="story-title">🏞️ עצם ההימצאות בארץ</h3>
+      <p>ומתרץ רבי משה פיינשטיין תירוץ שיש לו השלכות הלכתיות ומעשיות רבות: מכאן למדנו שעצם ההימצאות בארץ ישראל, מקום הקדושה, דבר גדול הוא, אפילו למי שאין בידו לקיים מצוות. כלומר, עצם זה שדבר נמצא בארץ ישראל – אפילו חפץ, אפילו דומם, וכל שכן בעל חיים – גורם לו לקבל קדושה ומעלה אותו.</p>
+      <p>ואיפה רואים זאת? בתורה נאמר שגבול הארץ מגיע "עַד הַנָּהָר הַגָּדֹל נְהַר פְּרָת". ושואל רש"י: הרי פרת הוא האחרון והקטן מבין ארבעת הנהרות שיוצאים מעדן – פישון, גיחון, חידקל ופרת. למה נקרא "הגדול"? ומתרץ רש"י: מפני שנזכר עם ארץ ישראל, קרוי גדול. והמשל שמביא רש"י: עבד מלך – מלך. מי שקרוב למלך, נקרא בשמו.</p>
+      <p>נהר הוא דבר דומם, לא אדם ולא בעל מצוות. ובכל זאת, רק מפני שהוא נזכר עם ארץ ישראל, הוא נקרא גדול. זו בדיוק המעלה שרצה משה רבנו: להיות בארץ, אפילו בלי מצוות.</p>
+      <p class="bold-para">עצם ההימצאות בארץ ישראל, מקום הקדושה, היא דבר גדול – גם בלי מצוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה להיות ציפור?</div>
+      <h3 class="story-title">🍞 החלה הקטנה מארץ ישראל</h3>
+      <p>סיפור על אחד מאדמו"רי סלונים, בעל "דברי שמואל". פעם ביקר בארץ ישראל, ובחזרתו לקח איתו חלה קטנה מן הארץ ונסע לחוץ לארץ. הגיעה שבת, והונחו לפניו החלה הגדולה שלו והחלה הקטנה מארץ ישראל. התעורר ספק: על איזו מהן יבצע?</p>
+      <p>על פי ההלכה, כשיש לפני אדם לחם גדול ולחם קטן, מברכים על הגדול. ולכאורה היה צריך לברך על החלה הגדולה. היה שם תלמיד חכם אחד, ואמר לו: מה הספק? כתוב ברש"י "הנהר הגדול נהר פרת" – נקרא גדול מפני שהוא סמוך לארץ ישראל. אם כן, דבר שנמצא בארץ ישראל נקרא גדול. החלה מארץ ישראל היא הגדולה, ועליה תברך.</p>
+      <p>וסיפור דומה מסופר על המלבי"ם. פעם ישב בחדרו, ונכנס השמש ואמר: מחכים לך שניים – רב חשוב מרוסיה, ושד"ר פשוט מארץ ישראל. אמר המלבי"ם: הכנס את השד"ר. השד"ר ישב עמו כחצי שעה, סיפר לו מה קורה בארץ וקיבל ברכה. הרב שחיכה בחוץ נעלב. כשנכנס, שאל: איזה חידושי תורה אמר לך היהודי הפשוט הזה? ענה המלבי"ם: חידושים לא אמר. אבל נזכרתי ברש"י על נהר פרת, ולמדתי שלפעמים יהודי פשוט מארץ ישראל גדול יותר מגדולים רבים בחוץ לארץ.</p>
+      <p class="bold-para">דבר שנמצא בארץ ישראל נקרא גדול, ולכן ראוי לברך עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מי תלוי במי</div>
+      <h3 class="story-title">⚖️ הארץ תלויה במצוות, או המצוות בארץ?</h3>
+      <p>רבי משה פיינשטיין מביא ראיה נוספת לכך שמעלת ארץ ישראל אינה רק בגלל המצוות. יש מעלה לדור בירושלים יותר משאר ארץ ישראל. והרי בירושלים אין מצוות נוספות שתלויות בדירה בה. נמצא שהמעלה היא בגלל הקדושה, לא בגלל ריבוי המצוות.</p>
+      <p>ומכאן נכנס הרב לשאלה עמוקה: מי תלוי במי? הרב סיפר שפעם הוציא עיתון אחד מוסף לכבוד ארץ ישראל, ושינה בכוונה את הביטוי "מצוות התלויות בארץ" לכותרת "ארץ התלויה במצוות". והעירו לו שזה כלל לא פשוט.</p>
+      <p>השאלה היא כך: האם ארץ ישראל קדושה משום שמקיימים בה מצוות רבות? כמו אתרוג, שהוא פרי פשוט, ונעשה קדוש משום שעושים בו מצווה. כמו תפילין, שהם עור בהמה, ונעשים קדושים משום ששם ה' כתוב בהם. או להפך: ארץ ישראל קדושה בעצמה, ומשום שהיא קדושה ניתנו בה מצוות?</p>
+      <p>ויש לזה נפקא מינה עצומה. אם הקדושה באה מן המצוות, הרי מקום שאין בו מצוות התלויות בארץ, אין בו קדושה. ואם הקדושה היא עצמית, היא קיימת גם שם. ואכן, היו פוסקים שדנו לפי זה בשאלות מעשיות על מקומות שבגבולות הארץ שאין בהם חיוב מצוות.</p>
+      <p class="bold-para">האם ארץ ישראל קדושה בגלל המצוות שבה, או שהמצוות באו בגלל קדושתה?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מי תלוי במי</div>
+      <h3 class="story-title">🌍 "נקודה ראשונה בבריאה"</h3>
+      <p>על השאלה הזאת כתב רבי שלמה אלקבץ, מחבר "לכה דודי", דברים ברורים. הוא כתב אותם לבית יוסף, שחי באותה תקופה. וכך כתב: רבים חשבו שמעלת ארץ ישראל היא בהיות בני ישראל בתוכה, ושמעלתה תלויה בהם. הם חשבו שכל עניינה אינו אלא מפני שבני ישראל שומרים בה מצוות.</p>
+      <p>ואיזו טעות בידם, כתב. דע כי שלמות ארץ ישראל היא בעצמותה ממש, כי הייתה הנקודה הראשונה בבריאה, כעניין אבן השתייה. כלומר, לא מחמת המצוות הארץ קדושה, אלא מחמת קדושתה יש לה ריבוי מצוות. לא הארץ תלויה במצוות, אלא המצוות תלויות בארץ.</p>
+      <p>ולמה היא קדושה? כי בורא עולם בחר בה. היא נחלת ה', הבית שלו, נקודת הבריאה. והמצוות ניתנו לנו כדי לתת לנו כלים לקבל את קדושת הארץ.</p>
+      <p>הרב המשיל: אסור לגעת בספר תורה בידיים חשופות. אף אחד לא יאמר שספר התורה קדוש משום שאסור לגעת בו. להפך: משום שהוא קדוש, אסור לגעת בו. משום שהוא קדוש, עומדים מפניו. כך גם ארץ ישראל: לא מחמת המצוות היא קדושה, אלא מחמת שהיא קדושה יש בה מצוות.</p>
+      <p class="bold-para">שלמות ארץ ישראל היא בעצמותה; לא מחמת המצוות היא קדושה, אלא מחמת קדושתה יש בה מצוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מי תלוי במי</div>
+      <h3 class="story-title">🎁 מנות הלוי</h3>
+      <p>אגב רבי שלמה אלקבץ, הזכיר הרב שהיו לו חיבורים נוספים מלבד "לכה דודי". אחד מהם הוא "מנות הלוי" על מגילת אסתר, ספר יפה שיש בו הלכות וטעמים לפורים.</p>
+      <p>שם הוא מסביר למה שולחים משלוח מנות. המן אמר: "יֶשְׁנוֹ עַם אֶחָד מְפֻזָּר וּמְפֹרָד בֵּין הָעַמִּים". הוא ראה פירוד בעם ישראל. ואסתר אמרה: "לֵךְ כְּנוֹס אֶת כָּל הַיְּהוּדִים". התיקון הוא אחדות. לכן תיקנו משלוח מנות – כדי להרבות אהבה ואחווה, שלום ורעות.</p>
+      <p>ומכאן למד הרב לימוד מעשי: אם תכלית משלוח המנות היא להרבות אהבה, כדאי לחשוב מה באמת ישמח את השני. לא רק עוד כמה סוכריות שאולי אף אחד לא יאכל. צריך לחשוב, לחפש רעיון נחמד, משהו שיש בו מחשבה: ספר, דבר יפה, או מאכל מיוחד שהוכן בבית. כמובן צריך גם שיהיו מיני מאכל, כדי לקיים את המצווה כהלכתה, אבל אפשר להוסיף להם משהו שמראה שחשבו על המקבל. זה לא קל, אבל זה מה שמרבה אהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מי תלוי במי</div>
+      <h3 class="story-title">⛰️ בעלי התוספות בעכו</h3>
+      <p>לשאלה הזאת – האם הקדושה היא מחמת המצוות או בעצם – יש השלכות בהרבה מקומות בהיסטוריה. הרב סיפר על עליית בעלי התוספות, לפני קרוב לשמונה מאות שנה. כשלוש מאות מבעלי התוספות עלו לארץ ישראל וגרו בעכו.</p>
+      <p>ומסופר שאת מתיהם לא קברו בעכו עצמה, אלא הלכו לקבור על הר הכרמל. למה? כי חששו שעכו אינה קדושה בקדושת ארץ ישראל. ברור שעכו היא חלק מארץ ישראל. אבל הם חששו שבאותו מקום לא קידשו עולי בבל את הארץ, ולכן אולי חסרה בו הקדושה.</p>
+      <p>שוב רואים את אותה שאלה בדיוק: האם קדושת ארץ ישראל באה מחמת המצוות והקידוש, או שהיא בעצם? ועל זה אמר רבי שלמה אלקבץ: דע לך, ארץ ישראל קדושה בעצם, ומחמת קדושתה יש בה מצוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה שסופגים</div>
+      <h3 class="story-title">🍇 "וכי לאכול מפריה הוא צריך?"</h3>
+      <p>וכאן שואלים שאלה מפורסמת. בגמרא במסכת סוטה: "דָּרַשׁ רַבִּי שִׂמְלַאי: מִפְּנֵי מָה נִתְאַוָּה מֹשֶׁה רַבֵּנוּ לִיכָּנֵס לְאֶרֶץ יִשְׂרָאֵל? וְכִי לֶאֱכוֹל מִפִּרְיָהּ הוּא צָרִיךְ, אוֹ לִשְׂבּוֹעַ מִטּוּבָהּ הוּא צָרִיךְ?"</p>
+      <p>החתם סופר דייק בלשון הגמרא: היא לא אמרה "וכי לאכול מפריה הוא רוצה", אלא "הוא צריך". מה הפירוש? דע לך, כל יהודי רגיל צריך לאכול מפרייה ולשבוע מטובה בשביל הקדושה שלו. כי באכילת פירות ארץ ישראל יש קדושה רבה, והיא מכניסה קדושה באדם. אבל משה רבנו, שהיה ארבעים יום בשמיים, "לֶחֶם לֹא אָכַל וּמַיִם לֹא שָׁתָה" – הוא לא היה צריך לכך. אחרים כן צריכים.</p>
+      <p>ומכאן לימוד מעשי: כשאדם הולך לחנות ובוחר, ויש לפניו תמרים מיובשים מחוץ לארץ ותמרים מארץ ישראל, זה עולם אחר. מי שאוכל פירות ארץ ישראל, מכניס בעצמו קדושה. גם בקדושה צריך לבחור.</p>
+      <p>והיו צדיקים שהקפידו על כך. האדמו"ר מצאנז-קלויזנבורג, שהקים את קריית צאנז, סיפר על אביו שהיה קונה שמן זית מארץ ישראל, ובכל יום היה טובל בו את הלחם שאכל.</p>
+      <p class="bold-para">החתם סופר מדייק: כל יהודי צריך את פירות הארץ לקדושתו, רק משה רבנו לא היה זקוק לכך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה שסופגים</div>
+      <h3 class="story-title">🏺 קדושה, או מצוות?</h3>
+      <p>ומה עונה הגמרא בסוטה? "אֶלָּא כָּךְ אָמַר מֹשֶׁה: הַרְבֵּה מִצְוֹת נִצְטַוּוּ יִשְׂרָאֵל, וְאֵין מִתְקַיְּימִין אֶלָּא בְּאֶרֶץ יִשְׂרָאֵל. אֶכָּנֵס אֲנִי לָאָרֶץ כְּדֵי שֶׁיִּתְקַיְּימוּ כּוּלָּן עַל יָדִי".</p>
+      <p>וכאן שואלים כולם: אם קדושת הארץ היא עצמית, למה לא אמרה הגמרא שמשה רצה להיכנס בשביל הקדושה? מן הגמרא משמע לכאורה שכל מעלת ארץ ישראל היא רק מחמת המצוות. ואם כך, מי שאינו מקיים בה מצוות, אין בכך קדושה, כמו אתרוג.</p>
+      <p>והתשובה מעניינת מאוד: כל כוונת משה הייתה לזכות בקדושת ארץ ישראל. והראיה פשוטה. כשלא נתנו לו להיכנס, לא כציפור ולא כדג, מה ביקש? לראות. ובראייה איזו מצווה יש? אין שום מצווה. בראייה אפשר רק לתפוס קדושה. אם כן, הוא רצה קדושה.</p>
+      <p>אלא שהדרך המובחרת לזכות בקדושה היא על ידי קיום מצוות בארץ ישראל. האדם צריך כלים כדי לספוג את הקדושה. עצם ההימצאות כאן כבר שווה הרבה. אבל כשמקיימים מצוות בארץ ישראל, סופגים את קדושתה הרבה יותר.</p>
+      <p class="bold-para">משה רבנו רצה את קדושת הארץ, והמצוות הן הכלים המובחרים לספוג אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה שסופגים</div>
+      <h3 class="story-title">✨ קרקע שקדושה מן השמיים</h3>
+      <p>והחתם סופר אמר על כך משפט מבהיל: אפילו אם ירבה האדם מצוות בחוץ לארץ עד שיגיעו לדרגת השמיים, אינן מגיעות למצוות שמקיימים בארץ ישראל, אפילו בדרגת הארץ. וכשהגיע משה רבנו לגבול ארץ ישראל, הרגיש אור נפלא וקדושה עצומה, מה שלא הרגיש אפילו בשמיים. כי קרקע ארץ ישראל קדושה יותר מן השמיים של חוץ לארץ.</p>
+      <p>זה מסביר למה התאווה משה כל כך להיכנס. הוא היה בשמיים ארבעים יום, ובכל זאת הרגיש בגבול הארץ דבר שלא הרגיש שם.</p>
+      <p>ומכאן גם הלכה למעשה. הרב סיפר ששאלו פעם אחד מגדולי ישראל: האם כדאי להעלות לארץ יהודים שיודעים מראש שלא ישמרו בה מצוות? אם המטרה היא קיום מצוות, הרי הם לא יקיימו. והשיב: עדיף שיעלו לארץ ישראל. עצם ההימצאות בארץ שווה. ולא רק זה: הקדושה של הארץ תגרום להם לאט לאט לחזור בתשובה.</p>
+      <p>והרב הוסיף שאנחנו רואים זאת בעינינו. ברוך ה', בארץ ישראל רבים הולכים ומתקרבים לתורה ולמצוות, וזה הולך ומתרבה. הקדושה של הארץ משפיעה.</p>
+      <p class="bold-para">אפילו מצוות שבחוץ לארץ, שהגיעו עד השמיים, אינן מגיעות למצוות שבארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קדושה שסופגים</div>
+      <h3 class="story-title">🌬️ לנשום את האוויר</h3>
+      <p>הרב סיפר בעל פה על הסבא מסלבודקה. בסוף ימיו היה חולה, שוכב במיטה בארץ ישראל, ולא היה יכול ללמוד כמעט דבר. ואמר: נכון שאינני עושה כלום. אבל לפחות אני נמצא עכשיו בארץ ישראל. עצם ההימצאות שלי כאן, וזה שאני נושם את האוויר של ארץ ישראל, זו כבר שמחה עצומה.</p>
+      <p>זה בדיוק היסוד של רבי משה פיינשטיין. גם כשאדם אינו יכול לקיים מצוות, ההימצאות בארץ ישראל איננה דבר ריק. היא קדושה בפני עצמה. משה רבנו היה מוכן להיות ציפור כדי לזכות בה, והסבא מסלבודקה שמח בה גם כשכוחותיו אזלו.</p>
+      <p>ומי שחי בארץ, צריך לפעמים לעצור ולהרגיש זאת: אני נושם אוויר שמשה רבנו התחנן לנשום. זו מתנה שאין כמותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · קדושת האוויר</div>
+      <h3 class="story-title">🧭 לגור במקום שקידשו עולי מצרים</h3>
+      <p>ומכאן לשאלה מעשית: האם יש מצוות ישיבת ארץ ישראל במקום שלא קידשו אותו עולי בבל, אלא רק עולי מצרים? לדוגמה, בית שאן. או ערים מסוימות בדרום.</p>
+      <p>הרב סיפר על הבבא סאלי, שלפני שעבר לגור בנתיבות התעוררה שאלה: האם בנתיבות מקיימים מצוות ישוב ארץ ישראל? הרי באתי לארץ כדי לגור בארץ ישראל! שכן הגמרא במסכת גיטין אומרת שעד אשקלון ודאי עלו עולי בבל, ומאשקלון והלאה יש ספק.</p>
+      <p>והיו כמה ראשונים, כמו שמשמע בתוספות במסכת גיטין, שסברו שאין מצווה לגור שם, כי קדושת הארץ היא מחמת מצוותיה, ובמקום שאין חיוב מצוות אין קדושה. השאלה לא פשוטה.</p>
+      <p>אבל בספר "כפתור ופרח" של רבי אשתורי הפרחי, ספר יפה מאוד על ארץ ישראל, שנכתב לפני כשבע מאות שנה, הוא דן בזה בהרחבה. רבי אשתורי גר בכוונה בבית שאן, לא במקרה. והוא הכריע שקדושת הארץ היא בעצם, ולא מחמת קיום המצוות, ולכן גם בשטח של עולי מצרים יש מצוות ישיבת הארץ. וכן פסקו להלכה הפוסקים.</p>
+      <p class="bold-para">רבים מהפוסקים פסקו שגם בגבולות עולי מצרים יש מצוות ישיבת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · קדושת האוויר</div>
+      <h3 class="story-title">🌤️ קדושת הקרקע וקדושת האוויר</h3>
+      <p>בערוך השולחן מובאים דברים יפים מאוד: בארץ ישראל יש שתי קדושות. האחת קדושת האוויר, והשנייה קדושת הקרקע. מה שהתבטל בכיבוש הגויים בחורבן בית המקדש הוא קדושת הקרקע, במקום שלא נתקדש לעתיד לבוא. אבל קדושת האוויר נשארה. לכן כל דבר שקשור לאווירה של ארץ ישראל שייך גם בגבולות עולי מצרים.</p>
+      <p>ומסופר על שאלה ששאל אחד מגדולי התורה את גיסו: למה אמרו חז"ל "אֲוִירָא דְּאֶרֶץ יִשְׂרָאֵל מַחְכִּים", ולא אמרו שעפר ארץ ישראל מחכים? מה מיוחד דווקא באוויר?</p>
+      <p>והשיב: כי אוויר הארץ נתקדש בראייתו של משה רבנו, שראה את הארץ מהר נבו. וחז"ל אמרו שאילו הכניס משה רבנו את ישראל לארץ בעצמו, לא הייתה נחרבת לעולם. את הקרקע קידש יהושע, ולכן יכלה לבוא נבוכדנצר בכיבושו ולבטל את קדושתה. אבל את האוויר קידש משה רבנו, ומה שמשה עשה – עומד לעד. לכן קדושת האוויר לא בטלה מעולם.</p>
+      <p>ולפי זה יש מצווה לגור בכל מקום בגבולות הארץ, גם בבית שאן וגם בנתיבות, כי שם הקדושה אינה של יהושע, אלא של משה רבנו, שקידש את הארץ בראייתו.</p>
+      <p class="bold-para">את הקרקע קידש יהושע ובטלה בכיבוש; את האוויר קידש משה בראייתו, והוא קדוש לעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · קדושת האוויר</div>
+      <h3 class="story-title">📜 שאלות שנשארו פתוחות</h3>
+      <p>בסוף השיעור הזכיר הרב שתי שאלות שעדיין צריכות דיון, ולא הספיק לעסוק בהן.</p>
+      <p>השאלה הראשונה: האם מקום שקידשו עולי בבל קדוש יותר? לכאורה כן: במקום שקידשו עולי מצרים בלבד יש קדושת אוויר, ואילו במקום שקידשו עולי בבל יש גם קדושת קרקע. אם כן, אולי גם שם יש מצווה, אבל המצווה במקום של עולי בבל גדולה יותר.</p>
+      <p>השאלה השנייה: מה הדין היום? הקדושה בטלה מפני שבא נבוכדנצר וכבש. ברגע שגוי כבש, בטלה קדושת הקרקע. אבל היום חזרנו וכבשנו את הארץ. אולי היום כבר אין הבדל כלל בין המקומות.</p>
+      <p>אלה נושאים בפני עצמם. אבל היסוד שעלה מן השיעור כולו ברור: ארץ ישראל קדושה בעצמה, בבחירתו של בורא עולם. משה רבנו התחנן להיות בה אפילו כציפור, ואנחנו זוכים לחיות בה, לנשום את אווירה ולאכול מפירותיה. יהי רצון שנדע להעריך זאת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/dNyr9Rxjp_s · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ביום ההילולא של משה רבנו","icon":"🕯️","color":"#c62b6b","stories":[{"id":1,"title":"לדבר על הצדיק","icon":"🕯️"},{"id":2,"title":"כוחה של ברכה פשוטה","icon":"💬"}]},{"id":2,"name":"התפילה על הירדן","icon":"🌊","color":"#6d28d9","stories":[{"id":3,"title":"\"תן לי להיות כעוף השמיים\"","icon":"🕊️"},{"id":4,"title":"מעל לעננים","icon":"☁️"},{"id":5,"title":"\"מוטב שימות משה\"","icon":"❤️"}]},{"id":3,"name":"למה להיות ציפור?","icon":"🕊️","color":"#e08e00","stories":[{"id":6,"title":"מה יועיל לו להיות ציפור?","icon":"🤔"},{"id":7,"title":"\"כולו לב\"","icon":"🐕"},{"id":8,"title":"עצם ההימצאות בארץ","icon":"🏞️"},{"id":9,"title":"החלה הקטנה מארץ ישראל","icon":"🍞"}]},{"id":4,"name":"מי תלוי במי","icon":"⚖️","color":"#1e88b8","stories":[{"id":10,"title":"הארץ תלויה במצוות, או המצוות בארץ?","icon":"⚖️"},{"id":11,"title":"\"נקודה ראשונה בבריאה\"","icon":"🌍"},{"id":12,"title":"מנות הלוי","icon":"🎁"},{"id":13,"title":"בעלי התוספות בעכו","icon":"⛰️"}]},{"id":5,"name":"קדושה שסופגים","icon":"🍇","color":"#c62b6b","stories":[{"id":14,"title":"\"וכי לאכול מפריה הוא צריך?\"","icon":"🍇"},{"id":15,"title":"קדושה, או מצוות?","icon":"🏺"},{"id":16,"title":"קרקע שקדושה מן השמיים","icon":"✨"},{"id":17,"title":"לנשום את האוויר","icon":"🌬️"}]},{"id":6,"name":"קדושת האוויר","icon":"🌤️","color":"#6d28d9","stories":[{"id":18,"title":"לגור במקום שקידשו עולי מצרים","icon":"🧭"},{"id":19,"title":"קדושת הקרקע וקדושת האוויר","icon":"🌤️"},{"id":20,"title":"שאלות שנשארו פתוחות","icon":"📜"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
