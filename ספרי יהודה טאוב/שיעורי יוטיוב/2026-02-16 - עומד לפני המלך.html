@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 עומד לפני המלך</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 עומד לפני המלך</h1>
+  <p>היהודי שהתפלל בשדה ולא הפסיק כשהשר הרומי בירך אותו לשלום, ומה לומדים ממנו על תפילה לפני מלך שהוא גם אבא</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ עומד לפני המלך" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/rQdGDjVvqfA?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/rQdGDjVvqfA/hqdefault.jpg" alt="עומד לפני המלך" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=rQdGDjVvqfA" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מי לובש כתר</div>
+      <h3 class="story-title">👑 מלך בלי כתר</h3>
+      <p>השיעור נפתח בשאלה פשוטה: מי לובש כתר? מלך. ומי המלך האמיתי? הקדוש ברוך הוא. הוא המלך של כל העולם, והוא אפילו אינו צריך ללבוש כתר כדי שיידעו שהוא מלך.</p>
+      <p>מלך בשר ודם צריך כתר, גלימה, כיסא מלכות ושומרים, כדי שכולם יבינו מי הוא. בלי כל אלה הוא נראה כמו כל אדם אחר. אבל הקדוש ברוך הוא מלך גם בלי שום סימן חיצוני. כל העולם כולו הוא הממלכה שלו.</p>
+      <p>ובכל זאת, יש רגע אחד שבו כל יהודי עומד ממש לפני המלך הזה. זה רגע שקורה כמה פעמים בכל יום, ולפעמים אנחנו שוכחים כמה הוא גדול: רגע התפילה.</p>
+      <p>כדי להבין מה זה לעמוד לפני המלך, השיעור מספר סיפור עתיק, שמסופר כבר בדברי חז"ל, על יהודי אחד, על שר אחד, ועל שאלה אחת ששינתה את הכל.</p>
+      <p class="bold-para">בעולם יש מלכים ושרים, אבל המלך האמיתי הוא הקדוש ברוך הוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מי לובש כתר</div>
+      <h3 class="story-title">🤔 מה הייתם עושים?</h3>
+      <p>לפני שמתחילים, כדאי לשאול שאלה: מה הייתם עושים אילו הייתם במצב מסוכן מאוד, ומישהו חשוב וחזק היה כועס עליכם? האם הייתם ממשיכים לעשות את מה שאתם עושים, או עוזבים הכל כדי לרצות אותו?</p>
+      <p>זו לא שאלה קלה. רוב האנשים, כשמגיע מישהו חזק ומפחיד, ממהרים לעשות מה שהוא רוצה. זה טבעי. מי רוצה להסתבך עם שר גדול ועם חיילים?</p>
+      <p>אבל היהודי שבסיפור עשה בדיוק את ההפך. והוא לא עשה זאת מתוך עקשנות ולא מתוך גאווה. היה לו נימוק פשוט וחזק, נימוק שאפילו השר עצמו לא יכול היה להתווכח איתו.</p>
+      <p>בואו נראה מה קרה, צעד אחר צעד, ונחשוב בכל שלב: מה היינו עושים אנחנו? ואולי, בסוף הסיפור, נגלה שהשאלה הזאת שייכת גם לחיים שלנו, בכל יום מחדש, ולא רק ליהודי אחד שעמד פעם בשדה רחוק.</p>
+      <p class="bold-para">הסיפור מזמין אותנו לחשוב מה היינו עושים במקומו של היהודי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · תפילה באמצע השדה</div>
+      <h3 class="story-title">🌾 יהודי בדרך ארוכה</h3>
+      <p>יהודי אחד הלך בדרך ארוכה. מסביב לא היו בתים, לא היה בית כנסת. רק שדות, שמים ופרחים. הוא הלך והלך, והגיע זמן התפילה.</p>
+      <p>מה עשה? אמר לעצמו: אתפלל כאן, בשדה. עצם את עיניו, ועמד להתפלל באמצע השדה.</p>
+      <p>אפשר לשאול: למה לא חיכה עד שיגיע לבית הכנסת? הרי תפילה בבית כנסת, עם ציבור, היא דבר חשוב מאוד. למה לא המתין?</p>
+      <p>התשובה: אילו היה מחכה, היה מפספס את התפילה. הדרך הייתה ארוכה, ובית הכנסת רחוק. עד שהיה מגיע, זמן התפילה כבר היה עובר. ותפילה שעבר זמנה אי אפשר פשוט להשלים מתי שרוצים כאילו כלום לא קרה.</p>
+      <p>וכך עמד היהודי לבדו, בשדה פתוח, והתפלל. הוא לא ידע שבעוד רגעים ספורים התפילה הזאת תעמוד במבחן גדול.</p>
+      <p class="bold-para">כשהגיע זמן התפילה והיהודי היה בדרך, הוא התפלל במקום שבו עמד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · תפילה באמצע השדה</div>
+      <h3 class="story-title">⏰ לכל תפילה יש זמן</h3>
+      <p>בשיעור הוסבר למה אי אפשר לחכות. לכל תפילה יש זמן. תפילת שחרית מתפללים בבוקר, ואי אפשר להתפלל אותה בצהריים, כשהזמן שלה כבר עבר. תפילת מנחה מתפללים אחר הצהריים, ואחרי שהשמש שוקעת כבר מאוחר מדי בשבילה. ואת תפילת ערבית אי אפשר להתפלל בבוקר.</p>
+      <p>כלומר, התפילה היא כמו פגישה שנקבעה מראש עם המלך. הוא קבע את השעה. מי שמגיע אחרי שהפגישה נגמרה, הפסיד אותה.</p>
+      <p>לכן היהודי לא שאל את עצמו מה נוח לו, או איפה יהיה נעים יותר להתפלל. הוא שאל: מה המלך ביקש? והמלך ביקש שאתפלל עכשיו.</p>
+      <p>ויש כאן לימוד גם לנו: לפעמים אנחנו נמצאים במקום לא מתאים, בטיול, בנסיעה, באמצע משהו. ובכל זאת, כשמגיע הזמן, עוצרים ומתפללים. המקום פחות חשוב מן הפגישה.</p>
+      <p class="bold-para">כל תפילה קבועה בזמן משלה, ולכן אי אפשר לדחות אותה עד שיהיה נוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · תפילה באמצע השדה</div>
+      <h3 class="story-title">🏰 ארמון באמצע השדה</h3>
+      <p>יש משהו מיוחד בתמונה הזאת: יהודי אחד, לבד, בשדה פתוח. אין קירות, אין ארון קודש, אין ספסלים ואין חזן. רק שמים מעל, שדות מסביב ופרחים לרגליו.</p>
+      <p>ובכל זאת, ברגע שעצם את עיניו והתחיל להתפלל, המקום הזה הפך לחדר של המלך. כי מה שעושה את התפילה אינו הבניין, אלא העמידה לפני ה'.</p>
+      <p>מלך בשר ודם אפשר לפגוש רק בארמון שלו, בשעות שנקבעו, אחרי שעוברים שומרים ושערים. אבל הקדוש ברוך הוא נמצא בכל מקום. מי שעומד לפניו בשדה, עומד לפניו בדיוק כמו מי שעומד בבית הכנסת הגדול ביותר.</p>
+      <p>ולכן היהודי לא הרגיש שהוא מתפלל "בדיעבד", במקום לא מתאים. הוא הרגיש שהוא בארמון. וכך התנהג גם כשהגיע השר: כמו מי שעומד בארמון המלך, ולא כמו מי שעומד סתם בצד הדרך.</p>
+      <p class="bold-para">תפילה אינה תלויה במקום מפואר: כל מקום שבו יהודי עומד לפני ה' נעשה ארמון של המלך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · השר מרומי</div>
+      <h3 class="story-title">🐎 רעש של סוסים</h3>
+      <p>פתאום, באמצע התפילה, נשמע רעש מפחיד. רעש נורא. מה זה? חיילים רצים, סוסים דוהרים במהירות עצומה. מי הגיע?</p>
+      <p>הגיע שר גדול. לא שר יהודי, אלא שר גוי, חשוב מאוד, ממלכות רומי. הוא רכב על סוס ענק, וסביבו חיילים ומשרתים.</p>
+      <p>כל האנשים שראו אותו היו צריכים להשתחוות לו ולכבד אותו. זה מזכיר לנו מישהו: את המן. גם המן היה שר, לא מלך, וגם הוא ציווה שכולם ישתחוו לו. ומה קרה למי שלא השתחווה? המן רצה להרוג אותו, ולא רק אותו, אלא את כל עמו.</p>
+      <p>שר כזה אינו אדם שמזלזלים בו. מי שאינו מכבד אותו מסתכן בחייו. כל מי שעמד בדרך השתחווה, הוריד את הראש, וחיכה שהשיירה תעבור.</p>
+      <p>וכל אותו זמן, בצד הדרך, עמד יהודי אחד, עיניו עצומות, והתפלל.</p>
+      <p class="bold-para">באמצע התפילה הגיע שר רומי גדול, וכל מי שראה אותו השתחווה לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · השר מרומי</div>
+      <h3 class="story-title">🙇 כשכולם משתחווים</h3>
+      <p>חשבו על המצב מנקודת המבט של היהודי. הוא שומע את הסוסים, את החיילים, את הרעש. הוא יודע שעובר שם מישהו חשוב מאוד. אולי הוא אפילו יודע שכל מי שעומד בדרך משתחווה.</p>
+      <p>הכי קל היה לעשות מה שכולם עושים. להפסיק לרגע, להשתחוות, לחכות שהשר יעבור, ואחר כך לחזור לתפילה. מי היה מאשים אותו? הרי זו סכנה.</p>
+      <p>אבל היהודי לא שאל מה כולם עושים. הוא שאל לפני מי הוא עומד עכשיו. ומי שעומד לפני הקדוש ברוך הוא אינו יכול באמצע לפנות לשר, גדול ככל שיהיה.</p>
+      <p>זה מזכיר את מה שקרה בימי המן: כולם השתחוו, ויהודי אחד לא. גם שם, מי שלא השתחווה עמד לבדו מול שר רב כוח. לפעמים יהודי צריך לעמוד לבד, דווקא כשכולם סביבו עושים אחרת.</p>
+      <p class="bold-para">קל לעשות מה שכולם עושים, וקשה מאוד לעמוד לבד מול הזרם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · השר מרומי</div>
+      <h3 class="story-title">🗣️ "שלום! שלום!"</h3>
+      <p>השר ראה את היהודי. היהודי לא זז, לא כיבד, לא השתחווה. הוא המשיך להתפלל, גם כשהשר עבר לידו.</p>
+      <p>השר התקרב וקרא: "היי! שלום!" אבל היהודי המשיך להתפלל. הוא שתק. לא אמר כלום. לא הגיב. "שלום!" – והיהודי ממשיך בתפילתו.</p>
+      <p>עכשיו נעצור ונשאל: מה יקרה עכשיו? שר רומי גדול, שכולם משתחווים לו, בירך יהודי פשוט לשלום, והיהודי לא ענה לו. זה עלבון גדול מאוד. בעיני השר, זה כמעט כמו מרד.</p>
+      <p>השר יכול היה להורות לחייליו להרוג את היהודי במקום. איש לא היה עוצר אותו. היהודי היה לבד בשדה, בלי עדים ובלי מגינים.</p>
+      <p>מה הייתם עושים במקומו של היהודי? רוב האנשים היו מפסיקים באמצע, עונים "שלום" בחיפזון, ואולי גם משתחווים. אבל היהודי הזה לא הפסיק.</p>
+      <p class="bold-para">השר בירך את היהודי לשלום, והיהודי המשיך להתפלל ולא ענה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · השר מרומי</div>
+      <h3 class="story-title">⚖️ למה ה' לא מעניש מיד?</h3>
+      <p>בשיעור עלתה הצעה: אולי ה' יעניש את השר מיד, ויהרוג אותו לפני שיספיק לפגוע ביהודי? הרי היהודי עומד ומתפלל, והשר מאיים עליו.</p>
+      <p>אבל התשובה היא שה' אינו מעניש תמיד מיד. אילו כל מי שעשה רע היה נענש באותו רגע, לא הייתה בחירה בעולם. כולם היו עושים טוב רק מפחד העונש המיידי, ולא מתוך בחירה אמיתית.</p>
+      <p>ה' נותן לבני האדם לבחור. גם לשר יש בחירה: לכעוס ולהרוג, או להקשיב ולהבין. וגם ליהודי יש בחירה: להפסיק את התפילה מפחד, או להמשיך לעמוד לפני המלך.</p>
+      <p>וזה מה שהופך את הסיפור למרגש כל כך. היהודי לא ידע שיקרה נס. הוא לא היה בטוח שה' יציל אותו. הוא פשוט ידע לפני מי הוא עומד, ובחר לא להפסיק.</p>
+      <p class="bold-para">ה' אינו מעניש תמיד מיד, כי אילו היה עושה כך לא הייתה בחירה בעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · השר מרומי</div>
+      <h3 class="story-title">⏳ השר מחכה</h3>
+      <p>השר כעס מאוד. אבל במקום להרוג את היהודי מיד, הוא חיכה. הוא עמד שם עם חייליו וסוסיו, עד שהיהודי גמר להתפלל.</p>
+      <p>וכשהיהודי סיים, צעק עליו השר: "טיפש! איך העזת? מה זה אמור להיות? אילו הייתי הורג אותך עכשיו, מי היה מציל אותך? אף אחד!"</p>
+      <p>השר צדק בדבר אחד: איש לא היה מציל את היהודי. הוא היה לבד, והשר היה חזק. לשר היה כוח לעשות בו כרצונו.</p>
+      <p>אבל השר היה גוי, ולא הבין מה זו תפילה. בעיניו, היהודי סתם עמד בשדה ומלמל מילים, והתעלם ממנו בחוצפה. הוא לא ידע מה באמת קרה באותן דקות.</p>
+      <p>ועכשיו, כשהשר כועס והחרב קרובה, מגיע הרגע של היהודי. במקום להתנצל, במקום לבקש רחמים, הוא אומר: "חכה רגע. יש לי שאלה אחת חשובה לשאול אותך."</p>
+      <p class="bold-para">השר חיכה בכעס עד שהיהודי סיים את תפילתו, ואז צעק עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לפני מי אתה עומד</div>
+      <h3 class="story-title">🏛️ "עמדת פעם לפני המלך?"</h3>
+      <p>אמר היהודי לשר: "חכה רגע, רק שנייה. יש לי שאלה מעניינת לשאול אותך, שאלה חשובה. האם פעם עמדת לפני המלך?"</p>
+      <p>השר ענה בגאווה: "בוודאי! ודאי שעמדתי לפני המלך. הרי אני שר גדול." שר חשוב כמוהו עמד פעמים רבות לפני קיסר רומי.</p>
+      <p>המשיך היהודי ושאל: "ואילו, בשעה שעמדת לפני המלך, היה עובר שם שר אחר ואומר לך 'שלום', היית עונה לו?"</p>
+      <p>שימו לב כמה חכמה השאלה הזאת. היהודי אינו מתווכח עם השר. הוא אינו אומר לו שהוא טועה. הוא שואל אותו על העולם שהשר עצמו מכיר היטב, העולם של מלכים ושל כבוד מלכות.</p>
+      <p>ועכשיו השר צריך לענות. ולשאלה הזאת יש רק תשובה אחת.</p>
+      <p class="bold-para">היהודי שאל את השר שאלה פשוטה, והשר ענה בגאווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לפני מי אתה עומד</div>
+      <h3 class="story-title">🙅 "חס וחלילה!"</h3>
+      <p>השר צעק: "חס וחלילה! מה פתאום? הרי זה יעליב את המלך! יהרגו אותי אם אעשה דבר כזה. איך אעז? באמצע שאני עומד לפני המלך, לדבר עם מישהו אחר? אין דבר כזה, בשום פנים ואופן לא הייתי מדבר."</p>
+      <p>השר הבין היטב את מה שהוא מכיר מן החיים שלו. מי שעומד לפני מלך, כל תשומת לבו נתונה למלך. גם אם יעבור שם השר החשוב ביותר, גם אם יברך אותו, הוא לא יפנה אליו. זה פשוט לא עולה על הדעת.</p>
+      <p>ובתשובה הזאת, בלי ששם לב, השר כבר ענה בעצמו על שאלתו שלו. הוא שאל את היהודי "איך העזת לא לענות לי?", וכעת הוא עצמו הסביר מדוע אדם שעומד לפני מלך אינו עונה לאף אחד.</p>
+      <p>כל מה שנשאר ליהודי הוא לחבר את הדברים.</p>
+      <p class="bold-para">השר הודה שלעולם לא היה מפסיק באמצע עמידה לפני המלך, אפילו כדי לענות שלום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לפני מי אתה עומד</div>
+      <h3 class="story-title">👑 לפני מלך מלכי המלכים</h3>
+      <p>אמר לו היהודי: "אתה רואה? כשאתה עמדת לפני המלך, לא העזת להפסיק. ואתה יודע לפני מי אני עמדתי? אני עמדתי לפני מלך מלכי המלכים, הקדוש ברוך הוא. באמצע התפילה, איך אוכל להפסיק? גם אני עמדתי לפני המלך. איך אפסיק?"</p>
+      <p>אם לפני קיסר רומי, מלך בשר ודם, אדם אינו עונה לשר אחר, קל וחומר שלפני הקדוש ברוך הוא, מלך מלכי המלכים, אין מפסיקים כדי לענות לשר בשר ודם, גדול ככל שיהיה.</p>
+      <p>והשר הגוי, ששמע את הדברים, אמר: "אתה צודק." הוא הודה ליהודי, ונתן לו ללכת לשלום.</p>
+      <p>השר שבא לכעוס הלך משם מבין. היהודי שעמד בסכנת חיים הלך לדרכו בשלום. ומה הציל אותו? בדיוק אותו דבר שהכניס אותו לסכנה: העובדה שהוא ידע לפני מי הוא עומד.</p>
+      <p class="bold-para">אם לפני מלך בשר ודם אין מפסיקים, קל וחומר לפני מלך מלכי המלכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לפני מי אתה עומד</div>
+      <h3 class="story-title">💡 שאלה במקום ויכוח</h3>
+      <p>כדאי לשים לב לדרך שבה היהודי הציל את עצמו. הוא לא צעק, לא התחנן ולא נאם. הוא לא אמר לשר "אתה לא מבין" או "אתה גוי ואינך יודע מה זו תפילה". הוא פשוט שאל שאלה.</p>
+      <p>והשאלה הייתה מן העולם של השר עצמו. השר אינו מכיר תפילה, אבל הוא מכיר מלכים. הוא יודע מה זה לעמוד לפני קיסר, ומה קורה למי שמזלזל בכבוד המלך. היהודי לקח את מה שהשר כבר יודע, ובנה ממנו גשר אל מה שהשר אינו יודע.</p>
+      <p>כך השר לא הרגיש שמנצחים אותו בוויכוח. הוא הגיע לתשובה בעצמו. ומי שמגיע לתשובה בעצמו, מקבל אותה בלב שלם.</p>
+      <p>זו חכמה שאפשר ללמוד ממנה גם בחיים: כשרוצים להסביר משהו למישהו, כדאי להתחיל ממה שהוא כבר מכיר ומבין.</p>
+      <p class="bold-para">היהודי לא התווכח עם השר, אלא שאל שאלה שהביאה את השר להבין בעצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לפני מי אתה עומד</div>
+      <h3 class="story-title">🐎 השר שהלך מבין</h3>
+      <p>בתחילת הסיפור השר היה כועס מאוד. הוא הרגיש שהיהודי השפיל אותו לפני כל חייליו. ובסוף הסיפור הוא אמר "אתה צודק" ונתן לו ללכת לשלום.</p>
+      <p>מה שינה את דעתו? לא פחד ולא שוחד. הוא ראה לפניו אדם שמכבד את המלך שלו באמת, בכל הרצינות, גם במחיר סכנה. ושר שמכיר כבוד מלכות, יודע להעריך דבר כזה.</p>
+      <p>אילו היהודי היה מפסיק את התפילה ומשתחווה, השר היה עובר הלאה ושוכח אותו מיד. דווקא מפני שלא הפסיק, השר עצר, שאל והקשיב, ולמד משהו על מלך מלכי המלכים.</p>
+      <p>יש כאן לימוד נוסף: מי שמתפלל ברצינות, משפיע גם על מי שרואה אותו. אפילו שר רומי גוי יצא מן המפגש הזה עם כבוד לתפילה של יהודי.</p>
+      <p class="bold-para">השר בא כועס והלך מבין, כי ראה יהודי שמכבד את המלך שלו באמת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לפני מי אתה עומד</div>
+      <h3 class="story-title">🙏 "כשאני מתפלל, אני עומד לפני המלך"</h3>
+      <p>אם צריך לסכם את כל הסיפור במשפט אחד, זה המשפט: כשאני מתפלל, אני עומד לפני המלך.</p>
+      <p>היהודי בשדה לא עמד סתם וקרא מילים. הוא הרגיש באמת שהוא עומד לפני הקדוש ברוך הוא. ולכן, כשהגיע השר, לא היה לו ספק. מי שמדבר עם המלך אינו מפנה את ראשו לשר שעובר.</p>
+      <p>ויש כאן שאלה לכל אחד מאיתנו: האם אנחנו מרגישים כך בתפילה? כשמישהו נכנס לבית הכנסת, האם אנחנו מסתובבים לראות מי הגיע? כשמישהו לוחש לנו משהו באמצע, האם אנחנו עונים?</p>
+      <p>היהודי שבסיפור לא ענה לשר גדול שאיים על חייו. אנחנו לא נדרשים לעמוד במבחן כזה. אבל אפשר לנסות, לפחות, לא להפסיק את התפילה בשביל דברים קטנים הרבה יותר. כי גם אנחנו, כשאנחנו מתפללים, עומדים לפני המלך.</p>
+      <p class="bold-para">המשפט שהציל את היהודי הוא המשפט שכל אחד צריך לזכור בתפילתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מלך שהוא גם אבא</div>
+      <h3 class="story-title">🎵 "מי אנוכי"</h3>
+      <p>אחרי הסיפור שמעו בשיעור שיר מפורסם מאוד, ששרים אותו הרבה. הוא מזכיר לנו בדיוק את מה שלמדנו: כשאנחנו מתפללים, אנחנו עומדים לפני המלך.</p>
+      <p>השיר פותח כך: "מי אנוכי שאזכה להתפלל לפני הקדוש ברוך הוא, שהוא אל גדול ונורא?" מי אני בכלל, שאזכה לעמוד ולדבר עם המלך הגדול?</p>
+      <p>זה החלק הראשון של התחושה בתפילה. לא כל אחד יכול לבוא ולדבר עם מלך. זה בכלל לא פשוט. מלכים בשר ודם יושבים מאחורי שומרים ודלתות, וצריך רשות מיוחדת כדי להיכנס אליהם. והנה אנחנו, אנשים פשוטים, יכולים לעמוד לפני מלך מלכי המלכים כמה פעמים ביום.</p>
+      <p>השר הרומי הבין מה זה לעמוד לפני מלך. השיר מזמין אותנו להבין את זה גם, ולהתרגש מן הזכות שניתנה לנו.</p>
+      <p class="bold-para">השיר מזכיר שתפילה היא זכות גדולה: לעמוד ולדבר עם מלך גדול ונורא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מלך שהוא גם אבא</div>
+      <h3 class="story-title">❤️ "אבל אבא יקר"</h3>
+      <p>אבל השיר אינו נעצר בפחד ובריחוק. הוא ממשיך: "אבל אבא יקר, אתה הוא שרצית שרק אליך נייחל, אז אני הבן שלך, ניצב כאן מולך, ומבקש להתפלל."</p>
+      <p>מה הכוונה? נכון שה' הוא מלך גדול ונורא, ומי אני שאעמוד לפניו. אבל הוא לא רק מלך. הוא גם אבא. והוא עצמו רצה שנבוא אליו. הוא נתן לנו מצווה להתפלל. הוא ביקש שנפנה אליו, ורק אליו.</p>
+      <p>אז אני, הבן שלו, עומד כאן מולו ומבקש להתפלל. לא כמו זר שהתגנב לארמון, אלא כמו ילד שאבא שלו קרא לו לבוא.</p>
+      <p>יש כאן שני צדדים, ושניהם חשובים. מצד אחד, הוא מלך העולם, ולכן עומדים לפניו ביראה ולא מפסיקים באמצע. ומצד שני, הוא אבא שלנו, ולכן אפשר לבוא אליו בביטחון ובאהבה, ולבקש.</p>
+      <p class="bold-para">המלך הגדול הוא גם אבא, והוא עצמו רצה שנבוא אליו ונתפלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מלך שהוא גם אבא</div>
+      <h3 class="story-title">🕯️ הצדיק שזעק "אבא"</h3>
+      <p>בשיעור הושמע גם סיפור על יהודי צדיק, שלפני למעלה מארבעים שנה עמד להתפלל לפני ציבור. פתאום התחיל לזעוק: "אבא! אבא!" האנשים שעמדו שם לא הבינו. למי הוא קורא? איפה אבא שלו?</p>
+      <p>ואז המשיך ואמר: "אבינו שבשמים". ופתאום כולם הבינו. יש לנו אבא, שהוא מלך העולם, שברא את הכל. אבל הוא גם אבא שלנו.</p>
+      <p>הצדיק הזה לא דיבר אל ה' כמו אל שליט רחוק. הוא קרא לו כמו שילד קורא לאביו. ומי ששמע אותו הרגיש פתאום את הקרבה הזאת בעצמו.</p>
+      <p>וזו התפילה בשלמותה: לעמוד כמו היהודי בשדה, שידע שהוא לפני המלך ולא הפסיק לשום דבר, ולקרוא כמו הצדיק הזה, שידע שהמלך הוא גם אבא. יראה ואהבה יחד, באותו רגע עצמו.</p>
+      <p class="bold-para">מי שזוכר שהמלך הוא גם אבא, יכול לפנות אליו מעומק הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מלך שהוא גם אבא</div>
+      <h3 class="story-title">🤝 שני סיפורים, תפילה אחת</h3>
+      <p>בשיעור שמענו שני סיפורים, ובמבט ראשון הם נראים שונים מאוד. בסיפור הראשון, יהודי עומד בשקט מוחלט, עיניו עצומות, ואינו זז גם כשסכנה גדולה מתקרבת. בסיפור השני, צדיק זועק בקול רם "אבא!", עד שכל השומעים נבהלים.</p>
+      <p>אבל שני הסיפורים מדברים על אותו דבר בדיוק: על אדם שיודע עם מי הוא מדבר. היהודי בשדה ידע שהוא מדבר עם מלך, ולכן לא הפסיק. הצדיק ידע שהוא מדבר עם אבא, ולכן קרא מעומק הלב.</p>
+      <p>מי שמרגיש רק מלך, עלול לפחד ולהתרחק, ולחשוב שאין לו זכות לבקש. מי שמרגיש רק אבא, עלול לשכוח את הכבוד, ולדבר בקלות ובחוסר תשומת לב. התפילה האמיתית מחברת ביניהם: עומדים לפני מלך, ולכן בכבוד ובלי הפסקות; ומדברים אל אבא, ולכן באהבה ובביטחון.</p>
+      <p>זה בדיוק מה שאנחנו אומרים בתפילה עצמה פעמים רבות: "אבינו מלכנו". שתי מילים, ובתוכן כל מה שלמדנו בשיעור הזה.</p>
+      <p class="bold-para">היהודי בשדה מלמד יראה, הצדיק שזעק "אבא" מלמד אהבה, ותפילה שלמה צריכה את שתיהן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מה לוקחים איתנו</div>
+      <h3 class="story-title">❓ שאלות לחזרה</h3>
+      <p>בשיעור נשאלו כמה שאלות כדי לחזור על הסיפור. כדאי לענות עליהן גם כאן.</p>
+      <p>שאלה ראשונה: מה עשה היהודי כשלא היה בית כנסת? הוא התפלל בשדה, במקום שבו עמד, כדי לא להחמיץ את זמן התפילה.</p>
+      <p>שאלה שנייה: למה היהודי לא ענה לשר? האם לא שמע אותו? האם לא פחד ממנו? האם לא אהב אותו? לא. הוא לא ענה כי היה באמצע התפילה, ועמד לפני המלך.</p>
+      <p>שאלה שלישית: מה לומדים מכאן? איך צריך להרגיש כשמתפללים? לומדים שבתפילה עומדים לפני המלך, ולכן אין להפסיק באמצע התפילה. לא מתאים לפנות לאחרים כשמדברים עם מלך מלכי המלכים.</p>
+      <p>שלוש תשובות פשוטות, אבל מי שזוכר אותן יודע מה זו תפילה.</p>
+      <p class="bold-para">שלוש שאלות קצרות מסכמות את הסיפור ואת הלימוד שבו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מה לוקחים איתנו</div>
+      <h3 class="story-title">🎭 לספר את הסיפור בעצמך</h3>
+      <p>בסוף השיעור כל אחד צבע וגזר שתי דמויות, את היהודי המתפלל ואת השר, הדביק אותן על מקלות, ועשה הצגה קטנה. ואחר כך ניסו לספר את הסיפור כולו בעל פה, בלי לקרוא, במילים של עצמם.</p>
+      <p>וכשמנסים לספר, מגלים מה זוכרים ומה חסר. היו שסיפרו שהשר רצה להרוג את היהודי ולא הרג, אבל שכחו את החלק החשוב ביותר: למה לא הרג? כי היהודי הסביר לו. הוא שאל אותו אם עמד פעם לפני המלך, והשר הודה שלא היה מפסיק, וכך הבין שגם היהודי עמד לפני המלך, לפני מלך מלכי המלכים.</p>
+      <p>החלק הזה הוא לב הסיפור. בלעדיו, הסיפור הוא רק הרפתקה עם סוף טוב. איתו, הוא שיעור על תפילה.</p>
+      <p>וזו עצה טובה לכל לימוד: לא להסתפק בשמיעה. לספר לאחרים, לספר בבית, לספר בעל פה. מי שמספר, זוכר. ומי שזוכר את הסיפור, ייזכר בו גם ברגע שמישהו ינסה להפריע לו באמצע התפילה, ויידע מה לעשות.</p>
+      <p class="bold-para">מי שמספר סיפור במילים שלו, זוכר אותו ומבין אותו לעומק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מה לוקחים איתנו</div>
+      <h3 class="story-title">👣 צעדים קטנים בתפילה</h3>
+      <p>אנחנו לא נדרשים לעמוד מול שר רומי ולסכן את חיינו. אבל כל אחד יכול לקחת מן הסיפור הזה כמה צעדים קטנים לתפילה שלו.</p>
+      <p>צעד ראשון: לא לדבר באמצע התפילה. גם אם חבר לוחש משהו, גם אם קורה משהו מעניין מסביב. אם השר לא קיבל תשובה, גם החבר יכול לחכות.</p>
+      <p>צעד שני: לא להסתכל מסביב. היהודי בשדה עצם את עיניו. מי שמסתכל על כל מי שנכנס ויוצא, כבר אינו עומד לפני המלך, אלא לפני כל העולם.</p>
+      <p>צעד שלישי: לפני שמתחילים, לומר לעצמנו משפט אחד: אני עומד עכשיו לפני המלך. המשפט הזה הציל את היהודי בשדה, והוא יכול לשנות גם את התפילה שלנו.</p>
+      <p class="bold-para">אפשר להתחיל בדברים קטנים: לא לדבר, לא להסתכל מסביב, ולזכור לפני מי עומדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מה לוקחים איתנו</div>
+      <h3 class="story-title">🌅 פגישה עם המלך בכל יום</h3>
+      <p>בכל יום, כמה פעמים ביום, יש לנו פגישה עם המלך. בבוקר, אחר הצהריים ובערב. המלך קבע את הזמנים, והוא מחכה.</p>
+      <p>אפשר לבוא לפגישה הזאת בחיפזון, לומר את המילים מהר, להסתכל מסביב, לענות למי שפונה אלינו. ואפשר לבוא אליה כמו היהודי שבשדה: לעצום עיניים, לדעת לפני מי עומדים, ולא לתת לשום דבר להפריע.</p>
+      <p>וכשבאים כך, נזכרים גם בשיר: מי אני שאזכה להתפלל לפני הקדוש ברוך הוא? אבל אבא יקר, אתה רצית שאבוא. אז הנה אני, הבן שלך, עומד מולך ומבקש להתפלל.</p>
+      <p>זה כל הסוד: מלך גדול, שאין מפסיקים לפניו, ואבא אוהב, שאפשר לבקש ממנו הכל. מי שזוכר את שני הדברים האלה, תפילתו נעשית פגישה אמיתית. ויהי רצון שנזכה לעמוד כך לפני ה' בכל תפילה, ביראה ובאהבה, כבנים שעומדים לפני אביהם המלך, ושתפילותינו יתקבלו לפניו ברצון.</p>
+      <p class="bold-para">בכל תפילה אנחנו נכנסים לפגישה עם המלך, ואפשר לבוא אליה כמו היהודי שבשדה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/rQdGDjVvqfA · 2026-02-16 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מי לובש כתר","icon":"👑","color":"#c62b6b","stories":[{"id":1,"title":"מלך בלי כתר","icon":"👑"},{"id":2,"title":"מה הייתם עושים?","icon":"🤔"}]},{"id":2,"name":"תפילה באמצע השדה","icon":"🌾","color":"#6d28d9","stories":[{"id":3,"title":"יהודי בדרך ארוכה","icon":"🌾"},{"id":4,"title":"לכל תפילה יש זמן","icon":"⏰"},{"id":5,"title":"ארמון באמצע השדה","icon":"🏰"}]},{"id":3,"name":"השר מרומי","icon":"🐎","color":"#e08e00","stories":[{"id":6,"title":"רעש של סוסים","icon":"🐎"},{"id":7,"title":"כשכולם משתחווים","icon":"🙇"},{"id":8,"title":"\"שלום! שלום!\"","icon":"🗣️"},{"id":9,"title":"למה ה' לא מעניש מיד?","icon":"⚖️"},{"id":10,"title":"השר מחכה","icon":"⏳"}]},{"id":4,"name":"לפני מי אתה עומד","icon":"⚖️","color":"#1e88b8","stories":[{"id":11,"title":"\"עמדת פעם לפני המלך?\"","icon":"🏛️"},{"id":12,"title":"\"חס וחלילה!\"","icon":"🙅"},{"id":13,"title":"לפני מלך מלכי המלכים","icon":"👑"},{"id":14,"title":"שאלה במקום ויכוח","icon":"💡"},{"id":15,"title":"השר שהלך מבין","icon":"🐎"},{"id":16,"title":"\"כשאני מתפלל, אני עומד לפני המלך\"","icon":"🙏"}]},{"id":5,"name":"מלך שהוא גם אבא","icon":"❤️","color":"#c62b6b","stories":[{"id":17,"title":"\"מי אנוכי\"","icon":"🎵"},{"id":18,"title":"\"אבל אבא יקר\"","icon":"❤️"},{"id":19,"title":"הצדיק שזעק \"אבא\"","icon":"🕯️"},{"id":20,"title":"שני סיפורים, תפילה אחת","icon":"🤝"}]},{"id":6,"name":"מה לוקחים איתנו","icon":"✅","color":"#6d28d9","stories":[{"id":21,"title":"שאלות לחזרה","icon":"❓"},{"id":22,"title":"לספר את הסיפור בעצמך","icon":"🎭"},{"id":23,"title":"צעדים קטנים בתפילה","icon":"👣"},{"id":24,"title":"פגישה עם המלך בכל יום","icon":"🌅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
