@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 יוצאים מן החומות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 יוצאים מן החומות</h1>
+  <p>הדיין ממרוקו שאסף 613 מעלות לארץ ישראל, השומר הבודד של נחלת שבעה, הקדחת במאה שערים, ובית הכנסת שחיכה שבע מאות שנה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ יוצאים מן החומות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/sR2vt--UiZ4?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/sR2vt--UiZ4/hqdefault.jpg" alt="יוצאים מן החומות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=sR2vt--UiZ4" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · התחלה בייסורים</div>
+      <h3 class="story-title">🕯️ ארץ ישראל נקנית בייסורים</h3>
+      <p>השיעור ממשיך את סיפור יציאתה של ירושלים מן החומות. השכונה הראשונה, משכנות שאננים, נבנתה בידי משה מונטיפיורי. עכשיו מגיעים אל השכונה השנייה, שכונה ספרדית, ואחריה אל השכונה השלישית.</p>
+      <p>אבל לפני כן צריך לזכור שההתחלה הייתה קשה מאוד. אמרו חז"ל שארץ ישראל נקנית בייסורים, ומי שהתחילו את ההתחלה הרגישו זאת בגופם. מבין תלמידי הגר"א שעלו לארץ, מספר עצום, אולי כמחציתם, מתו במגפות ובצרות למיניהן. לא היו אז חיסונים, ולא הייתה רפואה כמו היום.</p>
+      <p>ובכל זאת המשיכו לעלות. למה? כי הגאון מווילנה אמר להם שאין אפשרות להביא את הגאולה כשיושבים ומחכים בחוץ לארץ. רק על ידי שנבנה את ארץ ישראל, תבוא הגאולה.</p>
+      <p>לכן הבינו שאין ברירה. עלו במסירות נפש, בלי לחשוב על עצמם, גם כשראו את חבריהם נופלים סביבם. וכל השכונות שנלמד עליהן נבנו ברוח הזאת: מתוך אמונה שכל בית חדש מחוץ לחומות הוא צעד אל הגאולה.</p>
+      <p class="bold-para">תלמידי הגר"א המשיכו לעלות גם כשרבים מהם מתו, כי האמינו שהגאולה תבוא רק מתוך בניין הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השכונה השנייה</div>
+      <h3 class="story-title">🧳 הדיין שעזב את מרוקו</h3>
+      <p>גיבור השכונה השנייה הוא רבי דוד בן שמעון, הנקרא על שם ספרו "צוף דבש". הוא אהב מאוד את ארץ ישראל, ובמשך שנים רבות חלם לעלות אליה.</p>
+      <p>כבר בגיל צעיר היה דיין במרוקו. בגיל עשרים ושמונה החליט: עד כאן. אני עוזב את הכל ועולה לארץ ישראל.</p>
+      <p>כל הקהילה באה לשכנע אותו להישאר. איך יכול להיות שהרב, הדיין, יעזוב את כולם? אבל הוא השיב להם שאין לו ברירה, הוא חייב לעלות. ובסביבות שנת 1854 עלה לארץ ישראל.</p>
+      <p>באותה תקופה לא היה בירושלים ציבור מוגרבי מאורגן עם רבנים משלו. הם היו כאן כמעט לבדם. וגם העלייה לארץ הייתה אז מועטת מאוד – אחד פה, אחד שם.</p>
+      <p>כיוון שעלה רב גדול כמותו, הוא גרם לעלייה של ספרדים ובני צפון אפריקה לארץ ישראל. הוא היה חכם עצום ודיין, וכשהגיע, הקים בית כנסת לכל הספרדים מבני עדתו. עכשיו היה להם מי שפוסק, מי שדן, ומי שמנהיג. עד היום יש בית כנסת על שמו, ויש לו צאצאים שמשמשים ברבנות.</p>
+      <p class="bold-para">רבי דוד בן שמעון, דיין צעיר במרוקו, עזב את מעמדו ואת קהילתו כדי לעלות לארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השכונה השנייה</div>
+      <h3 class="story-title">📚 613 מעלות לארץ ישראל</h3>
+      <p>אחת היצירות היפות ביותר שלו היא ספר שבו אסף את כל מה שאמרו חז"ל בשבחה של ארץ ישראל. הוא עשה זאת כמניין תרי"ג מצוות: 613 מאמרים על מעלות הארץ, שנאספו מכל המדרשים ומכל המקורות.</p>
+      <p>העבודה הזאת לקחה זמן רב, ויצאה ממנה יצירה יפה מאוד. הוא קרא לה "שער החצר". את רוב כספו השקיע בהדפסת הספר, כי ההדפסה הייתה אז יקרה מאוד.</p>
+      <p>לפני כמה שנים החליט מכון "תורה והארץ" להוציא את הספר במהדורה חדשה ומפוארת, בשני כרכים גדולים בגודל של גמרא, עם הסכמות רבות מגדולי ישראל. הרב אמר שזה אחד הספרים היפים ביותר למי שרוצה להתעורר על מעלת ארץ ישראל.</p>
+      <p>והרב קרא את המעלה הראשונה בספר: מי שיש לו קרקע בארץ ישראל, נחשב לו כאילו קנה חלק בעולם הבא. ומביא לכך רמז מן הפסוק: "אַחַת שָׁאַלְתִּי מֵאֵת ה', אוֹתָהּ אֲבַקֵּשׁ: שִׁבְתִּי בְּבֵית ה' כָּל יְמֵי חַיַּי, לַחֲזוֹת בְּנֹעַם ה'". "שבתי בבית ה'" – זו ארץ ישראל. ועל ידי זה זוכים "לחזות בנועם ה'" בעולם הבא.</p>
+      <p class="bold-para">רבי דוד בן שמעון אסף מכל דברי חז"ל 613 מעלות של ארץ ישראל, כמניין המצוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השכונה השנייה</div>
+      <h3 class="story-title">🏠 שכונה לעניי העדה</h3>
+      <p>אבל עיקר עיסוקו של רבי דוד בן שמעון היה בעזרה לעניי ירושלים, ובעיקר לעניי עדתו. הוא החליט שצריך לבנות שכונה חדשה, שבה יוכלו העניים לגור בזול, במחיר שיוכלו לעמוד בו.</p>
+      <p>זה לא היה פשוט. בשביל זה צריך הרבה מאוד כסף. הוא אסף, שלח שליחים, ובסופו של דבר בנה את השכונה השנייה מחוץ לחומות: שכונת "מחנה ישראל".</p>
+      <p>השכונה הזאת אינה מה שמכונה היום "מחנה ישראל". לפי מה שהוזכר בשיעור, היא שכנה באזור ממילא של היום. השכונה נקראה בשמות שונים, וערביי המקום קראו לה "שכונת המוגרבים", על שם בני מרוקו שגרו בה.</p>
+      <p>היא נבנתה לא הרבה אחרי השכונה של מונטיפיורי, והייתה מיועדת בעיקר לעניים שלא היה להם כסף. כך, אותו דיין שעזב את מעמדו במרוקו, לא הסתפק בכך שעלה בעצמו. הוא דאג שגם העניים יוכלו לחיות כאן בכבוד.</p>
+      <p class="bold-para">רבי דוד בן שמעון אסף כסף ובנה מחוץ לחומות את השכונה השנייה, "מחנה ישראל", בעיקר עבור העניים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · נחלת שבעה ומאה שערים</div>
+      <h3 class="story-title">🧱 צפיפות בתוך החומות</h3>
+      <p>השכונה השלישית נחשבת לפריצה הגדולה מחוץ לחומות, אף שכבר היו לפניה כמה בתים. היא נבנתה בידי רבי יוסף ריבלין, שנקרא בפי כול "בונה השכונות" ו"בונה ירושלים". השכונה הראשונה שבנה הייתה נחלת שבעה, ומשם התחילה הבנייה הגדולה של ירושלים. ממנה התחילו כל ה"נחלות", וכל השאר רץ אחריה.</p>
+      <p>באותה תקופה כבר גרו בעיר העתיקה כעשרת אלפים יהודים. כמה אפשר להכניס בין החומות? הצפיפות הייתה גדולה, והמחירים גבוהים מאוד. השכונות שנבנו קודם לכן מחוץ לחומות היו קטנות. במשכנות שאננים, למשל, גרו כשמונים משפחות בלבד. זה לא פתרון לעשרת אלפים.</p>
+      <p>רבי יוסף ריבלין דיבר הרבה, שוב ושוב, על כך שחייבים לצאת. ומסופר שאפילו בשעת אירוסיו התנה עם כלתו שהם הולכים לגור מחוץ לחומות. הרב אמר שאינו יודע אם התלהבה מכך, אבל היא הסכימה.</p>
+      <p>והיציאה הזאת לא הייתה פשוטה כלל. מחוץ לחומות לא הייתה שום הגנה, והסכנה הייתה ממשית.</p>
+      <p class="bold-para">בעיר העתיקה כבר גרו כעשרת אלפים יהודים בצפיפות, ובכל זאת היציאה מן החומות דרשה אומץ גדול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · נחלת שבעה ומאה שערים</div>
+      <h3 class="story-title">🌙 השומר הבודד והרימון</h3>
+      <p>שבעה אנשים יצאו לבנות את השכונה החדשה. ביום היו בונים, ובלילה חוזרים לתוך החומות. אבל אז אמרו: אם כך נמשיך, יום אחד יבואו הערבים ויהרסו את מה שבנינו. מישהו חייב להישאר בלילות.</p>
+      <p>החליטו לעשות גורל, שבכל לילה יישאר מישהו אחר. אבל אף אחד לא הסכים להישאר. ראה רבי יוסף ריבלין שכך, והחליט שהוא עצמו יישאר. וכך היה: לילה אחר לילה נשאר לבד.</p>
+      <p>יום אחד הגיע ערבי עם סכין. רבי יוסף הבין שעוד רגע מגיע המוות. היה לו תמיד בכיס שקית עם פרי, כדי שיהיה לו מה לאכול אם ירעב בלילה. אמר בלבו: לפני שאני נפרד מן העולם, אברך לפחות ברכת "בורא פרי העץ". הכניס את ידו לכיס והוציא רימון.</p>
+      <p>הערבי ראה את הרימון בידו, נבהל – כנראה חשב שזה רימון של מלחמה – וברח. כך ניצל.</p>
+      <p>אבל הסכנות לא נגמרו. פעם אחרת פרץ שודד ושדד את אשתו, והבהלה הייתה גדולה כל כך שבריאותה נפגעה, וכעבור זמן היא נפטרה. ובכל זאת, למרות הכל, לא התייאש והמשיך לגור במקום.</p>
+      <p class="bold-para">רבי יוסף ריבלין נשאר לבדו בלילות בשכונה החדשה, וניצל באורח פלא כשהוציא רימון לברך עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · נחלת שבעה ומאה שערים</div>
+      <h3 class="story-title">🏗️ שלושים ושניים חודשים לבד</h3>
+      <p>במשך שלושים ושניים חודשים – כמעט שלוש שנים – גר רבי יוסף ריבלין לבדו בשכונה. רק אחר כך התחילו להצטרף אליו: עוד אחד, ועוד אחד, ועוד יהודים, עד שהשכונה גדלה, וברוך ה' גרו בה כבר יהודים רבים.</p>
+      <p>מעניין לציין שהשכונות נבנו לאורך דרך יפו, בגלל הצורך בביטחון. לגור ליד הדרך הראשית היה בטוח יותר מאשר להתרחק אל השטחים הפתוחים.</p>
+      <p>רבי יוסף ריבלין הלך, כמובן, בדרכם של תלמידי הגר"א, ושאב מן היסוד שהזכרנו בתחילה, היסוד שבזכותו המשיכו לעלות גם בשנות המגפות הקשות: הגאולה תבוא רק על ידי בניין הארץ. ולכן לא הסתפק בשכונה אחת. אחרי נחלת שבעה המשיך ובנה עוד שכונות.</p>
+      <p>יש כאן לימוד גדול: לפעמים אדם אחד, שמוכן להיות הראשון ולשאת בבדידות ובסכנה, פותח את הדרך לאלפים. אף אחד לא רצה להישאר בלילה הראשון. אבל מי שנשאר, הוא שבנה את ירושלים החדשה.</p>
+      <p class="bold-para">במשך כמעט שלוש שנים גר רבי יוסף ריבלין לבדו, עד שהצטרפו אליו לאט לאט עוד ועוד יהודים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · נחלת שבעה ומאה שערים</div>
+      <h3 class="story-title">💧 מאה שערים והקדחת</h3>
+      <p>השכונה הבאה הייתה מאה שערים. למה נקראה כך? היו לכך שני טעמים. ראשית, בהתחלה הצטרפו אל הקבוצה כמאה אנשים. ושנית, חנוכת הבית הייתה בשבוע של פרשת תולדות, שבה נאמר על יצחק: "וַיִּמְצָא בַּשָּׁנָה הַהִוא מֵאָה שְׁעָרִים". ובסוף, הרב הוסיף, הם היו אפילו יותר ממאה: מאה ושבעה עשר איש, שהתחייבו לתת כסף להמשך הבנייה.</p>
+      <p>והפעם לא הערבים היו הסכנה. ליד השכונה היו מים גלויים, מים עומדים. ומשם הגיעה הקדחת. האנשים התחילו למות זה אחר זה, והמצב היה נורא. כולם התכוננו לברוח, ונראה היה שהשכונה עומדת להינטש.</p>
+      <p>אז הלכו הרבנים להתפלל במבנה עתיק ועגול, שעל פי המסורת נקרא "שערי ירושלים". הרב אמר שאינו יודע על איזה מבנה מדובר. הם התפללו: ריבונו של עולם, האם חלילה נגזר עלינו שנצטרך לנטוש את המקום בגלל הקשיים?</p>
+      <p>והתפילה עזרה. נמצא רעיון, והם הצליחו לייבש באופן כלשהו את הביצה. הקדחת נעלמה, והשכונה ניצלה. ואחרי שנבנו השכונות האלה, החלה כל ארץ ישראל להיבנות: פתח תקווה ועוד מקומות. אפשר לראות ממש איך אחרי שבונים את ירושלים, נבנית כל הארץ.</p>
+      <p class="bold-para">שכונת מאה שערים כמעט ננטשה בגלל הקדחת, וניצלה אחרי תפילה ומציאת דרך לייבש את המים העומדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שבע מאות שנה ושישה ימים</div>
+      <h3 class="story-title">🕍 בית הכנסת של הרמב"ן</h3>
+      <p>הרב הצביע על הבדל גדול בין הדורות. במאות השנים הראשונות, כל מה שבנו יהודים בארץ ישראל נחרב. דוגמה לכך היא בית הכנסת שבנה הרמב"ן בירושלים, כשעלה לארץ.</p>
+      <p>הערבים החריבו אותו, והמקום היה חרב שנים רבות מאוד. הם לא נתנו לבנות אותו מחדש. אחר כך המקום אף הפך לבית מלאכה. לפני כמאה וחמישים שנה זיהה חוקר אחד, לפי עמודי שיש ושרידים אחרים, שזה המקום של בית הכנסת של הרמב"ן. אבל עדיין לא היה היתר לבנות.</p>
+      <p>ורק אחרי מלחמת ששת הימים נבנה בית הכנסת מחדש. וזה היה הדבר הראשון שבנו לאחר שחרור העיר העתיקה, עוד לפני כל השאר. למה דווקא הוא? כי יצא בחשבון שהרמב"ן עלה לארץ ובנה את בית הכנסת בשנת ה'כ"ז, ושחרור העיר העתיקה היה בשנת תשכ"ז. בדיוק שבע מאות שנה.</p>
+      <p>הבונים רצו לציין את זה: שבע מאות שנה לרמב"ן. וכך היה בית הכנסת של הרמב"ן לבית הכנסת הראשון שקם מחדש בירושלים המשוחררת.</p>
+      <p class="bold-para">בית הכנסת שבנה הרמב"ן נחרב, ונבנה מחדש מיד אחרי ששת הימים – שבע מאות שנה אחרי שנבנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שבע מאות שנה ושישה ימים</div>
+      <h3 class="story-title">✡️ שישה ימים</h3>
+      <p>על מלחמת ששת הימים הרב סיים בכמה דברים על הניסים. המלחמה פרצה בשבוע השישי של ספירת העומר. הרב הוסיף רמז: היום שבו פרצה המלחמה יוצא "יסוד שביסוד" בספירה, והמלחמה עצמה נמשכה שישה ימים.</p>
+      <p>הרב ציין שבהיסטוריה הכתובה, לפחות כפי שהוא יודע, קשה מאוד למצוא מלחמה שנגמרה בניצחון כזה בתוך שישה ימים. מלחמה אינה דבר קטן. נכנסים לשטח של אויב כדי לכבוש אותו, וזה לוקח זמן רב. גם מעצמות גדולות נלחמו חודשים ושנים.</p>
+      <p>וגם במלחמות של ישראל לאורך ההיסטוריה זה לא היה כך. יהושע בן נון כבש את ארץ ישראל, ולפי המסורת זה לקח שבע שנים. החשמונאים ניצחו את היוונים, אבל לא ביום אחד ולא בחודש אחד, אלא במשך שנים.</p>
+      <p>ואילו כאן, הכל נגמר בשישה ימים. את רמת הגולן כבשו ביום האחרון. במשך עשרים שנה בנו שם בונקרים, וכל בונקר כזה דורש זמן רב לכבוש אותו. איך גומרים את כל זה ביום אחד? זה דבר שקשה מאוד לתפוס בשכל.</p>
+      <p class="bold-para">מלחמת ששת הימים פרצה בשבוע השישי של ספירת העומר, ונסתיימה בניצחון בתוך שישה ימים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שבע מאות שנה ושישה ימים</div>
+      <h3 class="story-title">🎓 "אין לי מה ללמד"</h3>
+      <p>הרב סיפר סיפור ששמע מאדם שהיה שם. סטודנט יהודי למד באוניברסיטה בארצות הברית, במגמה שעוסקת במלחמות. לומדים שם איך מנצחים: מה הטקטיקה, מה האסטרטגיה, למה צד אחד ניצח והשני הפסיד.</p>
+      <p>באחד הקורסים עבר המרצה על כל המלחמות של מאה השנים האחרונות. מי נלחם נגד מי, ולמה ניצח. כשהגיע לשנת 1948 – דילג. כשהגיע לשנת 1967 – דילג שוב על מלחמת ששת הימים.</p>
+      <p>הסטודנט לא יכול היה להתאפק. אחרי השיעור ניגש למרצה ושאל: הרי ב-1967 הייתה מלחמה גדולה, שכל העולם מכיר. איך אפשר לדלג עליה? אולי חשד שהמרצה שונא יהודים.</p>
+      <p>אמר לו המרצה: תשמע, אני מלמד מלחמות שבהן מדינה נלחמה, ויש בהן טקטיקה שאפשר ללמוד. אבל מה אלמד על מלחמה שבה אלוקים נלחם? אין לי מה ללמד.</p>
+      <p>הסטודנט, שלא היה שומר מצוות באותו זמן, לקח את הדברים מאוד ללב. המרצה יודע שאלוקים נלחם בשביל היהודים, ואני לא יודע את זה? הדבר נכנס עמוק ללבו. הוא החליט לעלות לארץ ישראל, ובארץ התחזק וחזר בתשובה. ואת הסיפור הזה סיפר פעמים רבות.</p>
+      <p class="bold-para">מרצה למלחמות דילג על ששת הימים, כי אמר שאין מה ללמד על מלחמה שבה אלוקים נלחם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שבע מאות שנה ושישה ימים</div>
+      <h3 class="story-title">✈️ המטוסים שלא נראו</h3>
+      <p>ועוד סיפור, שהתפרסם רק אחרי הסכם השלום עם ירדן, כשהירדנים עצמם סיפרו אותו. בתחילת המלחמה התקשר נאצר, שליט מצרים, אל חוסיין, מלך ירדן, ואמר לו: הצטרף למלחמה. המטוסים שלי כבר מפציצים את תל אביב, אנחנו כובשים את כל הארץ.</p>
+      <p>חוסיין לא ידע אם להאמין לו. הוא החליט להתקשר בעצמו למגדל הפיקוח ולשאול: האם באמת יש מטוסים מצריים בדרך? המלך יכול להתקשר לכל מקום, אבל אי אפשר להתקשר אליו בחזרה.</p>
+      <p>המשקיף הסתכל, ואמר: כן, אני רואה מטוסים רבים מאוד מגיעים, להקה ענקית, ואף אחד לא עוצר אותם. חוסיין שמע, וניתק.</p>
+      <p>כעבור שניות ספורות התברר למשקיף מה קרה. המטוסים של ישראל טסו נמוך מאוד, בגובה העצים, כדי שהמכ"ם לא יגלה אותם. הוא ראה מטוסים, אבל הם היו בדרך חזרה מן ההפצצה. אילו חוסיין היה מתקשר דקה אחר כך, היה המשקיף רואה את סימני המטוסים ומבין שהם ישראליים. אבל המלך כבר ניתק, ואי אפשר היה להתקשר אליו.</p>
+      <p>חוסיין, שחשב שהמצרים מנצחים, אמר לחייליו להצטרף. וכך נפתחה המלחמה בירושלים, ובסופה זכינו לשחרר את העיר העתיקה. ניסים ונפלאות שעשה לנו ה'. וכדאי לזכור אותם, ולהודות עליהם, בכל פעם שאנו מגיעים אל העיר העתיקה ואל הכותל.</p>
+      <p class="bold-para">מלך ירדן שאל את מגדל הפיקוח אם מטוסים מצריים בדרך, והמשקיף ראה מטוסים בלי לדעת של מי הם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/sR2vt--UiZ4 · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"התחלה בייסורים","icon":"🕯️","color":"#c62b6b","stories":[{"id":1,"title":"ארץ ישראל נקנית בייסורים","icon":"🕯️"}]},{"id":2,"name":"השכונה השנייה","icon":"🏠","color":"#6d28d9","stories":[{"id":2,"title":"הדיין שעזב את מרוקו","icon":"🧳"},{"id":3,"title":"613 מעלות לארץ ישראל","icon":"📚"},{"id":4,"title":"שכונה לעניי העדה","icon":"🏠"}]},{"id":3,"name":"נחלת שבעה ומאה שערים","icon":"🧱","color":"#e08e00","stories":[{"id":5,"title":"צפיפות בתוך החומות","icon":"🧱"},{"id":6,"title":"השומר הבודד והרימון","icon":"🌙"},{"id":7,"title":"שלושים ושניים חודשים לבד","icon":"🏗️"},{"id":8,"title":"מאה שערים והקדחת","icon":"💧"}]},{"id":4,"name":"שבע מאות שנה ושישה ימים","icon":"✡️","color":"#1e88b8","stories":[{"id":9,"title":"בית הכנסת של הרמב\"ן","icon":"🕍"},{"id":10,"title":"שישה ימים","icon":"✡️"},{"id":11,"title":"\"אין לי מה ללמד\"","icon":"🎓"},{"id":12,"title":"המטוסים שלא נראו","icon":"✈️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
