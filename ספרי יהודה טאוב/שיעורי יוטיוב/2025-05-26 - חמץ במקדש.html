@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 חמץ במקדש</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 חמץ במקדש</h1>
+  <p>מדוע קרבן שבועות בא חמץ: המהר"ל והרמב"ן, לחם עוני מול לחם עושר, שלושת המקומות שבהם מותר שאור ודבש, ומה הסוד של מאה ברכות</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ חמץ במקדש" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/rTDYemTdJ2Y?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/rTDYemTdJ2Y/hqdefault.jpg" alt="חמץ במקדש" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=rTDYemTdJ2Y" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מפסח לשבועות</div>
+      <h3 class="story-title">🔄 מכל פירור – לקרבן חמץ</h3>
+      <p>אם שמים לב, פסח ושבועות הם ממש "ונהפוך הוא". בפסח אמרו לנו: כל החמץ – תזרוק. "בל יראה ובל ימצא". בדיקת חמץ מתחת לכל מיטה, שלא יישאר שום פירור. מצה שמורה, זהירות בכל רגע, שלא יהיה פירור חמץ אחד בבית.</p>
+      <p>ואז עוברים חמישים יום, ולא להאמין: לתוך בית המקדש, למקום הקדוש ביותר, מה מביאים? קרבן חמץ. שתי הלחם, חמץ גמור.</p>
+      <p>זה פלא עצום. אם החמץ הוא דבר גרוע כל כך, שצריך לבער אותו עד הפירור האחרון, איך ייתכן שחמישים יום אחר כך מביאים אותו לבית המקדש?</p>
+      <p>ויותר מזה: זהו קרבן ציבור ייחודי, שלא מצאנו כמותו בשום הזדמנות אחרת. אף פעם אין קרבן ציבור שבא חמץ. כל השנה אסור להקריב קרבן ציבור של חמץ, ורק בחג השבועות מצווה להקריבו. גם לחם הפנים, שעמד בבית המקדש כל השבוע, היה מצה: לחם עבה ושטוח, בלי שאור, מעשה אומן. וכך גם כל המנחות שהקריבו כל השנה. אז מה עניינו של הקרבן המיוחד הזה?</p>
+      <p>יש על כך כמה מהלכים. נתחיל במהלך אחד יפה, ואחר כך נעבור למהלך רחב יותר, שנוגע להמון דברים: לקרבן תודה, לביכורים, להלל, ובעצם לכל דרך החיים של אדם שרוצה להודות לבורא עולם.</p>
+      <p class="bold-para">בפסח מבערים כל פירור חמץ, וחמישים יום אחר כך מקריבים חמץ בבית המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מפסח לשבועות</div>
+      <h3 class="story-title">🧂 המהר"ל: תורה תבלין</h3>
+      <p>המהר"ל אומר פירוש יפה. בפסח זרקנו את היצר הרע. החמץ מסמל את היצר, ובפסח שחטנו אותו, הורדנו אותו, ביערנו כל חמץ.</p>
+      <p>אבל בשבועות קיבלנו את התורה. ועל התורה אמרו חז"ל: "בָּרָאתִי יֵצֶר הָרָע, בָּרָאתִי לוֹ תּוֹרָה תַּבְלִין". שימו לב: לא כתוב שהתורה שוחטת את היצר הרע. מה עושה התורה? תבלין. מה עושה תבלין? ממתיק את האוכל. יש לך תפוח אדמה יבש, אתה שם עליו מלח ותבלינים, והוא נהיה טעים.</p>
+      <p>התורה אינה הורגת את היצר הרע. היא עושה ממנו דבר טעים, הופכת אותו לדבר טוב. אחרי שקיבלנו את התורה, אנחנו מסוגלים לקחת את כל הכוחות האלה ולקדש אותם.</p>
+      <p>ולכן, אומר המהר"ל, בחג השבועות יש מעלה גדולה יותר: לוקחים את החמץ עצמו ומקריבים אותו לפני בורא עולם. בפסח מתרחקים ממנו, ובשבועות מקדשים אותו. פירוש יפה מאוד, שאפשר לומר אותו בשולחן החג.</p>
+      <p class="bold-para">בפסח שוחטים את היצר, ובשבועות, אחרי קבלת התורה, הופכים אותו לטוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מפסח לשבועות</div>
+      <h3 class="story-title">🧀 שתי הלחם ומאכלי חלב</h3>
+      <p>בדרך אגב הוזכר בשיעור קשר מעניין בין שתי הלחם לבין המנהג לאכול מאכלי חלב בחג השבועות. הרב ציין שזכור לו שהרמ"א כותב טעם כזה.</p>
+      <p>ההלכה היא שאם אוכלים לחם בשולחן חלבי, אסור להשתמש באותו לחם אחר כך בסעודה בשרית. ובחג השבועות נהגו לאכול בסעודה גם מאכלי חלב וגם בשר: בתחילת הסעודה חלב, ואחר כך בשר. ממילא יוצא שצריך להכין שני לחמים: לחם אחד לתחילת הסעודה, החלבית, ולחם אחר לסעודה הבשרית. ושני הלחמים האלה מזכירים את שתי הלחם שהיו מקריבים בבית המקדש בחג.</p>
+      <p>הרב העיר שזה טעם שאנשים כמעט אינם מכירים היום, כי כיום רוב האנשים אינם נוהגים לאכול לחם עם הבשר באותה צורה, וברוך ה' יש שפע של מאכלים אחרים. אבל יש בו רמז יפה: גם על שולחן החג שלנו, בלי בית מקדש, נשאר זכר לשתי הלחם.</p>
+      <p>ועכשיו נחזור לשאלה העיקרית: למה שתי הלחם עצמן באות חמץ?</p>
+      <p class="bold-para">יש שקשרו את מנהג מאכלי החלב בשבועות לקרבן שתי הלחם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מפסח לשבועות</div>
+      <h3 class="story-title">🌾 הרמב"ן: לחם של תודה</h3>
+      <p>מהלך שני, רחב יותר, פותח ברמב"ן. הרמב"ן עומד על השאלה וכותב: שתי הלחם באות חמץ, לפי שהם תודה לה' על שהגיענו לחוקות קציר, ובקרבן תודה בא לחם חמץ.</p>
+      <p>כלומר, הרמב"ן לומד שקרבן שתי הלחם, שנקרא גם קרבן הביכורים, הוא הודיה לקדוש ברוך הוא על שברוך ה' יש תבואה טובה, בריאה ושמנה, שהגיעה בשלום עד הקציר.</p>
+      <p>וכל קרבן תודה בא עם חמץ. כולנו יודעים: בקרבן תודה מביאים ארבעים לחמים, שלושים מצות ועשרה חמץ. ואם שתי הלחם הם קרבן תודה של הציבור, ברור שגם הם באים חמץ.</p>
+      <p>אבל זו רק תחילת התשובה. כי עכשיו צריך לשאול: למה בהודיה מותר חמץ, ובכל מקום אחר אסור? מה יש בהודיה שהופך את הכלל?</p>
+      <p class="bold-para">הרמב"ן מסביר ששתי הלחם באים חמץ כי הם קרבן תודה על הקציר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שאור ודבש</div>
+      <h3 class="story-title">🍯 "כל שאור וכל דבש"</h3>
+      <p>יש דבר נוסף שדומה לזה. בבית המקדש אסור להקריב לא רק חמץ, אלא גם דבר מתוק: "כִּי כָל שְׂאֹר וְכָל דְּבַשׁ לֹא תַקְטִירוּ מִמֶּנּוּ אִשֶּׁה לַה'". "שאור" הוא חמץ. ו"דבש" אינו דווקא דבש דבורים, אלא פירות מתוקים: דבש תמרים, דבש תאנים.</p>
+      <p>אבל מיד באותו פסוק בא יוצא מן הכלל: "קָרְבַּן רֵאשִׁית תַּקְרִיבוּ אֹתָם לַה'". מה פירוש "קרבן ראשית"? הביכורים – "רֵאשִׁית בִּכּוּרֵי אַדְמָתְךָ". בביכורים מביאים פירות מתוקים לבית המקדש: תאנים ותמרים. ומה הם הביכורים? מצווה שכולה הודיה לה'.</p>
+      <p>יוצא מכאן כלל: אסור להקריב שאור ודבש, חוץ משלושה מקומות בלבד בכל התורה. בקרבן תודה מביאים חמץ. בקרבן שתי הלחם, שגם הוא הודיה לה', מביאים חמץ. ובביכורים, שגם הם הודיה, מביאים פירות מתוקים.</p>
+      <p>מה המכנה המשותף לשלושתם? כולם, בלי יוצא מן הכלל, הודיה. מדוע דווקא בהודיה משתנים כל הכללים, ומותר להקריב גם חמץ וגם דבש? אם חמץ ודבש אינם טובים, למה בהודיה הכל מתהפך? כאן יש יסוד נפלא, שנוגע לכל אדם.</p>
+      <p class="bold-para">בבית המקדש אסור להקריב שאור ודבש, חוץ מקרבנות של הודיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לחם עוני ולחם עושר</div>
+      <h3 class="story-title">🥖 מצה – לחם עוני</h3>
+      <p>כדי להבין, צריך לראות מה ייחודו של החמץ ומה ייחודה של המצה. התורה קוראת למצה "לֶחֶם עֹנִי". מצד עצם מהותה, המצה היא לחם בלי שום תוספת, בלי שום דבר שמשביח את המאפה. לחם של עניים.</p>
+      <p>החמץ, לעומתה, הוא לחם של עושר. השאור, שמנפיח את העיסה, הופך אותה לגלוסקה שמנה. זה סימנו של העשיר, שיש לו יכולת. המצה מבטאת את העוני, שמלווה בדרך כלל בכניעה ובענווה, כמו שנאמר "תַּחֲנוּנִים יְדַבֶּר רָשׁ". החמץ מסמל את האושר וההצלחה, שמלווים לעיתים קרובות ברגשי גאווה, כמו שנאמר "וְעָשִׁיר יַעֲנֶה עַזּוֹת".</p>
+      <p>לחם העוני השטוח מסמל את האדם העני והעניו. והלחם הגדול והתופח לגובה מסמל הרבה פעמים את האדם בעל הגאווה. ודומה לזה גם הדבש, הפירות המתוקים: הם לחם של אושר, של שלמות גשמית.</p>
+      <p>חמץ ודבש הם ביטוי להשגת התכלית הנכספת של אושר והצלחה גשמית.</p>
+      <p class="bold-para">המצה מסמלת עוני וענווה, והחמץ התופח מסמל עושר ולעיתים גאווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לחם עוני ולחם עושר</div>
+      <h3 class="story-title">🙏 לעמוד בענווה לפני ה'</h3>
+      <p>ולכן, כשאדם מביא קרבן לה', אסור להביא חמץ. כי ההקרבה היא כמו תפילה: על האדם לעמוד לפני ה' מתוך רגשי כניעה. תחושות של עושר והצלחה אישית, רגשות של גאווה, אין מקומם לפני מזבח ה'.</p>
+      <p>זה פשוט מאוד. בבית המקדש אדם בא נכנע, עומד בכניעה לפני בורא עולם, מתפלל לפניו ומבקש. אין מקום שם לתחושות של גאווה. לכן "כל שאור וכל דבש לא תקטירו ממנו".</p>
+      <p>ואם כך, מדוע בכל זאת מביאים חמץ בקרבן תודה? כאן נשמע יסוד נפלא מאוד, שהוא כמעט צורת חיים לכל אדם.</p>
+      <p>כי יש מקומות שבהם הרגשת העניות היא דווקא חיסרון. לפעמים טוב מאוד שאדם ירגיש שפל ועני. אבל לא תמיד.</p>
+      <p class="bold-para">קרבן הוא כמו תפילה, ולכן אין בו מקום לסמלים של גאווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לחם עוני ולחם עושר</div>
+      <h3 class="story-title">🎶 על מה תאמר הלל?</h3>
+      <p>קחו דוגמה: אדם אומר: איזו ארץ ישראל יש לנו? ארץ מסכנה, חסר כאן וחסר שם, וכל החסרונות. לפעמים טוב שאדם מרגיש שחסר לו. בתשעה באב זה מתאים מאוד, זה נפלא. אבל ביום ירושלים? איך יאמר הלל, אם הוא אומר: זה חסר, וזה חסר, וזה חסר?</p>
+      <p>כאשר אדם רוצה להודות לבורא עולם, הוא חייב להרגיש מה יש לו. אם ירגיש "אני מסכן, חסר לי", אין לו על מה להודות. כשאדם מביא קרבן תודה, הוא חייב להרגיש: בורא עולם נתן לי, הביא לי, נתן לי כוח. הוא צריך להרגיש שמן ומרווח.</p>
+      <p>עד כדי כך, שנאמר בגמרא שאין אומרים הלל אלא בנפש שבעה וכרס מלאה. ולכן בליל הסדר אנחנו אומרים את רוב ההלל אחרי "שולחן עורך", אחרי הסעודה. כדי להרגיש הודיה, צריך להרגיש טוב.</p>
+      <p>וכך בהודיה: "וְשָׂמַחְתָּ בְכָל הַטּוֹב אֲשֶׁר נָתַן לְךָ ה' אֱלֹקֶיךָ". כאן אין מקום להרגיש עניות. אדרבה, צריך להרגיש את כל העשירות שה' נתן.</p>
+      <p class="bold-para">מי שמרגיש רק חיסרון, אינו יכול להודות; בהודיה צריך להרגיש את העושר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לחם עוני ולחם עושר</div>
+      <h3 class="story-title">⚖️ מצה וחמץ יחד</h3>
+      <p>ובקרבן תודה מביאים גם מצות וגם חמץ. למה? המצה מזכירה את העבר: איפה הייתי, איזו צרה הייתה. והחמץ מבטא את ההודיה על הישועה מן הצרה, שהביאה את האדם למצב של רווחה. עליו להכיר ולהרגיש את הטובה הגדולה הזאת.</p>
+      <p>ואם לא יביא חמץ, וימשיך להרגיש מסכן, יש בכך כפיות טובה. הרי זה כמי שקיבל מתנה, וממשיך להתלונן לפני הנותן על מצבו הכללי.</p>
+      <p>כשאדם מביא גם מצה וגם חמץ, הוא מזכיר לעצמו כמה רע היה לפני כן, ואחר כך מביא גם את הלחם התופח, להראות כמה הקדוש ברוך הוא רומם אותו והצליח אותו.</p>
+      <p>מישהו אמר לרב פעם על הפסוק "וְנַפְשֵׁנוּ קָצָה בַּלֶּחֶם הַקְּלֹקֵל". שנים הוא לא הבין: ירד להם מן, שהיה בו כל הטעמים, בלי עבודה ובלי מאמץ, ובסוף קראו לו "לחם קלוקל"? עד שראה בדורנו אנשים שמקבלים דברים טובים, בחינם וללא מאמץ, ומתלוננים ומוצאים בהם רק רע. אז הבין: אפשר לקבל את הדברים הטובים ביותר, ולקרוא להם "לחם קלוקל". זו בדיוק ההרגשה שהחמץ שבקרבן התודה בא לתקן.</p>
+      <p class="bold-para">בקרבן תודה יש גם מצה וגם חמץ: זוכרים את הצרה, ומרגישים את הישועה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הוא עשנו ולו אנחנו</div>
+      <h3 class="story-title">⚠️ מתי העושר מסוכן?</h3>
+      <p>אבל עדיין קשה: הרי השאור מביא את האדם לגאווה, כמו שאמרנו. לכן התורה פסלה אותו מן המזבח. איך פתאום בהודיה מותר?</p>
+      <p>התשובה: השאור מסוכן כאשר האדם שוכח שה' הוא שנתן לו את העושר. אבל כאשר הוא מודה ומהלל על הטוב שנתן לו ה', אדרבה: האושר מביא אותו לתוספת אהבת ה', ומחזק את ההכרה שכל מה שיש לו ניתן לו בחינם ממנו יתברך.</p>
+      <p>מתי האושר מביא את האדם לגאווה? כאשר הוא חושב "כֹּחִי וְעֹצֶם יָדִי עָשָׂה לִי אֶת הַחַיִל הַזֶּה". התורה מתארת: אדם יבוא לארץ ישראל, יאכל וישבע, יבנה בתים טובים וישב בהם, ירבה בקרו וצאנו, ירבה כסף וזהב, "וְרָם לְבָבֶךָ וְשָׁכַחְתָּ אֶת ה' אֱלֹקֶיךָ".</p>
+      <p>אבל באותה פרשה התורה נותנת גם את הפתרון: "וְאָכַלְתָּ וְשָׂבָעְתָּ וּבֵרַכְתָּ אֶת ה' אֱלֹקֶיךָ עַל הָאָרֶץ הַטֹּבָה אֲשֶׁר נָתַן לָךְ". איך לא תגיע לגאווה? על ידי שתודה לקדוש ברוך הוא. ושימו לב: גם שם כתוב "ושבעת" – צריך להרגיש שובע, להרגיש טוב, ואז לברך.</p>
+      <p class="bold-para">העושר מסוכן כשאדם אומר "כוחי ועוצם ידי"; כשהוא מודה, העושר מקרב אותו לה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הוא עשנו ולו אנחנו</div>
+      <h3 class="story-title">🤲 "הוא עשנו ולו אנחנו"</h3>
+      <p>ולפי זה מובן מזמור שאומרים, שלפי שיטות רבות נאמר בשעת הקרבת קרבן תודה: "מִזְמוֹר לְתוֹדָה... דְּעוּ כִּי ה' הוּא אֱלֹקִים הוּא עָשָׂנוּ וְלֹא אֲנַחְנוּ". מה החידוש? וכי ראית פעם אדם שחושב שהוא ברא את עצמו?</p>
+      <p>ויש כאן קרי וכתיב: נכתב "ולא" באל"ף, ונקרא "ולו" בוי"ו. ומפרש הרד"ק: "הוא עשנו" אין פירושו רק שברא אותנו, אלא שגידל אותנו ורומם אותנו. כל ההצלחה מגיעה ממנו יתברך, "ולא אנחנו" – איננו מייחסים את ההצלחה לעצמנו כלל.</p>
+      <p>ומה קורה כשמכירים בזה? "ולו אנחנו" – אנחנו שלו. ההכרה הזאת מביאה אותנו למצב המרומם, להיות שייכים לבורא עולם. אין סתירה בין הקרי לכתיב: על ידי שאדם מרגיש שלא הוא הצליח, אלא שהקדוש ברוך הוא עזר לו, הוא נעשה מחובר לבורא עולם.</p>
+      <p>ולכן דווקא בקרבן תודה, בשתי הלחם ובביכורים, יש מצווה להביא שאור ודבש.</p>
+      <p class="bold-para">מי שמרגיש שה' הצליח אותו, נעשה מחובר לה' ושייך לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הוא עשנו ולו אנחנו</div>
+      <h3 class="story-title">✌️ שתי סיבות</h3>
+      <p>נסכם את שתי הסיבות. הסיבה הראשונה: אם אתה רוצה להודות, אתה צריך להרגיש שיש לך שפע. אחרת, על מה תודה? אדם שמרגיש רק חיסרון מתחיל להתלונן. מי שמרגיש שהוא עדיין בגלות, ומסתכל רק על מה שעוד לא הגיע, אינו מרגיש את הניסים והנפלאות שיש כבר עכשיו, ואין לו על מה להודות. רק מי שמרגיש שיש לו, יכול להודות.</p>
+      <p>הסיבה השנייה: מתי הגאווה מסוכנת? כאשר האדם מרגיש שהוא בעל הדבר, שהוא עשה. אז הוא מתגאה. אבל אם הוא מייחס את הישועה לאלוקים, כדאי מאוד שירגיש את השפע, כי על ידי זה הוא מתקרב לקדוש ברוך הוא.</p>
+      <p>זה היסוד שמאחורי החמץ של חג השבועות. פסח הוא חג של מצה, של "לחם עוני", של זיכרון השעבוד. ושבועות, שבו מודים על הארץ ועל הקציר, הוא הזמן שבו מותר ואף מצווה להרגיש את העושר, ולהביא אותו לפני ה', מתוך הכרה שהכל ממנו.</p>
+      <p>וזה גם מה שהמהר"ל אמר בדרכו: אחרי קבלת התורה, אפשר לקחת את החמץ ולקדש אותו. שני המהלכים נפגשים: החמץ אינו פסול מעצם טבעו; הוא פסול רק כשהוא מנותק מבורא עולם. כשהוא מוקדש לו ומובא כהודיה, הוא נעשה קרבן.</p>
+      <p class="bold-para">בהודיה צריך להרגיש שפע, וכשהשפע מיוחס לה', הוא אינו מביא לגאווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מאה ברכות</div>
+      <h3 class="story-title">💯 "אל תקרי מה אלא מאה"</h3>
+      <p>ויש עוד דבר שהרב אוהב מאוד, על הפסוק: "וְעַתָּה יִשְׂרָאֵל מָה ה' אֱלֹקֶיךָ שֹׁאֵל מֵעִמָּךְ". אומרת הגמרא במסכת מנחות: אל תקרי "מה" אלא "מאה". מכאן שחייב אדם לברך מאה ברכות בכל יום.</p>
+      <p>אבל מה פירוש "אל תקרי"? הרי כתוב "מה". וכי אפשר למחוק מילים ולקרוא מה שרוצים? מה עניין מאה ברכות בפסוק הזה?</p>
+      <p>והרב ראה פעם פירוש יפה, במשל. יום אחד אדם רואה נמלים על השולחן שבו הוא אוכל. הוא לוקח תרסיס ומרסס. למחרת הן מגיעות מן הצד השני. הוא מרסס שוב. למחרת הן מגיעות מלמטה. כל יום מצד אחר.</p>
+      <p>עד שבא אדם חכם ואומר לו: יש פתרון פשוט. תעצור רגע עם הריסוס כאן וכאן. תחפש את החור שממנו הן מגיעות. סתום אותו, ונגמר הסיפור. אין צורך בריסוס ולא בשום דבר. כל עוד אתה מרסס כל נמלה בנפרד, זה לא ייגמר. אבל אם מצאת את המקור, הכל נגמר ברגע אחד.</p>
+      <p class="bold-para">חז"ל דרשו מן הפסוק "מה ה' אלוקיך שואל מעמך" חובה לברך מאה ברכות בכל יום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מאה ברכות</div>
+      <h3 class="story-title">🔑 המקור של הכל</h3>
+      <p>ועכשיו הפסוק: "מָה ה' אֱלֹקֶיךָ שֹׁאֵל מֵעִמָּךְ כִּי אִם לְיִרְאָה אֶת ה' אֱלֹקֶיךָ, לָלֶכֶת בְּכָל דְּרָכָיו, וּלְאַהֲבָה אֹתוֹ, וְלַעֲבֹד אֶת ה' אֱלֹקֶיךָ בְּכָל לְבָבְךָ וּבְכָל נַפְשֶׁךָ, לִשְׁמֹר אֶת מִצְוֹת ה'". איזו רשימה ארוכה! יראה, הליכה בדרכיו, אהבה, עבודה בכל הלב, שמירת כל המצוות. ספר מסילת ישרים בנוי כולו כמעט על הפסוק הזה. ואתה אומר לי "מה"? כאילו זה דבר קטן?</p>
+      <p>אומרים חז"ל: אם תנסה להשיג כל אחד מן הדברים בנפרד, כמו לרסס כל נמלה, זה לא ייגמר. אבל אם תקרא "מאה" – תמצא את המקור. אם אדם יברך מאה ברכות, לא מתוך הרגל, אלא מתוך הרגשת הודיה ושמחה, מתוך התבוננות במה שהוא מקבל, הוא יזכה להשיג את כל הדברים האלה בדרך קלה.</p>
+      <p>ואז, כשתקרא "מאה", באמת יתברר פירוש "מה": זה באמת דבר קטן, "מה". כי מאה ברכות אינן דבר קשה, ומי שעושה אותן מתוך רגש ואהבה, מגיע מתוכן להודיה אמיתית לקדוש ברוך הוא, ומשם ליראה ולאהבה ולכל השאר.</p>
+      <p>וכך גם ב"מזמור לתודה": הוא פרק ק' בתהילים, מאה, כמו מאה הברכות. כל מטרתן היא לעורר את האדם להודות.</p>
+      <p class="bold-para">מי שמברך מאה ברכות מתוך הודיה אמיתית, משיג בקלות את כל מה שה' שואל ממנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מאה ברכות</div>
+      <h3 class="story-title">🛡️ לראות את החסדים</h3>
+      <p>הדבר האסור הוא שאדם יתרגל, ולא ישים לב. אוכל, שותה, נהנה, ואינו שם לב לכל החסדים. ולכן צריך להתבונן בכל דבר.</p>
+      <p>הרב סיפר שבאותו בוקר ראה סרטון: מחבלים שיגרו טילים בקצב מסחרר, משני מקומות יחד, ומערכת "כיפת ברזל" יירטה אותם אחד אחרי השני. קשה להאמין שאפשר ליירט בקצב כזה. ברוך ה', אלה חסדי ה' עלינו. הקדוש ברוך הוא שומר עלינו. וכך בכל דבר: אדם מוצא את הסיבה להודות לקדוש ברוך הוא.</p>
+      <p>וכאשר אדם מודה, אפשר לשלוח לו הרבה אושר. כי כמו שראינו, מתי האושר מעביר את האדם על דעתו? כאשר אינו מייחס אותו לקדוש ברוך הוא. אבל כאשר הוא רואה באושר את בורא עולם ששלח לו את השפע הטוב, השפע לא יזיק לו. אדרבה, הוא ילך ויגדל, ויתקרב עוד יותר.</p>
+      <p>וזה סוד החמץ של חג השבועות: מי שיודע להודות, יכול לקבל עושר בלי להתגאות. יהי רצון שהקדוש ברוך הוא ישלח לנו הרבה שפע טוב, ונדע להודות עליו, ונזכה עוד ועוד, מתוך שמחה והודיה, לכל השפע הטוב.</p>
+      <p class="bold-para">מי שמתרגל לראות את חסדי ה' ולהודות, יכול לקבל שפע בלי שיזיק לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/rTDYemTdJ2Y · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מפסח לשבועות","icon":"🔄","color":"#c62b6b","stories":[{"id":1,"title":"מכל פירור – לקרבן חמץ","icon":"🔄"},{"id":2,"title":"המהר\"ל: תורה תבלין","icon":"🧂"},{"id":3,"title":"שתי הלחם ומאכלי חלב","icon":"🧀"},{"id":4,"title":"הרמב\"ן: לחם של תודה","icon":"🌾"}]},{"id":2,"name":"שאור ודבש","icon":"🍯","color":"#6d28d9","stories":[{"id":5,"title":"\"כל שאור וכל דבש\"","icon":"🍯"}]},{"id":3,"name":"לחם עוני ולחם עושר","icon":"🥖","color":"#e08e00","stories":[{"id":6,"title":"מצה – לחם עוני","icon":"🥖"},{"id":7,"title":"לעמוד בענווה לפני ה'","icon":"🙏"},{"id":8,"title":"על מה תאמר הלל?","icon":"🎶"},{"id":9,"title":"מצה וחמץ יחד","icon":"⚖️"}]},{"id":4,"name":"הוא עשנו ולו אנחנו","icon":"🤲","color":"#1e88b8","stories":[{"id":10,"title":"מתי העושר מסוכן?","icon":"⚠️"},{"id":11,"title":"\"הוא עשנו ולו אנחנו\"","icon":"🤲"},{"id":12,"title":"שתי סיבות","icon":"✌️"}]},{"id":5,"name":"מאה ברכות","icon":"💯","color":"#c62b6b","stories":[{"id":13,"title":"\"אל תקרי מה אלא מאה\"","icon":"💯"},{"id":14,"title":"המקור של הכל","icon":"🔑"},{"id":15,"title":"לראות את החסדים","icon":"🛡️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
