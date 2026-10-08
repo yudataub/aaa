@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 פנימיות וחיצוניות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 פנימיות וחיצוניות</h1>
+  <p>היחס לבוני הארץ שאינם שומרי מצוות: שיטת הרב קוק, שיטת האמרי אמת מגור, והמקורות שעליהם נשענת כל אחת מהן</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ פנימיות וחיצוניות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/0QDzzDOtZC0?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/0QDzzDOtZC0/hqdefault.jpg" alt="פנימיות וחיצוניות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=0QDzzDOtZC0" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להבין את הצד השני</div>
+      <h3 class="story-title">👂 דו־שיח של חירשים</h3>
+      <p>הרב פותח בזיכרון. פעם, ביום העצמאות, ישב באוטובוס ושמע שני אנשים מתווכחים. שניהם בוגרי ישיבות, ושניהם שינו במהלך חייהם את דרכם לכיוונים שונים. הוויכוח היה על היחס ליום העצמאות ועל כל הנושא הזה.</p>
+      <p>ומה ראה? דו־שיח של חירשים. כל אחד דיבר, ואף אחד לא שמע את השני. כל אחד חזר על העמדה שלו, ולא היה בשיחה שום כיוון. כמו שאומרים: בוויכוח כזה אין מנצח, יש שני מפסידים.</p>
+      <p>לכן קובע הרב מטרה ברורה לשיעור: לא להכריע, אלא בעיקר ללמוד את הצד של השני ולהבין את שני הצדדים. ההצלחה של השיעור תהיה אם כל אחד יידע להסביר גם את הדעה שמנגד, ולא רק את שלו.</p>
+      <p>הנושא רגיש, והוא מענייני השעה. אבל דווקא משום כך חשוב לגשת אליו כך: מתוך הקשבה, מתוך כבוד לגדולי ישראל שנחלקו בו, ומתוך רצון להבין מה ראה כל אחד מהם. מי שמבין את הטעם של חברו, יכול לחלוק עליו בלי לפגוע בו.</p>
+      <p class="bold-para">בוויכוח שבו איש אינו שומע את חברו אין מנצח, יש רק שני מפסידים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · להבין את הצד השני</div>
+      <h3 class="story-title">💞 אדם שאיחד לבבות</h3>
+      <p>השיעור נמסר ביום פטירתו של הרב אברהם אלימלך פירר, ולכן פתח הרב בכמה מילים עליו. הוא הקים מפעל אדיר של חסד, שעזר לאין ספור חולים, וגם איחד לבבות רבים מאוד. הוא הקפיד ללכת בכל מקום בלבוש חרדי מלא, בחליפה ובכובע, ובכל זאת אהבו אותו כולם: רופאים, חולים, אנשים מכל הציבורים.</p>
+      <p>הרב מספר, כפי ששמע מאשתו, שהיו אנשים שלא האמינו שאדם יכול לעשות כל כך הרבה טוב בלי שום רווח. הועלו נגדו חשדות חמורים, והוא נאלץ לעמוד בהליך משפטי ארוך. רק אחרי כשנתיים, בזכות ראיות ועדויות רבות, הוכח שכל מטרתו הייתה חסד בלבד. התמונה המפורסמת שלו מאותה תקופה צולמה באולם המשפט: הוא עומד שם רגוע ומחייך, בוטח בבורא עולם.</p>
+      <p>אחרי כל זה שקל לעזוב ולחזור לחיים שקטים. אבל החליט: יש יהודים שצריכים אותי, ואין מי שיעשה זאת במקומי. מה בורא עולם רוצה ממני? והמשיך. גם אחרי פטירתו ממשיכה אשתו את המפעל. וכך נאמר: גדולים צדיקים במיתתם יותר מבחייהם.</p>
+      <p>ואיחוד לבבות, כפי שנראה, הוא בדיוק הרקע לנושא השיעור.</p>
+      <p class="bold-para">צדיקים גדולים במיתתם יותר מבחייהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השאלה שעמדה לפני הרב קוק</div>
+      <h3 class="story-title">🏛️ הרב קוק</h3>
+      <p>הדמות המרכזית בשיעור היא הרב אברהם יצחק הכהן קוק, הראי"ה. הוא למד בישיבה ליטאית, בישיבת וולוז'ין, והיה בתחילת דרכו תלמיד חכם ליטאי לכל דבר. במשך השנים עלה לארץ ישראל, ונעשה רבה של יפו והמושבות החדשות. לאחר מכן עבר לירושלים.</p>
+      <p>בירושלים, בשנות התר"פ בערך, פרצה מחלוקת עצומה. הרב מתאר אותה כמחלוקת שחילקה את ירושלים לשני חצאים; ממש אש בוערת. על מה הייתה המחלוקת? הרב מבקש להראות שהיו בה שתי השקפות, ולהכיר גם את מי שניסה לעשות שלום ביניהן.</p>
+      <p>כדי להבין את המחלוקת, צריך להבין קודם את השאלה. הרב קוק הגיע לארץ ישראל ומצא לפניו תופעה שלא הייתה פשוטה בכלל, ושלא הייתה לה דוגמה ברורה בדורות הקודמים.</p>
+      <p>בדורות הקודמים, מי שעזב את דרך התורה בדרך כלל גם התרחק מן הקהילה ומן העם. כאן, לעומת זאת, עמדו אנשים שהתרחקו מן המצוות, ובאותה שעה מסרו את נפשם על בניין הארץ והעם. זה היה מצב חדש.</p>
+      <p>הוא היה צריך להחליט, כרב וכמנהיג, איך להתייחס אליה. והשאלה שעמדה לפניו היא שאלה שיש בה צד חזק לכאן וצד חזק לכאן. מי שמבין את שני הצדדים של השאלה, יבין גם את שתי התשובות שניתנו לה.</p>
+      <p class="bold-para">הרב קוק עלה לארץ, כיהן כרב ביפו ובמושבות ואחר כך בירושלים, ושם פרצה מחלוקת גדולה סביב דרכו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השאלה שעמדה לפני הרב קוק</div>
+      <h3 class="story-title">❓ צד לכאן וצד לכאן</h3>
+      <p>מה ראה הרב קוק? יהודים שלצערנו פרקו מעליהם עול תורה ומצוות, אבל משתדלים מאוד לבנות את ארץ ישראל. הם משקיעים מאמצים עצומים, מגייסים כסף בכל העולם, ובונים. ועולה השאלה: מה צריך להיות היחס של רב כלפי יהודים כאלה?</p>
+      <p>יש כאן צד חיובי: ברוך ה' שהם בונים. אפשר לשבח אותם, לעזור להם ולבנות יחד את ארץ ישראל. זה צד נפלא מאוד.</p>
+      <p>אבל יש גם צד שני, שאינו פשוט כלל. אם משבחים את מי שאינו שומר תורה, ואומרים כמה הוא טוב, הדבר עלול להיות סיבה שרבים ילכו אחריו. למה לא? אם הם טובים ועושים מעשים טובים, גם אני רוצה להיות כמוהם. וכך אפשר לגרום, חלילה, להתדרדרות של ציבור גדול.</p>
+      <p>איך מתמודדים עם שני הצדדים? מה אומרים על אדם שעושה מעשה טוב מצד אחד, ומתנהג שלא כדרך התורה מצד שני? זו השאלה. ולפני שנראה את התשובות, מביא הרב סיפור מן הגמרא שעוסק בשאלה דומה, ושיאיר את כל הסוגיה.</p>
+      <p class="bold-para">שבח לבונים יכול לחזק את בניין הארץ, אך גם למשוך אחריהם את הציבור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השאלה שעמדה לפני הרב קוק</div>
+      <h3 class="story-title">🌉 שלושה תנאים והרומאים</h3>
+      <p>הגמרא במסכת שבת מספרת על שלושה תנאים שישבו יחד ודנו במעשי הרומאים. פתח רבי יהודה ואמר: כמה נאים מעשיה של אומה זו. תיקנו שווקים, תיקנו גשרים, תיקנו מרחצאות. יש לנו היכן להתרחץ ובאיזו דרך לעבור. מגיע להם שבח.</p>
+      <p>רבי יוסי ישב ושתק.</p>
+      <p>ורבי שמעון בר יוחאי נענה ואמר: כל מה שתיקנו, לא תיקנו אלא לצורך עצמם. שווקים – לצורך עצמם. מרחצאות – לעדן בהם את עצמם. גשרים – ליטול מהם מכס. איך אפשר לשבח אותם על כך?</p>
+      <p>הדברים הגיעו לאוזני המלכות, והתחילה הבריחה המפורסמת של רבי שמעון בר יוחאי, שהביאה אותו אל המערה. הרב מזכיר שהסיפור קשור לל"ג בעומר ולחודש אייר.</p>
+      <p>אבל מה שחשוב לנו כאן הוא המחלוקת עצמה. שלושה גדולי תורה ראו את אותם מעשים בדיוק, והגיעו לשלוש עמדות שונות: שבח, שתיקה, וביקורת. איך ייתכן? מה ראה כל אחד מהם?</p>
+      <p class="bold-para">רבי יהודה שיבח את מעשי הרומאים, רבי יוסי שתק, ורבי שמעון בר יוחאי אמר שכל מה שתיקנו – לצורך עצמם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · השאלה שעמדה לפני הרב קוק</div>
+      <h3 class="story-title">🔍 חיצוניות ופנימיות</h3>
+      <p>הרב מציע הבנה יפה במחלוקת. רבי יהודה מסתכל על החיצוניות של הדבר: אני נהנה, יש לי גשר, יש לי מרחץ, נעשה כאן דבר טוב שמועיל לי. מבחינה זו, מגיע שבח.</p>
+      <p>רבי שמעון בר יוחאי מסתכל על הפנימיות: מה הייתה הכוונה שלהם? למה הם עשו את זה? מה שמעניין אותו אינו התוצאה החיצונית, אלא המניע הפנימי. ואם המניע הוא טובת עצמם, אין על מה לשבח.</p>
+      <p>כלומר, השאלה היא: האם שופטים מעשה לפי החיצוניות שלו, או לפי הפנימיות שלו?</p>
+      <p>והנה הדבר המעניין, שהרב חוזר אליו בסוף השיעור: הרב קוק לוקח את הכיוון של רבי שמעון בר יוחאי – להסתכל על הפנימיות – אבל מגיע איתו בדיוק לכיוון ההפוך. רבי שמעון בר יוחאי ראה מעשה טוב בחיצוניות, ואמר שבפנימיות הכוונה אינה טובה. הרב קוק ראה אנשים שבחיצוניות אינם הולכים בדרך התורה, ואמר שבפנימיות יש בהם קדושה.</p>
+      <p>יש כאן לימוד גם לחיינו הפרטיים. כשאנחנו שופטים את מעשיו של אדם אחר, אנחנו בוחרים, לפעמים בלי לשים לב, אם להסתכל על מה שהוא עשה או על מה שהוא התכוון. ולשתי ההסתכלויות יש מקום בתורה.</p>
+      <p>כדי להבין זאת, צריך לקרוא את דברי הרב קוק עצמו.</p>
+      <p class="bold-para">רבי יהודה הסתכל על התועלת שבמעשה, ורבי שמעון בר יוחאי על הכוונה שמאחוריו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שיטת הרב קוק</div>
+      <h3 class="story-title">🔥 ברית שלא תיטמא כליל</h3>
+      <p>הרב קרא בשיעור קטע מדברי הרב קוק. וזה תוכן דבריו: ברית כרותה לכנסת ישראל כולה, שלא תיטמא טומאה גמורה. אמנם הטומאה יכולה לפעול בה ולעשות בה פגמים, אבל אינה יכולה להבדיל אותה לגמרי ממקור החיים האלוקיים.</p>
+      <p>ועל הרוח הלאומית שהתעוררה בזמנו, שרבים מן המחזיקים בה אומרים שאינם זקוקים לרוח ה', הוא כותב: אילו היו יכולים באמת לבסס רוח לאומית כזאת בישראל, היו מביאים את האומה לידי טומאה וכליון. אבל הם אינם יודעים בעצמם מה הם רוצים.</p>
+      <p>כל כך מחוברת רוח ישראל ברוח ה', עד שאפילו מי שאומר שאינו זקוק לרוח ה' כלל – כיוון שהוא אומר שהוא חפץ ברוח ישראל, הרוח האלוקית שורה בתוכיות נקודת שאיפתו, גם בעל כורחו. ובעוד שהיחיד יכול לנתק את עצמו ממקור החיים, האומה כולה אינה יכולה. ולכן כל מה שחביב על האומה, ארצה, שפתה ותולדותיה, רוח ה' שורה בו.</p>
+      <p>הרב מסביר: הרב קוק אומר, אל תסתכל על האדם כפי שהוא נראה מבחוץ. בפנימיותו הוא רוצה לקיים את דבר ה', שהבטיח לעם ישראל לשוב לארצו.</p>
+      <p class="bold-para">לפי הרב קוק, מי שחפץ ברוח ישראל, רוח ה' שורה בו גם בעל כורחו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שיטת הרב קוק</div>
+      <h3 class="story-title">🧱 סוחבי הלבנים</h3>
+      <p>בקטע נוסף חוזר הרב קוק על אותו רעיון בדימוי יפה. את הלבנים אל הבניין יכולים לשאת גם אלה שאינם חודרים אל עומק סוד הבניין. גם מי שאינו מבין איזה עומק מונח באותן לבנים, יכול לסחוב אותן ולבנות. ולא רק אלה, אלא אפילו מי שאינם הולכים בדרך הטובה יכולים להיות מן המנצחים על המלאכה. הם אינם מבינים את כל העומק שבמה שהם עושים.</p>
+      <p>אבל, הוא כותב, הדבר עתיד להתגלות לעיני כל. והוא מסיים בפסוק: "ושבתם וראיתם בין צדיק לרשע".</p>
+      <p>מכאן, אומר הרב, ראה הרב קוק את האנשים האלה כאנשים שבונים את כסא ה' בעולם. מכאן גם הביטוי המפורסם שהמדינה היא "יסוד כסא ה' בעולם". הם בונים אותו, אף שאינם מבינים בעצמם מה הם עושים.</p>
+      <p>הרב מסכם את שיטת הרב קוק: בפנימיותם, כל מה שבונים הוא כדי לבנות את הגאולה, לקרב את עם ישראל לייעודו. ולכן ראה בהם אנשים שיש בהם קדושה גדולה, גם אם בחיצוניותם הם מתנהגים אחרת.</p>
+      <p class="bold-para">הרב קוק ראה בבוני הארץ אנשים שבונים את כסא ה' בעולם, גם אם אינם מבינים זאת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שיטת הרב קוק</div>
+      <h3 class="story-title">✨ משיח בן יוסף</h3>
+      <p>עד כמה הרחיק הרב קוק בדרך זו? הרב מזכיר שאחרי פטירתו של הרצל נשא הרב קוק דברים בירושלים, ובהם עסק במשיח בן יוסף. כלומר, את מה שנעשה בידי תנועה שרוב ראשיה לא שמרו מצוות, ראה הרב קוק כחלק מתהליך הגאולה עצמו.</p>
+      <p>הרב ממליץ ללמוד את דברי הרב קוק, ומסביר מה יפה בהם: הם גורמים לאדם התלהבות ושמחה רבה. במקום לראות את כל מה שקורה כמעשים של רשעים, אתה רואה כאן בניין של כסא ה' בעולם. זה מרומם את האדם מאוד.</p>
+      <p>יש כאן גם עומק קבלי. הרב קוק היה מקובל, והוא ראה בכל זה העלאת ניצוצות ותיקונים בעולמות העליונים. מה שנראה מבחוץ כחול, מתגלה מבפנים כקודש.</p>
+      <p>אבל מובן מאליו, אומר הרב, שבירושלים של אותם ימים כעסו מאוד על הרב קוק. איך אפשר לומר כך על אנשים שאינם שומרי מצוות? איך אפשר לשבח את מעשיהם? וכך פרצה המחלוקת הגדולה. בתוך הסערה הזאת הגיע לארץ אדם חשוב מאוד, שניסה לעזור ולגשר.</p>
+      <p class="bold-para">ההסתכלות של הרב קוק מרוממת את האדם ומביאה התלהבות ושמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האמרי אמת</div>
+      <h3 class="story-title">🌾 האמרי אמת מגור</h3>
+      <p>האדם הזה היה האדמו"ר מגור, בעל "אמרי אמת". הרב מציין שחסידות גור הייתה החסידות הגדולה ביותר באירופה, עם למעלה ממאה אלף חסידים, והוא היה מן האדמו"רים הגדולים ביותר של דורו.</p>
+      <p>האמרי אמת אהב מאוד את ארץ ישראל, ואהב גם את הרב קוק. והוא ניסה לגשר על הפערים העצומים. בביקורו בארץ נפגש עם שני הצדדים, ישב עם כל אחד מהם, וניסה לקרב את הדעות. הרב מציין שגם עליו יצאו מודעות ביקורת בירושלים, על כך שנפגש עם הרב קוק.</p>
+      <p>הרב מביא תיאור יפה מן הביקור. הרב קוק בא לקבל את פניו, והביא לו חיטים מן המושבה נחלת ישראל, חיטים שמורות למצות, שכל המלאכה בהן – חרישה, זריעה וקצירה – נעשתה בידיים יהודיות. האמרי אמת קנה אותן בשמחה, והפריש מהן בעצמו תרומות ומעשרות, ונתן מן המעשר לרב קוק.</p>
+      <p>ובשעת ההפרשה, נוסף על הברכה הרגילה, בירך גם "שהחיינו". למה? על כך הרב מביא שלושה טעמים.</p>
+      <p class="bold-para">האדמו"ר מגור, מנהיג החסידות הגדולה באירופה, אהב מאוד את ארץ ישראל וגם את הרב קוק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האמרי אמת</div>
+      <h3 class="story-title">🙏 שלושה טעמים לשהחיינו</h3>
+      <p>הטעם הראשון: זו הייתה הפעם הראשונה בחייו שזכה לקיים את מצוות התרומות והמעשרות, שאינן נוהגות בחוץ לארץ. ובזה סמך על דברי החיי אדם, שפסק שמי שמקיים מצווה בפעם הראשונה מברך שהחיינו.</p>
+      <p>הטעם השני: שזכה להקביל את פני הרב קוק. מעיקר הדין, אדם שרואה את חברו אחרי זמן רב ושמח בו, יכול לברך שהחיינו.</p>
+      <p>והטעם השלישי: שזכה להגיע לארץ ישראל.</p>
+      <p>יש משהו סמלי בתמונה הזאת: חיטים שגדלו בידי חקלאים יהודים בארץ ישראל, מצווה שאפשר לקיים רק כאן, ושני גדולי ישראל, מנהיגים של ציבורים שונים, יושבים יחד ושמחים זה בזה. אהבת הארץ ואהבת התורה נפגשות באותו רגע.</p>
+      <p>הרב מדגיש: רואים מכאן עד כמה שמח האמרי אמת בפגישה עם הרב קוק, עד שהיא הייתה אחד הטעמים לברכת שהחיינו. אין כאן יחס של ריחוק או של עוינות, אלא של אהבה והערכה.</p>
+      <p>ובכל זאת, כפי שנראה, דווקא האדם שאהב והעריך כל כך, וניסה לגשר, לא יכול היה להסכים עם הרב קוק בנקודה אחת. וכדי להבין למה, צריך לקרוא את מה שכתב אחרי הביקור.</p>
+      <p class="bold-para">השמחה על הפגישה עם הרב קוק הייתה אחד הטעמים לברכת שהחיינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האמרי אמת</div>
+      <h3 class="story-title">🚢 הגעגוע שלא התממש</h3>
+      <p>לפני שנקרא את המכתב, מספר הרב על חייו של האמרי אמת. הוא רצה מאוד להשתקע בארץ ישראל, ועלה אליה כמה וכמה פעמים. באחת הפעמים, לפי מה שהובא, אף לא שמר יום טוב שני של גלויות, כי היה בטוח שהוא נשאר כאן.</p>
+      <p>אבל החסידים לחצו עליו מאוד: איך תשאיר אותנו? איך ייתכן שהאדמו"ר בארץ ישראל והחסידים מפוזרים באירופה? וכל פעם משכו אותו בחזרה. הרב מציין שכל ימיו הצטער על כך מאוד.</p>
+      <p>כי אחר כך פרצה השואה. הגרמנים חיפשו את מנהיגי היהודים, ובמיוחד דמות גדולה כמותו. חסידיו באמריקה גייסו סכומים גדולים כדי להצילו, ולאחר מאמצים רבים הוברח, והגיע ברכבת שיצאה מאירופה. כך ניצל, והגיע לארץ ישראל.</p>
+      <p>הסיפור הזה מראה עד כמה אהב האמרי אמת את ארץ ישראל. אין כאן מי שמתנגד לארץ או לבניינה. ולכן ההסתייגות שלו מדרכו של הרב קוק אינה נובעת מחוסר אהבה לארץ, אלא ממקום אחר לגמרי.</p>
+      <p class="bold-para">האמרי אמת רצה להשתקע בארץ, אך חסידיו החזירו אותו שוב ושוב לאירופה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · האמרי אמת</div>
+      <h3 class="story-title">💌 "אהבה מקלקלת את השורה"</h3>
+      <p>אחרי הביקור כתב האמרי אמת מכתב שבו סיכם את הפגישה. וכך כתב, בתוכן הדברים: הרב קוק הוא איש גדול בתורה, ובעל מידות טובות ונעלות. אלא שאהבתו לציון עוברת כל גבול. ובלשון חז"ל: "אהבה מקלקלת את השורה". מרוב אהבה הוא אומר על טמא טהור, ומראה לו פנים.</p>
+      <p>והוא מדמה זאת לגמרא במסכת עירובין, שאומרת על רבי מאיר: גלוי וידוע לפני מי שאמר והיה העולם שאין בדורו של רבי מאיר כמותו, ומפני מה לא קבעו הלכה כמותו? שלא יכלו חבריו לעמוד על סוף דעתו. כלומר, דבריו של הרב קוק גבוהים, והכוונה שלו רצויה – הוא רוצה לרומם ולהגביה את הכל – אבל בני אדם אינם מבינים עומק כזה. הם שומעים רק ששבחו את מי שאינם שומרים תורה.</p>
+      <p>ומכאן הבעיה: הרב קוק נותן יד למי שעומדים במרדם. והאמרי אמת מביא את הביטוי "בנין להרים סתירה": גם כשמדובר בבניין, אפילו בניין קדוש, אי אפשר לבנות אותו בדרך שסותרת את יסודות התורה.</p>
+      <p>ובמכתב נוסף כתב: לקרוא להם "שלום עליכם מלאכי השרת" – זה מקומם את שומרי התורה באופן שאי אפשר לתקנו.</p>
+      <p class="bold-para">האמרי אמת העריך מאוד את הרב קוק, אך לא יכול היה להסכים לשבח את מי שאינם שומרים תורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקורות ההסתייגות</div>
+      <h3 class="story-title">📜 החנופה החמורה ביותר</h3>
+      <p>כדי להבין למה הפריע הדבר כל כך לאמרי אמת, מביא הרב את דברי רבנו יונה בספר "שערי תשובה". רבנו יונה מונה תשעה חלקים בחנופה, והחלק הראשון, החמור ביותר, הוא: החנף שרואה ויודע שיש עוול בכף חברו, והוא אומר לו: לא עשית רע.</p>
+      <p>כלומר, אדם שרואה מישהו עושה דבר רע, ואומר לו שהוא עושה טוב – זו עבירה חמורה מאוד. ורבנו יונה אף מוסיף: חייב אדם למסור עצמו לסכנה, ואל יעמיס על נפשו עוון כזה.</p>
+      <p>מאין לקח רבנו יונה חידוש כזה? מן הגמרא במסכת סוטה. אגריפס המלך עמד וקרא בתורה במעמד הקהל, וכשהגיע לפסוק "לא תוכל לתת עליך איש נכרי אשר לא אחיך הוא", זלגו עיניו דמעות, כי ידע שאינו מזרע ישראל מצד אביו. אמרו לו החכמים: "אחינו אתה, אחינו אתה".</p>
+      <p>ומסיימת הגמרא: באותה שעה נתחייבו שונאי ישראל כליה, שהחניפו לו לאגריפס. אף שפחדו ממנו, והחניפו לו מיראה, נחשבה החנופה הזאת לחטא חמור מאוד.</p>
+      <p>מכאן למד רבנו יונה שאין לאדם להחניף אפילו כשהוא מפחד, ואפילו כשהחנופה נראית כמחווה של אהבה וקירוב. מילה של שבח, שנאמרת במקום שבו התורה אומרת אחרת, עלולה לטשטש את הגבול בין טוב לרע בעיני השומעים. ולפי שיטת האמרי אמת, זה בדיוק מה שעלול לקרות כשמשבחים בפומבי את מי שאינם שומרים תורה.</p>
+      <p class="bold-para">רבנו יונה כותב שהחמור בחלקי החנופה הוא לומר למי שעושה עוול שלא עשה רע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקורות ההסתייגות</div>
+      <h3 class="story-title">⚖️ מי נקרא רשע?</h3>
+      <p>הרב מבאר את הגדרת הדברים. אדם שעובר עבירות בפרהסיה, והוא יודע שהוא עובר, נקרא בלשון ההלכה רשע. ובסיפור אגריפס, הוא ידע שאסור לו למלוך, ובכל זאת מלך, והחכמים החניפו לו.</p>
+      <p>ומכאן שיטת האמרי אמת: גם אם יש במעשים צד טוב, גם אם הם בונים, אי אפשר לשבח את מי שעובר על התורה ולומר שהוא צדיק. ההלכה אינה מרשה זאת. מותר להכיר בטוב, אבל אסור להחניף.</p>
+      <p>וכאן נוגע הרב בנקודה חשובה: אין זו שאלה של רגש או של אהבה לארץ. האמרי אמת אהב את הארץ לא פחות מאיש. זו שאלה הלכתית: מה מותר לומר, ומה אסור לומר, על אדם שמתנהג שלא על פי התורה.</p>
+      <p>ויש לשאלה הזאת השלכה נוספת, שהרמב"ם עוסק בה: לא רק מה אומרים על אחרים, אלא גם איך החברה שבה אדם חי משפיעה עליו. כאן נכנס החשש שהזכרנו בתחילה, שהשבח יגרום לרבים להימשך אחרי הדרך שמשבחים.</p>
+      <p class="bold-para">לפי השיטה המסתייגת, ההלכה אוסרת לשבח את מי שעובר על התורה ביודעין, גם אם יש במעשיו צד טוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקורות ההסתייגות</div>
+      <h3 class="story-title">👥 נמשך אחר רעיו</h3>
+      <p>הרמב"ם כותב בהלכות דעות: דרך בריאתו של אדם להיות נמשך בדעותיו ובמעשיו אחר רעיו וחבריו, ונוהג כמנהג אנשי מדינתו. הרב מדגיש: הרמב"ם אינו אומר שזו תוצאה של חינוך לקוי. כך נברא האדם. זו תכונה טבעית שלו.</p>
+      <p>ולפיכך, אומר הרמב"ם, צריך אדם להתחבר לצדיקים ולשבת אצל החכמים תמיד, כדי שילמד ממעשיהם, ויתרחק מן הרשעים ההולכים בחושך, כדי שלא ילמד ממעשיהם. וזה שאמר שלמה: "הולך את חכמים יחכם, ורועה כסילים ירוע".</p>
+      <p>ומה יעשה אדם אם הגיע למדינה שאנשיה אינם נוהגים בדרך טובה? ילך למקום שאנשיו צדיקים. ואם כל המדינות שהוא יודע נוהגות בדרך לא טובה, או שאינו יכול ללכת, ישב לבדו. ואם היו רעים וחטאים ואינם מניחים לו לשבת בלי להתערב עמהם, יצא למערות ולמדברות, ככתוב: "מי יתנני במדבר מלון אורחים".</p>
+      <p>הרב מסביר: הרמב"ם מלמד שהחברה מושכת חזק מאוד, וקשה לברוח ממנה. ולכן החשש מפני השפעה איננו דבר קטן.</p>
+      <p class="bold-para">הרמב"ם קובע שדרך בריאתו של אדם להיות נמשך אחר חבריו, ולכן עליו להתחבר לצדיקים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקורות ההסתייגות</div>
+      <h3 class="story-title">🕰️ עדות מאותם ימים</h3>
+      <p>כדי להמחיש שהחשש של הצד המסתייג לא היה דמיוני, מביא הרב דבר ששמע מהרב יואל שוורץ. הוריו נישאו בשנת תרצ"ב, ובמשך שמונה שנים לא נולדו להם ילדים. רק בשנת ת"ש נולד.</p>
+      <p>ולימים, כך סיפר, הבין למה מנע ה' מהוריו ילדים כל אותן שנים. אילו היה נולד מיד אחרי חתונתם, היה בשנת תש"ח בן שש עשרה, ובאותם ימים כבר היה מצטרף ללחימה. ולפי מה שתיאר, באותה תקופה רבים מן הצעירים שהצטרפו נסחפו אחר רוח הזמן, ולא שמרו על דרכם בתורה ובמצוות. ה' ריחם עליו, כך אמר, ורצה שיגדל בדרך התורה.</p>
+      <p>הרב מביא את הסיפור לא כדי להכריע בשאלה כלשהי של ימינו, אלא כדי להראות את רוח התקופה ההיא. הרוח שנשבה אז הייתה סוחפת מאוד, ובמיוחד את הצעירים.</p>
+      <p>ומי שמבין זאת, מבין למה חששו כל כך שומרי התורה של אותם ימים מכל דבר שנראה כשבח למי שאינם שומרים מצוות. בעיניהם, כל מילה כזאת עלולה הייתה להוסיף כוח לזרם שכבר כך היה חזק מאוד. וזה בדיוק מה שתיאר הרמב"ם: אדם נמשך אחר חבריו ואחר אנשי מקומו.</p>
+      <p class="bold-para">כדי להבין את חששם של המסתייגים, צריך להיכנס לרוח התקופה ולהבין עד כמה הייתה סוחפת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקורות ההסתייגות</div>
+      <h3 class="story-title">🏜️ "המדבר שלנו הוא הישיבה"</h3>
+      <p>הרב מספר סיפור מפורסם. אחרי קום המדינה בא אדמו"ר אחד לבקר את החזון איש, ושאל אותו: איך אתה מרשה לציבור שלך לגור יחד עם מי שאינם שומרי מצוות, באותן ערים? הרי הרמב"ם כותב שאם אתה נמצא במדינה שאנשיה אינם נוהגים כראוי, עליך לצאת למדבר. צא כמוני, הקם מקום נפרד שכולו של שומרי תורה. איך אתה מורה לכולם לגור כאן?</p>
+      <p>ענה לו החזון איש תשובה מפתיעה: המדבר שלנו הוא הישיבה. כלומר, אין צורך לצאת למדבר במובן הגאוגרפי. בית המדרש עצמו הוא המקום הנבדל, שבו אדם מוקף בצדיקים ובחכמים, ולומד ממעשיהם.</p>
+      <p>הסיפור מראה שגם בתוך השיטה המסתייגת יש דרכים שונות. יש מי שהבין את הרמב"ם כפשוטו, כהוראה להתרחק פיזית. ויש מי שהבין שאפשר לחיות בתוך החברה, ובלבד שיש לאדם מקום פנימי מוגן של תורה.</p>
+      <p>הרב מבקש לזכור זאת: בתוך כל צד יש גוונים רבים, ואין הדבר שחור ולבן. מי שמצייר את הצד השני כאחיד וכקיצוני, מחמיץ את העושר שבו, ומתקשה להבין אותו באמת.</p>
+      <p class="bold-para">החזון איש ענה שהדרך להתבדל בתוך החברה היא בית המדרש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · שתי השיטות</div>
+      <h3 class="story-title">🤔 אין כאן צד פשוט</h3>
+      <p>הרב מדגיש שוב ושוב: זה לא פשוט בכלל. כל צד שתבחר, יש לו קשיים. הוא אומר שאינו יודע אם יש מי שיכול לומר על אחת השיטות שהיא הנכונה במאה אחוז.</p>
+      <p>מצד אחד, הדרך של הרב קוק מרוממת, משמחת, ומביאה אהבה לכל יהודי ולכל מה שנבנה בארץ. אבל הרב קוק עצמו ידע שהוא לוקח סיכון גדול, שרבים יימשכו בגלל השבח אל דרכם של מי שאינם שומרי תורה. הרב מציין שגם בציבור שהלך בדרך זו נכתב לא פעם על הקושי לשמור על הצעירים בדרך התורה, וכבר לפני עשרות שנים דנו בכך.</p>
+      <p>מצד שני, אי אפשר לומר שבגלל החשש הזה, לא היה צריך לבנות או לא היה צריך להכיר בטוב. גם לדרך ההתבדלות יש מחיר, וגם היא אינה פותרת הכל.</p>
+      <p>ולכן, אומר הרב, המטרה איננה להכריע מי צודק, אלא להבין שיש כאן שני צדדים אמיתיים, שכל אחד מהם נשען על יסודות של תורה, ושגדולי ישראל עמדו בכל אחד מהם מתוך יראת שמים.</p>
+      <p class="bold-para">לכל אחת מן השיטות יש מחיר, ולכן קשה לומר על אחת מהן שהיא צודקת במאה אחוז.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · שתי השיטות</div>
+      <h3 class="story-title">🔄 רבי שמעון בר יוחאי – בכיוון ההפוך</h3>
+      <p>בסוף השיעור חוזר הרב לסיפור הגמרא, ומראה איך הוא מאיר את כל המחלוקת. רבי שמעון בר יוחאי הגיע למקום שבו הרומאים עשו דבר טוב לעם ישראל, ואמר: אסור לשבח אותם, כי הכוונה שלהם אינה טובה. הוא הלך מן החיצוניות הטובה אל הפנימיות שאינה טובה.</p>
+      <p>זו שיטה עקבית: לא להסתפק במה שנראה לעין, אלא לשאול מה עומד מאחוריו.</p>
+      <p>הרב קוק עשה את אותו דבר בדיוק, אבל בכיוון ההפוך. הוא ראה אנשים שמעשיהם בחיצוניותם אינם על פי התורה, ואולי אף אינם מתכוונים במודע לשם שמים. והוא הלך אל הפנימיות, ומצא בה קדושה: רוח ישראל, ששורה בה רוח ה'. כך הפך את מעשיהם לקדושים.</p>
+      <p>והאמרי אמת, לעומתו, אומר: ייתכן שאתה צודק מבחינה רוחנית. ייתכן מאוד שנבנה כאן עכשיו כסא ה' בעולם, ושנעשים כאן תיקונים גדולים, כמו שאתה אומר. זה יפה מאוד כרעיון. אבל להתייחס בפועל למי שמתנהג שלא כדרך התורה כאל צדיק – את זה ההלכה אינה מתירה.</p>
+      <p>אתה רוצה לכתוב את הרעיון שלך, כתוב. אבל אי אפשר לשבח את מי שעובר על התורה.</p>
+      <p class="bold-para">הרב קוק הסתכל על הפנימיות כמו רבי שמעון בר יוחאי, אבל ראה בה דווקא קדושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · שתי השיטות</div>
+      <h3 class="story-title">⚖️ שתי השיטות</h3>
+      <p>וכאן, אומר הרב, לא הצליחו השניים להגיע לעמק השווה, והדבר נשאר מחלוקת ביניהם.</p>
+      <p>הרב מסכם את שתי השיטות. שיטת הרב קוק: לראות את מעשיהם של בוני הארץ כדבר גדול, כחלק מבניין כסא ה' בעולם, מתוך ידיעה שבפנימיותם יש קדושה. והוא ידע שיש בזה סיכון גדול, ובכל זאת הלך בדרך זו.</p>
+      <p>ושיטת האמרי אמת, שהרב מתאר אותה כשיטה המתונה ביותר שהייתה בציבור שהסתייג מן הרב קוק: גם אם יש צדק ברעיון, אי אפשר להחניף ולשבח את מי שעובר על התורה. ההלכה אינה מרשה זאת, וצריך לשמור מרחק מן ההשפעה.</p>
+      <p>והרב מוסיף שאפשר לראות איך מן הנקודה הזאת נובעים דברים רבים מאוד בהמשך, בשאלות שעולות עד היום. השאלה היסודית היא אותה שאלה: האם מותר לשבח, או שההלכה אוסרת.</p>
+      <p>ואם כך, נחזור למטרה שהציב הרב בתחילת השיעור: לא דו־שיח של חירשים, אלא הבנה. מי שלמד את השיעור הזה צריך לדעת להסביר את שתי השיטות, ולהבין שבשתיהן עמדו גדולי ישראל שאהבו את התורה, את הארץ ואת עם ישראל.</p>
+      <p class="bold-para">המחלוקת נשארה ביניהם: האם מותר לשבח את מעשי מי שאינו שומר תורה, או שההלכה מחייבת להתרחק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/0QDzzDOtZC0 · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"להבין את הצד השני","icon":"👂","color":"#c62b6b","stories":[{"id":1,"title":"דו־שיח של חירשים","icon":"👂"},{"id":2,"title":"אדם שאיחד לבבות","icon":"💞"}]},{"id":2,"name":"השאלה שעמדה לפני הרב קוק","icon":"❓","color":"#6d28d9","stories":[{"id":3,"title":"הרב קוק","icon":"🏛️"},{"id":4,"title":"צד לכאן וצד לכאן","icon":"❓"},{"id":5,"title":"שלושה תנאים והרומאים","icon":"🌉"},{"id":6,"title":"חיצוניות ופנימיות","icon":"🔍"}]},{"id":3,"name":"שיטת הרב קוק","icon":"🧱","color":"#e08e00","stories":[{"id":7,"title":"ברית שלא תיטמא כליל","icon":"🔥"},{"id":8,"title":"סוחבי הלבנים","icon":"🧱"},{"id":9,"title":"משיח בן יוסף","icon":"✨"}]},{"id":4,"name":"האמרי אמת","icon":"🌾","color":"#1e88b8","stories":[{"id":10,"title":"האמרי אמת מגור","icon":"🌾"},{"id":11,"title":"שלושה טעמים לשהחיינו","icon":"🙏"},{"id":12,"title":"הגעגוע שלא התממש","icon":"🚢"},{"id":13,"title":"\"אהבה מקלקלת את השורה\"","icon":"💌"}]},{"id":5,"name":"מקורות ההסתייגות","icon":"📜","color":"#c62b6b","stories":[{"id":14,"title":"החנופה החמורה ביותר","icon":"📜"},{"id":15,"title":"מי נקרא רשע?","icon":"⚖️"},{"id":16,"title":"נמשך אחר רעיו","icon":"👥"},{"id":17,"title":"עדות מאותם ימים","icon":"🕰️"},{"id":18,"title":"\"המדבר שלנו הוא הישיבה\"","icon":"🏜️"}]},{"id":6,"name":"שתי השיטות","icon":"⚖️","color":"#6d28d9","stories":[{"id":19,"title":"אין כאן צד פשוט","icon":"🤔"},{"id":20,"title":"רבי שמעון בר יוחאי – בכיוון ההפוך","icon":"🔄"},{"id":21,"title":"שתי השיטות","icon":"⚖️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
