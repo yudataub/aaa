@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 קטונתי ושכם</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 קטונתי ושכם</h1>
+  <p>פנינים מפרשת וישלח: גדולתו של הקטן, שתי הפנים של עשו, שלוש שאלות לפני היצר, ומחלוקת הרמב"ם והרמב"ן במעשה שכם</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ קטונתי ושכם" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/1Rebdl3Fw9A?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/1Rebdl3Fw9A/hqdefault.jpg" alt="קטונתי ושכם" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=1Rebdl3Fw9A" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · תפילת יעקב</div>
+      <h3 class="story-title">🔡 קטונתי – באות קטנה</h3>
+      <p>בפרשת וישלח יעקב אבינו שולח מלאכים לעשו, ולפני המפגש הוא מתפלל: "קָטֹנְתִּי מִכֹּל הַחֲסָדִים וּמִכָּל הָאֱמֶת אֲשֶׁר עָשִׂיתָ אֶת עַבְדֶּךָ". בשיעור הובאה הערה על טעמי המקרא: על המילה "קטנתי" בא טעם חשוב ובולט. איך ייתכן? המילה אומרת "קטן", והטעם "גדול"!</p>
+      <p>ההסבר נשען על יסוד שמובא בזוהר, בפרשת חיי שרה, על הפסוק "מֵאָה שָׁנָה וְעֶשְׂרִים שָׁנָה וְשֶׁבַע שָׁנִים". הזוהר מבחין בין מי שהוא קטן בעיני עצמו ובאמת גדול, ובין מי שעושה עצמו גדול ובאמת קטן.</p>
+      <p>מי שבונה לעצמו מגדלים באוויר, מתפרסם ומרעיש, הוא לפעמים אדם קטן מאוד. ולעומתו, מי שהוא עניו, שאינו עושה מעצמו דבר, נחשב בשמיים גדול מאוד. לכן דווקא "קטנתי" מוטעם בטעם גדול: מי שאומר "קטן אני", הוא לפי האמת הפנימית גדול.</p>
+      <p class="bold-para">דווקא מי שקטן בעיני עצמו הוא גדול באמת, ולכן "קטנתי" מוטעם בטעם גדול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · תפילת יעקב</div>
+      <h3 class="story-title">👶 "זה הקטן גדול יהיה"</h3>
+      <p>הרב סיפר ששמע פעם בברית מילה רב שאל: למה אומרים "זֶה הַקָּטֹן גָּדוֹל יִהְיֶה"? מה צריך להזכיר שהוא קטן? היה אפשר לומר "זה הנולד גדול יהיה", או פשוט "גדול יהיה".</p>
+      <p>ותשובתו: דווקא הקטנות היא שתגדל אותו. אדם שמנמיך את עצמו, שהוא עניו ואינו תופס את עצמו כאדם חשוב ומפורסם, הקטנות הזאת עצמה גורמת לו להיות גדול.</p>
+      <p>כך היה ביעקב, שאמר "קטנתי". וכך היה בדוד המלך, שנאמר עליו "וְדָוִד הוּא הַקָּטָן". דווקא משום שהיה קטן בעיני עצמו, הגיע לבסוף לגדולה עצומה. הענווה אינה סתירה לגדולה. היא הדרך אליה.</p>
+      <p>וזו גם ברכה לכל ילד שנכנס בבריתו של אברהם אבינו: שיהיה קטן בעיני עצמו, ומתוך כך יגדל באמת.</p>
+      <p class="bold-para">הענווה עצמה היא מה שמגדלת את האדם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · תפילת יעקב</div>
+      <h3 class="story-title">🚶 "כי במקלי"</h3>
+      <p>יעקב ממשיך בתפילתו: "כִּי בְמַקְלִי עָבַרְתִּי אֶת הַיַּרְדֵּן הַזֶּה וְעַתָּה הָיִיתִי לִשְׁנֵי מַחֲנוֹת". יצאתי רק עם מקל, ועכשיו יש לי משפחה שלמה ורכוש רב.</p>
+      <p>הרב סיפר על הרב אהרן יהודה לייב שטיינמן. משפחתו כולה נכחדה בשואה. הוא עצמו ניצל כשברח לשווייץ, כדי שלא יגייסו אותו, ונשאר לבדו. שם התחתן עם אשתו, שגם היא הייתה יתומה בודדה. הם הגיעו לארץ ישראל בלי כלום.</p>
+      <p>והיה הרב שטיינמן קורא את הפסוק הזה ומתמלא שבח והודיה: ריבונו של עולם, במקלי עברתי את הים הזה. אני ואשתי הגענו לכאן בלי שום דבר, ועכשיו, ברוך ה', יש משפחה, ילדים, הכל. "ועתה הייתי לשני מחנות".</p>
+      <p>מי שזוכר מאין יצא, יודע להודות על מה שיש לו. הפסוק אינו רק סיפור על יעקב. הוא תבנית של הודיה לכל אדם, על הדרך שעבר מן המקל אל המחנות.</p>
+      <p class="bold-para">הרב שטיינמן היה קורא את הפסוק "כי במקלי עברתי" על חייו שלו, ומודה בהתרגשות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · תפילת יעקב</div>
+      <h3 class="story-title">🤝 מיד אחי – מיד עשו</h3>
+      <p>יעקב מתפלל: "הַצִּילֵנִי נָא מִיַּד אָחִי מִיַּד עֵשָׂו". והשאלה ידועה: כמה אחים יש לו? רק אחד. למה הכפילות "מיד אחי" ו"מיד עשו"?</p>
+      <p>בעל בית הלוי מסביר, ודבריו מפורסמים, שיעקב ביקש כאן בקשה גדולה מאוד. עשו מגיע במשך הדורות בשתי צורות. יש עשו הרשע, שבא עם סכין ורוצה להרוג. ויש עשו אחר, שרואה שבדרך הזאת לא הולך לו, ובא בתחפושת של אח: בוא נשב יחד, בוא נהיה חברים, אחי.</p>
+      <p>והרב הסביר שהצורה השנייה קשה הרבה יותר להתמודדות. כנגד חרב, אדם מתגונן. כנגד חיבוק, הוא נפתח. כך במשך הדורות: היו מקומות שבהם הרדיפה הייתה גלויה, והיו מקומות שבהם הכל היה שוויון וחברות, ושם איבדו רבים את זהותם היהודית בשקט, בלי שום כלי נשק.</p>
+      <p>לכן יעקב מקדים "מיד אחי": הוא חושש יותר מעשו שבא כאח. והרב הוסיף שיש בזה חסד מסוים במצבנו בארץ: ההתבוללות כאן נמוכה מאוד, ובכך עשה ה' חסד עם עם ישראל.</p>
+      <p class="bold-para">עשו מגיע בשתי צורות: עם חרב, או בחיבוק של אחווה – והשנייה מסוכנת יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · תפילת יעקב</div>
+      <h3 class="story-title">🌟 היטב איטיב</h3>
+      <p>ובהמשך התפילה: "וְאַתָּה אָמַרְתָּ הֵיטֵב אֵיטִיב עִמָּךְ". מה פירוש הכפילות "היטב איטיב"? רש"י עוסק בכך, ובספרים רבים מובא רעיון יפה.</p>
+      <p>כאשר אדם מתייחס לקדוש ברוך הוא כטוב – אומר: ה' טוב, ויעשה טוב, ויהיה עוד יותר טוב – הדבר הזה עצמו גורם שה' ייטיב עמו. ההכרה בטוב מעוררת עוד טוב.</p>
+      <p>כשאדם מאמין שיהיה טוב, וחושב שיהיה טוב, זה מסוגל מאוד שיהיה לו טוב. יש בכך גם צד טבעי, שמחשבה חיובית מביאה גם תוצאות חיוביות במציאות. אבל יש בזה בעיקר צד של אמונה: "ואתה אמרת היטב" – כשאתה אומר שה' עושה טוב, אז "איטיב עמך" – עוד ועוד.</p>
+      <p>ומכאן לימוד לחיים: הדיבור על הטוב שה' עושה איתנו אינו רק תיאור. הוא פותח את השער לעוד טוב.</p>
+      <p class="bold-para">מי שמאמין שה' מטיב, ואומר זאת, מעורר על עצמו עוד הטבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המפגש עם עשו</div>
+      <h3 class="story-title">❔ שלוש שאלות</h3>
+      <p>יעקב מכין מתנה לעשו, ומצווה את השליח הראשון: "כִּי יִפְגָשְׁךָ עֵשָׂו אָחִי וּשְׁאֵלְךָ לֵאמֹר לְמִי אַתָּה וְאָנָה תֵלֵךְ וּלְמִי אֵלֶּה לְפָנֶיךָ".</p>
+      <p>יש כאן רמז יפה. כשעשו, שהוא היצר הרע, פוגש את האדם, האדם צריך לשאול את עצמו שלוש שאלות. "למי אתה": האם אתה זוכר שאתה בנו של בורא עולם, שאוהב אותך, משגיח עליך ושומר עליך? "ואנה תלך": לאן אתה רוצה להגיע? למה אתה שואף? "ולמי אלה לפניך": אילו מעשים אתה עושה בפועל, עכשיו?</p>
+      <p>שלוש השאלות האלה מחזירות את האדם אל עצמו. הן מזכירות לו את זהותו, את מטרתו ואת אחריותו למעשיו. מי שעונה עליהן בכנות, לא קל ליצר להטעות אותו.</p>
+      <p>יעקב שולח לעשו מתנה גדולה מאוד, ועושה דבר מעניין: "וְרֶוַח תָּשִׂימוּ בֵּין עֵדֶר וּבֵין עֵדֶר". הוא מפריד בין העדרים ומשאיר רווחים ביניהם.</p>
+      <p>למה? כי עשו מאז ומעולם מתלהב מאוד מן השפע, ממה שנראה לעין, מן התמונה החיצונית. כשהעדרים באים בזה אחר זה, עם רווחים ביניהם, המתנה נראית גדולה ומרשימה עוד יותר.</p>
+      <p>הרב העיר שיש כאן דבר מעשי מאוד: יעקב אינו נשען רק על התפילה. הוא מתפלל, מתכונן למלחמה, ושולח דורון – ובכל אחד מן האמצעים הוא פועל בחכמה, לפי טבעו של מי שעומד מולו. כך יש לנהוג גם מול מי שמתרשם מן החיצוניות: לדעת מה מדבר אליו.</p>
+      <p class="bold-para">כשהיצר פוגש את האדם, עליו לשאול את עצמו: למי אתה, לאן אתה הולך, ומה המעשים שלפניך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מעשה שכם</div>
+      <h3 class="story-title">🗡️ מה עשו שמעון ולוי</h3>
+      <p>בהמשך הפרשה מגיע מעשה שכם. שכם לקח את דינה, ושמעון ולוי באו לעיר והרגו את כל הזכרים בה, כמו שכתוב: "וַיַּהַרְגוּ כָּל זָכָר". מעשה נועז מאוד. והשאלה היא: האם היה מותר? איך מתייחסים אליו?</p>
+      <p>הרמב"ם, בהלכות מלכים, מסביר שבני נח מצווים על שבע מצוות, ואחת מהן היא מצוות דינים – להושיב בתי דין. בן נח שעובר על אחת מהן חייב מיתה. ומפני זה, כותב הרמב"ם, נתחייבו כל בעלי שכם הריגה, שהרי שכם גזל, והם ראו וידעו ולא דנוהו.</p>
+      <p>לפי הבנה זו, שמעון ולוי פעלו לפי הדין. ויעקב אבינו, שכעס עליהם, לא טען שעשו דבר אסור. הוא חשש מן ההשלכות: "עֲכַרְתֶּם אֹתִי לְהַבְאִישֵׁנִי בְּיֹשֵׁב הָאָרֶץ". לא כל מה שמותר מבחינה עקרונית ראוי לעשותו, כי יש לו תוצאות מסוכנות.</p>
+      <p class="bold-para">מעשה שכם עורר מחלוקת: הרמב"ם מצדיק אותו מצד הדין, והרמב"ן חולק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מעשה שכם</div>
+      <h3 class="story-title">❓ קושיית הרמב"ן</h3>
+      <p>הרמב"ן אינו מקבל את הסבר הרמב"ם. הוא שואל: אם אתה מחפש עבירות אצל אנשי שכם, הרי היו להם עבירות רבות. הם עבדו עבודה זרה, ולא חסרו עבירות חמורות אחרות. מה נתפסת דווקא לכך שלא עשו דין?</p>
+      <p>ועוד: לדעת הרמב"ן, אי עשיית דין היא "שב ואל תעשה". הם לא עשו מעשה, אלא נמנעו מלעשות. ואדם אינו נענש במיתה על מה שלא עשה, אלא על מה שעשה.</p>
+      <p>לכן לפי הרמב"ן, אנשי שכם לא היו חייבים מיתה בגלל זה. ובפשטות, הרמב"ן אינו מרוצה ממעשה שמעון ולוי. וכך נראה מדברי יעקב אבינו בסוף ימיו: "שִׁמְעוֹן וְלֵוִי אַחִים כְּלֵי חָמָס מְכֵרֹתֵיהֶם... אָרוּר אַפָּם כִּי עָז". אביהם כעס עליהם, ולא רק מן הצד המדיני.</p>
+      <p>נמצא שיש כאן מחלוקת יסודית: לפי הרמב"ם, המעשה היה לפי הדין, ולפי הרמב"ן, לא.</p>
+      <p class="bold-para">הרמב"ן שואל: אם מחפשים עבירות, היו להם רבות; ומי שלא עשה דין, לא עשה מעשה – ואין עונשים על כך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מעשה שכם</div>
+      <h3 class="story-title">👓 לראות את שתי הדעות</h3>
+      <p>הרב הביא דבר ששמע: אפשר לזהות את השקפתו של כל כותב לפי המקור שהוא מביא. בעלונים שיוצאים בפרשת השבוע, מי שמחזיק בדעות קיצוניות יביא רק את הרמב"ם. מי שנוטה לפשרות יביא רק את הרמב"ן. נדיר למצוא מי שמביא את שניהם יחד.</p>
+      <p>כי בדרך כלל, אדם אוהב לראות את הכל בשחור ולבן. להכיר בכך שיש גם דעה שחולקת עליו, זה דבר נדיר. אבל זו דרכה של תורה: להביא את כל הדעות, לשקול אותן, ולהבין מה כל אחת אומרת ומה לא.</p>
+      <p>וזה מה שהרב ביקש לעשות כאן: להציג את שתי השיטות, ולראות גם איך הרמב"ם עצמו מגביל את דבריו. כי כשמעיינים, מתברר שהרמב"ם אינו אומר את מה שחלק מן המצטטים אותו מבינים ממנו.</p>
+      <p class="bold-para">האמת דורשת להכיר גם בדעה החולקת, ולא לראות הכל בשחור ולבן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מעשה שכם</div>
+      <h3 class="story-title">🕊️ "טוב ה' לכל"</h3>
+      <p>הרב סיפר שפגש פעם, בנסיעה באוטובוס, מחבר ספר העוסק בדיני מלחמה, וניצל את ההזדמנות לשאול אותו שאלה שהטרידה אותו. הרמב"ם כותב כאן שבן נח שעבר על אחת משבע מצוות חייב מיתה. אבל במקומות אחרים הרמב"ם פוסק שאסור להרוג גוי שאין בינינו ובינו מלחמה.</p>
+      <p>ויותר מזה: הרמב"ם פוסק שאפילו הגויים, ציוו חכמים לבקר חוליהם, לקבור מתיהם ולפרנס ענייהם, מפני דרכי שלום. "הֲרֵי נֶאֱמַר טוֹב ה' לַכֹּל וְרַחֲמָיו עַל כָּל מַעֲשָׂיו, וְנֶאֱמַר דְּרָכֶיהָ דַרְכֵי נֹעַם וְכָל נְתִיבֹתֶיהָ שָׁלוֹם". יהודי צריך לנהוג בצורה יפה גם עם מי שאינו יהודי, כמו שה' טוב לכל.</p>
+      <p>אם כן, איך מתיישבים שני הדברים? מצד אחד, "חייב מיתה". מצד שני, אסור להרוג, ויש לנהוג בדרכי שלום. זו הייתה השאלה, ובכרטיס הבא נראה את התשובה שקיבל.</p>
+      <p class="bold-para">הרמב"ם עצמו פוסק שאסור להרוג גוי שאין עמו מלחמה, ושיש לנהוג עמו בדרכי שלום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מעשה שכם</div>
+      <h3 class="story-title">⚖️ לא מסע נקמה</h3>
+      <p>התשובה הייתה שזו בדיוק קושיית הרמב"ן, וזה גם יישובה. אדם אינו יכול לקום סתם כך ולפגוע בגוי בטענה שהוא עובר על שבע מצוות. אילו שמעון ולוי היו פוגעים באנשי שכם בגלל עבודה זרה, כולם היו שואלים: מה נזכרתם היום? אתמול לא עבדו עבודה זרה? זה היה נראה כתירוץ למסע נקמה, ולא כעשיית דין.</p>
+      <p>לכן הרמב"ם תלה את הדין דווקא בכך שלא עשו דין במעשה שנגע לבני יעקב עצמם, באחותם. לפי ההסבר הזה, הדין שבדברי הרמב"ם שייך לבית דין, או למצב מיוחד שבו הדבר נוגע ישירות למשפחה, כפי שאמרו שמעון ולוי: "הַכְזוֹנָה יַעֲשֶׂה אֶת אֲחוֹתֵנוּ".</p>
+      <p>ומה למעשה? הרב אמר זאת בבירור: כשאתה פוגש גוי, אתה אינך בית דין. אין שום עניין להכריח אותו לקיים שבע מצוות בכוח. זה לא יוסיף צדק בעולם ולא יתרום דבר. ברור שאסור לפגוע בו, ואדרבה – צריך לנהוג עמו בצורה טובה, בדרכי שלום, כמו שפסק הרמב"ם.</p>
+      <p>כך מתיישבים שני חלקי הרמב"ם, וכך מתברר שהלימוד העיוני של מעשה שכם אינו מוביל להיתר מעשי, אלא להבנה עמוקה יותר של הדין ושל גבולותיו.</p>
+      <p class="bold-para">ההיתר שברמב"ם אינו רשות ליחיד לעשות דין; למעשה אסור להרוג, ויש לנהוג בדרכי שלום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/1Rebdl3Fw9A · 2024-12-11 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"תפילת יעקב","icon":"🙏","color":"#c62b6b","stories":[{"id":1,"title":"קטונתי – באות קטנה","icon":"🔡"},{"id":2,"title":"\"זה הקטן גדול יהיה\"","icon":"👶"},{"id":3,"title":"\"כי במקלי\"","icon":"🚶"},{"id":4,"title":"מיד אחי – מיד עשו","icon":"🤝"},{"id":5,"title":"היטב איטיב","icon":"🌟"}]},{"id":2,"name":"המפגש עם עשו","icon":"🎁","color":"#6d28d9","stories":[{"id":6,"title":"שלוש שאלות","icon":"❔"}]},{"id":3,"name":"מעשה שכם","icon":"⚖️","color":"#e08e00","stories":[{"id":7,"title":"מה עשו שמעון ולוי","icon":"🗡️"},{"id":8,"title":"קושיית הרמב\"ן","icon":"❓"},{"id":9,"title":"לראות את שתי הדעות","icon":"👓"},{"id":10,"title":"\"טוב ה' לכל\"","icon":"🕊️"},{"id":11,"title":"לא מסע נקמה","icon":"⚖️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
