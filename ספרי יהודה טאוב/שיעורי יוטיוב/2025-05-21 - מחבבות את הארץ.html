@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מחבבות את הארץ</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מחבבות את הארץ</h1>
+  <p>בנות צלפחד ומצוות אהבת ארץ ישראל: מה ההבדל בינה לבין אהבת מולדת, איך היא באה לידי ביטוי בהלכה למעשה, ולמה דווקא הנשים אהבו את הארץ</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מחבבות את הארץ" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/-HBCwD-DF7w?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/-HBCwD-DF7w/hqdefault.jpg" alt="מחבבות את הארץ" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=-HBCwD-DF7w" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמש בנות בתורה</div>
+      <h3 class="story-title">🧩 חידה: מי מופיעה בתורה בזכות עצמה?</h3>
+      <p>השיעור נפתח בחידה למשתתפים: כמה נשים מוזכרות בחמשת חומשי תורה, חוץ מן האמהות? התשובות התחילו לזרום: יוכבד, צפורה, בתיה, אלישבע, דינה.</p>
+      <p>אבל אז חודדה השאלה. כמעט כל הנשים שהוזכרו מופיעות בתורה בתור "אמא של" או "אשת". יוכבד היא אמו של משה רבנו. אלישבע היא אשת אהרן. הן מוזכרות בזכות הקשר שלהן לדמות אחרת. השאלה היא: איזו אישה מופיעה בתורה בזכות עצמה, בגלל מעשה שעשתה, כאישיות עצמאית?</p>
+      <p>כשמחפשים כך, מגלים שהרשימה קצרה מאוד. יש את מרים הנביאה, שהתורה מספרת עליה פעמיים: פעם כששרה את השירה על הים, ופעם בדיבור על משה. אולי גם שפרה ופועה. ויש קבוצה אחת נוספת, מיוחדת מאוד: בנות צלפחד.</p>
+      <p>זה דבר חריג. חמש בנות, שעדיין לא היו נשואות ולא היו אמהות של אף אחד, זכו שפרשה שלמה בתורה תיכתב על שמן ובזכות מעשיהן. מה הן עשו שזכו לכך? זה הנושא של השיעור.</p>
+      <p class="bold-para">כמעט כל הנשים בתורה מוזכרות כאמהות; בנות צלפחד מופיעות בזכות מעשיהן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמש בנות בתורה</div>
+      <h3 class="story-title">🔁 חמישה שמות, שוב ושוב</h3>
+      <p>התורה הייתה יכולה לכתוב בקיצור: "ותקרבנה בנות צלפחד". אבל היא מפרטת: "וְאֵלֶּה שְׁמוֹת בְּנֹתָיו מַחְלָה נֹעָה וְחָגְלָה מִלְכָּה וְתִרְצָה". וכך לא רק פעם אחת. השמות מופיעים כבר כשהתורה מונה את משפחות השבטים, ושוב בתחילת הפרשה, ושוב בסוף ספר במדבר, כשהבנות נישאות.</p>
+      <p>מה הטעם לחזור על כך? הרי כבר כתבת את השמות כמה פסוקים קודם. ועוד, הסדר שבו הן מופיעות משתנה בין מקום למקום, והמפרשים עמדו על כך.</p>
+      <p>הרב הסביר: כשאוהבים מישהו, מזכירים את שמו שוב ושוב. וכשמישהו אינו אהוב, מתחמקים משמו. שאול המלך, כשכעס על דוד, לא קרא לו בשמו. הוא שאל: "מַדּוּעַ לֹא בָא בֶן יִשַׁי". הוא לא רצה להזכיר את השם. ובנות צלפחד – התורה חוזרת על שמותיהן כמה פעמים, סימן שהן חביבות מאוד לפני המקום.</p>
+      <p>אם כן, יש כאן שתי שאלות. מה עשו הבנות האלה, ומה היה בהן שגרם לתורה לחבב אותן כל כך?</p>
+      <p class="bold-para">כשאוהבים מישהו מזכירים את שמו פעם אחר פעם, והתורה מזכירה את שמות הבנות כמה פעמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמש בנות בתורה</div>
+      <h3 class="story-title">🏡 "תנה לנו אחוזה"</h3>
+      <p>על פניו, הבקשה שלהן היא בקשה של נדל"ן. אביהן מת בלי בנים, והן ביקשו לקבל את חלקו בארץ. במבט ראשון אין בזה מעלה מיוחדת. גם היום יש אנשים שעומדים בתור שנים לקבל דירה, ואין זה אומר שהם אוהבים את ארץ ישראל.</p>
+      <p>אבל רש"י מגלה את המעלה. נאמר: "לְמִשְׁפְּחֹת מְנַשֶּׁה בֶן יוֹסֵף". שואל רש"י: הרי כבר נאמר שהוא בן מנשה, ומדוע להוסיף "בן יוסף"? אלא לומר לך: יוסף חיבב את הארץ, שנאמר "וְהַעֲלִתֶם אֶת עַצְמֹתַי מִזֶּה", ובנותיו חיבבו את הארץ, שנאמר "תְּנָה לָּנוּ אֲחֻזָּה".</p>
+      <p>איך רואים שהבקשה שלהן הייתה אהבה ולא סתם רצון בנכס? הרב הסביר דרך המפה. הבנות היו משבט מנשה. וחצי שבט מנשה קיבל נחלה עצומה בעבר הירדן המזרחי, בארץ הבשן, שטח ענק בשביל חצי שבט בלבד. אילו היו מבקשות נחלה שם, היו מקבלות בלי שום ויכוח, ככל שירצו. היה שם מקום רב.</p>
+      <p class="bold-para">בנות צלפחד לא רק ביקשו נחלה; הן ביקשו דווקא בתוך ארץ ישראל, ובכך הראו את אהבתן לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמש בנות בתורה</div>
+      <h3 class="story-title">🦴 יוסף ובנותיו</h3>
+      <p>כדאי להתעכב על הקשר שרש"י מצביע עליו. מדוע התורה מייחסת את בנות צלפחד דווקא ליוסף, ולא מסתפקת במנשה? משום שיש כאן תכונה שעברה במשפחה, מדור לדור.</p>
+      <p>יוסף חי את רוב חייו במצרים. הוא היה משנה למלך, עשיר ומכובד, והיה יכול להיקבר שם בכבוד גדול. ובכל זאת השביע את אחיו: "וְהַעֲלִתֶם אֶת עַצְמֹתַי מִזֶּה". הוא לא רצה להישאר במצרים אפילו אחרי מותו. מקומו האמיתי היה בארץ ישראל.</p>
+      <p>ובנות צלפחד, בנות בנותיו של יוסף, הלכו בדרכו. גם להן הוצע, כביכול, מקום רחב ונוח מחוץ לארץ. וגם הן אמרו: לא. אנחנו רוצות להיות דווקא בתוך הארץ.</p>
+      <p>מכאן לומדים שאהבת הארץ היא ירושה שעוברת בבית. מה שהאב חיבב, הבנים והבנות מחבבים. ומה שמספרים בבית על הארץ, בטוב או ברע, זה מה שהילדים יאהבו או ירחיקו. משום כך התורה מזכירה כאן את יוסף: כדי שנדע מאיפה ינקו הבנות את אהבתן.</p>
+      <p class="bold-para">כמו שיוסף ביקש שיעלו את עצמותיו לארץ, כך בנות בנותיו ביקשו אחוזה בתוכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמש בנות בתורה</div>
+      <h3 class="story-title">🗝️ חדר בארץ או ארמון בחוץ</h3>
+      <p>אבל הן לא ביקשו בעבר הירדן. הן אמרו: "תְּנָה לָּנוּ אֲחֻזָּה בְּתוֹךְ אֲחֵי אָבִינוּ" – בתוך ארץ ישראל עצמה, במערב הירדן. ושם המקום היה צפוף מאוד. בספר יהושע מסופר שבני יוסף באו להתלונן שאין להם די מקום, ויהושע אמר להם לעלות ליער ולברוא לעצמם מקום שם.</p>
+      <p>הרב המשיל זאת לאדם שמבקש דירה דווקא בעיר הצפופה ביותר, שבה כבר אין מקום בין בית לבית, כשבמקום אחר מציעים לו מגרש רחב. מדוע לבקש דווקא שם?</p>
+      <p>כאן רואים את אהבתן: עדיף להן חדר קטן בארץ ישראל מאשר וילה עם מגרש מחוצה לה. ואפילו עבר הירדן, שאינו חוץ לארץ גמור, קדוש פחות. וכך נאמר בספר יהושע לשבטים שישבו שם: "וְאַךְ אִם טְמֵאָה אֶרֶץ אֲחֻזַּתְכֶם עִבְרוּ לָכֶם אֶל אֶרֶץ אֲחֻזַּת ה' אֲשֶׁר שָׁכַן שָׁם מִשְׁכַּן ה'".</p>
+      <p>הן רצו להיות דווקא במקום הקדוש ביותר, במקום שבו ישכון המשכן. ומכאן למדו חז"ל שהן חיבבו מאוד את הארץ, ולא רק הן, אלא הנשים בכלל.</p>
+      <p class="bold-para">בנות צלפחד העדיפו פיסת קרקע צפופה בארץ ישראל על פני שטח רחב מחוצה לה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמש בנות בתורה</div>
+      <h3 class="story-title">⭐ מעלה אחת ששווה הכל</h3>
+      <p>שימו לב לדבר מפליא. על בנות צלפחד לא נכתבה בתורה שום מעלה נוספת. לא נאמר שהיו צנועות, לא שהיו גומלות חסדים, לא שהיו מלומדות. היו בוודאי דברים טובים רבים, אבל התורה לא כתבה אותם. היא כתבה מעלה אחת ויחידה: הן אהבו את ארץ ישראל.</p>
+      <p>ובזכות המעלה הזאת לבדה רש"י קורא להן צדקניות. ועוד מוסיף רש"י שהתורה פירטה את שמן ואת שם אביהן, סימן שגם אביהן היה צדיק. ומי היה צלפחד? יש אומרים שהיה המקושש עצים בשבת. לא אדם שהיה בעינינו דמות מופת. ובכל זאת, בזכות אהבת הארץ שהנחיל לבנותיו, הוא נקרא צדיק.</p>
+      <p>מכאן רואים כמה חשובה בעיני בורא עולם אהבת ארץ ישראל. הקדוש ברוך הוא אוהב את מי שאוהב את ארצו. זו מעלה שיכולה לבדה לעשות אדם לצדיק.</p>
+      <p>ומכאן גם מקור חשוב למצווה עצמה, כפי שיתברר בפרק הבא.</p>
+      <p class="bold-para">התורה לא כתבה על בנות צלפחד שום מעלה אחרת, ובכל זאת רש"י קורא להן צדקניות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי אהבת הארץ</div>
+      <h3 class="story-title">🔎 מה המקור למצווה?</h3>
+      <p>יש מצווה לאהוב את ה': "וְאָהַבְתָּ אֵת ה' אֱלֹקֶיךָ". יש מצווה לאהוב כל יהודי: "וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ". ומה עם אהבת ארץ ישראל? כשניסו לכתוב על המצווה הזאת באופן מסודר, השאלה הראשונה שעלתה הייתה: מה המקור?</p>
+      <p>יש מצווה ליישב את הארץ. הרמב"ן לומד מן הפסוק "וְהוֹרַשְׁתֶּם אֶת הָאָרֶץ וִישַׁבְתֶּם בָּהּ" שיש מצווה לגור בארץ ישראל. אבל מי אמר שלגור פירושו לאהוב? אנשים רבים גרים במקום ואינם אוהבים אותו. המגורים הם מעשה; האהבה היא רגש.</p>
+      <p>יש בהלכה דבר שנקרא חיבוב מצווה. למשל, מנהג לנשק את התפילין, כפי שמובא במשנה ברורה בשם השל"ה. אבל זה חיבוב כללי של כל המצוות. איפה כתוב שיש מצווה מיוחדת לאהוב את ארץ ישראל?</p>
+      <p>התשובה: אין פסוק מפורש. אבל אחד המקורות הרציניים ביותר הוא פרשת בנות צלפחד. התורה לא ייחסה להן שום מעלה אחרת חוץ מאהבת הארץ, ובזכותה בלבד הן נקראו צדקניות ונכתבה עליהן פרשה. סימן שזו מעלה גדולה מאוד בעיני התורה.</p>
+      <p class="bold-para">אין פסוק מפורש שמצווה לאהוב את הארץ; אחד המקורות החשובים לכך הוא פרשת בנות צלפחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי אהבת הארץ</div>
+      <h3 class="story-title">🗼 לא כמו הצרפתי שאוהב את פריז</h3>
+      <p>אבל כאן צריך להיזהר מאוד, כפי שמדגיש בעל המשך חכמה. גם האנגלי אוהב את אנגליה, והצרפתי אוהב את צרפת, והאמריקאי את אמריקה. כמו שאמרו חז"ל: "חן המקום על יושביו". כל אדם אוהב את המקום שהוא גר בו.</p>
+      <p>ואהבת מולדת יכולה להיות עזה מאוד. אנשים מוכנים למסור את נפשם על מולדתם. במלחמת העולם השנייה עמים רבים נלחמו ומתו כדי שלא ליפול בידי הגרמנים. אם כן, איך יודעים אם אהבה מסוימת לארץ היא אהבת ארץ ישראל של התורה, או סתם אהבת מולדת?</p>
+      <p>וכך כותב המשך חכמה בערך: אהבת הארץ אינה כאהבת המולדת, כאשר יאהב הצרפתי את ארץ מולדתו ויכבד את עיר בירתו, כי זה רגש לאומי. אהבת הארץ צריכה להיות ענף של מצוות אהבת ה'. שהרי האוהב את ה' אוהב את ביתו ואת משכנו, וארץ ישראל היא המקום שבו בחר ה' את דירתו, ככתוב: "כִּי בָחַר ה' בְּצִיּוֹן אִוָּהּ לְמוֹשָׁב לוֹ".</p>
+      <p>אם אהבת ארץ ישראל הופכת לאהבת מולדת בלבד, איבדנו את העיקר. זו כבר אינה המעלה שעליה דיברה התורה.</p>
+      <p class="bold-para">המשך חכמה: אהבת הארץ אינה אהבת מולדת, אלא ענף של אהבת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי אהבת הארץ</div>
+      <h3 class="story-title">🏛️ כמו אהבת בית המקדש</h3>
+      <p>מהי, אם כן, אהבת הארץ האמיתית? כשאדם אוהב את ארץ ישראל מפני שהיא ביתו של ה'. כאן הקדוש ברוך הוא מסתכל תמיד, כמו שנאמר: "עֵינֵי ה' אֱלֹקֶיךָ בָּהּ מֵרֵשִׁית הַשָּׁנָה וְעַד אַחֲרִית שָׁנָה". זה המקום שהוא בחר בו, ושבו הוא שוכן.</p>
+      <p>ארץ ישראל היא במדרגה של בית המקדש. כמו שאוהבים את בית המקדש לא בגלל האבנים היפות שלו, אלא משום שהוא בית ה', כך אוהבים את ארץ ישראל. אהבה כזאת אינה תלויה בנוף או באקלים או בנוחות. היא תלויה בקדושה.</p>
+      <p>וזה בדיוק מה שהבינו בנות צלפחד. הן אהבו את הארץ משום שהבינו את המעלה והקדושה שיש בה. לכן העדיפו פיסת קרקע קטנה בארץ ישראל על פני שטח עצום בחוץ. מי שאוהב מולדת מחפש את המקום הנוח והרחב. מי שאוהב את בית ה', מחפש את המקום הקדוש.</p>
+      <p>זו ההגדרה. ועכשיו נראה איך האהבה הזאת יוצאת מן הלב אל המעשה, בהלכות מעשיות.</p>
+      <p class="bold-para">אהבת הארץ האמיתית היא לאהוב אותה מפני שהיא ביתו של הקדוש ברוך הוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אבניה, פירותיה ומימיה</div>
+      <h3 class="story-title">🪨 מנשקים את אבניה</h3>
+      <p>ההלכה המפורסמת ביותר בעניין זה פוסק הרמב"ם בהלכות מלכים: גדולי החכמים היו מנשקים על תחומי ארץ ישראל, ומנשקים את אבניה, ומתגלגלים על עפרה. וכן הוא אומר: "כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ וְאֶת עֲפָרָהּ יְחֹנֵנוּ".</p>
+      <p>זו הלכה שרבים מכירים. אבל המפרשים למדו ממנה הלאה. אם החכמים חיבבו אפילו את האבנים, הדבר הפשוט והפחות חשוב שיש בארץ, הרי שהחיבה לארץ אינה רק רעיון. היא באה לידי ביטוי במעשים גשמיים ממש: בנשיקה, בנגיעה, בגילוי חיבה למה שיש בה.</p>
+      <p>האבן מבטאת את הדבר הפשוט ביותר בארץ. אין בה טעם ואין בה ריח, ואין לאדם הנאה ממנה. דווקא משום כך, החיבה אליה מראה שאוהבים את הארץ עצמה, ולא את מה שהיא נותנת.</p>
+      <p>ומכאן לימד הרדב"ז כמה הלכות נוספות, שנוגעות לחיי היום יום של כל אחד מאיתנו. הן מראות שהמצווה הזאת אינה שמורה לגדולי החכמים בלבד, ואינה רק למי שמגיע לגבולות הארץ. כל אדם יכול לקיים אותה בביתו, בשולחנו ובקניות שלו, כמה פעמים ביום.</p>
+      <p class="bold-para">גדולי החכמים היו מנשקים את אבני הארץ ומתגלגלים בעפרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אבניה, פירותיה ומימיה</div>
+      <h3 class="story-title">🍇 פירות הארץ</h3>
+      <p>כתב הרדב"ז: אם את אבני הארץ מצווה לאהוב, קל וחומר את פירות ארץ ישראל. כלומר, מי שנותן נשיקה לפרי של ארץ ישראל, מתלהב ממנו ואומר: הנה פרי של ארץ ישראל – מקיים את המצווה של "כי רצו עבדיך את אבניה".</p>
+      <p>אחד המשתתפים הקשה: את הפירות אוהבים ממילא, כי הם טעימים. באבנים דווקא ניכרת יותר האהבה לשמה. התשובה: נכון שבאבנים האהבה ניכרת יותר, אבל אין זה אומר שאי אפשר לאהוב את הפירות גם מתוך אהבת הארץ. הכל תלוי בכוונה.</p>
+      <p>ומכאן מסיק הרדב"ז הלכה מעשית: מצווה לחפש תמיד פירות מתוצרת ארץ ישראל, ולהימנע ככל האפשר מתוצרת חוץ לארץ. ברוך ה', היום כמעט כל הפירות והירקות בחנויות הם תוצרת הארץ. אבל יש עונות שבהן, למשל, תפוחים מגיעים מחוץ לארץ. אז יש מצווה לחפש דווקא את תוצרת הארץ.</p>
+      <p>חשוב לדייק: המצווה שעליה דיבר הרדב"ז היא על דברים שגדלו באדמת ארץ ישראל. זו אינה בדיוק אותה שאלה כמו כל מוצר שיוצר כאן בתעשייה. לחזק את המשק ולעזור ליהודים זה דבר חשוב, אבל זה עניין אחר. אהבת הארץ מתבטאת במיוחד במה שהאדמה עצמה מצמיחה.</p>
+      <p class="bold-para">הרדב"ז: אם מצווה לחבב את האבנים, קל וחומר את פירות הארץ – ולכן יש להעדיף את תוצרתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אבניה, פירותיה ומימיה</div>
+      <h3 class="story-title">🍋 האתרוגים של ארץ ישראל</h3>
+      <p>הרעיון של העדפת תוצרת הארץ אינו חדש. לפני כמאה שנה ויותר פעלה אגודה שקראה לקנות תוצרת הארץ. היא עבדה קשה כדי שגם יהודים בחוץ לארץ יקנו ממה שגדל כאן, כי בלי זה המשק הצעיר היה נופל. היו גם התלבטויות קשות: מה עושים כשהמחירים עולים, וכשאפשר להשיג בזול ממקום אחר.</p>
+      <p>גדולי ישראל כתבו בעניין הזה מכתבים יפים מאוד. הרב הזכיר מכתב של הרב קוק על חשיבות תוצרת ארץ ישראל. והרב עוזיאל, הרב הראשי הספרדי, כתב מכתב נלהב כשהתחילו לשווק לחוץ לארץ את האתרוגים שגדלו בארץ, וכמה חשוב לקנות דווקא אותם.</p>
+      <p>ועוד קודם לכן, בתקופה שבה היה ויכוח גדול על האתרוגים שהגיעו מקורפו, כתב בעל ערוך השולחן מכתב יפה על החשיבות להעדיף את אתרוגי ארץ ישראל.</p>
+      <p>המכנה המשותף לכל המכתבים האלה: מי שאוהב את הארץ, רוצה שהמצוות שלו ייעשו בפירות שלה. מה שהאדמה הקדושה מצמיחה, חביב עליו יותר.</p>
+      <p class="bold-para">גדולי ישראל כתבו מכתבים נלהבים על החשיבות לקנות דווקא אתרוגים מארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אבניה, פירותיה ומימיה</div>
+      <h3 class="story-title">💧 המים של הארץ</h3>
+      <p>סיפור יפה מסופר על הרב מרדכי אליהו. כשהיה נוסע לחוץ לארץ, היה לוקח איתו בקבוקי מים מארץ ישראל. שאלו אותו: למה? וכי אין מים בספרד או במרוקו? מה חסר לך שם?</p>
+      <p>הוא השיב: המים הם עיקר החיות של האדם. אני רוצה שעיקר החיות שלי תהיה מארץ ישראל.</p>
+      <p>הסיפור הזה מראה עד כמה אפשר להעמיק את אהבת הארץ. לא רק לחבב את פירותיה כשהם מונחים לפנינו, אלא לרצות שהחיים עצמם יבואו ממנה.</p>
+      <p>באמצע השיעור, כשהגיעו לסיפור הזה, ביקש הרב כוס מים. הוא הקפיד שיהיו אלה מים של הארץ, ולא בקבוק שמגיע ממקור בחוץ לארץ. כך, אמר, נוכל לקיים את הדברים הלכה למעשה ולא רק ללמוד עליהם. אחרי שמדברים על מצווה, כדאי לקיים אותה מיד.</p>
+      <p>וזה אחד המסרים החשובים של השיעור כולו: אהבת הארץ אינה רק תחושה בלב. יש לה הלכות, ויש לה מעשים, ואפשר לקיים אותה כמה פעמים ביום – בכל פרי שבוחרים, בכל כוס מים שמברכים עליה.</p>
+      <p class="bold-para">הרב מרדכי אליהו לקח איתו לחוץ לארץ מים מארץ ישראל, כי רצה שעיקר חיותו תהיה ממנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אבניה, פירותיה ומימיה</div>
+      <h3 class="story-title">✈️ לבוא לבקר</h3>
+      <p>עוד שאלה הלכתית חשובה: היום מגיעים לארץ ישראל המוני יהודים מחוץ לארץ, לביקור. בימי שני וחמישי באים לכותל אלפים, הרבה מהם לחגוג בר מצווה. יש תוכניות שמממנות לצעירים ביקור בארץ, כולל טיסה, רק כדי שיבואו ויכירו אותה. ולא פעם הצעירים האלה מושכים אחריהם גם את הוריהם.</p>
+      <p>האם יש מצווה לבוא לבקר בארץ ישראל? מצוות יישוב הארץ, "וִישַׁבְתֶּם בָּהּ", עוסקת במגורים. מי שבא לביקור אינו גר. אבל הפוסקים כתבו: אם יש מצווה לאהוב את הארץ, הרי מי שבא לבקר בה מקיים את מצוות אהבת הארץ. ולכן, הלכה למעשה, יש מצווה לבוא לבקר בארץ ישראל, אם לא מדין יישוב הארץ, הרי מדין אהבתה.</p>
+      <p>ויש לכך גם השלכה הלכתית. בעבר, כשהיו מפליגים באוניות, הייתה שאלה מתי מותר לצאת להפלגה שיש בה חשש של חילול שבת. ומי שנסע לארץ ישראל, הקלו לו, כי נסיעתו היא לדבר מצווה.</p>
+      <p>כך מתברר שאהבת הארץ אינה רק תוספת רגשית למצוות יישוב הארץ. היא מצווה בפני עצמה, שיש לה דינים משלה ומקיימים אותה גם במקום שמצוות היישוב אינה חלה.</p>
+      <p class="bold-para">גם מי שאינו מחויב לגור בארץ מקיים מצוות אהבת הארץ כשהוא בא לבקר בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אבניה, פירותיה ומימיה</div>
+      <h3 class="story-title">🧳 ומה עם מי שגר בחוץ לארץ?</h3>
+      <p>מכאן עבר הרב לשאלה רחבה יותר, שנוגעת ליהודים רבים בעולם: האם יהודי שגר בחוץ לארץ חייב לעלות לארץ ישראל? זה נידון ארוך בין הפוסקים. יש שסוברים שיש חיוב גמור, ויש שפוטרים מסיבות שונות.</p>
+      <p>אבל לפי מה שלמדנו, יש כאן נקודה חשובה. גם הפוסקים שפוטרים אדם מלעלות, פוטרים אותו מן החיוב שמצד מצוות יישוב הארץ. אבל מצד מצוות אהבת הארץ, ברור שיש מצווה לכל יהודי שגר בחוץ לארץ לבוא ולגור בארץ ישראל.</p>
+      <p>שהרי מי שאוהב, רוצה להיות קרוב. כמו בנות צלפחד, שלא הסתפקו בנחלה רחבה מעבר לירדן ורצו דווקא להיות בתוך הארץ. ומי שאוהב את בית ה', אינו מסתפק בשמיעה עליו מרחוק. הוא רוצה לגור בו.</p>
+      <p>כך אהבת הארץ אינה רק מוסיפה טעם למצוות אחרות. לפעמים היא עצמה המקור לחיוב, במקום שבו שאר המקורות אינם מחייבים.</p>
+      <p class="bold-para">גם לפי הפוטרים מחיוב עלייה מצד יישוב הארץ, מצד אהבתה ודאי שיש מצווה לבוא ולגור בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ארץ ישראל יפה</div>
+      <h3 class="story-title">🌳 האם יש מצווה שהארץ תהיה יפה?</h3>
+      <p>יש היום ארגונים שעוסקים בשמירה על ניקיון הארץ ועל יופיה. נשאלה השאלה: האם זו רק פעולה נחמדה, או שיש בזה מצווה?</p>
+      <p>התשובה עולה מן הגמרא בסוף מסכת כתובות, שמספרת על רבי חנינא שהיה מתקן את מכשולי העיר. ומסביר רש"י: מחמת חיבת הארץ שהייתה חביבה עליו, חזר אחריה שלא ייצא שם רע על הדרכים. וכבר הובא מעשה באחד מגדולי המוסר מסלבודקה, שכשהגיע לחברון היה מרים מן הדרך פסולת ומכשולים. כשחשבו שהוא עושה זאת כדי שאיש לא ייפגע, השיב שהוא עושה זאת מתוך חיבת הארץ, כמו רבי חנינא.</p>
+      <p>מכאן שיש מצווה לדאוג שארץ ישראל תהיה יפה, מדין אהבת הארץ. ואותו הדין חל גם על כל אחד בביתו. למשל, מי שגדר החצר שלו צומחת החוצה אל המדרכה, מן הראוי שלא יחכה לגנן, אלא יגזום בעצמו. כשענפים בולטים לרחוב, אנשים אומרים: ככה זה בארץ ישראל. מי שגוזם, מקיים את מצוות חיבת הארץ.</p>
+      <p>וכך גם לגבי הלכלוך שהשאירו אחרים. גם עליו צריך לחשוב: לא רק לא ללכלך, אלא גם לתקן. כמו רבי חנינא, שלא חיכה שאחרים יתקנו.</p>
+      <p class="bold-para">מן הגמרא על רבי חנינא למדו שיש מצווה לדאוג ליופיה של הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ארץ ישראל יפה</div>
+      <h3 class="story-title">🏢 מצוות תפארת ארץ ישראל</h3>
+      <p>שני אנשים באו לפני הרב זילברשטיין. בבניין שלהם התקינו כל הדיירים סורגים יפים, מעוצבים. הגיע דייר חדש ואמר: לא מעניין אותי יופי. אני רוצה סורגים פשוטים, ישרים, יד שנייה, בחצי מחיר ואולי ברבע. אמרו לו: הבניין כולו יפה, ואתה תהיה היחיד שמכער אותו. הוא לא הסכים, ובאו לדין תורה.</p>
+      <p>פסק הרב זילברשטיין: כיוון שהבניין בארץ ישראל, ובארץ ישראל יש מצווה של תפארת הארץ, כפי שמשמע מן הגמרא ומדברי רש"י, אין לך רשות לכער את הארץ.</p>
+      <p>אבל הוא הוסיף גבול חשוב. אם אין מנהג כזה במקום, אי אפשר לחייב אדם לבנות דווקא מאבן ירושלמית יקרה כי "ארץ ישראל צריכה להיות יפה". החיוב חל כשכולם כבר עשו כך, ואדם רוצה לשנות ולכער. אז אסור לו.</p>
+      <p>והרב הוסיף הערה חדה: יש מי שנוסע במכונית, זורק מן החלון פסולת, ובאותו רגע שר בהתלהבות "ארץ ישראל יפה". זו בדיוק הנקודה. חיבת הארץ אינה יכולה להישאר בתיאוריה ובשירים. צריכים להיות לה הלכות מעשיות.</p>
+      <p class="bold-para">הרב זילברשטיין פסק שאסור לכער בניין בארץ ישראל כשכל השכנים יפו אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ארץ ישראל יפה</div>
+      <h3 class="story-title">⚒️ זהב מזפת, אפר מזהב</h3>
+      <p>סיפור יפה מסופר על המשגיח של ישיבת כנסת חזקיהו. יום אחד נכנס לבית המדרש באמצע הסדר, דפק על הבימה ואמר: אני חייב לספר לכם מה ראיתי עכשיו.</p>
+      <p>בשנים ההן, בראשית ימי המדינה, היו יהודים עובדים בסלילת כבישים, בעבודה קשה בזפת לוהטת. המשגיח הלך בדרך וראה שני פועלים כאלה. ניגש לראשון ושאל: מה אתה עושה? ענה לו: אני עושה מצווה. אתה רואה, היו פה אבנים וחצץ, היה קשה ללכת. אמא שהולכת עם עגלה לטיפת חלב – העגלה נתקעה. עכשיו היא תוכל לנסוע בקלות. אני עושה חסד, ואני בונה את ארץ ישראל. אני עושה מצוות בכל רגע.</p>
+      <p>המשיך הלאה, וראה פועל שני. שאל גם אותו: מה אתה עושה? ענה: אני עושה כסף. ומה כבר אני עושה? עובד מהבוקר עד הערב, ומרמים אותי, ונותנים לי גרושים. אבל מה לעשות, אין עבודה אחרת.</p>
+      <p>אמר המשגיח לתלמידים: ראיתי אדם אחד שעושה מזפת זהב – מעבודה פשוטה הוא עושה מצוות של חסד ושל בניין הארץ. וראיתי אדם שני שעושה מזהב אפר. אותה פעולה בדיוק, ואותו כביש. הכל תלוי במה שאדם חושב שהוא עושה. ומי שעובד בארץ ישראל מתוך אהבתה, הופך כל יום עבודה ליום של מצוות.</p>
+      <p class="bold-para">אותה עבודה בדיוק יכולה להיות מצווה גדולה או סתם פרנסה – הכל תלוי במה שאדם חושב שהוא עושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מצוות שנובעות מאהבה</div>
+      <h3 class="story-title">🎶 שירי ארץ חמדה</h3>
+      <p>הלכה נוספת עוסקת בשירים על הארץ. בחוברת שהרב חיבר, הוא קרא לפרק הזה "שירי ארץ חמדה". הוא העדיף את השם הזה כדי שלא ישתמע שמדובר בכל מה שמכונה היום "שירי ארץ ישראל".</p>
+      <p>רבי אלעזר אזכרי, בעל ספר חרדים, שחי בצפת לפני מאות שנים, מספר על מנהג מעניין מאוד שהיה בימיו. בכל ערב ראש חודש היו מתכנסים ליד קבר רבי יהודה בר אלעאי, התנא, שנמצא בדרך בין צפת למירון. ושם היו שרים את השיר "ארץ הקדושה, יקרה וחמודה".</p>
+      <p>לא ברור בדיוק מי חיבר את השיר הזה. וגם אין מסורת ברורה מה הקשר בין רבי יהודה בר אלעאי לשירי ארץ ישראל. הרב אמר שאם מישהו ימצא את הקשר, ישמח לשמוע. אבל המנהג היה קיים.</p>
+      <p>ומספרים שהרב מרדכי אליהו, בכל פעם שהגיע לקבר רבי יהודה בר אלעאי, היה שר שם את השיר הזה. והיום השיר תלוי שם על הקיר, וכל מי שמגיע יכול לשיר אותו. ובעל ספר חרדים פוסק שיש מצווה לשיר שירים על ארץ ישראל, כחלק מאהבתה.</p>
+      <p class="bold-para">בעל ספר חרדים מספר על מנהג לשיר בכל ערב ראש חודש שיר על הארץ ליד קבר רבי יהודה בר אלעאי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מצוות שנובעות מאהבה</div>
+      <h3 class="story-title">🤐 היזהרות מדיבת הארץ</h3>
+      <p>מתוך אהבת הארץ יוצאת גם הלכה הפוכה, שנלמדה בהרחבה בשיעורים אחרים: הזהירות הגדולה שלא לדבר בגנות ארץ ישראל. זו הלכה שאינה פשוטה, והיא חמורה מאוד.</p>
+      <p>אדם נוסע לטיול בחוץ לארץ, וחוזר ומספר כמה שם מסודר וכמה פה לא. הוא מדבר על האנשים שבארץ: ראו איך מתנהגים כאן, ואיך מתנהגים שם. כל זה בכלל הוצאת דיבת הארץ רעה, וחמור מאוד.</p>
+      <p>וזאת גם כשהדברים אמת. אין מדברים רעה על ארץ ישראל, אלא אם כן יש בכך תועלת מעשית ממשית.</p>
+      <p>והקשר לאהבה פשוט: מי שאוהב, אינו מחפש את החסרונות של אהובו, וודאי שאינו מפרסם אותם. ואם אדם מוצא את עצמו מדבר כל הזמן על מה שלא טוב בארץ, כדאי שישאל את עצמו מה קרה לאהבה שלו אליה. בנות צלפחד, שאהבו את הארץ, ביקשו דווקא להיות בתוכה. המרגלים, שלא אהבו, הוציאו עליה דיבה.</p>
+      <p class="bold-para">מתוך אהבת הארץ נולדת גם הזהירות הגדולה שלא לדבר עליה רעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מצוות שנובעות מאהבה</div>
+      <h3 class="story-title">🍞 "על הארץ הטובה"</h3>
+      <p>יש רשימה של מצוות שכולן שורשן באהבת ארץ ישראל. אחת מהן היא ברכת המזון. הרב הצביע על דבר מפליא: אין בתורה ציווי מפורש להודות על החיים, על הנשימה, על הבגדים או על ההורים. אבל בברכת המזון נאמר במפורש: "וְאָכַלְתָּ וְשָׂבָעְתָּ וּבֵרַכְתָּ אֶת ה' אֱלֹקֶיךָ עַל הָאָרֶץ הַטֹּבָה אֲשֶׁר נָתַן לָךְ".</p>
+      <p>למה דווקא על הארץ? כדי לעורר את האהבה אליה. אדם שמודה שלוש פעמים ביום על הארץ הטובה, לומד לראות את טובה.</p>
+      <p>וכך גם במצוות הביכורים. כל העניין של הביכורים הוא הודאה לקדוש ברוך הוא על ארץ ישראל. המביא אומר: "הִגַּדְתִּי הַיּוֹם לַה' אֱלֹקֶיךָ כִּי בָאתִי אֶל הָאָרֶץ אֲשֶׁר נִשְׁבַּע ה' לַאֲבֹתֵינוּ לָתֶת לָנוּ". הפירות הראשונים הם הזדמנות לומר: ה' נתן לנו את הארץ, ואנחנו שמחים בה.</p>
+      <p>שתי המצוות האלה, ברכת המזון והביכורים, מלמדות שהתורה רוצה שאהבת הארץ תהיה חלק קבוע מן החיים. לא משהו שנזכרים בו פעם בשנה, אלא בכל ארוחה ובכל קציר.</p>
+      <p class="bold-para">התורה ציוותה להודות במפורש על דבר אחד: על הארץ הטובה – כדי לעורר את אהבתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מצוות שנובעות מאהבה</div>
+      <h3 class="story-title">🥾 "קום התהלך בארץ"</h3>
+      <p>ועוד אמרו פוסקים שיש מצווה לטייל בארץ ישראל. הרב העיר שהפסוק "קוּם הִתְהַלֵּךְ בָּאָרֶץ" נאמר לאברהם אבינו, ושללמוד ממנו על טיולים זה רעיון יפה ולא יותר. אבל העיקרון נכון: כשאדם מטייל בארץ ישראל כדי לאהוב אותה, הוא מקיים מצווה.</p>
+      <p>אדם נוסע לטבריה ונהנה מן הנוף. הוא רואה את הכנרת. ויש גם ברכות רבות שמברכים על מראות הארץ. מי שרואה את הכנרת, אם לא ראה אותה זמן רב, יכול לברך "עוֹשֶׂה מַעֲשֵׂה בְרֵאשִׁית".</p>
+      <p>כך הטיול הופך ממשהו של בילוי לדבר של קדושה. אדם הולך, נהנה מארץ ישראל, רואה כמה היא יפה, מודה עליה, ובכך מקיים את מצוות אהבת הארץ.</p>
+      <p>וזה מסכם את כל הפרק: הנשיקה לאבנים, הפרי שבוחרים, כוס המים, הביקור, הגדר שגוזמים, השיר, הברכה והטיול – כולם ביטויים של אותה אהבה. ואהבה שיש לה מעשים, היא אהבה שמתחזקת והולכת.</p>
+      <p class="bold-para">מי שמטייל בארץ ונהנה מנופה, מקיים את מצוות אהבתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למה דווקא הנשים</div>
+      <h3 class="story-title">👩 על הנשים לא נגזרה הגזרה</h3>
+      <p>השיעור הסתיים ברש"י שבסמוך לפרשת בנות צלפחד. על הפסוק "וּבְאֵלֶּה לֹא הָיָה אִישׁ" אומר רש"י: אבל על הנשים לא נגזרה גזרת המרגלים, לפי שהן היו מחבבות את הארץ.</p>
+      <p>כלומר, הגזרה שכל הדור ימות במדבר ולא ייכנס לארץ חלה רק על הגברים. הגברים דיברו רעה על הארץ ובכו בליל המרגלים. הנשים לא. הן אהבו את ארץ ישראל.</p>
+      <p>ובנות צלפחד הן הדוגמה הבולטת לכך. בזמן שהגברים של אותו דור מאסו בארץ, הן באו בעצמן לפני משה וביקשו חלק בתוכה.</p>
+      <p>יש כאן תמונה מרגשת. ארבעים שנה אחרי חטא המרגלים, כשהדור כולו כבר כמעט מת במדבר בגלל שלא רצה להיכנס לארץ, עומדות חמש בנות ומבקשות בדיוק את מה שאבותיהן דחו. הן לא נבהלו מן הענקים ולא מן הערים הבצורות. הן לא חשבו על הקשיים שמחכים שם. הן חשבו רק על דבר אחד: שגם להן יהיה חלק בארץ שה' בחר בה. בכך הן תיקנו, במידה מסוימת, את החטא של דורן.</p>
+      <p>ונשאלת השאלה: מה הקשר בין נשים לאהבת ארץ ישראל? למה דווקא הנשים אהבו את הארץ, והגברים לא? הרב שאל את המשתתפים אם יש להם רעיון, והביא פירוש שנהנה ממנו מאוד במפרשים.</p>
+      <p class="bold-para">רש"י: גזרת המרגלים לא נגזרה על הנשים, משום שהן חיבבו את הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · למה דווקא הנשים</div>
+      <h3 class="story-title">🥖 עבודת ה' מתוך הגשמיות</h3>
+      <p>אחת הסיבות שהמרגלים דיברו רעה על הארץ הייתה פשוטה. במדבר חיו בני ישראל כמו בגן עדן. המן ירד מן השמים, הכל היה מוכן. לא חורשים, לא זורעים, לא קוצרים, לא טוחנים ולא אופים. כל היום אפשר ללמוד תורה ממשה רבנו.</p>
+      <p>ומה מחכה להם בארץ? עבודה. חרישה, זריעה, קציר, צבא, מלחמות, משפטים. כדי לאכול צריך לעבוד את האדמה. אמרו הגברים: מה צריך את זה? כאן אנחנו לומדים תורה בשלווה, ושם נצטרך לעסוק בכל הגשמיות הזאת.</p>
+      <p>ועכשיו הסתכלו על האישה. כל עבודת ה' שלה היא מתוך הגשמיות. היא מבשלת, אופה, מכבסת, רוחצת את הילדים, מגדלת אותם ומחנכת אותם. היא עובדת את ה' כל היום דרך הדברים החומריים, ומקדשת אותם.</p>
+      <p>ולכן הגברים התקשו לאהוב את הארץ, והנשים לא. ארץ ישראל היא בדיוק זה: ארץ שבה עובדים את ה' דרך האדמה, דרך החומר, ומקדשים את הארציות. זו המהות של האישה. ולכן דווקא הנשים הן שידעו לחבב את ארץ ישראל, ובנות צלפחד היו לדוגמה לדורות.</p>
+      <p class="bold-para">האישה עובדת את ה' מתוך הגשמיות, ולכן היא מבינה את סוד הארץ הקדושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/-HBCwD-DF7w · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"חמש בנות בתורה","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"חידה: מי מופיעה בתורה בזכות עצמה?","icon":"🧩"},{"id":2,"title":"חמישה שמות, שוב ושוב","icon":"🔁"},{"id":3,"title":"\"תנה לנו אחוזה\"","icon":"🏡"},{"id":4,"title":"יוסף ובנותיו","icon":"🦴"},{"id":5,"title":"חדר בארץ או ארמון בחוץ","icon":"🗝️"},{"id":6,"title":"מעלה אחת ששווה הכל","icon":"⭐"}]},{"id":2,"name":"מהי אהבת הארץ","icon":"❤️","color":"#6d28d9","stories":[{"id":7,"title":"מה המקור למצווה?","icon":"🔎"},{"id":8,"title":"לא כמו הצרפתי שאוהב את פריז","icon":"🗼"},{"id":9,"title":"כמו אהבת בית המקדש","icon":"🏛️"}]},{"id":3,"name":"אבניה, פירותיה ומימיה","icon":"🍇","color":"#e08e00","stories":[{"id":10,"title":"מנשקים את אבניה","icon":"🪨"},{"id":11,"title":"פירות הארץ","icon":"🍇"},{"id":12,"title":"האתרוגים של ארץ ישראל","icon":"🍋"},{"id":13,"title":"המים של הארץ","icon":"💧"},{"id":14,"title":"לבוא לבקר","icon":"✈️"},{"id":15,"title":"ומה עם מי שגר בחוץ לארץ?","icon":"🧳"}]},{"id":4,"name":"ארץ ישראל יפה","icon":"🌳","color":"#1e88b8","stories":[{"id":16,"title":"האם יש מצווה שהארץ תהיה יפה?","icon":"🌳"},{"id":17,"title":"מצוות תפארת ארץ ישראל","icon":"🏢"},{"id":18,"title":"זהב מזפת, אפר מזהב","icon":"⚒️"}]},{"id":5,"name":"מצוות שנובעות מאהבה","icon":"🎶","color":"#c62b6b","stories":[{"id":19,"title":"שירי ארץ חמדה","icon":"🎶"},{"id":20,"title":"היזהרות מדיבת הארץ","icon":"🤐"},{"id":21,"title":"\"על הארץ הטובה\"","icon":"🍞"},{"id":22,"title":"\"קום התהלך בארץ\"","icon":"🥾"}]},{"id":6,"name":"למה דווקא הנשים","icon":"👩","color":"#6d28d9","stories":[{"id":23,"title":"על הנשים לא נגזרה הגזרה","icon":"👩"},{"id":24,"title":"עבודת ה' מתוך הגשמיות","icon":"🥖"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
