@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מזבח חדש בציון</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מזבח חדש בציון</h1>
+  <p>עיון בשאלה אם אפשר להקריב קרבן פסח בזמן הזה: ייחודו של הקרבן, מכתבי הרב קלישר והתשובות של גדולי הדורות, הבעיות ההלכתיות ופתרונותיהן, סדר הגאולה לפי נוסח התפילה, וחידושו של הרב נבנצל</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מזבח חדש בציון" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/IGcdrqeSnuw?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/IGcdrqeSnuw/hqdefault.jpg" alt="מזבח חדש בציון" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=IGcdrqeSnuw" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הקרבן שנתן לחג את שמו</div>
+      <h3 class="story-title">📰 הקדמה: שאלה אקטואלית</h3>
+      <p>השיעור נפתח בהודעה שהוא עוסק בדברים אקטואליים, ושגם חדשות אותו בוקר נוגעות לנושא. השאלה שעמדה במרכזו היא: כיצד ניתן להקריב היום קרבן פסח? האם הדבר אפשרי בכלל? ואם כן, מה חסר, ולמה זה עדיין לא קורה?</p>
+      <p>הרב ביקש לבנות את התשובה לפי הסדר. תחילה, להבין מה מיוחד בקרבן הפסח, ולמה דווקא הוא עומד במרכז השאלה. אחר כך, לראות מתי ואיך התעוררה השאלה בדורות האחרונים, ומה השיבו עליה גדולי ישראל. משם לעבור על הבעיות ההלכתיות אחת אחת, ולבחון איך הוצעו להן פתרונות. ולבסוף, לשאול איפה הדבר עומד היום, ומה מלמדים מקורות חז"ל על הסדר שבו אמורה הגאולה להגיע.</p>
+      <p>חשוב להקדים: הדיון בספר זה הוא לימוד עיוני של מקורות ושיטות, כפי שהוצגו בשיעור. השאלות המעשיות הנוגעות להר הבית ולהקרבה שנויות במחלוקת גדולה בין גדולי הפוסקים, ואין לראות בדברים כאן הוראה למעשה. כל הנוגע למעשה תלוי בהכרעת גדולי התורה.</p>
+      <p>ועם זאת, הרב הדגיש שעצם העיסוק בשאלה, הלימוד והבירור, הם כבר צעד חשוב. מי שאינו לומד את הסוגיה, לא יידע מה אפשר ומה אי אפשר.</p>
+      <p class="bold-para">השיעור מבקש לבחון בעיון, מתוך המקורות, את השאלה אם ניתן להקריב קרבן פסח בימינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הקרבן שנתן לחג את שמו</div>
+      <h3 class="story-title">🐑 למה החג נקרא פסח</h3>
+      <p>בכל שנה יהודים עמלים בהכנות מאומצות לקראת חג הפסח, וליל הסדר עומד במרכזו. אבל לאמיתו של דבר, אמר הרב, חייבים לזכור שחסר לנו המרכז של הסדר: הפסח עצמו.</p>
+      <p>החג אינו נקרא על שם המצות. הוא נקרא על שם קרבן הפסח. במשך כאלף שנה, מאז שנכנסו ישראל לארץ ועד חורבן הבית, הקריבו את הקרבן הזה, והוא היה עיקר ליל הסדר. אילו שאלת יהודי בזמן בית המקדש מהו פסח, הוא לא היה אומר "מצות". הוא היה אומר: הקרבן. המצות היו חלק מן החג, אבל כל העסק העיקרי היה סביב הקרבן.</p>
+      <p>קרבן הפסח, כך הוסבר, הוא אחת המצוות המרכזיות והחשובות ביותר במסורת היהודית. אפשר לומר שזו המצווה הראשונה שקיבלו ישראל כעם. הייתה ברית מילה לאברהם אבינו, והייתה מצוות קידוש החודש, אבל המעשה הראשון שעשו ישראל כעם היה הקרבת הפסח במצרים: שחיטת השה בארבעה עשר בניסן, ואכילתו עם מצות ומרורים בליל החג.</p>
+      <p>מאז החורבן פסקה עבודת הקרבנות כמעט לחלוטין, והקרבן נשאר זיכרון בלבד. ובכל זאת, השם "פסח" נשאר, ומזכיר לנו בכל שנה את מה שחסר במרכז השולחן.</p>
+      <p class="bold-para">עיקר החג בזמן המקדש היה הקרבן, ועל שמו נקרא החג.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הקרבן שנתן לחג את שמו</div>
+      <h3 class="story-title">🚪 הפסח הראשון במצרים</h3>
+      <p>מקורו של קרבן הפסח ביציאת מצרים. הקדוש ברוך הוא ציווה את ישראל לקחת שה לבית אבות, שה לבית, לשחוט אותו, ולתת מדמו על שתי המזוזות ועל המשקוף. וכשעבר ה' להכות את בכורי מצרים, פסח על בתי בני ישראל. מי שרצה להינצל, היה חייב להקריב את הפסח ולתת את הדם על פתח ביתו.</p>
+      <p>והתורה מפרטת שם גם איך אוכלים אותו: צלי אש, עם מצות ומרורים, בחיפזון, מתניים חגורים, נעליים ברגליים ומקל ביד. ואין משאירים ממנו עד הבוקר. רבים מן הדינים האלה נשארו לדורות, ומהם צמח סדר ליל הפסח כפי שאנו מכירים אותו.</p>
+      <p>מכאן גם השם "פסח": על שם שפסח הקדוש ברוך הוא על בתי ישראל. הקרבן, הדם, וההצלה – כולם קשורים יחד. לכן הקרבן אינו רק זיכרון ליציאת מצרים; הוא חלק מן המעשה שבו נעשו ישראל לעם.</p>
+      <p class="bold-para">בפסח מצרים הדם על המשקופים הציל את ישראל, ומשם נקבעו דיני האכילה לדורות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הקרבן שנתן לחג את שמו</div>
+      <h3 class="story-title">🍽️ זכר לפסח</h3>
+      <p>התורה אסרה להקריב קרבנות מחוץ למקום המקדש. לכן, מאז שחרב הבית, אנו עושים רק זכר לקרבן הפסח. בסוף הסעודה אוכלים עוד מצה, האפיקומן, "זכר לפסח הנאכל על השובע". ובקערה שמים בשר, הזרוע.</p>
+      <p>ויש כאן זהירות גדולה. אין מרימים את הזרוע ואין אומרים "זה קרבן פסח". חז"ל החמירו מאוד בכך, כדי שלא יטעו לחשוב שאוכלים קדשים מחוץ למקומם. ולכן גם נהגו שלא לאכול בליל הסדר בשר צלי.</p>
+      <p>ובכל שנה, בברכה שבסוף מגיד, אנו מבקשים: "וְנֹאכַל שָׁם מִן הַזְּבָחִים וּמִן הַפְּסָחִים". כלומר, הציפייה לחזרת הקרבן היא חלק מן הסדר עצמו. אנו לא רק זוכרים את מה שהיה, אלא מבקשים שיחזור.</p>
+      <p>הרב הוסיף שיש דיון אם לאחר החורבן היו מי שהמשיכו להקריב פסח. יש מקור שמסופר בו על זמנו של אחד החכמים שהקריבו בו, אך אין ראיה מפורשת לכך שהקריבו אחרי החורבן. המסקנה הפשוטה: מאז החורבן אין קרבן פסח, והשאלה היא אם וכיצד אפשר לחדשו.</p>
+      <p class="bold-para">מאז החורבן אנו עושים זכר בלבד, ומתפללים בכל שנה לזכות לקרבן עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הקרבן שנתן לחג את שמו</div>
+      <h3 class="story-title">🩸 פסח ומילה</h3>
+      <p>מה מיוחד בקרבן הפסח שאין בשום קרבן אחר? הרב הצביע על שני דברים, שבהם הוא דומה רק למצווה אחת נוספת: ברית מילה.</p>
+      <p>הראשון: קרבן פסח דוחה שבת. כשחל ערב פסח בשבת, היו שוחטים את הפסח בשבת, אף ששחיטה היא מן המלאכות שחייבים עליהן סקילה. מלבד הפסח, רק מילה בזמנה דוחה שבת.</p>
+      <p>השני: בדרך כלל חייבים כרת על מעשה – אכילה ביום הכיפורים, חילול שבת. אבל על ביטול מצוות עשה אין כרת. יש רק שני יוצאים מן הכלל: מי שאינו מל את עצמו, ומי שאינו מקריב את הפסח. אלה המצוות היחידות שעל ביטולן חייבים כרת.</p>
+      <p>ובמילה, כך הסביר הרב, הכרת חל רק אם האדם לא מל את עצמו כל ימי חייו. האב שלא מל את בנו עבר על מצווה, אך אינו חייב כרת. והבן, אם מל אפילו בזקנתו, כמו מי שהגיע ממקום שלא יכול היה למול בו, נפטר מן הכרת. אחד המשתתפים שאל שאלה טובה על ההגדרה, והרב אמר שיבדוק ויחזור אליה.</p>
+      <p>הקשר בין שתי המצוות עמוק: בשתיהן יש דם ברית. ובשתיהן ראו חז"ל את יסוד הברית בין ישראל לקדוש ברוך הוא. לכן, אמר הרב, במשך הדורות היו המונים מגיעים להקריב את הפסח.</p>
+      <p class="bold-para">קרבן פסח ומילה הם שתי מצוות עשה היחידות שמי שמבטלן חייב כרת, ושתיהן דוחות שבת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קרבן ציבורי</div>
+      <h3 class="story-title">⛺ רק בבמה גדולה</h3>
+      <p>לאחר יציאת מצרים הקריבו ישראל פסח במדבר רק פעם אחת, בשנה השנייה. ואחר כך לא הקריבו עד שנכנסו לארץ. הרב שאל את המשתתפים: למה? מה הקשר בין קרבן פסח לארץ ישראל? והשאיר את השאלה פתוחה למחשבה, תוך רמז לקשר בין מילה, פסח וארץ ישראל.</p>
+      <p>ושאלה נוספת: מאז הכניסה לארץ ועד שבנה שלמה המלך את בית המקדש עברו כארבע מאות שנה. היה משכן בשילה, ובתקופות אחרות במקומות אחרים, והיו גם במות פרטיות שהותר להקריב בהן. איפה הקריבו אז את הפסח? האם כל אחד בביתו?</p>
+      <p>התשובה מפורשת במשנה במסכת מגילה: "אֵין בֵּין בָּמָה גְדוֹלָה לְבָמָה קְטַנָּה אֶלָּא פְּסָחִים". כלומר, את הפסח אי אפשר היה להקריב בבמה קטנה, פרטית. רק בבמה הגדולה, במשכן הציבורי.</p>
+      <p>וזה מלמד דבר יסודי: קרבן הפסח אינו רק עוד קרבן. הוא קרבן ציבורי. גם כשהיה מותר להקריב קרבנות אחרים בבית, את הפסח היו כולם באים להקריב יחד, במקום אחד.</p>
+      <p class="bold-para">קרבן פסח היה מוקרב רק במקום המשכן הציבורי, ולא בבמה פרטית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קרבן ציבורי</div>
+      <h3 class="story-title">👥 ושחטו אותו כל קהל עדת ישראל</h3>
+      <p>הרב תיאר את אופי הקרבן. לא עושים אותו לבד. בהתחלה, הקריבו אותו כולם יחד. גם אוכלים אותו לא לבד, אלא בחבורות. התורה אומרת: "וְשָׁחֲטוּ אֹתוֹ כֹּל קְהַל עֲדַת יִשְׂרָאֵל". זה קרבן של כל העם, בבת אחת.</p>
+      <p>גם הטקס עצמו היה מרשים. השחיטה נעשתה בהמוניה, בעזרת הלוויים והכהנים. הכהנים קיבלו את הדם במזרקים של זהב ושל כסף, והעבירו אותם עד שהגיעו למזבח, וזרקו את הדם על המזבח. ובמהלך ההקרבה היו הלוויים שרים את ההלל, בליווי כלי נגינה. הייתה שם שירה עצומה.</p>
+      <p>ומכאן לדבר חשוב: עבודת הכהנים אינה פרט שולי. כדי שקרבן יהיה כשר, הכהן חייב לקבל את הדם ולזרוק אותו על המזבח. בלי זה אין קרבן פסח. עיקר הקרבן הוא זריקת הדם.</p>
+      <p>הרב הזכיר שבכל שנה מדווח על אנשים שמנסים להעלות גדי להר הבית ולשחוט אותו שם. והעיר שאינו מבין מה תועיל שחיטה כזו: גם אם יצליחו, בלי כהן, בלי מזבח ובלי זריקת דם, אין זה קרבן פסח כלל. ויש אף חשש איסור, כי חז"ל החמירו מאוד שלא ייראה כאילו אוכלים קדשים פסולים.</p>
+      <p class="bold-para">קרבן הפסח נעשה בציבור, בחבורות, בשירה ובשמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קרבן ציבורי</div>
+      <h3 class="story-title">⚖️ חובת היחיד</h3>
+      <p>יש בקרבן הפסח שילוב מיוחד. מצד אחד הוא קרבן ציבורי, של כל קהל עדת ישראל. מצד שני, התורה מטילה אותו על כל אדם ואדם. אי אפשר לומר "זה עניין של הציבור". זו חובתו של היחיד, עד כדי כך שמי שאינו מקריב חייב כרת.</p>
+      <p>העוצמה הזו, הסביר הרב, היא שגרמה לגדולי ישראל בדורות האחרונים לראות בחידוש קרבן הפסח עניין חשוב כל כך. זו אינה עוד מצווה שאפשר לדחות עד שיבוא המשיח. זו מצווה שעל ביטולה יש עונש חמור, ולכן מי שחשב שיש אפשרות לקיימה, הרגיש חובה גדולה לברר את הדבר.</p>
+      <p>ויש עוד ממד. קרבן הפסח היה ראשית היציאה לחירות. בלילה שבו הקריבו אותו במצרים, היכה הקדוש ברוך הוא את בכורי מצרים, ופרעה אמר: קומו צאו. לכן מי שראה בקרבן הפסח פתח לגאולה, ראה בו לא רק מצווה אלא גם סימן: כשם שאז הוביל הקרבן ליציאה מן הגלות, כך אולי גם עכשיו.</p>
+      <p>ולבסוף, קרבן הפסח נתפס כפתח לכל עבודת המקדש. מי שיחדש אותו, יפתח את הדרך לחידוש העבודה כולה.</p>
+      <p class="bold-para">אף שהוא קרבן ציבורי, הפסח הוא חובה על כל יחיד, ומי שמבטלו חייב כרת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · קרבן ציבורי</div>
+      <h3 class="story-title">🗺️ בין מצרים לארץ ישראל</h3>
+      <p>הרב חזר לשאלה שהעלה: למה במשך ארבעים השנים במדבר הקריבו ישראל פסח רק פעם אחת, בשנה השנייה, ואחר כך לא הקריבו עד שנכנסו לארץ ובאו לגלגל? המשתתפים הציעו כמה תשובות. אחד הזכיר את הטומאה, אחר הזכיר שהיה להם משכן גם במדבר, ולכן אין זה בגלל חוסר מקדש.</p>
+      <p>אחד המשתתפים הזכיר את הקשר למילה: במדבר רבים לא נימולו, ו"כָל עָרֵל לֹא יֹאכַל בּוֹ". ובכניסה לארץ, ביהושע, קודם כל מלו את העם, ורק אחר כך עשו את הפסח בגלגל. הרב אמר שאכן יש כאן קשר בין שלושה דברים: ברית מילה, קרבן פסח וארץ ישראל, ושאל את המשתתפים לחשוב על כך עוד. הוא השאיר את השאלה פתוחה כחלק מן הלימוד: לא כל שאלה צריכה להיפתר מיד, ויש ערך גם בשאלה שמלווה את הלומד ומעוררת אותו לחשוב ולחפש בעצמו.</p>
+      <p>הקשר הזה מאיר גם את הדורות האחרונים. אם קרבן הפסח קשור בטבורו לכניסה לארץ ולישיבה בה, אין זה מקרה שהשאלה על חידושו התעוררה דווקא בדורות שבהם התחילו יהודים לשוב לארץ ישראל. מי שעסק ביישוב הארץ, כמו הרב קלישר, ראה בפסח את ההמשך הטבעי של אותו מהלך.</p>
+      <p class="bold-para">השאלה למה לא הקריבו פסח במדבר רומזת לקשר עמוק בין הפסח, המילה והארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מהרב קלישר עד החזון איש</div>
+      <h3 class="story-title">✉️ הרב קלישר מעורר</h3>
+      <p>מתי התחילה השאלה בדורות האחרונים? הרב חזר כמאתיים שנה לאחור, לאזור שנות הת"ק-ת"ר (לפי חשבונו, סביב 1830). שם פעל הרב צבי הירש קלישר, שהיה ידוע בפעילותו הרבה לעידוד העלייה לארץ ישראל. הוא פנה לגבירים, למונטיפיורי ולרוטשילד, והשקיע מאמצים רבים ביישוב הארץ.</p>
+      <p>והרב קלישר היה, ככל הנראה, הראשון שעורר את השאלה המעשית: הבה ננסה להקריב קרבן פסח. הוא הציע לשלם לשלטון המקומי בירושלים, כדי שיאפשר לקנות מקום בהר הבית ליד מקום המזבח ולחדש את הקרבת הפסח. ופנה במכתבים לגבירים ולגדולי התורה.</p>
+      <p>לכאורה יש כאן שני עניינים שונים: יישוב ארץ ישראל מצד אחד, וקרבן פסח מצד שני. למה הרב קלישר חיבר ביניהם? הרב הסביר: הוא ראה בקרבן הפסח לא רק עוד מצווה. הוא ראה בו סימן לכך שההיסטוריה תחזור על עצמה. כשם שביציאת מצרים הקריבו ישראל את הפסח, ובעקבות זה עשה הקדוש ברוך הוא את הנס הגדול והוציא אותם, כך אם נקריב פסח, אולי יוציא אותנו שוב מן הגלות. זה היה בעיניו חלק ממהלך הגאולה.</p>
+      <p class="bold-para">בדור שלפני כמאתיים שנה, הרב צבי הירש קלישר היה מן הראשונים לעורר את השאלה בפועל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מהרב קלישר עד החזון איש</div>
+      <h3 class="story-title">📜 רבי עקיבא איגר והחתם סופר</h3>
+      <p>למי שולחים מכתבים בשאלה כזו? הרב שאל את המשתתפים: מי היו הדמויות המפורסמות ביותר בעולם היהודי באותה תקופה? והתשובה: רבי עקיבא איגר והחתם סופר. שתי דמויות שעד היום כמעט אין יהודי שומר מצוות שאינו מכיר את שמן. שניהם גאונים עצומים, ואף קרובי משפחה זה לזה.</p>
+      <p>אליהם פנה הרב קלישר, וביקש את חוות דעתם. בתשובות הללו נדונו הבעיות ההלכתיות, ובהמשך הספר נראה אותן אחת אחת.</p>
+      <p>אבל הסוף של הסיפור, כפי שתיאר אותו הרב, היה פשוט: לאחר כל הדיון ההלכתי, הגיע החתם סופר למסקנה שאי אפשר להקריב קרבן פסח, משום שהשלטון המוסלמי על ההר אינו מרשה ליהודים לעלות. לא משנה כמה כסף ישלמו. יהודי לא יורשה לדרוך שם כלל. ובזה, כך נראה, הסתיים העניין.</p>
+      <p>הרב הדגיש את הנקודה: המניעה העיקרית אז לא הייתה הלכתית, אלא מעשית. מאז חלפו שנים רבות. לפני למעלה מחמישים שנה נכבש הר הבית, והשלטון שמנע אז כבר אינו שם. ולכן, לדבריו, צריך לבחון מחדש: מה המצב היום?</p>
+      <p class="bold-para">השאלה הובאה לפני גדולי הדור, והתשובה הסתיימה בכך שהשלטון המוסלמי אינו מאפשר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מהרב קלישר עד החזון איש</div>
+      <h3 class="story-title">🌊 טומאה הותרה בציבור</h3>
+      <p>שאל הרב: אם תשאל אדם למה אין מקריבים היום קרבן פסח, מה הוא יענה? התשובה הראשונה שתשמע: כי כולנו טמאי מתים, ואין פרה אדומה לטהר אותנו.</p>
+      <p>אבל הרמב"ם כותב במפורש בהלכות קרבן פסח: כשהיו הטמאים מיעוט הקהל, הם נדחים לפסח שני. אבל אם רוב הקהל טמאי מת, או שהיו הכהנים טמאים, אינם נדחים, אלא כולם מקריבים את הפסח בטומאה – הטמאים והטהורים. וכך מבואר גם במשנה במסכת פסחים.</p>
+      <p>כלומר, חומרת המצווה של קרבן הפסח, שהוא קרבן ציבור, דוחה את איסור הטומאה. כאשר כל הציבור טמא, מותר להם להקריב את הפסח, ואף להיכנס לשם כך להר הבית. "טומאה הותרה בציבור".</p>
+      <p>והרב הקפיד להבחין: אין לדין הזה קשר לשאלה אם מותר לעלות להר הבית בזמן הזה סתם, כדי להתפלל או לבקר. "טומאה הותרה בציבור" נאמר רק לגבי עבודה של מצווה ציבורית, כמו קרבן הפסח. אין ללמוד ממנו היתר לעלייה רגילה. אלה שני דיונים נפרדים.</p>
+      <p class="bold-para">כשרוב הציבור טמא, מקריבים את הפסח בטומאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מהרב קלישר עד החזון איש</div>
+      <h3 class="story-title">🚪 החזון איש: אל תסגור את השער</h3>
+      <p>אחד המקורות החשובים בנושא הוא דברי החזון איש, באבן העזר. בתקופתו, הזכיר הרב, היה הר הבית בשליטה ירדנית, והשאלה לא הייתה מעשית. ובכל זאת הוא התייחס אליה.</p>
+      <p>החזון איש דן בשאלה מי נחשב כהן. מן התורה, עד אחד נאמן לומר שאדם כהן, וגם האדם עצמו נאמן. רק מדרבנן החמירו להצריך שני עדים לעניין יוחסין. ובכל זאת, אנו סומכים על החזקה, ונותנים לכהן לעלות לתורה ראשון ולשאת כפיים.</p>
+      <p>והחזון איש מוסיף: מסתבר שחכמים לא העמידו את החומרה שלהם במקום שבו יש כהנים אחרים. אבל במקום שבלעדיה תתבטל הכהונה לגמרי, לא העמידו את דבריהם. ומכאן מסקנתו החשובה לענייננו: לכן, בזמן הזה, אם יהיה רשות להקריב קרבן פסח, אין לבטל זאת משום שאין לנו כהן מיוחס.</p>
+      <p>הרב הדגיש: החזון איש אינו נותן כאן הוראה מעשית, כי בזמנו זה לא היה אפשרי. וגם הוא מביא שדנו בזה האחרונים, ומציין צד שני. אבל הוא אומר: אל תסגור את השער. אם תבוא הזדמנות, אל תאמר שאי אפשר.</p>
+      <p class="bold-para">החזון איש כתב שאם יתאפשר להקריב, אין לפסול מחמת חסרון כהן מיוחס.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מהרב קלישר עד החזון איש</div>
+      <h3 class="story-title">🧵 חסרון התכלת</h3>
+      <p>החזון איש מסיים בבעיה נוספת: "ועוד דנו משום חסרון תכלת לאבנט". כהן הדיוט צריך ארבעה בגדים: כותונת, מכנסיים, מצנפת ואבנט. והאבנט עשוי משש וארגמן ותולעת שני ותכלת. בזמנו של החזון איש לא הייתה תכלת מזוהה, ולכן היה חסר בגד שבלעדיו הכהן אינו יכול לעבוד.</p>
+      <p>הרב אמר שבימינו, לדעתו, גם הבעיה הזו נפתרה. יש מחקר שמזהה את חלזון התכלת, והוא מסביר גם את הארגמן: אותו חלזון, אם עושים את הצביעה במקום סגור, נותן ארגמן, ואם בחוץ באור, נותן תכלת.</p>
+      <p>והזכיר סיפור שכבר סיפר בעבר על הרב הרצוג, שחקר את החלזון הזה, אבל לא הצליח לזהות בו את התכלת. לפי מה שסיפר, הסיבה הייתה שעשה את הניסוי בתוך חדר סגור, ולכן יצא לו ארגמן ולא תכלת. רק מאוחר יותר התגלה שבחשיפה לאור השמש מתקבל הצבע הכחול.</p>
+      <p>מכאן הסיק הרב שהחזון איש לא פסל את האפשרות; הוא רק הצביע על חסרון שהיה בזמנו. כמובן, זיהוי התכלת עצמו שנוי במחלוקת, ויש פוסקים שאינם מקבלים אותו.</p>
+      <p class="bold-para">החזון איש העלה את חסרון התכלת לבגדי הכהונה, ובימינו יש מי שטוענים שהבעיה נפתרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הבעיות ההלכתיות</div>
+      <h3 class="story-title">🗂️ ארבעה חלקים</h3>
+      <p>הרב חילק את השאלה "מה צריך בשביל להקריב קרבן פסח היום" לארבעה חלקים.</p>
+      <p>החלק הראשון הלכתי. כאן יש בעיות רבות, ובהמשך נעבור עליהן אחת אחת.</p>
+      <p>החלק השני מעשי. צריך לתכנן הכל: מאיפה יהיו מספיק כבשים לכולם, ומאיפה מספיק שיפודים מעץ רימון, שבו צולים את הפסח. ויש שאלות מעניינות: למה דווקא עץ רימון? כי הוא אינו מוציא מים. ולמה לא ברזל? כי ברזל מתלהט באש, והבשר נצלה מחום המתכת ולא מן האש עצמה, והתורה דורשת "צלי אש". נשאלה גם שאלה אם אפשר להשתמש בחומרים חדשים העמידים בחום. הרב אמר שזו שאלה מעניינת שצריך לבדוק.</p>
+      <p>החלק השלישי, ואולי הקשה ביותר, הוא הציבורי. קרבן הפסח אינו אמור להיות מעשה של יחיד שמגיע במחבוא. "ושחטו אותו כל קהל עדת ישראל". צריך ציבור שיבוא להקריב.</p>
+      <p>והחלק הרביעי, שהיה מכריע עד לפני כמה שנים, הוא הביטחוני. על החלק הזה ועל החלק הציבורי נדבר בהמשך.</p>
+      <p class="bold-para">כדי להקריב קרבן פסח בימינו צריך לפתור בעיות הלכתיות, מעשיות, ציבוריות וביטחוניות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הבעיות ההלכתיות</div>
+      <h3 class="story-title">📐 איפה המזבח?</h3>
+      <p>בספר בשם "קרנות המזבח", שיצא לאור לפני כמאה שנה, בשנת תרפ"ח, ושלאחרונה יצא במהדורה חדשה, דן מחברו, אחד מרבני אותו דור, בכל הבעיות ההלכתיות שבהקרבת קרבנות בזמן הזה. הוא כתב אותו בתקופה שבה הבריטים כבר שלטו בארץ, וראה בזה מהפך שמאפשר להתחיל לדון בדבר. הרב הציג את תמונת הספר הישן ואת המהדורה החדשה.</p>
+      <p>הבעיה הראשונה: איפה המזבח צריך לעמוד? בעבר אמרו שאין יודעים בדיוק איפה היה. אבל היום, כך הסביר הרב, אפשר למדוד הכל בדיוק רב, אפילו בלי להיכנס להר הבית. יש מפות ומדידות מדויקות של כל השטח.</p>
+      <p>אם סומכים על כך שאבן השתייה היא מקום קודש הקדשים, אפשר לחשב לפי מסכת מידות היכן היו העזרות, ומשם היכן עמד המזבח. ויש עוד פתח: העזרה הייתה ארוכה, ולכן גם אם יש ספקות, אפשר לבנות מזבח קטן, במידה המינימלית, במקום שלפי כל השיטות נמצא בתוך תחום הכשר.</p>
+      <p>הרב הוסיף שמקום כזה רחוק עשרות מטרים מן המבנים הקיימים כיום בהר, כך שהבנייה לא תיגע בהם.</p>
+      <p class="bold-para">בעבר אמרו שאין יודעים את מקום המזבח, אך היום אפשר למדוד במדויק לפי הנחות מקובלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הבעיות ההלכתיות</div>
+      <h3 class="story-title">🔥 צלי אש ושיפוד של רימון</h3>
+      <p>אחד הדברים שעלו בחלק המעשי הוא אופן צליית הפסח. התורה מצווה שהפסח יהיה "צְלִי אֵשׁ", ולא מבושל ולא נא. ובמשנה במסכת פסחים נאמר שצולים אותו בשיפוד של עץ רימון. למה דווקא רימון? כי עצים אחרים מוציאים מים, וחלק מן הבשר יתבשל בהם במקום להיצלות. עץ הרימון יבש, ואינו מוציא מים.</p>
+      <p>ולמה לא שיפוד של מתכת? הרב שאל את המשתתפים: מה קורה לברזל כשמכניסים אותו לאש? והם ענו: הוא מתלהט מיד. ואם הבשר נצלה מחום הברזל ולא מן האש עצמה, הוא אינו "צלי אש". לכן אין משתמשים בשיפוד מתכת.</p>
+      <p>ומכאן שאלה שהעלו המשתתפים: היום יש חומרים חדשים שעמידים מאוד בחום. האם אפשר להשתמש בהם? הרב אמר שזו שאלה מעניינת, ושצריך לבדוק אם יש חומר כזה שאינו מוציא מים ואינו מתלהט. וזו דוגמה לכך שחידוש מצווה עתיקה מעורר שאלות חדשות, שצריך לברר אותן מתוך הסוגיות.</p>
+      <p>ובפשטות, גם את השאלה מאיפה יהיו מספיק עצי רימון לכל המקריבים צריך לפתור. זה חלק מן ההכנה המעשית שצריכה ללוות את הבירור ההלכתי.</p>
+      <p class="bold-para">גם הפרטים המעשיים של צליית הפסח דורשים לימוד הלכתי מדויק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הבעיות ההלכתיות</div>
+      <h3 class="story-title">👘 כהנים, טבילה ובגדים</h3>
+      <p>ממשיך הרב לעבור על הבעיות. טומאת מת – פתורה, כפי שראינו, מדין "טומאה הותרה בציבור". אבל טומאות היוצאות מגוף האדם עצמו אינן בכלל ההיתר, ולכן כל אדם צריך לטבול במקווה לפני כן.</p>
+      <p>תכלת – לדעתו פתורה בימינו, כפי שהוסבר. ומה עם הציץ ואבני החושן? הם מבגדי הכהן הגדול, ובגדי כהן גדול אינם מעכבים את קרבן הפסח. לפסח צריך כהנים הדיוטות בבגדיהם, ובלי בגדים העבודה פסולה, אבל כהן גדול אינו נצרך. הרב הוסיף שיש טוענים שאבני החושן כבר זוהו ואף נקנו, אך ציין שלא בדק את הנושא בעצמו.</p>
+      <p>כהנים – לפי החזון איש, אפשר לסמוך על מי שמוחזק במשך דורות שהוא כהן, ואין צורך לחשוש שמא אינו כהן. וכך פסק גם החתם סופר: אם יש חזקה, אפשר לסמוך עליה גם בלי עדות מלאה.</p>
+      <p>קרבנות ציבור צריכים להיות משל ציבור. אבל בעניין קרבן הפסח, שהוא קרבן של כל יחיד, אין בעיה. ובשאר קרבנות הציבור, אמר הרב בחיוך, בימינו אפשר להודיע ברבים שכל מי שרוצה להשתתף יעביר את חלקו, ופתור.</p>
+      <p class="bold-para">את בעיות הכהונה והבגדים אפשר לפתור לפי השיטות שהובאו, ובגדי כהן גדול אינם מעכבים את הפסח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הבעיות ההלכתיות</div>
+      <h3 class="story-title">🏛️ מקריבים אף על פי שאין בית</h3>
+      <p>האם אפשר להקריב בלי בית מקדש? הגמרא במסכת מגילה מביאה את דברי רבי יהושע: "שָׁמַעְתִּי שֶׁמַּקְרִיבִין אַף עַל פִּי שֶׁאֵין בַּיִת". והראיה: בימי עזרא, לפני שנבנה הבית השני, כבר הקריבו קרבנות על המזבח.</p>
+      <p>מדוע? כי לאחר ששלמה המלך בנה את בית המקדש, המקום התקדש, ו"קדושה ראשונה קידשה לשעתה וקידשה לעתיד לבוא". גם אם חרב הבניין, המקום נשאר קדוש, ואפשר להקריב בו.</p>
+      <p>והרב הזכיר את הרמב"ם, שפסק שקדושת המקדש לא בטלה, ולכן גם אסור לעלות להר הבית בטומאה עד היום. אותה קדושה שאוסרת את הכניסה, היא שמאפשרת את ההקרבה.</p>
+      <p>ויש עוד טענה שהעלו בעבר: בכל הקרבנות נאמר "רֵיחַ נִיחֹחַ לַה'". והיו מי שאמרו שבזמן הגלות, כשהקדוש ברוך הוא כביכול הסתיר פניו, אין קרבן יכול להיות ריח ניחוח. הרב השיב שאפשר היה לומר זאת בעבר, אבל היום, כשרואים את קיבוץ הגלויות, את הארץ הפורחת ואת הניסים שה' עושה לעמו, קשה לומר שאנו בעיצומה של הסתרת פנים.</p>
+      <p>ושאלה אחרונה: האם צריך נביא כדי לדעת את מקום המזבח? לדברי הרב, אם המקום ידוע, אין צורך בנביא.</p>
+      <p class="bold-para">לפי הגמרא, מקריבים קרבנות גם כשאין בית מקדש, משום שקדושת המקום לא בטלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איפה זה עומד היום</div>
+      <h3 class="story-title">🛡️ המניעה הביטחונית</h3>
+      <p>אם רוב הבעיות ההלכתיות נפתרו, לפחות לפי השיטות שהובאו, מה עצר את הדבר עד היום? הרב תיאר את המצב כפי שהיה במשך שנים רבות.</p>
+      <p>היו קבוצות שפנו לבית המשפט וביקשו לאפשר להם להקריב, או לפחות לשחוט כבש במקום. בית המשפט, לפי תיאור הרב, לא שלל את הבקשה מצד עצמה, אבל אמר שאם המשטרה טוענת שיש סכנה ביטחונית, אין הוא מתערב בהחלטה זו. וכך, במשך כל השנים, המשטרה מנעה זאת מטעמי ביטחון.</p>
+      <p>ולא בכדי. הרב תיאר כיצד לפני כמה שנים לא ניתן היה לדמיין דבר כזה. כולם הניחו שהדבר יצית את כל המזרח התיכון. זה היה קו אדום. היה ברור שאם ייעשה דבר כזה, ירושלים תותקף מכל הכיוונים. אויבינו אף קראו למתקפה שלהם על ישראל בשם שקשור להר הבית.</p>
+      <p>לכן, אמר הרב, איש שאחראי לביטחון המדינה לא תכנן להתיר דבר כזה. ומצד ההלכה ברור שאין להיכנס לסכנה של רבים כדי לקיים מצווה. זו הייתה המניעה המרכזית, לא פחות מן הבעיות ההלכתיות.</p>
+      <p class="bold-para">במשך שנים רבות נחשב חידוש ההקרבה לקו אדום שעלול להצית את האזור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איפה זה עומד היום</div>
+      <h3 class="story-title">🔄 האם המצב השתנה?</h3>
+      <p>הרב טען שבשנתיים האחרונות השתנו דברים רבים. הוא מנה את האיומים שבעבר נחשבו מכריעים, ושאל את המשתתפים: מי מהם נשאר במלוא כוחו? לדעתו, רבים מן הגורמים שאיימו בעבר נחלשו מאוד בעקבות המלחמה, ומעמדם השתנה.</p>
+      <p>הוא הזכיר גם שבעבר היה לחץ בינלאומי, בעיקר מצד ארצות הברית, נגד כל שינוי בהר הבית. ולדבריו, הממשל האמריקני החדש מביע עמדה אחרת. בשיעור הוצגו הדברים, והרב אמר שבהפסקה יראה למשתתפים מה נאמר.</p>
+      <p>ובאותו בוקר מונה גם שר חדש לאחראי על המשטרה. הרב העריך שאין לצפות שהמשטרה תמנע את הדבר מכוח עמדתו של השר החדש. ממילא, לדבריו, התירוץ הביטחוני הישן אינו עומד עוד באותה עוצמה.</p>
+      <p>כמובן, אלה הערכות של מציאות פוליטית וביטחונית משתנה, ולא קביעות הלכתיות. הרב הביא אותן כדי לחדד את השאלה: אם המניעה העיקרית בעבר הייתה ביטחונית, ואם המצב השתנה, מה עדיין חסר?</p>
+      <p class="bold-para">לדעת הרב, השינויים של השנים האחרונות מחייבים לבחון מחדש את המניעה הביטחונית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איפה זה עומד היום</div>
+      <h3 class="story-title">🙌 לא קבוצה קטנה במחבוא</h3>
+      <p>הרב חזר שוב ושוב על נקודה אחת: קרבן הפסח אינו מעשה של יחידים. ניסיונות של אנשים בודדים להבריח גדי להר הבית אינם עונים על מה שהתורה דורשת. אפילו אילו הצליחו, לא היה זה קרבן פסח: לא היה מזבח, לא היה כהן שיזרוק את הדם, ולא היה ציבור.</p>
+      <p>התורה אומרת "כֹּל קְהַל עֲדַת יִשְׂרָאֵל". ולכן, אמר הרב, אין זה מספיק שחלק קטן מן הציבור ירצה. צריך שהציבור הרחב, ובראשו גדולי התורה, יתחבר לשאלה. ולדבריו, גם מי שאינו שומר מצוות לא בהכרח יתנגד, אבל צריך שהציבור שמחויב להלכה יעמוד מאחורי הדבר.</p>
+      <p>יש בכך גם צד של אחדות. קרבן שמקריבים אותו כל ישראל יחד, בחבורות, בשירה, דורש שהעם יהיה מאוחד. אי אפשר לעשותו מתוך מחלוקת ועימות. ולכן הדרך אליו עוברת דרך לימוד משותף, בירור, ושכנוע, ולא דרך מעשים חד-צדדיים.</p>
+      <p>וזה גם מסביר מדוע הרב הדגיש שהצעד הראשון הוא לימוד הסוגיה. רק כשגדולי התורה ידונו בשאלה ויבררו אותה, ייתכן שתיווצר אותה הסכמה רחבה שהקרבן הציבורי דורש.</p>
+      <p class="bold-para">קרבן ציבורי צריך להיעשות בהסכמה ובשותפות רחבה, ולא כמעשה של יחידים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איפה זה עומד היום</div>
+      <h3 class="story-title">📣 חסרה דרישה ציבורית</h3>
+      <p>איפה הדבר עומד היום? כך סיכם הרב: בעבר המניעה הייתה השלטון המוסלמי. אחר כך האיומים הביטחוניים. והיום, לדעתו, הבעיה העיקרית היא שהציבור לא התעורר.</p>
+      <p>הוא הזכיר שעל פי מה שנאמר, כבר פנו לראש הממשלה בעניין, והוא השיב: תביאו דרישה ציבורית, ונדון בנושא. כלומר, לדעת הרב, הדבר תלוי בכמה הציבור ירצה. אם יהיו רק מעטים, הדבר לא יקרה. קרבן הפסח, כפי שראינו, הוא קרבן של "כל קהל עדת ישראל", ואי אפשר לעשותו בידי קבוצה קטנה במחבוא.</p>
+      <p>ונשאלה שאלה מן הקהל: מה עמדת הרבנים החרדים? הרב השיב שזו שאלה מעניינת, ושיש רבים שלדעתם אין מה לדון כלל: בית המקדש ירד מן השמים, ועד אז אין מה לעשות. ועל כך בדיוק עוסק החלק האחרון של השיעור.</p>
+      <p>ולכן, לדבריו, הצעד הראשון אינו מעשה של הקרבה, אלא לימוד. שיתחילו גדולי התורה לשבת ולדון בסוגיה, לקחת את מראי המקומות, ללמוד ולבדוק. אם לא תהיה התעוררות ללמוד, הדבר לא יקרה. וגם להתפלל על כך, בכל לב ובכוונה.</p>
+      <p class="bold-para">לדעת הרב, מה שחסר היום הוא בעיקר התעוררות ציבורית ולימוד הסוגיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איפה זה עומד היום</div>
+      <h3 class="story-title">🎶 שיר ותפילה</h3>
+      <p>בשיעור הושמע שיר שנכתב בנושא, ובו כמיהה לחידוש הקרבן. השיר אומר, בין השאר: אין לנו בית, אך יש לנו מקום, הקדושה נשארה. טומאה הותרה בציבור. היו ימים קשים ואויבים מסביב, אך עכשיו נפרצו החומות. גדולי ישראל חיכו לזה, החתם סופר והחזון איש שמרו את החזון. יודעים את מקום המזבח, יש כהנים בחזקה. ואין לחכות בחיבוק ידיים, אלא להשתדל, ללמוד ולדרוש.</p>
+      <p>ובסוף הובאה תפילה ארוכה שנכתבה לעניין, ובה בקשה: ריבונו של עולם, נפשי כמהה ומשתוקקת לעבודתך בטהרה. אלפי שנים אנו מצפים, והמזבח שומם. הנה מתקרבים ימי האביב, ימי הגאולה. חזק את חכמי ישראל לברר הלכה צרופה, והסר כל מחיצה המפרידה בינינו לבין מצוותיך. יהי רצון שנזכה בימינו להקריב לפניך קרבן פסח במועדו, בטהרה ובשמחה, ובכך לקרב את גאולתנו וגאולת העולם כולו.</p>
+      <p>הרב הדגיש שוב את סדר הדברים שבתפילה: קודם כל להתפלל שיתחילו לדון בשאלה, ושגדולי התורה ילבנו אותה. רק מתוך לימוד והתעוררות אפשר להגיע לבירור אמיתי.</p>
+      <p>ולפני שעבר לחלק האחרון, ערך הרב חידון קצר שחזר על עיקרי הדברים: מהו המושג שמתיר הקרבה בטומאה? מי סיים את דבריו "אל תמנע"? מה זוהה מחדש? ומה אפשר לבנות בחמש אמות?</p>
+      <p class="bold-para">השיעור הביא שיר ותפילה שנכתבו בכמיהה לחידוש קרבן הפסח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · איפה זה עומד היום</div>
+      <h3 class="story-title">🐏 מנוי לכבש</h3>
+      <p>בתוך החידון הוזכר מנהג מעניין, שהרב ייחס לאחד מגדולי הדור האחרון: בכל ערב פסח היה קונה כבש, או "מנוי" לכבש, כדי שאם ייבנה בית המקדש באותה שנה, יהיה לו קרבן מוכן. והרב הוסיף שגם היום יש מי שמוכרים מנויים כאלה, למי שרוצה להיות מוכן.</p>
+      <p>יש במנהג הזה ביטוי לציפייה אמיתית. לא רק לומר "לשנה הבאה בירושלים הבנויה", אלא להתכונן בפועל, כאילו הדבר עשוי לקרות כבר השנה.</p>
+      <p>הרב גם הציג תמונה של מזבח שכבר נבנה מראש, לפי השיטות ההלכתיות, ושעליו מתאמנים צעירים מן השבטים הכהניים בעבודה. לדבריו, הכל כבר מוכן, ורק מחכים לרגע שבו יהיה אפשר להשתמש בו.</p>
+      <p>המסר הוא שהציפייה לגאולה אינה רק רגש. היא יכולה להתבטא גם בהכנה מעשית, בלימוד ההלכות, ובבירור השאלות, כך שאם תגיע השעה, לא נמצא את עצמנו בלתי מוכנים.</p>
+      <p class="bold-para">יש מגדולי הדור שהיו מכינים מראש כבש לפסח, למקרה שיזכו בשנה זו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סדר הגאולה</div>
+      <h3 class="story-title">🕯️ מזבח חדש בציון תכין</h3>
+      <p>בחלק האחרון של השיעור ניסה הרב לברר מתוך חז"ל לאן העתיד הולך, ואיך אמור להיבנות בית המקדש. והתחיל בהשוואה בין שתי תפילות.</p>
+      <p>בתפילת מוסף של ראש חודש אומרים: "מִזְבֵּחַ חָדָשׁ בְּצִיּוֹן תָּכִין, וְעוֹלַת רֹאשׁ חֹדֶשׁ נַעֲלֶה עָלָיו". ובתפילת מוסף של יום טוב אומרים: "וּבְנֵה בֵיתְךָ כְּבַתְּחִלָּה... וַהֲבִיאֵנוּ לְצִיּוֹן עִירְךָ בְּרִנָּה... וְשָׁם נַעֲשֶׂה לְפָנֶיךָ אֶת קָרְבְּנוֹת חוֹבוֹתֵינוּ". הבקשה על "מזבח חדש" מופיעה בראש חודש, ואינה מופיעה בתפילת יום טוב. למה?</p>
+      <p>הרב הביא את הסברו של הרב יחזקאל אברמסקי. אנו מבקשים על הקמת המזבח משום שראש חודש חל על פי רוב בימי חול, ויש אפשרות לבנות אותו. שהרי בונים מזבח ומקריבים קרבנות אף על פי שאין בית, כפי שעשו לפני בניין הבית השני על פי שלושה נביאים. אבל ביום טוב אסור לבנות מזבח, ולכן אין לבקש על כך. ביום טוב מבקשים שהבית ייבנה כולו, ואילו בראש חודש, שהוא יום חול, אפשר לבקש על מזבח שנבנה בידינו כבר היום.</p>
+      <p class="bold-para">בתפילת מוסף של ראש חודש מבקשים על מזבח חדש, ולא בתפילת יום טוב – ויש בכך לימוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סדר הגאולה</div>
+      <h3 class="story-title">🧱 קודם המזבח, אחר כך הבית</h3>
+      <p>הרב המשיך עם דברי ספר "הר המוריה". שלוש מצוות נצטוו ישראל בכניסתם לארץ: למנות מלך, להכרית את זרעו של עמלק, ולבנות את בית הבחירה. ובית הבחירה בא אחרון. אבל, כך מבואר שם, אין הכוונה שאי אפשר להקריב עד שייבנה הבית השלם. מיד כשמתחייבים, בונים מזבח ומקריבים.</p>
+      <p>וכן היה בימי עזרא: קודם כל בנו מזבח, עוד לפני שנבנה בית המקדש. וכן תיקנו בתפילת מוסף של ראש חודש: "מזבח חדש בציון תכין" – זה הדבר הראשון. ובית המקדש השלם ייבנה בהמשך, כשתחזור המלוכה ותהיה מנוחה מן האויבים.</p>
+      <p>ומכאן דיוק נפלא, כך הסביר הרב: הסדר העתידי יהיה כך. קודם כל, "מזבח חדש בציון", שעליו יקריבו קרבנות מסוימים. ורק בהמשך נזכה שייבנה בית המקדש. ונאמר עוד, בשם ספרים שהביא, שהמזבח החדש הזה לא ירד מן השמים, אלא ישראל הם שיבנו אותו. ורק בסוף הגאולה, כשירד בית המקדש מן השמים, ירד גם מזבח משמים.</p>
+      <p>מכאן הסיק הרב שהסדר הזה אינו המצאה של מי שרוצה "לדחוק את הקץ", אלא סדר שלמדו מנוסח התפילה שתיקנו אנשי כנסת הגדולה.</p>
+      <p class="bold-para">לפי נוסח התפילה וההיסטוריה, סדר הגאולה הוא: קודם מזבח, ורק אחר כך בית המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סדר הגאולה</div>
+      <h3 class="story-title">📖 סתירה: הרמב"ם ורש"י</h3>
+      <p>את החלק האחרון של השיעור הקדיש הרב לחידוש של הרב נבנצל, שלדבריו הוא חידוש מהפכני בהשקפה. "אם תצאו היום רק עם החידוש הזה", אמר, "היה שווה הכל".</p>
+      <p>הרמב"ם מונה בספר המצוות את מצוות בניין בית המקדש בין תרי"ג המצוות. והרמב"ם עצמו כתב בשורש השלישי שאין מונים מצווה שאינה נוהגת לדורות. מכאן שלדעתו מצוות בניין המקדש נוהגת לעולם, בכל זמן שיש צורך ואפשרות לבנות אותו. ולכן הביא הרמב"ם את כל פרטי הלכות בניין הבית, ואת כל הלכות העבודה והקרבנות, ואילו את הלכות הקרבה בבמה לא הביא, כי אחרי בניין המקדש נאסרו הבמות לעולם, ואין בהן נפקא מינה.</p>
+      <p>לעומת זאת, בגמרא במסכת סוכה (וכן בראש השנה) נאמר שיש לחשוש שמא ייבנה בית המקדש בלילה או ביום טוב. ושואל רש"י: והרי בית המקדש אינו נבנה בלילה ואינו נבנה ביום טוב! ומתרץ: מקדש העתיד, שאנו מצפים לו, בנוי ומשוכלל הוא, ויגלה ויבוא מן השמים, שנאמר "מִקְּדָשׁ ה' כּוֹנְנוּ יָדֶיךָ".</p>
+      <p>על פניו יש כאן סתירה מפורשת בין הראשונים. לפי הרמב"ם, יש מצוות עשה לבנות בידינו. לפי רש"י, המקדש ירד מן השמים. איך מיישבים?</p>
+      <p class="bold-para">הרמב"ם מונה את בניין המקדש כמצווה לדורות, ורש"י כותב שהמקדש העתידי ירד מן השמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+          <a href="#story-29">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-29" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סדר הגאולה</div>
+      <h3 class="story-title">⏳ זכו – אחישנה</h3>
+      <p>הרב נבנצל פותח במאמר חז"ל שכולם מכירים: "זָכוּ – אֲחִישֶׁנָּה, לֹא זָכוּ – בְּעִתָּהּ". כלומר, לגאולה אין דרך קבועה אחת. היא משתנה לפי מעשי ישראל. ולכן, כך הוא כותב, נכתבו רבות מן הנבואות בלשון סתומה, כדי שיתפרשו באופנים שונים, בזמנים שונים.</p>
+      <p>יש לכך דוגמאות נוספות בחז"ל. בגמרא בברכות נאמר על ביאת ישראל בימי עזרא, שהייתה ראויה להיות כמו ביאת יהושע, אלא שגרם החטא. ובמקום אחר נאמר שהקדוש ברוך הוא ביקש לעשות את חזקיהו משיח, ונדחה הדבר. וכן: "זכו – עם ענני שמיא; לא זכו – עני ורוכב על חמור". הגאולה יכולה לבוא בדרך נפלאה, ויכולה לבוא בדרך פשוטה יותר, הכל לפי הזכות.</p>
+      <p>ומכאן החידוש: כשם שזמן הגאולה תלוי בזכות ישראל, כך גם צורת הגאולה תלויה בזכות ישראל. והרב נבנצל מחבר זאת לדברי הרמב"ם בהלכות מלכים, שכל הדברים האלה של ביאת המשיח לא יידע אדם איך יהיו עד שיהיו, ואין לחכמים קבלה בהם. גם בנוגע לצורת בניין הבית, כך הוא כותב, ייתכן שינוי בין מצב של "זכו" למצב של "לא זכו".</p>
+      <p class="bold-para">כשם שזמן הגאולה תלוי בזכות ישראל, כך גם צורתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-28">⟶ הקודם</a>
+          <a href="#story-30">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(29, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-30" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סדר הגאולה</div>
+      <h3 class="story-title">🔥 המקדש היורד מן השמים – עונש?</h3>
+      <p>וזו לשון החידוש, כפי שהביא הרב: אם זכו, ויש נחת רוח לקדוש ברוך הוא ממעשה ידיהם, אז יזכו הם בעצמם לבנות את בית המקדש בידיים של מטה. אבל אם לא זכו, והגיע זמן הבית להיבנות, אז ירד מן השמים.</p>
+      <p>הרב עמד על המהפך שבדברים. רבים חושבים שירידת המקדש מן השמים היא הדרך הנעלה והנפלאה ביותר, ושמי שבונה בידיים מקדים את המאוחר. אבל לפי הרב נבנצל זה הפוך: הירידה מן השמים אינה שכר, אלא, כביכול, עונש. כשלא זוכים, אין לנו חלק בבניין. הקדוש ברוך הוא רואה שאין עם מי לדבר, ובלית ברירה מוריד את המקדש מן השמים.</p>
+      <p>ואילו כשזוכים, נותן לנו הקדוש ברוך הוא את הזכות לבנות בעצמנו. וזו, לפי ההסבר הזה, שיטת הרמב"ם: מצוות עשה לבנות, בידינו. ורש"י מתאר את המצב של "לא זכו". כך מיישבים את הסתירה: שתי השיטות נכונות, כל אחת למצב אחר.</p>
+      <p>ומה זה אומר לנו? שאנו רוצים שיהיה לנו חלק בבית המקדש. איננו רוצים שירד מן השמים בלית ברירה. אנו רוצים לזכות לבנות. וכך, אמר הרב, מי שזוכה בונה: בונה את ארץ ישראל, בונה את ירושלים, וזוכה גם לבנות את המזבח ואת הבית.</p>
+      <p class="bold-para">לפי הרב נבנצל, אם נזכה נבנה בעצמנו, ורק אם לא נזכה ירד המקדש מן השמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-29">⟶ הקודם</a>
+          <a href="#story-31">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(30, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-31" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סדר הגאולה</div>
+      <h3 class="story-title">🌱 מה זה אומר לנו היום</h3>
+      <p>הרב ביקש שהחידוש של הרב נבנצל לא יישאר רק תשובה לסתירה בין הראשונים, אלא ישנה את ההשקפה. רבים, אמר, מחכים שהכל יירד מוכן מן השמים, ורואים במי שבונה ועושה מי שמקדים את המאוחר. לפי ההסבר הזה, זה הפוך: מי שזוכה, בונה.</p>
+      <p>והבניין אינו רק של המקדש. מי שבונה את ארץ ישראל, בונה את ירושלים, מחזק את התורה והמצוות בארץ – כל אלה הם חלק מאותו "זכו". הקדוש ברוך הוא נותן לנו את הזכות להיות שותפים בגאולה, ולא רק צופים בה.</p>
+      <p>ויש בזה גם אחריות. אם צורת הגאולה תלויה בזכותנו, הרי שמעשינו קובעים לא רק מתי תבוא, אלא גם איך תבוא. גאולה שבאה בדרך של "זכו" היא גאולה שבה ישראל שותפים, בונים ומתקנים. ולכן כל מעשה טוב, כל לימוד וכל מצווה מקרבים אותנו לא רק לגאולה, אלא לצורה הטובה שלה.</p>
+      <p class="bold-para">ההבנה ש"זכו" פירושו לבנות בעצמנו, משנה את היחס לכל מעשה של בניין בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-30">⟶ הקודם</a>
+          <a href="#story-32">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(31, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-32" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סדר הגאולה</div>
+      <h3 class="story-title">🌅 סיכום: לזכות לבנות בעצמנו</h3>
+      <p>אפשר לסכם את מהלך השיעור כך. קרבן הפסח הוא לב החג, קרבן ציבורי שעל ביטולו חייבים כרת. מאז החורבן אין מקריבים אותו, אבל בדורות האחרונים התעוררו גדולי ישראל לשאלה אם אפשר לחדשו. הרב קלישר פנה לגדולי דורו, והמניעה אז הייתה בעיקר השלטון שעל ההר. החזון איש כתב שלא לסגור את השער בגלל חסרון כהן מיוחס. ורבות מן הבעיות ההלכתיות – טומאה, מקום המזבח, כהונה ובגדים – נדונו, והוצעו להן פתרונות לפי שיטות שונות.</p>
+      <p>בדורות האחרונים, לדעת הרב, הוסרו כמה מן המניעות המעשיות, ומה שחסר בעיקר הוא התעוררות של הציבור ולימוד הסוגיה בידי גדולי התורה.</p>
+      <p>ומן התפילה ומחז"ל למדנו את הסדר: קודם "מזבח חדש בציון" שנבנה בידינו, ורק אחר כך הבית השלם. ולפי חידושו של הרב נבנצל, הדרך הטובה היא שנזכה לבנות בעצמנו. ירידת המקדש מן השמים היא הדרך של "לא זכו".</p>
+      <p>וחשוב לחזור על מה שנאמר בתחילה: הדברים כאן הם עיון במקורות כפי שהוצגו בשיעור, והשאלות המעשיות שנויות במחלוקת גדולה בין הפוסקים. וכך סיים הרב בתפילה: יהי רצון שנזכה בעזרת ה', במהרה, לבנות בעצמנו, ולשמוח בקיום המצווה בציון ובירושלים.</p>
+      <p class="bold-para">השיעור מסתיים בתפילה שנזכה לבנות במו ידינו, ובקריאה להתעורר ללימוד הסוגיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-31">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(32, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/IGcdrqeSnuw · 2025-03-19 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הקרבן שנתן לחג את שמו","icon":"🐑","color":"#c62b6b","stories":[{"id":1,"title":"הקדמה: שאלה אקטואלית","icon":"📰"},{"id":2,"title":"למה החג נקרא פסח","icon":"🐑"},{"id":3,"title":"הפסח הראשון במצרים","icon":"🚪"},{"id":4,"title":"זכר לפסח","icon":"🍽️"},{"id":5,"title":"פסח ומילה","icon":"🩸"}]},{"id":2,"name":"קרבן ציבורי","icon":"👥","color":"#6d28d9","stories":[{"id":6,"title":"רק בבמה גדולה","icon":"⛺"},{"id":7,"title":"ושחטו אותו כל קהל עדת ישראל","icon":"👥"},{"id":8,"title":"חובת היחיד","icon":"⚖️"},{"id":9,"title":"בין מצרים לארץ ישראל","icon":"🗺️"}]},{"id":3,"name":"מהרב קלישר עד החזון איש","icon":"✉️","color":"#e08e00","stories":[{"id":10,"title":"הרב קלישר מעורר","icon":"✉️"},{"id":11,"title":"רבי עקיבא איגר והחתם סופר","icon":"📜"},{"id":12,"title":"טומאה הותרה בציבור","icon":"🌊"},{"id":13,"title":"החזון איש: אל תסגור את השער","icon":"🚪"},{"id":14,"title":"חסרון התכלת","icon":"🧵"}]},{"id":4,"name":"הבעיות ההלכתיות","icon":"⚖️","color":"#1e88b8","stories":[{"id":15,"title":"ארבעה חלקים","icon":"🗂️"},{"id":16,"title":"איפה המזבח?","icon":"📐"},{"id":17,"title":"צלי אש ושיפוד של רימון","icon":"🔥"},{"id":18,"title":"כהנים, טבילה ובגדים","icon":"👘"},{"id":19,"title":"מקריבים אף על פי שאין בית","icon":"🏛️"}]},{"id":5,"name":"איפה זה עומד היום","icon":"🧭","color":"#c62b6b","stories":[{"id":20,"title":"המניעה הביטחונית","icon":"🛡️"},{"id":21,"title":"האם המצב השתנה?","icon":"🔄"},{"id":22,"title":"לא קבוצה קטנה במחבוא","icon":"🙌"},{"id":23,"title":"חסרה דרישה ציבורית","icon":"📣"},{"id":24,"title":"שיר ותפילה","icon":"🎶"},{"id":25,"title":"מנוי לכבש","icon":"🐏"}]},{"id":6,"name":"סדר הגאולה","icon":"🕍","color":"#6d28d9","stories":[{"id":26,"title":"מזבח חדש בציון תכין","icon":"🕯️"},{"id":27,"title":"קודם המזבח, אחר כך הבית","icon":"🧱"},{"id":28,"title":"סתירה: הרמב\"ם ורש\"י","icon":"📖"},{"id":29,"title":"זכו – אחישנה","icon":"⏳"},{"id":30,"title":"המקדש היורד מן השמים – עונש?","icon":"🔥"},{"id":31,"title":"מה זה אומר לנו היום","icon":"🌱"},{"id":32,"title":"סיכום: לזכות לבנות בעצמנו","icon":"🌅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
