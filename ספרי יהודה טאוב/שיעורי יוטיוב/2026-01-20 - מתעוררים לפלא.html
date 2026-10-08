@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מתעוררים לפלא</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מתעוררים לפלא</h1>
+  <p>איך לא לישון בהקיץ: כוס קפה מאפריקה, תפוח שהוא מפעל שלם, מצה ששמרה על יישוב, ופרעה שהלך לישון בפיג'מה בליל מכת בכורות</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מתעוררים לפלא" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/CGlCNJ6ctSc?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/CGlCNJ6ctSc/hqdefault.jpg" alt="מתעוררים לפלא" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=CGlCNJ6ctSc" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ישנים בהקיץ</div>
+      <h3 class="story-title">😴 "היינו כחולמים"</h3>
+      <p>השיעור הזה עוסק בשאלה איך אדם יכול להפוך את חייו לחיים שמחים ומעניינים. בשבוע הקודם דובר על החיוך. הפעם הנושא רחב יותר, ויש לו קשר לפרקי אבות, לפרשת השבוע ולהמון מקרים בחיים. שמו של הנושא: להתעורר אל הפלא.</p>
+      <p>יש אנשים שישנים בשכיבה, ויש אנשים שישנים בעמידה. מה הכוונה? אדם שישן בעמידה הרי היה נופל. אלא שבשיר המעלות אומרים: "בְּשׁוּב ה' אֶת שִׁיבַת צִיּוֹן הָיִינוּ כְּחֹלְמִים". איך אדם יכול להיות כמו חולם כשהוא ער?</p>
+      <p>יש אדם שרואה דברים נפלאים, ובמקום להתלהב ולהתרגש ולומר "איזה יופי", הוא אינו שם לב לכלום. בדיוק כמו אדם ישן: עיניו פקוחות, אבל הוא אינו רואה ואינו מרגיש.</p>
+      <p>החלום יכול להיות מלא דברים מופלאים, אבל הישן אינו מתפעל מהם באמת, כי הוא לא שם. כך גם אדם שעובר ליד ניסים ואינו מרגיש בהם. הוא חי, אבל ישן בהקיץ.</p>
+      <p class="bold-para">יש אנשים שעיניהם פקוחות, אבל הם ישנים: רואים דברים נפלאים ואינם מרגישים דבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ישנים בהקיץ</div>
+      <h3 class="story-title">🌳 ארץ שהייתה ביצות</h3>
+      <p>דוגמה אחת: הקדוש ברוך הוא החזיר את עם ישראל לארץ ישראל אחרי אלפיים שנה. אנחנו מסתובבים כאן, וקורים לנו ניסים בכל יום. הקדוש ברוך הוא שומר על עם ישראל. ויש אנשים שהולכים ואינם מרגישים כלום. הם אפילו לא יודעים שיש כאן ניסים.</p>
+      <p>או דוגמה פשוטה יותר: היום אדם נכנס לחנות ומוצא מלא פירות, ורובם, ברוב ימות השנה, גדלו כאן בארץ ישראל. ולפני כמאה שנה הארץ הייתה ברובה שממה. היו כאן ביצות. מי שרצה להגיע ממקום למקום נסע בעגלה וסוס, והעגלות היו נתקעות בבוץ.</p>
+      <p>תוך כמאה שנה התהפך כאן הכל. ערים מלאות, הכל פורח, הכל צומח. ויש אדם שהולך ואינו רואה. הוא התרגל לסביבה שלו, ומה שהתרגלנו אליו כבר אינו מרגש.</p>
+      <p>וזה מה שהשיעור רוצה לברר: למה יש אנשים שחיים, אבל בפועל הם ישנים? ומה בדיוק מפסיד מי שישן בהקיץ?</p>
+      <p class="bold-para">מי שהתרגל לסביבה שלו מפסיק לראות את הנס שבתוכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ישנים בהקיץ</div>
+      <h3 class="story-title">🐟 הדג שחיפש מים</h3>
+      <p>מה מפסיד מי שישן בהקיץ? הוא מפספס הרבה. העולם מלא ניסים, אבל אם אדם אינו רואה אותם, הוא אינו מתרגש, אינו יודע להודות, ואינו שם לב לקדוש ברוך הוא.</p>
+      <p>יש משל על דג צעיר ששחה בים ופגש דג מבוגר. שאל הדג הצעיר: "תגיד לי, כולם מדברים על הדבר הזה שנקרא מים. איפה הם? אני מחפש אותם כבר שבועות." השיב לו הדג המבוגר: "אתה שוחה בתוכם. הם סביבך, הם בתוכך, הם הכל."</p>
+      <p>הדג הצעיר התאכזב: "זה? זה סתם נוזל שקוף. אני רוצה מים!" ושחה משם לחפש במקום אחר.</p>
+      <p>כך לפעמים אדם מחפש ריגושים, דברים מיוחדים ומרשימים, ואינו שם לב שהדברים הנפלאים באמת נמצאים כאן, סביבו. הוא שוחה בתוכם כל הזמן, ודווקא בגלל זה אינו רואה אותם.</p>
+      <p>המשל הזה מלמד שהבעיה אינה שחסרים פלאים. הבעיה היא שהפלא קרוב מדי, רגיל מדי, והעין מפסיקה לראות אותו.</p>
+      <p class="bold-para">לפעמים אדם מחפש את הנפלא במקום רחוק, והנפלא נמצא סביבו כל הזמן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ישנים בהקיץ</div>
+      <h3 class="story-title">⏳ מתים בגיל עשרים וחמש</h3>
+      <p>יש משפט שנאמר בשיעור, והוא קצת מבהיל: רוב האנשים מתים בגיל עשרים וחמש, אבל נקברים רק בגיל שבעים וחמש. מה הכוונה?</p>
+      <p>ילדים קטנים בדרך כלל מתרגשים מאוד ממה שיש להם. כל דבר חדש, כל צבע, כל מתנה קטנה. אחר כך הם גדלים ומתרגלים למה שיש, וכבר אינם שמים לב בכלל.</p>
+      <p>ויש אנשים שחיים בהרגל כזה, שאין להם שום דבר חדש. הכל מוכר, הכל רגיל, הכל מובן מאליו. אדם שאינו מתרגש ואינו מתפעל, הוא כמו מת. אז מה אם הוא חי? הוא ישן בהקיץ.</p>
+      <p>ולכן, אם אדם אינו לומד להתרגש מן הדברים שיש לו, הוא מפסיד את החיים עצמם. החדשות הטובות הן שאפשר ללמוד את זה. ההתפעלות אינה רק תכונה של ילדים קטנים. היא הרגל שאפשר לחזור אליו, וכל השיעור הזה הוא אימון בדיוק בכך.</p>
+      <p>בפרקים הבאים נראה דוגמאות: כוס קפה, תפוח, שדה חיטים. ובסוף נראה גם את ההפך הגמור, אדם שלא ידע לראות דבר.</p>
+      <p class="bold-para">מי שאינו מתרגש עוד ממה שיש לו, חי כאילו אינו חי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · סיפורה של כוס קפה</div>
+      <h3 class="story-title">☕ פולי קפה מחצי העולם</h3>
+      <p>קחו דוגמה פשוטה: אדם מוזג לעצמו כוס קפה. כמה אפשר להתרגש מכוס קפה? הרבה מאוד.</p>
+      <p>מאיפה הגיע הקפה? מפולי קפה. ופולי הקפה גדלים על עצים, ועצי קפה אינם גדלים באזור שלנו. הם מגיעים מאפריקה, או ממקומות רחוקים אחרים בעולם. כך גם הקקאו. כמה מרחק עברו הפולים האלה עד שהגיעו לכוס? לפעמים כמעט מחצי העולם השני.</p>
+      <p>וכמה אנשים עבדו בדרך: מי שגידל, מי שקטף, מי שייבש, מי שקלה, מי שארז, מי ששלח באוניה, מי שהביא לחנות. כמה השקיעו בשביל שיהיה לי קפה.</p>
+      <p>וזה רק הקפה. צריך גם כוס. וצריך גם מים, ולא סתם מים מן הברז, אלא מים חמים. ועל המים החמים יש סיפור קטן משלהם.</p>
+      <p class="bold-para">בכל כוס קפה יש מסע ארוך, ומי שחושב עליו מתרגש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · סיפורה של כוס קפה</div>
+      <h3 class="story-title">🫖 הקומקום שעל האש</h3>
+      <p>לא לפני הרבה שנים, מי שרצה מים חמים היה לוקח קומקום, כלי עם ידית ועם מכסה, ושם אותו על האש. ולמה קראו לו קומקום? בשיעור הוצע שכשהמים היו רותחים, המכסה היה מתרומם וקופץ ומרעיש, כאילו קם וקם.</p>
+      <p>היו שמים את הקומקום על האש, ומחכים. עשר דקות בערך. ורק אז היו סוף סוף מים חמים, ואפשר היה להכין כוס קפה.</p>
+      <p>והיום? לאנשים אין כוח לחכות אפילו דקה ליד קומקום חשמלי. יש מכשירים שנותנים מים חמים מיד, ברגע שלוחצים. זה היה פעם חלום.</p>
+      <p>ועכשיו נניח שאדם עומד להכין כוס קפה, וחושב על כל זה: מאיזה מרחק הביאו לו את הפולים, וכמה היו צריכים לחכות פעם למים חמים. הוא מתרגש. הוא אומר: תשמע, איזה דברים נפלאים יש כאן.</p>
+      <p>זה נקרא לשים לב לפלא: לראות את הדברים הנפלאים שהקדוש ברוך הוא נתן בבריאה, גם בתוך כוס קפה של בוקר.</p>
+      <p class="bold-para">מה שפעם לקח עשר דקות של המתנה נעשה היום ברגע, ודווקא לכן איננו שמים לב אליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · סיפורה של כוס קפה</div>
+      <h3 class="story-title">⏸️ לעצור רגע לפני הלגימה</h3>
+      <p>אפשר לחשוב שכדי להתפעל צריך לצאת לטיול רחוק, לראות מפל גדול או הר גבוה. אבל הדוגמה של כוס הקפה מלמדת שהפלא נמצא דווקא בדברים הקטנים, אלה שעוברים לידם עשרות פעמים בכל יום.</p>
+      <p>ההבדל בין מי שישן בהקיץ למי שער אינו בכמה דברים הוא רואה. שניהם מחזיקים אותה כוס בדיוק. ההבדל הוא אם עצרו לרגע לחשוב מאין היא באה.</p>
+      <p>מי ששותה בלי לחשוב, שתה קפה. מי שעצר וחשב על הפולים מאפריקה, על האנשים שעבדו בשבילו ועל המים החמים שפעם חיכו להם עשר דקות, שתה קפה וגם קיבל מתנה. ולא רק שנהנה יותר מן הקפה, אלא גם התקרב לבורא עולם, שסידר את כל זה בשבילו.</p>
+      <p>ומי שמתרגל לעשות זאת בכוס קפה, יתחיל לעשות זאת גם בלחם, בבית, בחברים ובמשפחה. כך נבנה הרגל של עין ערה.</p>
+      <p class="bold-para">ההתפעלות אינה דורשת זמן רב, רק רגע אחד של מחשבה לפני שממשיכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כפוי טובה</div>
+      <h3 class="story-title">🔄 מה פירוש "כפוי"?</h3>
+      <p>ומה קורה לאדם שאינו יודע לשים לב? הרבה פעמים הוא נעשה כפוי טובה. ושימו לב לשאלה: למה לא אומרים פשוט "לא מכיר טובה"? למה דווקא "כפוי"?</p>
+      <p>המילה "כפוי" באה מן הלשון "לכפות את הכלי": לקחת כלי ולהפוך אותו, כך שפיו כלפי מטה. כפוי טובה אינו רק אדם שאינו מחזיר טובה. הוא הופך את הטובה.</p>
+      <p>הקדוש ברוך הוא עשה לו טובה, החבר עשה לו טובה, המורה עשתה לו טובה. ומה הוא אומר? לא רק שאינו מודה, אלא הופך את הכל: לא הם עשו לי טובה, אני עשיתי להם. הם חייבים לי.</p>
+      <p>זו מדרגה גרועה הרבה יותר משכחה. השוכח פשוט אינו שם לב. הכופה הופך את המציאות על פיה, ומשכנע את עצמו שהוא הנותן ולא המקבל.</p>
+      <p class="bold-para">כפוי טובה הוא מי שהופך את הטובה, כמו שכופים כלי והופכים אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כפוי טובה</div>
+      <h3 class="story-title">🎁 התלמיד שחיכה למתנה</h3>
+      <p>הרב סיפר שלפני שנים רבות לימד בישיבה. בסוף השנה, כשהבחורים סיימו את הלימודים, ניגש לאחד הבחורים ושאל: מה אתה מכין לרבנים לכבוד הסיום? משהו, מתנה קטנה, מילה טובה?</p>
+      <p>והבחור ענה: מה פתאום? למה אני צריך להכין לרבנים? מה הם עשו בשבילי? אני באתי להקשיב להם, אני באתי לשמוע אותם. הם צריכים להכין לי מתנה!</p>
+      <p>הרבנים לימדו אותו, דאגו לו, הדריכו אותו בדרכו, ובעיניו הם לא עשו כלום. ההפך: הוא עשה להם טובה בכך שבא ללמוד.</p>
+      <p>שימו לב מה הוא עשה. הוא לא רק לא הכיר טובה. הוא הפך אותה. זה בדיוק "כפוי טובה". והוא לא הראשון בהיסטוריה שהתנהג כך. מי היה אחד המפורסמים שעשו זאת? פרעה.</p>
+      <p class="bold-para">כפוי הטובה אינו רק שוכח מה עשו בשבילו, אלא בטוח שהאחרים חייבים לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כפוי טובה</div>
+      <h3 class="story-title">🏛️ "אשר לא ידע את יוסף"</h3>
+      <p>בתורה כתוב: "וַיָּקָם מֶלֶךְ חָדָשׁ עַל מִצְרָיִם אֲשֶׁר לֹא יָדַע אֶת יוֹסֵף". דמיינו כותרת בעיתון: "קם ראש ממשלה חדש שלא הכיר את ראש הממשלה הקודם". האם ייתכן? יוסף היה המשנה למלך, הוא הציל את מצרים מרעב. איך ייתכן שהמלך החדש לא ידע עליו?</p>
+      <p>בשיעור הוצג הדבר כך: פרעה החדש כינס את כל השרים ואמר להם: אתם יודעים מי היה יוסף? הוא היה עבד, ישב בבית הסוהר. אנחנו, המצרים, לקחנו אותו מבית הסוהר ועשינו אותו למשנה למלך. כמה הוא צריך להכיר לנו טובה!</p>
+      <p>וזה לא הכל. לקחנו את כל המשפחה שלו מארץ כנען, הבאנו אותם למצרים, וכולם התפרנסו כאן על חשבוננו. והיהודים האלה – איזו כפיות טובה! אנחנו עשינו להם, והם לא מכירים לנו טובה.</p>
+      <p>זה "לא ידע את יוסף": לא שלא שמע עליו, אלא שהחליט לא לדעת. הוא הפך את הטובה, ומשם הדרך לשעבוד הייתה קצרה.</p>
+      <p class="bold-para">פרעה החדש הפך את הסיפור: במקום שמצרים תודה ליוסף, יוסף והיהודים חייבים למצרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כפוי טובה</div>
+      <h3 class="story-title">⚖️ מי צודק?</h3>
+      <p>ובשיעור עלתה שאלה חכמה: אבל אולי פרעה צודק? נכון שבזכות יוסף היה למצרים מה לאכול בשנות הרעב. אבל גם נכון שבזכות מצרים יצא יוסף מבית האסורים. אז מי צריך להכיר טובה למי?</p>
+      <p>התשובה מפתיעה: אין כאן תשובה של מי צודק. נכון, אתה עשית לו, והוא עשה לך. שניהם עשו. השאלה היא אחרת לגמרי: על מה אתה רוצה להסתכל?</p>
+      <p>יש אנשים שתמיד מסתכלים על כמה שאחרים חייבים להם. ויש אנשים שתמיד מסתכלים על כמה שאחרים עשו להם, כמה נתנו להם, כמה עזרו להם, והם רוצים להכיר להם טובה.</p>
+      <p>פרעה בחר כל הזמן לחשוב כמה כולם חייבים לו, כמה כולם צריכים לתת לו. הוא אף פעם לא הסתכל בצורה של "כמה נתנו לי". ועוד נראה בסוף השיעור לאן הוביל אותו המבט הזה.</p>
+      <p>וזו בחירה שכל אדם עושה בכל יום: בבית, בכיתה, עם חברים. אותה מציאות בדיוק, ושני מבטים הפוכים.</p>
+      <p class="bold-para">השאלה אינה מי עשה יותר, אלא על מה אתה בוחר להסתכל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כפוי טובה</div>
+      <h3 class="story-title">👀 לבחור את המבט הטוב</h3>
+      <p>אם השאלה היא על מה אנחנו בוחרים להסתכל, אפשר להתאמן בכך. בכל יום יש לנו הזדמנויות רבות לבחור.</p>
+      <p>בבית: אפשר להסתכל על מה שההורים עוד לא נתנו לנו, ואפשר להסתכל על האוכל שהכינו, על הבגדים המסודרים, על הדאגה שאיננו רואים בכלל. בכיתה: אפשר להתלונן על המורה, ואפשר לחשוב כמה הכינה את השיעור וכמה היא משקיעה. עם חברים: אפשר לזכור את הפעם שחבר לא עזר, ואפשר לזכור את כל הפעמים שכן.</p>
+      <p>התלמיד מן הישיבה ופרעה בחרו במבט של "חייבים לי". הם לא היו טיפשים, והיו להם טענות שנשמעו הגיוניות. אבל המבט הזה הפך אותם לאנשים כפויי טובה, שאינם שמחים בשום דבר.</p>
+      <p>ומי שבוחר במבט של "כמה נתנו לי", רואה טובה בכל מקום. הוא מודה, הוא שמח, והוא גם אדם שנעים להיות לידו. וזה בדיוק הקשר בין הכרת הטוב לבין חיים שמחים, הנושא שבו פתח השיעור.</p>
+      <p class="bold-para">מי שמרגיל את עצמו לשאול "מה עשו בשבילי" נעשה אדם שמח ומכיר טובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הסבא והתפוח</div>
+      <h3 class="story-title">🍎 "רק רגע, תברך עליו"</h3>
+      <p>ועכשיו נראה דוגמה חיה, מסיפור, איך אדם מתרגש מן הדברים שיש לו. יוסי חזר מבית הספר רעב מאוד. הוא הניח את התיק, רץ למטבח ושאל: "אמא, מה יש לאכול היום?" הוא לקח תפוח, ופתאום שמע את סבא: "רק רגע, תברך עליו."</p>
+      <p>יוסי חשב שסבא מתכוון לומר שאסור לאכול. אבל סבא אמר: לא, מצווה לאכול. אבל לפני שאתה אוכל, אני רוצה לגלות לך סוד. בוא תראה איזה מפעל שלם יש כאן, מאחורי התפוח הזה.</p>
+      <p>וסבא התחיל לספר. תגיד יוסי, אם אתה צריך לתכנן אוכל שייתן כוח לגוף, מה היית עושה? אדם עייף, חלש, לא מרגיש טוב, ואתה רוצה לתת לו כוח. יש כדורים, יש ויטמינים. איך נראה ויטמין? כדור קטן, לבן או בצבע אחר, סתם צבע.</p>
+      <p>אם הקדוש ברוך הוא היה רוצה רק לתת לנו כוח, הוא יכול היה לעשות שיגדלו על העצים כדורים. כדור לבן, כדור צהוב, והיינו אוכלים כדורים. אבל הוא לא עשה כך.</p>
+      <p class="bold-para">לפני שאוכלים פרי, כדאי לגלות איזה מפעל שלם עומד מאחוריו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הסבא והתפוח</div>
+      <h3 class="story-title">❤️ חיוך של בורא עולם</h3>
+      <p>מה הקדוש ברוך הוא עשה? פירות צבעוניים. יש תפוח אדום, יש תפוח ירוק, יש תפוח צהוב. כל מיני תפוחים בכל מיני צבעים. למה? אם הכל בשביל כוח, למה כל הצבעים האלה?</p>
+      <p>התשובה שנתן הסבא בסיפור: כי ה' אוהב אותנו ורוצה שנהיה שמחים. הצבע האדום הוא כמו חיוך של ה', שאומר: הכנתי לך את זה, שיהיה לך נעים בעיניים וטעים בפה.</p>
+      <p>הקדוש ברוך הוא אינו נותן רק מזון כדי להתקיים. הוא עושה אותו יפה. מסתכלים על תמונה של פירות צבעוניים, וכיף להסתכל עליה. הצבעים עצמם הם מתנה.</p>
+      <p>ושימו לב לצבע אחד שכמעט אינו מופיע באוכל: שחור. כמעט אין ממתקים שחורים, כמעט אין פירות שחורים שאוהבים לאכול. יש מעט יוצאי דופן, אבל ברוב המקרים שחור הוא צבע שאנשים אינם נמשכים לאכול. ותיכף נראה למה זה חשוב.</p>
+      <p class="bold-para">ה' לא נתן לנו רק מזון כדי להתקיים, אלא פירות צבעוניים כדי שנשמח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הסבא והתפוח</div>
+      <h3 class="story-title">📦 האריזה המשוכללת בעולם</h3>
+      <p>סבא הצביע על קליפת התפוח ואמר: זו האריזה המשוכללת ביותר בעולם.</p>
+      <p>למה? בשיעור נזכר סיפור על מורה שלקחה את תלמידות כיתה ב' לטיול במפעל ממתקים. מנהל המפעל הראה להן מכונה גדולה ומשוכללת: היא לוקחת כל סוכרייה לבד, מכניסה אותה לעטיפה, סוגרת, והכל אוטומטי, בנייר מרשרש ויפה.</p>
+      <p>אחר כך, באוטובוס, הוציאה המורה פרי ואמרה: המכונה כאן משוכללת הרבה יותר מן המכונה שראיתן במפעל. למה? במפעל יש מכונה לסוכריות ומכונה לעטיפות. ובעץ? יש מכונה אחת שעושה גם את הפרי וגם את האריזה שלו, יחד.</p>
+      <p>האם מישהו הצליח לייצר מכונה שעושה גם את הסוכרייה וגם את העטיפה בבת אחת? עדיין לא. ה' הצליח, והמכונה הזאת עומדת בכל גינה.</p>
+      <p class="bold-para">העץ הוא מכונה אחת שעושה גם את הפרי וגם את האריזה שלו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הסבא והתפוח</div>
+      <h3 class="story-title">🚦 אריזה שמחליפה צבעים</h3>
+      <p>"יש לנו עוד פטנט גאוני", אמר הסבא. "אריזה שמשנה צבע." כשהתפוח עוד לא בשל, הוא חמוץ ולא בריא, והקליפה שלו ירוקה וקשה. כך גם בננה: יש לה שלושה צבעים בחייה, ירוק, צהוב ושחור. וגם קלמנטינה שעוד לא הבשילה היא ירוקה, וכשהיא בשלה היא כתומה.</p>
+      <p>למה דווקא ירוק כשהפרי עוד לא מוכן? כי ירוק הוא צבע שאינו בולט בין העלים. הפרי משחק מחבואים. הוא אינו ראוי למאכל, ולכן הוא מתחבא בין העלים, ולא רואים אותו.</p>
+      <p>זו גם אחת הסיבות שחיילים לובשים מדים בצבע ירוק כהה: כדי שיוכלו להסתתר בין השיחים ולא יראו אותם. לא ירוק בוהק, אלא ירוק שמתמזג עם הסביבה.</p>
+      <p>וכשהפרי בשל, הוא מקבל צבע יפה ובולט, שמזמין לאכול. וכשהוא מתקלקל, הוא משחיר, ושחור, כמו שראינו, הוא צבע שבדרך כלל לא רוצים לאכול.</p>
+      <p>עכשיו תחשבו: האם יש חברה בעולם שהצליחה לייצר קופסה שמחליפה צבע לפי מצב המוצר? קרטון חלב שהוא לבן כשהחלב טרי ומשחיר כשהחלב מתקלקל? אין כזה. לכל היותר, כשהחלב מתקלקל מאוד, הקרטון מתנפח. אבל לא מחליף צבע. והתפוח עושה את זה מעצמו.</p>
+      <p class="bold-para">קליפת הפרי מודיעה לנו בעצמה מתי הוא מוכן ומתי הוא כבר לא טוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הסבא והתפוח</div>
+      <h3 class="story-title">💧 בקבוק מיץ שאינו נשפך</h3>
+      <p>כולם מכירים את הסכנה: אדם שם בתיק בקבוק שלא נסגר היטב, ליד המחשב או ליד הספרים, והכל נשפך. לפעמים זה ממש אסון.</p>
+      <p>ועכשיו, אמר הסבא, תסתכל על התפוח. אם מכניסים אותו למסחטה, יוצא מיץ תפוחים. רובו של התפוח, בערך שמונים אחוז, הוא מים. אז למה אפשר לשים תפוח בתיק, ליד המחשב, ולא קורה כלום?</p>
+      <p>אם אתה לוקח כוס מיץ ושם בתיק בלי מכסה, הכל יישפך ויהיה דביק. אבל בתוך התפוח יש המון מיץ, ואינו נשפך כשאתה מחזיק אותו. איך?</p>
+      <p>הקדוש ברוך הוא ברא פלא עצום: המיץ כלוא בתוך תאים קטנטנים. הנוזל והמוצק מחוברים יחד. רק כשנותנים ביס בשיניים, המיץ יוצא ומרטיב את הפה. זו הנדסה מדהימה: בקבוק מיץ בתוך פרי, בלי שתישפך טיפה. וכך גם בקלמנטינה, ובעוד פירות רבים.</p>
+      <p class="bold-para">בתוך התפוח יש הרבה מיץ, והוא שמור בתאים קטנטנים כך שאינו נשפך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הסבא והתפוח</div>
+      <h3 class="story-title">🌱 מחשב בתוך גרעין</h3>
+      <p>ועוד דבר אחד: בית חרושת בתוך גרעין. סבא חתך את התפוח והוציא גרעין קטן ושחור. "אתה רואה את הגרעין הזה? הוא נראה כמו סתם לכלוך, נכון?"</p>
+      <p>אבל בתוך הגרעין הזה יש כמו מחשב על, שכתובות בו כל ההוראות איך לבנות עץ תפוחים. בלשון המדע קוראים לזה DNA: נתונים רבים מאוד שכתובים בתוך דבר זעיר.</p>
+      <p>הגרעין הזה יודע לקחת בוץ ומים מן האדמה, אור מן השמש ואוויר, ולהפוך אותם לעץ ענק עם ענפים, עלים ופירות מתוקים. שום אדם בעולם לא הצליח לבנות מכונה קטנה כזאת שיודעת לייצר תפוחים מבוץ.</p>
+      <p>הגרעין הוא כמו תוכנית בנייה מושלמת. וכל זה נמצא בתוך התפוח שיוסי רצה לאכול בלי לחשוב. עכשיו מבינים למה הסבא אמר: "רק רגע, תברך עליו." מי שראה את כל זה, אומר את הברכה אחרת לגמרי.</p>
+      <p class="bold-para">בגרעין קטן כתובות כל ההוראות להפוך בוץ, מים ואור לעץ מלא פירות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הסבא והתפוח</div>
+      <h3 class="story-title">🙏 ברכה של מי שראה</h3>
+      <p>עכשיו אפשר לחזור לרגע שבו התחיל הסיפור: יוסי רעב, תפוח ביד, וסבא אומר "רק רגע, תברך עליו". בהתחלה זה נשמע כמו עיכוב. יוסי רצה לאכול, וסבא עוצר אותו.</p>
+      <p>אבל אחרי כל מה שסבא גילה לו, הברכה כבר אינה עיכוב. היא הדבר הטבעי ביותר. מי שהבין שהצבע האדום הוא כמו חיוך שה' שלח לו, שהקליפה היא אריזה שאף מפעל אינו יודע לעשות, שהמיץ שמור בתאים זעירים ושהגרעין הוא מחשב שלם, רוצה לומר תודה.</p>
+      <p>זה ההבדל בין ברכה של מי שישן לברכה של מי שער. שתיהן אותן מילים בדיוק: "בּוֹרֵא פְּרִי הָעֵץ". אבל אחת יוצאת מן הפה מתוך הרגל, והשנייה יוצאת מן הלב מתוך התפעלות.</p>
+      <p>ואין צורך לחזור על כל ההסבר לפני כל פרי. מספיק לזכור לרגע אחד שמאחורי כל תפוח עומד מפעל שלם, ושמי שבנה אותו עשה זאת מאהבה.</p>
+      <p class="bold-para">הברכה על הפרי היא הרגע שבו כל ההתבוננות הופכת לתודה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מצה ששומרת</div>
+      <h3 class="story-title">🌾 מחבואים בשדה החיטים</h3>
+      <p>כשדיברו על פרי שמשחק מחבואים, סיפר הרב סיפור על מחבואים מסוג אחר לגמרי, שהיה כאן בארץ ישראל לפני כעשור, בזמן אחד הסבבים מול עזה.</p>
+      <p>המחבלים תכננו פיגוע. הם חפרו מנהרה שנגמרה בתוך שדה חיטים. החיטים היו גבוהות מאוד. התוכנית הייתה לצאת מן המנהרה אל תוך השדה, לזחול בין החיטים הגבוהות כשאיש אינו רואה אותם, להגיע עד יישוב סמוך ולפגוע בו, רחמנא ליצלן, כמו שקרה מאוחר יותר בשמחת תורה.</p>
+      <p>השדה היה מקום מסתור מושלם. חיטה גבוהה מסתירה אדם שזוחל בתוכה. מי שמשקיף מרחוק רואה רק ים של שיבולים.</p>
+      <p>אבל אז קרה משהו מדהים, והוא קשור למצווה שאנחנו מכירים מליל הסדר.</p>
+      <p>התורה אומרת: "וּשְׁמַרְתֶּם אֶת הַמַּצּוֹת". המצה צריכה להיות מצה שמורה. ממה שומרים אותה? שלא יבואו עליה מים, כי מים עלולים להחמיץ את החיטה.</p>
+      <p>וממתי צריך לשמור? בזה יש שיטות שונות: יש אומרים משעת טחינה, ויש אומרים משעת קצירה. ויש שיטה מחמירה עוד יותר: מן השעה שהחיטה ראויה לקצירה, כלומר מן הרגע שהבשילה, אסור שיבואו עליה מים.</p>
+      <p>לפי הסיפור, העדה החרדית, שנוהגת להחמיר, רצתה לנהוג כשיטה המחמירה הזאת. ובאותה שנה קרה דבר נדיר: בחודש תמוז ירד גשם בארץ ישראל. התברר שכמעט על כל החיטים שכבר הבשילו ירד גשם.</p>
+      <p>חיפשו וחיפשו, ומצאו שדה אחד ליד עזה, שבזמן שירד הגשם החיטים בו עדיין לא הבשילו. הן עדיין לא היו ראויות לקצירה, ולכן הגשם לא פסל אותן. אבל השדה היה ליד עזה, בזמן מלחמה. מי ייכנס לשם לקצור?</p>
+      <p class="bold-para">מחבלים תכננו להסתתר בשדה חיטים גבוה כדי להגיע ליישוב בלי שיראו אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מצה ששומרת</div>
+      <h3 class="story-title">🛡️ לא מצה שמורה – מצה שומרת</h3>
+      <p>נמצאו כמה מתנדבים שהסכימו לקחת את הסיכון. הם נכנסו עם טרקטור לשדה, במקום שהיה מסוכן. כדי לא להסתכן פעמיים, החליטו לעשות הכל בבת אחת: ביום אחד קצרו את כל השדה, עד השיבולת האחרונה.</p>
+      <p>למחרת בבוקר, בשעה חמש לפנות בוקר, יצאו המחבלים מן המנהרה, כמו שתכננו חודשים ארוכים. והם לא האמינו למראה עיניהם: איפה החיטים? מי גמר כאן הכל? השדה היה חשוף לגמרי.</p>
+      <p>הם התחילו לזחול על האדמה, אבל כשאין חיטים, אין מסתור. כעבור דקות ספורות ראו אותם החיילים שהשקיפו על האזור. מיד יצאו כוחות לקראתם. חלקם נפגעו, וחלקם ברחו בחזרה למנהרה. הפיגוע לא קרה.</p>
+      <p>אחר כך שאלו: מי קצר את השדה? מי הציל אותנו? וכשסיפרו את הסיפור, אמרו: דבר אחד אנחנו יודעים. זו לא הייתה רק מצה שמורה. זו הייתה מצה שומרת. המצה שמרה על היישוב היהודי.</p>
+      <p>וזה עוד פלא שאפשר לישון לידו, או להתעורר אליו.</p>
+      <p class="bold-para">החיטים נקצרו כדי לשמור על המצוה, ובסוף המצה היא ששמרה על היישוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מצה ששומרת</div>
+      <h3 class="story-title">🧩 יד שמסדרת מאחורי הקלעים</h3>
+      <p>כדאי לעצור ולהתבונן בסיפור הזה, כי יש בו כמה פלאים שמשתלבים זה בזה. גשם נדיר שירד בתמוז, דווקא באותה שנה. רצון להחמיר בשמירת המצות, דווקא לפי השיטה המחמירה ביותר. שדה אחד בכל הארץ שהחיטים בו לא הבשילו בזמן הגשם, דווקא ליד עזה, דווקא מעל המנהרה. ומתנדבים שהחליטו לקצור הכל ביום אחד, דווקא יום לפני הפיגוע.</p>
+      <p>איש מהם לא ידע על המנהרה. המתנדבים חשבו רק על מצה לפסח. המחבלים חשבו שתכננו הכל. ובסוף התברר שמישהו אחר תכנן טוב יותר מכולם.</p>
+      <p>מי שישן בהקיץ יקרא לזה צירוף מקרים. מי שער יראה כאן יד שמסדרת דברים מאחורי הקלעים. וזה בדיוק ההבדל שעליו מדבר השיעור כולו: אותו סיפור, אותן עובדות, ושתי דרכים להסתכל עליהן.</p>
+      <p class="bold-para">מנהג של חומרה במצווה הפך, בלי שאיש ידע, להצלה של יישוב שלם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · פרעה בפיג'מה</div>
+      <h3 class="story-title">🎵 השיר על פרעה</h3>
+      <p>ועכשיו נעשה פנייה של מאה ושמונים מעלות, ונראה מי היה ההפך הגמור ממי שיודע לראות פלאים: אדם שניסים ונפלאות קרו מול עיניו, והוא לא ראה כלום. לומדים עליו כדי לא להיות כמוהו.</p>
+      <p>כמעט כל ילד מכיר את השיר על פרעה שרץ באמצע הלילה, בפיג'מה. אבל איפה כתוב שפרעה היה בפיג'מה? חפשו ברש"י, במפרשים, במדרש. זה לא כתוב.</p>
+      <p>בשיעור סופר מאיפה בא הרעיון, כפי שסיפר מחבר השיר בעצמו אחרי שנים. כשהיה ילד קטן בכיתה ג', היה לו רבי עם אומץ מיוחד. כשהגיעו בפרשה למכת בכורות, אמר הרבי: "רגע, אני תכף חוזר", ויצא.</p>
+      <p>כעבור שתי דקות נכנס הרבי לכיתה בפיג'מה. כל הילדים נדהמו. והוא סיפר להם בהתלהבות עצומה על פרעה, שישן בלילה, קם באמצע הלילה בפיג'מה ויצא לחפש את משה ואהרן, ורץ ממקום למקום, וכולם ראו את המלך כך.</p>
+      <p>עברו שנים, והילד נעשה מורה בעצמו. את הסיפור המצחיק הזה לא היה יכול לשכוח. הוא לא נכנס לכיתה בפיג'מה, אבל חיבר שיר: פרעה רץ באמצע הלילה.</p>
+      <p class="bold-para">מורה אחד נכנס לכיתה בפיג'מה, ותלמידו לא שכח זאת כל ימיו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · פרעה בפיג'מה</div>
+      <h3 class="story-title">🛌 איך פרעה נרדם?</h3>
+      <p>אבל יש בשיר הזה שאלה עמוקה. כדי להבין אותה, נזכור לילה אחד לא רחוק. לפני זמן לא רב הייתה אזעקה בשלוש לפנות בוקר, בלי שנפל שום טיל. למה? כי צה"ל יצא למבצע באיראן, וחששו שהאיראנים יתקפו מיד בהמון טילים. ברוך ה' זה לא קרה באותו רגע, אבל כולם התכוננו.</p>
+      <p>ועכשיו תגידו: מי הצליח לישון אחר כך? מי שלא ידע מה קורה, אולי נרדם. אבל מי שידע שהתחיל מבצע, ושבכל רגע יכולים לעוף לכאן טילים, לא כל כך הצליח לישון. ומה היה הסיכוי שטיל יפגע בו דווקא? קטן מאוד. ובכל זאת, קשה לישון.</p>
+      <p>ועכשיו פרעה. משה רבנו אמר לו: הלילה תהיה מכת בכורות. כל הבכורות ימותו. ופרעה עצמו היה בכור. וכבר ראה שכל מה שמשה אומר מתקיים, מכה אחרי מכה.</p>
+      <p>אז איך הוא לבש פיג'מה? איך בכלל נרדם? הלילה הוא אמור למות. לא טיל שאולי ייפול, אלא הבטחה ודאית שכל מה שקדם לה התקיים. מה התשובה?</p>
+      <p class="bold-para">פרעה ידע שהלילה תבוא מכת בכורות, ובכל זאת לבש פיג'מה והלך לישון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · פרעה בפיג'מה</div>
+      <h3 class="story-title">🙈 הכוח להתעלם</h3>
+      <p>התשובה חוזרת לתחילת השיעור. פרעה היה כפוי טובה. אדם שאינו מתרגל לראות דברים טובים, שכל דבר טוב הוא מכסה ומתעלם ממנו, מתרגל להתעלם מכל דבר.</p>
+      <p>ויש לו כוח אדיר: הוא יודע להתעלם ולא להרגיש. גם כשאומרים לו שהלילה הוא עלול למות, הוא חושב: לא יקרה כלום. והולך לישון. הזוי, אבל זה בדיוק מה שקרה.</p>
+      <p>כך נראה אדם שאינו לומד להתרגש מן הדברים הנפלאים שבורא עולם ברא. הוא ישן בהקיץ כל החיים, ובסוף הוא ממש הולך לישון, בפיג'מה, בלילה שבו כל העולם שלו קורס.</p>
+      <p>זה הסוף של הדרך שהתחילה ב"אשר לא ידע את יוסף". מי שבחר לא לדעת את הטובה, הגיע למצב שבו אינו יודע גם את הסכנה. העיניים שהתרגלו לא לראות את הטוב, לא ראו גם את הרע שמתקרב.</p>
+      <p class="bold-para">מי שמתרגל להתעלם מכל טובה, מפתח כוח אדיר להתעלם גם מן הסכנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · פרעה בפיג'מה</div>
+      <h3 class="story-title">🗣️ פה רע ופה סח</h3>
+      <p>ועכשיו אנחנו, היהודים, לומדים להיות ההפך מפרעה. בשיעור הובא רמז: פרעה – "פה רע". הוא כל הזמן דיבר רע, ראה רק רע, וחשב כמה כולם חייבים לו.</p>
+      <p>ומה החג שלנו? פסח – "פה סח", פה שמספר. בפסח יושבים כל הלילה ומספרים את הניסים והנפלאות שהקדוש ברוך הוא עשה איתנו. זה הפה ההפוך מן הפה של פרעה.</p>
+      <p>ומה הבעיה שלנו היום? לא שהניסים נעלמו מן העולם. הבעיה היא שהבורא הוא כמו קוסם מוכשר כל כך, שהוא חוזר על הקסם פעמים רבות, והקהל כבר מתרגל וקורא לזה "טבע". כלומר, דבר שהתרגלנו אליו ושקענו בו, כאילו הכל רגיל.</p>
+      <p>התפקיד של יהודי הוא תמיד לשים לב לכל הפלאים שהקדוש ברוך הוא יוצר.</p>
+      <p class="bold-para">פרעה דיבר רק רע, ובפסח אנחנו פותחים את הפה לספר את הניסים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · פרעה בפיג'מה</div>
+      <h3 class="story-title">☀️ להתעורר בכל יום</h3>
+      <p>בשיעור ראינו כמה דוגמאות, אבל יש המון המון דוגמאות. כל אדם יכול להתרגש תמיד מן הדברים שהקדוש ברוך הוא בורא, אם רק ילמד להסתכל ולראות.</p>
+      <p>ראינו את כוס הקפה, שעברה חצי עולם ואת המים החמים שפעם חיכו להם עשר דקות. ראינו את התפוח: הצבעים שהם כמו חיוך, האריזה שה' עושה יחד עם הפרי, הקליפה שמחליפה צבע, המיץ שאינו נשפך, והגרעין שיש בו מחשב שלם. וראינו שדה חיטים שנקצר למען מצווה, והציל יישוב שלם.</p>
+      <p>ומולם ראינו את פרעה, שראה רק רע, הפך כל טובה, ובסוף הלך לישון בפיג'מה בלילה של מכת בכורות.</p>
+      <p>והתפקיד שלנו הפוך: להתרגל לראות כמה דברים יפים יש בבריאה, בבית, בבית הספר, בכל דבר, ולהתרגל להודות. לא להיות "פה רע", אלא "פה סח". לא לישון בהקיץ, אלא להתעורר אל הפלא, בכל יום מחדש, ולראות בכל דבר קטן את חסדו של בורא עולם.</p>
+      <p class="bold-para">התפקיד שלנו הוא להתרגל לראות את היופי שבבריאה ולהודות עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/CGlCNJ6ctSc · 2026-01-20 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ישנים בהקיץ","icon":"😴","color":"#c62b6b","stories":[{"id":1,"title":"\"היינו כחולמים\"","icon":"😴"},{"id":2,"title":"ארץ שהייתה ביצות","icon":"🌳"},{"id":3,"title":"הדג שחיפש מים","icon":"🐟"},{"id":4,"title":"מתים בגיל עשרים וחמש","icon":"⏳"}]},{"id":2,"name":"סיפורה של כוס קפה","icon":"☕","color":"#6d28d9","stories":[{"id":5,"title":"פולי קפה מחצי העולם","icon":"☕"},{"id":6,"title":"הקומקום שעל האש","icon":"🫖"},{"id":7,"title":"לעצור רגע לפני הלגימה","icon":"⏸️"}]},{"id":3,"name":"כפוי טובה","icon":"🔄","color":"#e08e00","stories":[{"id":8,"title":"מה פירוש \"כפוי\"?","icon":"🔄"},{"id":9,"title":"התלמיד שחיכה למתנה","icon":"🎁"},{"id":10,"title":"\"אשר לא ידע את יוסף\"","icon":"🏛️"},{"id":11,"title":"מי צודק?","icon":"⚖️"},{"id":12,"title":"לבחור את המבט הטוב","icon":"👀"}]},{"id":4,"name":"הסבא והתפוח","icon":"🍎","color":"#1e88b8","stories":[{"id":13,"title":"\"רק רגע, תברך עליו\"","icon":"🍎"},{"id":14,"title":"חיוך של בורא עולם","icon":"❤️"},{"id":15,"title":"האריזה המשוכללת בעולם","icon":"📦"},{"id":16,"title":"אריזה שמחליפה צבעים","icon":"🚦"},{"id":17,"title":"בקבוק מיץ שאינו נשפך","icon":"💧"},{"id":18,"title":"מחשב בתוך גרעין","icon":"🌱"},{"id":19,"title":"ברכה של מי שראה","icon":"🙏"}]},{"id":5,"name":"מצה ששומרת","icon":"🌾","color":"#c62b6b","stories":[{"id":20,"title":"מחבואים בשדה החיטים","icon":"🌾"},{"id":21,"title":"לא מצה שמורה – מצה שומרת","icon":"🛡️"},{"id":22,"title":"יד שמסדרת מאחורי הקלעים","icon":"🧩"}]},{"id":6,"name":"פרעה בפיג'מה","icon":"👑","color":"#6d28d9","stories":[{"id":23,"title":"השיר על פרעה","icon":"🎵"},{"id":24,"title":"איך פרעה נרדם?","icon":"🛌"},{"id":25,"title":"הכוח להתעלם","icon":"🙈"},{"id":26,"title":"פה רע ופה סח","icon":"🗣️"},{"id":27,"title":"להתעורר בכל יום","icon":"☀️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
