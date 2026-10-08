@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מכורש ועד בלפור</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מכורש ועד בלפור</h1>
+  <p>הצהרת כורש והצהרת בלפור זו מול זו: מה שקרה בתחילת בית שני ומה שקרה בדורות האחרונים, דברי הרב אלקלעי והמשך חכמה, ומשמעות ההצהרה בהלכה ובאגדה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מכורש ועד בלפור" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/SElvgsGWuaQ?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/SElvgsGWuaQ/hqdefault.jpg" alt="מכורש ועד בלפור" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=SElvgsGWuaQ" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הצהרת כורש</div>
+      <h3 class="story-title">📅 יום אחד, הרבה תאריכים</h3>
+      <p>השיעור נאמר ביום שאחרי יז בחשון. לתאריך הזה יש הרבה פנים. בתורה הוא מופיע כיום שבו ירד המבול. במשנה הוא מופיע כיום שאם עד אליו לא ירדו גשמים, היחידים מתחילים להתענות. כלומר, זה היום שבו כבר צריך שיירד גשם.</p>
+      <p>ובדורות האחרונים נוסף לו עוד פן. הצהרת בלפור ניתנה בשני בנובמבר 1917, וכשמחשבים את התאריך העברי, יוצא שזה היה יז בחשון. הרב העיר שזה מעניין: יום שבו העולם כולו נשטף במבול, ויום שבו נפתח פתח לשיבת ישראל לארצו.</p>
+      <p>בשיעור הוא ביקש לדבר על ההצהרה הזאת לא רק כמאורע היסטורי. היא בעלת מימד ניסי, יש לה משמעות רוחנית, ויש לה גם השלכות הלכתיות שנוגעות לנו עד היום הזה. אבל לפני שמגיעים לבלפור, צריך לחזור אחורה, אל הצהרה אחרת, עתיקה הרבה יותר: הצהרת כורש.</p>
+      <p>יש השוואות רבות מאוד בין מה שקרה בתחילת ימי בית שני לבין מה שקורה בגאולה של ימינו, ויש מי שכתבו על כך חוברות שלמות. בשיעור הזה נראה רק נקודה אחת מתוכן: כורש מול בלפור.</p>
+      <p class="bold-para">יז בחשון הוא יום המבול, יום של תפילה על הגשמים, וגם היום שבו ניתנה הצהרת בלפור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הצהרת כורש</div>
+      <h3 class="story-title">👑 "והוא פקד עלי"</h3>
+      <p>מלכות פרס כבשה את מלכות בבל. בתום שבעים שנה למלכות בבל עלה לשלטון כורש, ופרסם הצהרה מפתיעה ביותר: היהודים רשאים לשוב לארץ ישראל. כך כתוב בתחילת ספר עזרא: "כֹּה אָמַר כֹּרֶשׁ מֶלֶךְ פָּרַס, כֹּל מַמְלְכוֹת הָאָרֶץ נָתַן לִי ה' אֱלֹקֵי הַשָּׁמָיִם, וְהוּא פָקַד עָלַי לִבְנוֹת לוֹ בַיִת בִּירוּשָׁלַ‍ִם אֲשֶׁר בִּיהוּדָה".</p>
+      <p>מלך גוי אומר במפורש: הקדוש ברוך הוא נתן לי את כל הממלכות, והוא ציווה עליי לבנות לו בית. והמפרשים שואלים: איפה פקד עליו? מתי נצטווה כורש? ומבואר בדבריהם שהכוונה לנבואת ישעיה, שניבא שיבוא מלך בשם כורש, ועל ידו יפקוד ה' את עמו. כורש הבין שהנבואה מדברת עליו, וקיבל אותה על עצמו.</p>
+      <p>ושימו לב לניסוח: "מִי בָכֶם מִכָּל עַמּוֹ, יְהִי אֱלֹקָיו עִמּוֹ, וְיַעַל". הוא אינו מחייב איש. מי שרוצה – יעלה. ומי שנשאר, מתבקש לסייע בכסף, ברכוש ובבהמה, בנדבה לבית ה'. כורש עצמו אף החזיר את כלי בית המקדש שהוציא נבוכדנצר מירושלים.</p>
+      <p>וקמו ראשי האבות של יהודה ובנימין, הכהנים והלוויים, כל מי שהעיר האלוקים את רוחו, לעלות ולבנות את בית ה' שבירושלים. הרשות ניתנה לכולם, אבל רק מי שרוחו התעוררה קם בפועל. זו נקודה שתחזור שוב ושוב בשיעור.</p>
+      <p class="bold-para">כורש הכריז שה' ציווה אותו לבנות את בית המקדש, והתיר לכל יהודי שרוצה לעלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הצהרת כורש</div>
+      <h3 class="story-title">👣 מעט מאוד עלו</h3>
+      <p>וכמה יהודים עלו? הנביא עצמו מונה: "כָּל הַקָּהָל כְּאֶחָד אַרְבַּע רִבּוֹא אַלְפַּיִם שְׁלֹשׁ מֵאוֹת שִׁשִּׁים" – ארבעים ושניים אלף שלוש מאות ושישים. הרב העריך שבאותה תקופה היו יהודים פי עשרה, ואולי פי שלושים מזה. רק חלק קטן מאוד קם ועלה. למה?</p>
+      <p>הסיבה הראשונה פשוטה: היה להם טוב בגלות, ובארץ ישראל היה עוני ומחסור. ארץ חרבה, שצריך לבנות אותה מן ההתחלה. מי שהשתתף פעם בבניית מקום חדש יודע כמה זה קשה. הרב הביא דוגמה מן ההתיישבות שלפני כמאה שנה: נרשמו מאות משפחות, הגיעו רק חלק מהן, ומתוכן נשארו בסוף משפחות בודדות. מי שבא לבדוק ראה שאין תחבורה, אין פרנסה, ויש ביצות – וחזר. נשארו בעיקר מי שכבר מכרו את ביתם ולא היה להם לאן לחזור.</p>
+      <p>הסיבה השנייה עמוקה יותר. הם ציפו לגאולה אחרת. הם חשבו שהגאולה תבוא בניסים ונפלאות, על כנפי נשרים, בנצחונות גלויים. והנה מגיע מלך גוי ואומר: מי שרוצה, יעלה. ועוד בארץ מחכים להם שכנים שמצרים להם. הם אמרו: זו גאולה? לא התלהבו מן הרעיון.</p>
+      <p class="bold-para">רק עשרות אלפים עלו עם כורש, כי היה קשה, וכי ציפו לגאולה של ניסים גלויים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הצהרת כורש</div>
+      <h3 class="story-title">🧱 לא רק צדיקים</h3>
+      <p>הייתה גם סיבה שלישית. אנשים חיפשו את הצדיק, את הנביא שיוביל את הגאולה. במקום זה, השליח שה' שלח היה כורש, מלך פרס. לא כך דמיינו את התחלת הגאולה.</p>
+      <p>וגם הקבוצות הראשונות שעלו לא היו עשויות דווקא מן הצדיקים הגדולים. הנביאים מספרים על בעיות קשות בקרב העולים: נישואי תערובת, ושאלות יוחסין שהעסיקו את עזרא כשבא לארץ. המצב הרוחני בארץ לא היה פשוט. ממילא, רבים מן הנשארים בגלות לא ראו סיבה להצטרף.</p>
+      <p>ובכל זאת, דרך המעטים האלה, בתוך הקושי הזה, נבנה בית המקדש השני. מה שנראה מבחוץ כהתחלה חלשה, לא מרשימה ולא מושלמת, היה בפועל תחילתה של גאולה שלמה של דור. זה היסוד שיחזור בהמשך השיעור: הגאולה אינה חייבת להופיע בבת אחת ובצורה שאדם ציפה לה.</p>
+      <p class="bold-para">גם מי שעלו לא היו דווקא הצדיקים הגדולים, ובכל זאת דרכם נבנה בית שני.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הדרך אל הצהרת בלפור</div>
+      <h3 class="story-title">🗺️ מלחמה שהכינה דרך</h3>
+      <p>עכשיו קופצים כאלפיים שנה קדימה, אל מלחמת העולם הראשונה. עד היום דנים מדוע בדיוק פרצה. בתחילה עמדו גרמניה ואוסטריה מול רוסיה, צרפת ובריטניה. לטורקיה לא היה שום קשר לסכסוך, והיא יכלה להישאר מן הצד.</p>
+      <p>אבל גרמניה שכנעה אותה להצטרף: שתחסום את המעבר של רוסיה לים התיכון, ובתמורה תקבל ספינות מלחמה. כך נותקה רוסיה מרוב דרכי הייצוא שלה. הטורקים הפריעו גם לבריטים בדרכם אל תעלת סואץ, ואז החליטה בריטניה להילחם בהם.</p>
+      <p>המלחמה על ארץ ישראל לא הייתה קלה כלל. הרב סיפר שהבריטים איבדו בה חיילים רבים מאוד, יותר מכל מה שנפל בכל מלחמה אחת של ישראל מאז קום המדינה. בסופו של דבר כבשה בריטניה את הארץ מידי הטורקים.</p>
+      <p>אבל הארץ לא הייתה רק שלה. רוסיה, צרפת ובריטניה לחמו יחד, ולכן היה צריך לחלק ביניהן את השלל, וכך נחתמו הסכמים על חלוקת האזור. ודווקא בתוך המלחמה הזאת, כמו שאומרים בתפילה, "עושה חדשות, בעל מלחמות", קרה דבר מפתיע מאוד.</p>
+      <p class="bold-para">אלפיים שנה אחר כך, במלחמת העולם הראשונה, נכנסה טורקיה למערכה, ובריטניה כבשה את ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הדרך אל הצהרת בלפור</div>
+      <h3 class="story-title">🎩 שלושה אנשים במקום הנכון</h3>
+      <p>בריטניה לא נחשבה למדינה אוהדת יהודים. יהודים ניסו לא פעם לדבר עם השלטון, ולא היה עם מי לדבר. והנה, בדיוק בתקופה הזאת עולים לשלטון שלושה אנשים, וכל אחד מהם הגיע לתפקידו בדרך מפתיעה.</p>
+      <p>המלך ג'ורג' החמישי היה צעיר, ולא אמור היה למלוך כלל. אחיו הבכור נפטר, וכך הגיע הכתר אליו. בצעירותו ביקר בארץ ישראל, ולפי מה שסיפר הרב, אף שהה בליל הסדר בבית הראשון לציון של אותם ימים, ושמע על אמונתם של היהודים. הוא הכיר את התנ"ך, ומיוחס לו שאמר על ההצהרה שכתוב בתורה שבני ישראל עתידים לשוב לארצם, והוא שמח שממלכתו מסייעת לכך.</p>
+      <p>גם ראש הממשלה התחלף באמצע המלחמה, כמה שבועות לפני ההצהרה: קודמו התפטר אחרי שנטען שאינו מנהל את המלחמה כראוי, ובמקומו קם לויד ג'ורג', שגם הוא אהד מאוד את היהודים. ושר החוץ, ארתור בלפור, למד את התנ"ך ודבק בו.</p>
+      <p>שלושתם, כנראה, היו בעלי אמונה חזקה בתנ"ך. ושלושתם יחד החליטו על ההצהרה. אין זה מעשה של צירוף מקרים, אמר הרב. זו יד ה' שמסדרת את האנשים הנכונים במקומות הנכונים.</p>
+      <p class="bold-para">המלך, ראש הממשלה ושר החוץ של בריטניה הגיעו לתפקידם כמעט במקרה, ושלושתם האמינו בתנ"ך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הדרך אל הצהרת בלפור</div>
+      <h3 class="story-title">🏠 בית לאומי לעם היהודי</h3>
+      <p>בשני בנובמבר 1917 נשלח מכתב ממשרד החוץ הבריטי, וזו לשונו בתרגום: "ממשלת הוד מלכותו רואה בעין יפה הקמת בית לאומי לעם היהודי בארץ ישראל, ותשתדל במיטב מאמציה להקל את השגת מטרה זו". אחר כך נוסף התנאי שלא ייעשה דבר שעלול לפגוע בזכויות האזרחיות והדתיות של העדות הלא יהודיות בארץ, או בזכויותיהם של יהודים בכל ארץ אחרת.</p>
+      <p>הניסוח הזה נשקל ונבחן ארוכות. והרב עמד על ייחודו: "בית לאומי לעם היהודי". האם יש בעולם מדינה ששייכת ללאום ולא לתושביה? מדינות רבות מורכבות מעמים שונים, ואזרחותן אינה תלויה בשייכות לעם מסוים.</p>
+      <p>כאן, בפעם הראשונה, מוקם בית שמוגדר כשייך לעם. והדבר נשאר כך עד היום: אדם יכול לבוא לארץ כתייר, אבל הזכות לבוא ולקבל אזרחות נתונה מכוח השייכות לעם היהודי, ולמעט מקרים חריגים, מי שאינו שייך לעם היהודי אינו מקבל אותה. והרב הוסיף תפילה: שה' יעזור שיֵדעו כראוי מה זה יהודי.</p>
+      <p class="bold-para">בפעם הראשונה בעולם הוכרז על בית לאומי השייך לעם ולא לתושבי השטח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הדרך אל הצהרת בלפור</div>
+      <h3 class="story-title">⛪ נוצרים שמחזירים את היהודים</h3>
+      <p>כאן עולה שאלה גדולה. בנצרות הקלאסית מקובל שהיהודים נענשו לעולם, שה' עזב אותם, ושלעולם לא ישובו לארצם. כל מבנה האמונה הזה נשען על כך. איך ייתכן שדווקא מנהיגים נוצרים הם שמחזירים את היהודים לארץ ישראל? הרי זה סותר את אמונתם עצמה.</p>
+      <p>הרב סיפר משל על שני מלומדים נוצרים שהתווכחו על שאלה יסודית בתולדות דתם, ופנו למלומד הראשי. הוא ענה להם: זה לא משנה. העיקר הוא שהיהודים אשמים. כל כך עמוק הייתה האמונה הזאת מושרשת.</p>
+      <p>התשובה, לפי הרב, היא שהחלה אז להתפשט אמונה אחרת בקרב חלק מן הנוצרים, שנקראים היום אוונגליסטים. לפי אמונתם, שיבת היהודים לארצם ושליטתם בירושלים היא חלק הכרחי מן הגאולה של העולם. מסיבה זו רבים מהם תומכים בישראל עד היום, באים לבקר ומתרגשים עד דמעות מול הכותל.</p>
+      <p>ובכל זאת, הרב ראה בכל זה פלא. ה' רצה, וממילא אלה שאמונתם הקלאסית אמרה ההפך נעשו שלוחיו. אחר כך התכנסו המעצמות בוועידת סן רמו, ואישרו כולן את ההצהרה. וכשהתכנסה העצרת הכללית של האומות המאוחדות כשלושים שנה אחר כך, ההצבעה עברה ברוב הנדרש, כמעט על חודו של קול.</p>
+      <p class="bold-para">לפי התאולוגיה הנוצרית הקלאסית היהודים לא ישובו לארצם, ובכל זאת נוצרים הם שהחזירו אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הדרך אל הצהרת בלפור</div>
+      <h3 class="story-title">🪨 "גל" של עדים טובים</h3>
+      <p>הרב הביא רמז שעוזר לו לזכור את המספרים. ההצבעה באומות המאוחדות על הקמת מדינה יהודית התקיימה במוצאי שבת פרשת ויצא, בשנת תש"ח. בסוף הפרשה, כשלבן רודף אחרי יעקב, הם עורכים ביניהם ברית ומקימים גל של אבנים. ואז כתוב: "וַיִּקְרָא לוֹ לָבָן יְגַר שָׂהֲדוּתָא, וְיַעֲקֹב קָרָא לוֹ גַּלְעֵד".</p>
+      <p>יש כאן מילים בארמית בתוך התורה, ונשאלת השאלה למה. והרב הביא רמז: יעקב קרא למקום "גל עד". "גל" בגימטריה שלושים ושלוש. שלושים ושלוש מדינות הצביעו בעד, והיו "עדים" טובים ליעקב.</p>
+      <p>ולבן, שרדף אחרי יעקב ורצה לכלותו, קרא לו "יגר שהדותא". "יג" – שלוש עשרה. שלוש עשרה מדינות הצביעו נגד, והיו בצד של לבן. רמז מפליא, שנקרא באותה פרשה שבה התרחש הדבר.</p>
+      <p>הרב הדגיש שהוא אינו זוכר את המספרים בעל פה. הרמז פשוט מזכיר אותם מעצמו. יש פרשה, יש שבוע, ויש מאורע שקורה בדיוק בזמן שבו קוראים עליו. ובאותו שבוע, כשבני ישראל קראו בבתי הכנסת על הגל שהקים יעקב, הצביעו אומות העולם על עתידו של עם יעקב בארצו. מי שמתבונן בכך רואה שגם לוח הזמנים של ההיסטוריה אינו מקרי, ושהתורה מלווה את עם ישראל גם במאורעות של דורנו.</p>
+      <p class="bold-para">בשבוע של פרשת ויצא, שבה נאמר "יגר שהדותא" ו"גלעד", הצביעו שלושים ושלוש מדינות בעד ושלוש עשרה נגד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מי שראה מראש</div>
+      <h3 class="story-title">🔭 הרב אלקלעי ראה מראש</h3>
+      <p>מקובל לומר שחוזה המדינה היה הרצל. אבל הרב רצה להקריא ממי שהיה לפניו: הרב יהודה אלקלעי, שכיהן כרב בסרביה ופרסם את ספריו עשרות שנים לפני הצהרת בלפור.</p>
+      <p>כך כתב, בתמצית: גאולת ישראל תהיה על ידי מלכי הארץ. לה' התשועה, והוא מסבב אותה על ידי בני אדם, כמו שסובבה תשועת גלות בבל על ידי כורש. ישראל יפתחו פתח כחודו של מחט – יעשו השתדלות, יתעוררו – והקדוש ברוך הוא יפתח להם פתח כפתחו של אולם, ויטה את לב המלכים לעשות את בקשתם.</p>
+      <p>והוסיף הבדל בין שתי הגאולות: בבבל העיר ה' רק את רוח כורש לבדו, ובגאולה הזאת יטה את לב כל מלכי הארץ, כי האומות שהגלו את ישראל צריכות לעשות תשובה ולקבל את ישראל שפיזרו בעמים.</p>
+      <p>ובאחד מספריו המאוחרים, לפי מה שהקריא הרב, כתב שלפי רוח הזמן הסיכויים אצל מלכי אירופה טובים, ושמלכות בריטניה תהיה הראשונה, ואחריה גם צרפת תסייע. הרב התפלא: מאין ידע? ואכן, בריטניה הייתה הראשונה עם הצהרת בלפור, ובוועידת סן רמו הצטרפה גם צרפת.</p>
+      <p class="bold-para">עשרות שנים לפני בלפור כתב הרב יהודה אלקלעי שהגאולה תבוא על ידי מלכי הגויים, ושבריטניה תהיה הראשונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מי שראה מראש</div>
+      <h3 class="story-title">🪡 פתח כחודו של מחט</h3>
+      <p>כדאי להתעכב על המשל שבדברי הרב אלקלעי. ישראל פותחים פתח כחודו של מחט, והקדוש ברוך הוא פותח פתח כפתחו של אולם. יש כאן הנחיה מעשית: אין לחכות שהכל ייעשה מלמעלה בלי שום מעשה מצדנו. צריך התעוררות, צריך השתדלות, ולו קטנה.</p>
+      <p>וגם אין לחשוב שהכל תלוי בכוחנו. ההשתדלות של ישראל קטנה מאוד ביחס לתוצאה. הצהרה של מעצמה, החלטה של כינוס בינלאומי, מלחמה עולמית שמשנה את מפת האזור – כל אלה אינם בידי קבוצה קטנה של יהודים. אלה הפתחים הגדולים שה' פותח.</p>
+      <p>והרב אלקלעי הוסיף שגם הרד"ק מבאר כך: הגאולה תסובב על ידי מלכי הגויים, לא בעל כורחם, אלא כשה' מעיר את רוחם. התפקיד של ישראל הוא לפתוח את הפתח הקטן, ולהיות מוכנים להיכנס בפתח הגדול כשייפתח. זה בדיוק מה שהיה חסר אצל רבים בימי כורש: הפתח נפתח, והם לא נכנסו בו.</p>
+      <p class="bold-para">ההשתדלות של ישראל קטנה, אבל היא מעוררת את הסיוע הגדול מלמעלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מי שראה מראש</div>
+      <h3 class="story-title">🕊️ "לכורש משיחו"</h3>
+      <p>הרב סיפר גם עובדה מעניינת: אביו של הרצל היה גבאי בבית הכנסת של הרב אלקלעי, והרצל עצמו התפלל שם בצעירותו, כשהיה עדיין ילד בבית שומר מצוות. האם שמע שם דרשות? האם נכנסו הדברים ללבו ויצאו אחרי שנים? אין לדעת. אבל זו עובדה מעוררת מחשבה.</p>
+      <p>ישעיה הנביא אומר: "כֹּה אָמַר ה' לִמְשִׁיחוֹ לְכוֹרֶשׁ". למה נקרא כורש "משיחו" של ה'? כי לקדוש ברוך הוא יש שלוחים רבים, ולפעמים השליח הוא מלך גוי. כורש היה שליח ה' לגאולה של בית שני.</p>
+      <p>ובדורות האחרונים, אמר הרב, ממלכת בריטניה וההצהרה שלה היו כביכול "כורש השני". ושוב, כמו אז, מעט יהודים עלו. רבים לא ראו במה שקרה קריאה אלוקית. מסופר שכעבור שנים שאל מדינאי בריטי בכיר את אחד ממנהיגי הציונות: אמרת שאם רק יפתחו את הדלת כולם יבואו, איפה כולם? לא היה קל לעלות, ולא היה קל להבין שזו הקריאה.</p>
+      <p class="bold-para">כמו שכורש נקרא שליח ה', כך גם בדורות האחרונים שלח ה' שליחים מאומות העולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · באגדה ובהלכה</div>
+      <h3 class="story-title">🐖 "שמחזיר עטרה לבעליה"</h3>
+      <p>הרב הביא דבר יפה שמובא בשם אחד מגדולי החסידות. למה הייתה הגאולה צריכה לעבור דווקא דרך הנוצרים, דרך הבריטים? למה לא קיבל עם ישראל את הארץ ישר מידי הטורקים?</p>
+      <p>חז"ל אמרו על החזיר, שהוא סמל למלכות אדום: "ולמה נקרא שמה חזיר? שמחזרת עטרה לבעליה". והתנבא הנביא עובדיה: "וְעָלוּ מוֹשִׁעִים בְּהַר צִיּוֹן לִשְׁפֹּט אֶת הַר עֵשָׂו, וְהָיְתָה לַה' הַמְּלוּכָה". נמצא שמלכות אדום, הנוצרים, היא שתחזיר את הארץ לבעליה.</p>
+      <p>ולמה צריך אותם באמצע? כי לבני ישמעאל יש זכויות מסוימות. הם אינם עובדי עבודה זרה, הם מכריזים על ה' אחד, ויש להם זכות של ברית מילה. אף שאין המילה שלהם בשלמות, לא בשמונה ימים, יש להם בה זכות. ובזוהר מובא שבזכות זו ניתנה להם הארץ לתקופה.</p>
+      <p>לכן, אילו היה עם ישראל צריך לקחת את הארץ ישר מידיהם, היה קטרוג גדול. מה עשה הקדוש ברוך הוא? סובב שהנוצרים, שאין להם זכות זו, ייקחו את הארץ מידי בני ישמעאל, ועם ישראל יקבל אותה מידי הנוצרים. כך לא היה קטרוג.</p>
+      <p class="bold-para">חז"ל רמזו שמלכות אדום תחזיר את הארץ לבעליה, ולכן היה צורך שהנוצרים יעמדו באמצע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · באגדה ובהלכה</div>
+      <h3 class="story-title">🧭 גבולות הארץ שבתורה</h3>
+      <p>בוועידת סן רמו חולק האזור בין המעצמות. לצרפת ניתן השטח שבצפון, ושם נקבע גבול שקיים עד היום, בסמוך למטולה. אבל הרב העיר: זה אינו הגבול שבתורה.</p>
+      <p>בתורה כתוב: "וַיְהִי גְּבוּל הַכְּנַעֲנִי מִצִּידֹן בֹּאֲכָה גְרָרָה עַד עַזָּה". ארץ כנען, שה' נתן לעם ישראל, מגיעה לכל הפחות מצידון ועד עזה. יש בתורה גם גבולות רחבים יותר, אבל זה המינימום. כל מי שפותח תנ"ך רואה שבימי יהושע ובדורות שאחריו ישבו ישראל גם באזורים שבצפון לגבול של היום.</p>
+      <p>הרב ביקש מן השומעים לפתוח את העיניים: הגבולות שאמרה התורה אינם רק זיכרון היסטורי. הם הבטחה של הקדוש ברוך הוא לעמו. הוא הביע את אמונתו שה' רוצה לתת לנו את הארץ בשלמותה בבוא העת, ושצריך לדעת ולהבין שזה מה שמחכה לנו.</p>
+      <p>ובלפור עצמו, כך מסופר, אמר בסוף ימיו שבהסתכלות לאחור, ההצהרה הזאת היא הדבר הראוי ביותר שעשה בחייו. והרב ראה בזה עוד סימן: כשהקדוש ברוך הוא רוצה, גם בריטניה, גם צרפת, גם איטליה וגם ארצות הברית מסכימות, ואנשים שאינם מבני ישראל מרגישים שזכו לדבר גדול כשהם משמשים שליחים לכך.</p>
+      <p class="bold-para">הגבול שנקבע בין המעצמות אינו גבול הארץ בתורה, שמגיע לכל הפחות מצידון ועד עזה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · באגדה ובהלכה</div>
+      <h3 class="story-title">📜 שלוש השבועות</h3>
+      <p>עכשיו מגיעים להלכה. יש להצהרת בלפור השלכה הלכתית חשובה מאוד, ולא כולם יודעים אותה. חז"ל מספרים על שלוש שבועות שהשביע הקדוש ברוך הוא בזמן הגלות. אחת מהן היא שישראל לא יעלו בחומה, ואחרת היא שלא ימרדו באומות.</p>
+      <p>בדורות שלפני ההצהרה היו גדולים שעשו רבות לישוב הארץ, ויהודים רבים עלו לירושלים בזכותם. הדבר התרחב בעזרת אנשים רבים. אבל רבנים רבים עמדו מנגד, וגם אלה שבלבם רצו לקרב את הדבר שמו יד לפה. למה? כי חששו מן השבועות. אולי יציאה המונית לארץ היא בדיוק עלייה בחומה? אולי זה מרד באומות?</p>
+      <p>השאלה הזאת אינה רק נחלת העבר. הרב סיפר שפגש פעם יהודי שאמר לו שיש בעיה עם כל זה משום שלוש השבועות, ושאל: איך אתה יודע בוודאות שאין בזה בעיה? והתשובה, אמר הרב, כתובה במכתב מפורש של אחד מגדולי הדור ההוא. זו אינה סברה של דורנו, אלא דברים שנכתבו בזמן אמת, על ידי מי שעמד מול המאורעות עצמם ושקל אותם במשקל ההלכה.</p>
+      <p class="bold-para">היו רבנים שחששו שהשיבה לארץ היא עלייה בחומה, האסורה משום שלוש השבועות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · באגדה ובהלכה</div>
+      <h3 class="story-title">✉️ מכתבו של המשך חכמה</h3>
+      <p>בעל המשך חכמה והאור שמח, שהיה רב בדווינסק ומגדולי הדור, כתב מכתב אחרי ההחלטות של אותן שנים. הוא תיאר את מה שהיה קודם: הגדולים שפעלו לישוב הארץ, והרבנים שעמדו מנגד מחשש השבועות.</p>
+      <p>ואז כתב, בתוכן הדברים: אבל עכשיו, בהשגחה, בהחלטת המלכויות שנעשתה בסן רמו ניתן צו שארץ ישראל תהיה לעם ישראל. וכיוון שסר פחד השבועות, וברשות המלכים, קמה ועומדת מצוות ישוב ארץ ישראל, ששקולה ככל המצוות שבתורה, ומצווה על כל איש מישראל לסייע בכל יכולתו.</p>
+      <p>ההיגיון פשוט: האיסור היה שלא נמרוד באומות ושלא נעלה בחומה בכוח. אבל כאן האומות עצמן נתנו. אין כאן מרד ואין כאן עלייה בחומה. ממילא אין יותר חשש של שלוש השבועות.</p>
+      <p>ואז הוסיף משפט שהרב ביקש שכל יהודי יכיר: אם יתן ה' והדבר יתרחב ויגדל ויפרח, יהיה זה כמו שהייתה הרשות מפרס, שממנה החלה גאולת בית שני. כלומר, הוא עמד בתחילת הדרך, לא ידע עדיין לאן תגיע, אבל אמר: אם נראה שהדבר פורח והולך, דעו לכם שכאן מתחילה הגאולה.</p>
+      <p class="bold-para">המשך חכמה כתב שמשעה שהמלכויות נתנו את הארץ לישראל, סר פחד השבועות ומצוות ישוב הארץ במקומה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לדעת לזהות את הקריאה</div>
+      <h3 class="story-title">🌹 "ויגדל ויפרח כשושנה"</h3>
+      <p>הרב אמר שהמשפט הזה הוא יסוד שצריך ללוות כל יהודי. לפעמים קמים אנשים ומודיעים, מתוך חשבון מציאותי, שאי אפשר לעמוד באיומים, שהמצב אבוד. מבחינה טבעית גרידא, אולי יש בדבריהם צד.</p>
+      <p>אבל מי שחושב כך שוכח דבר אחד: אנחנו לא נמצאים כאן במקרה. אנחנו נמצאים בתוך תהליך הגאולה של עם ישראל. ואם תהליך כזה החל, הוא הולך וגדל, מתרחב ופורח, כמו שכתב המשך חכמה. הוא אינו הולך וחוזר לאחור.</p>
+      <p>מי שחושב שהגענו לכאן במקרה, יכול גם לחשוב שבמקרה נלך מכאן. אבל מי שמבין שכמו שהיה בימי כורש, גם כאן זו רק תחילת הגאולה, יודע שהגאולה הולכת וגדלה. ממה יפחד? הקדוש ברוך הוא נלחם לעמו ועוזר לו, והדבר הולך ופורח.</p>
+      <p>והאמונה הזאת נותנת גם אומץ. מי שיודע שהוא חלק מתהליך שה' מוביל, אינו חושש לדבר על ההבטחות הגדולות של התורה, ולבקש שיתקיימו במלואן.</p>
+      <p class="bold-para">מי שמבין שהגאולה הולכת ופורחת אינו נבהל מתחזיות קודרות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לדעת לזהות את הקריאה</div>
+      <h3 class="story-title">📖 מי שלמד מראש</h3>
+      <p>ומה הלקח למעשה? שאנחנו נדע לזהות את הקריאה. לא נאמר: זה סתם מלך גוי, סתם פוליטיקה, סתם מקרה. נדע לראות שהקדוש ברוך הוא עושה כאן דבר, ונדע להכין את עצמנו.</p>
+      <p>הרב הסביר שזו בדיוק הבעיה: כשקורה דבר, כבר מאוחר מדי להתחיל להבין. מי שלמד לפני כן את דברי הרב אלקלעי, וידע מראש שכך עשויה הגאולה להגיע, רואה את המאורע ומיד מבין: הנה, מה שהיה כתוב מתקיים. הוא שמח, ומבין שיש אלוקים שמנהיג את העולם.</p>
+      <p>ומי שלא למד, וחיכה לדברים אחרים לגמרי, עומד מול אותו מאורע ממש ומהסס: אולי זה במקרה? הוא אינו יודע מה לעשות עם מה שהוא רואה. כך היה בימי כורש, כך היה בימי בלפור, וכך עלול לקרות שוב אם לא נלמד מראש.</p>
+      <p>לכן צריך לדעת מראש שהגאולה אינה חייבת להגיע בבת אחת, ושלא הכל ירד מן השמים. כמובן, יש אפשרות כזאת. אבל יש גם אפשרות גדולה שחלק גדול מן הדברים ייעשה על ידינו, בדרך טבעית, כשה' מסבב אותם.</p>
+      <p class="bold-para">מי שלמד מראש איך הגאולה עשויה להגיע, מזהה אותה כשהיא באה ושמח בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לדעת לזהות את הקריאה</div>
+      <h3 class="story-title">⚖️ כורש ובלפור זה מול זה</h3>
+      <p>כשמניחים את שתי ההצהרות זו מול זו, הדמיון בולט. בשתיהן מלך או ממשלה של גויים מכריזים שהיהודים רשאים לשוב לארצם. בשתיהן ההכרזה מנומקת, במפורש או ברמז, באמונה בדברי הנביאים: כורש הזכיר את ה' אלוקי השמים, ומנהיגי בריטניה דיברו על מה שכתוב בתנ"ך.</p>
+      <p>בשתיהן איש אינו מחויב לעלות. כורש אמר "מִי בָכֶם", ובלפור דיבר על "בית לאומי" שיש להקל את הקמתו. ובשתיהן קמו רק מעטים ועלו, והמצב בארץ היה קשה מאוד, הן מבחינה כלכלית והן מבחינה רוחנית.</p>
+      <p>גם ההתנגדות דומה. אז אמרו: זו גאולה? מלך גוי, עולים מעטים, שכנים מצירים? וגם בדורות האחרונים רבים אמרו כך. אבל דרך העולים המעטים של ימי כורש נבנה בית שני, ודרך מה שהחל בהצהרת בלפור הלך הישוב וגדל, כמו שכתב המשך חכמה.</p>
+      <p>השיעור מבקש מאיתנו לא לחזור על הטעות של אז. מי שרואה את הדמיון הזה, מבין שגם הגאולה של היום היא דרך של ה', גם אם היא אינה נראית כמו שדמיינו.</p>
+      <p class="bold-para">בשתי הגאולות שלח ה' שליח מן האומות, ובשתיהן מעטים בלבד זיהו את הקריאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לדעת לזהות את הקריאה</div>
+      <h3 class="story-title">🏛️ מסכת מידות</h3>
+      <p>הרב הביא לכך דוגמה מבית המקדש. יש מי שאומרים שבית המקדש השלישי ירד בנוי מן השמים. אבל מדוע, אם כן, נכתבה מסכת שלמה, מסכת מידות, שמתארת בפרוטרוט איך היה בית המקדש בנוי? אם הוא ירד מן השמים, אין צורך במידות.</p>
+      <p>אלא, אמר הרב, משום שידעו שיש אפשרות גדולה שאנחנו בעצמנו נבנה את בית המקדש. בתחילה יבנו לפי המידות שהיו בעבר, עד שנבין את מה שכתוב ביחזקאל על בית המקדש השלישי, ואז ישנו לפי מה שנבין.</p>
+      <p>וכמו שזכינו לראות נבואות רבות שהתקיימו, הרב מאחל שנזכה לראות גם את ההמשך: שנדע לקלוט את הניסים שהקדוש ברוך הוא עושה עמנו בכל יום ויום, נבין שזו השגחה, ולא נאמר עליהם "מקרה".</p>
+      <p>וכשתבוא הקריאה הבאה, שנדע לקבל אותה בשמחה, כמי שלמד מראש וחיכה לה. שנזכה לראות איך הדבר הולך וגדל, פורח ומתרחב, עד הגאולה השלמה, במהרה בימינו, אמן.</p>
+      <p class="bold-para">רבי כתב את מסכת מידות כי ידע שאולי נבנה את בית המקדש בעצמנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/SElvgsGWuaQ · 2024-11-19 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הצהרת כורש","icon":"👑","color":"#c62b6b","stories":[{"id":1,"title":"יום אחד, הרבה תאריכים","icon":"📅"},{"id":2,"title":"\"והוא פקד עלי\"","icon":"👑"},{"id":3,"title":"מעט מאוד עלו","icon":"👣"},{"id":4,"title":"לא רק צדיקים","icon":"🧱"}]},{"id":2,"name":"הדרך אל הצהרת בלפור","icon":"🗺️","color":"#6d28d9","stories":[{"id":5,"title":"מלחמה שהכינה דרך","icon":"🗺️"},{"id":6,"title":"שלושה אנשים במקום הנכון","icon":"🎩"},{"id":7,"title":"בית לאומי לעם היהודי","icon":"🏠"},{"id":8,"title":"נוצרים שמחזירים את היהודים","icon":"⛪"},{"id":9,"title":"\"גל\" של עדים טובים","icon":"🪨"}]},{"id":3,"name":"מי שראה מראש","icon":"🔭","color":"#e08e00","stories":[{"id":10,"title":"הרב אלקלעי ראה מראש","icon":"🔭"},{"id":11,"title":"פתח כחודו של מחט","icon":"🪡"},{"id":12,"title":"\"לכורש משיחו\"","icon":"🕊️"}]},{"id":4,"name":"באגדה ובהלכה","icon":"⚖️","color":"#1e88b8","stories":[{"id":13,"title":"\"שמחזיר עטרה לבעליה\"","icon":"🐖"},{"id":14,"title":"גבולות הארץ שבתורה","icon":"🧭"},{"id":15,"title":"שלוש השבועות","icon":"📜"},{"id":16,"title":"מכתבו של המשך חכמה","icon":"✉️"}]},{"id":5,"name":"לדעת לזהות את הקריאה","icon":"🌱","color":"#c62b6b","stories":[{"id":17,"title":"\"ויגדל ויפרח כשושנה\"","icon":"🌹"},{"id":18,"title":"מי שלמד מראש","icon":"📖"},{"id":19,"title":"כורש ובלפור זה מול זה","icon":"⚖️"},{"id":20,"title":"מסכת מידות","icon":"🏛️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
