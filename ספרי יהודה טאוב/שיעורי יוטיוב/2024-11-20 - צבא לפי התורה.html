@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 צבא לפי התורה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 צבא לפי התורה</h1>
+  <p>השקפת התורה על מלחמה מול הקוד האתי המערבי, ודילמות השירות של מי שרואה בצבא ערך – מסירוב פקודה ועד יחידות נפרדות</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ צבא לפי התורה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/ZXkxVHs-ksE?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/ZXkxVHs-ksE/hqdefault.jpg" alt="צבא לפי התורה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=ZXkxVHs-ksE" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פתיחה: שתי מערכות ערכים</div>
+      <h3 class="story-title">📘 כשהצבא והתורה אינם אומרים אותו דבר</h3>
+      <p>הנושא של השיעור אינו היחס בין דת למדינה באופן כללי. הוא עוסק בשאלה ממוקדת: אדם הולך להילחם, נכנס למערכה, ומגלה שהדרך שבה הצבא רוצה להילחם סותרת לכאורה את מה שכתוב בתורה. האם באמת יש סתירה? ואם יש, כיצד צריך אדם לנהוג?</p>
+      <p>הרב ביסס חלק גדול מן השיעור על ספר שהוא מעריך מאוד: "אתיקה צבאית יהודית". את הספר כתבו רבנים ממכון "משפטי ארץ", מכון העוסק בכתיבת הלכות הנוגעות לחיים במדינה כיום. הספר נבנה כנגד הקוד האתי של צה"ל, ומציג לצידו את עמדת ההלכה.</p>
+      <p>הרב ציין שהספר כתוב בצורה עדינה ומאוזנת. הוא אינו קיצוני לשום כיוון, ואינו מתנשא. סימן לכך, אמר, הוא שהספר יצא בהוצאה כללית גדולה, שלא הייתה מוציאה ספר קיצוני.</p>
+      <p>השיעור בנוי בשלושה שלבים. ראשית, השאיפה העקרונית: מה התורה מצפה מאיתנו ביחס לארץ ישראל. שנית, ההבדלים בין רוח הצבא כיום ובין השקפת התורה, ובעיקר בשאלת הפגיעה בחפים מפשע. שלישית, הדילמות המעשיות: איך מתגייס אדם לצבא שאינו פועל לפי התורה, ומה עושה חייל כשפקודה סותרת את ההלכה. הרב הדגיש שמטרתו להציג את הדעות ואת שורשיהן, ולא להכריע בשאלות מעשיות.</p>
+      <p class="bold-para">השיעור עוסק במה שעושה אדם כשהדרך שבה הצבא נלחם אינה תואמת את מה שכתוב בתורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גבולות הארץ והשאיפה</div>
+      <h3 class="story-title">🗺️ מצידון עד עזה</h3>
+      <p>הדוגמה הראשונה נוגעת למצב באותם ימים: מלחמה בצפון, ודיונים על הסכם הפסקת אש. זו שאלה קשה מאוד להכרעה. אבל לפני שנכנסים לשיקולים, צריך לשאול: מה צריכה להיות השאיפה היהודית העקרונית?</p>
+      <p>בפרשת נח כתוב: "וַיְהִי גְּבוּל הַכְּנַעֲנִי מִצִּידֹן בֹּאֲכָה גְרָרָה עַד עַזָּה". זה גבול ארץ כנען. יש גם גבולות ההבטחה לעתיד לבוא, "מִנְּהַר מִצְרַיִם עַד הַנָּהָר הַגָּדֹל נְהַר פְּרָת", אבל עליהם הרב לא דיבר. הוא דיבר על המינימום.</p>
+      <p>וגם בברכת יעקב לזבולון נאמר: "זְבוּלֻן לְחוֹף יַמִּים יִשְׁכֹּן... וְיַרְכָתוֹ עַל צִידֹן". נחלת השבטים הגיעה עד אזור צידון.</p>
+      <p>בשיעור נשאלה שאלה על עכו ועל אזור נהריה, שלגביהם יש דיון אם נתקדשו בקדושה השנייה של עולי בבל. הרב השיב שזו שאלה הנוגעת למצוות התלויות בארץ. אבל לגבי ארץ ישראל של התורה, אין ספק שהיא כוללת את האזורים האלה. עם ישראל כבש אותם בימי יהושע, ויהודים ישבו שם תמיד.</p>
+      <p>ההבחנה הזאת חשובה: יש שאלות של קדושת הארץ לעניין מצוות כמו תרומות ומעשרות ושביעית, ויש שאלה אחרת – מהי הארץ שהתורה ציוותה לרשת. בשאלה השנייה, הגבול המינימלי שהתורה עצמה משרטטת ברור, והוא נקודת המוצא לכל דיון על השאיפה העקרונית.</p>
+      <p class="bold-para">לפי התורה הגבול המינימלי של ארץ כנען הוא מצידון ועד עזה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גבולות הארץ והשאיפה</div>
+      <h3 class="story-title">🧭 שאיפה אינה הוראה</h3>
+      <p>מכאן אומר הרב: אם אנחנו מאמינים שאנו נמצאים בתהליך של גאולה, ולא הגענו לכאן במקרה, כמו מי שמצא לו מקלט זמני, אזי אנחנו צריכים לשאוף שהגאולה תתקדם. התורה ציוותה לרשת את ארץ ישראל.</p>
+      <p>והרב העיר שבפועל, שני המקומות שמהם באות הצרות הגדולות בשנים האחרונות הם בדיוק קצות הגבול המינימלי הזה: אזור צידון שבצפון, ועזה שבדרום – שני מקומות שאינם בידינו.</p>
+      <p>אבל הרב הדגיש מיד: השאיפה אינה אומרת שעכשיו צריך לעשות זאת. יש חשבונות רבים, הוא אינו האחראי עליהם, ואין כאן הוראה מעשית. השאלה היא מה צריך להיות בתודעה, במחשבה העקרונית.</p>
+      <p>הוא הוסיף שהמושג "ארץ ישראל השלמה" כמעט נעלם מן הלקסיקון הציבורי כיום, והדבר משפיע על הרבה החלטות. הוא הזכיר גם את המעבר שנעשה בתפיסה הצבאית בשנים שלפני המלחמה, מתפיסה של הכרעה לתפיסה של הכלה. כשהשאיפה העקרונית אינה ברורה, גם ההתנהגות בשטח משתנה. אלה הן שאלות ציבוריות, לא שאלות של היחיד, ולכן הן נבחנות כאן ברמה העקרונית.</p>
+      <p class="bold-para">השאיפה לארץ ישראל השלמה צריכה להיות חלק מן התודעה, גם כשאינה הוראה מעשית לרגע זה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חפים מפשע: התורה מול המערב</div>
+      <h3 class="story-title">🌳 על מה כולם מסכימים</h3>
+      <p>הנושא השני הוא ההבדל בין רוח הקוד האתי של הצבא ובין השקפת התורה. דוגמה מרכזית היא היחס לחפים מפשע.</p>
+      <p>חלק מן העקרונות מוסכמים על כולם. גם התורה אוסרת להשחית לשווא, גם בשעת מלחמה: "לֹא תַשְׁחִית אֶת עֵצָהּ". אסור להשחית דבר בלי צורך, אסור לפגוע בבית מבלי סיבה, ואסור להרוג סתם. זה רעיון שמופיע כבר בתורה.</p>
+      <p>השאלה הקשה מתחילה כשהדברים מעורבבים: יש במקום אחד גם מי שמבקש להרוג, וגם אנשים שאינם מעורבים. מה עושים במקרה כזה?</p>
+      <p>לפי האמנות הבינלאומיות, הכלל הוא מידתיות. אי אפשר לפגוע בכפר שלם בגלל מחבל אחד שנמצא בו. הרב העיר שהאמנות האלה נכתבו לעולם אחר, ואין בהן התייחסות מספקת למקרים שאנו פוגשים כמעט בכל יום. בפועל, לדבריו, לעתים קרובות מוחמצת האפשרות לפגוע במי שמבקש להרוג, מתוך זהירות רבה, והדבר עולה במחיר.</p>
+      <p>השאלה, אם כן, אינה אם מותר לפגוע בחפים מפשע לשווא – על כך כולם מסכימים שאסור. השאלה היא איך שוקלים את הדברים כשאין דרך לפגוע במי שמבקש להרוג בלי לפגוע גם במי שסביבו, ומה המשקל שניתן לחיי הלוחמים ולחיי האזרחים שלנו.</p>
+      <p class="bold-para">גם התורה אוסרת להשחית ולהרוג לשווא; המחלוקת מתחילה כשחפים מפשע ולוחמים מעורבים יחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חפים מפשע: התורה מול המערב</div>
+      <h3 class="story-title">📖 שכם: מה כתוב בתורה</h3>
+      <p>הרב הביא את פרשת וישלח. אחרי מעשה שכם, באו שמעון ולוי, נקמו את דינה, והרגו את אנשי העיר. הרמב"ן עוסק במעשה, ומסביר שבני יעקב ראו את אנשי שכם כרשעים, שהיה עליהם עונש. לפי הצגת הרב, יש כאן ראייה שונה מאוד מזו של האמנות הבינלאומיות: כדי להציל את דינה, פגעו בעיר כולה.</p>
+      <p>אבל מיד הוסיף: יעקב אבינו כעס עליהם. ויש סוגיה שלמה בשאלה אם כעסו היה מצד ההלכה, או מצד השיקול המדיני – מה יקרה בעקבות המעשה. כי לא כל מה שמותר צריך לעשות בפועל. גם אם נאמר שדבר מסוים מותר על פי הלכה, צריך לחשב את התוצאות ואת התגובות.</p>
+      <p>והרב הדגיש בעניין הזה, כלשונו, שהדברים אינם בחשבון כהוראה למעשה: גם כשלומדים את הסוגיה ההלכתית, ההכרעה בפועל תלויה בשיקולים רבים, ובראשם מה יקרה בעקבות המעשה. כך עשה יעקב אבינו, ששקל את ההשלכות ולא רק את הדין.</p>
+      <p>הלימוד כאן הוא עיוני: להבין שהתורה רואה את המלחמה בעיניים אחרות מן המקובל במערב. אבל ההבנה הזאת אינה מבטלת את הצורך בשיקול דעת, באחריות ובזהירות.</p>
+      <p class="bold-para">סיפור שכם מראה שהתורה רואה את המלחמה אחרת, אבל גם שיעקב אבינו כעס, ושלא כל מה שמותר ראוי לעשותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חפים מפשע: התורה מול המערב</div>
+      <h3 class="story-title">🔍 מאין הפער?</h3>
+      <p>למה יש פער כה גדול בין התפיסה המקובלת ובין מה שעולה מן התורה? הרב הסביר זאת כך. מי שמחזיק בתפיסה ליברלית, ורואה את כל בני האדם באותו מישור, אינו מכיר בייחודה של הנשמה היהודית. הוא מודה שאזרחי מדינתו חשובים לו יותר, אבל במידה מוגבלת. לכן הוא אינו מסכים שייפגעו יותר מדי בלתי מעורבים, גם כשברור שבכך יינצלו יהודים.</p>
+      <p>התורה, לעומת זאת, רואה ערך בכל אדם. אסור להרוג סתם, וכתוב "שֹׁפֵךְ דַּם הָאָדָם בָּאָדָם דָּמוֹ יִשָּׁפֵךְ". התורה אינה מתירה פגיעה לשווא באיש. אבל היא אינה רואה את שני הצדדים במלחמה כשקולים לגמרי. היא מחייבת קודם כול להציל את ישראל, ורואה בכך ערך עליון.</p>
+      <p>זה ההבדל העקרוני בין שתי המערכות. האחת שואלת: כמה בלתי מעורבים מותר לסכן כדי להציל את אזרחינו? והשנייה מתחילה מן החובה להגן על עם ישראל, ובתוך זה אוסרת כל פגיעה מיותרת. ההבדל בנקודת המוצא משפיע על כל השאלות שבאות אחריה.</p>
+      <p class="bold-para">המחשבה הליברלית רואה את כל בני האדם באותו מישור; התורה מכירה בערך כל אדם אבל מחייבת קודם כול להציל את ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חפים מפשע: התורה מול המערב</div>
+      <h3 class="story-title">🏢 המחבל בבניין</h3>
+      <p>הרב העלה שאלה כללית, שאינה קשורה דווקא ליהדות. מחבל נמצא בדירה, ואיתו חמישה אנשים שאינם מעורבים כלל. הוא נכנס לשם בלי רשותם, הם אינם יודעים מיהו, ואין אפשרות אחרת לעצור אותו. האם מותר לפגוע בו, כשהדבר יגרום לפגיעה גם בהם?</p>
+      <p>בשיעור התפתח דיון. אחד המשתתפים טען שהמחבל מסכן גם אותם, ושאם לא יפגעו בו כל מבוקש יסתתר בין אזרחים. הרב שאל: אבל מה ההצדקה המוסרית? למה חייך עדיפים על חייהם, אם הם חפים מפשע לחלוטין?</p>
+      <p>הרב ציין שגם לפי הכללים המקובלים בעולם, במקרה כזה מותר לפגוע, כשמדובר בפגיעה מוגבלת ולא בכפר שלם. השאלה היא איך מצדיקים זאת.</p>
+      <p>אחד ממחברי הקוד האתי של הצבא ענה על כך במפורש: כשאני עושה שיקול מוסרי טהור, אינני רואה הבדל ביני ובינם, כי כולם בני אדם. ובכל זאת, המדינה מחויבת קודם כול לאזרחיה. לכן מותר לה לפעול, אף שייפגעו בלתי מעורבים. כך הוא ראה את הדבר.</p>
+      <p class="bold-para">גם המשפט הבינלאומי מתיר במקרים מסוימים לפגוע במבוקש כשבלתי מעורבים נפגעים, והשאלה היא מה ההיגיון לכך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חפים מפשע: התורה מול המערב</div>
+      <h3 class="story-title">👥 כלל מול כלל</h3>
+      <p>ואיך רואה זאת התורה? הרב הביא את המהר"ל, שעוסק בעניין הזה, גם בפרשת וישלח. בפרשת "כִּי תִקְרַב אֶל עִיר לְהִלָּחֵם עָלֶיהָ וְקָרָאתָ אֵלֶיהָ לְשָׁלוֹם" התורה מתייחסת לעיר כולה כיחידה אחת. אם היא משלימה – טוב. ואם היא יוצאת למלחמה, העיר כולה נחשבת לוחמת.</p>
+      <p>לפי המהר"ל, התורה אינה רואה את המלחמה כמאבק בין לוחם בודד ללוחם בודד. היא אינה בודקת את האזרח בקומה השמינית לעומת זה שבקומה השנייה. המלחמה היא בין כלל לכלל.</p>
+      <p>הרב הדגיש: אין כאן היתר להרוג אנשים סתם, ואין בזה עניין כלל. אבל כשצריך לפגוע במטרה צבאית, אין לראות בכך בעיה עקרונית, כי הצד שמולך נחשב כגוף אחד. והוסיף שלעתים קרובות גם מי שנקראים בלתי מעורבים תומכים ומסייעים בדרכים שונות.</p>
+      <p>והוא תיאר את הקושי במציאות: חייל בטנק יודע שיש מולו מחבל, ויודע שאם יירה אולי יציל חיים, אבל גם שבניין עלול לקרוס. הוא אינו יכול לעשות כרצונו, ועליו לפעול לפי ההוראות. השאלה אינה פשוטה, וכך היא מוצגת גם בספר.</p>
+      <p class="bold-para">לפי המהר"ל, מלחמה בתורה היא בין קולקטיב לקולקטיב, ולכן היא שונה מן הדין הפלילי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חפים מפשע: התורה מול המערב</div>
+      <h3 class="story-title">🚔 שאלת הרוצח הפלילי</h3>
+      <p>בספר מובאת שאלה שהעלה מחבר הקוד האתי בעצמו. בכל העולם מקובל שההיתר לפגוע במבוקש, גם כשהסביבה נפגעת, קיים רק במלחמה. אם רוצח פלילי, עם סכין, נכנס לבניין – ברור שאסור להפיל את הבניין עליו. אין שום היתר כזה.</p>
+      <p>ואז נשאלת השאלה: מה ההבדל? אם ההצדקה היא רק שהמדינה מחויבת לאזרחיה, היה צריך לצאת שגם כלפי פושע פלילי, שאינו אזרח, יהיה מותר. מה הופך את המלחמה למקרה שונה? לפי שיטת הקוד האתי זה קשה להסביר.</p>
+      <p>לפי התורה, הרב אמר, הדבר מובן היטב. רוצח פלילי הוא אדם פרטי. אין כאן מלחמה של כלל, אלא עבירה של יחיד, ולכן אסור לפגוע במי שסביבו. במלחמה, לעומת זאת, אין נלחמים נגד אדם בודד, אלא נגד הכלל. לכן הדין שונה.</p>
+      <p>ההבחנה הזאת חשובה: היא מסבירה מדוע גם התורה, שאוסרת לפגוע לשווא, מבחינה בין מצב של מלחמה ובין כל מצב אחר. הכלל של "כלל מול כלל" אינו היתר כללי, אלא הגדרה של מצב המלחמה.</p>
+      <p class="bold-para">ההיתר לפגוע בסביבה קיים רק במלחמה, וההסבר התורני ליישב זאת הוא שמלחמה היא עניין של כלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חפים מפשע: התורה מול המערב</div>
+      <h3 class="story-title">❓ מיהו האויב בלחימה בטרור?</h3>
+      <p>ויש כאן שאלה עמוקה עוד יותר, שהספר עצמו מעלה. כל האמנות בעולם על דרכי הלחימה נכתבו למלחמה בין צבא לצבא, בין מדינה למדינה. המלחמה שלנו אינה כזו. אנחנו נלחמים בארגונים שמטרתם המוצהרת היא לפגוע דווקא באזרחים.</p>
+      <p>אם כן, נגד מי נלחמים? הספר מונה כמה אפשרויות: נגד מי שיורה בפועל, נגד מי שמסייע לו, או נגד האוכלוסייה התומכת. לקוד האתי, לדברי הרב, אין עדיין תשובה מגובשת לשאלות האלה, והשאלה מיהו האויב בעזה – הלוחמים בלבד או גם המסייעים – נותרה פתוחה גם בשיח הציבורי.</p>
+      <p>ובתורה ראינו שהעיר כולה נחשבת יחידה אחת. אבל כאן עולה שאלה: למה? מפני שהשלטון של העיר יצא למלחמה. הבעלים של העיר, מי שמנהל אותה, הכריז מלחמה. לכן מלחמה במדינה שיצאה נגדך שונה ממלחמה בארגון שפועל בתוך מדינה אחרת.</p>
+      <p>במקום שבו הארגון הוא השלטון, אפשר לומר שהשלטון יצא למלחמה. אבל מה דינו של מקום שבו הארגון פועל בתוך מדינה ששלטונה הרשמי אחר? בשיעור עלו דעות שונות. הרב ציין שגם הספר מציג את השאלה הזאת כשאלה פתוחה, ואינו מכריע בה. כך גם השאיר אותה הרב.</p>
+      <p class="bold-para">האמנות נכתבו למלחמה בין צבאות; במלחמה בארגוני טרור השאלה מיהו האויב נשארת פתוחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · למה ואיך מתגייסים</div>
+      <h3 class="story-title">🪖 האם אפשר להתגייס?</h3>
+      <p>ועכשיו לחלק המעשי: לא מה צריך להיות בעתיד, אלא מה עושים היום, כשהצבא פועל לפי השקפה שאינה השקפת התורה. השאלות האלה עצומות, ונשאלו פעמים רבות.</p>
+      <p>הדוגמה החריפה: אדם רוצה להתגייס. הוא יודע שבמבצעים רבים הלוחמים נמצאים בסכנה מוגברת דווקא בגלל השיטה המערבית, שמקפידה מאוד שלא לפגוע בבלתי מעורבים. אם יקרה, חלילה, אסון, אמו תשאל: האם בני נפל על קידוש השם, או בגלל שיטה שאינה של התורה? איך אפשר להתגייס בצורה כזאת?</p>
+      <p>לשאלה הזאת יש כמה תשובות, והתשובה שאדם נותן תלויה במידה רבה בשאלה איך הוא רואה את הצבא ואת המדינה. אם הוא רואה בהם דבר קדוש כבר עכשיו, התשובה אחת. אם הוא רואה בהם הכנה לקדושה שתבוא בעתיד, התשובה אחרת לגמרי. ונראה את התשובות אחת אחת.</p>
+      <p>הרב הדגיש שהשאלה אינה מופשטת. היא עולה בכל בית שבו בן עומד להתגייס, ובכל ישיבה שמחנכת את תלמידיה לקראת השירות. ולכן חשוב להבין את הדעות ואת שורשיהן, ולא להסתפק בסיסמאות לכאן או לכאן.</p>
+      <p class="bold-para">מי שרואה שהצבא נלחם לפי ערכים שאינם של התורה, שואל איך הוא יכול להשתתף בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · למה ואיך מתגייסים</div>
+      <h3 class="story-title">🏛️ מחלוקת בתוך בית המדרש</h3>
+      <p>התשובה הראשונה היא של הציבור הדתי-לאומי, שרואה במדינה ובצבא דבר קדוש כבר עכשיו. ומה עושים עם דבר קדוש שיש בו בעיות? משתתפים בו בכל זאת.</p>
+      <p>הרב קרא מדברי הרב צבי יהודה הכהן קוק, שלימד לחנך לאיזון: המתח שנוצר בין עמדות מדיניות ובין עמדות של תורה אינו התנגשות בין קודש לחול, אלא התנגשות בין שני ערכי קודש, בתוך בית המדרש עצמו. ולמרות התנגדויות קולניות וביקורות חריפות, הרוב הגדול של תלמידיו הלכו בדרכו, ולא נתנו למתחים כאלה להשפיע על הנאמנות למדינה ולמוסדותיה, ועל ההזדהות הנפשית והרוחנית עמה.</p>
+      <p>המשל ברור: במחלוקת בתוך בית המדרש, לא שוברים את בית המדרש. מחפשים דרך להמשיך בו. דבר קדוש לא עוזבים בגלל מחלוקת.</p>
+      <p>אבל מי שרואה בצבא דבר שיהיה קדוש בעתיד, ואינו קדוש עכשיו, מסתבך מאוד. בעיניו זה עדיין חולין, ואם החולין אינו מתנהג כראוי, איך אפשר להשתתף בו? לכן כשציבור כזה ישרת, ייווצרו מתחים רבים, כי הוא לא יסכים לקבל דברים שלדעתו מנוגדים לתורה. הרב הזכיר שגם יחידה שהוקמה במיוחד עבור חיילים חרדים כבר נתקלה בלחצים קשים, גם מבחוץ, סביב שאלות כאלה.</p>
+      <p class="bold-para">מי שרואה בצבא ערך קדוש כבר היום, רואה את המתח כמחלוקת בתוך בית המדרש ולא כסיבה לעזוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · למה ואיך מתגייסים</div>
+      <h3 class="story-title">⏳ כשהגישה רואה קדושה רק בעתיד</h3>
+      <p>הרב הרחיב על ההבדל בין שתי הגישות. לפי הגישה שרואה במדינה קדושה כבר עכשיו, הוויתורים מובנים: אתה משתתף בדבר קדוש, גם אם יש בו פגמים, כמו שאדם אינו עוזב את בית המדרש בגלל מחלוקת.</p>
+      <p>אבל לפי הגישה שרואה במדינה הכנה לקדושה שתבוא בעתיד, המצב שונה לגמרי. כרגע, לפי הגישה הזאת, זה עדיין חולין. וכשחולין אינו נוהג כראוי, אין סיבה לוותר עליו על דברים שכתובים בתורה. מי שמחזיק בגישה הזאת ישאל: למה עליי להשתתף במסגרת שמבקשת ממני לנהוג נגד ההלכה?</p>
+      <p>לכן, אמר הרב, כשציבור כזה יגיע לשירות במספרים גדולים, ייווצרו מתחים רבים מאוד בצבא. כרגע עדיין אין הוראות מגובשות של רבני הציבור החרדי לכל שאלה צבאית, ולכן הדבר אינו מעשי כל כך. אבל ברגע שיתחילו להתקבל החלטות על איך צריך לנהוג בצבא לפי התורה, השאלות האלה יעלו במלוא חריפותן.</p>
+      <p>ההבנה הזאת מסבירה מדוע אותה שאלה מקבלת תשובות כה שונות. ההבדל אינו רק בהלכה, אלא בהשקפה על מהות המדינה.</p>
+      <p class="bold-para">מי שרואה במדינה הכנה לקדושה עתידית יתקשה לוותר על ההלכה בתוך הצבא, והדבר ייצור מתחים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · למה ואיך מתגייסים</div>
+      <h3 class="story-title">🤝 שותפות עם כלל ישראל</h3>
+      <p>התשובה השנייה היא ערך נוסף, שפותר הרבה פעמים את הבעיה: השותפות עם כלל ישראל. הציבור הדתי רואה ערך עצום בכך שהוא חלק מעם ישראל, ומשרת לצד כולם.</p>
+      <p>הטענה היא כזו: אם כל ציבור יקבע תנאים, ואם לא יתקבלו – יפסיק לשרת, האחווה מתפרקת. נוצר קרע בעם, והאויבים רואים את הקרע ומנצלים אותו. ולכן, גם אם אתה צודק, מה אתה רוצה שנעשה? שנפרק את הצבא? כך גם כותבים מחברי הספר: אנחנו רואים הבדלים בין הקוד האתי ובין ההלכה, ונשתדל לפעול לשנות כמיטב יכולתנו. אבל לאיים בהפסקת שירות – זה לא שייך.</p>
+      <p>לעומת זאת, יש מי שאומר: אין זה סביר שנשרת בלי תנאי סף בסיסיים. צריך להציב תנאים, ואם לא יעמדו בהם, לא נסכים. הם אינם מוכנים שחייל יהודי ייפול בגלל גישה שאינה מן התורה.</p>
+      <p>ההכרעה בין העמדות תלויה במידה רבה במשקל שאדם נותן לאחדות עם כלל ישראל כערך עליון. וזו גם התשובה השלישית: הצורך להגן על עם ישראל. אם לא יהיה צבא, מי יודע מה יקרה. החובה להציל את עם ישראל מכריעה את הכף, גם כשהדרך אינה מושלמת.</p>
+      <p class="bold-para">הערך של אחדות ושותפות עם כלל ישראל מכריע אצל רבים, גם כשהצבא אינו נוהג כפי שהיו רוצים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · פקודה מול הלכה</div>
+      <h3 class="story-title">📜 דברי הרב ודברי העבד</h3>
+      <p>השאלה הבאה היא כבר שאלה של החייל עצמו: מה עושה חייל כשפקודה סותרת את ההלכה? הרמב"ם פוסק במפורש, בהלכות מלכים: המבטל גזרת המלך בשביל שנתעסק במצוות, אפילו במצווה קלה, הרי זה פטור. דברי הרב ודברי העבד – דברי הרב קודמים. ואין צריך לומר אם גזר המלך לבטל מצווה, שאין שומעין לו.</p>
+      <p>כלומר, העיקרון ברור: אם אפילו המלך מצווה לעבור על רצון ה', אין לשמוע לו. אבל איך מיישמים זאת בפועל, בצבא, כשמדובר בחייל צעיר ובמערכת מורכבת?</p>
+      <p>הרב עדן שץ, שדבריו מובאים בספר, כתב שעל החייל לסרב לפקודה רק כאשר ברור מעבר לכל ספק שהפקודה מנוגדת להלכה. אם ברור לחלוטין שמורים לו לחלל שבת בלי שום צורך, כמו לבצע פעולה שאינה דחופה כלל בשבת – יסרב. אבל כל עוד יש ספק, אולי יש לפקודה טעם שאינו ידוע לו, ימשיך לשמוע למפקד. לא יעשה מהומה, ואפשר לברר את הדברים אחר כך. רק כשיש לו מידע ברור, הוא רשאי לסרב.</p>
+      <p class="bold-para">לפי הרמב"ם, אם המלך גזר לבטל מצווה – אין שומעין לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · פקודה מול הלכה</div>
+      <h3 class="story-title">⚙️ למה לא לסרב בספק</h3>
+      <p>מדוע הורה הרב שץ שלא לסרב כל עוד יש ספק? ההיגיון פשוט. צבא אינו יכול לתפקד אם כל חייל מחליט בעצמו, בכל רגע, אם הפקודה ראויה. לא פעם יש למפקד מידע או שיקול שהחייל אינו מודע להם. מה שנראה לחייל כחילול שבת מיותר, עשוי להיות צורך מבצעי של ממש.</p>
+      <p>לכן, כל עוד הדבר אינו ברור, החייל ממשיך לשמוע למפקד. אם יש לו שאלה, הוא יכול לברר אותה אחר כך: לשאול רב, לפנות בדרך המסודרת, לקיים דיון. אבל לא לעשות מהומה בזמן אמת על סמך ספק.</p>
+      <p>ורק כשהדבר ברור לחלוטין, כמו בדוגמת התפילה שנראה מיד, החייל רשאי לעמוד על דעתו. יש כאן איזון בין שני ערכים: מצד אחד, אין שומעין למלך שגזר לבטל מצווה. מצד שני, הסדר והמשמעת הצבאיים הם עצמם חלק מן ההגנה על עם ישראל, ואסור לפרק אותם בלי סיבה ברורה.</p>
+      <p>הכלל הזה מתאים גם לשאלות אחרות בחיים: לא כל ספק מצדיק מרד. אבל כשהדבר ברור, אין לוותר על קיום התורה.</p>
+      <p class="bold-para">סירוב פקודה בספק עלול להזיק יותר מן התועלת, כי למפקד יש לעתים שיקולים שהחייל אינו יודע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · פקודה מול הלכה</div>
+      <h3 class="story-title">⏰ תפילת שחרית לפני ביקור המפקד</h3>
+      <p>בספר מובאת דוגמה לפקודה שברור שהיא מנוגדת להלכה. חיילים היו באימונים מן הבוקר, ולא הספיקו להתפלל. היה מתוכנן שבצהריים תהיה הפסקה של שעה, והם ביקשו להתפלל שחרית בהפסקה. המפקד סירב. למה? כי עמד להגיע מפקד בכיר, וכולם היו צריכים להיות מוכנים להתחיל את האימון ברגע שיגיע.</p>
+      <p>החיילים לא הבינו: הוא לא אמר שיש סכנה, לא אמר שיש צורך מבצעי. רק מפני כבוד המפקד שעמד להגיע, לא יתפללו? הם לא שמעו לו, והתפללו שחרית.</p>
+      <p>זו דוגמה למצב שבו ברור מעבר לכל ספק שהפקודה מנוגדת להלכה. ויתרה מזו, הרב העיר שגם לפי פקודות הצבא עצמו, המפקד חייב לאפשר לחיילים להתפלל, אלא אם כן יש צורך צבאי. וכבוד מפקד בכיר אינו צורך צבאי. הרב שיער שהחיילים לא הסתבכו בגלל זה, ואדרבה – המפקד הוא שחשש שיוגשו נגדו תלונות.</p>
+      <p>הדוגמה מלמדת שגם בתוך מערכת צבאית יש מקום לעמוד על קיום מצוות, כשהדבר ברור, ובדרך מכובדת.</p>
+      <p class="bold-para">כשאין צורך צבאי אמיתי, ודאי שהמפקד חייב לאפשר לחיילים להתפלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · פקודה מול הלכה</div>
+      <h3 class="story-title">🏚️ ימית, אוסלו וההתנתקות</h3>
+      <p>הדילמה הגדולה ביותר עלתה כמה פעמים. היא התחילה בפינוי ימית, החריפה בתקופת הסכמי אוסלו, הגיעה לשיא בהתנתקות, וחזרה בפינוי עמונה. השאלה הייתה עצומה, ונשאלה בכל קשת הרבנים של הציבור הדתי.</p>
+      <p>כמעט כל הרבנים הסכימו שחייל לא ישתתף בעצמו בפינוי בפועל. לדעתם, מדובר באיסור מן התורה, שהרי התורה ציוותה לרשת את ארץ ישראל, ומסירת חלקים ממנה סותרת זאת. המחלוקת התחילה בשאלה של חייל שאינו בקו הראשון, אלא במעגלי התמיכה סביב. כאן נחלקו הדעות.</p>
+      <p>והרב הוסיף נקודה מעניינת. הציבור הדתי, לדבריו, היה יכול אולי למנוע את ההתנתקות בדרך פשוטה: אילו כל החיילים מן הציבור הדתי היו מודיעים שהם עוזבים את הצבא בעקבות ההחלטה, ייתכן שהמהלך לא היה מתבצע. אבל כמעט איש לא הציע זאת. למה? כי זה היה מסכן את ביטחון הארץ, וכי זה סותר את הערכים שראינו: הקדושה שבצבא, והשותפות עם כלל ישראל.</p>
+      <p>הרב תיאר את הדילמה במילים חדות: מצד אחד, רואים במדינה בשורה אלוקית, ואין נלחמים בדבר קדוש. מצד שני, מה עושים כשהמדינה פועלת, לפי השקפה זו, בניגוד לתהליך הגאולה?</p>
+      <p class="bold-para">שאלת השירות במצב שבו המדינה פועלת נגד מה שנראה כתהליך הגאולה עלתה שוב ושוב, והחריפה בהתנתקות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · פקודה מול הלכה</div>
+      <h3 class="story-title">⭕ הקו הראשון והמעגלים שסביבו</h3>
+      <p>כדי להבין את עומק הדילמה, צריך להבחין בין המעגלים. בקו הראשון עומד מי שמבצע את הפינוי בפועל: נכנס לבית ומוציא את יושביו. לגבי חייל כזה הייתה כמעט הסכמה בין הרבנים: לא ישתתף בעצמו.</p>
+      <p>אבל סביב הקו הראשון יש מעגלים רבים. יש מי שמאבטח את המקום, יש מי שמוביל את הכוחות, יש מי שמספק להם ציוד ומזון, יש מי שמחליף חיילים במקומות אחרים כדי שאחרים יוכלו להשתתף. עד כמה כל אחד מאלה נחשב שותף למעשה?</p>
+      <p>בשאלה הזאת נחלקו הרבנים לכאן ולכאן. יש שהחמירו ויש שהקלו, כל אחד לפי הבנתו כמה רחוק השתתפות עקיפה מן המעשה עצמו. והשאלה אינה רק הלכתית: היא נוגעת גם לשאלה מה יקרה לצבא ולחברה אם רבים יסרבו, ומה יקרה לציבור הדתי עצמו אם ייראה כמי שאינו נאמן.</p>
+      <p>כך מתגלה שוב שהכרעות כאלה אינן מתקבלות בחלל ריק. הן תלויות בהשקפה, בשיקולי אחדות, ובחשבון של תוצאות.</p>
+      <p class="bold-para">בשאלת הפינוי הייתה הסכמה כמעט מלאה לגבי הקו הראשון, ומחלוקת לגבי מי שתומך בו מסביב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · פקודה מול הלכה</div>
+      <h3 class="story-title">🔊 בפומבי או בשקט</h3>
+      <p>גם באופן הסירוב נחלקו. הרב אליעזר מלמד כותב בספרו שבעת פינוי היישובים בגוש קטיף, היו רבנים, ובהם הרב אברהם שפירא, שרצו שהחיילים יודיעו בפומבי, ובהקדם האפשרי, שלא יבצעו את הפקודה. הנימוק: מעבר למצוות התוכחה, ייתכן שהודעה של חיילים רבים, בצירוף פעולות ציבוריות נוספות, הייתה גורמת לביטול הגזירה.</p>
+      <p>אחרים חלקו על כך. הם חששו מאוד ממה שיקרה בעקבות הודעה פומבית כזאת: לפגיעה בצבא, לקרע בעם, ולתוצאות שאינן צפויות.</p>
+      <p>ובפועל, כמעט כל הרבנים הורו שלא להשתתף בפינוי עצמו, וכך היה: חיילים מן הציבור הדתי כמעט לא השתתפו בקו הראשון של הפינוי, מלבד מקרים בודדים. בקו השני כבר היו דעות לכאן ולכאן.</p>
+      <p>אחרי ההתנתקות, לדברי הרב, השתנתה במידה מסוימת הגישה. בעבר רבים ראו במדינה דבר קדוש כמעט בלי סייג. היום ההגדרות מורכבות יותר, ויש פיצול בין מה שנקרא הגישה הממלכתית ובין גישות אחרות, עם כמה וכמה עמדות ביניהן.</p>
+      <p class="bold-para">בהתנתקות נחלקו הרבנים אם החיילים יודיעו מראש ובפומבי על סירובם, או שיפעלו בשקט.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מבחנים בשטח</div>
+      <h3 class="story-title">🎶 טקס עם שירת נשים</h3>
+      <p>דוגמה נוספת, שנוגעת למעשה עד היום: הצבא הוא צבא העם, וכולל את כל המגזרים. לפעמים נערכים טקסים או אירועים שבהם שרות חיילות, וחיילים דתיים נדרשים להיות נוכחים. מה עושה חייל במקרה כזה?</p>
+      <p>הרב מלמד הורה שבמקרה כזה החייל צריך לצאת, גם אם המפקד אינו מרשה, ואפילו אם מדובר בסירוב פקודה. הרב הצבאי הראשי באותה עת חלק עליו, והורה שלא לסרב לפקודה במצב כזה. הרב דב ליאור הורה דרך אחרת: לא לעשות מהומה, אלא למצוא דרך להתחמק בשקט, למשל לצאת לצורך כלשהו באותו רגע.</p>
+      <p>הרב מלמד, לעומת זאת, כעס על כך שמכריחים חיילים לנהוג נגד ההלכה, ורצה להפוך את העניין למחאה ציבורית, כדי שלא יכריחו חיילים לעשות דברים בניגוד לתורה. הדבר הוביל לעימות חריף בינו ובין מערכת הצבא, שהיו לו השלכות גם על הישיבה שבראשה הוא עומד.</p>
+      <p>הרב הסביר שהיה כאן דבר עמוק יותר משאלת הטקס עצמה: שאלת היחס בין הציבור הדתי לצבא, ועד כמה הוא מוכן לוותר כדי להיות חלק ממנו.</p>
+      <p class="bold-para">בשאלת חייל שנדרש לשמוע שירת נשים נחלקו הרבנים בין יציאה גלויה, התחמקות שקטה וציות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מבחנים בשטח</div>
+      <h3 class="story-title">⚖️ שלוש דרכים ומחיר לכל אחת</h3>
+      <p>כדאי להתבונן בשלוש העמדות שראינו בשאלת הטקס, כי הן משקפות שלוש דרכים להתמודד עם מתח בין צבא להלכה.</p>
+      <p>הדרך הראשונה היא העמידה הגלויה: לצאת, גם במחיר סירוב פקודה, ואף להפוך את העניין לשאלה ציבורית. היתרון: נשמרת ההלכה במלואה, ויש סיכוי לשנות את המדיניות. המחיר: עימות עם המערכת, שעלול לפגוע בשותפות ובמוסדות שבנו אותה.</p>
+      <p>הדרך השנייה היא ההתחמקות השקטה: לא לעמוד מול המפקד, אבל גם לא להישאר במקום. היתרון: נשמרת ההלכה בלי עימות. המחיר: המציאות אינה משתנה, והשאלה תחזור שוב ושוב.</p>
+      <p>הדרך השלישית היא הציות: לא לסרב לפקודה במצב כזה, מתוך הערכה שהנזק שבסירוב גדול מן הנזק שבנוכחות. היתרון: נשמרות המשמעת והשותפות. המחיר: החייל נדרש לנהוג בניגוד למה שהוא מבין כהלכה.</p>
+      <p>הרב לא הכריע בין הדרכים. הוא הראה שכל אחת מהן נובעת מסדר עדיפויות אחר, ושההכרעה תלויה בשאלה הגדולה שליוותה את כל השיעור: איך אדם רואה את הצבא ואת המדינה.</p>
+      <p class="bold-para">יציאה גלויה, התחמקות שקטה וציות – כל אחת מן הדרכים משקפת סדר עדיפויות אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מבחנים בשטח</div>
+      <h3 class="story-title">✉️ מכתב של אב</h3>
+      <p>הרב קרא מכתב שכתב אחד מרבני הציבור הדתי-לאומי. לפני כעשרים וחמש שנה, כתב, בנו היה מפקד ביחידה קרבית, והתקשר אליו בדאגה: מצרפים לסוללה שלו בנות. מה לעשות? האב השיב שיאמר למפקדיו שהוא בוגר ישיבת הסדר, ואינו יכול להיות במצב כזה. התגובה הייתה: אם כך, נעביר אותך לתפקיד אחר, רחוק מן הלוחמים.</p>
+      <p>האב פנה לראש הישיבה, שבחר לשתוק. הבן אמר לאביו: אבל אלה החיילים שלי, אני הכשרתי אותם, איך אעזוב? בסוף מפקדיו, שאהבו אותו, מצאו פתרון והעבירו אותו לסוללה שבה לא היו בנות. האב כתב שאמר אז לראש הישיבה שאסור לשתוק, ושצריך לאחד את כל ראשי הישיבות כדי להציב קו אדום.</p>
+      <p>לפני עשרים וחמש שנה, כתב, עוד היה אפשר לעשות זאת, כשהתהליך היה בראשיתו. אבל הדבר לא נעשה, כי רצו להיות ממלכתיים ולא לפגוע בקדושת השירות. ומאז, לדבריו, שילם הציבור מחיר כבד: צעירים רבים התרחקו מדרכם בתוך השירות.</p>
+      <p>ועכשיו, הוא כותב, אני שומע שלחיילים החרדים מקימים מסגרת שבה אין חיילות כלל, ויש זמן מוגדר לתפילה ולשיעור. אני שואל: למה לחרדים כן ולנו לא? האם קדושת הנשמה של בנינו פחותה?</p>
+      <p class="bold-para">אב שבנו מפקד ביחידה מעורבת כתב שהגיע הזמן לדרוש מסגרות שמכבדות את אורח החיים הדתי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מבחנים בשטח</div>
+      <h3 class="story-title">🕯️ צבא קטן וקדוש</h3>
+      <p>המכתב מסתיים בקריאה לרבנים ולראשי הציבור הדתי-לאומי. הגיע הזמן, כותב האב, כמו שהתרסקו קונספציות רבות בשנה האחרונה, להכיר שגם הקונספציה שלפיה בחור דתי יכול לשרת במסגרת מעורבת התרסקה. הוא מבקש שהצבא יכיר בכך שקדושת הנשמה של הבחורים הדתיים-לאומיים אינה פחותה משל כל מגזר אחר, ושיינתנו להם מסגרות דומות.</p>
+      <p>והוא מוסיף: אנחנו מחוברים לכל עם ישראל ומרגישים חלק ממנו, כפי שהוכח במלחמה האחרונה. אבל צריך לזכור שגדעון ניצח עם שלוש מאות איש בלבד, אלה שלא כרעו על ברכיהם לשתות. כדי שה' יהיה עם המחנה, המחנה צריך להיות קדוש: "כִּי ה' אֱלֹקֶיךָ מִתְהַלֵּךְ בְּקֶרֶב מַחֲנֶךָ לְהַצִּילְךָ... וְהָיָה מַחֲנֶיךָ קָדוֹשׁ".</p>
+      <p>הרב העיר שהשאלה מעניינת מאוד. ראינו שהציבור הדתי ויתר על דברים רבים בגלל הקדושה שראה בצבא, ובגלל הצורך באחדות העם. והכותב שואל: אם לחרדים מגיע, למה לנו לא? והרב הוסיף עובדה מעניינת: בשלב מסוים, חלק גדול מן החיילים ביחידה שהוקמה לחרדים היו דווקא בוגרי הציבור הדתי-לאומי, שרצו מסגרת כזאת, והדבר לא תאם את כוונת מקימיה.</p>
+      <p class="bold-para">האב מסיים בקריאה לצבא קטן וקדוש, כמו שלוש מאות של גדעון, ובפסוק "והיה מחניך קדוש".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · מבחנים בשטח</div>
+      <h3 class="story-title">🔚 סיכום: שלוש תשובות ושאלה פתוחה</h3>
+      <p>בסיום הרב סיכם את השיעור. בחלק הראשון ראינו כיצד ההשקפה העקרונית, שראשיתה לפני יותר ממאה שנה, משפיעה על הכל: מי שראה בתהליכים חלק מן הגאולה, רואה במדינה דבר קדוש ומתגייס כדי להצטרף לקדושה.</p>
+      <p>בחלק השני ראינו את ההבדלים בין רוח הקוד האתי של הצבא ובין הקוד האתי היהודי, כפי שהוא מוצג בספר "אתיקה צבאית יהודית". הרב הביע תקווה שבקרוב יתחילו להתחשב יותר בעמדת ההלכה.</p>
+      <p>בחלק השלישי ראינו שלוש סיבות שבגללן מתגייסים, גם כשהצבא עושה דברים שנוגדים לדעת המשרתים את השקפת התורה: הקדושה שבצבא – ולא שוברים דבר קדוש; הצורך להציל את עם ישראל; והאחדות עם כלל ישראל. ראינו גם שהצבא לא הסכים בעבר לוותר לציבור הדתי על עקרון השירות המשותף, והרבנים עמדו בפני הכרעה קשה.</p>
+      <p>והשאלה שנותרה פתוחה: האם עכשיו, כשמקימים מסגרות מיוחדות לחרדים, יבקשו גם אחרים מסגרות דומות? את העתיד, אמר הרב, איננו יודעים. ותפילתו: שנזכה בקרוב לצבא קטן וקדוש, שמצליח במלחמותיו.</p>
+      <p class="bold-para">ההכרעות בשאלות הצבא נובעות מן היחס העקרוני למדינה, וכל דרך יש לה מחיר; העתיד עוד יגלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/ZXkxVHs-ksE · 2024-11-20 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"פתיחה: שתי מערכות ערכים","icon":"📘","color":"#c62b6b","stories":[{"id":1,"title":"כשהצבא והתורה אינם אומרים אותו דבר","icon":"📘"}]},{"id":2,"name":"גבולות הארץ והשאיפה","icon":"🗺️","color":"#6d28d9","stories":[{"id":2,"title":"מצידון עד עזה","icon":"🗺️"},{"id":3,"title":"שאיפה אינה הוראה","icon":"🧭"}]},{"id":3,"name":"חפים מפשע: התורה מול המערב","icon":"⚖️","color":"#e08e00","stories":[{"id":4,"title":"על מה כולם מסכימים","icon":"🌳"},{"id":5,"title":"שכם: מה כתוב בתורה","icon":"📖"},{"id":6,"title":"מאין הפער?","icon":"🔍"},{"id":7,"title":"המחבל בבניין","icon":"🏢"},{"id":8,"title":"כלל מול כלל","icon":"👥"},{"id":9,"title":"שאלת הרוצח הפלילי","icon":"🚔"},{"id":10,"title":"מיהו האויב בלחימה בטרור?","icon":"❓"}]},{"id":4,"name":"למה ואיך מתגייסים","icon":"🪖","color":"#1e88b8","stories":[{"id":11,"title":"האם אפשר להתגייס?","icon":"🪖"},{"id":12,"title":"מחלוקת בתוך בית המדרש","icon":"🏛️"},{"id":13,"title":"כשהגישה רואה קדושה רק בעתיד","icon":"⏳"},{"id":14,"title":"שותפות עם כלל ישראל","icon":"🤝"}]},{"id":5,"name":"פקודה מול הלכה","icon":"📜","color":"#c62b6b","stories":[{"id":15,"title":"דברי הרב ודברי העבד","icon":"📜"},{"id":16,"title":"למה לא לסרב בספק","icon":"⚙️"},{"id":17,"title":"תפילת שחרית לפני ביקור המפקד","icon":"⏰"},{"id":18,"title":"ימית, אוסלו וההתנתקות","icon":"🏚️"},{"id":19,"title":"הקו הראשון והמעגלים שסביבו","icon":"⭕"},{"id":20,"title":"בפומבי או בשקט","icon":"🔊"}]},{"id":6,"name":"מבחנים בשטח","icon":"🧭","color":"#6d28d9","stories":[{"id":21,"title":"טקס עם שירת נשים","icon":"🎶"},{"id":22,"title":"שלוש דרכים ומחיר לכל אחת","icon":"⚖️"},{"id":23,"title":"מכתב של אב","icon":"✉️"},{"id":24,"title":"צבא קטן וקדוש","icon":"🕯️"},{"id":25,"title":"סיכום: שלוש תשובות ושאלה פתוחה","icon":"🔚"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
