@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 נברא להתענג</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 נברא להתענג</h1>
+  <p>מסילת ישרים מול פרויד: עונג רגשי ורוחני, להיות בתוך החוויה, ויהדות שנהנים ממנה כבר בעולם הזה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ נברא להתענג" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/UkIGu2HqXLg?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/UkIGu2HqXLg/hqdefault.jpg" alt="נברא להתענג" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=UkIGu2HqXLg" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מטרה אחת לכל התורה</div>
+      <h3 class="story-title">📚 חמשת אלפים ספרים בשנה</h3>
+      <p>השיעור נפתח בנתון מפתיע. במאגר ספרי תורה ממוחשב מוכר נוספים מדי שנה בערך חמשת אלפים ספרים חדשים. וזה עוד לא הכל, אלא רק הספרים שמחבריהם הסכימו להכניס אותם למאגר. ברוך ה', עולם התורה מלא ספרים: הלכה, מוסר, חסידות, פרשנות ועוד.</p>
+      <p>ומתוך השפע הזה עולה שאלה: האם יש מכנה משותף לכל זה? האם יש מטרה אחת לכל המצוות, לכל ההלכות, לכל ספרי המוסר והחסידות? לאן כל זה אמור להוביל?</p>
+      <p>כששואלים את השאלה הזאת, אנשים עונים תשובות יפות ונכונות: לעבוד את בורא עולם, להידבק בו, להיות אדם טוב, לשמוח. אבל הרב סיפר שבכל המקומות שבהם שאל, עוד לא קם אדם אחד ואמר: המטרה של התורה והמצוות היא להתענג.</p>
+      <p>ויש סיבה לכך שאיש אינו מעז לומר זאת. התענוג נשמע כמו שכר, לא כמו תפקיד. אולי בעולם הבא, אבל לא כאן. ואפילו נשמע אגואיסטי. אדם הולך לעבודה כדי לעבוד, לא כדי להתענג. וחז"ל אמרו "הַיּוֹם לַעֲשׂוֹתָם וּמָחָר לְקַבֵּל שְׂכָרָם". אם כן, איך אפשר לומר שהתורה נועדה לתענוג? כדי לענות, פותחים ספר יסוד אחד.</p>
+      <p class="bold-para">מאחורי כל הספרים, ההלכות והמוסר צריך לחפש יעד אחד שאליו הכל מוביל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מטרה אחת לכל התורה</div>
+      <h3 class="story-title">📖 הצרה שנהפכה לברכה</h3>
+      <p>את "מסילת ישרים" חיבר רבי משה חיים לוצאטו, הרמח"ל. הוא היה מקובל עצום, וכתב חיבורים רבים בתורת הנסתר. אלא שבתקופה שאחרי שבתי צבי חששו מאוד מכל חידוש בענייני קבלה, והתעוררה נגדו התנגדות קשה. גזרו עליו שלא יכתוב עוד בקבלה, וחלק מכתביו נשרפו. הוא עזב את איטליה ועבר לאמסטרדם.</p>
+      <p>ובמצב הזה כתב ספר שאין בו אפילו פעם אחת את המילה "זוהר": "מסילת ישרים". והצרה נהפכה לברכה עצומה. לרמח"ל ספרים רבים, כמו "דעת תבונות", "דרך ה'" וספרי קבלה רבים, ורוב הלומדים כמעט אינם פותחים אותם. אבל את "מסילת ישרים" פותחים כמעט כולם. הוא נעשה ספר יסוד בעולם היהודי.</p>
+      <p>למה דווקא הוא? כי לא כל אחד מבין בקבלה. מי שרואה ספר קבלה, סוגר אותו. אבל "מסילת ישרים" כתוב במילים פשוטות, ברורות ומסודרות, ומתאים לכל אחד, לגברים ולנשים. בזכות מה שנראה כצרה, הדברים הגיעו לכולם. ועכשיו נראה מה כתוב בפתח הספר.</p>
+      <p class="bold-para">דווקא הרדיפה שגרמה לרמח"ל לכתוב בלשון פשוטה, הפכה את "מסילת ישרים" לספר שכל יהודי לומד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מטרה אחת לכל התורה</div>
+      <h3 class="story-title">🌅 "לא נברא אלא להתענג"</h3>
+      <p>בפרק הראשון כותב הרמח"ל: "יְסוֹד הַחֲסִידוּת וְשֹׁרֶשׁ הָעֲבוֹדָה הַתְּמִימָה הוּא שֶׁיִּתְבָּרֵר וְיִתְאַמֵּת אֵצֶל הָאָדָם מַה חוֹבָתוֹ בְּעוֹלָמוֹ, וּלְמָה צָרִיךְ שֶׁיָּשִׂים מַבָּטוֹ וּמְגַמָּתוֹ בְּכָל אֲשֶׁר הוּא עָמֵל כָּל יְמֵי חַיָּיו".</p>
+      <p>כלומר, מי שרוצה לעבוד את ה' כראוי צריך קודם כל להבין מה התפקיד שלו. לא רק באופן כללי לשמור תורה ומצוות, אלא לדעת לאן הכל צריך להוביל. המצוות אינן כמו עגלה בסופרמרקט, שאוספים לתוכה עוד ועוד בלי לדעת למה. צריך יעד שאליו שואפים בכל יום מימי החיים.</p>
+      <p>ומה היעד? ממשיך הרמח"ל: "שֶׁהָאָדָם לֹא נִבְרָא אֶלָּא לְהִתְעַנֵּג עַל ה' וְלֵהָנוֹת מִזִּיו שְׁכִינָתוֹ, שֶׁזֶּהוּ הַתַּעֲנוּג הָאֲמִתִּי וְהָעִדּוּן הַגָּדוֹל מִכָּל הָעִדּוּנִים שֶׁיְּכוֹלִים לְהִמָּצֵא".</p>
+      <p>זה נשמע כמעט מפתיע. האדם נברא כדי להתענג. זה התפקיד שלו. ובכל פעם שקוראים את הדברים, אנשים אומרים: יפה מאוד, אבל זה שייך לאדמו"רים ולצדיקים גדולים. איפה אני ואיפה התענוג על ה'? על זה בדיוק בא השיעור לענות.</p>
+      <p class="bold-para">הרמח"ל קובע בפתח ספרו שהאדם נברא כדי להתענג על ה', ושזהו התענוג האמיתי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מטרה אחת לכל התורה</div>
+      <h3 class="story-title">🔎 המילה המבוקשת ביותר</h3>
+      <p>הרב ביקש להראות שאין אדם אחד שאינו מכיר את המושג "תענוג", ולא רק תענוג גשמי. בדרך כלל, כשאומרים ברחוב "תענוג", מתכוונים לגלידה וכדומה. אבל יש סוג אחר של תענוג, שאין מי שאינו מכיר אותו ואין מי שאינו אוהב אותו. אפשר לקרוא לו "הנאה רגשית".</p>
+      <p>הדוגמה הראשונה: הרב סיפר שקרא פעם שהמילה שאנשים מחפשים יותר מכל באינטרנט היא "אהבה". על המקור המדויק הוא לא התחייב, אבל הנקודה ברורה לכל אחד: אנשים מחפשים מאוד אהבה. כנראה שחסר להם.</p>
+      <p>ועכשיו שאלה פשוטה. כשאדם מרגיש אוהב או אהוב, איפה הוא נהנה? בידיים? ברגליים? באוזניים? זו אינה הנאה של אחד מחמשת החושים. זו הנאה רגשית. ומכאן רואים שההנאה הרגשית מבוקשת אצל בני האדם הרבה יותר מן ההנאה הגשמית.</p>
+      <p>וזה הפירוש של "להתענג על ה'". אין הכוונה דווקא לדבר נשגב ורחוק, אלא להנאות רגשיות ורוחניות שכל אדם מכיר. כשלומדים דבר תורה חדש ונהנים מן הידע ומן האוצר שנפתח, זו אינה הנאה גשמית. וכך גם כשאדם עוזר לחברו ועושה חסד.</p>
+      <p class="bold-para">כולם מכירים עונג שאינו בגוף, ובדרך כלל הוא אפילו מבוקש יותר מן העונג הגשמי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · העונג שאינו בגוף</div>
+      <h3 class="story-title">🤝 מי אוהב את מי</h3>
+      <p>בשיעור הובאה שאלה מעניינת שמיוחסת לאריסטו. הוא התבונן בעולם וראה דבר פלא. אדם עשיר נתן לאדם עני כסף, כדי שיהיה לו מה לאכול. והוא שאל: מי אוהב יותר את מי? העני את העשיר, או העשיר את העני?</p>
+      <p>לכאורה התשובה פשוטה. העשיר הפסיד והעני קיבל, ולכן העני אמור לאהוב יותר. אבל כשבדק ראה דבר מפתיע: העשיר אוהב את העני יותר.</p>
+      <p>וההסבר: אנחנו חושבים שהעני הוא שקיבל, אבל באמת העשיר קיבל יותר. מה קיבל העני? כסף. הוא אכל, שתה, ישן. נפלא. ומה קיבל העשיר? הוא יודע שהיה כאן אדם מסכן שלא היה לו מה לאכול, ועכשיו בזכותו יש לו. הוא יכול לגדל את ילדיו ולראות אותם לבושים ושמחים. זו הנאה רגשית, והיא גדולה הרבה יותר. ולכן העשיר אוהב יותר.</p>
+      <p>ובחז"ל נאמר יסוד דומה במדרש: יותר ממה שבעל הבית עושה עם העני, העני עושה עם בעל הבית. מי שנותן אינו מפסיד. הוא זוכה לדבר שאין לו מחיר: לדעת שעשה טוב.</p>
+      <p>וכל אחד יכול לבדוק זאת בעצמו. מה נשאר בלב אחרי ערב שבו קנה לעצמו עוד דבר נחמד, ומה נשאר אחרי ערב שבו עזר למישהו שהיה זקוק לו? את הקנייה שוכחים מהר. את החסד זוכרים, והוא ממשיך לחמם את הלב עוד זמן רב. זו בדיוק ההנאה הרגשית שהתורה רוצה שנכיר.</p>
+      <p class="bold-para">הנותן מקבל יותר מן המקבל, כי ההנאה הרגשית שלו גדולה מן ההנאה הגשמית של העני.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · העונג שאינו בגוף</div>
+      <h3 class="story-title">🌾 "אשר עשיתי עמו היום"</h3>
+      <p>את היסוד הזה חייתה אישה אחת במלוא מובן המילה. היא הייתה חדשה ביהדות, וכל מה שלמדה, חייתה, כי הבינה שכך היא האמת. יום אחד הלכה ללקט שיבולים בשדה של בועז. זו הייתה רות.</p>
+      <p>כשחזרה הביתה שאלה אותה נעמי איפה הייתה היום. ורות ענתה משפט מפליא: "שֵׁם הָאִישׁ אֲשֶׁר עָשִׂיתִי עִמּוֹ הַיּוֹם בֹּעַז". לא "האיש שעשה עמי", אלא "האיש אשר עשיתי עמו". היא, הענייה שליקטה שיבולים, עשתה היום טובה לבועז העשיר.</p>
+      <p>כך מתאר הכתוב את רות: היא חייתה את המציאות הרוחנית בצורה כל כך ברורה, שידעה מי באמת עשה למי. אצלנו זה לפעמים נשאר רעיון תיאורטי, פילוסופיה. אצלה זה היה פשוט: בועז נתן לה מעט תבואה, והיא נתנה לו את הזכות לעשות חסד.</p>
+      <p>ומכאן שוב אנו רואים: האדם נהנה הרבה יותר מן ההנאה הרגשית והרוחנית מאשר מן ההנאה הגשמית. וכשאומרים שהאדם נברא להתענג על ה', הכוונה היא שנברא ליהנות, ולא רק מהנאות הגוף.</p>
+      <p class="bold-para">רות חייתה את המציאות הרוחנית כל כך, שהבינה שהיא זו שעשתה טובה לבועז.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · העונג שאינו בגוף</div>
+      <h3 class="story-title">🍦 גלידה או מופע</h3>
+      <p>ולמי שעדיין מתלבט, הובאה דוגמה נוספת. דמיינו שנכנסים לאולם, ונותנים לכל אחד לבחור בין שני כרטיסים. בצד אחד אפשר להיכנס לאולם מלא בגלידות הטובות ביותר שיש. בצד השני יש מופע של זמר אהוב עם מקהלה, שירה מכל הלב.</p>
+      <p>מי יבחר בגלידות? הילדים, בני שש ושבע. אולי גם איזה בחור. אבל רוב המבוגרים יבחרו במופע. ולמה? כי הגלידה היא תענוג רגעי ופיזי. חמש דקות, והסיפור נגמר.</p>
+      <p>מופע טוב, שבו שרו מכל הלב, נשאר עם האדם שנים. הוא נזכר בו פעם אחר פעם. לפעמים חוויה כזאת נותנת השראה לזמן ארוך מאוד. איך אפשר בכלל להשוות בין השניים?</p>
+      <p>כולנו רואים אם כן שהאדם נהנה הרבה יותר מן ההנאה הרגשית. וזה מה שאומר "מסילת ישרים": האדם נברא כדי להתענג על ה' וליהנות מזיו שכינתו, שזהו התענוג האמיתי. אתם בעצמכם אמרתם שזה תענוג גדול בהרבה מן התענוג הגשמי. עכשיו נראה איך המצוות מביאות את האדם אל התענוג הזה.</p>
+      <p class="bold-para">הנאה גשמית נגמרת בתוך דקות, והנאה רגשית נשארת עם האדם שנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פרויד מול התורה</div>
+      <h3 class="story-title">🧠 שני העקרונות של פרויד</h3>
+      <p>כדי להבין את החידוש של התורה, הביא הרב את שיטתו של הפסיכולוג המפורסם זיגמונד פרויד. לפי פרויד, הכוח החזק ביותר שמניע את האדם הוא הרצון לעונג. האדם מחפש כל חייו עונג, או בורח מסבל. כמעט כל פעולה שהוא עושה נובעת מן הרצון הזה.</p>
+      <p>כך זה מתחיל כבר בשנים הראשונות. תינוק עושה הכל מתוך הרצון לעונג: מחפש אוכל, מחפש שתייה. אחר כך, כשנכנס בו קצת שכל, הוא מבין שיש עוד עיקרון בחיים. אי אפשר לחיות רק עם הרצון לעונג. צריך להסתדר עם העולם.</p>
+      <p>ילד קטן חוטף מן השולחן כל מה שהוא רוצה. ילד בן שש כבר מבין מה יקרה אם ימשוך: יעירו לו, ובפעם הבאה אולי יוציאו אותו מן הכיתה. אז הוא מוותר.</p>
+      <p>ולפי פרויד, כל האדם נמצא בקונפליקט מתמיד בין שני העקרונות. פעם הוא רוצה עונג, ופעם הוא יודע שאין ברירה וצריך להסתדר עם החברה. אי אפשר לגנוב מן החנות, צריך ללכת לעבוד. ולכן האדם מוותר שוב ושוב על העונג, כי אין ברירה. כך ראה פרויד את העולם כולו. עולם מסכן מאוד.</p>
+      <p class="bold-para">פרויד ראה את האדם כקרוע בין הרצון לעונג לבין הצורך להסתדר עם המציאות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פרויד מול התורה</div>
+      <h3 class="story-title">🔄 לוותר על הרגע כדי לקבל יותר</h3>
+      <p>היהדות באה ואומרת: זו טעות גדולה. הרצון לעונג אכן קיים, וכל אדם שואף לעונג. אבל כשהתורה אומרת ליהודי בבוקר: הגיע הזמן לקום, לך לתפילת שחרית, אל תישאר מתחת לשמיכה, לך לשיעור ואל תשב מול החדשות, היא אינה אומרת לו "ותר על העונג כי אין ברירה".</p>
+      <p>היא אומרת: ותר על עונג רגעי, על ריגוש חולף, על תאווה של רגע, כדי שתיהנה הרבה יותר. ולא רק בעולם הבא, אלא כאן, בעולם הזה. באת לתפילה והתחברת לבורא עולם? זו הנאה רגשית. אדם מרגיש אהבה לה', שמחה בה'. הוא מרגיש שמישהו שומר עליו ואוהב אותו, שהוא שייך לדבר נצחי, שעשה מצווה שאינה נמחקת. והוא יוצא מאושר הרבה יותר.</p>
+      <p>וכך גם בכיבוד הורים. כשהתורה אומרת לאדם לעזוב את ספר המתח ולעשות מה שביקשו ההורים, היא אינה מבקשת ממנו להפסיד. הוא מוותר על הנאה קטנה ומקבל עונג גבוה הרבה יותר: סיפוק, שמחה, תחושה שהוא אדם טוב ומכיר טובה.</p>
+      <p>זה ההבדל העצום: לא מוותרים, אלא מקבלים הרבה יותר. ואם אדם שומר מצוות ואינו מרגיש שהוא נהנה יותר, צריך לבדוק. משהו כאן אינו תקין.</p>
+      <p class="bold-para">התורה אינה מבקשת לוותר על העונג, אלא לוותר על עונג רגעי כדי לקבל עונג גדול בהרבה כבר כאן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פרויד מול התורה</div>
+      <h3 class="story-title">📺 השיעור או החדשות</h3>
+      <p>הרב הביא דוגמה שכל אחד יכול להרגיש. נניח ששני אנשים החליטו הבוקר לא לבוא לשיעור. אחד העדיף להישאר במיטה, והשני העדיף לשבת מול החדשות. בשעה שתים עשרה השיעור נגמר. מי מאושר יותר: זה שנשאר במיטה, זה שישב מול הטלוויזיה, או זה שבא לשיעור?</p>
+      <p>כמובן, לא תמיד ולא אצל כולם. אם מישהו נעדר בגלל סיבה אמיתית, זה דבר אחר. אבל אם זה נבע מעצלות, או מרצון לראות עוד ועוד חדשות שאינן נגמרות, התשובה ברורה. ראיתם פעם אדם שקם מאושר אחרי שעתיים של חדשות? בדרך כלל הוא יוצא מדוכדך.</p>
+      <p>זו דוגמה שמרגישים מהר מאוד, ולכן היא טובה להתחלה. אבל היסוד רחב הרבה יותר: כמעט תמיד, כשאדם מוותר על משהו בשביל רצון ה', הוא אינו מפסיד. הוא מרוויח.</p>
+      <p>וזה ההבדל בין שתי ההשקפות. לפי פרויד, האדם מוותר על העונג כדי להסתדר עם העולם, ולכן אל תהיה בהמה כל היום, כי אין ברירה. לפי התורה, האדם מוותר על עונג קטן כדי לקבל עונג גדול: שמחה, סיפוק ואושר.</p>
+      <p class="bold-para">מי שוויתר על נוחות רגעית למען דבר טוב, מרגיש בדרך כלל טוב יותר עם עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פרויד מול התורה</div>
+      <h3 class="story-title">💧 יסוד המים</h3>
+      <p>הרעיון שהרצון לעונג מניע את האדם נמצא כבר בספרי רבי חיים ויטל, תלמידו של האר"י. הוא כתב שיש ארבעה יסודות שמניעים את האדם: אש, רוח, מים ועפר, ומהם נובעות המידות. ויסוד המים, לפי דבריו, הוא כוח התענוג.</p>
+      <p>בשיעור הובא ביאור לדבריו: כוח התענוג שבנפש הוא הכוח שמחיה את האדם ומקיים אותו. אין לאדם אפשרות לחיות בעולם הזה בלי תענוג. כשם שאי אפשר להתקיים בלי מים, כך אי אפשר להתקיים בלי תענוג. וכפי גודל התענוג, כך גודל הקיום. ככל שאדם נהנה יותר, כך הוא חי יותר, שמח יותר ובריא יותר.</p>
+      <p>הרב סיפר מה שאמר לו פעם רופא: הרבה פעמים מגיעים אליו אנשים שסובלים מכאבים שונים, ולא תמיד יש לכך סיבה גופנית. מאחורי חלק מהם עומד צער גדול שהאדם נושא בלבו. הצער אינו נשאר רק ברגש, הוא מתבטא בגוף, והגוף אינו פורח.</p>
+      <p>ולכן זה דבר חשוב מאוד, ולא רק עניין נחמד. אדם שרוצה שהתורה והמצוות שלו יגרמו לו לגדול ולפרוח, צריך לחפש את העונג שבהן.</p>
+      <p class="bold-para">רבי חיים ויטל כתב שכוח התענוג הוא שמחיה את האדם, ושלפי גודל התענוג כך גודל החיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פרויד מול התורה</div>
+      <h3 class="story-title">🍎 העץ והפירות</h3>
+      <p>להמחשת הדברים הובא משל. כשרואים עץ שפירותיו גדולים, דשנים ועסיסיים, מבינים שהעץ הזה קיבל השקיה, דישון ואור בשפע ובקביעות. וכשרואים עץ שפירותיו קטנים, שדופים וחסרי טעם, אפשר להסיק שמנעו ממנו מים, אוויר ואור.</p>
+      <p>כך גם באדם. כשרואים יהודי ששומר תורה ומצוות כראוי, רואים עליו סימנים: הוא שמח, טוב לב, נהנה ממה שהוא עושה. זה סימן שהוא מקבל מן המצוות את המים שלו, את העונג שמחיה אותו.</p>
+      <p>ואם אדם רואה שהפירות שלו קטנים, שהוא עושה הכל אבל אינו שמח ואינו פורח, אין זה סימן שהדרך אינה טובה. זה סימן שחסרים לו מים. הוא עושה את המעשים, אבל אינו מקבל מהם את העונג. ולשם כך צריך ללמוד איך נהנים ממצווה.</p>
+      <p>וזה, אמר הרב, הוא כל עניינו של הקורס "להתענג באהבה" שהשיעור הזה פותח: ללמוד איך אדם נהנה מן התורה והמצוות, ואיך הן נותנות לו הרבה עונג ושמחה. השם נלקח מן הפסוק "מַה יָּפִית וּמַה נָּעַמְתְּ אַהֲבָה בַּתַּעֲנוּגִים".</p>
+      <p class="bold-para">כשאדם שומר תורה ומצוות כראוי, רואים עליו שמחה וטוב לב, כמו שרואים על העץ אם השקו אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פרויד מול התורה</div>
+      <h3 class="story-title">👑 "אין בטובה למעלה מענג"</h3>
+      <p>בספר יצירה נאמר: "אֵין בְּטוֹבָה לְמַעְלָה מֵעֹנֶג". את הדברים ביאר בהרחבה האדמו"ר הרש"ב מליובאוויטש, האדמו"ר החמישי בשושלת חב"ד. לפי דבריו, נפש האדם מחולקת לכוחות שמקבילים לספירות שלמעלה, ומעל כל הכוחות האלה יש כוח הרצון וכוח התענוג, והם קשורים בעצם הנפש.</p>
+      <p>וזו הסיבה שאדם אינו יכול להסביר למה הוא רוצה דווקא בדבר הזה ולא בדבר אחר, למה הוא נהנה דווקא מעניין מסוים. הרצון והתענוג נמצאים למעלה מן השכל. אדם שנהנה מחידוש בתורה יתקשה מאוד להסביר במילים ממה הוא נהנה. מי שנהנה מתפילה ינסה לכתוב את החוויה, ולא יצליח. נסו לבקש מחתן וכלה להסביר במה הם נהנים זה מזה. הם יגמגמו.</p>
+      <p>והרש"ב הוסיף שהעונג נמצא אפילו למעלה מן הרצון, כי הוא הסיבה של הרצון. אדם רוצה בדבר מפני התענוג שיש לו בו. אילו לא היה לו תענוג בדבר, לא היה רוצה בו.</p>
+      <p>ומכאן ההבדל מפרויד. אצל פרויד, העונג הוא רק גשמי: אוכל, שתייה וכדומה. כל מה שמעבר לזה הוא ויתור כפוי. היהדות אומרת: יש עונג ויש עונג. יש תאווה ברובד הנמוך, ויש עונג שמגיע מן המקום הגבוה ביותר בנפש. אדם שמכבד את הוריו נהנה מכך שהוא אדם טוב ורוחני, מלא סיפוק ומשמעות. מי שקורא לזה ויתור, פשוט לא הכיר יותר מזה.</p>
+      <p class="bold-para">התענוג נמצא מעל השכל ומעל הרצון, ולכן כל כך קשה להסביר אותו במילים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להיות בתוך הדבר</div>
+      <h3 class="story-title">📚 שני בחורים, אותה גמרא</h3>
+      <p>הרב סיפר מעשה שהיה לפני יותר מעשר שנים. בתקופה מסוימת התחילו בחורים מבית ספר חילוני בעיר לבוא ללמוד תורה. היה להם חשק עצום להתקרב לבורא עולם. מדי ערב הם הגיעו לבית מדרש בעיר, הרבה מאוד בחורים, והרב היה לומד איתם.</p>
+      <p>יום אחד פגש הרב בחור מתיכון דתי בעיר, וסיפר לו: מדי ערב באים בחורים ללמוד גמרא. הבחור שאל: מה הם מקבלים על זה? הרב ענה: שום דבר. הם פשוט רוצים ללמוד תורה, הם נהנים. והבחור לא האמין: לא יכול להיות. אני לומד גמרא ולא מרגיש שום הנאה.</p>
+      <p>הרב הציע לו לבוא ולראות בעצמו. והוא הגיע, התיישב, ראה אותם לומדים ושאל אותם: למה אתם באים? הם ענו: זה עושה לנו טוב. אנחנו מרגישים שמחה גדולה, סיפוק, הנאה. והוא עדיין לא הצליח להבין. איך זה ייתכן? אותה גמרא, אותו שולחן.</p>
+      <p>התשובה היא יסוד גדול: מה שנותן לאדם הנאה ועונג מדבר הוא, בדרך כלל, שהאדם נמצא בתוך הדבר וחווה אותו. ההבדל בין שני הבחורים לא היה בגמרא, אלא במקום שבו היו הם עצמם בזמן הלימוד.</p>
+      <p class="bold-para">אותו לימוד יכול להיות לאחד מקור של שמחה ולאחר עול, לפי השאלה אם הוא נמצא בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להיות בתוך הדבר</div>
+      <h3 class="story-title">🎧 מי שנמצא במקום אחר</h3>
+      <p>כדי להסביר, הובאה דוגמה מן השיעור עצמו. נניח שבזמן השיעור מישהו מדפדף בטלפון ומקשיב בחצי אוזן. האם בסוף השיעור הוא ייהנה מן הרעיון היפה שנאמר? אולי הוא שמע, ואולי אפילו ידע לחזור על הדברים. אבל ליהנות מהם? אין סיכוי. הוא לא היה מרוכז. הוא לא חווה את זה.</p>
+      <p>ועוד דוגמה. אדם מגיע הביתה, וילדתו מספרת לו בהתלהבות מה היה היום בגן. והוא עם אוזנייה באוזן. הוא מוצלח, התרגל לעשות שלושה דברים ביחד, והוא באמת שומע אותה. האם הוא יכול ליהנות ממה שהיא מספרת? אילו היה יכול, היה מריץ את הסיפור במהירות כפולה. הוא שמע כל מילה, ובכל זאת לא נהנה, כי הוא היה במקום אחר.</p>
+      <p>אם כן, כדי שאדם ייהנה ויתענג מדבר, הדבר הראשון הוא להיות בחוויה. גם הדבר היפה ביותר בעולם לא ייתן הנאה למי שלחוץ כי עוד רגע מגיע האוטובוס. אם אתה לא נמצא שם, אתה לא חווה.</p>
+      <p class="bold-para">אי אפשר ליהנות מדבר כשהראש נמצא במקום אחר, גם אם שומעים כל מילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להיות בתוך הדבר</div>
+      <h3 class="story-title">✔️ לסמן וי</h3>
+      <p>ועכשיו אפשר להבין את ההבדל בין שני הבחורים. למה פתח הבחור מן התיכון גמרא בבוקר? לא מפני שרצה ללמוד. יש מבחן, יש בגרות. אם לא ילמד, לא יעבור, ההורים יכעסו, המורה יכעס, אולי יוציאו אותו. אין ברירה, פותחים. האם ככה אפשר ליהנות? הוא אינו נמצא שם. הוא מחכה לצלצול, כדי ללכת למה שהוא באמת רוצה.</p>
+      <p>הבחור מן הבית ספר החילוני הגיע בשמונה בערב, כי החליט. איש לא הכריח אותו. להפך, היו שניסו להניא אותו: בשביל מה אתה צריך את זה? אבל הוא החליט: טוב לי כאן, זה מה שאני רוצה. ולכן היה כל כולו בתוך החוויה, ונהנה.</p>
+      <p>וזה הסבר לתופעה מוכרת: הרבה פעמים רואים אנשים ששומרים מצוות ואינם מתענגים. למה? כי הם רק מחכים שזה ייגמר. הם אינם נמצאים שם. הם אומרים "עלינו לשבח" כדי לסיים, כדי לצאת. הם לא באו בשביל להיות, אלא בשביל לסמן וי.</p>
+      <p>ואי אפשר ליהנות מדבר כשבאים רק כדי לסמן וי. צריך להיות בדבר, להתרגש ממנו, לחוות אותו. בכל פעם שאדם עושה דבר בלי שהוא נמצא בתוכו, אין לו אפשרות ליהנות.</p>
+      <p>ומכאן עצה מעשית. לפני מצווה, כדאי לעצור לרגע ולשאול: האם אני כאן? האם באתי כדי לגמור, או כדי להיות? עצם ההחלטה להיות נוכח, להניח לרגע את הטלפון ואת המחשבות על מה שאחר כך, יכולה להפוך מעשה רגיל של חובה לחוויה של עונג. זה מה שעשו אותם בחורים בכל ערב, בלי שאיש לימד אותם.</p>
+      <p class="bold-para">מי שבא רק כדי לצאת ידי חובה ולסמן וי, אינו יכול להתענג על המצווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אשריך בעולם הזה</div>
+      <h3 class="story-title">🚓 החוקר שלא הבין</h3>
+      <p>כדי להראות איך נראה העולם לפי השקפתו של פרויד, ואיך נראה עולם יהודי, סיפר הרב מעשה ששמע מבעל המעשה עצמו. לפני שנים, ביישוב קטן בצפון לא היה בית מרקחת, כי לא היו מספיק תושבים כדי שיהיה כדאי למישהו לפתוח אחד. מי שהיה צריך תרופות נאלץ לנסוע לעיר הסמוכה, נסיעה ארוכה בתחבורה ציבורית.</p>
+      <p>יהודי יקר החליט להקים גמ"ח. מי שהיה צריך תרופה הביא לו מרשם ושילם את מחירה, ואחת לכמה ימים נסע לעיר, קנה את כל התרופות והביא אותן. כך עבד הגמ"ח שנים רבות.</p>
+      <p>יום אחד הסתבך היהודי בסכסוך כספי עם אדם אחר, ואותו אדם החליט לנקום בו. הוא התלונן במשטרה שיש מישהו שסוחר בתרופות. הגיעו שוטרים רבים, כאילו מדובר בסוחר סמים. החרימו את ארון התרופות, אזקו את האיש ולקחו אותו לחקירה.</p>
+      <p>החוקר שאל אותו למה סחר בתרופות. הוא ענה: זה לא מסחר, זה גמ"ח. החוקר לא הבין: מה הרווחת מזה? כלום, הוא ענה, עשיתי חסד, עזרתי לאנשים. החוקר התעקש: איזה רווח כספי? מי עושה דבר בלי רווח? אז ביקש היהודי שיביאו לו את מדריך הטלפונים של עיר חרדית גדולה. הוא פתח אותו בדפי הגמ"חים: גמ"ח לולים, גמ"ח עגלות, גמ"ח תרופות, גמ"ח מזוזות, ועוד ועוד. מה מרוויחים כל אלה? הם שמחים לעזור. זה עושה להם טוב.</p>
+      <p>והחוקר נדהם. הוא לא שמע מעולם דבר כזה. אנשים מוזרים יש בעולם, אמר. זו דוגמה קלאסית לאדם שרואה את העולם כמו פרויד: מה זו הנאה? הנאה גשמית. אם אין כסף, בשביל מה לעשות? וברוך ה' שהבדילנו מן הטועים ונתן לנו תורת אמת. מי שעושה חסד נהנה הרבה יותר מאילו הרוויח עוד כמה עשרות שקלים.</p>
+      <p class="bold-para">מי שמכיר רק הנאה גשמית אינו מסוגל להבין אנשים שעושים חסד בשביל השמחה שבו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אשריך בעולם הזה</div>
+      <h3 class="story-title">⚠️ לא לסבול כאן בשביל שם</h3>
+      <p>זה יסוד אדיר, אמר הרב, שצריך לשנן אותו פעמים רבות: האם יהדות פירושה לסבול כאן כדי ליהנות שם? על כך כתב דברים חזקים רבי אליהו לופיאן, שהיה משגיח שנים רבות בישיבת "כנסת חזקיהו". הוא היה יהודי בעל לב עצום, אש של אהבת ה' ועבודת ה'.</p>
+      <p>בתוכן דבריו, כפי שהובאו בשיעור: אל יחשוב האדם ואל יחיה באופן כזה שיאמר לעצמו: אם אעבוד את ה' ואקיים את התורה, יהיה עליי לסבול הרבה בעולם הזה. אבל זה כדאי, כי כדאי להקריב את העולם הזה החולף כדי שבעולם הבא יהיה לי כל טוב. יש הרבה שחושבים כך: קשה כאן, אבל זו מעין פנסיה לעולם הבא.</p>
+      <p>ומי שחושב כך, כתב, טועה הרבה מאוד. מלבד שזה אינו נכון, גם אין זו הדרך בעבודת ה'. כך אין מצליחים. אדם שאינו נהנה ואינו מתענג, קשה לו מאוד לפרוח ולהמשיך.</p>
+      <p>ועוד כתב שהקדוש ברוך הוא תובע מן האדם שיתבונן וימצא שאם יקיים את רצונו, יהיה לו גם בעולם הזה טובה וברכה. כלומר: שמירת תורה ומצוות בצורתה הנכונה אמורה להביא את האדם לכך שיהיה לו טוב יותר כבר כאן. להיות יהודי פירושו ליהנות כאן הנאה אמיתית, כדי שתיהנה גם בעולם הבא.</p>
+      <p class="bold-para">הטעות הנפוצה היא לחשוב שעבודת ה' היא סבל בעולם הזה תמורת שכר בעולם הבא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אשריך בעולם הזה</div>
+      <h3 class="story-title">👕 פת במלח ושתי חולצות</h3>
+      <p>אבל יש לכאורה קושיה מן המשנה בפרקי אבות: "כָּךְ הִיא דַּרְכָּהּ שֶׁל תּוֹרָה: פַּת בַּמֶּלַח תֹּאכַל, וּמַיִם בַּמְּשׂוּרָה תִּשְׁתֶּה, וְעַל הָאָרֶץ תִּישַׁן, וְחַיֵּי צַעַר תִּחְיֶה, וּבַתּוֹרָה אַתָּה עָמֵל". זה נשמע כמו חיי סבל. אבל המשנה ממשיכה: "אִם אַתָּה עֹשֶׂה כֵּן, אַשְׁרֶיךָ וְטוֹב לָךְ. אַשְׁרֶיךָ בָּעוֹלָם הַזֶּה".</p>
+      <p>הכוונה היא שיש אדם שהגיע למדרגה כל כך גבוהה, שהוא נהנה כל כך מלימוד התורה, עד שכדאי לו לוותר על הרבה דברים בעולם הזה כדי ללמוד עוד. מבחוץ נראה שאין לו הרבה, אבל הוא מאושר מאוד. זה לא סבל, זו בחירה של מי שמסוגל לכך.</p>
+      <p>הדוגמה שהובאה היא הרב שך. בצעירותו, בחוץ לארץ, היה עני מאוד. הייתה תקופה שישב בספסל האחרון בישיבה, כי הייתה לו חולצה אחת בלבד, והוא התבייש לקום. עד שאישה אחת שמעה על כך ותרמה לו שתי חולצות. כל חייו הכיר לה טובה.</p>
+      <p>ושנים אחר כך סיפר: היה לי בקושי מה לאכול, ובכל זאת לא היו לי ימים מאושרים בעולם הזה כמו אותה תקופה בישיבה. אדם שאוהב חכמה ולומד חכמה, ההנאה שלו אינה ניתנת לתיאור. ויש גם היום רבים שיכולים לצאת לעבודה ובוחרים להישאר ללמוד, כי הם נהנים מן התורה כל כך שכדאי להם לוותר. זה "אשריך בעולם הזה".</p>
+      <p class="bold-para">מי שאוהב את התורה באמת יכול להיות מאושר גם בעוני, כי העונג שהתורה נותנת לו גדול מכל השאר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אשריך בעולם הזה</div>
+      <h3 class="story-title">📊 גם המחקר רואה</h3>
+      <p>ולמי שעדיין אינו מאמין, הובא בסוף השיעור נתון מסקר שבדק בפועל מי מרוצה יותר מחייו. לפי הנתונים שהוצגו, כשישים ושניים אחוז מן החרדים הגדירו את עצמם מרוצים מאוד מחייהם, לעומת כעשרים ושישה אחוז בלבד בקרב החילונים. פער עצום.</p>
+      <p>הרב הדגיש שהנתונים נלקחו מאתר כללי לגמרי, שאינו קשור כלל לקירוב או לחזרה בתשובה. אלה נתונים מן השטח. מה שנאמר בחז"ל ובספרי המוסר מתברר גם במציאות: התורה והמצוות, כשהן נעשות כראוי, באמת מביאות את האדם לאושר.</p>
+      <p>בסקר עצמו הובאו גם הסברים לפער, אבל הזמן כבר לא הספיק כדי להיכנס אליהם. העיקר ברור: זה לא רק רעיון יפה, אלא כך נראית המציאות.</p>
+      <p>ומכאן החשבון כולו. התורה לא באה לקחת מן האדם את העונג, אלא לתת לו כלים ליהנות הרבה יותר. האדם נברא להתענג על ה'. זו המטרה: להיות אדם רוחני, אדם רגשי, אדם שנהנה לעשות דברים נפלאים.</p>
+      <p class="bold-para">סקרים מראים שבפועל שומרי מצוות מדווחים על שביעות רצון גבוהה בהרבה מחייהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אשריך בעולם הזה</div>
+      <h3 class="story-title">🎉 "כי חג ה' לנו"</h3>
+      <p>את השיעור חתם הרב ברעיון מן הפרשה, שמסכם את כל מה שנלמד. משה רבנו בא אל פרעה ומזהיר אותו מפני מכת הארבה. עבדי פרעה לוחצים עליו: "עַד מָתַי יִהְיֶה זֶה לָנוּ לְמוֹקֵשׁ, שַׁלַּח אֶת הָאֲנָשִׁים". פרעה מחזיר את משה ואהרן ושואל: "מִי וָמִי הַהֹלְכִים?"</p>
+      <p>ומשה עונה: "בִּנְעָרֵינוּ וּבִזְקֵנֵינוּ נֵלֵךְ, בְּבָנֵינוּ וּבִבְנוֹתֵנוּ". ופרעה מסרב: "לְכוּ נָא הַגְּבָרִים וְעִבְדוּ אֶת ה', כִּי אֹתָהּ אַתֶּם מְבַקְשִׁים". על מה בדיוק היה הוויכוח ביניהם?</p>
+      <p>חשבו: לאן לוקחים את הילדים? לשמחת תורה, להכנסת ספר תורה, לחתונה של קרובים, לברית. ומי לוקח את הילדים לעבודה? רק כשאין ברירה, כשאין מי שישמור עליהם. מה יעשו הילדים בעבודה?</p>
+      <p>פרעה ראה בתורה ובמצוות עבודה. ולכן אמר: אם אתם רוצים לעבוד, ילכו הגברים. למה צריך את כולם? זה קשה, זה סבל. ומשה ענה לו: לא, בנערינו ובזקנינו נלך. למה? "כִּי חַג ה' לָנוּ". אצלנו עבודת ה' אינה סבל. היא חגיגה, השמחה של היהודי. ולחגיגה לוקחים את כולם, כי מי לא רוצה שכולם ייהנו? יזכה אותנו ה' להרגיש כך בכל מצווה.</p>
+      <p class="bold-para">פרעה ראה בעבודת ה' עבודה קשה, ומשה ענה לו שהיא חגיגה שכולם הולכים אליה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/UkIGu2HqXLg · 2024-01-17 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מטרה אחת לכל התורה","icon":"🎯","color":"#c62b6b","stories":[{"id":1,"title":"חמשת אלפים ספרים בשנה","icon":"📚"},{"id":2,"title":"הצרה שנהפכה לברכה","icon":"📖"},{"id":3,"title":"\"לא נברא אלא להתענג\"","icon":"🌅"},{"id":4,"title":"המילה המבוקשת ביותר","icon":"🔎"}]},{"id":2,"name":"העונג שאינו בגוף","icon":"💞","color":"#6d28d9","stories":[{"id":5,"title":"מי אוהב את מי","icon":"🤝"},{"id":6,"title":"\"אשר עשיתי עמו היום\"","icon":"🌾"},{"id":7,"title":"גלידה או מופע","icon":"🍦"}]},{"id":3,"name":"פרויד מול התורה","icon":"⚖️","color":"#e08e00","stories":[{"id":8,"title":"שני העקרונות של פרויד","icon":"🧠"},{"id":9,"title":"לוותר על הרגע כדי לקבל יותר","icon":"🔄"},{"id":10,"title":"השיעור או החדשות","icon":"📺"},{"id":11,"title":"יסוד המים","icon":"💧"},{"id":12,"title":"העץ והפירות","icon":"🍎"},{"id":13,"title":"\"אין בטובה למעלה מענג\"","icon":"👑"}]},{"id":4,"name":"להיות בתוך הדבר","icon":"🧭","color":"#1e88b8","stories":[{"id":14,"title":"שני בחורים, אותה גמרא","icon":"📚"},{"id":15,"title":"מי שנמצא במקום אחר","icon":"🎧"},{"id":16,"title":"לסמן וי","icon":"✔️"}]},{"id":5,"name":"אשריך בעולם הזה","icon":"☀️","color":"#c62b6b","stories":[{"id":17,"title":"החוקר שלא הבין","icon":"🚓"},{"id":18,"title":"לא לסבול כאן בשביל שם","icon":"⚠️"},{"id":19,"title":"פת במלח ושתי חולצות","icon":"👕"},{"id":20,"title":"גם המחקר רואה","icon":"📊"},{"id":21,"title":"\"כי חג ה' לנו\"","icon":"🎉"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
