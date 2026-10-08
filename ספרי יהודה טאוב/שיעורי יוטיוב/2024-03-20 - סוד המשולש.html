@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 סוד המשולש</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 סוד המשולש</h1>
+  <p>מה מקופל בצורת אוזני המן: אחדות ישראל, הנקודה המשותפת שמחברת בין שניים, וכוחו של המספר שלוש בתורה ובחיים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ סוד המשולש" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/ZvpvQYDPHpU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/ZvpvQYDPHpU/hqdefault.jpg" alt="סוד המשולש" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=ZvpvQYDPHpU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פורים של אחדות</div>
+      <h3 class="story-title">🥟 פורים בתוך אוזן</h3>
+      <p>השיעור נאמר בימים שלפני פורים, סמוך לתענית אסתר. לכל חג יש המאכל שלו, ולפורים יש את אוזני המן. השאלה שעמדה במרכז הייתה: מה מונח בצורה הזו? למה דווקא משולש, ולמה דווקא אוזן?</p>
+      <p>המטרה הייתה לא רק להסביר מאכל אחד, אלא לקפל בתוך האוזן הקטנה את כל הפורים, את כל המצוות של היום. ובהמשך נראה שהרעיון חורג הרבה מעבר לפורים, ונוגע בתורה, בתפילה, בחיי המשפחה ובחיי כל אדם.</p>
+      <p>נתחיל מן המצווה שתופסת את רוב היום: משלוח מנות. יש בפורים כמה מצוות. מקרא מגילה מובן: מפרסמים את הנס. מתנות לאביונים מובנות: דואגים לעניים ביום שמחה. אבל מה הקשר בין פורים לבין משלוח מנות? למה דווקא ביום הזה כל אחד שולח לחברו?</p>
+      <p>התשובה נמצאת במגילה עצמה, בדברי המן הרשע, ובתשובה שענתה לו אסתר המלכה. משם נבין גם את סוד המשולש.</p>
+      <p class="bold-para">כל חג יש לו מאכל, וגם בצורת אוזני המן אפשר לקפל את כל הפורים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פורים של אחדות</div>
+      <h3 class="story-title">🧩 מפוזר ומפורד</h3>
+      <p>כשהמן בא אל אחשוורוש לבקש להשמיד את היהודים, הוא אמר: "יֶשְׁנוֹ עַם אֶחָד מְפֻזָּר וּמְפֹרָד בֵּין הָעַמִּים". לא רק מפוזרים בין העמים, אלא גם מפורדים. הם אינם מאוחדים. וכשעם אינו מאוחד, אומר המן לעצמו, יש לי אפשרות לנצח אותו.</p>
+      <p>אסתר המלכה הבינה בדיוק את הנקודה הזו. מה היא אמרה למרדכי? "לֵךְ כְּנוֹס אֶת כָּל הַיְּהוּדִים". דאג לאחד את כולם. כוחנו באחדותנו. ורק על ידי זה נצליח לנצח את המן הרשע.</p>
+      <p>ויש עוד רמז נאה. יש מקומות שנוהגים להכות בהמן רק פעם אחת, בסוף המגילה, בפסוק "כִּי הָמָן בֶּן הַמְּדָתָא הָאֲגָגִי צֹרֵר כָּל הַיְּהוּדִים". הפשט הוא ש"צורר" פירושו אויב. אבל יש ורט שמפרש: המן "צרר", קשר יחד, את כל היהודים. בלי שהתכוון, הוא איחד אותם.</p>
+      <p>ומעניין שהפסוק הזה כתוב מיד אחרי הפסוק שמזכיר את משלוח המנות. כמו שאז נעשו כל היהודים לאחד, כך גם אנחנו בפורים דואגים לאחדות. זה טעמה של מצוות משלוח מנות איש לרעהו. כל מנה שעוברת מבית לבית היא תשובה חיה לטענת המן: איננו מפורדים, אנחנו עם אחד.</p>
+      <p>ומכאן יוצא שהמלחמה בהמן אינה רק זיכרון של מאורע שהיה. בכל דור יש מי שמנסה להפריד בין יהודים, ובכל דור התשובה היא אותה תשובה: להתקרב, להתאחד, ולהיות כנוסים יחד.</p>
+      <p class="bold-para">המן ידע שכוחו של עם ישראל באחדותו, ולכן אסתר השיבה: לך כנוס את כל היהודים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הנקודה האמצעית</div>
+      <h3 class="story-title">🔺 צריך נקודה באמצע</h3>
+      <p>עכשיו נגיע לאוזני המן. צורתם משולשת, ובכך הם נושאים את המסר המרכזי של היום. כאשר רוצים לאחד שני בני אדם, מה עושים? תמיד צריך לדאוג לדבר שלישי, שיהיה משותף לשניהם. צריך צורה של משולש: נקודה אמצעית שמחברת ביניהם.</p>
+      <p>הנקודה הזו יכולה להיות דברים רבים. התניא, בפרק ל"ב, מלמד "דרך ישרה וקלה" לבוא לידי אהבת ישראל. הגופים מחולקים, אבל הנשמות כולן שורשן אחד, ו"אב אחד לכולנו". לכן נקראים כל ישראל אחים ממש. אם אתה מרגיש שלכולנו יש אבא אחד, אתה יכול לאהוב את השני, כי יש לכם נקודה משותפת.</p>
+      <p>ולפעמים, לצערנו, הנקודה המשותפת היא אויב. בשיעור דובר על כך שבתקופה האחרונה נוצרה בעם ישראל אחדות גדולה. לפני כן לכל אחד הייתה דעה אחרת, וקשה היה להתאחד. כשהופיע אויב משותף, נוצרה מטרה אחת, וכולם התקרבו.</p>
+      <p>אבל אם זוכים, אין צורך באויב. מספיק לזכור שיש אבא אחד לכולנו, ובורא עולם עצמו הוא הנקודה האמצעית שמחברת את כל ישראל.</p>
+      <p class="bold-para">כדי לאחד שני אנשים צריך תמיד נקודה שלישית שמשותפת לשניהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הנקודה האמצעית</div>
+      <h3 class="story-title">💎 למצוא בו נקודה טובה</h3>
+      <p>יש עוד דרך למצוא נקודה משותפת, והיא כלל נפלא לחיים. אם אתה רוצה להתחבר לאדם, אפילו לאדם שאתה כועס עליו מאוד על דברים רבים, חפש בו נקודה טובה אחת. משהו אחד שאתה מעריך בו באמת.</p>
+      <p>כמעט בכל אדם תמצא נקודה כזו. וברגע שתתרכז בה, היא תהיה הנקודה האמצעית במשולש. ההערכה המשותפת לטוב הזה תוכל לחבר ביניכם, גם אם יש עוד הרבה דברים שמפרידים.</p>
+      <p>ולמה דווקא אוזן? אחד הרמזים הוא זה: אדם מתאחד עם השני כשהוא יודע להקשיב לו. יש אנשים שעסוקים כל הזמן בלדבר. או שהם מדברים, או שהם מחכים לתורם לדבר, ונדמה שהם שומעים את השני רק כדי שיגיע תורם. כך קשה מאוד להתאחד.</p>
+      <p>אבל כאשר אדם באמת מקשיב לשני, שומע מה כואב לו, יש סיכוי גדול שיתאחדו. האוזן היא כלי של אחדות.</p>
+      <p>ומכאן נראה שאותו רעיון בדיוק, משולש של אחדות, מופיע בתורה, במצוות ובחגים בשפע. עד כדי כך שיש מי שמפרש שעם ישראל נקרא "עם סגולה" על שם הסגול, שלוש נקודות במשולש.</p>
+      <p class="bold-para">גם כלפי מי שכועסים עליו, מי שמחפש בו נקודה טובה אחת ומתרכז בה, יכול להתאחד איתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של שלוש</div>
+      <h3 class="story-title">📜 אוריאן תליתאי</h3>
+      <p>הגמרא במסכת שבת מביאה דרשה של אחד מחכמי הגליל: בריך רחמנא דיהב אוריאן תליתאי, לעם תליתאי, על ידי תליתאי, ביום תליתאי, בירחא תליתאי. ברוך הרחמן שנתן תורה משולשת לעם משולש, על ידי השלישי, ביום השלישי, בחודש השלישי.</p>
+      <p>תורה משולשת: תורה, נביאים וכתובים. עם משולש: כהנים, לויים וישראלים. על ידי השלישי: משה רבנו, שהיה השלישי במשפחה, אחרי מרים ואהרן. בחודש השלישי: חודש סיוון.</p>
+      <p>בשיעור הודגש שאצלנו המשולש אינו מטרה בפני עצמה. הוא אמצעי. הוא הדרך להגיע לאחד, לאחדות עם בורא עולם. השלוש משרת את האחד.</p>
+      <p>יש בכך גם הבדל מהותי מן הדרך שבה אחרים השתמשו במספר שלוש באמונתם. אצלנו אין שלושה כוחות ואין חלוקה באלוקות חלילה. השלוש הוא הדרך שבה הנבראים, המחולקים והשונים זה מזה, מתחברים יחד ומגיעים אל האחד.</p>
+      <p>ולמה דווקא שלוש? כאן מגיע הסבר עמוק של המהר"ל מפראג, שמבאר את כוחו של המספר הזה מתוך המשנה במסכת אבות.</p>
+      <p class="bold-para">התורה ניתנה כולה בסימן שלוש, כי השלוש הוא סימן האחדות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של שלוש</div>
+      <h3 class="story-title">➗ שניים הם ריבוי</h3>
+      <p>המשנה במסכת אבות אומרת: "שְׁלֹשָׁה שֶׁאָכְלוּ עַל שֻׁלְחָן אֶחָד וְאָמְרוּ עָלָיו דִּבְרֵי תוֹרָה, כְּאִלּוּ אָכְלוּ מִשֻּׁלְחָנוֹ שֶׁל מָקוֹם". למה דווקא שלושה? למה לא חמישה?</p>
+      <p>המהר"ל מסביר: שניים הם מחולקים. השניים הם תחילת הריבוי. ויש לזה רמז בלשון: עברו על כל המספרים, ותראו שרק "שניים" בא בלשון רבים, בסיומת "ים". שלושה, ארבעה, חמישה, כולם בלשון יחיד. כי השניים מורים על הריבוי והפירוד.</p>
+      <p>לעומת זאת, לשלושה יש התאחדות, כאילו הם דבר אחד. וגם בבריאה רואים זאת: ביום השני לא נאמר "כי טוב", כי זה היה יום של הבדלה, יום של פירוד בין מים למים. ביום השלישי נאמר "כי טוב" פעמיים, כי בו התחילה ההתאחדות.</p>
+      <p>והמהר"ל מביא גם משל מן ההנדסה. כאשר מניחים שני קווים זה ליד זה, אפשר להמשיך אותם עד אין סוף, והם לא ייפגשו לעולם. אבל כאשר מניחים שלושה קווים, הם נפגשים וסוגרים צורה. זה נקרא דבר אחד.</p>
+      <p class="bold-para">לפי המהר"ל, שניים מורים על פירוד, ושלושה מורים על התאחדות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של שלוש</div>
+      <h3 class="story-title">🏠 שכינה ביניהם</h3>
+      <p>חז"ל אמרו: לא איש בלא אישה, ולא אישה בלא איש, ולא שניהם בלא שכינה. למה אי אפשר לשניהם בלא שכינה?</p>
+      <p>כי כשיש רק שניים, אין להם חיבור קבוע. רק כאשר יש שכינה ביניהם, יש שלישי שהוא החיבור, ואז השניים נקשרים. כאשר יש להם מטרה משותפת, כששניהם רוצים להקים בית בישראל, כששניהם רוצים שבורא עולם ישרה בביתם, יש להם נקודה משותפת שמאחדת אותם.</p>
+      <p>וזה מה ששלמה המלך אומר בקהלת: "טוֹבִים הַשְּׁנַיִם מִן הָאֶחָד", ומסיים: "וְהַחוּט הַמְשֻׁלָּשׁ לֹא בִמְהֵרָה יִנָּתֵק". שניים טובים מאחד, אבל רק המשולש עומד בפני כל קושי.</p>
+      <p>זה גם עיקרון כללי: כל דבר טוב שרוצים שיתקיים, צריך בו שילוש. ומיד נראה כמה הרבה דוגמאות לכך יש בחיינו היומיומיים.</p>
+      <p>וכך גם חוזרים לדברי המשנה על שלושה שאכלו על שולחן אחד. כשהם אומרים עליו דברי תורה, התורה היא הדבר השלישי שמחבר ביניהם, והשולחן נעשה כביכול שולחנו של מקום. האחדות שבין בני האדם נעשית מקום שבו שורה השכינה.</p>
+      <p class="bold-para">איש ואישה זקוקים לשלישי, השכינה, כדי שיהיה ביניהם חיבור אמיתי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של שלוש</div>
+      <h3 class="story-title">🥖 צמה וחלה</h3>
+      <p>תראו כמה דברים יש לנו בשלושה. שלוש תפילות ביום. שלוש פעמים בשנה עולים לרגל. שלושה אבות. הקדושה נאמרת שלוש פעמים בכל יום: ביוצר, בחזרת הש"ץ וב"ובא לציון", ובכל פעם אומרים "קדוש" שלוש פעמים.</p>
+      <p>בקריאת התורה עולים כהן, לוי וישראל, וכל עולה קורא לכל הפחות שלושה פסוקים. יש לנו תורה, נביאים וכתובים, ויש מקרא, משנה ותלמוד. תפילת העמידה פותחת בשלוש ברכות ראשונות ומסתיימת בשלוש אחרונות. וגם חזקה נקבעת בשלוש פעמים.</p>
+      <p>ויש דוגמה מן השטח. מי שקלע פעם צמה יודע: צמה חייבת שלושה חוטים. בשניים היא לא מחזיקה מעמד, היא נפתחת. כך גם בחלה: מי שקולע חלה יודע שכדי שתחזיק צריך לפחות שלושה פסים. בפחות מזה היא לא תופסת בכלל.</p>
+      <p>המשולש אינו רק רעיון מופשט. הוא חוק של קיום. מה שבנוי משלושה, נשאר. ומי שרוצה שהקשרים בחייו יחזיקו מעמד, בבית, בין חברים ובקהילה, צריך לדאוג שיהיה ביניהם חוט שלישי: מטרה משותפת, ערך משותף, ובראש ובראשונה בורא עולם.</p>
+      <p class="bold-para">מן התפילה ועד הצמה, כל מה שצריך להחזיק מעמד בנוי משלושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של שלוש</div>
+      <h3 class="story-title">⏳ שלוש תקופות בחיים</h3>
+      <p>גם חייו של אדם מחולקים לשלושה. בספרים מובאים ימי העלייה, ימי העמידה וימי הירידה. ימי העלייה הם בערך עד גיל שלושים, כשהאדם מתפתח עד שהוא מגיע לבשלות. אחר כך כשלושים שנה של עמידה, כמו השמש בצהריים. ולאחר מכן ימי הירידה, כשהגוף מתחיל להיחלש.</p>
+      <p>אבל מעניין מאוד: בחלק הרוחני הסדר בדיוק מתהפך. יש באדם שלושה חלקים: נפש, רוח ונשמה. הנפש שייכת לתאוות, לאוכל, לרצון ליהנות מדברים גשמיים. הרוח שייכת לרגשות. והנשמה היא המצפון, המשמעות, החלק העליון.</p>
+      <p>בצעירות, כשהגוף עולה, הנפש היא הדומיננטית. בגיל הביניים הרגשות פועלים בעיקר. ובגיל המבוגר, דווקא כשהגוף יורד, הנשמה היא שמובילה. לכן אין לראות בזקנה רק ירידה. מבחינה רוחנית היא פסגה, הזדמנות לחיות בעיקר מתוך המשמעות.</p>
+      <p>ויש לכך הקבלה גם בשלוש האהבות שמובאות בספרים: אהבת הערב, אהבת המועיל ואהבת הטוב. ילד קטן מבין בעיקר את הערב, את הממתק. אחר כך האדם לומד לאהוב את מה שמועיל לו. ולבסוף הוא מגיע לאהוב את הטוב עצמו, את התורה ואת בית הכנסת.</p>
+      <p class="bold-para">הגוף עולה ויורד, אבל הנפש עולה מן הנפש אל הרוח ומן הרוח אל הנשמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · כוחו של שלוש</div>
+      <h3 class="story-title">🍬 מבחן המרשמלו</h3>
+      <p>יש ניסוי מפורסם שנקרא "מבחן המרשמלו". נותנים לילד ממתק ואומרים לו: אני יוצא עכשיו מן החדר. אם כשאחזור הממתק עוד יהיה כאן, תקבל שניים. רוב הילדים לא עמדו בזה ואכלו מיד.</p>
+      <p>החוקרים עקבו אחרי הילדים לאורך השנים, ומצאו שרבים מאלה שאכלו מיד נתקלו בהמשך חייהם בקשיים רבים. למה? כי חסר להם הכוח לדחות סיפוקים. אצלם פועלת רק אהבת הערב, הרגע הנעים, ולא החשבון של מה שיועיל להם יותר אם יחכו.</p>
+      <p>בשיעור הובאה השערה שהתוצאות היו קשות כל כך כי הניסוי נעשה אצל ילדים שאינם שומרי מצוות. ילד שגדל בבית של תורה רגיל מגיל צעיר מאוד לשאול: מה ההכשר? מותר לאכול את זה? הוא לומד שלא כל מה שבא לי, אני עושה. אסור לאכול בשר וחלב, מחכים שש שעות. כך מתחנך האדם מקטנותו לעבור מאהבת הערב אל אהבת המועיל ואהבת הטוב.</p>
+      <p>זו מתנה גדולה שהמצוות נותנות לילדים, גם בלי שהם מרגישים. כל "חכה רגע, צריך לברך", כל "עוד לא הגיע הזמן", בונה בהם את הכוח לבחור במה שטוב באמת ולא רק במה שמתוק עכשיו. וזו גם הדרך לעלות במשולש של שלוש האהבות, מדרגה אחר מדרגה.</p>
+      <p class="bold-para">ילד שהתרגל מקטנותו לדחות סיפוקים, מצליח יותר בחיים; וחינוך לכשרות מלמד זאת מגיל צעיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש מחציות</div>
+      <h3 class="story-title">🪙 מחצית, מחצית, מחצית</h3>
+      <p>ומכאן למצווה שמקיימים לפני פורים: נתינת זכר למחצית השקל, עד תענית אסתר. בפרשה כתוב: "הֶעָשִׁיר לֹא יַרְבֶּה וְהַדַּל לֹא יַמְעִיט מִמַּחֲצִית הַשָּׁקֶל", ובכמה פסוקים סמוכים מופיעה המילה "מחצית" שלוש פעמים. למה שלוש פעמים?</p>
+      <p>רש"י מסביר שהן כנגד שלוש תרומות. אבל יש כאן גם רמז נפלא נוסף: למה נתנו דווקא חצי? כדי לרמוז לאדם שהוא חצי. לך והתאחד עם עוד מישהו, עד שתהיה שלם.</p>
+      <p>יש ורט נאה על המשנה במסכת שקלים: "בְּאֶחָד בַּאֲדָר מַשְׁמִיעִין עַל הַשְּׁקָלִים וְעַל הַכִּלְאַיִם". מה הקשר ביניהם? השקלים מזכירים לאדם שעליו להתאחד ולהתחבר. אבל הכלאיים מזהירים: היזהר עם מי אתה מתאחד. בכלאי הכרם, מה עושים? שורפים את שניהם יחד. חיבור עם דבר שאינו ראוי יכול להעלות באש את הכול.</p>
+      <p>ולכן גם יש מנהג, למי שאינו נותן סכום גדול, לתת שלוש מחציות, כנגד שלוש הפעמים שנאמרה המילה.</p>
+      <p class="bold-para">מחצית השקל מלמדת שהאדם הוא חצי, וצריך להתאחד כדי להיות שלם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש מחציות</div>
+      <h3 class="story-title">💞 שלושה איחודים</h3>
+      <p>מה רומזות שלוש המחציות? האדם בעולמו צריך להתאחד בסך הכול בשלושה מקומות.</p>
+      <p>האחדות הראשונה היא עם אשתו. חז"ל אמרו שהאוהב את אשתו כגופו ראוי לברכה. השנייה היא עם עם ישראל: "וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ". והשלישית, המצווה הגדולה מכולן: "וְאָהַבְתָּ אֵת ה' אֱלֹקֶיךָ". שלוש פעמים האדם הוא חצי, ושלוש פעמים הוא נקרא להשלים את עצמו.</p>
+      <p>בשיעור נרמז גם ששלוש התרומות שניתנו למשכן מקבילות לשלושת האיחודים האלה. למשל, תרומת קורבנות הציבור, שבה כל עם ישראל שותף יחד בקורבן התמיד, רומזת לאחדות של כל ישראל.</p>
+      <p>בשולי הדברים נזכר גם הפסוק שמתאר את ימי הגאולה: "עֹד יֵשְׁבוּ זְקֵנִים וּזְקֵנוֹת בִּרְחֹבוֹת יְרוּשָׁלִָם וְאִישׁ מִשְׁעַנְתּוֹ בְּיָדוֹ מֵרֹב יָמִים". אריכות ימים כזו היא ברכה, והיא מתאימה למה שראינו: ככל שהאדם מתבגר, יש לו עוד זמן לבנות את האיחודים האלה, ולהגיע מן הנפש אל הנשמה.</p>
+      <p class="bold-para">האדם צריך להתאחד שלוש פעמים: עם אשתו, עם עם ישראל ועם הקדוש ברוך הוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש מחציות</div>
+      <h3 class="story-title">🎁 משלוח מנות עם אוזן</h3>
+      <p>איך מתרגמים את כל זה למעשה בפורים הקרוב? משלוח מנות יכול להיות סידור טכני: רשימה, שקיות, שליחים. ויכול להיות מעשה של אחדות. ההבדל תלוי במחשבה שמלווה אותו.</p>
+      <p>כשאדם מכין משלוח, הוא יכול לעצור רגע ולחשוב על מי שיקבל אותו: מה הנקודה המשותפת בינינו? מה הטוב שאני מעריך בו? אולי דווקא כלפי מי שהיה ביניהם ריחוק, משלוח קטן עם מילה טובה יכול להיות הנקודה האמצעית שמחברת מחדש.</p>
+      <p>וכשנפגשים בפתח הבית, אפשר לזכור את האוזן: לא רק למסור ולמהר הלאה, אלא להקשיב רגע. לשאול מה שלומו באמת, ולשמוע את התשובה. זה בדיוק מה שהמן לא האמין שיקרה, ומה שאסתר ביקשה: שכל היהודים יהיו כנוסים יחד, ולב אחד ביניהם.</p>
+      <p class="bold-para">אפשר להפוך את משלוח המנות למעשה של אחדות: לחשוב על הנקודה המשותפת, לראות טוב ולהקשיב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלוש מחציות</div>
+      <h3 class="story-title">🎭 לסכם את האוזן</h3>
+      <p>בואו נסכם את מה שראינו. שאלנו למה אוכלים אוזני המן ומה פשר צורתם. מצוות פורים היא משלוח מנות, כדי להרבות אהבה ואחווה. כי המן אמר "יֶשְׁנוֹ עַם אֶחָד מְפֻזָּר וּמְפֹרָד", ואסתר השיבה "לֵךְ כְּנוֹס אֶת כָּל הַיְּהוּדִים". המן "צרר" את כל היהודים, וחיבר אותם לאחד. וכשאנחנו באחדות, יש לנו כוח לנצח את המן, ואת כל אויבי ישראל בכל דור.</p>
+      <p>לכן בתוך משלוח המנות שמים אוזן המן. היא מראה לנו בצורתה איך מתאחדים: כשמוצאים נקודה משותפת ביני לבין חברי. לפעמים, לצערנו, זה אויב משותף. אבל אם זוכים, זה בורא עולם, אבא אחד לכולנו. או שאדם רואה בחברו נקודה טובה, מעריך אותה, ומתאחד איתו דרכה. ובאוזן עצמה יש תזכורת להקשיב.</p>
+      <p>הרבה מאוד ממצוות פורים סובבות סביב הנושא הזה, האחדות והאהבה לעם ישראל. ובחג שבו המן ביקש להפריד, אנחנו בוחרים להתאחד, ובכך הופכים את עצתו לטובתנו.</p>
+      <p class="bold-para">כל מצוות פורים סובבות סביב אחדות, ואוזן המן מלמדת איך מגיעים אליה: דרך נקודה משותפת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/ZvpvQYDPHpU · 2024-03-20 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"פורים של אחדות","icon":"🎭","color":"#c62b6b","stories":[{"id":1,"title":"פורים בתוך אוזן","icon":"🥟"},{"id":2,"title":"מפוזר ומפורד","icon":"🧩"}]},{"id":2,"name":"הנקודה האמצעית","icon":"🔺","color":"#6d28d9","stories":[{"id":3,"title":"צריך נקודה באמצע","icon":"🔺"},{"id":4,"title":"למצוא בו נקודה טובה","icon":"💎"}]},{"id":3,"name":"כוחו של שלוש","icon":"🧵","color":"#e08e00","stories":[{"id":5,"title":"אוריאן תליתאי","icon":"📜"},{"id":6,"title":"שניים הם ריבוי","icon":"➗"},{"id":7,"title":"שכינה ביניהם","icon":"🏠"},{"id":8,"title":"צמה וחלה","icon":"🥖"},{"id":9,"title":"שלוש תקופות בחיים","icon":"⏳"},{"id":10,"title":"מבחן המרשמלו","icon":"🍬"}]},{"id":4,"name":"שלוש מחציות","icon":"🪙","color":"#1e88b8","stories":[{"id":11,"title":"מחצית, מחצית, מחצית","icon":"🪙"},{"id":12,"title":"שלושה איחודים","icon":"💞"},{"id":13,"title":"משלוח מנות עם אוזן","icon":"🎁"},{"id":14,"title":"לסכם את האוזן","icon":"🎭"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
