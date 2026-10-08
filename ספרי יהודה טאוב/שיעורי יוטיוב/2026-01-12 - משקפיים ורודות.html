@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 משקפיים ורודות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 משקפיים ורודות</h1>
+  <p>שיעור לילדי כיתה א בפרקי אבות: חמשת תלמידי רבן יוחנן בן זכאי, הדרך הטובה שכל אחד מהם בחר, ועין טובה שרואה את הטוב – בתפוז, בעץ בדרך ובחבר</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ משקפיים ורודות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/yUO0Hl3RaOU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/yUO0Hl3RaOU/hqdefault.jpg" alt="משקפיים ורודות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=yUO0Hl3RaOU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמישה יהלומים</div>
+      <h3 class="story-title">💎 חמישה תלמידים</h3>
+      <p>השיעור נמסר לילדי כיתה א, בהמשך ללימוד פרקי אבות. הפעם למדו הילדים על חמישה תלמידים שהיו לרבן יוחנן בן זכאי. כך אומרת המשנה: "חֲמִשָּׁה תַלְמִידִים הָיוּ לוֹ לְרַבָּן יוֹחָנָן בֶּן זַכַּאי". ואחר כך היא מונה אותם אחד אחד: רבי אליעזר בן הורקנוס, רבי יהושע בן חנניה, רבי יוסי הכהן, רבי שמעון בן נתנאל, ורבי אלעזר בן ערך.</p>
+      <p>הרב תיאר אותם כחמישה יהלומים. כל אחד מהם היה מיוחד בדבר אחר, וכל אחד הבריק באור משלו. רבן יוחנן בן זכאי עצמו מנה את שבחו של כל אחד מהם, כמו שהמשנה מביאה.</p>
+      <p>המטרה, כך אמר הרב, היא לא רק לדעת מי היו התלמידים, אלא ללמוד מה מיוחד בכל אחד מהם, ומה אנחנו יכולים ללמוד מזה. כי כל מידה טובה שהייתה לאחד מהם, יכולה להיות גם לנו.</p>
+      <p>לאורך השיעור קיבלו הילדים ציונים ונקודות על ישיבה יפה ועל תשובות נכונות. ובסוף השיעור נשאל כל ילד שאלה על מה שלמדו, כדי לבדוק מה נשאר בזיכרון.</p>
+      <p class="bold-para">לרבן יוחנן בן זכאי היו חמישה תלמידים, וכל אחד היה יהלום מיוחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמישה יהלומים</div>
+      <h3 class="story-title">🌱 אף פעם לא מאוחר מדי</h3>
+      <p>הסיפור של רבי אליעזר בן הורקנוס, שהרב סיפר לילדים, מלמד דבר חשוב מאוד. הוא לא היה ילד שלמד בבית ספר ובישיבה מגיל קטן. הוא עבד בשדה, בעבודה קשה באדמה. כולם חשבו שכך יישאר כל חייו.</p>
+      <p>אבל יום אחד הוא החליט: אני לא רוצה להישאר כך. אני רוצה ללמוד תורה. ההחלטה הזו לא הייתה קלה. הוא היה צריך לעזוב את הבית, ללכת לבד, ולהתחיל ללמוד מן ההתחלה, כשכל שאר התלמידים כבר ידעו הרבה.</p>
+      <p>ומה יצא ממנו? הוא נעשה "בור סוד שאינו מאבד טיפה", התלמיד הראשון ברשימה של רבן יוחנן בן זכאי, ואחד מגדולי החכמים של עם ישראל.</p>
+      <p>מכאן לומדים הילדים שאף פעם לא מאוחר מדי להתחיל. גם מי שמרגיש שהוא מאחור, שאחרים יודעים יותר ממנו, יכול להחליט היום להתחיל ללמוד ברצינות. מה שקובע הוא הרצון והאהבה לתורה, ולא מאיפה מתחילים.</p>
+      <p class="bold-para">רבי אליעזר התחיל ללמוד תורה כשהיה כבר גדול, ובכל זאת נעשה לאחד מגדולי החכמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמישה יהלומים</div>
+      <h3 class="story-title">🕳️ בור סוד ואשרי יולדתו</h3>
+      <p>הראשון היה רבי אליעזר בן הורקנוס. הרב סיפר עליו שבילדותו לא למד תורה. הוא עבד בשדה, באדמה, וכך היה אמור להמשיך כל חייו. אבל יום אחד החליט שהוא רוצה מאוד ללמוד תורה. הוא עזב את הבית, הגיע לישיבה של רבן יוחנן בן זכאי, והתחיל ללמוד.</p>
+      <p>ומה אמר עליו רבו? "בּוֹר סוּד שֶׁאֵינוֹ מְאַבֵּד טִפָּה". כמו בור שמצופה בסיד, שאין בו סדקים, ולכן כל טיפת מים שנכנסת אליו נשארת בו. כך רבי אליעזר: כל מה שלמד, זכר. לא שכח כלום. איך זכה לזה? הרב הסביר: הוא אהב את התורה, ולכן זכר הכל. והילדים אמרו: הלוואי עלינו!</p>
+      <p>השני היה רבי יהושע בן חנניה. ועליו אמר רבן יוחנן בן זכאי: "אַשְׁרֵי יוֹלַדְתּוֹ". אשרי האמא שילדה אותו. כלומר, הוא היה תלמיד כזה טוב, שכל מי שראה אותו שיבח את הוריו. הרב המשיל זאת לתלמיד שהמורה תמיד שולחת עליו פתקים טובים הביתה להורים. כל מעשה שלו מביא כבוד לאבא ולאמא.</p>
+      <p class="bold-para">רבי אליעזר זכר כל מה שלמד, ורבי יהושע היה תלמיד שכולם שיבחו את הוריו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמישה יהלומים</div>
+      <h3 class="story-title">🌟 מה זה חסיד?</h3>
+      <p>השלישי היה רבי יוסי הכהן, ועליו נאמר: "חָסִיד". הרב שאל את הילדים: מה זה חסיד? אחד אמר: מי שלומד תורה. אבל הרב הסביר: חסיד הוא אדם שעושה דברים שהוא לא חייב לעשות. הוא עושה יותר ממה שחייבים.</p>
+      <p>הרב נתן דוגמאות מן החיים של ילדים. נניח שבכיתה מברכים, וילד אחד רוצה לברך עוד, יותר ממה שצריך. או ילדים שאינם חייבים ללכת לבית הכנסת בכל יום, אבל מעצמם, כי הם אוהבים, הולכים להתפלל. ושאל: מי פה הולך לבית הכנסת? כמה ילדים סיפרו שהם הולכים בשבת, ויש שהולכים גם ביום חול למנחה וערבית. וזה מאוד יפה.</p>
+      <p>מי שעושה דברים טובים שלא חייבים, מתוך אהבה, נקרא חסיד. הוא לא מחפש רק לצאת ידי חובה. הוא מחפש איך לעשות עוד טוב, איך לשמח עוד יותר את הקדוש ברוך הוא ואת ההורים.</p>
+      <p>הרב תיאר גם ציור שהופיע בשיעור: ילד שטייל עם אביו, ושמע שאביו מאוד אוהב דבר מסוים. בלי שאבא ביקש, הלך הבן והביא לו אותו. זו בדיוק מידת החסידות: לעשות מה שהשני ירצה, עוד לפני שביקש.</p>
+      <p class="bold-para">חסיד הוא מי שעושה יותר ממה שהוא חייב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמישה יהלומים</div>
+      <h3 class="story-title">🔥 כמו אש וכמו מעיין</h3>
+      <p>הרביעי היה רבי שמעון בן נתנאל, ועליו נאמר: "יְרֵא חֵטְא". הוא תמיד פחד שלא יעשה עבירות, ותמיד נזהר בזה. והרב שאל: למה זה דומה לאש? כמו שאדם מפחד מאש, ולא מתקרב אליה, כי הוא יודע שהיא שורפת, כך רבי שמעון פחד מעבירה. הוא שמר מרחק ממנה.</p>
+      <p>והחמישי, אחרון חביב, היה רבי אלעזר בן ערך. ועליו אמר רבו: "מַעְיָן הַמִּתְגַּבֵּר". מה זה? מעיין שכל הזמן נובעים ממנו מים, ועוד מים, ועוד מים. כך רבי אלעזר: כל הזמן היה מחדש דברים חדשים בתורה. הוא לא רק זכר את מה שלמד, כמו רבי אליעזר, אלא הוסיף עליו חידושים משלו.</p>
+      <p>יש כאן שני סוגים של גדולה בתורה: מי שזוכר הכל, ומי שמחדש הרבה. ושניהם יהלומים.</p>
+      <p>הרב חיפש בשיעור שיר נחמד שיש על חמשת התלמידים, אבל לא מצא אותו באותו רגע, והבטיח להביא אותו בפעם אחרת. אבל העיקר כבר נשאר: חמישה תלמידים, וחמש מעלות שאפשר ללמוד מהם.</p>
+      <p class="bold-para">רבי שמעון נזהר מעבירה כמו מאש, ורבי אלעזר היה כמו מעיין שתמיד נובע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · צאו וראו</div>
+      <h3 class="story-title">🔍 מה הדבר הכי טוב?</h3>
+      <p>אחרי שהכירו הילדים את חמשת התלמידים, סיפר הרב מה קרה. רבן יוחנן בן זכאי אהב מאוד את תלמידיו, והוא ביקש מהם בקשה מעניינת. כך אומרת המשנה: "צְאוּ וּרְאוּ אֵיזוֹהִי דֶּרֶךְ טוֹבָה שֶׁיִּדְבַּק בָּהּ הָאָדָם". כלומר, אני רוצה שכל אחד מכם יאמר לי מה הדבר הכי טוב שאדם צריך לעשות.</p>
+      <p>הרב אמר לילדים: זה מעניין! מה באמת הדבר הכי טוב בעולם? כל תלמיד חשב, וכל אחד אמר תשובה אחרת. ובכל תשובה יש לימוד גדול.</p>
+      <p>רבי יהושע אמר: "חָבֵר טוֹב". שיהיו לך חברים טובים. כשאדם מתחבר לחברים טובים, גם הוא נעשה טוב. רבי יוסי אמר: "שָׁכֵן טוֹב". שיהיו לך שכנים טובים, גם זה חשוב מאוד. רבי שמעון אמר: "הָרוֹאֶה אֶת הַנּוֹלָד", מי שחושב מראש מה יקרה בעקבות המעשים שלו. הרב אמר שזה קצת קשה לילדים, והשאיר אותו לפעם אחרת.</p>
+      <p>ורבי אלעזר בן ערך אמר: "לֵב טוֹב". שיהיה לאדם לב טוב, לב של זהב. ועליו אמר רבן יוחנן בן זכאי שבדבריו כלולים דברי כולם. אבל בשיעור הזה התעכבו דווקא על התשובה של התלמיד הראשון, רבי אליעזר.</p>
+      <p class="bold-para">רבן יוחנן ביקש מתלמידיו לומר מהי הדרך הטובה ביותר שאדם צריך לדבוק בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · צאו וראו</div>
+      <h3 class="story-title">🏘️ חבר טוב ושכן טוב</h3>
+      <p>שתי התשובות של רבי יהושע ורבי יוסי נשמעות דומות: חבר טוב ושכן טוב. ושתיהן מלמדות שהאדם אינו חי לבד. האנשים שסביבו משפיעים עליו מאוד.</p>
+      <p>הרב הסביר לילדים: אם יש לך חברים טובים, אתה מתחבר אליהם, ומה קורה? גם אתה נעשה טוב. אם החברים שלך אוהבים ללמוד, גם אתה תאהב. אם הם אומרים מילים יפות, גם אתה תתרגל לכך. ולהפך: חברים שמרגיזים ומציקים מושכים גם אותך לכך.</p>
+      <p>ויש כאן עוד צד. "חבר טוב" אינו רק לבחור חברים טובים, אלא גם להיות חבר טוב. וכך "שכן טוב": לא רק לגור ליד שכנים טובים, אלא גם להיות שכן טוב בעצמי. לעזור לשכן, לשמור על השקט, לומר שלום.</p>
+      <p>וכשכל ילד בכיתה מחליט להיות חבר טוב, כל הכיתה נעשית מקום טוב יותר. הטוב מדביק, בדיוק כמו שהרע מדביק.</p>
+      <p class="bold-para">האנשים שסביבנו משפיעים עלינו מאוד, ולכן חשוב לבחור חברים טובים ולהיות שכנים טובים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · צאו וראו</div>
+      <h3 class="story-title">❤️ לב טוב כולל הכל</h3>
+      <p>רבי אלעזר בן ערך, "המעיין המתגבר", אמר שהדרך הטובה היא לב טוב. והמשנה מספרת שרבן יוחנן בן זכאי אמר לתלמידיו: רואה אני את דברי אלעזר בן ערך מדבריכם, שבכלל דבריו דבריכם. כלומר, בתוך "לב טוב" נמצאות כל שאר התשובות.</p>
+      <p>איך זה? מי שיש לו לב טוב, ממילא יש לו גם עין טובה: הוא רואה את הטוב באחרים ושמח בו. ממילא הוא גם חבר טוב, ומתנהג יפה לחבריו. וממילא הוא גם שכן טוב. הלב הוא המקור, ומשם יוצאות כל המידות הטובות.</p>
+      <p>הרב תיאר זאת לילדים כ"לב זהב" – לב טוב שאוהב את כולם, שרוצה לעזור, שלא מקנא ולא שונא.</p>
+      <p>ובשיעור הזה, אף על פי שלב טוב הוא הכלל של הכל, התמקדו בעין טובה. אולי משום שהיא הדרך הקלה ביותר להתחיל: עוד לפני שהלב משתנה, אפשר להתחיל לשנות את המבט. וכשהעיניים מתרגלות לראות טוב, גם הלב נעשה טוב.</p>
+      <p class="bold-para">מי שיש לו לב טוב, יש לו ממילא עין טובה, וחבר טוב ושכן טוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · צאו וראו</div>
+      <h3 class="story-title">👁️ עין טובה</h3>
+      <p>מה אמר רבי אליעזר? "עַיִן טוֹבָה". הרב הציג לילדים תמונה, וביקש: תגידו לי מה אמר התלמיד הראשון, לפי התמונה. בתמונה הייתה ילדה עם משקפיים ורודות.</p>
+      <p>מה זה משקפיים ורודות? הרב הסביר שאין הכוונה למשקפיים שאדם מרכיב על העיניים כדי לראות טוב. רוב הילדים בכיתה בכלל לא מרכיבים משקפיים! הכוונה למשהו אחר לגמרי: לאיך שאדם מסתכל על העולם.</p>
+      <p>יש אנשים, כך הסביר הרב, שכל היום רואים רק דברים רעים. הם כאילו מרכיבים משקפיים שחורות. ויש אנשים שתמיד רואים דברים טובים. הם כאילו מרכיבים משקפיים ורודות. העולם הוא אותו עולם, אבל כל אחד רואה אותו אחרת, לפי המשקפיים שלו.</p>
+      <p>עין טובה, לפי רבי אליעזר, היא הדרך הטובה ביותר שאדם יכול לדבוק בה. מי שיש לו עין טובה, שמח במה שיש לו, שמח בטוב של אחרים, ורואה בכל מקום את החסד של הקדוש ברוך הוא.</p>
+      <p class="bold-para">רבי אליעזר אמר שהדרך הטובה היא עין טובה: לראות תמיד את הטוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · משקפיים ורודות</div>
+      <h3 class="story-title">🥜 הבמבה של אמא</h3>
+      <p>כדי להמחיש, הביא הרב דוגמה שכל ילד מכיר. אמא מחלקת במבה לילדים. מה אומר מי שיש לו משקפיים שחורות? "אמא, למה דודי קיבל יותר? למה לנועה יש יותר? למה רחלי קיבלה יותר?" במקום להודות לאמא, הוא רק בודק מה קיבלו האחרים.</p>
+      <p>הילדים בכיתה הוסיפו דוגמאות משלהם: "למה הבמבה שלו יותר צהובה?" "למה הכתר שלו יותר גדול? יותר יפה?" והרב אמר: נכון, אתם מכירים ילדים כאלה. הם תמיד רואים את הרע. יש להם משקפיים שחורות.</p>
+      <p>ומה עושה מי שיש לו משקפיים ורודות? הוא רואה את הטוב. הוא שמח במה שקיבל. הוא אומר: "תודה, אמא!" הוא לא סופר כמה קיבל כל אחד אחר, כי הוא שמח בשלו.</p>
+      <p>יש כאן דבר מעניין: שני הילדים קיבלו אותה במבה בדיוק. אבל אחד שמח, והשני כועס. ההבדל אינו בבמבה, אלא במשקפיים. ומכאן שהשמחה שלנו תלויה הרבה פחות במה שיש לנו, והרבה יותר באיך שאנחנו מסתכלים עליו.</p>
+      <p class="bold-para">מי שיש לו משקפיים שחורות תמיד בודק מה קיבלו אחרים; מי שיש לו משקפיים ורודות שמח במה שקיבל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · משקפיים ורודות</div>
+      <h3 class="story-title">🌧️ יום של גשם</h3>
+      <p>דוגמה נוספת: עוד מעט ירד גשם. מה יאמר מי שיש לו משקפיים שחורות? הילדים ידעו: "אוף, רטוב! אי אפשר לצאת החוצה!" בבית הספר, כשיורד גשם, אי אפשר לצאת לשחק בהפסקה, וכולם צריכים להישאר בכיתה. זה לא כל כך נחמד.</p>
+      <p>ומה יאמר מי שיש לו משקפיים ורודות? הוא יראה את הצד הטוב: ברוך ה' יורד גשם! הגשם משקה את האדמה, ממלא את הכנרת ואת המעיינות, מצמיח את העצים והפירות. בארץ ישראל, כל טיפת גשם היא ברכה גדולה.</p>
+      <p>הגשם הוא אותו גשם. מי שמסתכל רק על ההפסקה שהתבטלה, רואה צרה. מי שמסתכל על כל הטוב שהגשם מביא, רואה ברכה. וגם בתוך הכיתה, ביום של גשם, אפשר למצוא משחק נחמד או סיפור טוב.</p>
+      <p>וזו עבודה שאפשר לעשות בכל יום: כשמשהו לא נעים קורה, לעצור ולשאול: מה הטוב שיש כאן? כמעט תמיד אפשר למצוא משהו. ומי שמתרגל לחפש, מוצא יותר ויותר.</p>
+      <p class="bold-para">אותו גשם יכול להיראות כצרה או כברכה, תלוי במשקפיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · משקפיים ורודות</div>
+      <h3 class="story-title">🕶️ כל אחד בוחר משקפיים</h3>
+      <p>יש בדימוי של המשקפיים רעיון מעודד מאוד. אדם לא נולד עם עיניים שרואות רק רע או רק טוב. הוא בוחר אילו משקפיים להרכיב. ואם עד היום הרכיב משקפיים שחורות, הוא יכול להוריד אותן ולהרכיב ורודות.</p>
+      <p>איך עושים זאת? מתאמנים. כל פעם שמשהו קורה, שואלים: מה הטוב כאן? בהתחלה זה קשה, כי העיניים רגילות לראות את הרע. אבל אחרי כמה פעמים זה נעשה קל יותר, ובסוף זה נעשה טבע.</p>
+      <p>ומי שמצליח בזה, מרוויח הרבה. הוא שמח יותר, כי הוא רואה יותר טוב. החברים אוהבים אותו יותר, כי הוא לא מתלונן כל הזמן. וההורים שמחים בו, כי הוא אומר תודה במקום לבדוק מה קיבלו אחרים.</p>
+      <p>ובעיקר: הוא מתקרב לקדוש ברוך הוא. כי מי שרואה טוב, רואה כמה ה' עושה בשבילו, ומודה לו על כך. וזו, לפי רבי אליעזר, הדרך הטובה ביותר שאדם יכול לדבוק בה.</p>
+      <p class="bold-para">את המשקפיים שאנחנו מרכיבים אפשר להחליף, ועין טובה היא הרגל שאפשר לבנות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · משקפיים ורודות</div>
+      <h3 class="story-title">🚪 שלום עליכם בפתח</h3>
+      <p>עין טובה אינה רק איך שרואים את העולם, אלא גם איך שרואים את החברים. יש ילדים שכל היום מרגיזים את החבר: "למה לקחת לי? למה לא נתת לי? למה אתה מפריע?" ויש ילדים שכל הזמן משתדלים לומר לחבר מילה טובה: "כמה כיף שבאת! כמה נחמד שהיית!"</p>
+      <p>הרב סיפר שבכיתה ב, באותו יום, עשו הבנות משחק. בשבוע הקודם למדו על "הוי מקבל את כל האדם בסבר פנים יפות". והמשחק היה כך: ילדה אחת יוצאת מן הכיתה, ואחר כך דופקת בדלת ונכנסת. וילדה אחרת עומדת בפתח ומקבלת אותה בשמחה: "שלום! מה שלומך? איזה כיף שבאת!"</p>
+      <p>הבנות מאוד אהבו את המשחק. גם בכיתה א ניסו אותו: אחד הילדים יצא, דפק בדלת, והרב קיבל אותו בשמחה, בשמו, ושאל לשלומו. הילדים רצו להמשיך ולנסות כולם, אבל הזמן לא הספיק, והשיעור המשיך.</p>
+      <p>המשחק הזה מלמד שקבלת פנים יפה היא דבר שאפשר להתאמן עליו. היא אינה תלויה רק במצב רוח. וכשמישהו מקבל אותנו בשמחה, אנחנו מרגישים רצויים ואהובים.</p>
+      <p class="bold-para">עין טובה כלפי החבר היא לשמוח לראות אותו ולהראות לו זאת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלום שהציל חיים</div>
+      <h3 class="story-title">🤝 השומר בשער</h3>
+      <p>בהמשך סיפרו הילדים בעצמם סיפור ששמעו, על "בוקר טוב" ו"ערב טוב". היה יהודי בשם יהודה שעבד במפעל גדול. בשער המפעל עמד שומר בשם מריו. ובכל יום, כשנכנס יהודה לעבודה, אמר למריו: "בוקר טוב!" וכשיצא בערב, אמר לו: "ערב טוב!" רוב העובדים בכלל לא שמו לב לשומר, אבל יהודה תמיד בירך אותו בשמחה.</p>
+      <p>יום אחד, בסוף יום העבודה, נכנס יהודה לחדר קירור גדול במפעל. הדלת נסגרה מאחוריו, והוא נשאר כלוא בפנים, בקור הנורא. הוא צעק, אבל איש לא שמע. כל העובדים כבר הלכו הביתה.</p>
+      <p>אבל מריו, השומר, שם לב שמשהו חסר. יהודה לא עבר בשער. הוא לא אמר לו "ערב טוב". מריו התחיל לחפש במפעל, חדר אחרי חדר, עד שמצא את יהודה בתוך חדר הקירור, ופתח לו את הדלת. וכך ניצל.</p>
+      <p>יהודה שאל אותו: איך ידעת שאני כאן? ומריו ענה: כל יום אתה אומר לי שלום. כל יום אתה מראה לי שאני חשוב. היום לא שמעתי ממך "ערב טוב", וידעתי שמשהו קרה. אף אחד אחר לא היה שם לב.</p>
+      <p class="bold-para">יהודי שבירך את השומר בכל יום, ניצל בזכות אותו שלום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלום שהציל חיים</div>
+      <h3 class="story-title">💬 מה למדו הילדים מן הסיפור</h3>
+      <p>הרב שאל את הילדים שאלות על הסיפור, וכל אחד ענה בתורו. איך מריו ידע שיהודה נמצא בחדר הקירור? אחד הילדים חשב שמריו שמע אותו צועק. אבל הרב הזכיר: השומר עומד בשער, רחוק, והוא לא שמע כלום. אז איך ידע? ואחד הילדים ענה נכון: כל יום יהודה אמר לו שלום, והיום הוא לא אמר. מזה ידע.</p>
+      <p>זה הלימוד הגדול. ה"ערב טוב" של יהודה נראה דבר קטן מאוד. שתי מילים. אבל בגלל שאמר אותן בכל יום, נוצר קשר אמיתי בינו לבין השומר. מריו הרגיש שיהודה רואה אותו, שהוא חשוב לו. וכשיהודה נעלם, מריו הרגיש בחסרונו.</p>
+      <p>זו עין טובה כלפי אדם אחר: לראות אותו. לא לעבור לידו כאילו הוא לא קיים. לומר לו שלום, לחייך אליו, לשמוח בו. והמעשה הקטן הזה, כך מסתבר, יכול אפילו להציל חיים.</p>
+      <p>ומכאן גם לכיתה: אם כל ילד יאמר בוקר טוב לחבריו, למורה, לשומר בשער ולמנקה, ייווצרו הרבה קשרים טובים. ואולי מתישהו גם מישהו מהם ישים לב אלינו, בדיוק כשנצטרך.</p>
+      <p class="bold-para">מילה טובה קטנה בכל יום יוצרת קשר אמיתי, וזה יכול לשנות הכל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שלום שהציל חיים</div>
+      <h3 class="story-title">👑 יהודים בני מלכים</h3>
+      <p>באמצע השיעור, כשהילדים היו צריכים הפסקה קטנה, שרו יחד שיר שהם כבר מכירים: "יהודים בני מלכים". השיר מזכיר לכל ילד שהקדוש ברוך הוא הוא מלך המלכים, והוא אבינו. ואם אבינו מלך, אנחנו בני מלכים.</p>
+      <p>השיר מתאים מאוד לנושא השיעור. בן מלך מתנהג בכבוד. הוא אינו מתקוטט על במבה, ואינו מעליב את חבריו. הוא יודע שגם הם בני מלכים, ולכן מכבד אותם. ומי שמרגיש שהוא בן מלך, רואה את העולם כארמון של אביו, מלא בדברים טובים שהכין לו.</p>
+      <p>כך השיר מחבר בין שני הדברים שלמדו: עין טובה כלפי החברים, ועין טובה כלפי העולם. מי שזוכר שהוא בן מלך, וכל חבריו בני מלכים, ואביהם הכין להם עולם נפלא – יש לו עין טובה כמעט מעצמה.</p>
+      <p>ואחרי השיר, כשהילדים חזרו למקומותיהם, המשיך הרב לסיפורים על עין טובה.</p>
+      <p class="bold-para">כל יהודי הוא בן מלך, ובן מלך רואה את עצמו ואת חבריו בעין של כבוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העולם הוא בית מלון</div>
+      <h3 class="story-title">🍬 המכונה שעוטפת סוכריות</h3>
+      <p>אחרי השיר "יהודים בני מלכים", הגיע סיפור נוסף על עין טובה. כיתה אחת יצאה לטיול שנתי מרגש במיוחד: למפעל ממתקים גדול. הילדות התרגשו מאוד. כשהגיעו, העיניים שלהן נפתחו לרווחה. הן ראו מכונות ענקיות, צינורות שמהם זורם שוקולד, סרטים נעים, ואלפי סוכריות צבעוניות.</p>
+      <p>המדריך במפעל לקח אותן לחדר מיוחד, עם חלונות זכוכית גדולים, ואמר בגאווה: כאן נמצאת המכונה החדשה והמשוכללת ביותר שיש לנו. מה היא עושה? היא לוקחת כל סוכרייה שיוצאת מן המכונה, ועוטפת אותה לבד בנייר צבעוני, ושומרת עליה נקייה וטרייה.</p>
+      <p>הילדות לא האמינו למראה עיניהן. צ'יק צ'ק, הסוכרייה נכנסת, ויוצאת עטופה! איזו חכמה צריך כדי להמציא מכונה כזו!</p>
+      <p>אבל כשחזרו לאוטובוס, חיכתה להן המורה עם הפתעה. היא הוציאה מן התיק שלה תפוז, ואמרה: בנות, במפעל ראינו מכונה שעוטפת סוכריות. זה באמת נחמד. אבל אני רוצה להראות לכן עטיפה הרבה יותר מתוחכמת, הרבה יותר חכמה.</p>
+      <p class="bold-para">בני אדם מתפעלים ממכונה חכמה, אבל הבריאה של ה' חכמה הרבה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העולם הוא בית מלון</div>
+      <h3 class="story-title">🍊 העטיפה של התפוז</h3>
+      <p>המורה החזיקה את התפוז ושאלה: מי עטף אותו? האם יש מכונה שעומדת ליד העץ ועוטפת כל תפוז? הבנות צחקו: לא! הקדוש ברוך הוא עשה את זה.</p>
+      <p>ולמה העטיפה של התפוז טובה יותר משל הסוכרייה? הרב שאל את הילדים, והם גילו כמה דברים. ראשית, הקליפה שומרת על המיץ שלא יישפך, ושומרת על הפרי טרי. תפוז שקילפנו מחזיק יום או יומיים. תפוז עם קליפה מחזיק הרבה יותר זמן.</p>
+      <p>שנית, אם הסוכרייה מקולקלת, האם רואים זאת על העטיפה? לא. העטיפה נשארת יפה, גם כשהסוכרייה בפנים לא טובה. אבל כשתפוז מתקלקל, הקליפה מתחילה להשחיר, כמו בננה שמשחירה. הקליפה מספרת לנו מה קורה בפנים! איזה מפעל הצליח לייצר עטיפה כזו?</p>
+      <p>ושלישית, תפוז שנופל לאדמה, לאט לאט מתקלקל, נעשה שחור, ובסוף נבלע באדמה וחוזר אליה. עטיפה של סוכרייה נשארת על האדמה זמן רב מאוד.</p>
+      <p>והדבר המופלא ביותר: במפעל, קודם עושים סוכרייה, ורק אחר כך עוטפים אותה. אבל הקדוש ברוך הוא עושה תפוז שגדל יחד עם העטיפה שלו. אין מפעל בעולם שמצליח לייצר סוכרייה שגדלה יחד עם העטיפה.</p>
+      <p class="bold-para">קליפת התפוז שומרת, מראה מה קורה בפנים, וגדלה יחד עם הפרי – דבר שאף מפעל לא יכול לעשות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העולם הוא בית מלון</div>
+      <h3 class="story-title">✨ לראות את הבריאה</h3>
+      <p>הילדה בסיפור הביטה בתפוז שבידה, ופתאום ראתה אותו אחרת. זה כבר לא היה סתם פרי. זה היה משהו מיוחד מאוד, הרבה יותר מסתם סוכרייה.</p>
+      <p>מה לומדים מכאן? כך הסביר הרב: אדם שיש לו עין טובה רואה בכל דבר דברים טובים ויפים. הוא רואה שהבריאה משוכללת מאוד מאוד. מה שאחרים לא שמים לב אליו, כי הם רגילים בו, הוא מתפעל ממנו.</p>
+      <p>יש כאן עוד צד של עין טובה. היא לא רק לשמוח במה שקיבלנו ולא לקנא באחרים. היא גם לפתוח את העיניים ולראות כמה טוב הקדוש ברוך הוא עשה לנו. מפעל ממתקים מרשים אותנו, כי הוא חדש ונדיר. אבל תפוז, שאנחנו אוכלים כל יום בחורף, הוא פלא גדול הרבה יותר.</p>
+      <p>בסוף השיעור נשאלו הילדים: מה המורה אמרה לילדות שהתלהבו כל כך מן העטיפה של הסוכריות? ואחד הילדים ענה יפה: שאם מתלהבים מעטיפה של מפעל, צריך להתלהב הרבה יותר מן הקליפה שהקדוש ברוך הוא עשה.</p>
+      <p class="bold-para">עין טובה רואה בכל דבר רגיל את החכמה והחסד של הבורא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העולם הוא בית מלון</div>
+      <h3 class="story-title">🎓 כל ילד עונה</h3>
+      <p>לפני הסיפור האחרון עשה הרב חזרה: כל ילד נשאל שאלה אחת, לפי הסדר, וקיבל נקודה על תשובה טובה. השאלות היו מגוונות, כדי שכל אחד יוכל להצליח במשהו.</p>
+      <p>היו שאלות על חמשת התלמידים: כמה תלמידים היו לרבן יוחנן בן זכאי? מה היה מיוחד באחד מהם? אחד הילדים נזכר: חסיד, שעושה יותר ממה שחייב. היו שאלות על עין טובה: מה זה עין טובה? וילד אחד, שנעזר בתמונה המצחיקה של המשקפיים, ענה: לראות את כל הדברים הטובים.</p>
+      <p>היו שאלות על הסיפורים: לאן נסעה הכיתה בטיול? למפעל הממתקים. מה עשתה המכונה המיוחדת? עטפה סוכריות. ולמה הקליפה של התפוז משוכללת יותר? כי היא נוצרת יחד עם הפרי.</p>
+      <p>לא כל ילד זכר הכל, והרב עזר במתינות, עם רמזים ותמונות, עד שכל אחד מצא תשובה משלו. כך כל ילד יצא מן השיעור עם לפחות דבר אחד טוב שזכר. וגם זו עין טובה: לחפש את מה שהילד יודע, ולא רק את מה שהוא שכח.</p>
+      <p class="bold-para">חזרה שבה כל ילד עונה בתורו מגלה מה נשאר בלב מן השיעור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העולם הוא בית מלון</div>
+      <h3 class="story-title">🌳 בית מלון באמצע הדרך</h3>
+      <p>הסיפור האחרון סופר בחמש הדקות האחרונות של השיעור. השמש קפחה בשמים. היה יום חם מאוד. משפחה אחת חזרה ברגל מבית הכנסת, שהיה רחוק מן הבית, והדרך הייתה ארוכה מאוד. הבת הקטנה, חנה, הייתה עייפה מאוד. היא הזיעה ואמרה: "אבא, חם לי, אני עייפה וצמאה. מתי נגיע הביתה?"</p>
+      <p>אבא עצר ליד עץ גדול ויפה שעמד בדרך, ואמר: "בואו ניכנס לבית המלון". חנה הסתכלה סביב בבלבול: איזה בית מלון? אבא, יש פה רק עץ!</p>
+      <p>"סתם עץ?" שאל אבא. "בואי נתבונן רגע, כמו שאברהם אבינו היה מתבונן. השמש יוקדת, ה' עושה חם מאוד. אבל מתחת לעץ יש צל נעים וקריר. העץ פורס את הענפים שלו כמו סוכה ענקית, במיוחד בשבילנו, כדי שלא יהיה לנו חם". חנה התיישבה בצל, ונשמה לרווחה. הרבה יותר טוב.</p>
+      <p>"תראי", אמר אבא והצביע למעלה. "בית המלון הזה גם מגיש כיבוד". בין הענפים היו פירות. העץ נותן לנו גם צל בחינם, וגם פירות מתוקים בחינם. והקדוש ברוך הוא שתל עצים כאלה בכל מקום, כמו בתי מלון לאורחים שלו בעולם.</p>
+      <p class="bold-para">מי שמסתכל טוב רואה שכל העולם הוא בית מלון שה' הכין לנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העולם הוא בית מלון</div>
+      <h3 class="story-title">🙏 תודה על העולם הנפלא</h3>
+      <p>חנה הביטה למעלה, אל העלים הירוקים, נשמה נשימה עמוקה, ואמרה: "תודה לך, ה', על העץ הזה. הוא ממש הציל אותי מן החום".</p>
+      <p>אבא חייך ואמר: נכון מאוד. מי שמסתכל טוב רואה שכל העולם הוא כמו בית מלון אחד גדול. ה' הכין בשבילנו מנורה ענקית – זו השמש, שמאירה ומחממת אותנו. שטיח ירוק – זה הדשא. מים טובים לשתייה, והגשם, שאולי עוד מעט ירד. אנחנו רק צריכים לפתוח את העיניים, ולומר תודה רבה לה' על העולם הנפלא שלנו.</p>
+      <p>כך, אמר הרב, נראה מי שיודע להסתכל בצורה יפה על העולם כולו. זו עין טובה: לא רק לא לקנא, אלא לראות בכל דבר – בעץ, בתפוז, בגשם, בחבר – את הטוב שיש בו, ולשמוח בו.</p>
+      <p>ויש קשר בין כל חלקי השיעור. רבי אליעזר אמר שהדרך הטובה היא עין טובה. ילד עם משקפיים ורודות שמח בבמבה שלו. יהודי שראה את השומר, אמר לו שלום בכל יום. ילדה שהתבוננה בתפוז, ראתה את חכמת הבורא. ומשפחה שעצרה תחת עץ, גילתה בית מלון. בכל אחד מן הסיפורים, העיניים הן שעשו את ההבדל.</p>
+      <p>השיעור הסתיים בשיר על הידיים, הרגליים והפה שה' נתן לנו, ובבקשה לכל הילדים להרים את הכיסאות לפני היציאה – כי גם זה חלק מעין טובה כלפי מי שמנקה את הכיתה.</p>
+      <p class="bold-para">צריך רק לפתוח את העיניים ולומר תודה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/yUO0Hl3RaOU · 2026-01-12 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"חמישה יהלומים","icon":"💎","color":"#c62b6b","stories":[{"id":1,"title":"חמישה תלמידים","icon":"💎"},{"id":2,"title":"אף פעם לא מאוחר מדי","icon":"🌱"},{"id":3,"title":"בור סוד ואשרי יולדתו","icon":"🕳️"},{"id":4,"title":"מה זה חסיד?","icon":"🌟"},{"id":5,"title":"כמו אש וכמו מעיין","icon":"🔥"}]},{"id":2,"name":"צאו וראו","icon":"🔍","color":"#6d28d9","stories":[{"id":6,"title":"מה הדבר הכי טוב?","icon":"🔍"},{"id":7,"title":"חבר טוב ושכן טוב","icon":"🏘️"},{"id":8,"title":"לב טוב כולל הכל","icon":"❤️"},{"id":9,"title":"עין טובה","icon":"👁️"}]},{"id":3,"name":"משקפיים ורודות","icon":"👓","color":"#e08e00","stories":[{"id":10,"title":"הבמבה של אמא","icon":"🥜"},{"id":11,"title":"יום של גשם","icon":"🌧️"},{"id":12,"title":"כל אחד בוחר משקפיים","icon":"🕶️"},{"id":13,"title":"שלום עליכם בפתח","icon":"🚪"}]},{"id":4,"name":"שלום שהציל חיים","icon":"🤝","color":"#1e88b8","stories":[{"id":14,"title":"השומר בשער","icon":"🤝"},{"id":15,"title":"מה למדו הילדים מן הסיפור","icon":"💬"},{"id":16,"title":"יהודים בני מלכים","icon":"👑"}]},{"id":5,"name":"העולם הוא בית מלון","icon":"🍊","color":"#c62b6b","stories":[{"id":17,"title":"המכונה שעוטפת סוכריות","icon":"🍬"},{"id":18,"title":"העטיפה של התפוז","icon":"🍊"},{"id":19,"title":"לראות את הבריאה","icon":"✨"},{"id":20,"title":"כל ילד עונה","icon":"🎓"},{"id":21,"title":"בית מלון באמצע הדרך","icon":"🌳"},{"id":22,"title":"תודה על העולם הנפלא","icon":"🙏"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
