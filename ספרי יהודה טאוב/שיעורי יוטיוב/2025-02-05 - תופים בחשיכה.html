@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 תופים בחשיכה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 תופים בחשיכה</h1>
+  <p>מרים הנביאה שהכינה תופים במצרים, הרב מפוניבז' שבנה ישיבה בימי השואה, ובעל "אם הבנים שמחה" שראה את הגאולה מתוך החושך</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ תופים בחשיכה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/iHAmI8WAcQM?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/iHAmI8WAcQM/hqdefault.jpg" alt="תופים בחשיכה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=iHAmI8WAcQM" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · בדרך אמונה</div>
+      <h3 class="story-title">🛤️ "דרך אמונה בחרתי"</h3>
+      <p>נושא השיעור הוא סוד השירה והאמונה גם כאשר האדם נמצא בחשיכה. הוא נפתח בדבר שקרה ממש באותם ימים. אחת החטופות ששוחררו מן השבי, בדרכה חזרה הביתה, כתבה את הפסוק מתהילים: "דֶּרֶךְ אֱמוּנָה בָחָרְתִּי מִשְׁפָּטֶיךָ שִׁוִּיתִי".</p>
+      <p>היא סיפרה אחר כך איך השתדלה לשמור בשבי, ככל שיכלה, על יום הכיפורים ועל איסור חמץ בפסח. ומשפחתה ביקשה בקשה מיוחדת: שלא יחללו שבת בשבילה בעת השחרור, בשידורים ובכל מה שמסביב. בתחילה היו שלגלגו על כך, כי שבת אחר שבת עברה והבת לא שוחררה. ובסוף היא אכן שוחררה באמצע השבוע, ביום חמישי, ולא חיללו שבת בשבילה.</p>
+      <p>בשיעור הוזכר גם שזו הייתה שאלה הלכתית שאינה פשוטה, ושהפוסקים נדרשו לה. אבל עיקר הדברים אינו ההלכה, אלא הפסוק שנכתב בדרך חזרה. אדם שעבר את הלילה החשוך ביותר בוחר לומר: בדרך אמונה בחרתי. מכאן ממשיך השיעור אל השורש של כוח זה, בפרשת השירה.</p>
+      <p class="bold-para">שירה ואמונה אינן שמורות לימים הטובים; אפשר לשיר גם מתוך החשיכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מרים הנביאה</div>
+      <h3 class="story-title">🥁 "מרים הנביאה אחות אהרן"</h3>
+      <p>בשירת הים נאמר: "וַתִּקַּח מִרְיָם הַנְּבִיאָה אֲחוֹת אַהֲרֹן אֶת הַתֹּף בְּיָדָהּ וַתֵּצֶאןָ כָל הַנָּשִׁים אַחֲרֶיהָ בְּתֻפִּים וּבִמְחֹלֹת". מאז ועד היום יש מושג ישראלי: "תוף מרים". כל גננת מחזיקה אחד כזה. מי שיבקש "תוף מרים" בחנות בחוץ לארץ, לא יבינו על מה הוא מדבר.</p>
+      <p>חז"ל שואלים, ורש"י מביא את הדברים: מדוע נקראת מרים "אחות אהרן"? הרי יש לה אח מפורסם הרבה יותר, משה רבנו! והתשובה היא שכאן מסתתר הסוד של מרים הנביאה. היא נקראת אחות אהרן, כי נבואתה נאמרה בזמן שהייתה רק אחות אהרן, עוד לפני שנולד משה.</p>
+      <p>בשיעור הוזכר שבישראל היו שבע נביאות, ולכל אחת מהן יש משהו מיוחד שהיא מסמלת. המיוחד של מרים הוא הנבואה שנאמרה בחשיכה, והאמונה שלא הרפתה ממנה גם כשהכל נראה הפוך.</p>
+      <p class="bold-para">מרים נקראת "אחות אהרן" כי נבואתה נאמרה עוד לפני שנולד משה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מרים הנביאה</div>
+      <h3 class="story-title">🌧️ נבואה בתוך הייאוש</h3>
+      <p>צריך לתאר את המצב. עם ישראל נמצא בגלות מצרים כבר שנים רבות, והמצב רק הולך ומחמיר. שנה רודפת שנה ואין שום שינוי. רק שעבוד, ועוד שעבוד. אין שום סימן לישועה, ואף אחד לא יודע איך משתחררים מן המצרים.</p>
+      <p>המצב היה ירוד כל כך שעמרם, אביה של מרים, הגיע למסקנה שאין טעם להביא עוד ילדים, ופירש מאשתו. וכולם הלכו אחריו: למה להביא עוד עבדים לפרעה? העסק אבוד.</p>
+      <p>ואז, מתוך החושך, מרים, ילדה צעירה, מכריזה נבואה: אמא שלי עתידה ללדת בן שיושיע את ישראל. הנבואה התקבלה בתחילה כמו גשם מרענן. היא החזירה תקווה. ומרים באה אל אביה ושכנעה אותו: גזירתך קשה משל פרעה. פרעה גזר רק על הזכרים, ואתה גוזר גם על הנקבות. עמרם חזר אל אשתו, ונולד ילד. הבית התמלא אור, וכולם ראו בו את הבן שיביא את הגאולה.</p>
+      <p class="bold-para">כשכל העם היה שקוע בייאוש, מרים הקטנה הכריזה שאמה עתידה ללדת את מושיען של ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מרים הנביאה</div>
+      <h3 class="story-title">👁️ "ותתצב אחותו מרחוק"</h3>
+      <p>אבל אז הגיע רגע הניסיון. פרעה גזר שכל הבנים יושלכו ליאור, ומשה, התקווה של כל העם, מונח בתיבה על פני המים. המדרש מספר שאביה פנה אליה בכאב ואמר: איפה הנבואה שלך?</p>
+      <p>ומה עשתה מרים? התורה אומרת: "וַתֵּתַצַּב אֲחֹתוֹ מֵרָחֹק לְדֵעָה מַה יֵּעָשֶׂה לוֹ". היא לא התייאשה. היא עמדה שם. המפרשים מסבירים שלא עמדה סתם להסתכל, אלא לראות איך יקרה הנס. היא האמינה שסיפורו של משה לא נגמר כאן. איך בדיוק יקרה הנס? אינני יודעת. אבל הקדוש ברוך הוא הבטיח, והוא יקיים.</p>
+      <p>וכך באמת קרה. בת פרעה ירדה לרחוץ ביאור באותו יום בדיוק, מצאה את התיבה, ומשה גדל בארמון פרעה, ומשם יצא להנהיג את ישראל. הנבואה של מרים התקיימה. ומרים לא האמינה רק באותו רגע. היא חיה עם הנבואה שלה כל הזמן.</p>
+      <p class="bold-para">גם כשהנבואה נראתה מתבטלת, מרים לא התייאשה ועמדה לראות איך יקרה הנס.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מרים הנביאה</div>
+      <h3 class="story-title">🎶 מאין היו להם תופים?</h3>
+      <p>חז"ל שואלים בפרשת השירה: מאין היו להן תופים במדבר? והתשובה מלמדת על מרים ועל נשות הדור הצדקניות: הן היו בטוחות שהקדוש ברוך הוא יעשה להן נסים, ולכן הכינו תופים כבר במצרים. כמו שאמר הרב בלשון ציורית: מרים פתחה כבר שם "קורס תופים". היא לימדה את הבנות לנגן, כי ברור לה שתגיע גאולה, ויהיו נסים כאלה שצריך לשיר עליהם. ברגע האחרון אי אפשר להתחיל ללמוד לתופף.</p>
+      <p>בשיעור הובא משל מימינו: ההחלטה על טקס גדול התקבלה פעם בתוך עשרים וארבע שעות, ואדם אחד נדרש לארגן הכל, את האולם, את הכלים, את כל הפרטים, ברגע. סופרו על כך סיפורים מופלאים, כמה קשה להכין דבר גדול כשלא התכוננו אליו.</p>
+      <p>מרים לא חיכתה לרגע האחרון. בתוך השעבוד היא כבר הכינה את התזמורת לקראת הישועה. זו אמונה אדירה: לעמוד במקום שאינך רואה בו כלום, ולהכין את התופים לשמחה שעוד לא באה.</p>
+      <p class="bold-para">מי שבטוח שהישועה תבוא, מתכונן אליה מראש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מרים הנביאה</div>
+      <h3 class="story-title">🌱 תן לנבואה שלך זמן</h3>
+      <p>מה לומדים מכל זה? לחלום, ולהאמין בחזון גדול, גם כשהדרך מלאה סתירות. לא לוותר למרות הספקות, גם כשהכל נראה הפוך. לעמוד כמו מרים, "מֵרָחֹק לְדֵעָה", ולתת לנבואה שלך את הזמן להתגשם.</p>
+      <p>כל תהליך גדול עובר שלבים של אכזבה. יש רגעים שבהם נראה שהכל אבד, שהתוכנית נשברה, שההבטחה לא תתקיים. אבל בסוף החזון מתממש. ומי שהתייאש באמצע, לא יזכה לשיר כשתבוא הישועה.</p>
+      <p>הרב מסביר שכל אדם צריך לחפש את ה"נבואה" שלו: את הדבר הטוב שהוא מאמין בו. ואם הוא מרגיש שהוא באמצע הדרך והרגע שלו עדיין לא הגיע, שימשיך להחזיק באמת שלו ולחכות לראות אותה מתגשמת. זה מה שמרים הנביאה מלמדת: הכוח להאמין. ואחרי זה, כדי להראות שהדבר אפשרי גם בימינו, הביא הרב שתי דמויות מימי השואה.</p>
+      <p class="bold-para">חלום גדול עובר בדרך מלאה סתירות; המבחן הוא לא להתייאש באמצע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ובהר ציון תהיה פליטה</div>
+      <h3 class="story-title">🏛️ הבכי ברחוב</h3>
+      <p>הדוגמה הראשונה: הרב מפוניבז', הרב יוסף שלמה כהנמן. באמצע ימי השואה ראה אותו אדם בוכה ברחוב ושאל אותו מדוע. אמר לו: אני רוצה להקים בבני ברק ישיבה ענקית, לחמש מאות בחורים. יש יהודי שמוכן לתרום לי כסף לקניית המגרש. הבעיה היא שאין לי כסף לשלוח אליו מכתב, לבול.</p>
+      <p>האדם לא הבין על מה הוא מדבר. אנחנו קוברים יהודים, המונים מתים, ואתה מדבר על ישיבה לחמש מאות בחורים? גם אם תאסוף את כל הבחורים הדתיים בארץ, לא תגיע לחמש מאות!</p>
+      <p>אמר לו הרב מפוניבז': שמע. הייתי תלמיד של החפץ חיים. כשעלה היטלר לשלטון, נכנסתי אל החפץ חיים ושאלתי אותו: הרי הוא אומר שהוא הולך להשמיד את עם ישראל, מה יהיה? והחפץ חיים, למרבה הפלא, היה אופטימי. אמר לי: להשמיד את כל עם ישראל אין לו סיכוי, שנאמר: "אִם יָבוֹא עֵשָׂו אֶל הַמַּחֲנֶה הָאַחַת וְהִכָּהוּ וְהָיָה הַמַּחֲנֶה הַנִּשְׁאָר לִפְלֵיטָה". יהיו צרות, אבל תהיה פליטה.</p>
+      <p>שימו לב לחילוק הדק: החפץ חיים לא אמר שלא יהיו צרות, ולא הבטיח שהכל יעבור בשלום. הוא אמר דבר אחר לגמרי: גם בתוך החורבן, חלק יישאר. ומי שמחזיק בהבטחה הזאת, אינו שואל אם יש תקווה, אלא איפה היא תצמח.</p>
+      <p class="bold-para">בימי השואה ביקש הרב מפוניבז' להקים ישיבה ענקית בבני ברק, ולא היה לו אפילו כסף לבול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ובהר ציון תהיה פליטה</div>
+      <h3 class="story-title">⛰️ "ובהר ציון תהיה פליטה"</h3>
+      <p>המשיך הרב מפוניבז' ואמר: שאלתי את החפץ חיים, היכן תהיה הפליטה? לאן לברוח? אמר לי: זה כתוב בהפטרה של אותה פרשה, "וּבְהַר צִיּוֹן תִּהְיֶה פְלֵיטָה וְהָיָה קֹדֶשׁ". כתוב במפורש: הפליטה תהיה בארץ ישראל.</p>
+      <p>ולכן, אמר הרב מפוניבז', ברור לי שכאן תהיה הישועה של עם ישראל. אני רוצה להקים ישיבה ענקית לקראת כל אלה שיגיעו. האיש התרשם כל כך, ששלף מכיסו ונתן לו את הכסף במקום. המכתב נשלח, המגרש נקנה, והישיבה נבנתה.</p>
+      <p>עד היום אפשר ללכת לישיבת פוניבז' ולראות: על בניין הישיבה חקוק הפסוק "וּבְהַר צִיּוֹן תִּהְיֶה פְלֵיטָה וְהָיָה קֹדֶשׁ", הפסוק שאמר לו החפץ חיים. זו דוגמה לאדם שחי את האמונה של מרים. בשעה שאיש לא ידע מה יקרה עוד רגע, הוא כבר הכין את התופים: הוא בנה בית לתורה עבור הפליטים שעוד לא הגיעו. וזה הדבר: אדם עם חזון מאמין. התהליך אינו משדר הצלחה, יש רגעים של אכזבה, אבל בסוף החזון מתממש.</p>
+      <p class="bold-para">הרב מפוניבז' בנה ישיבה מתוך ודאות שהפליטה תהיה בארץ ישראל, וחקק את הפסוק על בניין הישיבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אם הבנים שמחה</div>
+      <h3 class="story-title">📕 שמונים שנה לפטירתו</h3>
+      <p>הדמות השנייה: הרב יששכר שלמה טייכטל, בעל הספר "אם הבנים שמחה". השיעור נאמר סמוך לשמונים שנה לפטירתו, ובאותם ימים נערך כנס לזכרו. הרב שאל שאלה: למה קרא לספרו דווקא "אם הבנים שמחה"? מה הסיפור שמאחורי השם?</p>
+      <p>כדי להבין, צריך לדעת מי היה האיש. הוא היה רב חשוב בסלובקיה ובהונגריה לפני השואה, ומחסידי מונקאטש. בצעירותו החזיק בדעה המתנגדת בחריפות לתנועה הציונית, כמו כל הסביבה שבה גדל. בשיעור הודגש שלא הייתה זו מסקנה של מחקר ועיון, אלא פשוט הדרך שבה חונך, כמו כולם סביבו.</p>
+      <p>ובימי השואה הוא מסתתר בסלובקיה. יהודים נרצחים מכל עבר, ואין לו כמעט ספרים. שם, במחבוא, הוא כותב ספר שלם, את רובו מתוך הזיכרון. הוא התחיל לחקור בעצמו את המקראות ואת דברי חז"ל, ושינה את דעתו מן הקצה אל הקצה. בספרו הביע אהבה גדולה לעלייה לארץ ישראל, ראה בהתרחקות מן הארץ את אחת מסיבות הצרות, וקרא ליהודים לעזוב את הגלות.</p>
+      <p class="bold-para">בעל "אם הבנים שמחה" כתב את ספרו בימי השואה, כשהוא מסתתר וכמעט בלי ספרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אם הבנים שמחה</div>
+      <h3 class="story-title">🏡 האם שקיבלה את ילדיה</h3>
+      <p>שם הספר נולד מסיפור שראה בעיניו. בימי השואה בסלובקיה, בחג הפסח, ניסו ילדיה של אם אחת לברוח מעבר לגבול מפחד הנאצים. השוטרים הסלובקים תפסו אותם, והעונש היה ידוע: הסגרה לגרמנים ושילוח למחנות ההשמדה. האם ידעה מה צפוי לבניה, והעולם חשך בעיניה. חג הגאולה הפך לימים של בכי בלי הפוגה.</p>
+      <p>ואז הגיעה ישועה בדרך נס. כפי שסופר בשיעור, הרב שמואל דוד אונגר הצליח לפדות את הילדים מידי השוטרים בתמורה לסכום גדול. אחרי שעות ארוכות של מתח, הילדים חזרו ופגשו את אמם.</p>
+      <p>הוא מתאר את הרגע: האם פרצה בבכי שלא היה בו אלא השתפכות הלב. בתחילה לא יכלה להוציא מילה מרוב התרגשות, ואחר כך בכתה בכי של שמחה. וכתב: מי שלא ראה את רגע הפגישה ואת שמחתה של אם הבנים, לא ראה שמחה מימיו. הסיפור הזה נגע בלבו עמוקות, והוא הפך אותו למשל.</p>
+      <p class="bold-para">"מי שלא ראה את רגע הפגישה, לא ראה שמחה מימיו."</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אם הבנים שמחה</div>
+      <h3 class="story-title">🌄 ארץ ישראל מחכה לבניה</h3>
+      <p>וזה הנמשל: ארץ ישראל היא אם. חכמינו מתארים אותה, ואת השכינה, כאם שבוכה על בניה בגלות ואין לה מנוחה. היא מחכה שנחזור אליה. וכמו האם שחיבקה את ילדיה בדמעות, כך תשמח ארץ ישראל, אמנו, כשנשוב אליה.</p>
+      <p>לכן קרא לספרו "אם הבנים שמחה", לשון הפסוק בתהילים: "מוֹשִׁיבִי עֲקֶרֶת הַבַּיִת אֵם הַבָּנִים שְׂמֵחָה הַלְלוּיָהּ". אם כך גדולה שמחתה של אם שבנה האבוד חוזר הביתה, כמה גדולה תהיה שמחת ארץ ישראל כשעם ישראל שב אליה.</p>
+      <p>ותחשבו מתי נכתבו הדברים: באמצע השואה. אדם רואה מתים מכל עבר, אינו יודע מי נשאר ומה נשאר, והוא כותב ספר שכולו ודאות שעוד מעט "אם הבנים שמחה", שעם ישראל עומד לחזור לארצו ושהגאולה עומדת להיפתח. זה בדיוק מה שעשתה מרים במצרים: באמצע החושך הוא כבר ראה את הגאולה, והכין לה את התופים.</p>
+      <p class="bold-para">כשם שאם שמחה בשובם של בניה, כך שמחת ארץ ישראל כשעם ישראל חוזר אליה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אם הבנים שמחה</div>
+      <h3 class="story-title">🍞 הלחם האחרון</h3>
+      <p>הוא עצמו לא זכה לראות את התגשמות חזונו. הוא נרצח סמוך לסוף המלחמה, בחורף של שנת 1945, ברכבת שהובילה אסירים. הסיפור המובא הוא שאחד מן האסירים הגויים חטף מיהודי את פת הלחם האחרונה שלו. הרב לא שתק. הוא עמד על כך שהלחם יוחזר ליהודי, והגויים שסביבו התנפלו עליו ורצחו אותו.</p>
+      <p>אבל ספרו נשאר. בני משפחתו שניצלו עזרו להוציא אותו לאור, ומשפחתו הגדולה ממשיכה עד היום, ויש בה תלמידי חכמים רבים.</p>
+      <p>הרב חזר על הנקודה: הנה אדם שנמצא באמצע החושך, באמצע הכל, ורואה כבר את הגאולה, איך היא תגיע, וקורא לה בשם: "אם הבנים שמחה". בדיוק כמו בפרשת השירה, כשמרים הנביאה לוקחת את התוף בידה. אדם צריך להאמין בנסים, וכמו שפתחנו: "דֶּרֶךְ אֱמוּנָה בָחָרְתִּי".</p>
+      <p class="bold-para">בעל "אם הבנים שמחה" נרצח בדרכו למחנה, כשעמד על כבודו של יהודי אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שלושה שלבי שמחה</div>
+      <h3 class="story-title">💍 שלוש ברכות, שלושה שלבים</h3>
+      <p>בעל "אם הבנים שמחה" הראה מקור לרעיון הזה בברכות שאנו מברכים בכל חתונה. בשבע ברכות יש שלוש ברכות שמדברות על הגאולה, והן מתארות שלושה שלבים.</p>
+      <p>השלב הראשון: "שׂוֹשׂ תָּשִׂישׂ וְתָגֵל הָעֲקָרָה בְּקִבּוּץ בָּנֶיהָ לְתוֹכָהּ בְּשִׂמְחָה". זו שמחת ציון. העקרה, ארץ ישראל שהייתה שוממה, שמחה כשבניה מתקבצים אליה. זו ממש "אם הבנים שמחה": עם ישראל חוזר לארצו.</p>
+      <p>השלב השני: "שַׂמֵּחַ תְּשַׂמַּח רֵעִים הָאֲהוּבִים כְּשַׂמֵּחֲךָ יְצִירְךָ בְּגַן עֵדֶן מִקֶּדֶם". אחרי שהבנים שבו, ארץ ישראל נעשית כמו גן עדן. יש בה אווירה של גן עדן.</p>
+      <p>והשלב השלישי: "מְהֵרָה ה' אֱלֹקֵינוּ יִשָּׁמַע בְּעָרֵי יְהוּדָה וּבְחוּצוֹת יְרוּשָׁלָיִם קוֹל שָׂשׂוֹן וְקוֹל שִׂמְחָה". זו כבר שלמות הגאולה: כל ששון וכל שמחה, שמחה בלי קץ. נמצא שהגאולה אינה באה ברגע אחד; היא מתחילה בשיבת הבנים, ממשיכה בפריחה, ומגיעה לשלמות.</p>
+      <p class="bold-para">שלוש מן הברכות שבשבע ברכות מתארות את שלבי הגאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שלושה שלבי שמחה</div>
+      <h3 class="story-title">🎵 "שישו את ירושלים"</h3>
+      <p>והברכות האלה לקוחות מן הפסוק בישעיהו: "שִׂמְחוּ אֶת יְרוּשָׁלַיִם וְגִילוּ בָהּ כָּל אֹהֲבֶיהָ שִׂישׂוּ אִתָּהּ מָשׂוֹשׂ כָּל הַמִּתְאַבְּלִים עָלֶיהָ". מי שהתאבל על ירושלים בגלות, הוא שיזכה לשוש איתה בשובה.</p>
+      <p>את השיעור חתם הרב בשיר הישן והמוכר שנבנה על הפסוק הזה, "שישו את ירושלים". שירה, כמו התוף של מרים, אינה מחכה עד שהכל יושלם. היא מתחילה כבר עכשיו, מתוך האמונה במה שעוד יבוא.</p>
+      <p>וזה המסר של כל השיעור: מרים שהכינה תופים בשעבוד, הרב מפוניבז' שבנה ישיבה בשעה שהעולם בער, בעל "אם הבנים שמחה" שכתב על שמחת הגאולה במחבוא, והחטופה שכתבה "דרך אמונה בחרתי" בדרכה הביתה. כולם ראו את האור עוד בתוך החשיכה. וכל אדם יכול לעשות כמותם: לבחור בדרך האמונה, לעמוד מרחוק לדעה מה ייעשה, ולהכין כבר עכשיו את השיר לישועה.</p>
+      <p class="bold-para">השמחה שבברכות לקוחה מן הנבואה "שמחו את ירושלים", ואותה שרים כבר היום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/iHAmI8WAcQM · 2025-02-05 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"בדרך אמונה","icon":"🛤️","color":"#c62b6b","stories":[{"id":1,"title":"\"דרך אמונה בחרתי\"","icon":"🛤️"}]},{"id":2,"name":"מרים הנביאה","icon":"🥁","color":"#6d28d9","stories":[{"id":2,"title":"\"מרים הנביאה אחות אהרן\"","icon":"🥁"},{"id":3,"title":"נבואה בתוך הייאוש","icon":"🌧️"},{"id":4,"title":"\"ותתצב אחותו מרחוק\"","icon":"👁️"},{"id":5,"title":"מאין היו להם תופים?","icon":"🎶"},{"id":6,"title":"תן לנבואה שלך זמן","icon":"🌱"}]},{"id":3,"name":"ובהר ציון תהיה פליטה","icon":"🏛️","color":"#e08e00","stories":[{"id":7,"title":"הבכי ברחוב","icon":"🏛️"},{"id":8,"title":"\"ובהר ציון תהיה פליטה\"","icon":"⛰️"}]},{"id":4,"name":"אם הבנים שמחה","icon":"🏡","color":"#1e88b8","stories":[{"id":9,"title":"שמונים שנה לפטירתו","icon":"📕"},{"id":10,"title":"האם שקיבלה את ילדיה","icon":"🏡"},{"id":11,"title":"ארץ ישראל מחכה לבניה","icon":"🌄"},{"id":12,"title":"הלחם האחרון","icon":"🍞"}]},{"id":5,"name":"שלושה שלבי שמחה","icon":"💍","color":"#c62b6b","stories":[{"id":13,"title":"שלוש ברכות, שלושה שלבים","icon":"💍"},{"id":14,"title":"\"שישו את ירושלים\"","icon":"🎵"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
