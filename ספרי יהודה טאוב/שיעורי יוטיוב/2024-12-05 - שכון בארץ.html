@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 שכון בארץ</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 שכון בארץ</h1>
+  <p>המצווה ליישב את הארץ גם ברוחניות: למה כדאי לגור בפריפריה, מה צריך לבדוק לפני שעוברים, ואיך מיישבים את זה עם "הכל מעלין לירושלים"</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ שכון בארץ" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/HPlSh75UpFs?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/HPlSh75UpFs/hqdefault.jpg" alt="שכון בארץ" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=HPlSh75UpFs" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שכון בארץ – יישוב גשמי ורוחני</div>
+      <h3 class="story-title">❓ האם יש עניין לגור בפריפריה?</h3>
+      <p>השיעור נפתח בשאלה פשוטה לכאורה: האם מבחינה יהודית, מעבר לשיקולים של מחיר דירה ונוחות, יש עניין לגור דווקא בפריפריה? האם יש בזה מצווה, או שזו רק ברירה של מי שאין לו אפשרות אחרת?</p>
+      <p>השאלה הזאת איננה תאורטית. היא נוגעת להחלטות שמשפחות רבות מקבלות היום, והיא נוגעת גם למקום שבו נמסר השיעור עצמו – עיר בצפון, שידעה תקופות של ירידה ותקופות של פריחה.</p>
+      <p>הרב מבקש לבנות את התשובה מן היסוד: מפסוקי התורה, מדברי המדרש, מן המשנה והגמרא, ומסיפורים על גדולי ישראל שעמדו לפני השאלה הזאת בעצמם. בדרך נגלה שהשאלה "איפה לגור" היא שאלה של עבודת ה' לא פחות מאשר שאלה של כלכלה.</p>
+      <p>וכמו בכל שאלה כזאת, נראה גם את הצד השני: מתי אסור לעבור, מה חייבים לבדוק, ומתי ההכרעה צריכה לבוא משאלת חכם ולא מהתלהבות. השיעור איננו קריאה עיוורת לעזוב את הכל, אלא ניסיון להבין מה רוצה הקדוש ברוך הוא מאיתנו.</p>
+      <p class="bold-para">השיעור שואל אם מבחינה יהודית יש ערך מיוחד במגורים הרחק מן המרכז, מעבר לשיקולי מחיר ונוחות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שכון בארץ – יישוב גשמי ורוחני</div>
+      <h3 class="story-title">💧 יצחק בגרר</h3>
+      <p>נקודת המוצא היא פרשת תולדות. היה רעב בארץ, ויצחק חשב לרדת למצרים כמו אביו אברהם. אבל הקדוש ברוך הוא נגלה אליו ואמר: "אַל תֵּרֵד מִצְרָיְמָה, שְׁכֹן בָּאָרֶץ אֲשֶׁר אֹמַר אֵלֶיךָ. גּוּר בָּאָרֶץ הַזֹּאת וְאֶהְיֶה עִמְּךָ וַאֲבָרְכֶךָּ". ויצחק הלך לגרר, ארץ פלשתים שבדרום.</p>
+      <p>שם חפר יצחק באר, ורועי גרר רבו עמו עליה. חפר באר שנייה, ושוב היה ריב. רק בפעם השלישית לא רבו עליה, והוא קרא לה רחובות.</p>
+      <p>הרב מוציא מכאן לימוד: התורה מספרת לנו מראש שדברים גדולים אינם מצליחים בפעם הראשונה. יהיה קשה, יהיו מריבות, צריך לנסות פעם ופעמיים, ובפעם השלישית זה מצליח. מי שבא לבנות מקום חדש, ליישב שטח ולהקים קהילה, צריך לדעת זאת מראש ולא להתייאש מן המכשולים של ההתחלה.</p>
+      <p>וזו גם הקדמה לכל השיעור: יישוב הארץ איננו דבר שקורה מעצמו. הוא דורש עקשנות, סבלנות ואמונה שבסוף הקדוש ברוך הוא "הִרְחִיב לָנוּ".</p>
+      <p class="bold-para">יצחק חפר באר ושוב באר, ורק בפעם השלישית הצליח – ומכאן לימוד שלא להתייאש מן הקשיים הראשונים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שכון בארץ – יישוב גשמי ורוחני</div>
+      <h3 class="story-title">🌾 שכון וגור – מה ההבדל?</h3>
+      <p>המדרש מתקשה בלשון הפסוק. הקדוש ברוך הוא אומר ליצחק "שְׁכֹן בָּאָרֶץ" ומיד אחר כך "גּוּר בָּאָרֶץ הַזֹּאת". מה ההבדל בין לשכון לבין לגור? לכאורה זה אותו דבר.</p>
+      <p>הרב מביא שני כיוונים מן המדרש. הכיוון הראשון: "שכון" מלשון שכונה. עשה שכונה בארץ – זרע, נטע, דאג שתהיה פריחה. לא רק לשבת במקום, אלא לבנות אותו ולהפוך אותו למיושב.</p>
+      <p>הכיוון השני: "שכון" מלשון שכינה. שַׁכֵּן את השכינה בארץ. דאג שהשכינה תשרה במקום שבו אתה נמצא.</p>
+      <p>כבר כאן רואים שני צדדים של אותה מצווה. יש יישוב גשמי – בתים, שדות, אנשים. ויש יישוב רוחני – תורה, תפילה, השראת שכינה. וחשוב לשים לב שהציווי הזה נאמר ליצחק דווקא באזור רחוק בדרום, באזור של זריעה וחקלאות, ולא בלב העולם התרבותי של אותם ימים. הקדוש ברוך הוא שולח אותו לבנות במקום שעוד צריך לבנות.</p>
+      <p class="bold-para">המדרש מבין ש"שכון בארץ" פירושו גם לעשות שכונה בארץ: לזרוע, לנטוע ולגרום לה לפרוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שכון בארץ – יישוב גשמי ורוחני</div>
+      <h3 class="story-title">🏕️ הרחיבי מקום אהלך</h3>
+      <p>כולנו יודעים שיש מצווה לגור בארץ ישראל. אבל הרב מדגיש שיש בתוך המצווה עוד נקודה: יישוב הארץ. רצון ה' הוא שלא כולם יתרכזו במקום אחד, אלא שיתפשטו ויישבו את כל המקומות, לאורכה ולרוחבה של הארץ.</p>
+      <p>כך אומר הנביא ישעיהו: "הַרְחִיבִי מְקוֹם אָהֳלֵךְ וִירִיעוֹת מִשְׁכְּנוֹתַיִךְ יַטּוּ, אַל תַּחְשֹׂכִי, הַאֲרִיכִי מֵיתָרַיִךְ וִיתֵדֹתַיִךְ חַזֵּקִי. כִּי יָמִין וּשְׂמֹאול תִּפְרֹצִי, וְזַרְעֵךְ גּוֹיִם יִירָשׁ, וְעָרִים נְשַׁמּוֹת יוֹשִׁיבוּ". זו התמונה של יישוב הארץ: להתרחב, לפרוץ ימין ושמאל, להושיב את הערים השוממות.</p>
+      <p>הרב מעיר בחיוך: היום בונים בעיקר לגובה, מגדלים של עשרות קומות. אבל המצווה היא ליישב את האדמה, לא את האוויר. בימי חז"ל כמעט לא בנו יותר מבית ועלייה על גביו, והיישוב התפשט לרוחב.</p>
+      <p>ואם מישהו אומר שאין מקום – זה פשוט לא נכון. יש בארץ יישובים רבים, בצפון ובדרום, שמחכים שיבואו אליהם יהודים. יש מקומות רבים שזקוקים מאוד לאנשים.</p>
+      <p>המצווה, אם כן, איננה רק "לגור בארץ ישראל" במובן הכללי, אלא לדאוג לכך שכמה שיותר מקומות בארץ יהיו מיושבים. לא שכולם יגורו במקום אחד צפוף, בגורדי שחקים, אלא שהיישוב יתרחב ויתפשט. זו מצוות יישוב ארץ ישראל במובנה הפשוט, וממנה נעבור עכשיו לצד הרוחני שלה, שהוא אולי החשוב מכולם.</p>
+      <p class="bold-para">מצוות יישוב הארץ היא לא רק לגור בה, אלא לפרוש את היישוב לאורכה ולרוחבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שכון בארץ – יישוב גשמי ורוחני</div>
+      <h3 class="story-title">✨ לשכן את השכינה</h3>
+      <p>ועכשיו לחלק השני של המדרש: "שַׁכֵּן את השכינה בארץ". איך משכנים את השכינה? הרב מציע רעיון, ואומר בפירוש שאין לו מקור מפורש לכך, אבל הדבר נראה לו מסתבר מאוד.</p>
+      <p>חז"ל דרשו על הפסוק "וָאֱהִי לָהֶם לְמִקְדָּשׁ מְעַט" – אלו בתי כנסיות ובתי מדרשות. במקום שיושבים ועוסקים בתורה, השכינה שורה ביניהם. ואם כן, כמו שיש מצווה ליישב את כל הארץ בגשמיות, כך יש גם מצווה ליישב אותה ברוחניות.</p>
+      <p>מה פירוש? אולי כולם היו רוצים לגור במקום אחד, בעיר גדולה של תורה, ושם יהיו מאות בתי מדרש. אבל במקומות אחרים בארץ אין כמעט כלום. מי שהולך למקום כזה ופותח בו גרעין של תורה, מקים בית כנסת, מעביר שיעור, מביא קהילה – הוא מקיים יישוב ארץ ישראל במובן הרוחני.</p>
+      <p>הרב מתאר את המקום שבו נמסר השיעור: לפני שנים לא רבות בתי הכנסת שם הלכו ונסגרו, האוכלוסייה עזבה, ומבחינה רוחנית המקום התרוקן. מי שבא למקום כזה ומחזיר אליו את התורה, מקיים בדיוק את מה שנאמר ליצחק: שַׁכֵּן את השכינה בארץ.</p>
+      <p class="bold-para">כמו שיש מצווה ליישב את הארץ בגשמיות, יש גם מצווה ליישב אותה ברוחניות – להביא תורה למקום שאין בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהפכה שקרתה בשקט</div>
+      <h3 class="story-title">🚪 במשך שנים – כולם עזבו</h3>
+      <p>הרב מביא כתבה שתיארה תהליך ציבורי מעניין. לפעמים מנסים במשך שנים לגרום לשינוי חברתי, ולא מצליחים. ואז, לאט לאט, בלי שמרגישים, השינוי כבר קורה. מסתכלים אחורה ומגלים שנמצאים במקום אחר לגמרי.</p>
+      <p>במשך שנים ארוכות ניסו לעודד בני תורה לגור בערי השדה. כבר החזון איש שלח בזמנו יהודים לכל מיני מקומות, אבל הדבר לא הצליח כל כך.</p>
+      <p>הרב נזכר בילדותו: במקום שבו גדל היו אומרים שאף אחד לא נשאר. כמעט כל מי שהתחתן עזב לאחד הריכוזים הגדולים. היה מעט מאוד מכל דבר – מסגרת תורנית אחת ששירתה את כל סוגי הציבור יחד, וגם אותה היו צריכים לבקש שיבואו להחזיק. היו מוסדות שחיפשו מלמדים ולא מצאו, כי כולם עזבו.</p>
+      <p>ובשנים האחרונות התמונה התהפכה. משפחות רבות של בני תורה עברו לגור בערים בצפון ובדרום, ומקומות שפעם נחשבו פריפריה נעשו מרכזים של ממש. השאלה היא: איך זה קרה, ולמה?</p>
+      <p class="bold-para">במשך תקופה ארוכה מקומות רבים בפריפריה התרוקנו מבני תורה, ומי שהתחתן כמעט תמיד עבר למרכז.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהפכה שקרתה בשקט</div>
+      <h3 class="story-title">🏗️ כשהמרכז מתמלא</h3>
+      <p>הרב מתאר תופעה מעניינת: במשך תקופה ארוכה מאוד הציבור החרדי לא הצליח להקים עיר חדשה. היו יוזמות רבות, היו הבטחות רבות, וזה לא הלך.</p>
+      <p>והוא מעיר שזה מפליא, כי יש בעבר דוגמאות לערים שקמו כמעט מכוח היוזמה של הציבור עצמו – קנו שטח, תכננו, בנו. ובכל זאת, בשנים האחרונות, משום מה, זה לא מצליח.</p>
+      <p>ובינתיים, בערים הקיימות כמעט לא נשאר מקום לבנות. אחוזי הבנייה שם נמוכים, האפשרויות להתרחב נגמרו, והציבור הולך וגדל. משפחות צעירות רבות צריכות דירה בכל שנה, ואין להן לאן ללכת.</p>
+      <p>וכך, כמעט בלי שמישהו תכנן זאת, המשפחות מתחילות להתפזר. הן הולכות לגור בכל מיני מקומות בארץ – בצפון, בדרום, בערים מעורבות. זו הסיבה הטכנית. אבל הרב שואל שאלה עמוקה יותר: למה הקדוש ברוך הוא מסובב את הדברים כך? מה הוא רוצה ללמד אותנו בזה?</p>
+      <p>כי מי שמאמין שהכל בהשגחה, לא מסתפק בהסבר של מחירי דיור. הוא מחפש את המסר.</p>
+      <p class="bold-para">הציבור התורני לא הצליח להקים עיר חדשה במשך שנים, והערים הקיימות התמלאו – וכך התחילו המשפחות להתפזר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהפכה שקרתה בשקט</div>
+      <h3 class="story-title">🕯️ כל שומר מצוות – שליח</h3>
+      <p>הרב מביא דברים ששמע מאחד העוסקים שנים רבות בקירוב לבבות. שאלו אותו: למה לדעתך הקדוש ברוך הוא לא נותן לציבור התורני להצליח להקים עוד עיר משלו?</p>
+      <p>והוא השיב תשובה מעניינת מאוד. הקדוש ברוך הוא רוצה שלא נדאג רק לעצמנו. הוא רוצה שתהיה השפעה על כל עם ישראל. ומניסיונו, כל אדם שומר מצוות שגר בעיר שאינה דתית הוא כמו סניף של קירוב, בלי שהוא רוצה ובלי שהוא עושה דבר מיוחד.</p>
+      <p>איך? עצם המציאות שלו. רואים איך הוא מתנהג, איך הוא מגדל את ילדיו, איך הוא מדבר עם השכנים. אנשים שאולי מעולם לא פגשו יהודי שומר תורה מקרוב, פוגשים פתאום אדם ישר, אכפתי, שמח – ומגלים שהתמונה שהייתה להם בראש אינה נכונה.</p>
+      <p>וזה "וְאָהַבְתָּ אֵת ה' אֱלֹקֶיךָ" כפי שדרשו חז"ל: שיהא שם שמים מתאהב על ידך. אדם שקורא בתורה ושונה, ומשאו ומתנו באמונה, ודיבורו בנחת עם הבריות – מה הבריות אומרות עליו? ראו כמה נאים מעשיו. מי שגר בסביבה מעורבת, הוא שגריר של התורה בכל יום מחדש.</p>
+      <p class="bold-para">יהודי שומר מצוות שגר בסביבה מעורבת משפיע עליה כבר במציאות שלו, בלי לומר מילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהפכה שקרתה בשקט</div>
+      <h3 class="story-title">🕎 השכנה שחיפשה את נרות החנוכה</h3>
+      <p>הרב מביא דוגמה מן החיים. יש מחלוקת ידועה היכן מדליקים נרות חנוכה: בפתח הבית או בפתח החצר. משפחה אחת נהגה להדליק בפתח החצר, ובשלב מסוים עברה להדליק בפתח הבית.</p>
+      <p>יום אחד דפקה בדלת שכנה שאינה שומרת מצוות. היא שאלה: כל שנה הייתי רואה את נרות החנוכה שלכם, איפה הם? היא עצמה אינה מדליקה, אבל היה חשוב לה לראות נרות חנוכה. הנרות של השכנים היו בשבילה החנוכה.</p>
+      <p>מאז, סיפר הרב, נוהגים במשפחה ההיא כך שאחד מדליק בפתח הבית ואחר מדליק בפתח החצר – כי הסביבה רוצה לראות.</p>
+      <p>זו רק דוגמה אחת, ויש עוד בלי סוף. שכן שמתקשר לשאול שאלה, מישהו שמבקש שיבואו לעשות לו משהו לפני חג, אדם שמחפש את מי לשאול. אנשים רבים, גם כאלה שנראים רחוקים, מחפשים קצת רוחניות. וכשיש לידם יהודי שומר מצוות, הם מגיעים אליו. ההשפעה הזאת גדולה מאוד, והיא קיימת רק אם גרים שם.</p>
+      <p class="bold-para">אנשים רבים מחפשים קצת רוחניות, וכשיש להם שכן שומר מצוות – הם מגיעים אליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהפכה שקרתה בשקט</div>
+      <h3 class="story-title">🏠 חיטוי בבית חולים</h3>
+      <p>הרב מספר על מקרה שבו פנו אליו בעניין דירה שעמדה ריקה לתקופה קצרה. ביקשו ממנו למצוא שוכר לחודשיים, והוצע אדם שאינו שומר מצוות. הוא התלבט, והלך לשאול רב.</p>
+      <p>הרב השיב שאין בזה איסור, אבל עדיף שלא. למה? כי העבירות משפיעות על המקום. חילול שבת בבית משפיע על הבית, והבית נעשה פחות קדוש. הוא המשיל זאת לחיטוי בבית חולים: יש דברים שנספגים בקירות, גם אם אינם נראים.</p>
+      <p>אבל החלק החשוב של הסיפור הוא ההמשך. כשנאלץ להשיב בשלילה, הוא לא הפנה עורף. הוא טרח ומצא דירה אחרת, טובה, והשוכרת הייתה מרוצה מאוד. היא ראתה מצד אחד אנשים עם עקרונות, שאכפת להם מקדושה, ומצד שני אנשים שאינם מזלזלים בה ודואגים לה.</p>
+      <p>זה בדיוק כוחה של השפעת הסביבה. המגע הישיר מראה לאדם ששמירת מצוות יכולה להפוך את האדם לאדם טוב יותר. זה קידוש שם שמים בפועל, ובשטח רואים שבמקומות שיש בהם ציבור תורני, ההשפעה על הסביבה גדולה מאוד.</p>
+      <p class="bold-para">מעשים טובים ועבירות משפיעים על המקום עצמו, ולכן יש ענין בכך שבית יישאר בית של קדושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תורה, עבודה וגמילות חסדים</div>
+      <h3 class="story-title">🌳 רבי יעקב אדלשטיין ברמת השרון</h3>
+      <p>הרב מביא את דמותו של רבי יעקב אדלשטיין זצ"ל, אחיו של הגאון רבי גרשון אדלשטיין, שכיהן כרב העיר רמת השרון שנים רבות מאוד. אחרי פטירתו יצא עליו ספר יפה מאוד.</p>
+      <p>רבים חשבו שכשיגיע לגיל מבוגר יעבור לאחת הערים הגדולות של תורה, כמו שעשו רבנים אחרים. אבל הוא לא עזב. הוא נשאר לגור ברמת השרון עד סוף ימיו.</p>
+      <p>והוא עצמו סיפר מה ראה שם. כשהגיע, היו בעיר מעט מאוד שומרי תורה. זו הייתה עיר רחוקה מאוד מתורה ומצוות. ולאט לאט, ברוך ה', באו אנשים. הגיעו משפחות, נוסדו קהילות, התפתח ציבור תורני. ובשנים האחרונות, סיפר, הוא לא מאמין למראה עיניו: כמה רבים הושפעו, התקרבו והתחזקו.</p>
+      <p>זו בדיוק השפעת הסביבה שדיברנו עליה. אדם בא, ואנשים רואים "כמה נאים מעשיו". ולא רק זה: הרב שנשאר במקומו נתן גם לאחרים את האומץ להישאר ולבוא. אבל לרבי יעקב הייתה גם סיבה נוספת, אולי חשובה לא פחות, והיא עולה מסיפור שהרב מספר שוב ושוב.</p>
+      <p class="bold-para">רבי יעקב אדלשטיין כיהן כרב ברמת השרון עשרות שנים, וראה כיצד העיר כולה הושפעה מנוכחות של תורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תורה, עבודה וגמילות חסדים</div>
+      <h3 class="story-title">🧭 "תישאר כאן"</h3>
+      <p>לפני שנים רבות היה אברך שגר ולמד במקום שבו נמסר השיעור. כשילדיו הגיעו לגיל בית ספר, המסגרת החינוכית המקומית לא התאימה לו, והוא החל להסיע אותם בכל יום ליישוב אחר. הלוך וחזור, כל יום, ברכב פרטי, בימים שעוד לא היה כביש נוח.</p>
+      <p>אחרי שנה או שנתיים כבר היה לו קשה מאוד. הוא נסע לרבי יעקב אדלשטיין ושאל: האם אני יכול לעבור לגור ביישוב השני? הרב השיב: תישאר. עברה עוד שנה, הוא חזר ושאל, והרב שוב אמר: תישאר.</p>
+      <p>האברך טען: הרב, רבים כבר עזבו! והרב השיב: הם לא באו לשאול אותי. הם עשו על דעת עצמם. ואז שאל האברך: למה זה כל כך חשוב? זה קשה מאוד, ואין לי חברים כאן.</p>
+      <p>והרב הסביר: אתה יודע שיש היום בעיה לא פשוטה. הורים מחתנים את ילדיהם, וזוגות צעירים לוקחים על עצמם חובות עצומים כדי לקנות דירה. אם כולם יעברו ליישוב השני, המחירים שם יעלו, ולא יהיה לאן ללכת. אתה צריך להישאר כאן, כדי שיהיה לציבור מקום שאפשר לקנות בו דירה במחיר שפוי.</p>
+      <p>וכך, מתוך שאלה אישית, עלה עיקרון ציבורי גדול.</p>
+      <p class="bold-para">רבי יעקב אדלשטיין הורה לאברך שלא לעזוב, כי אם כולם יעזבו – מי ישאיר לציבור מקום לגור בו?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תורה, עבודה וגמילות חסדים</div>
+      <h3 class="story-title">⚖️ החובות שמכבידים על הלב</h3>
+      <p>הרב מתעכב על דבריו של רבי יעקב אדלשטיין. החובות אינם רק עניין כספי. הם מורידים מן האדם את יישוב הדעת, פוגעים בשלום הבית, ומעיבים על שמחת החיים. זה נטל שקשה לשאר ולתאר.</p>
+      <p>ומשום כך, מי שבא לגור במקום שיש בו עדיין מחירים סבירים ומחזק אותו, עושה חסד עצום עם הציבור. הוא דואג שיהיה לזוגות צעירים לאן ללכת בלי לשקוע בחובות שילוו אותם שנים.</p>
+      <p>הרב מעיר שגם היום ההבדל במחירים בין מקום שהציבור התורני מתרכז בו לבין מקום סמוך שעוד לא התפתח כמותו הוא גדול מאוד. ומי שמחזק מקום כזה, מביא אליו עוד משפחות ומקים בו קהילה, חוסך מאנשים רבים צרות גדולות.</p>
+      <p>בהקשר הזה הרב מזכיר שבנו של רבי יעקב אדלשטיין ביקר לא מכבר במקום, וסיפרו בפניו את הסיפור הזה – כדי שידע כמה אביו היה קשור למקום ולא הרשה לעזוב אותו.</p>
+      <p>כך הופכת השאלה "איפה לגור" לשאלה של גמילות חסדים. לא רק "מה טוב לי", אלא "מה טוב לכלל".</p>
+      <p class="bold-para">חובות כבדים פוגעים ביישוב הדעת, בשלום הבית ובשמחת החיים – ומי שמחזיק מקום עם מחירים שפויים עושה חסד עם רבים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תורה, עבודה וגמילות חסדים</div>
+      <h3 class="story-title">🌄 נצא השדה</h3>
+      <p>הרב מזכיר את הרב יואל שוורץ זצ"ל, שהיה קשור אליו מאוד. לפני שנים רבות הוציא ספר שקרא לו "נצא השדה", על שם הפסוק בשיר השירים: "לְכָה דוֹדִי נֵצֵא הַשָּׂדֶה, נָלִינָה בַּכְּפָרִים".</p>
+      <p>כבר אז, בשנים שבהן כמעט אף אחד לא חשב כך, הוא ראה ברוח קודשו שהמחירים במרכז הולכים ועולים ושאנשים לא יוכלו לעמוד בהם. הוא קרא לציבור התורני להתחיל לצאת אל ערי השדה, ושלח לשם גם את ילדיו.</p>
+      <p>ובספרו כתב על המעלות שיזכה להן מי שהולך לגור בפריפריה. מעלה אחת היא החלוציות. אדם שאינו נגרר אחרי כולם, אלא הולך לפני המחנה, מקים ובונה – זה בונה את האישיות שלו. הוא לא סתם אחד מני רבים; הוא חושב, מתכנן, לוקח אחריות.</p>
+      <p>מעלה נוספת: הפריפריה מלמדת להסתפק במה שיש. לא תמיד יש שם כל השפע שאדם רוצה, וזה מחנך. ומעלה שלישית: חברות ושכנות טובה. כשמעט אנשים גרים יחד, הם קרובים יותר זה לזה. כל אחד יודע שהוא חלק ממשהו שצריך אותו.</p>
+      <p class="bold-para">הרב יואל שוורץ קרא כבר לפני עשרות שנים לצאת אל ערי השדה, וכתב על המעלות שבדבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תורה, עבודה וגמילות חסדים</div>
+      <h3 class="story-title">🛠️ פרנסה, ומי שחלם על המקום</h3>
+      <p>הרב מוסיף נקודה שאנשים רבים אינם יודעים. מקובל לחשוב שבפריפריה אין עבודה, ושמי שעובר לשם יתקשה להתפרנס. אבל בפועל, לפחות במקום שבו נמסר השיעור, המצב הפוך. מי שרוצה לעבוד מוצא עבודה, ואישה שמחפשת עבודה כמעט תמיד מוצאת.</p>
+      <p>ויש בזה עוד צד. אדם שגר בעיר מעורבת יוצא לעבוד בטבעיות, בלי בושה ובלי תחושה שהוא חריג. והעבודה עצמה מפגישה אותו עם אנשים רבים, שרואים אותו מקרוב – את היושר שלו, את האכפתיות, את הדרך שבה הוא מדבר ומתנהג. גם זה חלק מן ההשפעה שדיברנו עליה.</p>
+      <p>הרב מספר עוד שהמקום עצמו נבנה בזמנו מתוך יוזמה של אדם שכאב לו מאוד על כך שהציבור התורני אינו בא לבנות את ארץ ישראל. הוא נסע, שכנע, גייס, ופעל עד שהמקום קם. יש מקומות שנבנו מלכתחילה מתוך חלום כזה, ומי שבא לגור בהם היום ממשיך את אותו חלום.</p>
+      <p>וכשרואים כך את הדברים, ההחלטה לגור בפריפריה איננה עוד ויתור. היא המשך של דרך שהתחילה ביצחק אבינו בגרר, והמשיכה באנשים שהקימו מקומות מן הבוץ.</p>
+      <p class="bold-para">בפריפריה פעמים רבות קל יותר למצוא פרנסה, וגם המקום עצמו נבנה מתוך כאב על כך שהציבור התורני לא בא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תורה, עבודה וגמילות חסדים</div>
+      <h3 class="story-title">🤝 שלוש מעלות – תורה, עבודה וגמילות חסדים</h3>
+      <p>הרב מסכם את מה שראינו עד כאן בשלושת העמודים שהעולם עומד עליהם: על התורה, על העבודה ועל גמילות חסדים.</p>
+      <p>על התורה: אדם שמגיע למקום כזה גורם להשפעה תורנית. נפתחים שיעורים, נבנים בתי כנסת, ואנשים רבים מתקרבים ושבים. השכינה שורה במקום שלא שרתה בו קודם.</p>
+      <p>על העבודה: הוא מקיים את מצוות יישוב הארץ, "שְׁכֹן בָּאָרֶץ" – בונה, מרחיב, ממלא את הערים השוממות. הרב מוסיף שבמקומות כאלה יש פעמים רבות גם יותר אפשרויות פרנסה ממה שחושבים, ומי שרוצה לעבוד מוצא עבודה.</p>
+      <p>ועל גמילות חסדים: הוא עוזר לכולם. הוא שומר על מחירים שפויים, הוא נותן לזוגות צעירים מקום לגור בו, והוא מושך אחריו משפחות נוספות. מי שבא ראשון פותח את הדרך לאחרים.</p>
+      <p>הרב מביא דוגמה מן העיתון של אותו יום: עיר בדרום שקוראת לציבור התורני לבוא לגור בה, עם שטחים מוכנים ותוכניות לבנייה, עם מקומות תורה שכבר קיימים בה. יש מקומות שמחכים. השאלה היא רק מי ילך.</p>
+      <p class="bold-para">מי שבא לפריפריה מרבה תורה, מיישב את הארץ, ועושה חסד עם הציבור כולו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רק במקום תורה</div>
+      <h3 class="story-title">📜 רבי יוסי בן קסמא</h3>
+      <p>אבל כשמדברים על יציאה לפריפריה, הרב מדגיש שחייבים להזכיר דבר חשוב מאוד. במשנה המפורסמת במסכת אבות מסופר:</p>
+      <p>"אמר רבי יוסי בן קסמא: פעם אחת הייתי מהלך בדרך, ופגע בי אדם אחד, ונתן לי שלום, והחזרתי לו שלום. אמר לי: רבי, מאיזה מקום אתה? אמרתי לו: מעיר גדולה של חכמים ושל סופרים אני. אמר לי: רבי, רצונך שתדור עמנו במקומנו, ואני אתן לך אלף אלפים דינרי זהב ואבנים טובות ומרגליות? אמרתי לו: אם אתה נותן לי כל כסף וזהב ואבנים טובות ומרגליות שבעולם, איני דר אלא במקום תורה".</p>
+      <p>ולמה? "שבשעת פטירתו של אדם אין מלוין לו לאדם לא כסף ולא זהב ולא אבנים טובות ומרגליות, אלא תורה ומעשים טובים בלבד".</p>
+      <p>רואים כאן שבשום מחיר אין לוותר על מגורים במקום תורה. ואם כך, נשאלת השאלה: איך אפשר ללכת לפריפריה, למקום שיש בו אנשים רבים שאינם שומרים תורה ומצוות? הרי כל מה שאמרנו עד כאן נראה כסותר את המשנה הזאת.</p>
+      <p>הרב מבחין: יש מי שהולך כדי להפיץ תורה ולחזק, ועל כך צריך שאלת חכם. אבל השאלה שלנו היא על אדם רגיל, שמחפש דירה במחיר סביר ורוצה גם לקיים את יישוב הארץ. מה דינו?</p>
+      <p class="bold-para">המשנה באבות מלמדת שאסור לוותר על מקום תורה בעד כל הון שבעולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רק במקום תורה</div>
+      <h3 class="story-title">🏫 מה פירוש "מקום תורה"?</h3>
+      <p>התשובה היא שצריך להגדיר מה פירוש "מקום תורה". אין הכוונה שכל העיר כולה צריכה להיות של בני תורה. הכוונה היא למקום שיש בו כבר קהילה של בני תורה – קהילה בנויה, חזקה ומבוססת.</p>
+      <p>אסור להגיע למקום שאין בו קהילה כזאת, ולהיות שם בודד. השאלות פשוטות: לאן תשלח את הילדים? איזה תלמוד תורה יהיה להם? מי יהיו החברים שלהם? האם לא תוותר בעצמך על דברים רבים כדי להסתדר?</p>
+      <p>הרב מזכיר שגדולי ישראל העוסקים בכך מקפידים לשלוח אברכים רק למקומות שיש בהם קהילה בנויה ומבוססת, ולא לכל מקום. ובאמת רואים בחוש, לצערנו, שמי שגר בקהילה חלשה, ושולח את ילדיו למוסד חלש, מסתכן מאוד. הילדים עלולים שלא לצאת בצורה תורנית, והמחיר כבד מאוד.</p>
+      <p>והחשש הזה מוכר גם מחוץ לציבור החרדי: משפחות רבות בוחרות את מקום מגוריהן קודם כל לפי רמת מוסדות החינוך והחברה שבמקום, כי הן יודעות כמה זה משפיע על הילדים. זו לא נקודה שולית – זו הנקודה המכרעת.</p>
+      <p class="bold-para">מקום תורה אין פירושו שכל העיר בני תורה, אלא שיש בה קהילה בנויה ומבוססת עם מוסדות חינוך טובים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רק במקום תורה</div>
+      <h3 class="story-title">✅ הכלל למעשה</h3>
+      <p>הרב מסכם את הכלל למעשה בשלוש דרגות.</p>
+      <p>ראשית: בעד כל כסף וזהב לא הולכים לגור במקום שאין בו קהילה של בני תורה, ציבור מלוכד של יראי שמים שאכפת להם מדבר ה'. מקום כזה הוא סכנה ממש, ובשום אופן לא כדאי לגור בו.</p>
+      <p>שנית: במקום שיש בו קהילה מבוססת, עם תלמוד תורה טוב ועם בית יעקב טוב – אפשר ללכת, ואין בזה שום חשש. וזה למרות שלא כל העיר שומרת תורה ומצוות. אדרבה, כפי שראינו, מקום כזה יכול מאוד לפתח את האברך הצעיר, לבנות את אישיותו ולהפוך אותו לאדם שמשפיע ומקרין.</p>
+      <p>שלישית: במקום שבו הקהילה רק מתחילה, באמצע הדרך, צריך לשאול שאלת חכם. איך לעבור, מתי, ומה לעשות. אין כאן כלל אחיד, וכל מקרה לגופו.</p>
+      <p>זהו גדר חשוב מאוד לכל מי ששוקל לעבור לפריפריה: לבדוק שיש שם קהילה טובה. אם יש – אפשר לקיים את מצוות יישוב הארץ בלב שלם, בלי לוותר על המשנה של רבי יוסי בן קסמא.</p>
+      <p class="bold-para">במקום שיש בו קהילה מבוססת עם מוסדות טובים – אפשר ללכת; בקהילה מתחילה – שואלים חכם; ובמקום בלי קהילה – לא הולכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ומה עם ירושלים?</div>
+      <h3 class="story-title">🏛️ הכל מעלין לירושלים</h3>
+      <p>ועכשיו עולה קושיה שתלמידים רבים שואלים: הדרשה יפה מאוד, אבל מה עושים עם הגמרא שאומרת לכאורה את ההפך?</p>
+      <p>במסכת כתובות נאמר: "הכל מעלין לארץ ישראל ואין הכל מוציאין", וכן "הכל מעלין לירושלים ואין הכל מוציאין", "אחד אנשים ואחד נשים". ואפילו מנווה יפה שמחוץ לירושלים למקום פחות נאה בתוכה.</p>
+      <p>מה פירוש? אם בני הזוג חלוקים היכן לגור, ואחד מהם רוצה לעלות לירושלים – הוא יכול לכוף את השני. אם האיש רוצה והאישה מסרבת, יכול להוציאה בלי כתובה. ואם האישה רוצה והאיש מסרב, היא יכולה לכוף אותו, ואם אינו רוצה – יוציא ויתן כתובה. חז"ל קבעו זאת בגלל קדושתה של ירושלים.</p>
+      <p>ואם כך, שואלים: הרי אמרת שיש מצווה לפרוש את היישוב לאורך הארץ ולרוחבה, ולהביא תורה למקומות הרחוקים. אבל לפי הגמרא, ירושלים קודמת. ומה חסר בירושלים? אנשים יש שם בשפע; אף אחד לא ירגיש אם עוד משפחה הגיעה או לא. אז איך מתיישבים הדברים?</p>
+      <p class="bold-para">הגמרא בכתובות קובעת שבן זוג יכול לכוף את השני לעלות לירושלים – ולכאורה זה סותר את מעלת הפריפריה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ומה עם ירושלים?</div>
+      <h3 class="story-title">💡 תשובתו של תלמיד חכם</h3>
+      <p>הרב הלך לשאול כמה תלמידי חכמים. היו שאמרו: יש מעלה בזה ויש מעלה בזה. בירושלים יש מעלת הקדושה, ובפריפריה יש מעלת יישוב הארץ. אבל התשובה הזאת אינה מספיקה – אם יש מעלה גם כאן וגם כאן, איך יכול אחד לכוף את השני?</p>
+      <p>תשובה אחרת, של תלמיד חכם אחד, נראתה לרב מעניינת מאוד. הוא אמר: כל מה שהגמרא דיברה, הוא רק כשאין במקום השני דבר מיוחד. סתם אדם שמתלבט אם לגור בירושלים או בעיר גדולה אחרת, ואין שם שום מעלה מיוחדת – בזה אמרה הגמרא: הכל מעלין לירושלים.</p>
+      <p>אבל אם יש במקום השני מעלה גדולה – מקום שצריכים אותו מאוד, שאדם יכול להשפיע בו, שיש בו חיזוק של יישוב הארץ ושל תורה, דבר שגדולי ישראל רואים בו מצווה גדולה – בזה לא דיברה הגמרא.</p>
+      <p>ובאותו בוקר התקשר אליו אותו תלמיד חכם ואמר שמצא לכך ראיה יפה – סיפור מימי ראשית היישוב.</p>
+      <p class="bold-para">הגמרא דיברה על מקרה רגיל; כשיש מצווה גדולה של יישוב הארץ או חיזוק מקום שצריך אותו – לא נאמר הדין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ומה עם ירושלים?</div>
+      <h3 class="story-title">😄 "משוגעים אינם כשרים לתת גט"</h3>
+      <p>בימי ייסוד פתח תקווה, קבוצה של יהודים מירושלים החליטה לצאת מן העיר ולהקים מושבה חקלאית במקום ריק ושומם. בין המייסדים היה ר' זרח ברנט, אחד מחבורת המייסדים הידועה.</p>
+      <p>אשתו לא רצתה ללכת אחריו בשום אופן. כמו נשים אחרות באותה תקופה, היא העדיפה לקבל גט ולא לסכן את חייה במקום של ביצות ומחלות. כשלא רצה לתת לה גט, באו בני הזוג לפני רב העיר ירושלים, הגאון רבי שמואל סלנט.</p>
+      <p>הבעל טען בחיוך: בירושלים קוראים לנו משוגעים. אומרים שאנחנו הולכים למקום שומם, שכולנו נמות שם. ואם אנחנו משוגעים – הרי בהלכה משוגע אינו כשר לתת גט! ולכן אשתי צריכה ללכת אחריי. ותקוותי חזקה, אמר, שבזכות יישוב ארץ ישראל יהפוך הקדוש ברוך הוא את השממה לגן עדן, ואשתי תתענג על רוב טובה יחד איתי.</p>
+      <p>הדברים עשו רושם גדול. רבי שמואל סלנט ציווה על האישה ללכת אחרי בעלה, ואף נתן להם את ברכתו לדרך.</p>
+      <p>ומה הלימוד? הרי הגמרא אומרת שאין מוציאין מירושלים. אלא שבמקרה של יישוב ארץ ישראל גדול וחשוב, ההכרעה אחרת.</p>
+      <p class="bold-para">רבי שמואל סלנט הכריע שהאישה תלך אחרי בעלה לייסד יישוב חדש, ובירך אותם לדרך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ומה עם ירושלים?</div>
+      <h3 class="story-title">🌱 הרב בקוממיות</h3>
+      <p>הרב מסיים בסיפור שקשור למקום שבו נמסר השיעור. בשנות ראשית המדינה, רבה של העיר החליט לעזוב אותה ולעבור למושב קוממיות שבדרום.</p>
+      <p>קוממיות של אז לא הייתה כמו היום. לא היו כבישים, הלכו על אדמה ובוץ. היה שם גרעין של צעירים שסיימו את שירותם, שהחליטו להקים יישוב שישמור תורה ומצוות, וחיפשו רב. באו לחזון איש, והוא הציע את הרב. הרב ראה שם צעירים רציניים שרוצים באמת לשמור מצוות, והחליט לעבור.</p>
+      <p>אבל אשתו לא רצתה. העיר שבה גרו הייתה אז מקום מצליח מאוד, שהתפתח בקצב מסחרר, עם פרנסה טובה לרבים. ובקוממיות – בוץ, ולא כלום. באו לפני החזון איש, ומסופר שישב לילה שלם וחשב מה לומר לה. הרי המשנה בכתובות אומרת "מוציאין מנוה הרעה לנוה היפה, אבל לא מנוה היפה לנוה הרעה", והעיר שלהם הייתה אז נווה יפה.</p>
+      <p>בבוקר אמר לה: בעלך הולך לעשות דבר שישפיע מאוד על עם ישראל. זו הפעם הראשונה שיקום יישוב כזה ששומר שבת כמו שצריך. זו לא סתם העברת דירה. בשביל דבר כזה כדאי לך לעבור. והיא הסכימה.</p>
+      <p>ובאמת ראו בסוף כמה השפעה יצאה מזה. גם כאן, הבין החזון איש, דין המשנה נאמר במקרה רגיל, ולא כשיש מצווה גדולה.</p>
+      <p class="bold-para">החזון איש שכנע את אשת הרב לעבור עמו ליישוב חדש, כי שם עומדת לקום השפעה גדולה על עם ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ומה עם ירושלים?</div>
+      <h3 class="story-title">🌟 ירחיב ה' את גבולנו</h3>
+      <p>בסיום השיעור הרב חוזר על העיקר. מי שבא לגור בפריפריה, במקום שיש בו קהילת תורה מבוססת, עושה שלושה דברים גדולים.</p>
+      <p>הוא דואג שתהיה השפעה גדולה של תורה – "שַׁכֵּן את השכינה בארץ". הוא דואג ליישוב הארץ – "שְׁכֹן בָּאָרֶץ", להרחיב ולבנות. והוא דואג לגמילות חסדים – שיהיו מחירים שפויים, שזוגות צעירים יוכלו לגור בלי להיכנס לחובות כבדים, ושעוד ועוד משפחות יבואו אחריו.</p>
+      <p>וחשוב להבין למה עושים את זה. מי שעובר רק כי אין ברירה, מרגיש שנגזר עליו. אבל מי שמבין שיש בזה מצווה, שהקדוש ברוך הוא מסובב את הדברים כדי שנפיץ את אורו בכל מקום, עובר בשמחה ובשליחות.</p>
+      <p>ועם זאת, לא שוכחים את דברי רבי יוסי בן קסמא: "איני דר אלא במקום תורה". את ההכרעה למעשה, במיוחד במקום שהקהילה בו רק מתחילה, מקבלים בשאלת חכם.</p>
+      <p>יהי רצון שנזכה, בעזרת ה', שיתרחבו גם גבולות הארץ וגם גבולות הקדושה.</p>
+      <p class="bold-para">מי שבא לפריפריה – במקום שיש בו קהילת תורה – מרבה תורה, מיישב את הארץ ועושה חסד, ומרחיב גם את גבולות הקדושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/HPlSh75UpFs · 2024-12-05 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שכון בארץ – יישוב גשמי ורוחני","icon":"🌾","color":"#c62b6b","stories":[{"id":1,"title":"האם יש עניין לגור בפריפריה?","icon":"❓"},{"id":2,"title":"יצחק בגרר","icon":"💧"},{"id":3,"title":"שכון וגור – מה ההבדל?","icon":"🌾"},{"id":4,"title":"הרחיבי מקום אהלך","icon":"🏕️"},{"id":5,"title":"לשכן את השכינה","icon":"✨"}]},{"id":2,"name":"מהפכה שקרתה בשקט","icon":"🔄","color":"#6d28d9","stories":[{"id":6,"title":"במשך שנים – כולם עזבו","icon":"🚪"},{"id":7,"title":"כשהמרכז מתמלא","icon":"🏗️"},{"id":8,"title":"כל שומר מצוות – שליח","icon":"🕯️"},{"id":9,"title":"השכנה שחיפשה את נרות החנוכה","icon":"🕎"},{"id":10,"title":"חיטוי בבית חולים","icon":"🏠"}]},{"id":3,"name":"תורה, עבודה וגמילות חסדים","icon":"🤝","color":"#e08e00","stories":[{"id":11,"title":"רבי יעקב אדלשטיין ברמת השרון","icon":"🌳"},{"id":12,"title":"\"תישאר כאן\"","icon":"🧭"},{"id":13,"title":"החובות שמכבידים על הלב","icon":"⚖️"},{"id":14,"title":"נצא השדה","icon":"🌄"},{"id":15,"title":"פרנסה, ומי שחלם על המקום","icon":"🛠️"},{"id":16,"title":"שלוש מעלות – תורה, עבודה וגמילות חסדים","icon":"🤝"}]},{"id":4,"name":"רק במקום תורה","icon":"📚","color":"#1e88b8","stories":[{"id":17,"title":"רבי יוסי בן קסמא","icon":"📜"},{"id":18,"title":"מה פירוש \"מקום תורה\"?","icon":"🏫"},{"id":19,"title":"הכלל למעשה","icon":"✅"}]},{"id":5,"name":"ומה עם ירושלים?","icon":"🏛️","color":"#c62b6b","stories":[{"id":20,"title":"הכל מעלין לירושלים","icon":"🏛️"},{"id":21,"title":"תשובתו של תלמיד חכם","icon":"💡"},{"id":22,"title":"\"משוגעים אינם כשרים לתת גט\"","icon":"😄"},{"id":23,"title":"הרב בקוממיות","icon":"🌱"},{"id":24,"title":"ירחיב ה' את גבולנו","icon":"🌟"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
