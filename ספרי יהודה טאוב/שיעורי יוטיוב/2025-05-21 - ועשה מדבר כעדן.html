@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ועשה מדבר כעדן</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ועשה מדבר כעדן</h1>
+  <p>נטיעה לפני קבלת פני משיח, ההליכה בדרכי ה' בגן עדן, הזקן ואדריאנוס, האדמו"ר שנטע גינה כדי לשבות בשמיטה, ואיך קונים את קדושת הארץ במעשים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ועשה מדבר כעדן" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/iSXyCSoH8qk?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/iSXyCSoH8qk/hqdefault.jpg" alt="ועשה מדבר כעדן" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=iSXyCSoH8qk" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המדבר שנעשה גן</div>
+      <h3 class="story-title">🏜️ הערבה שפורחת</h3>
+      <p>השיעור נפתח במבט על הערבה. היום אנחנו רואים בה, ברוך ה', גידולים רבים, עצים ושדות, ומשם מגיעים פירות וירקות טובים ויפים אל כל הארץ.</p>
+      <p>צריך לדעת שבעבר, אפילו בימי שלמה המלך, החכם מכל אדם, לא היה בערבה שום יישוב. לא גידלו שם דבר. הערבה הייתה שממה גמורה.</p>
+      <p>ועל זה נאמר בנביא: "כִּי נִחַם ה' צִיּוֹן, נִחַם כָּל חָרְבֹתֶיהָ, וַיָּשֶׂם מִדְבָּרָהּ כְּעֵדֶן, וְעַרְבָתָהּ כְּגַן ה'". המילה "ערבה" כתובה בפסוק עצמו. מה שהיה פעם מדבר, הופך להיות מקום נפלא לגור בו, ומה שהיה ערבה נעשה כגן ה'.</p>
+      <p>אנחנו נהנים היום מכל הברכה הזאת, ולפעמים לא שמים לב שהיא קיום של נבואה. כל ירק שמגיע משם, כל עץ שגדל במקום שהיה פעם חול, הוא חלק מן הנחמה שהבטיח הנביא לציון.</p>
+      <p>ובחיוך הוסיף הרב שגם בערים, כשקבלן קונה מגרש חרב במחיר גבוה ובונה עליו בניין, אפשר לראות בזה קיום של "נִחַם כָּל חָרְבֹתֶיהָ". היום כל חורבה בארץ מבוקשת, וכולם רוצים לבנות עליה.</p>
+      <p class="bold-para">מה שלא היה אפילו בימי שלמה המלך – ערבה מלאה גידולים – אנו רואים היום בעינינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המדבר שנעשה גן</div>
+      <h3 class="story-title">🌲 אילן – תשעים ואחת</h3>
+      <p>הספר על נטיעת עצים, שממנו נלמד השיעור, יצא לעילוי נשמתו של אדם שאהב מאוד עצים. כל ימיו נטע, טיפח, ניקה ושמר על העצים שסביב ביתו, גם כשכל השכנים כבר עקרו את שלהם ובנו במקומם.</p>
+      <p>הרב ציין שאותו אדם נפטר בגיל תשעים ואחת, ושמספר זה אינו סתם. המילה "אילן" עולה בגימטריה תשעים ואחת. ובקבלה זה מספר גדול מאוד: זו הגימטריה של צירוף שני שמות הקודש – שם ההוויה ושם האדנות – יחד. מי שמתפלל בסידור ספרדי מכיר את הצירוף הזה, המופיע בו פעמים רבות.</p>
+      <p>הצירוף הזה מבטא את ייחוד קודשא בריך הוא ושכינתיה. ואם "אילן" עולה באותו מספר, יש בזה רמז שהעץ אינו רק צמח. יש בו סוד של חיבור בין שמיים וארץ, בין הקדוש ברוך הוא לבין העולם.</p>
+      <p>הספר עצמו נכתב לאט, במשך שנים רבות. הוא נולד מתוך לימוד הדרגתי, מקור אחר מקור, עד שנאסף חומר רב. ומטרתו הייתה פשוטה: שאנשים ידעו שיש מצווה לנטוע עצים בארץ ישראל, ושידעו כמה היא חשובה. הרב סיפר שאנשים רבים פנו אליו אחר כך ואמרו שלא ידעו כלל שזו מצווה.</p>
+      <p class="bold-para">המילה "אילן" עולה בגימטריה כצירוף שני שמות הקודש, רמז לייחוד קודשא בריך הוא ושכינתיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מעלת הנטיעה</div>
+      <h3 class="story-title">🌱 השתיל ביד והמשיח בפתח</h3>
+      <p>הספר עובר ממצוות הנטיעה אל מעלתה. ומביא מאמר חז"ל מפורסם: אם הייתה נטיעה בתוך ידך, ואמרו לך הרי המשיח בא – בוא ונטע את הנטיעה, ואחר כך צא והקבל פניו.</p>
+      <p>תארו לעצמכם את הרגע: אדם עומד עם שתיל ביד, ופתאום רצים אליו ואומרים לו: בוא מהר, המשיח הגיע! והמדרש אומר לו: קודם תסיים. תטע את השתיל, ורק אחר כך לך לקבל את פני המשיח.</p>
+      <p>למה? הרי מה יכול להיות חשוב יותר מקבלת פני משיח? אומר הרב שהמשיח לא יברח. הוא ימשיך להתקדם, ואתה תשיג אותו. אבל הנטיעה שבידך – אם לא תטע אותה עכשיו, היא עלולה להתייבש.</p>
+      <p>וכמובן יש כאן עומק גדול יותר, שתלמידי הגר"א עמדו עליו.</p>
+      <p class="bold-para">אם היה שתיל בידך ואמרו לך שהמשיח בא – קודם תטע, ואחר כך צא לקבל את פניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מעלת הנטיעה</div>
+      <h3 class="story-title">🕊️ להביא את הגאולה בידיים</h3>
+      <p>תלמידי הגר"א פירשו את המדרש כך: יש שתי דרכים לקראת הגאולה. יש מי שמחכה למשיח באופן סביל. הוא הולך לקבל את פניו, שר שירים, אומר "ברוך הבא". זה יפה, אבל הוא עצמו אינו עושה דבר כדי שהגאולה תבוא. הוא רק מקבל אותה.</p>
+      <p>לעומת זאת, מי שהולך ונוטע נטיעות ומפריח את הארץ, הוא מביא את הגאולה בפועל. הוא משתתף בבניין עצמו. ומי שמביא את הגאולה בפועל, גדול ממי שרק מקבל אותה.</p>
+      <p>לכן אמרו: גמור את הנטיעה, ואחר כך לך לקבל את פניו. כי הנטיעה עצמה היא חלק מן הגאולה. הנביאים תיארו את הגאולה כארץ שנותנת שוב את פירותיה, ומי שנוטע עכשיו, מקרב את היום הזה.</p>
+      <p>זה גם מסביר את דרכם של תלמידי הגר"א, שעלו לארץ במסירות נפש גדולה, וראו בבניין הארץ ובהפרחתה מצווה ממש, ולא רק צורך כלכלי. הם האמינו שהגאולה לא תבוא מתוך המתנה בחוץ לארץ, אלא מתוך בנייה בארץ.</p>
+      <p class="bold-para">תלמידי הגר"א לימדו: יש מקבל פני משיח באופן סביל, ויש המביא את הגאולה באופן פעיל, ובנטיעה מביאים אותה בפועל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מעלת הנטיעה</div>
+      <h3 class="story-title">👣 "אחרי ה' אלוקיכם תלכו"</h3>
+      <p>ועוד אומר המדרש דבר שהוא חידוש גדול: בנטיעת עצים יש קיום של מצוות "וְהָלַכְתָּ בִּדְרָכָיו".</p>
+      <p>בדרך כלל, כך מבינים את המצווה הזאת, וכך פוסק הרמב"ם: מה הוא רחום, אף אתה היה רחום. מה הוא גומל חסדים, אף אתה גומל חסדים. מה הוא מבקר חולים, אף אתה בקר חולים. ללכת בדרכיו פירושו לחקות את מידותיו.</p>
+      <p>אבל המדרש כאן אומר דבר אחר. על הפסוק "אַחֲרֵי ה' אֱלֹקֵיכֶם תֵּלֵכוּ" שואל המדרש: וכי אפשר לבשר ודם להלך אחר השכינה? אלא, מתחילת בריאתו של עולם לא נתעסק הקדוש ברוך הוא אלא במטע תחילה, שנאמר: "וַיִּטַּע ה' אֱלֹקִים גַּן בְּעֵדֶן מִקֶּדֶם". אף אתם, כשאתם נכנסים לארץ, לא תתעסקו אלא במטע תחילה, שנאמר: "וְכִי תָבֹאוּ אֶל הָאָרֶץ וּנְטַעְתֶּם".</p>
+      <p>כלומר, האדם הנוטע עצים עושה כביכול את מה שעשה הקדוש ברוך הוא בראשית הבריאה. זה לא רק חיקוי של מידה טובה; זה חיקוי של מעשה הבריאה עצמו.</p>
+      <p class="bold-para">המדרש מחדש שהנוטע עצים בארץ ישראל הולך בדרכיו של הקדוש ברוך הוא, שהתחיל את הבריאה בנטיעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מעלת הנטיעה</div>
+      <h3 class="story-title">🌺 גן עדן "מקדם"</h3>
+      <p>הרב עמד על המילה "מִקֶּדֶם". רש"י מפרש: במזרח. הגן היה בצד מזרח של עדן. אבל לפי המדרש, "מקדם" פירושו: לפני. קודם בריאת העולם.</p>
+      <p>ויש לזה ראיה יפה מן הברכות שאנו אומרים תחת החופה, בשבע ברכות: "שַׂמֵּחַ תְּשַׂמַּח רֵעִים הָאֲהוּבִים, כְּשַׂמֵּחֲךָ יְצִירְךָ בְּגַן עֵדֶן מִקֶּדֶם". אם "מקדם" פירושו רק "במזרח", מה העניין להזכיר בברכת חתנים באיזה צד של העולם שימח הקדוש ברוך הוא את אדם הראשון? מה אכפת לנו אם זה היה בצד ימין או בצד שמאל?</p>
+      <p>אלא, לפי המדרש, הכוונה שזו שמחה מיוחדת, שמחה שקדמה לעולם. משהו שהקדוש ברוך הוא הכין עוד לפני בריאת העולם. ומה הכין? גן עם עצים. בגן עדן נאמר במפורש: עץ החיים, עץ הדעת, וכל עץ נחמד למראה וטוב למאכל.</p>
+      <p>נמצא שהדבר הראשון שיש בבריאה הוא עצים בגן עדן. ומי שנוטע עץ בארץ ישראל, מתחבר אל הנקודה הראשונה של הבריאה.</p>
+      <p class="bold-para">לפי המדרש, נטיעת גן עדן קדמה לבריאת העולם, והדבר הראשון בבריאה היה עצים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מעלת הנטיעה</div>
+      <h3 class="story-title">😢 דמעות בשעת הנטיעה</h3>
+      <p>מסופר על הרב קוק שהוזמן פעם לנטוע עצים. הרב לא זכר באיזה מקום היה הדבר. כשהתחיל לנטוע, ראו האנשים שדמעות זולגות מעיניו.</p>
+      <p>שאלו אותו: למה הרב בוכה? מה קרה? אמר להם: האם אתם יודעים מה אני עושה עכשיו? אני עושה פעולה כמו שעשה הקדוש ברוך הוא, שנטע לנו את גן עדן. אני כביכול עושה עכשיו את מה שהוא עשה.</p>
+      <p>זה סיפור מדהים, שמראה מה יכול אדם להרגיש כשהוא מבין את המדרש. לא עוד עבודת גינה, לא עוד פעולה טכנית, אלא דבקות במידותיו של הבורא.</p>
+      <p>ויש כאן רעיון נפלא: ארץ ישראל היא בחינת גן עדן. לא סתם המדרש משווה ביניהם. בגן עדן הכל היה נפלא בפועל. בארץ ישראל כל זה גנוז וטמון בכוח, ולעתיד לבוא נראה אותו בפועל. ואנחנו רואים כבר מיום ליום איך הארץ הולכת ונעשית כגן עדן.</p>
+      <p>ושוב לפסוק: "וַיָּשֶׂם מִדְבָּרָהּ כְּעֵדֶן, וְעַרְבָתָהּ כְּגַן ה'". מה יוצא כשמחברים את המילים "עדן" ו"גן"? גן עדן. ומיד ממשיך הנביא: "שָׂשׂוֹן וְשִׂמְחָה יִמָּצֵא בָהּ, תּוֹדָה וְקוֹל זִמְרָה".</p>
+      <p class="bold-para">הרב קוק בכה בשעה שנטע עץ, כי הרגיש שהוא עושה מעשה כמו מעשה הקדוש ברוך הוא בגן עדן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · נטיעה שמביאה ברכה</div>
+      <h3 class="story-title">🍇 נטיעה משרה ברכה</h3>
+      <p>הרב הצביע על תופעה מעניינת בהיסטוריה של היישוב. בעליות הקודמות באו אנשים לארץ, גרו בה, בנו מעט פה ושם, אבל לא נטעו הרבה. כשהגיעה העלייה שנקראת בציבור "העלייה הראשונה", לפני כמאה וארבעים שנה, השינוי העיקרי היה שהעולים עסקו בעיקר בנטיעה ובהפרחת הארץ.</p>
+      <p>ושימו לב: מאז שהתחילו לנטוע, הארץ התחילה לפרוח מאוד, והיישוב גדל והצליח. יש לנטיעה כוח גדול להשרות ברכה. הנטיעה מביאה ברכה לאדמה ולמי שגר עליה.</p>
+      <p>וזה גם אחד הטעמים שאסור לעקור עץ מאכל בלי צורך: העץ משרה ברכה, ולא עוקרים דבר כזה.</p>
+      <p>הרעיון הזה אינו רק היסטוריה רחוקה. גם בחייו הפרטיים של אדם, נטיעת עץ יכולה להיות פתח לברכה, כמו שמראה הסיפור הבא.</p>
+      <p class="bold-para">כשהתחילו לנטוע בארץ ישראל, היישוב פרח והצליח, ומכאן שלנטיעה יש כוח להשרות ברכה על האדמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · נטיעה שמביאה ברכה</div>
+      <h3 class="story-title">📄 השתילים והטופס</h3>
+      <p>הרב סיפר על אדם שבנה בית באופן פרטי, וגמר את הבנייה. אבל כשביקש את האישור הסופי לחבר את הבית לחשמל, נתקל בקשיים בלי סוף. בכל פעם דרשו ממנו משהו אחר, ובכל פעם נוסף תנאי חדש. יום אחד דרשו ממנו לבנות מדרכה לאורך כל השכונה, ועד שלא יעשה זאת, לא יקבל את האישור.</p>
+      <p>הוא לא ידע מה לעשות. הוא היה אדם פרטי, לא קבלן גדול, ולא היה בידו לבנות מדרכה לכל השכנים. בינתיים נאלץ להסתדר עם פתרונות זמניים ולא פשוטים כדי שיהיה חשמל בבית, והמצב היה קשה.</p>
+      <p>הוא בא אל הרב ושאל: מה יהיה עליי? אמר לו הרב: תשמע, תנטע עצים בבית שלך. עצים משרים ברכה.</p>
+      <p>האיש הלך ונטע עצים. ובאמת, ברוך ה', כעבור שבועיים בערך הסתדר העניין, והוא קיבל את האישור והחשמל חובר כראוי.</p>
+      <p>הרב עצמו אמר בכנות שאין לו מושג איך בדיוק זה הסתדר. אבל כך סיפר לו האיש, והוא ראה בזה עדות לכך שהנטיעה משרה ברכה. ולכן, כאמור, לא עוקרים עץ כזה.</p>
+      <p class="bold-para">אדם שהסתבך בענייני ביתו נטע עצים לפי עצת הרב, וכעבור זמן קצר הסתדר עניינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · נטיעה שמביאה ברכה</div>
+      <h3 class="story-title">👴 "כשם שמצאתם נטיעות"</h3>
+      <p>מצווה נוספת בנטיעה היא דאגה לקיום העולם ולדורות הבאים. וכך אומר המדרש על "כִּי תָבֹאוּ אֶל הָאָרֶץ וּנְטַעְתֶּם": אמר הקדוש ברוך הוא לישראל, אף על פי שתמצאו אותה מלאה כל טוב, לא תאמרו נשב ולא נטע, אלא הוו זהירים בנטיעות.</p>
+      <p>וממשיך: כשם שנכנסתם ומצאתם נטיעות שנטעו אחרים, אף אתם היו נוטעים לבניכם.</p>
+      <p>ולכן, שלא יאמר אדם: אני זקן, כמה שנים עוד אחיה? למה אתייגע בשביל אחרים? מחר אני מת. הרי אדם שנוטע עכשיו עץ, יודע שיעברו שנים עד שיביא פירות, ועוד שנים עד שייהנו מהם באמת. מי ייהנה מזה?</p>
+      <p>ועל זה אמרו חז"ל שהקדוש ברוך הוא העלים מלבם של בני אדם את יום המיתה, כדי שיהיה אדם בונה ונוטע. אם יזכה – יהיה לו. אם לא יזכה – יהיה לאחרים.</p>
+      <p>ואמר הקדוש ברוך הוא לישראל: דמו לי, כביכול. כמו שאני נטעתי בשבילכם, עוד לפני שבאתם לעולם, כך אתם טעו בשביל הבאים אחריכם.</p>
+      <p class="bold-para">כמו שמצאנו עצים שאחרים נטעו בשבילנו, כך עלינו לנטוע בשביל ילדינו, ואין לומר "אני זקן".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · נטיעה שמביאה ברכה</div>
+      <h3 class="story-title">👑 הזקן והמלך אדריאנוס</h3>
+      <p>ומביא המדרש מעשה: אדריאנוס המלך היה עובר בדרכו למלחמה נגד מדינה שמרדה בו. בדרך ראה זקן אחד, זקן מאוד, שעומד וחופר באדמה ונוטע נטיעות של תאנים.</p>
+      <p>אמר לו אדריאנוס: אתה זקן כל כך, ואתה עומד ומתייגע בשביל אחרים? אמר לו הזקן: אדוני המלך, הרי אני נוטע. אם אזכה, אוכל מפירות נטיעותיי. ואם לא, יאכלו בניי.</p>
+      <p>עשה אדריאנוס שלוש שנים במלחמה, וחזר. ומצא את אותו זקן באותו מקום. מה עשה הזקן? נטל סלסלה, מילא אותה בכורי תאנים יפות, והביא אותה לפני אדריאנוס.</p>
+      <p>אמר לו: אדוני המלך, קבל מעבדך. אני אותו זקן שמצאת אותי בלכתך, ואמרת לי: אתה זקן, ומה אתה מצטער ומתייגע לאחרים? הרי כבר זיכני המקום לאכול מפירות נטיעותיי, ואלו שבתוך הסלסלה הם מהם.</p>
+      <p>מיד אמר אדריאנוס לעבדיו: טלו ממנו את הסלסלה ומלאו אותה זהובים. וכך עשו.</p>
+      <p>הרב ציין שיש למדרש המשך, אבל לא הביא אותו כי אינו מעניינו של הספר. העיקר הוא הלימוד: מי שנוטע מתוך אמונה, בלי לחשב אם יספיק ליהנות, זוכה פעמים רבות לראות את הברכה בעיניו.</p>
+      <p class="bold-para">הזקן שנטע תאנים בשביל בניו זכה לאכול מפירותיהן בעצמו, וסלסלתו מולאה זהובים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שכון בארץ</div>
+      <h3 class="story-title">🏡 גור, ושכון</h3>
+      <p>עוד במדרש: כבר יצחק אבינו נצטווה לנטוע ולזרוע בארץ ישראל, אף על פי שהארץ הייתה אז ביד הגויים.</p>
+      <p>בפרשת תולדות נאמר: "וַיְהִי רָעָב בָּאָרֶץ, מִלְּבַד הָרָעָב הָרִאשׁוֹן אֲשֶׁר הָיָה בִּימֵי אַבְרָהָם, וַיֵּלֶךְ יִצְחָק אֶל אֲבִימֶלֶךְ מֶלֶךְ פְּלִשְׁתִּים גְּרָרָה". ושם נגלה אליו ה' ואמר לו: "אַל תֵּרֵד מִצְרָיְמָה, שְׁכֹן בָּאָרֶץ אֲשֶׁר אֹמַר אֵלֶיךָ. גּוּר בָּאָרֶץ הַזֹּאת".</p>
+      <p>יש כאן כפל לשון: גם "שכון" וגם "גור". מה פירוש הדבר? אומר המדרש רבה: "שכון בארץ" – עשה שכונה בארץ. נטע, זרע, נצב.</p>
+      <p>כלומר, הקדוש ברוך הוא אמר ליצחק: לא די שאתה בעצמך תגור כאן. תדאג שהמקום יהיה מיושב, שיהיה בו מה שיפה, שיהיה אזור פורח. וכך עשה יצחק, שנאמר: "וַיִּזְרַע יִצְחָק בָּאָרֶץ הַהִוא, וַיִּמְצָא בַּשָּׁנָה הַהִוא מֵאָה שְׁעָרִים, וַיְבָרְכֵהוּ ה'". זרע, ומיד באה הברכה.</p>
+      <p class="bold-para">יצחק אבינו נצטווה "שכון בארץ" – עשה שכונה בארץ: נטע וזרע, וכך עשה גם כשהארץ הייתה ביד אחרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שכון בארץ</div>
+      <h3 class="story-title">📚 הנצי"ב והארץ שתחת ידי זרים</h3>
+      <p>את המדרש הזה הביא להלכה הנצי"ב מוולוז'ין, בפירושו "העמק דבר". בימיו הייתה הארץ תחת שלטון התורכים, ורוב הארץ לא הייתה כלל בידי יהודים. ושאלו אותו: האם יש מצווה לנטוע עצים במצב כזה? הרי הארץ אינה בידינו, ורוב היושבים בה אינם יהודים.</p>
+      <p>והשיב הנצי"ב: הרי הקדוש ברוך הוא ציווה את יצחק אבינו, כמו שאמרו במדרש, לנטוע ולזרוע. ובאותו זמן הארץ הייתה בידי פלשתים. יצחק היה כמעט היהודי היחיד בארץ, ובכל זאת הלך וזרע.</p>
+      <p>מכאן הוכיח הנצי"ב שני דברים: שיש מצווה לנטוע בארץ ישראל אפילו כשהיא בידי אחרים, ושיש מצווה כזאת אפילו לאדם יחיד, גם כשאין סביבו ציבור גדול שעושה כמותו.</p>
+      <p>זו הוכחה חזקה לכך שהמצווה אינה תלויה במצב המדיני של הארץ. כל יהודי, בכל דור, יכול לנטוע ולקיים בכך מצווה.</p>
+      <p class="bold-para">הנצי"ב למד מיצחק אבינו שיש מצווה לנטוע בארץ ישראל גם כשרובה אינו ביד ישראל, וגם ליחיד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שכון בארץ</div>
+      <h3 class="story-title">✨ להשכין את השכינה</h3>
+      <p>יש במדרש פירוש נוסף למילה "שכון": שכן את השכינה בארץ. רבים שאלו: מה הכוונה? איך יכול אדם להשכין את השכינה בארץ?</p>
+      <p>הרב הציע פירוש שאמר פעם בחנוכת תלמוד תורה חדש. אדם יכול לבנות בתים, ובזה יש יישוב. אבל יש מצווה לדאוג שהשכינה תהיה בכל מקום בארץ ישראל. בורא עולם אינו רוצה שכל מקומות התורה יתרכזו במקום אחד בלבד. הוא מבקש: פזרו את השכינה. דאגו שתהיה תורה בעוד עיר ובעוד יישוב, בכל פינה של הארץ.</p>
+      <p>לא די שהארץ תהיה פורחת; צריך שבכל מקום בה יהיה מקום של השראת שכינה. כל בית כנסת חדש, כל תלמוד תורה שנפתח במקום חדש, מקיים "שכן את השכינה בארץ".</p>
+      <p>ויש אפשרות נוספת, שאולי אינה סותרת: עצם נטיעת העצים והפרחת השממה גורמים שהשכינה תהיה שורה בארץ. כשהארץ נותנת את פירותיה, זה סימן שהשכינה שורה עליה.</p>
+      <p>עד כאן מעלת הנטיעה. ומכאן עוברים לנושא שקשור לשנת השמיטה.</p>
+      <p class="bold-para">"שכון בארץ" – השכן את השכינה בארץ: על ידי פיזור מקומות תורה בכל מקום, וגם על ידי עצם הנטיעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לזכות בשמיטה</div>
+      <h3 class="story-title">🌾 האם לחפש לקיים שמיטה?</h3>
+      <p>שמיטה, כידוע, מקיים בדרך כלל מי שיש לו קרקע: חקלאי, או מי שיש לו גינה. ונשאלת שאלה מעניינת: האם יש מצווה לאדם לחפש לקיים שביעית? האם ראוי לו להשתדל שתהיה לו קרקע, כדי שיוכל לשבות בה?</p>
+      <p>השאלה נוגעת גם לשאלה רחבה יותר, שרבנים מתחבטים בה: האם ראוי להתאמץ לגדל בשנת השמיטה ולהביא פירות בקדושת שביעית, עם כל ההלכות והזהירות שבכך? או שמא עדיף לפתור הכל בפשטות, להביא פירות מחוץ לארץ, ובזה נגמר העניין?</p>
+      <p>זו שאלה לא פשוטה בכלל, ואין עליה תשובה אחת ברורה. היא תלויה במידה רבה ברגש: מה האדם מרגיש כלפי המצווה, וכמה הוא רוצה לגעת בה בעצמו.</p>
+      <p>הרב פתח את הנושא דווקא בסיפור, ורק אחר כך עבר למקורות.</p>
+      <p class="bold-para">יש מקום לשאול אם ראוי לאדם להשתדל שתהיה לו קרקע כדי לקיים בה מצוות שביעית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לזכות בשמיטה</div>
+      <h3 class="story-title">🪴 האדמו"ר שנטע גינה</h3>
+      <p>בספר מובא סיפור מפורסם. האדמו"ר מבעלז, רבי אהרן, ניצל בדרך פלא מן השואה. היה בלבול גדול, הרשעים חיפשו אותו בכל מקום, ובכל זאת הצליחו להבריח אותו מתוך גיא צלמוות. הוא הגיע לארץ ישראל והשתקע בתל אביב.</p>
+      <p>כשהגיע, ביקש שישתלו גינה בחצר ביתו, ושיקנו את כל הכלים הדרושים לעבודת האדמה: לעידור, לניקוש ולהשקיה. החסידים תמהו מאוד על הבקשה. הרי בבעלז, בחוץ לארץ, לא גידלו צמחים. זה לא היה מקובל בחצר. מה קרה פתאום?</p>
+      <p>ואז הגיעה שנת השמיטה. ביקש האדמו"ר מעובדי הגינה שיגנזו את כל הכלים, והזהיר אותם שלא יעשו שום פעולה האסורה בשביעית.</p>
+      <p>אז הבינו החסידים שכל מטרתו בנטיעת הגינה הייתה כדי לקיים את מצוות השמיטה. הוא רצה לקיים בפועל "וְשָׁבְתָה הָאָרֶץ שַׁבָּת לַה'". ואיך אפשר לשבות מעבודת האדמה אם אין לך אדמה? לכן נטע גינה, טיפח אותה, הביא השקיה – ובשנה השביעית נמנע מכל עבודה בה.</p>
+      <p class="bold-para">האדמו"ר מבעלז נטע גינה בחצרו כדי שיוכל לקיים בפועל את מצוות השביתה בשנת השמיטה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לזכות בשמיטה</div>
+      <h3 class="story-title">🔎 לחזור אחרי המצוות</h3>
+      <p>זו דרכם של צדיקים, ובמיוחד של חסידים: לחפש מצוות ולחזר אחריהן. למשל, אפשר לקנות מצות בחנות, אבל רבים מקפידים לאפות בעצמם. אפשר לקנות חלות לשבת, אבל רבים אופים בבית כדי לקיים מצוות הפרשת חלה.</p>
+      <p>ובכל זאת, יש הבדל גדול בין אדם שיש לו שדה משלו, והוא שובת בו בשנת השמיטה, לבין אדם שנוטע גינה רק כדי שיוכל לשבות בה. האדמו"ר מבעלז עשה את כל זה רק בשביל המצווה. זה עולם אחר לגמרי של עבודת ה'.</p>
+      <p>הרב סיפר שכשהביא את הספר לאדמו"ר מבעלז של היום, הוא עבר עליו והתלהב מאוד. וסיפר לרב שגם הוא, אף שאין לו גינה בחצר כמו לאדמו"ר הקודם, רכש חלקה חקלאית בארץ, כדי לקיים בה את המצוות התלויות בארץ.</p>
+      <p>והרב הוסיף שהיום יש אפשרויות גם לאנשים רגילים לרכוש חלקה קטנה, לנטוע בה עצים ולקיים בה מצוות, בעלות סבירה. מי שרוצה באמת, יכול למצוא דרך.</p>
+      <p class="bold-para">דרכם של צדיקים לחזר אחרי מצוות, ולא להסתפק בכך שהן נעשות בשבילם בידי אחרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקנות את הארץ במעשים</div>
+      <h3 class="story-title">🏔️ למה רצה משה להיכנס לארץ</h3>
+      <p>ועכשיו לטעם נוסף למצוות הנטיעה, מלבד יישוב הארץ: נטיעת עצים בחצרו של אדם מאפשרת לו לקיים מצוות רבות התלויות בארץ. זכות גדולה היא לאדם לטרוח כדי לקיים את המצוות האלה.</p>
+      <p>את זה לימד אותנו משה רבנו, כמו שאמרו בגמרא: דרש רבי שמלאי, מפני מה נתאווה משה רבנו ליכנס לארץ ישראל? וכי לאכול מפריה הוא צריך, או לשבוע מטובה הוא צריך? אלא כך אמר משה: הרבה מצוות נצטוו ישראל, ואין מתקיימות אלא בארץ ישראל. אכנס אני לארץ, כדי שיתקיימו כולן על ידי.</p>
+      <p>הרב הביא כאן דבר מדהים בשם החתם סופר. הרי משה רבנו היה בשמיים ארבעים יום וארבעים לילה. אדם שהיה במקום כזה – מה חסר לו בארץ ישראל? ואמר החתם סופר: ללמדך, שהאדמה של ארץ ישראל, האדמה הגשמית, קדושה יותר מן השמיים שבחוץ לארץ.</p>
+      <p>משפט כזה צריך לחזור עליו כמה פעמים כדי לקלוט אותו. אבל מכאן עולה שאלה: איך אדם קונה את הקדושה הזאת? האם די שהוא נמצא בארץ?</p>
+      <p class="bold-para">משה רבנו לא השתוקק לארץ כדי לאכול מפריה, אלא כדי לקיים את המצוות התלויות בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקנות את הארץ במעשים</div>
+      <h3 class="story-title">🍰 מה שאדם משקיע – הוא אוהב</h3>
+      <p>הרב הסביר זאת באופן כללי. לדורות הקודמים לא הייתה בעיה של אהבת הארץ. למה? כי כאשר אדם עושה פעולות למען הארץ – עולה אליה, נוטע בה, מפריח את שממתה – הוא אוהב אותה באופן טבעי.</p>
+      <p>כך טבע האדם: מה שהוא משקיע בו, הוא אוהב. אמרו בגמרא: "רוֹצֶה אָדָם בְּקַב שֶׁלּוֹ מִתִּשְׁעָה קַבִּין שֶׁל חֲבֵרוֹ". אדם מעדיף קב אחד שגידל ועבד בעצמו, על פני תשעה קבים של חברו. מה שהוא טרח ויגע בו, לא יסכים למכור בקלות.</p>
+      <p>תנו לאישה שהכינה עוגה ועבדה עליה שעות, חמש עוגות מן החנות במקומה. היא תאמר: מה אתם משווים? את העוגה הזאת אני הכנתי, טרחתי ויגעתי בה.</p>
+      <p>ולא רק זה. הרב סיפר שהיום מלמדים אמהות שאם רוצים לחזק את האהבה בין האם לילדיה, כדאי שהאם תכין בעצמה מאכלים שהילדים אוהבים. כשהילד יודע שהוא אוכל את העוגה שאמא הכינה לו, זה מעורר בו אהבה אליה. הפעולה עצמה יוצרת קשר.</p>
+      <p>כך גם עם ארץ ישראל: מי שעושה בה, אוהב אותה.</p>
+      <p class="bold-para">טבע האדם הוא לאהוב את מה שהוא משקיע בו, ולכן מעשים בארץ ישראל מולידים אהבה לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקנות את הארץ במעשים</div>
+      <h3 class="story-title">🗝️ קניין במעשה</h3>
+      <p>הדבר נכון גם ברוחניות. בכל חג יש מצוות שבאמצעותן האדם קונה את תוכנו. בפסח אוכלים מצה ומבערים חמץ, ועל ידי זה זוכרים את יציאת מצרים ואת ההתנתקות מעבודה זרה. בשבועות נהגו מנהגים: ערים כל הלילה, קוראים את עשרת הדיברות, ועוד. על ידי הפעולות האדם קונה את הקניינים הרוחניים של החג. וכך בחנוכה, בפורים, ובכל מועד.</p>
+      <p>ארץ ישראל קדושה בקדושה עצומה. איך יקנה אדם את הקדושה הזאת? אם רק ישב ולא יעשה דבר, יספוג אולי משהו מן האוויר. אבל בלי מעשים, אדם אינו קונה באמת.</p>
+      <p>וכאן מגיעה נקודה כואבת. היום אדם יכול לגור בארץ ישראל כל ימיו בלי לקיים בעצמו כמעט שום מצווה התלויה בארץ. הכל כבר מגיע מן החנות מתוקן, עם תעודת כשרות. המשגיח דאג שיופרשו תרומות ומעשרות. אין לך ערלה, אין לך תרומות, אין לך מעשרות. ובשנה השביעית – אתה בא לחנות, והכל אותו דבר.</p>
+      <p>זה טוב שיש כשרות מסודרת. אבל אם אדם אינו עושה פעולות, אין לו קניינים. איך יזכור את קדושת הארץ?</p>
+      <p class="bold-para">כמו שבכל חג קונים את תוכנו הרוחני דרך מצוותיו, כך קונים את קדושת הארץ דרך המצוות התלויות בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקנות את הארץ במעשים</div>
+      <h3 class="story-title">🍊 הפרי של השנה הרביעית</h3>
+      <p>מי שנטע עץ בחצרו יודע איך זה מרגיש. מונים את השנים מאז הנטיעה. בשנים הראשונות יש ערלה, ואסור לאכול מן הפירות. מחכים, ומחשבים, ושואלים: מתי כבר נגיע לשנה הרביעית?</p>
+      <p>ואז, סוף סוף, מגיעה השנה הרביעית. הפרי הראשון שצומח בה מעורר התרגשות עצומה. מחלקים אותו בין בני הבית, כל פלח וכל ביס הם שמחה. אחרי ארבע שנים של המתנה, מקיימים את המצוות של העץ הזה.</p>
+      <p>אלה אינן עוד מצוות רגילות. אלה המצוות שעל ידן האדם סופג את קדושתה של ארץ ישראל. זה פירוש דברי המדרש, שמשה רבנו רצה להיכנס לארץ כדי לקיים את המצוות. על ידי המצוות, האדם זוכה להתקדש.</p>
+      <p>נמצא שיש בנטיעת עצים שני דברים. האחד: מצוות יישוב ארץ ישראל והמצווה המיוחדת של "וּנְטַעְתֶּם". והשני: כשאדם נוטע, הוא מאפשר לעצמו לקיים עוד מצוות רבות התלויות בארץ – ערלה, נטע רבעי, תרומות ומעשרות ושביעית – ועל ידי כולן הוא נעשה קדוש יותר.</p>
+      <p>יהי רצון שכל אחד יזכה לקיים את המצווה הזאת, וידאג גם שהדורות הבאים יידעו שיש מצווה כזאת ויקיימו אותה.</p>
+      <p class="bold-para">מי שנוטע עץ משלו מחכה שנים לפרי, ובזכות המצוות שבו הוא סופג את קדושת ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/iSXyCSoH8qk · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"המדבר שנעשה גן","icon":"🏜️","color":"#c62b6b","stories":[{"id":1,"title":"הערבה שפורחת","icon":"🏜️"},{"id":2,"title":"אילן – תשעים ואחת","icon":"🌲"}]},{"id":2,"name":"מעלת הנטיעה","icon":"🌳","color":"#6d28d9","stories":[{"id":3,"title":"השתיל ביד והמשיח בפתח","icon":"🌱"},{"id":4,"title":"להביא את הגאולה בידיים","icon":"🕊️"},{"id":5,"title":"\"אחרי ה' אלוקיכם תלכו\"","icon":"👣"},{"id":6,"title":"גן עדן \"מקדם\"","icon":"🌺"},{"id":7,"title":"דמעות בשעת הנטיעה","icon":"😢"}]},{"id":3,"name":"נטיעה שמביאה ברכה","icon":"🍇","color":"#e08e00","stories":[{"id":8,"title":"נטיעה משרה ברכה","icon":"🍇"},{"id":9,"title":"השתילים והטופס","icon":"📄"},{"id":10,"title":"\"כשם שמצאתם נטיעות\"","icon":"👴"},{"id":11,"title":"הזקן והמלך אדריאנוס","icon":"👑"}]},{"id":4,"name":"שכון בארץ","icon":"🏡","color":"#1e88b8","stories":[{"id":12,"title":"גור, ושכון","icon":"🏡"},{"id":13,"title":"הנצי\"ב והארץ שתחת ידי זרים","icon":"📚"},{"id":14,"title":"להשכין את השכינה","icon":"✨"}]},{"id":5,"name":"לזכות בשמיטה","icon":"🌾","color":"#c62b6b","stories":[{"id":15,"title":"האם לחפש לקיים שמיטה?","icon":"🌾"},{"id":16,"title":"האדמו\"ר שנטע גינה","icon":"🪴"},{"id":17,"title":"לחזור אחרי המצוות","icon":"🔎"}]},{"id":6,"name":"לקנות את הארץ במעשים","icon":"🤲","color":"#6d28d9","stories":[{"id":18,"title":"למה רצה משה להיכנס לארץ","icon":"🏔️"},{"id":19,"title":"מה שאדם משקיע – הוא אוהב","icon":"🍰"},{"id":20,"title":"קניין במעשה","icon":"🗝️"},{"id":21,"title":"הפרי של השנה הרביעית","icon":"🍊"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
