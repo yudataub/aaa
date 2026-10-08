@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מי האיש אשר בנה בית</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מי האיש אשר בנה בית</h1>
+  <p>למה פוטרת התורה מן המלחמה את מי שבנה בית ולא חנכו: הירושלמי, רש"י, אבן עזרא, הרשב"ם והאברבנאל על מצווה שהתחילה ועוד לא נגמרה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מי האיש אשר בנה בית" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/tjJfbo9FFSs?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/tjJfbo9FFSs/hqdefault.jpg" alt="מי האיש אשר בנה בית" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=tjJfbo9FFSs" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מצווה או רשות</div>
+      <h3 class="story-title">📞 שאלה בטלפון</h3>
+      <p>השיעור נפתח בשיחת טלפון. יהודי התקשר לרב ושאל שאלה פשוטה לכאורה: האם חובה לעשות חנוכת הבית? מה הבעיה, שאל אותו הרב. והוא הסביר: במשפחה שלו אין זה דבר מצוי שקונים בית. לו יש בית, ולאחרים אין. הוא מפחד שאם יעשה חנוכת בית גדולה, הדבר יעורר עין הרע. ואולי, הוא שאל, בכלל לא חייבים?</p>
+      <p>השאלה הזאת היא נקודת פתיחה טובה. לפני שעונים על עין הרע, צריך לברר את היסוד: מה זו חנוכת הבית מבחינת ההלכה? האם היא חובה, מצווה או רשות? האם היא כתובה בתורה, או שהיא מנהג טוב בלבד? רק אחרי שמבינים מה מעמדה, אפשר לשקול מה עושים כשיש חשש.</p>
+      <p>הרב אמר בשיעור שהוא עומד לדבר על מצווה שכמעט אין אדם בעולם שיודע עליה. והמצווה הזאת קשורה ישירות לפרשת השבוע: לפרשת שופטים, שבה מופיע "מִי הָאִישׁ אֲשֶׁר בָּנָה בַיִת חָדָשׁ וְלֹא חֲנָכוֹ", ולפרשת כי תצא שאחריה. בשתי הפרשיות יש עניין אחר, וההבדל ביניהן יתברר בהמשך.</p>
+      <p class="bold-para">השאלה אם חייבים לעשות חנוכת הבית פותחת עיון בשאלה מה מעמדה של המצווה הזאת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מצווה או רשות</div>
+      <h3 class="story-title">📜 תשובת הבאר שבע</h3>
+      <p>הדיון מתחיל בתשובה של הבאר שבע, מן הפוסקים שחיו לפני כארבע מאות שנה. הוא נשאל: האם סעודת חנוכת הבית היא סעודת מצווה או סעודת רשות? לשאלה הזאת יש השלכות רבות בהלכה. למשל, יש תלמידי חכמים שמקפידים לא לאכול בסעודת רשות, ומשתתפים רק בסעודת מצווה.</p>
+      <p>והשיב הבאר שבע: יש לחלק בדבר. אם הבית בארץ ישראל, הסעודה נקראת סעודת מצווה. אבל בחוץ לארץ היא נקראת סעודת רשות.</p>
+      <p>בזמנו, כשכתב את התשובה, החלק הראשון שלה היה כמעט הלכתא למשיחא. יהודי כמעט לא יכול היה לקנות בית בארץ ישראל. השלטון הטורקי לא הרשה ליהודים לקנות קרקע, חוץ ממקום אחד: בהר הזיתים, לקבורה. כך שהבאר שבע פסק הלכה על בית בארץ ישראל בזמן שכמעט לא היו ליהודים בתים בארץ. היום, ברוך ה', אנחנו רואים יישוב גדול, ומה שנראה אז כחלום רחוק הוא שאלה מעשית לכל אחד.</p>
+      <p class="bold-para">לפי הבאר שבע, סעודת חנוכת הבית בארץ ישראל היא סעודת מצווה, ובחוץ לארץ היא סעודת רשות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מצווה או רשות</div>
+      <h3 class="story-title">🧱 הבית שאיש לא רצה לגור בו</h3>
+      <p>הרב הרחיב מעט על ההיסטוריה. בסביבות שנת 1830 מרד מוחמד עלי, שליט מצרים, בטורקים וכבש את ארץ ישראל לכמה שנים. הטורקים ביקשו עזרה מאנגליה ומצרפת, וכשאלה עזרו, ביקשו תמורה: זכויות יתר בארץ ישראל לאזרחים שלהן. כך נפתחה הדלת, ומשה מונטיפיורי, אזרח אנגלי, קנה קרקעות והקים את משכנות שאננים.</p>
+      <p>אבל הקנייה הייתה רק ההתחלה. בתחילה הפך המקום לבית חולים, וזה לא הצליח. אחר כך הוחלט לתת את הבתים למגורים, וערכו הגרלה. הזוכים שמחו, נכנסו, ולאט לאט כולם ברחו. המקום עמד מול העיר, על הר בודד שנראה אז כמו מדבר, ואנשים פחדו לגור שם.</p>
+      <p>מונטיפיורי חזר ומצא את הבתים ריקים. הוא הציע דיור בחינם, וגם זה לא החזיק. בסוף לא הייתה לו ברירה: הוא הציע לשלם לאנשים כדי שיגורו שם. רק כך התחיל היישוב הראשון מחוץ לחומות, ומשם התפשט וגדל. והיום זה אחד המקומות היקרים ביותר.</p>
+      <p>הרב ציין שגם בימינו יש מקומות שבהם ניסו כמה פעמים להקים יישוב ולא הצליחו, עד שנמצא נדיב שנתן דירות בחינם ואף שילם לגרים בהן. כך הגיעו לשם שבע עשרה משפחות, רובן צעירות. יישוב הארץ תמיד דרש מסירות, וגם היום הוא דורש.</p>
+      <p class="bold-para">ראשית היישוב מחוץ לחומות הייתה קשה כל כך, שנאלצו לשלם לאנשים כדי שיגורו שם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מצווה או רשות</div>
+      <h3 class="story-title">🍞 הפעולה הראשונה בבית</h3>
+      <p>המגן אברהם מביא את דברי הבאר שבע להלכה, ומוסיף עליהם דבר מתוך הים של שלמה, שקדם לו. לפי דבריו, גם בחוץ לארץ יש מקרה שבו הסעודה נעשית סעודת מצווה: כשהיא הפעולה הראשונה שאדם עושה בבית. כלומר, אדם נכנס לבית, ועוד לפני שהוא מתחיל לחיות בו, הוא עושה סעודה ואומר בה דברי תורה. סעודה כזאת אינה קלות ראש. זו פתיחה של הבית בקדושה, והיא סעודת מצווה גם בחוץ לארץ.</p>
+      <p>מכאן מנהג שנהוג עד היום, בעיקר אצל הספרדים, לעשות לפחות חנוכת בית קטנה ביום הראשון. עוד לפני שפרקו את הארגזים, ממש על הקרטונים, אומרים דברי תורה ועושים סעודה קטנה, כדי שזו תהיה הפעולה הראשונה בבית.</p>
+      <p>היום מקפידים על כך פחות, כי בארץ ישראל הסעודה היא סעודת מצווה גם אם אינה נעשית באותו רגע. ובכל זאת, יש עניין לעשות אותה מוקדם ככל האפשר, כדי שהבית ייפתח בדברי תורה.</p>
+      <p class="bold-para">גם בחוץ לארץ, סעודה שהיא הפעולה הראשונה בבית, ויש בה דברי תורה, היא סעודת מצווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בית שגרים בו</div>
+      <h3 class="story-title">🏠 הירושלמי: מצווה לחנכו</h3>
+      <p>מניין לבאר שבע שבארץ ישראל יש מצווה בבית? הוא מביא ראיה מן הירושלמי, שדורש את המשנה במסכת סוטה. התורה אומרת: "מִי הָאִישׁ אֲשֶׁר בָּנָה בַיִת חָדָשׁ וְלֹא חֲנָכוֹ, יֵלֵךְ וְיָשֹׁב לְבֵיתוֹ". שואל הירושלמי: יכול אפילו מי שבנה בית בחוץ לארץ יחזור מעורכי המלחמה? תלמוד לומר "וְלֹא חֲנָכוֹ" – את שמצווה לחנכו, יצא זה שאין מצווה לחנכו.</p>
+      <p>ומה הפירוש "מצווה לחנכו"? הכוונה למצווה לגור בבית. מצוות יישוב ארץ ישראל אינה מתקיימת בכך שעומד בית ריק. היא מתקיימת כשגרים בו. מי שבנה בית בארץ ישראל ועדיין לא נכנס לגור בו, התחיל במצווה ולא גמר אותה. לכן התורה מחזירה אותו מן המלחמה, כדי שיגור בבית וישלים את המצווה.</p>
+      <p>אבל בחוץ לארץ אין מצווה ליישב את המקום. בית שעומד שומם שם אינו חיסרון במצווה, ולכן מי שבנה בית בחוץ לארץ אינו חוזר מן המלחמה. הירושלמי אומר זאת במפורש, וממנו רואים שבארץ ישראל יש מצווה ממשית לדור בבית שבנית.</p>
+      <p class="bold-para">הירושלמי מלמד שהפטור מן המלחמה נאמר רק על בית שיש מצווה לחנכו, כלומר בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בית שגרים בו</div>
+      <h3 class="story-title">🧵 ולמה לא טלית בלי ציציות?</h3>
+      <p>כדי להבין את חידושו של הירושלמי, הרב שאל את המשתתפים שאלה. אם התורה מחזירה מן המלחמה מי שהתחיל דבר ולא גמר, למה לא נאמר כך גם על דברים אחרים? למשל, מי שקנה טלית ועוד לא הטיל בה ציציות, שיחזור הביתה וישים ציציות. או מי שהזמין רכב חדש ועוד לא נסע בו, שיחזור וייסע. מה מיוחד דווקא בבית?</p>
+      <p>התשובה עולה מן הירושלמי. בית בארץ ישראל אינו סתם חפץ שאדם רוכש. יש בו מצווה, והמצווה הזאת אינה נגמרת בבנייה. כשאדם בונה את הבית, הוא עדיין לא קיים את מצוות יישוב הארץ. רק כשהוא נכנס לגור בו, הארץ מתיישבת. ולכן הבנייה בלי המגורים היא כמו חצי מצווה.</p>
+      <p>זה גם מה שמסביר את הבחירה במילה "חֲנָכוֹ". חנוכה היא התחלה. חנוכת הבית היא הרגע שבו הבית מתחיל לשמש למה שנועד, הרגע שבו גרים בו. עד אז הבית הוא בניין, ומרגע זה הוא בית. ולכן גם הסעודה שעושים בשעה הזאת היא סעודת מצווה בארץ ישראל: היא מציינת את הרגע שבו המצווה מתקיימת בפועל.</p>
+      <p>ומכאן גם ההבדל בין ארץ ישראל לחוץ לארץ. בחוץ לארץ אפשר לשמוח בבית חדש, ויש בכך הודיה וטעמים טובים. אבל אין שם מצווה שהמקום יהיה מיושב, ולכן אין שם מצווה שמחכה להשלמה.</p>
+      <p class="bold-para">בית שונה מכל חפץ אחר, כי המצווה שבו מתקיימת רק כשגרים בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בית שגרים בו</div>
+      <h3 class="story-title">🏚️ בתים ריקים</h3>
+      <p>מן הירושלמי הזה עולה שאלה מעשית. היו תקופות שבהן עלה רעיון להטיל מס על "בתי רפאים": דירות שבעליהן גרים בחוץ לארץ ובאים רק בחגים ובחופשות, ובשאר השנה הן עומדות ריקות. הרעיון לא יצא לפועל, אבל השאלה ההלכתית נשארה. רב אחד כתב תשובה בעניין, ורצה להוכיח מכאן שבית ריק בארץ ישראל הוא חיסרון ביישוב הארץ.</p>
+      <p>הרב סיפר על מקרה דומה שהוא עוסק בו: דירה של מי ששוהה רוב השנה בחוץ לארץ, ובא לכאן רק לזמן קצר. במשך שנים הדירה עמדה ריקה, כי לא היה לו פנאי לטפל בהשכרה. לבסוף נמצא מי שיטפל בה, ונכנסה לגור בה משפחה. האם יש בזה מצווה של יישוב ארץ ישראל, שהבית יהיה מיושב? לפי הדברים, כן.</p>
+      <p>ועם זאת, ההלכה שהובאה בשיעור מבחינה: בית אחד שעומד ריק אינו בעיה גדולה. אבל כשמדובר בשכונה שלמה של בתים ריקים, שבה המקום נראה שומם, זה כבר נוגע ליישוב הארץ עצמו. היסוד ברור: בארץ ישראל המצווה היא שהבתים יהיו מלאים באנשים.</p>
+      <p>ומכאן הסיכום של החלק הראשון: יש מצווה מן התורה לבנות בית בארץ ישראל ולגור בו. מי שבנה ועוד לא גר, לא השלים את המצווה, ולכן ציוותה התורה שיחזור מן המלחמה, כדי שיזכה להשלים את המצווה הגדולה הזאת.</p>
+      <p class="bold-para">בית אחד שעומד ריק אינו חיסרון גדול, אבל שכונה שלמה של בתים ריקים פוגעת ביישוב הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פן ימות במלחמה</div>
+      <h3 class="story-title">🛡️ על מה מצטערים בהלוויה</h3>
+      <p>עכשיו נכנסים לפסוק עצמו, ויש בו משפט שקשה מאוד להבין. "מִי הָאִישׁ אֲשֶׁר בָּנָה בַיִת חָדָשׁ וְלֹא חֲנָכוֹ יֵלֵךְ וְיָשֹׁב לְבֵיתוֹ, פֶּן יָמוּת בַּמִּלְחָמָה וְאִישׁ אַחֵר יַחְנְכֶנּוּ". מה הבעיה? אם הוא ימות במלחמה, זה אסון גדול, אבל אותו אסון קיים אצל כל חייל. למה דווקא לו יש זכות יתר על פני כולם?</p>
+      <p>הרב שאל את המשתתפים: האם ראיתם פעם בהלוויה שמספידים אדם ואומרים, חבל, הוא השקיע מיליון בבית ולא זכה לגור בו? שומעים לפעמים צער על כך שלא זכה לראות ילדים, או שלא זכה לראות את בנו מתחתן. אבל איש אינו אומר בהספד: חבל, הוא קנה רכב חדש ולא הספיק לנסוע בו.</p>
+      <p>ובאמת, התורה אינה מזכירה בגד חדש, או רכב חדש, או ארמון. היא מזכירה שלושה דברים: מי שבנה בית ולא חנכו, מי שנטע כרם ולא חיללו, ומי שארש אשה ולא לקחה. מה מיוחד בהם? רש"י אומר שזה "דבר של עגמת נפש". ומפרשים אחרים ניסו להסביר את הדבר בדרכים שונות.</p>
+      <p class="bold-para">התורה נותנת למי שבנה בית ולא חנכו זכות מיוחדת, ומפרשי התורה ניסו להבין למה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פן ימות במלחמה</div>
+      <h3 class="story-title">🏃 אבן עזרא: הראש בבית</h3>
+      <p>אבן עזרא הציע הסבר פשוט ומעשי. אדם שבנה בית, כל הראש שלו עכשיו בבית. כמו מי שהזמין רכב חדש וסופר את הימים עד שיגיע, כך מי שבנה בית ועוד לא נכנס אליו חושב עליו כל הזמן. מה יהיה עם הבית? מתי ייגמר? מתי ייכנס?</p>
+      <p>ומה קורה לאדם כזה במלחמה? הוא כל הזמן מפחד: מה יהיה עם הבית שלי. ואדם שמפחד בשדה הקרב עלול לברוח. וגרוע מזה, הפחד שלו מדבק. הוא גורם גם לאחרים לנוס. לכן התורה מעדיפה שיחזור הביתה, ולא יחליש את הלב של כל המחנה.</p>
+      <p>ההסבר הזה מתאים להמשך הפסוקים, שבהם הכוהן מכריז גם "מִי הָאִישׁ הַיָּרֵא וְרַךְ הַלֵּבָב, יֵלֵךְ וְיָשֹׁב לְבֵיתוֹ". המלחמה צריכה לוחמים שליבם פנוי לה. מי שליבו נמצא במקום אחר, בבית החדש שמחכה לו, אינו יכול להילחם באמת.</p>
+      <p>אבל ההסבר הזה עדיין אינו מסביר את הלשון המדויקת של הפסוק: "פֶּן יָמוּת בַּמִּלְחָמָה וְאִישׁ אַחֵר יַחְנְכֶנּוּ". הפסוק אינו מדבר על פחד, אלא על מוות ועל אדם אחר שיחנוך את הבית. לכן המפרשים המשיכו לחפש.</p>
+      <p class="bold-para">מי שהבית החדש ממלא את מחשבותיו עלול לברוח מן הקרב ולגרום לאחרים לברוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · פן ימות במלחמה</div>
+      <h3 class="story-title">😟 הרשב"ם: הפחד שמגשים את עצמו</h3>
+      <p>הרשב"ם מוסיף רעיון עמוק. ככל שאדם מפחד יותר מדבר, כך גדל הסיכוי שהדבר יקרה. היום קוראים לזה "נבואה שמגשימה את עצמה". וכבר אמר איוב: "כִּי פַחַד פָּחַדְתִּי וַיֶּאֱתָיֵנִי, וַאֲשֶׁר יָגֹרְתִּי יָבֹא לִי". אדם שמפחד מדבר גורם לו, פעמים רבות, לבוא.</p>
+      <p>הרב סיפר שהוא רואה את זה שוב ושוב אצל אורחים שמגיעים לדירות אירוח. יש אורח שנכנס ומיד מתלונן על משהו קטן: חסרה כוס לקפה, אין גפרורים לנרות שבת. ומניסיון, אורח כזה יוצא כמעט תמיד בסוף עם תלונות רציניות באמת. פתאום נשרף כבל של המזגן ונופל החשמל לכל השבת, או שקורה דבר אחר. ולעומתו, אורח שנכנס ומשבח את הדירה, משום מה התקלות נעלמות אצלו, ואם יש בעיה, הוא מוצא לה פתרון.</p>
+      <p>וכך מסביר הרשב"ם את הפסוק: אדם שבנה בית והשקיע בו הכל, ועכשיו הולך למלחמה, יחשוב כל הזמן: אולי אמות ולא אזכה לגור בבית. והפחד הזה עצמו עלול לגרום לכך. לכן אומרת התורה: יחזור לביתו, "פֶּן יָמוּת בַּמִּלְחָמָה". אלה הפירושים הרגילים, וכולם נכונים. אבל יש פירוש אחר לגמרי, שנוגע ישר לענייננו.</p>
+      <p class="bold-para">ככל שאדם מפחד יותר מדבר, כך גדל הסיכוי שיקרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מצווה שלא נגמרה</div>
+      <h3 class="story-title">❓ האברבנאל: מה אכפת לו?</h3>
+      <p>האברבנאל שואל שתי שאלות על הפסוק. ראשית, למה דווקא שלושת הדברים האלה, בית, כרם ואישה, ולא כל דבר אחר שאדם יכול להתחיל בו? ושנית, למה כתוב "וְאִישׁ אַחֵר יַחְנְכֶנּוּ"? הרי אחרי שאדם מת, מה אכפת לו מי יחנוך את ביתו? אחרי המוות אין קנאה.</p>
+      <p>הרב סיפר בהקשר זה על אדם שאמר שגילה שרק אנשים טובים מתים. איך הגיע למסקנה? הוא הלך להספדים יום אחרי יום, ובכל הספד שמע רק שבחים. מדוע? כל עוד אדם חי, קשה לפרגן לו. יש תחרות: מי יקבל, מי יצליח. אבל כשהוא מת, איש אינו מתחרה בו עוד, וקל לשבח אותו. ואם המת אינו מקנא באיש, מה אכפת לו שאחר יגור בביתו?</p>
+      <p>האברבנאל מביא את רש"י, שזה דבר של עגמת נפש, ומקשה עליו מן השכל. אם הצער הוא על הבית, הרי אדם שכבר גר בביתו שנה, השקיע בו, סידר אותו, התקין בו הכל, אמור להצטער הרבה יותר אם אחר יקח אותו. ומדוע דווקא מי שעוד לא גר בו חוזר מן המלחמה?</p>
+      <p>ואותו דבר באישה. ברור לכל אחד שאדם מקפיד הרבה יותר על אשתו שכבר נשא, מאשר על ארוסה שעוד לא נכנסה לביתו. ואם כן, איך ייתכן שהתורה מחזירה דווקא את המארס?</p>
+      <p class="bold-para">אחרי המוות אין קנאה, ולכן קשה להבין מה אכפת לאדם שאחר יחנוך את ביתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מצווה שלא נגמרה</div>
+      <h3 class="story-title">🧩 המתחיל במצווה</h3>
+      <p>לכן מחדש האברבנאל פירוש אחר לגמרי. כל העניין נאמר על אדם שהתחיל בדבר שיש מצווה בתכליתו ובהשלמתו, ועוד לא הגיע לגמור אותו. ידוע מה אמרו חז"ל על המתחיל במצווה ואינו גומרה. הגמרא בסוטה אומרת: "כָּל הַמַּתְחִיל בְּמִצְוָה וְאֵינוֹ גּוֹמְרָהּ, קוֹבֵר אִשְׁתּוֹ וּבָנָיו". ולומדים זאת מיהודה.</p>
+      <p>יהודה התחיל במצווה. הוא הציל את יוסף ממוות ואמר: "מַה בֶּצַע כִּי נַהֲרֹג אֶת אָחִינוּ". אבל הוא לא החזיר אותו לאביו. במקום זה הציע למכור אותו לישמעאלים. הוא עשה חצי מצווה, ומה קרה לו? בהמשך הוא קבר את בניו.</p>
+      <p>יש כאן יסוד גדול לחיים. אדם שואל לפעמים את הרב: האם לעשות דבר מסוים? הרב שואל אותו: איפה אתה עומד? אם עוד לא התחלת, אפשר לשקול אם זה מתאים. אבל אם כבר התחלת, תגמור. כמו שאומרים: המתחיל במצווה אומרים לו גמור, והמתחיל בעבירה אומרים לו עצור. אל תעשה חצי.</p>
+      <p>ולפי זה מובן הפסוק. מי שבנה בית ולא חנכו, נטע כרם ולא חיללו, ארש אשה ולא לקחה, כולם התחילו מצווה ולא גמרו אותה. ולכן התורה מחזירה אותם הביתה, כדי שיגמרו.</p>
+      <p class="bold-para">הצער של מי שבנה ולא חנך אינו על הבית, אלא על מצווה שהתחיל ולא גמר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מצווה שלא נגמרה</div>
+      <h3 class="story-title">🍇 כרם, אישה ובית</h3>
+      <p>האברבנאל מפרט את המצוות שבשלושת המקרים. בכרם: מצוות נטע רבעי, שבשנה הרביעית פודים את הפירות, או מעלים אותם לירושלים ואוכלים אותם שם. ובמשנה מבואר שכרם אינו דווקא שדה גדול. אפילו מי שנטע חמישה עצים נקרא "נוטע כרם" לעניין זה. באישה: מצוות פרייה ורבייה, מן המצוות הגדולות ביותר בתורה. ומי שארש ולא נשא, עדיין לא קיים אותה.</p>
+      <p>אבל בבית התקשה האברבנאל. איזו מצווה יש בבניית בית? הוא כתב שהמצווה היא מעקה, כמו שכתוב "כִּי תִבְנֶה בַּיִת חָדָשׁ וְעָשִׂיתָ מַעֲקֶה לְגַגֶּךָ". מי שבנה ועוד לא גמר, עוד לא עשה מעקה. אבל זה דוחק: לא כל בית צריך מעקה, ויש גג שאינו חייב בכך.</p>
+      <p>למה לא חשב האברבנאל על מצוות יישוב ארץ ישראל? הרב הסביר שבזמנם לא הייתה מודעות למצווה הזאת ולפרטיה. לא היו בתים של יהודים בארץ, וכמעט לא דיברו על כך. דוגמה לכך: על חנוכת הבית בכלל יש ספרים רבים, ועל חנוכת הבית בארץ ישראל יש, לדברי הרב, רק ספר אחד בעולם. כשדבר אינו קיים במציאות, גם הלימוד עליו נשכח. ולכן המפרשים האחרונים אמרו: המצווה בבית היא יישוב ארץ ישראל. מי שבנה ולא גר, לא השלים אותה.</p>
+      <p class="bold-para">בכרם יש מצוות נטע רבעי, באישה מצוות פרייה ורבייה, ובבית מצוות יישוב ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מצווה שלא נגמרה</div>
+      <h3 class="story-title">💭 הדאגה הנכונה</h3>
+      <p>ממשיך האברבנאל ומסביר: אם כן, אין כאן עניין של עגמת נפש, ולא של דאגה לדבר עצמו מצד התאווה הגופנית. אדם כזה אינו מפחד לאבד את הבית. הוא מפחד לאבד את המצווה. מצווה באה לידו, הוא אהב אותה, השקיע בה, והימים לא הספיקו לו לקיים אותה. ולכן הוא מקנא: שמא יתקיים המצווה על ידי אחר ולא על ידו.</p>
+      <p>זה חידוש עצום. "וְאִישׁ אַחֵר יַחְנְכֶנּוּ" אינו צער על נכס שעובר לאחר, אלא צער על זכות שהולכת לאחר. האדם הזה עשה את כל העבודה, ועכשיו מישהו אחר יקיים את המצווה.</p>
+      <p>ומכאן גם התשובה לקושיה. מי שכבר גר בביתו, כבר קיים את המצווה. מי שכבר נשא את אשתו, כבר התחיל לקיים פרייה ורבייה. אצלם אין מצווה שעומדת באמצע. אבל מי שבנה ולא גר, נטע ולא חילל, ארש ולא נשא, נמצא באמצע מצווה. ולכן ציוותה התורה: ילך וישוב לביתו, כדי שיקיים את מצוותו.</p>
+      <p>הרב העיר שזה פירוש מעניין מאוד: אדם מודאג, אבל הדאגה שלו אינה על הרכוש. הוא דואג איך לא גמר את המצווה. אשרי מי שזו הדאגה הגדולה שלו.</p>
+      <p class="bold-para">מי שבנה בית בארץ ישראל דואג שהמצווה תתקיים על ידי אחר ולא על ידו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · פרויקט חשוב מאוד</div>
+      <h3 class="story-title">🏗️ המהנדס שלא שולחים לחזית</h3>
+      <p>הרב הביא עוד כיוון קרוב: מדובר כאן במצוות חשובות מאוד, כל כך חשובות שהתורה מעדיפה שהאדם יישאר בהן ולא יצא למלחמה. ונתן משל מן הימים האלה. אדם שעובד בתעשייה הביטחונית על פרויקט חשוב, למשל מערכת יירוט מתקדמת, האם הצבא ישלח אותו לחזית? לא. אם חלילה יקרה לו משהו, הנזק יהיה עצום. ידע וניסיון כאלה אינם עוברים מאדם לאדם בקלות, ואין לו תחליף. לכן אומרים לו: יש לך תפקיד חשוב יותר, תישאר כאן.</p>
+      <p>הרב הזכיר בהקשר זה עסקה גדולה מאוד שבה נמכרה מערכת כזאת לגרמניה, ואמר: אילו היו מספרים לאדם לפני שמונים שנה שיבוא יום והגרמנים יבקשו מן היהודים לקנות מהם נשק כדי להגן על עצמם, ויתנו על כך סכום עצום, לא היה מאמין. הקדוש ברוך הוא הפך את העולם.</p>
+      <p>וכך גם כאן. מי שבונה בית בארץ ישראל עוסק בפרויקט חשוב מאוד. אנחנו צריכים אותו כאן. התורה מבינה שהמצווה שלו חשובה מן המלחמה, ולכן היא מחזירה אותו לביתו.</p>
+      <p>וזה מלמד גם אותנו כמה צריך להעריך את המצווה הזאת. אדם שקונה דירה רואה לפעמים רק משכנתא, תשלומים ושיפוצים. התורה רואה בו מי שעוסק במשימה לאומית ורוחנית, כל כך חשובה שאפילו המלחמה נדחית מפניה.</p>
+      <p class="bold-para">כמו שהצבא אינו שולח לקרב את מי שעובד על פרויקט חיוני, כך התורה משאירה בבית את מי שעוסק במצווה חשובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · פרויקט חשוב מאוד</div>
+      <h3 class="story-title">🌅 חלק בעולם הבא</h3>
+      <p>כמה גדולה המצווה הזאת? הרב הביא את דברי אבן עזרא, שכתב שמעלה גדולה יש לארץ ישראל, ומי שיש לו בה חלק, כאילו יש לו חלק לעולם הבא. כלומר, אדם שקונה בית או בונה בית בארץ ישראל, כאילו בונה את ביתו בעולם הבא. אבן עזרא לומד זאת מכמה פסוקים.</p>
+      <p>הרב הזכיר בחיוך שהיו פעם מי שמכרו חלקות על הירח, וכולם צחקו: מי נתן לך זכויות על הירח? ודמיין: אילו היה מתווך עם אישור חתום מבורא עולם, שמוכר חלקות בעולם הבא, חלקות לנצח, כולם היו עומדים בתור. ובאמת, אומר אבן עזרא, דע לך: מי שקונה בית בארץ ישראל, ועושה זאת בכוונה, קונה חלק בעולם הבא.</p>
+      <p>ומכאן הסיכום של החלק הראשון של השיעור. האדם שבנה בית ועדיין לא גר בו, עוסק במצווה גדולה שהתחיל ולא השלים. התורה אינה שולחת אותו למלחמה, כי יש לו עכשיו תפקיד חשוב: להיכנס לבית ולהשלים את המצווה. ומה קורה אחרי שהוא כבר גר בבית? מה הפרטים של חנוכת הבית, ומה עם השאלה על עין הרע? על כך דובר בחלק השני של השיעור.</p>
+      <p class="bold-para">אבן עזרא כותב שמי שיש לו חלק בארץ ישראל, כאילו יש לו חלק בעולם הבא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/tjJfbo9FFSs · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מצווה או רשות","icon":"⚖️","color":"#c62b6b","stories":[{"id":1,"title":"שאלה בטלפון","icon":"📞"},{"id":2,"title":"תשובת הבאר שבע","icon":"📜"},{"id":3,"title":"הבית שאיש לא רצה לגור בו","icon":"🧱"},{"id":4,"title":"הפעולה הראשונה בבית","icon":"🍞"}]},{"id":2,"name":"בית שגרים בו","icon":"🏠","color":"#6d28d9","stories":[{"id":5,"title":"הירושלמי: מצווה לחנכו","icon":"🏠"},{"id":6,"title":"ולמה לא טלית בלי ציציות?","icon":"🧵"},{"id":7,"title":"בתים ריקים","icon":"🏚️"}]},{"id":3,"name":"פן ימות במלחמה","icon":"🛡️","color":"#e08e00","stories":[{"id":8,"title":"על מה מצטערים בהלוויה","icon":"🛡️"},{"id":9,"title":"אבן עזרא: הראש בבית","icon":"🏃"},{"id":10,"title":"הרשב\"ם: הפחד שמגשים את עצמו","icon":"😟"}]},{"id":4,"name":"מצווה שלא נגמרה","icon":"🧩","color":"#1e88b8","stories":[{"id":11,"title":"האברבנאל: מה אכפת לו?","icon":"❓"},{"id":12,"title":"המתחיל במצווה","icon":"🧩"},{"id":13,"title":"כרם, אישה ובית","icon":"🍇"},{"id":14,"title":"הדאגה הנכונה","icon":"💭"}]},{"id":5,"name":"פרויקט חשוב מאוד","icon":"🏗️","color":"#c62b6b","stories":[{"id":15,"title":"המהנדס שלא שולחים לחזית","icon":"🏗️"},{"id":16,"title":"חלק בעולם הבא","icon":"🌅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
