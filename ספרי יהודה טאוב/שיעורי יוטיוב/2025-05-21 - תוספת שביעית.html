@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 תוספת שביעית</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 תוספת שביעית</h1>
+  <p>עיון בסוגיה לאורך הדורות: המשניות בתחילת מסכת שביעית, תוספת שבת ויום הכיפורים, ביטול רבן גמליאל, דברי הראשונים והאחרונים, וההצעה לקבל את השמיטה בפה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ תוספת שביעית" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/WNP7aAwlDeU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/WNP7aAwlDeU/hqdefault.jpg" alt="תוספת שביעית" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=WNP7aAwlDeU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סוגיה לאורך הדורות</div>
+      <h3 class="story-title">🕰️ ארבע תקופות</h3>
+      <p>השיעור נאמר בימים שלפני ראש חודש אלול, בשנה שלפני השמיטה. עדיין לא בשנת השביעית עצמה, אלא בתקופה שבה דנים בדין מיוחד: תוספת שביעית. כמו שיש תוספת שבת ותוספת יום הכיפורים, יש גם תוספת לשנה השביעית.</p>
+      <p>הרב הציע לעבור על הנושא לפי התקופות. תחילה, ימי בית המקדש. אחר כך, כארבע מאות שנה אחרי החורבן, שבהן עוד היו בארץ חיים יהודיים ויישוב חקלאי, עד ימי רבן גמליאל, נכדו של רבי יהודה הנשיא. אחר כך, תקופה ארוכה שבה היישוב החקלאי היהודי בארץ כמעט פסק לגמרי. ולבסוף, ימינו.</p>
+      <p>החלוקה הזאת חשובה, כי ההלכה עצמה משתנה בין התקופות. מה שלמדו במשנה בימי הבית, אינו בהכרח ההלכה למעשה בימינו. ובשיעור נראה איך ומדוע זה קרה.</p>
+      <p>וכדאי לזכור שגם המושג "תוספת" אינו פשוט. האם זו מצווה מן התורה? מדרבנן? הלכה למשה מסיני? ומה בדיוק אסור – כל המלאכות, או רק חרישה? השאלות האלה ילוו את כל הסוגיה.</p>
+      <p class="bold-para">כדי להבין את תוספת שביעית, צריך לעבור על ההיסטוריה של השמיטה בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סוגיה לאורך הדורות</div>
+      <h3 class="story-title">📕 למה אין הלכות שמיטה בשולחן ערוך</h3>
+      <p>יש שאלה ידועה: למה בשולחן ערוך אין הלכות שמיטה? הרי מרן הבית יוסף גר בצפת, בארץ ישראל! מדוע לא כתב את ההלכות הנוגעות לארץ?</p>
+      <p>תשובה אחת היא שהשולחן ערוך הלך בעיקרו אחרי סדר הטור, ושמר על המבנה שקבע רבי יעקב בעל הטורים, שחי בחוץ לארץ.</p>
+      <p>אבל יש גם סיבה מעשית. בצפת לא הייתה חקלאות, וגם היום אין בה כמעט. צפת היא מקום נפלא, עם אוויר נפלא ותיירות, אבל לא מקום של שדות. הקדוש ברוך הוא נותן לכל מקום את המעלה המיוחדת שלו.</p>
+      <p>ויותר מזה: חקלאות של יהודים בארץ ישראל כמעט לא הייתה עד לפני כמאה וחמישים שנה. היו ניסיונות מועטים של עולים, אבל לא היה לכך משקל של ממש. רק עם הקמת המושבות הראשונות – פתח תקווה ומקומות אחרים – חזרה החקלאות היהודית לארץ, והתחילו לדון מחדש בכל הלכות השמיטה.</p>
+      <p>ולכן, הלכות שנראות לנו היום מעשיות לגמרי, היו במשך מאות שנים כמעט תיאורטיות.</p>
+      <p class="bold-para">השולחן ערוך נכתב בצפת, בתקופה שבה כמעט לא הייתה חקלאות יהודית בארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סוגיה לאורך הדורות</div>
+      <h3 class="story-title">➕ שלוש תוספות</h3>
+      <p>כולנו מכירים את המושג "תוספת שבת": מדליקים נרות לפני השקיעה, ומוציאים את השבת אחרי צאת הכוכבים. מכירים גם את "תוספת יום הכיפורים": מתחילים לצום עוד לפני שנכנס היום. פחות מוכר המושג "תוספת שביעית", אבל גם הוא קיים, ועליו השיעור.</p>
+      <p>ובכל אחת מהן עולות אותן שאלות. מאין המקור? האם זו מצווה מן התורה, מדרבנן, או הלכה למשה מסיני? מי הנהיג אותה, ומתי? וכמה צריך להוסיף – דקות, שעות, או חודש שלם?</p>
+      <p>ויש גם שאלות מעשיות מאוד. הרב הביא דוגמה: האם מותר מחר לשתול פלפלים בגינה? האם מותר לחרוש בשבוע הבא? כדי לענות, צריך להבין את כל הסוגיה מתחילתה.</p>
+      <p>ולכן השיעור מתחיל במשנה, ממשיך בגמרא, עובר לראשונים ולאחרונים, ומסתיים בהצעה מעשית לימינו. זה מסלול לימוד ארוך, אבל רק כך אפשר להבין למה ההלכה בימינו היא כפי שהיא, ומה עדיין נשאר מן התוספת גם בזמן הזה.</p>
+      <p class="bold-para">תוספת שבת, תוספת יום הכיפורים ותוספת שביעית – כולן מלמדות להקדים את הקודש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סוגיה לאורך הדורות</div>
+      <h3 class="story-title">🚜 כשחזרה החקלאות</h3>
+      <p>יש משהו מיוחד בדור שלנו. במשך מאות שנים, יהודים שגרו בארץ ישראל עסקו בתורה, במסחר ובמלאכות, אבל כמעט לא בחקלאות. הלכות השמיטה נלמדו בבתי המדרש, אבל מעטים מאוד היו צריכים להן למעשה.</p>
+      <p>ופתאום, לפני כמאה וחמישים שנה, הכל השתנה. קמו מושבות, נחרשו שדות, ניטעו פרדסים. ויחד עם החקלאות חזרו השאלות: מה עושים בשנה השביעית? עד מתי מותר לחרוש? מה עם העצים הצעירים? והפוסקים נדרשו לחזור אל המשניות ואל הגמרא, וללמוד אותן כהלכה למעשה.</p>
+      <p>זו זכות גדולה. דורות רבים של יהודים בגולה התפללו לחזור לארץ ולקיים את המצוות התלויות בה, ולא זכו. ואנחנו זוכים לא רק לגור בארץ, אלא גם לשאול שאלות שרק מי שגר בה ועובד את אדמתה יכול לשאול.</p>
+      <p>ולכן גם לימוד סוגיה כמו תוספת שביעית אינו לימוד היסטורי בלבד. הוא חלק מן החזרה של עם ישראל לארצו, ולמצוותיה.</p>
+      <p class="bold-para">עם שיבת היהודים לעבודת האדמה, הלכות שהיו כמעט שכוחות חזרו להיות שאלות של יום יום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המשניות הראשונות</div>
+      <h3 class="story-title">🌳 עד מתי חורשים בשדה האילן</h3>
+      <p>מסכת שביעית נפתחת במשנה מפתיעה. היא אינה עוסקת בשנה השביעית, אלא בשנה שלפניה: "עַד אֵימָתַי חוֹרְשִׁין בִּשְׂדֵה הָאִילָן עֶרֶב שְׁבִיעִית? בֵּית שַׁמַּאי אוֹמְרִים: כָּל זְמַן שֶׁהוּא יָפֶה לַפֶּרִי. וּבֵית הִלֵּל אוֹמְרִים: עַד הָעֲצֶרֶת. וּקְרוֹבִין דִּבְרֵי אֵלּוּ לִהְיוֹת כְּדִבְרֵי אֵלּוּ".</p>
+      <p>שדה האילן הוא שדה שיש בו עצים. ולמה חורשים שדה כזה, אם העצים כבר נטועים? המפרשים מסבירים שהיה מנהג מעניין: האדמה העליונה רטובה, והתחתונה יבשה. חורשים והופכים את האדמה, כדי שהלחות תגיע גם למטה, אל השורשים. וזה מועיל לפירות.</p>
+      <p>הרב סיפר שמי שחפר באדמה מכיר זאת היטב. למעלה האדמה רכה, ובחפירה לעומק היא נעשית קשה כאבן. המים פשוט אינם מחלחלים לשם.</p>
+      <p>ועד מתי זה מועיל? בערך עד שבועות, כל זמן שהאדמה עדיין לחה מגשמי החורף. אחר כך החרישה כבר אינה עוזרת לפירות של השנה השישית. ואם אדם חורש בכל זאת, נראה שהוא מכין את האדמה לשנה השביעית. ולכן אסרו זאת.</p>
+      <p class="bold-para">המשנה הראשונה במסכת שביעית עוסקת דווקא בשנה השישית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המשניות הראשונות</div>
+      <h3 class="story-title">📅 שני מועדים שונים</h3>
+      <p>בשיעור עלתה שאלה: איך זה מסתדר עם מה שידוע, שפירות העצים של השנה השביעית מתחילים להיות קדושים רק אחרי ט"ו בשבט, ופירות שישית נאכלים כרגיל גם בשנה השביעית?</p>
+      <p>הרב הסביר שיש כאן הבדל חשוב שצריך לדעת. לגבי עבודת האדמה – חרישה, זריעה, קצירה – הכל הולך מא' בתשרי עד א' בתשרי. אבל לגבי קדושת שביעית בפירות האילן, הדבר תלוי בזמן שבו הפרי חנט. ולכן, בתחילת השנה השביעית עוד לא יהיו פירות עץ קדושים. הם יופיעו בערך אחרי פסח.</p>
+      <p>ובשנה השמינית יהיה ההפך. מא' בתשרי יהיה מותר לעבוד את האדמה, אבל עדיין יהיו פירות קדושים בקדושת שביעית, בערך עד פסח.</p>
+      <p>ובמשנה שלנו מדובר על החרישה, ולכן הכל נמדד ביחס לא' בתשרי. השאלה היא רק כמה זמן לפני כן כבר אסור לחרוש, משום שנראה שהחרישה נעשית בשביל השנה הבאה.</p>
+      <p class="bold-para">איסור העבודה הולך לפי א' בתשרי; קדושת פירות האילן הולכת לפי זמן החנטה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המשניות הראשונות</div>
+      <h3 class="story-title">🌾 שדה הלבן</h3>
+      <p>המשנה הראשונה בפרק השני עוברת לסוג אחר של שדה: "עַד אֵימָתַי חוֹרְשִׁין בִּשְׂדֵה הַלָּבָן עֶרֶב שְׁבִיעִית? עַד שֶׁתִּכְלֶה הַלֵּחָה, כָּל זְמַן שֶׁבְּנֵי אָדָם חוֹרְשִׁין לִטַּע בַּמִּקְשָׁאוֹת וּבַמִּדְלָעוֹת".</p>
+      <p>מה זה שדה לבן? שדה תבואה. כשהחיטה מבשילה, השדה כולו מלבין. הרב הזכיר שבעבר היו שדות כאלה גם בתוך העיר שבה גר, ליד השכונות, והיום כבר אין.</p>
+      <p>כלומר, בשדה תבואה מותר לחרוש כל זמן שאנשים חורשים בשביל לזרוע קישואים ודלועים באותה שנה. אחר כך כבר נראה שהחרישה היא לשנה הבאה.</p>
+      <p>"אָמַר רַבִּי שִׁמְעוֹן: נָתַתָּ תּוֹרַת כָּל אֶחָד וְאֶחָד בְּיָדוֹ!" – אם הכל תלוי במה שבני אדם נוהגים, כל אחד יעשה כרצונו. "אֶלָּא בִּשְׂדֵה הַלָּבָן עַד הַפֶּסַח, וּבִשְׂדֵה הָאִילָן עַד הָעֲצֶרֶת". רבי שמעון קובע מועדים ברורים: בשדה תבואה עד פסח, ובשדה אילן עד שבועות.</p>
+      <p>אלה הם "שני הפרקים" – הפרק הראשון והשני במסכת – שעליהם נדבר בהמשך, כשנגיע לתקנת רבן גמליאל.</p>
+      <p class="bold-para">שדה תבואה נקרא "לבן", ולגביו נקבע מועד מוקדם יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המשניות הראשונות</div>
+      <h3 class="story-title">🍞 "על המחיה" ו"על מחייתה"</h3>
+      <p>אגב שדות התבואה, עלתה שאלה מעניינת. בברכה מעין שלוש, כשאוכלים פירות מארץ ישראל, אומרים "ועל פירותיה", וכששותים יין מן הארץ אומרים "ועל פרי גפנה". אבל על מיני מזונות, האשכנזים נוהגים לומר תמיד "על המחיה", ואילו הספרדים אומרים על מזונות מן הארץ "על מחייתה". מה ההבדל?</p>
+      <p>הרב סיפר שחיפש זמן רב את הטעם, ומצא הסבר. פרי אפשר לזהות. חקלאי אמיתי, או מוכר פירות ותיק, מסתכל על פרי ויודע מיד אם הוא מן הארץ או לא. פירות הארץ נראים אחרת. גם ענבים ליין היו מביאים פעם הביתה, ואפשר היה לראות מה מוצאם.</p>
+      <p>אבל קמח? אין אדם שיכול להבחין, לא במראה ולא בטעם, אם הקמח מתבואת הארץ או מחוץ לארץ. ולכן, לפי ההסבר הזה, נהגו האשכנזים לומר תמיד "על המחיה", בלי לייחס את הקמח לארץ.</p>
+      <p>הרב הוסיף שבימינו קשה מאוד למצוא קמח לבן שאפשר להבטיח שהוא כולו מתבואת הארץ. ובכל אופן, המנהג נשאר כפי שהיה.</p>
+      <p class="bold-para">המנהגים השונים בברכה אחרונה על מיני מזונות נובעים מן היכולת לזהות פרי של הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המשניות הראשונות</div>
+      <h3 class="story-title">🪴 ללמד ילדים לגדל</h3>
+      <p>הרב הראה חוברת יפה שהוכנה לילדים לקראת השמיטה. הרעיון שבה: ללמד ילדים איך שותלים ירקות בגינה, כדי שגם הם, ומשפחותיהם, יוכלו לקיים בעצמם את מצוות השביעית.</p>
+      <p>יש בזה עניין לכל אדם. מי שאין לו שדה, ואינו חקלאי, יכול לחשוב שהשמיטה אינה נוגעת לו כלל. אבל מי שיש לו גינה קטנה ליד הבית, ומגדל בה משהו, ירגיש את השמיטה על בשרו. הוא יידע מה פירוש לעזוב את האדמה לשנה שלמה, וממילא יבין גם את החקלאי.</p>
+      <p>בחוברת לימדו את הילדים פרטים רבים: כמה שמש צריך הצמח, איפה לשתול, כמה מים לתת, ועד איזה תאריך מותר לשתול כל דבר לפני השמיטה.</p>
+      <p>וכך הלימוד אינו נשאר בספרים. הילד לומד את המשנה "עד אימתי חורשין", ובאותו זמן הוא עצמו מחזיק מעדר ושותל. ההלכות של שדה האילן ושדה הלבן הופכות למשהו שהוא מכיר בידיו. זו דרך נפלאה להכניס את מצוות הארץ ללב.</p>
+      <p class="bold-para">מי שמגדל ירקות בגינתו, יכול לקיים בעצמו את מצוות השביעית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מוסיפין מחול על הקודש</div>
+      <h3 class="story-title">🕯️ "בחריש ובקציר תשבות"</h3>
+      <p>מכאן עובר השיעור לגמרא במסכת ראש השנה, שם נמצאת הסוגיה של "מוסיפין מחול על הקודש". מאין לנו שיש מצווה להוסיף? בארץ נוהגים להדליק נרות שבת זמן מה לפני השקיעה – יש שנוהגים עשרים דקות, יש שלושים, ובירושלים ארבעים. מה המקור לכל זה?</p>
+      <p>הגמרא מביאה ברייתא על הפסוק בפרשת כי תשא: "שֵׁשֶׁת יָמִים תַּעֲבֹד וּבַיּוֹם הַשְּׁבִיעִי תִּשְׁבֹּת, בֶּחָרִישׁ וּבַקָּצִיר תִּשְׁבֹּת". הפסוק מופיע באמצע פרשת המועדים, ושואל רבי עקיבא: על מה הוא מדבר?</p>
+      <p>אם על שבת – בשבת אסורות ארבעים חסר אחת מלאכות, לא רק חרישה וקצירה. יש אפילו אחת עשרה מלאכות בתהליך הכנת הפת לבדו. ואם על שביעית – הרי כבר נאמר "שָׂדְךָ לֹא תִזְרָע וְכַרְמְךָ לֹא תִזְמֹר".</p>
+      <p>אלא, אומר רבי עקיבא, בא הפסוק ללמד: חריש של ערב שביעית הנכנס לשביעית, וקציר של שביעית היוצא למוצאי שביעית. כלומר, אסור לחרוש בשנה השישית חרישה שמועילה לשנה השביעית. ומכאן שלפי רבי עקיבא, תוספת שביעית היא מן התורה.</p>
+      <p class="bold-para">רבי עקיבא לומד מן הפסוק איסור תורה לחרוש בשישית בשביל השביעית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מוסיפין מחול על הקודש</div>
+      <h3 class="story-title">📜 רש"י ורבי ישמעאל</h3>
+      <p>רש"י על התורה מביא את הדרשה הזאת: יש מרבותינו אומרים, על חריש של ערב שביעית הנכנס לשביעית, וקציר של שביעית היוצא למוצאי שביעית. וממנה לומדים שמוסיפים מחול על הקודש.</p>
+      <p>אבל השאלה נשארת: האם רק חרישה אסורה, או כל עבודה? בתוספת שבת אסורות כל המלאכות. בתוספת שביעית לא ברור. יש סוגיה בראשונים בעניין, והרב לא נכנס אליה. אבל נראה שאסור רק מה שניכר בו שאדם מכין לשנה השביעית.</p>
+      <p>רבי ישמעאל לומד את הפסוק אחרת: מה חריש רשות, אף קציר רשות – יצא קציר העומר שהוא מצווה. כלומר, הפסוק מדבר על שבת, ומלמד שקציר של רשות אסור בה, אבל קציר העומר, שהוא מצווה, דוחה שבת.</p>
+      <p>בשיעור התעוררה שאלה מעשית: איך הגיעו לשדה בשבת? הרב ענה שאולי היה שדה סמוך לעיר, וכמה אנשים חנו שם מבעוד מועד. זה היה טקס גדול, עם אנשים רבים, וצריך לברר איך הסתדרו טכנית. אבל העיקר: לפי רבי ישמעאל, הפסוק הזה אינו מקור לתוספת.</p>
+      <p class="bold-para">לפי רבי ישמעאל, הפסוק מדבר על שבת, ומלמד שקציר העומר דוחה אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מוסיפין מחול על הקודש</div>
+      <h3 class="story-title">🌙 "ועניתם את נפשותיכם בתשעה"</h3>
+      <p>אז מאין לומד רבי ישמעאל שמוסיפים מחול על הקודש? מפסוק מוזר ביום הכיפורים: "וְעִנִּיתֶם אֶת נַפְשֹׁתֵיכֶם בְּתִשְׁעָה לַחֹדֶשׁ בָּעֶרֶב". יום הכיפורים הוא בעשירי בחודש, לא בתשיעי! מה פירוש "בתשעה"?</p>
+      <p>הגמרא מסבירה: יכול בתשעה ממש? תלמוד לומר "בערב". אם בערב, יכול משתחשך? תלמוד לומר "בתשעה". הא כיצד? מתחיל ומתענה מבעוד יום. מלמד שמוסיפים מחול על הקודש.</p>
+      <p>ומנין גם ביציאתו? תלמוד לומר "מֵעֶרֶב עַד עֶרֶב". כמו שבכניסה מוסיפים, כך גם ביציאה. ומשם לומדים גם לשבתות ולימים טובים: "תִּשְׁבְּתוּ שַׁבַּתְּכֶם" – כל מקום שיש בו שבות, מוסיפים מחול על הקודש.</p>
+      <p>נמצא שיש שתי שיטות. לפי רבי עקיבא, תוספת שביעית לומדים מ"בחריש ובקציר תשבות". לפי רבי ישמעאל, הפסוק הזה הולך על קציר העומר, ותוספת שבת ויום טוב נלמדת מ"בתשעה". ומאין לומד רבי ישמעאל תוספת שביעית? את זה נראה בהמשך.</p>
+      <p class="bold-para">מן התענית שמתחילה בתשעה בחודש לומדים שמוסיפים על הקודש בכניסתו וביציאתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מוסיפין מחול על הקודש</div>
+      <h3 class="story-title">🚪 בכניסה וביציאה</h3>
+      <p>יש משמעות בכך שהתוספת נאמרה גם בכניסה וגם ביציאה. בכניסה, האדם מקדים: הוא אינו ממתין לרגע האחרון כדי להתחיל את הקודש. וביציאה, הוא מאחר: הוא אינו ממהר לעזוב את הקודש ברגע הראשון האפשרי.</p>
+      <p>שני הצדדים האלה מבטאים אותו יחס. כמו אורח שאוהב את מארחו – הוא מגיע מוקדם, ואינו ממהר ללכת. ולהפך, מי שבא באיחור ויוצא מיד, מראה שהביקור היה לו מעמסה.</p>
+      <p>הלימוד מ"בתשעה לחודש בערב" ומ"מערב עד ערב" מלמד שהתורה עצמה רוצה בזה. לא רק שבת ויום הכיפורים, אלא כל מקום שנאמר בו שבות. התורה מבקשת מאיתנו להרחיב את הקודש מעט, משני צדדיו.</p>
+      <p>וזה מה שמכין אותנו להבין גם את תוספת שביעית. אם בשבת וביום הכיפורים מוסיפים, השאלה היא אם גם השנה השביעית, שהיא "שבת הארץ", מקבלת אותו יחס. והתשובה לכך, כפי שנראה, מורכבת יותר.</p>
+      <p class="bold-para">התוספת אינה רק בכניסת הקודש, אלא גם ביציאתו – לא ממהרים לעזוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מוסיפין מחול על הקודש</div>
+      <h3 class="story-title">✨ כוכבים קטנים</h3>
+      <p>מכאן מובן גם המנהג במוצאי שבת. כמעט בכל הארץ נוהגים להוציא את השבת בצאת כוכבים קטנים, כמו שכתוב בשולחן ערוך. ובלוחות כתוב בערך שלושים וחמש דקות אחרי השקיעה. מאין המספר הזה? יש דעות של שמונה עשרה, עשרים, עשרים וחמש.</p>
+      <p>כוכבים קטנים קשה מאוד לראות בדיוק. ולכן, כפי שהסביר הרב, לפני כמאה שנה בערך עשה הרב טוקצ'ינסקי, מחבר הלוח, מדידות, וקבעו כמה אור יש בשמים בזמן שאמורים לראות כוכבים קטנים. כלומר, כמה מעלות השמש נמצאת מתחת לאופק.</p>
+      <p>ומאז אין צורך למדוד כל יום. מחשבים לפי מיקום המקום ולפי זווית השמש. היום יש אפילו תוכנות שאומרות לכל מקום את כל הזמנים: זמן תפילין, חצות, צאת הכוכבים, לפי המקום המדויק.</p>
+      <p>ונשאלה שאלה טובה: ומה עם הגובה? בעיר אחת יש הבדלים של עשרות ומאות מטרים בין שכונה לשכונה. האם לכל רחוב יש זמן אחר? הרב אמר שהרב טוקצ'ינסקי קבע זמן אחד לכל מקום, ולא הלך לפי כל גובה וגובה, ורוב הלוחות בנויים עד היום על שיטתו.</p>
+      <p class="bold-para">גם במוצאי שבת מוסיפים, ולכן ממתינים עד צאת כוכבים קטנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מוסיפין מחול על הקודש</div>
+      <h3 class="story-title">🙏 לקבל את השבת בפה</h3>
+      <p>מה בדיוק המצווה של תוספת שבת? כאן נחלקו הפוסקים. רוב הפוסקים אומרים: מספיק שלא יעשה מלאכה בזמן התוספת. לפי זה, גם מי שמתפלל מנחה באותו זמן, הכל בסדר, ובלבד שאינו עושה מלאכות.</p>
+      <p>אבל יש דעה בראשונים שהמצווה היא לומר במפורש: הריני מקבל עליי תוספת שבת קודש. הרב סיפר על בית כנסת אחד שבו הרב מכריז על כך מדי שבוע אחרי מנחה של ערב שבת, ומזמין את הציבור לומר את המשפט הזה.</p>
+      <p>הרב הזכיר גם פרט שראוי לדעת: מי שקיבל על עצמו שבת מוקדם, יכול לבקש משכנו שעדיין לא קיבל שבת לעשות עבורו דבר שהוא עצמו כבר אינו עושה. כך קרה לו, לדבריו, כששכח להדליק את הפלטה. לגבי פרטי הדין הזה יש לברר אצל רב.</p>
+      <p>הוא העיר גם שרק מעט בתי כנסת מקדימים מספיק כדי לגמור את מנחה וקבלת שבת עוד לפני השקיעה. ובכל מקרה, מעיקר הדין, אמירה בפה אינה חובה לדעת רוב הפוסקים. ובכך נגמר העיסוק בתוספת שבת, וחוזרים אל השביעית.</p>
+      <p class="bold-para">נחלקו הפוסקים אם די לא לעשות מלאכה בזמן התוספת, או שצריך לומר במפורש שמקבלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבן גמליאל ובית דינו</div>
+      <h3 class="story-title">⚖️ "נמנו על שני פרקים הללו וביטלום"</h3>
+      <p>החלק השני של השיעור עובר לגמרא במסכת מועד קטן. אמר רבי שמעון בן פזי אמר רבי יהושע בן לוי משום בר קפרא: רבן גמליאל ובית דינו נמנו על שני פרקים הללו וביטלום.</p>
+      <p>מדובר ברבן גמליאל השלישי, בנו של רבי יהודה הנשיא. בתקופתו עוד היה בארץ יישוב יהודי וחקלאות. והוא ובית דינו החליטו: כל מה שלמדנו בשני הפרקים הראשונים של מסכת שביעית, מבוטל. מותר לחרוש עד ראש השנה. אין תוספת שביעית.</p>
+      <p>הרב סיפר שכאשר למד את המשניות האלה עם ילד, מתוך חוברת עם ציורים יפים, הגיעו למשנה שאומרת שרבן גמליאל ובית דינו ביטלו את כל זה. וזו קושיה פשוטה: רבן גמליאל חי בסוף תקופת התנאים. הוא בא אחרי בית שמאי ובית הלל, שחיו בזמן הבית השני. איך הוא יכול לבטל את דבריהם?</p>
+      <p>וזו בדיוק שאלת הגמרא: והא אין בית דין יכול לבטל דברי בית דין חברו, אלא אם כן גדול ממנו בחכמה ובמניין. איך ביטל רבן גמליאל את דברי בית שמאי ובית הלל?</p>
+      <p class="bold-para">כארבע מאות שנה אחרי החורבן ביטל רבן גמליאל ובית דינו את איסור החרישה של ערב שביעית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבן גמליאל ובית דינו</div>
+      <h3 class="story-title">❓ "גדול ממנו במניין"</h3>
+      <p>אגב הכלל "גדול ממנו בחכמה ובמניין", העלה הרב שאלה שאין לו עליה תשובה. מה פירוש "במניין"? בסנהדרין יש תמיד שבעים ואחד. לא יותר ולא פחות. איך יכול בית דין אחד להיות גדול מחברו במניין?</p>
+      <p>המפרשים עוסקים בשאלה, ויש בזה כמה הסברים. הרב אמר שיבדוק אחר כך.</p>
+      <p>והשאלה הזאת הזכירה לו דבר ששמע באותו שבוע בסיור במקום עתיקות. המדריך הסביר שבימי הבית השני היו אנשי כנסת הגדולה מאה ועשרים, ולאט לאט התמעטו עד שנעשו שבעים ואחד. הרב לא קיבל את ההסבר, שנראה לו המצאה. אבל השאלה עצמה הטרידה אותו: מה תפקידם של מאה ועשרים אנשי כנסת הגדולה, אם בית הדין הגדול הוא תמיד של שבעים ואחד?</p>
+      <p>בשיעור הוצעו כמה כיוונים: שבתוך המאה ועשרים היו נביאים, שאינם חלק מן הסנהדרין; או שהיו מפוזרים במקומות שונים. הרב אמר שעדיין אין לו תשובה ברורה, ושישמח לשמוע הגדרה מדויקת. זו דוגמה לכך שגם שאלות פשוטות לכאורה צריכות עיון.</p>
+      <p class="bold-para">מה פירוש "במניין", אם בכל סנהדרין יושבים שבעים ואחד?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבן גמליאל ובית דינו</div>
+      <h3 class="story-title">📜 הלכה למשה מסיני</h3>
+      <p>הגמרא מנסה לתרץ: אולי בית שמאי ובית הלל עצמם אמרו ביניהם: כל הרוצה לבטל יבוא ויבטל. כלומר, מלכתחילה נקבעה התקנה עם תנאי, שבית דין עתידי יוכל לבטלה.</p>
+      <p>אבל הגמרא דוחה: וכי איסור תוספת שביעית הוא רק תקנה של בית שמאי ובית הלל? והרי אמר רבי אסי אמר רבי יוחנן משום רבי נחוניא איש בקעת בית חורתן: עשר נטיעות, ערבה וניסוך המים – הלכה למשה מסיני.</p>
+      <p>"עשר נטיעות" – שדה שיש בו עשר נטיעות קטנות, מותר לחרוש אותו עד ראש השנה, כי הנטיעות הצעירות צריכות עזרה. משמע, שבשדה רגיל אסור לחרוש קודם לכן, וזו הלכה למשה מסיני. "ערבה" – מצוות הערבה בבית המקדש בחג הסוכות. "ניסוך המים" – הניסוך שהיו מנסכים על גבי המזבח בחג הסוכות.</p>
+      <p>אם כן, איסור החרישה לפני השביעית הוא הלכה למשה מסיני. איך יכול רבן גמליאל לבטל אותו?</p>
+      <p class="bold-para">עשר נטיעות, ערבה וניסוך המים – שלוש הלכות שנמסרו יחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבן גמליאל ובית דינו</div>
+      <h3 class="story-title">🗓️ שלושים יום ומפסח ועצרת</h3>
+      <p>מתרץ רבי יצחק: כי גמירי הלכתא – שלושים יום לפני ראש השנה. ואינהו – בית שמאי ובית הלל – אתו ואוסיפו, מפסח ומעצרת. וכי אתו אינהו בדידהו – כל הרוצה לבטל יבוא ויבטל.</p>
+      <p>כלומר: מן ההלכה למשה מסיני, האיסור הוא שלושים יום לפני השמיטה בלבד. חכמים הוסיפו עליו, ואסרו כבר מפסח או משבועות. ואת התוספת שלהם עצמם, קבעו בתנאי שאפשר לבטלה. רבן גמליאל ביטל רק את התוספת, וחזר הדין לשלושים יום.</p>
+      <p>לפי התירוץ הזה, גם אחרי תקנת רבן גמליאל, יש איסור חרישה שלושים יום לפני ראש השנה של השמיטה. הרב אמר שלפי זה היה יוצא שכבר מן השבוע הבא, סמוך לראש חודש אלול, יהיה אסור לחרוש. אבל זה אינו להלכה, כפי שנראה.</p>
+      <p>תירוץ אחר בגמרא מבוסס על השוואה לשבת: מה שבת בראשית, היא אסורה ולפניה ולאחריה מותרים, אף שביעית – היא אסורה ולפניה ולאחריה מותרים. כלומר, אין תוספת. ושואלת הגמרא: אם יש הלכה למשה מסיני, מה תועיל גזירה שווה? גזירה שווה אינה עוקרת הלכה.</p>
+      <p class="bold-para">לפי רבי יצחק, מן התורה האיסור רק שלושים יום, וחכמים הוסיפו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבן גמליאל ובית דינו</div>
+      <h3 class="story-title">🏛️ רב אשי: בזמן שבית המקדש קיים</h3>
+      <p>ומסיימת הגמרא: אלא אמר רב אשי, רבן גמליאל ובית דינו סברי לה כרבי ישמעאל, דאמר הלכתא גמירי לה. וכי גמירי הלכתא – בזמן שבית המקדש קיים, דומיא דניסוך המים. אבל בזמן שאין בית המקדש קיים – לא.</p>
+      <p>תראו כמה זה מעניין. ההלכה למשה מסיני נמסרה כשלוש הלכות יחד: עשר נטיעות, ערבה וניסוך המים. למה דווקא שלוש אלה יחד? יש עוד הרבה הלכות למשה מסיני. בא רבן גמליאל וחידש: זה תלוי בזה. אם יש ערבה וניסוך המים – כלומר, יש בית מקדש – יש גם תוספת שביעית. אין בית מקדש – אין ערבה, אין ניסוך המים, ואין תוספת שביעית.</p>
+      <p>כך, ארבע מאות שנה אחרי החורבן, "מחק" כביכול רבן גמליאל את הפרק הראשון והשני של מסכת שביעית – לא לגמרי, אלא בזמן הזה. הוא מודה שהדינים קיימים כשיש בית מקדש. רק בתקופתנו הם אינם נוהגים.</p>
+      <p>ולפי רב אשי, כך נפסק להלכה ברמב"ם. הרב אמר שלפי זה, היום מותר לחרוש ולעבוד את האדמה עד ראש השנה של השמיטה.</p>
+      <p class="bold-para">ההלכה של תוספת שביעית נאמרה רק בזמן הבית, דומיא דניסוך המים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבן גמליאל ובית דינו</div>
+      <h3 class="story-title">🕍 כשייבנה הבית</h3>
+      <p>יש בדברי רב אשי משהו מרגש. רבן גמליאל לא אמר שהמשניות של בית שמאי ובית הלל אינן נכונות. הוא לא ביטל את דבריהם בגלל שחשב שטעו. הוא אמר שההלכה הזאת קשורה לבית המקדש, כמו הערבה וניסוך המים.</p>
+      <p>ומה פירוש הדבר? כשאנחנו לומדים את שני הפרקים הראשונים של מסכת שביעית, אנחנו לומדים הלכות שאינן נוהגות היום, אבל יחזרו. ביום שייבנה בית המקדש, ויחזרו לקחת ערבה ולנסך מים על גבי המזבח בחג הסוכות, יחזור גם האיסור לחרוש בשדה האילן מעצרת ובשדה הלבן מפסח.</p>
+      <p>כך גם ההיתר שיש לנו היום הוא תזכורת לחורבן. אנחנו יכולים לחרוש עד ראש השנה, משום שאין לנו בית מקדש. וההקלה הזאת, אם חושבים עליה, מעוררת געגוע.</p>
+      <p>ומי שלומד את המשניות האלה עם ילדיו, כמו שסיפר הרב, מלמד אותם לא רק הלכה. הוא מלמד אותם מה חסר לנו, ולמה אנחנו מחכים. יהי רצון שנזכה לראות את ההלכות האלה חוזרות למעשה.</p>
+      <p class="bold-para">הדינים של שני הפרקים לא נמחקו לעולם; הם ממתינים לבית המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבן גמליאל ובית דינו</div>
+      <h3 class="story-title">🍊 עצי פרי – עניין אחר</h3>
+      <p>אבל הרב הדגיש מיד: אין זה אומר שמותר הכל. נטיעת עצי פרי היא עניין אחר לגמרי. כבר בט"ו באב הפסיקו לנטוע עצי פרי לקראת השמיטה, וזה אינו קשור לתוספת שביעית. זו גזירה נפרדת של חכמים, משום שהעץ צריך זמן כדי להיקלט, ונטיעה סמוכה לשמיטה נראית כהכנה לשנה השביעית.</p>
+      <p>גם לירקות ולגידולים אחרים יש תאריכים משלהם, ויש לחשב לכל גידול את המועד שלו. הרב אמר שאינו יכול לחשב את כל המועדים בעל פה בשיעור, ושאולי יעשו זאת בשיעור הבא. פרחים, לדבריו, מותר לשתול גם סמוך יותר. ומי שזה נוגע לו למעשה, צריך לברר את התאריכים המדויקים.</p>
+      <p>הרב הוסיף שעניין הזמנים קשור גם לחשבון שנות ערלה. משפחה שנוטעת עץ, צריכה לחשב: שנה ראשונה, שנייה, שלישית – ואם אחת מהן היא שנת שמיטה, הדבר משפיע על החשבון.</p>
+      <p>הוא תיאר כמה מרגש יכול להיות הרגע שבו משפחה מגיעה, אחרי כל החשבונות, לאכול לראשונה מפרי העץ שגידלה: מפרישים תרומות ומעשרות כדין, מברכים, וכל אחד מקבל פלח. זה רגע שבו ארץ ישראל והלכותיה נעשים חלק מן הבית.</p>
+      <p class="bold-para">האיסור לנטוע עצי פרי לפני השמיטה אינו קשור לתוספת שביעית, אלא לגזירה אחרת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הראשונים והאחרונים</div>
+      <h3 class="story-title">📚 תוספות: תוספת כל שהוא</h3>
+      <p>התוספות בסוגיה שואלים שאלה חזקה. הגמרא אמרה: מה שבת בראשית, לפניה ולאחריה מותרים. והרי בכל מקום אנחנו אומרים שיש תוספת שבת! כל הסוגיה כולה עוסקת בתוספת שבת, בכניסתה וביציאתה. איך אפשר לומר שלפני שבת מותר?</p>
+      <p>ומתרצים התוספות: הגמרא לא דיברה על תוספת כל שהוא. לדעת התוספות, די בתוספת קטנה – דקה, שתיים. והגמרא מדברת על תוספת גדולה, של שלושים יום. כמו שבשבת אין תוספת גדולה – הרי לפי אותו יחס, שלושים יום לפני שנה הם כמו כמה שעות לפני שבת – כך בשביעית אין תוספת גדולה.</p>
+      <p>הרב העיר שלמעשה איננו פוסקים שתוספת שבת היא "כל שהוא" בלבד. אבל לענייננו יוצא מן התוספות יסוד חשוב: גם היום יש מצווה להוסיף תוספת קטנה על השביעית. ותוספת זו היא מן התורה, כמו שראינו: כל מקום שנאמר בו שבות, מוסיפים מחול על הקודש.</p>
+      <p>אמנם יש שיטה אחרת: לדעת הרמב"ם, תוספת שבת אינה מן התורה. הפוסקים דנים בזה הרבה, אבל רוב הפוסקים סוברים שתוספת שבת היא מן התורה, כמו שעולה מן התוספות.</p>
+      <p class="bold-para">לדעת התוספות, גם בזמן הזה יש מצווה להוסיף מעט על השביעית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הראשונים והאחרונים</div>
+      <h3 class="story-title">🎺 קושיית המקדש דוד</h3>
+      <p>המקדש דוד, אחד האחרונים, שואל שאלה יפה על התוספות. השמיטה מתחילה בא' בתשרי. וא' בתשרי הוא ראש השנה – יום טוב! ממילא, בכניסת השמיטה כבר יש תוספת יום טוב. כל המלאכות אסורות ממילא, משום תוספת יום טוב.</p>
+      <p>אם כן, מה זה משנה אם יש או אין תוספת שביעית? בכל מקרה אף אחד אינו יכול לחרוש בזמן הזה, כי זה החג. על מה הדיון? למה התוספות טורחים להוכיח שיש תוספת שביעית בזמן הזה?</p>
+      <p>השאלה הזאת נראית חזקה מאוד. אם כל תוספת שביעית נבלעת בתוך תוספת יום טוב, אין לה כמעט שום משמעות מעשית. ובכל זאת, המקדש דוד מוצא תשובה מעניינת, והיא מגלה יסוד עמוק בהבנת מצוות השמיטה.</p>
+      <p>התשובה נשענת על שאלה יסודית שעוסקים בה הרבה: האם השביעית היא איסור על האדם, או איסור על האדמה?</p>
+      <p class="bold-para">א' בתשרי הוא ראש השנה, ובו ממילא אסורה מלאכה – אז מה מוסיפה תוספת שביעית?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הראשונים והאחרונים</div>
+      <h3 class="story-title">🌍 גברא או חפצא</h3>
+      <p>בשבת, האיסור הוא על האדם: "לֹא תַעֲשֶׂה כָל מְלָאכָה". ולכן שעון שבת מותר. המכשיר עובד, אבל אתה לא עשית מלאכה. וגם אמירה לגוי אסורה רק מדרבנן, משום שבות, ולא מן התורה.</p>
+      <p>אבל בשביעית, אומר המנחת חינוך, הפסוק אומר "וְשָׁבְתָה הָאָרֶץ". המצווה היא שהאדמה תשבות. ולכן, לדעתו, עבודת שדהו של יהודי על ידי גוי אסורה מן התורה משום שביתת שדהו. הרב הסביר שלכן גם הרבנות, כשהיא עושה את המכירה, אינה מסתפקת בכך שגוי יעבוד, אלא מוכרת לו את הקרקע עצמה. אם השדה נשאר של יהודי ומביאים עליו עובדים זרים – אין בזה כלום, כי האדמה של יהודי אינה שובתת.</p>
+      <p>ומכאן תשובת המקדש דוד: יש הבדל מעשי. מדין יום טוב, אפשר לבקש מגוי דבר דחוף בדקות האחרונות שלפני כניסת החג, כי האיסור הוא על האדם. אבל אם יש תוספת שביעית, שהיא איסור על האדמה – יהיה אסור שגוי יעבוד בשדה של יהודי גם בדקות האלה.</p>
+      <p>כך מתברר שיש משמעות לתוספת שביעית גם כשהיא חלה בערב ראש השנה.</p>
+      <p class="bold-para">לפי המנחת חינוך, מצוות השמיטה היא שהארץ תשבות, ולכן גם עבודת גוי אינה פתרון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הראשונים והאחרונים</div>
+      <h3 class="story-title">🖋️ שיטת הריטב"א</h3>
+      <p>הרב הביא גם את דברי הריטב"א, מן הראשונים, שחי כמאה שנה אחרי בעלי התוספות. הוא ציין שזה אחד הראשונים שנעים מאוד ללמוד, כי לשונו קלה וברורה, והוא נלמד הרבה בישיבות, יחד עם הרשב"א.</p>
+      <p>הריטב"א שואל: מה פירוש "מה שבת בראשית לפניה ולאחריה מותרים"? האם רבן גמליאל ובית דינו לא סברו שיש תוספת שבת? הרי כל הש"ס מדבר על תוספת שבת!</p>
+      <p>ומתרץ הריטב"א: "שבתון" – שבת עצמה – אין לה לפני ואחרי. התוספת נלמדת מ"תִּשְׁבְּתוּ שַׁבַּתְּכֶם". ואולי תאמר: נלמד משבת לשביעית? על כך הוא עונה בשני דרכים. ובתוך דבריו הוא מחדש יסוד נפלא: מצוות תוספת קיימת כשהמצווה היא על האדם. האדם צריך להוסיף. אבל כשהמצווה היא על האדמה – "שבת הארץ" – אין בה מצוות תוספת.</p>
+      <p>נמצא שיש כאן מחלוקת יסודית. התוספות מחדשים שגם היום יש מצווה להוסיף מעט על השביעית, ואילו מדברי הריטב"א עולה שאין תוספת במצווה שעל הקרקע. בשיעור התמקד הרב בשיטת התוספות.</p>
+      <p class="bold-para">לדעת הריטב"א, התוספת היא רק במצוות שעל האדם, ולא במצווה שעל הקרקע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הראשונים והאחרונים</div>
+      <h3 class="story-title">🔑 מה זה אומר על המכירה</h3>
+      <p>יסוד המנחת חינוך מאיר גם את הדיון הציבורי שמוכר לכולנו. בשבת, אם רוצים להפעיל מכשיר, יש שעון שבת. האדם אינו עושה מלאכה, והמכשיר עובד מעצמו. האיסור על האדם, והאדם לא עשה דבר.</p>
+      <p>אבל בשמיטה זה אינו עובד כך. אם האדמה שייכת ליהודי, ומישהו אחר עובד בה – היא אינה שובתת. אין כאן "שעון שבת" שאפשר להפעיל. ולכן, כפי שהסביר הרב, היתר המכירה בנוי על העברת הבעלות על הקרקע עצמה. השאלה אם המכירה מועילה או לא היא נושא בפני עצמו, והרב לא הכריע בה בשיעור. אבל ברור על מה הדיון: על השאלה של מי האדמה.</p>
+      <p>וזה מתחבר לרעיון שעולה בכל דיני השמיטה. השנה השביעית אינה רק שנה שבה האדם נח. היא שנה שבה הארץ נחה. "וְשָׁבְתָה הָאָרֶץ שַׁבָּת לַה'". הארץ עצמה כביכול מקיימת מצווה.</p>
+      <p>ולכן גם התוספת, אם יש בה ממש, נוגעת לארץ ולא רק לאדם. ובזה נחלקו, כפי שנראה, התוספות והריטב"א.</p>
+      <p class="bold-para">לפי ההבנה שהשמיטה היא מצווה על הקרקע, כל הדיון במכירה הוא על הקרקע עצמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הראשונים והאחרונים</div>
+      <h3 class="story-title">🧭 סיכום הסוגיה</h3>
+      <p>כדאי לעצור ולסכם את הדרך. במשנה, בימי הבית, היה איסור לחרוש בשדה האילן מעצרת ובשדה הלבן מפסח, משום שנראה שהאדם מכין את האדמה לשביעית.</p>
+      <p>בגמרא, ראינו שלפי רבי עקיבא תוספת שביעית היא מן התורה, מ"בחריש ובקציר תשבות", ולפי רבי ישמעאל היא הלכה למשה מסיני. ואחר כך ראינו את רבן גמליאל ובית דינו, שביטלו את שני הפרקים. ולפי רב אשי, הסיבה היא שההלכה למשה מסיני נאמרה רק בזמן שבית המקדש קיים, כמו ערבה וניסוך המים. וכך נפסק ברמב"ם.</p>
+      <p>ואז באו הראשונים. התוספות חידשו שגם אם אין תוספת גדולה של שלושים יום, יש מצווה של תוספת כל שהוא, מן התורה. הריטב"א, לעומתם, סבר שבמצווה שעל הקרקע אין תוספת. והמקדש דוד הראה שגם כשתוספת שביעית חלה בערב ראש השנה, יש לה משמעות מעשית, לפי המנחת חינוך שהשמיטה היא מצווה על הארץ.</p>
+      <p>ומכאן אנו עוברים אל החלק האחרון: מה עושים עם כל זה למעשה בימינו? וכאן באה הצעה מעשית של אחד מגדולי הדור.</p>
+      <p class="bold-para">מן המשנה, דרך הגמרא, ועד הראשונים: שלושה רבדים בדין תוספת שביעית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+          <a href="#story-29">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-29" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקבל את השמיטה בפה</div>
+      <h3 class="story-title">🗣️ הצעת התשובות והנהגות</h3>
+      <p>הרב משה שטרנבוך, ראב"ד העדה החרדית ותלמיד חכם גדול, כתב בספרו "תשובות והנהגות" הצעה מעשית מעניינת. בתרגום חופשי: אף שבזמן הזה אין מצוות תוספת שביעית, כפי שלמדנו בסוגיה, מכל מקום לעניות דעתי נראה שראוי לכל אחד בארץ ישראל, שמקבל בפה בערב ראש השנה את קדושת היום, שיוסיף ויאמר: ואני מקבל עליי מצוות שמיטה שציוונו הבורא יתברך שמו. ויש בזה עניין גדול.</p>
+      <p>הוא אינו אומר שזו חובה. הוא אומר שזה ראוי. ולכן, אמר הרב, בערב ראש השנה של השמיטה, לפני השקיעה, לפני הדלקת הנרות ולפני תפילת ערבית, כדאי לומר: הריני מקבל עליי מצוות תוספת שמיטה, או מצוות שמיטה.</p>
+      <p>ומה הטעמים לכך? הרב שטרנבוך מונה כמה. הטעם הראשון הוא מה שלמדנו: אף שבטלה התוספת הגדולה של שלושים יום, שהייתה הלכה למשה מסיני רק בזמן הבית, מכל מקום לדעת התוספות צריך תוספת כל שהוא.</p>
+      <p>והטעם השני: מבואר בראשונים, בריטב"א וברבנו יונה, שמצוות תוספת שבת היא לקבל בפה. ואם כן, גם בשביעית ראוי לקבל בפה, אף שהקדושה חלה מאליה כשמגיע הזמן.</p>
+      <p class="bold-para">ראוי שכל אחד בארץ, כשהוא מקבל את קדושת ראש השנה, יוסיף שהוא מקבל עליו את מצוות השמיטה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-28">⟶ הקודם</a>
+          <a href="#story-30">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(29, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-30" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקבל את השמיטה בפה</div>
+      <h3 class="story-title">⏰ לבוא מוקדם</h3>
+      <p>הרב שטרנבוך מוסיף שלא מצא בפוסקים את ההצעה הזאת במפורש, והוא כותב אותה מסברא. ובכל זאת, היא מתחברת לרעיון עמוק שהרב הרחיב עליו.</p>
+      <p>בפוסקים, הטעם הפשוט של תוספת שבת הוא שלא ייכשל אדם בכניסת השבת עצמה. אבל יש בזה גם רעיון פשוט מתוך ההרגשה. מי שאוהב שיעור, מגיע חמש או עשר דקות לפני. מי שאינו אוהב, מגיע עשר דקות אחרי. מי שאוהב דבר, מחכה לו מן הבוקר, מתכונן אליו, ורוצה להיות בו כמה שיותר.</p>
+      <p>וכך בשבת. אדם שרוצה להראות שהוא אוהב את השבת, מקבל אותה מוקדם. הוא עומד ומחכה לה, מצפה לה, ואינו ממתין לרגע האחרון. התוספת היא ההוכחה לאהבה.</p>
+      <p>הרב ציין שבימינו רבים מקבלים על עצמם תוספת שבת כסגולה לכל מיני ישועות, ויש בזה טעם. כשאדם מראה שהוא מחבב מצווה, גם הקדוש ברוך הוא מחבב אותו. חיבוב המצווה הוא סגולה שאדם לא ינזק. ובגמרא מובא שהקדוש ברוך הוא סולח לישראל משום שהם מחבבים את המצוות, ומקבלים על עצמם יותר ממה שחייבים.</p>
+      <p class="bold-para">מי שאוהב דבר, מקדים לבוא אליו; התוספת היא ביטוי של חיבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-29">⟶ הקודם</a>
+          <a href="#story-31">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(30, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-31" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקבל את השמיטה בפה</div>
+      <h3 class="story-title">🎁 מי שנותן מעבר למחויב</h3>
+      <p>הרב הסביר את הסגולה הזאת בטבע של בני אדם. כשמישהו בא אליך ואומר: אני רוצה לתת לך, ועושה יותר ממה שהוא חייב – אתה מיד רוצה גם אתה לתת לו. כך נבראנו.</p>
+      <p>הוא תיאר דוגמה מן ההשכרה של דירה. אורח שנהנה מאוד מן הדירה, והשאיר מתנה מעבר למה שסוכם – בעל הבית הרגיש מיד שגם הוא רוצה לתת לו משהו בחזרה, ונתן לו ספרים במתנה. מי שנותן מעבר למה שצריך, מעורר בצד השני רצון לתת.</p>
+      <p>ובמידה כזאת נוהג הקדוש ברוך הוא עם ישראל. כשאנחנו מוסיפים על השבת, מקבלים אותה מוקדם, ומראים את חיבתנו, גם הוא מראה לנו את חיבתו. התוספת אינה רק דקות נוספות. היא אמירה: אנחנו רוצים יותר ממה שנדרש מאיתנו.</p>
+      <p>ואותו דבר בשביעית. גם אם אין כאן חובה, לפחות לפי שיטת התוספות יש צד של מצווה. ולמה שלא יראה אדם את חיבתו למצוות השמיטה, ויאמר בפה שהוא מקבל אותה עליו? ומי שמראה חיבה, זוכה לחיבה. זה כל ההבדל בין מי שעושה רק את המינימום, לבין מי שמחפש להרבות, ומקבל את המצווה כמתנה ולא כמשא.</p>
+      <p class="bold-para">כשאדם נותן יותר ממה שצריך, גם הצד השני רוצה לתת לו יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-30">⟶ הקודם</a>
+          <a href="#story-32">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(31, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-32" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקבל את השמיטה בפה</div>
+      <h3 class="story-title">🌷 החזון איש והגנן</h3>
+      <p>הרב שטרנבוך מביא טעם נוסף, מסיפור על החזון איש. החזון איש הודיע לגנן של העירייה בבני ברק: אם תעבוד בגני העיר בשמיטה, כל תושבי בני ברק עוברים על מצוות שביתת הארץ. למה? כי השטחים הציבוריים שייכים לכל התושבים, וכולם שותפים בהם.</p>
+      <p>זה חשבון מעניין מאוד. הרי השטחים הציבוריים במדינה שייכים במובן מסוים לכל תושביה. ויש עוד דיונים, למשל על מי שמחזיק במניות של חברות שעובדות בשמיטה. אפשר לפלפל בזה הרבה, והפוסקים דנים בכל האפשרויות.</p>
+      <p>ומה יכול אדם לעשות, כשיש דברים שאינם בשליטתו? כאן נכנסת ההצעה. אם הוא עומד בערב השביעית ואומר: הריני מקבל עליי מצוות שמיטה, הוא מגלה בזה שהוא רוצה שלא יעבדו בחלקים שלו. ואם בכל זאת עובדים, זה בניגוד לרצונו.</p>
+      <p>זה הטעם שהרב שטרנבוך כותב: ראוי לכל אדם לומר את הנוסח הזה, כדי לגלות שהוא רוצה מאוד שגם בחלקים שהוא שותף בהם ישמרו את השמיטה. ומה עוד הוא יכול לעשות מעבר לכך?</p>
+      <p class="bold-para">מי שמקבל על עצמו את השמיטה בפה, מגלה שאינו רוצה שיעבדו גם בחלקים המשותפים שלו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-31">⟶ הקודם</a>
+          <a href="#story-33">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(32, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-33" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקבל את השמיטה בפה</div>
+      <h3 class="story-title">🕊️ "שבת לה'"</h3>
+      <p>והטעם האחרון. בפרשת בהר נאמר: "כִּי תָבֹאוּ אֶל הָאָרֶץ אֲשֶׁר אֲנִי נֹתֵן לָכֶם, וְשָׁבְתָה הָאָרֶץ שַׁבָּת לַה'". ומפרש רש"י: "לשם ה', כשם שנאמר בשבת בראשית". מה הפירוש?</p>
+      <p>הרב שטרנבוך מסביר: יש פוסקים שסוברים שמצוות צריכות כוונה. ובשבת צריך לכוון לשבות משום שציווה הבורא. ועוד, הקדוש ברוך הוא ציווה לקדש את השבת בדברים: "זָכוֹר אֶת יוֹם הַשַּׁבָּת לְקַדְּשׁוֹ". אנחנו לא אמורים לעשות שבת כמו שאחרים עושים יום מנוחה – לישון מאוחר, לנוח, כי נחמד ובריא לנוח.</p>
+      <p>השבת צריכה להיות עם הכרה: אני שובת, כמו שהקדוש ברוך הוא שבת. ולכן בקידוש אדם אוחז כוס יין ואומר "וַיְכֻלּוּ", כדי לומר בפה: אינני נח רק משום שנעים לנוח, אלא משום שזו שבת לה'.</p>
+      <p>ואותו דבר בשביתת הארץ. השנה השביעית אינה יציאה לפנסיה לשנה, ואינה סתם הפסקה. "שבת לה'" – כמו שבת בראשית. ולא די במחשבה בלבד; צריך לומר בפה, כמו שנאמר בשבת "לקדשו". לכן ראוי לאדם לומר: הריני מקיים מצוות שנת השביעית, כדי שתהיה השמיטה שבת לשם ה'.</p>
+      <p class="bold-para">השמיטה, כמו השבת, צריכה להיות לשם ה', ולא סתם מנוחה – ולכן ראוי לומר זאת בפה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-32">⟶ הקודם</a>
+          <a href="#story-34">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(33, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-34" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקבל את השמיטה בפה</div>
+      <h3 class="story-title">📝 מתי ואיך אומרים</h3>
+      <p>איך מקיימים את ההצעה הזאת בפועל? הרב תיאר זאת בפשטות. בערב ראש השנה שבו נכנסת שנת השמיטה, לפני השקיעה – לפני הדלקת הנרות ולפני תפילת ערבית – אדם אומר: הריני מקבל עליי מצוות תוספת שמיטה, או: הריני מקבל עליי מצוות שמיטה שציוונו הבורא יתברך שמו.</p>
+      <p>זה הכל. אין כאן טקס מסובך, אין צורך בהכנות מיוחדות. אבל יש בזה, כמו שכתב הרב שטרנבוך, עניין גדול. ולדבריו, אדם שעושה כך מקיים בבת אחת שתי שבתות: גם את תוספת קדושת החג, וגם את קבלת שבת הארץ. והוא סיים את דבריו בברכה, שהקדוש ברוך הוא ישמור את המקיימים מכל רע.</p>
+      <p>הרב העיר שהדבר מתאים לרוח של ימינו. היום רבים מאוד מקבלים על עצמם תוספת שבת, יותר מבעבר. כל הלוחות מציינים זאת, וכשיש לאנשים צרות, הם מקבלים על עצמם עוד תוספת, עוד קבלה מוקדמת של שבת.</p>
+      <p>ואם כך בשבת, שבאה כל שבוע, כל שכן בשמיטה, שבאה פעם בשבע שנים. משפט אחד, שנאמר פעם אחת, יכול לפתוח את השנה כולה ברוח של קדושה וחיבה.</p>
+      <p class="bold-para">בערב ראש השנה של השמיטה, לפני השקיעה, מוסיפים לקבלת החג משפט אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-33">⟶ הקודם</a>
+          <a href="#story-35">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(34, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-35" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לקבל את השמיטה בפה</div>
+      <h3 class="story-title">💚 לסיום: חיבה ולא רק חובה</h3>
+      <p>התחלנו בהיסטוריה, עברנו דרך המשניות בתחילת מסכת שביעית, דרך הסוגיה של מוסיפין מחול על הקודש, דרך תקנת רבן גמליאל ודברי רב אשי, ועד התוספות, הריטב"א והמקדש דוד. סוגיה מורכבת, עם שיטות רבות.</p>
+      <p>ולמעשה, כפי שאמר הרב, היום מותר לחרוש עד ראש השנה, לפי מה שנפסק ברמב"ם. אבל יש גזירות נפרדות על נטיעה לפני השמיטה, ויש לברר את התאריכים לכל גידול. ובכל שאלה מעשית צריך לשאול רב.</p>
+      <p>ומעל כל הפרטים, עולה מסר אחד, פשוט וברור. גם כשהחובה אינה גדולה, אפשר להראות חיבה. אפשר לעמוד בערב ראש השנה ולומר בפה: אני מקבל עליי את מצוות השמיטה שציווה הבורא. כך נעשית השמיטה "שבת לה'", כמו שבת בראשית.</p>
+      <p>ומי שמקבל את המצווה מתוך אהבה, ומקדים לבוא אליה, זוכה שגם הקדוש ברוך הוא יקדים לו את ברכתו. יהי רצון שנזכה לשמור את שנת השמיטה כראוי, ולשבות בה לשם ה'.</p>
+      <p>ומי שילמד את הסוגיה הזאת לפני השמיטה, ויגיע לערב ראש השנה כשהוא יודע מה הוא אומר ולמה, יאמר את המשפט הקצר הזה מתוך הבנה. הוא יידע שהוא ממשיך שלשלת שמתחילה במשנה, עוברת דרך רבן גמליאל, התוספות והאחרונים, ומגיעה עד אליו – יהודי בארץ ישראל, שמקבל על עצמו את שבת הארץ.</p>
+      <p class="bold-para">מן הסוגיה המורכבת עולה מסר פשוט: לקבל את השמיטה באהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-34">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(35, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/WNP7aAwlDeU · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"סוגיה לאורך הדורות","icon":"🕰️","color":"#c62b6b","stories":[{"id":1,"title":"ארבע תקופות","icon":"🕰️"},{"id":2,"title":"למה אין הלכות שמיטה בשולחן ערוך","icon":"📕"},{"id":3,"title":"שלוש תוספות","icon":"➕"},{"id":4,"title":"כשחזרה החקלאות","icon":"🚜"}]},{"id":2,"name":"המשניות הראשונות","icon":"🌳","color":"#6d28d9","stories":[{"id":5,"title":"עד מתי חורשים בשדה האילן","icon":"🌳"},{"id":6,"title":"שני מועדים שונים","icon":"📅"},{"id":7,"title":"שדה הלבן","icon":"🌾"},{"id":8,"title":"\"על המחיה\" ו\"על מחייתה\"","icon":"🍞"},{"id":9,"title":"ללמד ילדים לגדל","icon":"🪴"}]},{"id":3,"name":"מוסיפין מחול על הקודש","icon":"🕯️","color":"#e08e00","stories":[{"id":10,"title":"\"בחריש ובקציר תשבות\"","icon":"🕯️"},{"id":11,"title":"רש\"י ורבי ישמעאל","icon":"📜"},{"id":12,"title":"\"ועניתם את נפשותיכם בתשעה\"","icon":"🌙"},{"id":13,"title":"בכניסה וביציאה","icon":"🚪"},{"id":14,"title":"כוכבים קטנים","icon":"✨"},{"id":15,"title":"לקבל את השבת בפה","icon":"🙏"}]},{"id":4,"name":"רבן גמליאל ובית דינו","icon":"⚖️","color":"#1e88b8","stories":[{"id":16,"title":"\"נמנו על שני פרקים הללו וביטלום\"","icon":"⚖️"},{"id":17,"title":"\"גדול ממנו במניין\"","icon":"❓"},{"id":18,"title":"הלכה למשה מסיני","icon":"📜"},{"id":19,"title":"שלושים יום ומפסח ועצרת","icon":"🗓️"},{"id":20,"title":"רב אשי: בזמן שבית המקדש קיים","icon":"🏛️"},{"id":21,"title":"כשייבנה הבית","icon":"🕍"},{"id":22,"title":"עצי פרי – עניין אחר","icon":"🍊"}]},{"id":5,"name":"הראשונים והאחרונים","icon":"📚","color":"#c62b6b","stories":[{"id":23,"title":"תוספות: תוספת כל שהוא","icon":"📚"},{"id":24,"title":"קושיית המקדש דוד","icon":"🎺"},{"id":25,"title":"גברא או חפצא","icon":"🌍"},{"id":26,"title":"שיטת הריטב\"א","icon":"🖋️"},{"id":27,"title":"מה זה אומר על המכירה","icon":"🔑"},{"id":28,"title":"סיכום הסוגיה","icon":"🧭"}]},{"id":6,"name":"לקבל את השמיטה בפה","icon":"🗣️","color":"#6d28d9","stories":[{"id":29,"title":"הצעת התשובות והנהגות","icon":"🗣️"},{"id":30,"title":"לבוא מוקדם","icon":"⏰"},{"id":31,"title":"מי שנותן מעבר למחויב","icon":"🎁"},{"id":32,"title":"החזון איש והגנן","icon":"🌷"},{"id":33,"title":"\"שבת לה'\"","icon":"🕊️"},{"id":34,"title":"מתי ואיך אומרים","icon":"📝"},{"id":35,"title":"לסיום: חיבה ולא רק חובה","icon":"💚"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
