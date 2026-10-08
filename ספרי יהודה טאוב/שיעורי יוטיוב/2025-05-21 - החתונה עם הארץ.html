@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 החתונה עם הארץ</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 החתונה עם הארץ</h1>
+  <p>עם ישראל וארץ ישראל כחתן וכלה: גלות כגירושין, אירוסין נישואין ויחוד בשלושת הרגלים ובשיבה לארץ, ופירות הארץ כסימן הגאולה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ החתונה עם הארץ" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/ibsbSl1K7jo?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/ibsbSl1K7jo/hqdefault.jpg" alt="החתונה עם הארץ" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=ibsbSl1K7jo" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הכלה היא הארץ</div>
+      <h3 class="story-title">👰 לשמח את הכלה</h3>
+      <p>השיעור ממשיך סיכום של מה שנלמד קודם. התורה אומרת על מי שנשא אישה: "נָקִי יִהְיֶה לְבֵיתוֹ שָׁנָה אֶחָת, וְשִׂמַּח אֶת אִשְׁתּוֹ אֲשֶׁר לָקָח". וחז"ל למדו שהשנה הזאת נאמרה גם על מי שבנה בית ועל מי שנטע כרם. אבל אם כך, נמצא שבעומק הדברים גם בונה הבית ונוטע הכרם מצווים "לשמח את אשתו". את מי הם משמחים?</p>
+      <p>התשובה: לא כלה גשמית, אלא ארץ ישראל, שהיא ככלה לעם ישראל. אדם שבונה בית בארץ, כאילו מתחתן עם ארץ ישראל. ויש לו מצווה לשמוח עמה ולשמח אותה, על ידי שהוא מתעורר לאהוב את ארצו של ה'.</p>
+      <p>ולכן, אומר הרב, לא כתבה התורה במפורש "שנה של שמחה" לבונה בית, אלא כתבה זאת בשמחת חתן וכלה. כדי ללמד שהשורש הוא לשמח את הכלה, וגם לבונה הבית יש כלה לשמח: ארץ ישראל. המצווה בשנה הראשונה היא כביכול לאהוב את הקירות, לנשק אותם, לשמוח בהם, כמו שחתן שמח בכלתו.</p>
+      <p>הרעיון הזה פותח מבט רחב על כל היחס שבין עם ישראל לארצו. ויש לו מקורות רבים בחז"ל ובספרים: כשעם ישראל אינו בארצו, זה כמו גירושין; וכשהוא חוזר אליה, זו חתונה.</p>
+      <p class="bold-para">"ושמח את אשתו" נאמר גם על מי שבנה בית, כי הכלה שלו היא ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הכלה היא הארץ</div>
+      <h3 class="story-title">💔 כאלמנה, ולא אלמנה ממש</h3>
+      <p>כשעם ישראל נמצא בחוץ לארץ, זו בחינת גירושין. כך כתוב במגילת איכה: "אֵיכָה יָשְׁבָה בָדָד הָעִיר רַבָּתִי עָם, הָיְתָה כְּאַלְמָנָה". הפסוק מתאר את מצב הארץ בלי עם ישראל: היא כמו אלמנה.</p>
+      <p>אבל הגמרא במסכת תענית מדייקת: "כְּאַלְמָנָה" – ולא אלמנה ממש, אלא כאישה שהלך בעלה למדינת הים, ודעתו לחזור אליה. הבעל לא מת. הוא הלך רחוק, וזמן רב לא היה בבית. אבל הקשר לא נותק לגמרי, והוא עתיד לחזור.</p>
+      <p>רבי צדוק הכהן מלובלין היה אומר תמיד שלא בחינם כל דבר נמצא במסכת שבה הוא נמצא. סוגיית החורבן, עם כל הסיפורים הקשים על חורבן הבית, נמצאת במסכת גיטין. למה? כי החורבן הוא כביכול גט שנתן הקדוש ברוך הוא לעם ישראל. והוא הביא שם דוגמאות רבות לכך שמקומה של כל סוגיה מלמד על תוכנה.</p>
+      <p>ואם הגלות היא גירושין, השיבה לארץ היא חתונה מחדש. ויש לכך מקורות רבים. בזוהר מבואר שכאשר עם ישראל מגיע לארץ ישראל, זה כביכול כמו נישואי חתן וכלה. ולא רק בין העם לארץ, אלא גם בין העם לקדוש ברוך הוא.</p>
+      <p class="bold-para">הגלות דומה לאישה שבעלה הלך למדינת הים ודעתו לחזור אליה, ולכן סוגיית החורבן במסכת גיטין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הכלה היא הארץ</div>
+      <h3 class="story-title">🍷 הכוס החמישית</h3>
+      <p>יש כאן שני דברים שתלויים זה בזה: ארץ ישראל היא גמר הנישואין שבין עם ישראל לקדוש ברוך הוא. וזה רמוז בליל הסדר. יש ארבע לשונות של גאולה: "וְהוֹצֵאתִי", "וְהִצַּלְתִּי", "וְגָאַלְתִּי", "וְלָקַחְתִּי". ויש לשון חמישית: "וְהֵבֵאתִי אֶתְכֶם אֶל הָאָרֶץ". והשלמות של הכל היא ה"והבאתי".</p>
+      <p>"ולקחתי אתכם לי לעם" היא לשון של נישואין, כמו "כִּי יִקַּח אִישׁ אִשָּׁה". והחתונה נגמרת ב"והבאתי", בהבאה אל הארץ. כנגד הלשון החמישית יש מנהג של כוס חמישית, ושאלו למה לא שותים אותה. הרב אמר שזה נושא לשיעור בפני עצמו. משתתפים העירו שבהגדות מחודשות כבר הוסיפו כוס חמישית, אולי מאז קום המדינה.</p>
+      <p>העיקר: השלמות של הגאולה היא החתונה בין עם ישראל לארצו. וכאשר עם ישראל מתחתן עם ארץ ישראל, הוא זוכה שגם הקדוש ברוך הוא מתחתן איתו. שני הקשרים קשורים זה בזה: הקשר עם הארץ פותח את הקשר עם הקדוש ברוך הוא.</p>
+      <p>ועל זה יש פסוק מפורש, ודברים נפלאים בספר הכוזרי.</p>
+      <p class="bold-para">ארבע לשונות הגאולה מסתיימות ב"והבאתי", והשיבה לארץ היא שלמות החתונה בין עם ישראל לה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הכלה היא הארץ</div>
+      <h3 class="story-title">🧱 כי רצו עבדיך את אבניה</h3>
+      <p>הכוזרי אומר: מתי תבוא הגאולה לעם ישראל? כאשר עם ישראל יאהב את ארץ ישראל. והוא מביא את הפסוק בתהילים: "אַתָּה תָקוּם תְּרַחֵם צִיּוֹן, כִּי עֵת לְחֶנְנָהּ כִּי בָא מוֹעֵד". הרב אמר: חבל שבסידור אומרים רק את החלק הראשון. אילו היו אומרים כל בוקר גם את ההמשך, זה היה מעורר את כולם. כי מה ההמשך? "כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ, וְאֶת עֲפָרָהּ יְחֹנֵנוּ". מתי תקום ותרחם ציון? כאשר עבדיך ירצו את אבניה ויחוננו את עפרה. כאשר עם ישראל יאהב את ארץ ישראל ויתחבר אליה.</p>
+      <p>וכנגד זה, מידה כנגד מידה, הקדוש ברוך הוא יאהב אותם. כך כתוב בישעיה: "כִּי יִבְעַל בָּחוּר בְּתוּלָה יִבְעָלוּךְ בָּנָיִךְ, וּמְשׂוֹשׂ חָתָן עַל כַּלָּה יָשִׂישׂ עָלַיִךְ אֱלֹקָיִךְ". מתי ישיש עלייך אלוקייך כחתן על כלה? כאשר בנייך יתחברו לארץ כחתן לכלה.</p>
+      <p>משתתף העיר הערה יפה: יש כאן היפוך תפקידים. כלפי הקדוש ברוך הוא, עם ישראל הוא הכלה. וכלפי ארץ ישראל, עם ישראל הוא החתן והארץ היא הכלה. הרב הסכים.</p>
+      <p>ויש לזה עוד מקור. כמו שיש מצווה להידבק בה' – "וּבוֹ תִדְבָּק", וכמו שנאמר באיש "וְדָבַק בְּאִשְׁתּוֹ", כך יש מצווה להידבק בארץ ישראל, כמו שכתוב: "אִישׁ בְּנַחֲלַת מַטֵּה אֲבֹתָיו יִדְבְּקוּ בְּנֵי יִשְׂרָאֵל".</p>
+      <p class="bold-para">לפי הכוזרי, הגאולה תבוא כשעם ישראל יאהב את ארץ ישראל, ומידה כנגד מידה ה' ישמח בו כחתן על כלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אירוסין, נישואין ויחוד</div>
+      <h3 class="story-title">📝 למה "אירוסין"?</h3>
+      <p>כאשר אדם מתחתן עם אישה, יש שלושה שלבים. השניים הראשונים מוכרים: אירוסין ונישואין. אבל האם חשבתם פעם למה קוראים לזה "אירוסין"? מה פירוש המילה?</p>
+      <p>אירוסין הם מלשון איסור. האישה נאסרת על כל האנשים שבעולם, כהקדש. אבל היא עדיין אינה שייכת לבעלה. זו בחינה של "לא תעשה".</p>
+      <p>הרב המשיל זאת לקניית דירה. אדם ראה דירה שמוצאת חן בעיניו. הוא מבקש לחתום על זיכרון דברים. למה? כי אולי מחר יבוא אחר ויציע עוד עשרת אלפים שקל, וזה קורה הרבה. זיכרון דברים אינו מעביר את הדירה אליו. אבל הוא מונע מן המוכר למכור אותה לאחר. יש בו פיצוי מוסכם, ומתווך סיפר לרב שבפועל, כשמגיעים לבית משפט, בדרך כלל מגיעים לפשרה.</p>
+      <p>כך גם אדם שפוגש אישה, ברוך ה', ורוצה לשאת אותה. הוא חושש שמא יקדים אותו אחר. מה עושים? אירוסין. היא עדיין אינה שלו, אבל כאן יש תוקף הלכתי ממשי, לא כמו זיכרון דברים. היא נאסרת על כולם, ובשלב הזה גם עליו. לכן נקרא "אירוסין": עשינו עכשיו איסור.</p>
+      <p>הרב העיר בחיוך: יהודים חוגגים כל דבר, אפילו איסור. והמנהג לעשות את שמחת האירוסין אצל משפחת הכלה מובן: אצל החתן, מה קרה? כלום. היא רק נאסרה על כל העולם.</p>
+      <p class="bold-para">אירוסין הם מלשון איסור: האישה נאסרת על כל העולם, כמו זיכרון דברים בקניית דירה, אבל בתוקף הלכתי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אירוסין, נישואין ויחוד</div>
+      <h3 class="story-title">🪜 שלושה שלבים</h3>
+      <p>אחרי האירוסין באים הנישואין. סוף סוף האיש והאישה מתאחדים יחד, מתוך אהבה ואחווה, שלום ורעות. ויש גם שלב שלישי: יחוד. הוא מביא אותה לתוך ביתו, ומשם מתחילים החיים המשותפים. אלה שלושת השלבים: אירוסין, נישואין ויחוד.</p>
+      <p>הרב הסביר שבלשון הגמרא "קידושין" ו"אירוסין" הם אותו דבר. והשלבים האלה אינם רק בין איש לאישה. הם קיימים גם בנישואין שבין עם ישראל לקדוש ברוך הוא, כמו שמתואר בשיר השירים. ובחודש ניסן קוראים: "קוּמִי לָךְ רַעְיָתִי יָפָתִי וּלְכִי לָךְ". הקדוש ברוך הוא קורא לנו "רעייתי".</p>
+      <p>והם קיימים גם בנישואין שבין עם ישראל לארץ ישראל. כמו באיש ואישה, יש אירוסין, נישואין ויחוד.</p>
+      <p>נראה תחילה את השלבים בין הקדוש ברוך הוא לעם ישראל. הם מופיעים בשלושה חגים, שלושת חגי הגאולה של ישראל: פסח, שבועות וסוכות. כל חג מבטא שלב נוסף, ובכל חג אנחנו עולים ומתעלים, עד שמגיעים לשלמות. ואחר כך נחזור לארץ ישראל, ונראה שם את אותם שלושה שלבים בדיוק.</p>
+      <p class="bold-para">אירוסין, נישואין ויחוד: האיסור, החיבור באהבה, והבית המשותף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אירוסין, נישואין ויחוד</div>
+      <h3 class="story-title">🧹 פסח – אירוסין</h3>
+      <p>באירוסין האישה נאסרת על כולם, אבל עדיין אינה שייכת לבעלה. זו בחינה של "לא תעשה". כך היה בפסח. מה קרה ביציאת מצרים? יצאנו מארץ מצרים, יצאנו מכל הטומאה. עזבנו את העבודה הזרה, כמו שאמרו חז"ל על "מִשְׁכוּ וּקְחוּ לָכֶם" – משכו ידיכם מעבודה זרה. פרשנו משם. זה "סור מרע".</p>
+      <p>אבל עדיין לא התחברנו לקדוש ברוך הוא בדרך של "עשה טוב". כמעט לא קיבלנו מצוות במצרים. הייתה מצוות קרבן פסח, ומצוות מילה, וכמעט לא יותר. משתתפים הזכירו גם את הכסף שקיבלנו ביציאה, אבל זה אינו מצווה.</p>
+      <p>ולכן עד היום, מצוות הפסח הן בעיקר "לא תעשה". מה עושים בעיקר לקראת פסח? מבערים את החמץ. מנקים, בודקים, מבררים, זורקים. יש גם מצוות עשה, כמו אכילת מצה, אבל היא לוקחת כמה דקות. רוב ההכנות לפסח הן הסרת הרע, להוציא את החמץ מן הבית. זו בחינת אירוסין: נאסרים על כל העולם.</p>
+      <p>וכך לומדים את ההבדל בין פסח לסוכות. בסוכות עושים בדיוק להפך. מה מתעסקים לפני סוכות? בונים. בונים סוכה, מקשטים, מביאים ארבעה מינים. הכל חיובי. החג הראשון הוא עזיבת הרע; החג האחרון הוא בניין.</p>
+      <p class="bold-para">פסח הוא שלב של "סור מרע": יוצאים ממצרים, עוזבים את העבודה הזרה, ומבערים את החמץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אירוסין, נישואין ויחוד</div>
+      <h3 class="story-title">🌸 שבועות – החופה</h3>
+      <p>החג השני: שבועות. הקדוש ברוך הוא פרס עלינו את ההר כחופה. כמו שאמרו חז"ל: "בְּיוֹם חֲתֻנָּתוֹ" – זה מתן תורה. בחג השבועות ניתנה התורה, וזה יום החתונה בין הקדוש ברוך הוא לעם ישראל.</p>
+      <p>ולכן רבים ממנהגי שבועות הם מנהגי חתונה. אוכלים מאכלי חלב, ויש מי שמסביר: כמו שהכלה לבושה לבן, כך אנחנו אוכלים מאכלים לבנים. ובזוהר כתוב שלומדים כל הלילה כדי לקשט את הכלה בעשרים וארבעה קישוטי כלה. כל הלימוד בלילה נועד שהכלה, כנסת ישראל, תבוא מקושטת לחתונה שמתרחשת בבוקר.</p>
+      <p>יש קהילות שנוהגות לקרוא בשבועות כתובה, כתובה בין הקדוש ברוך הוא לעם ישראל. ויש עוד מנהגים רבים, וכולם מנהגים של חתונה. שבועות הוא החופה.</p>
+      <p>אבל החתונה אינה נגמרת בחופה. אחרי החופה יש עוד שלב. ושלב זה מתבטא בחג השלישי.</p>
+      <p>ויש לשים לב לסדר. בפסח עזבנו את הרע ונאסרנו על כל העולם; בשבועות עמדנו תחת החופה וקיבלנו את התורה, כמו כלה שמקבלת את הכתובה ואת המתנות. כל שלב בונה על מה שלפניו, ואי אפשר לדלג. בלי ההתנתקות של פסח אין חופה, ובלי החופה אין בית משותף.</p>
+      <p class="bold-para">מתן תורה הוא יום החתונה, ומנהגי שבועות הם מנהגי חתונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אירוסין, נישואין ויחוד</div>
+      <h3 class="story-title">🛖 סוכות – חדר היחוד</h3>
+      <p>השלב השלישי: סוכות. הוא כנגד המשכן, שהיה כביכול חדר היחוד עם בורא עולם. בשיר השירים כתוב "בְּיוֹם חֲתֻנָּתוֹ וּבְיוֹם שִׂמְחַת לִבּוֹ", ודרשו חז"ל: "ביום חתונתו" – זה מתן תורה, "וביום שמחת לבו" – זה בניין המקום שבו השכינה שורה בתוכנו. אחרי החתונה בא היחוד.</p>
+      <p>והסוכה שאנחנו בונים היא כמו חדר היחוד. בחג הסוכות אנחנו נכנסים כביכול לבית אחד עם הקדוש ברוך הוא, ויושבים איתו בצל אחד. לכן הכל בחג הזה הוא בנייה, ישיבה ושמחה.</p>
+      <p>נמצאו שלושה שלבים: אירוסין, נישואין ויחוד – פסח, שבועות וסוכות. לא בחינם יש שלושה חגים. כל חג מבטא שלב נוסף. פסח הוא ההתחלה, שבועות החופה, וסוכות השלמות. ושמיני עצרת, שבא אחרי סוכות, הוא כביכול שיא השלמות.</p>
+      <p>ועכשיו נראה שאותם שלושה שלבים קיימים גם בחתונה השלישית: בין עם ישראל לארץ ישראל. גם שם היו עליות וירידות, בבית ראשון ובבית שני. ועכשיו, בביאה השלישית, יש שוב אירוסין, נישואין וחדר יחוד. השאלה היא: מה הם?</p>
+      <p class="bold-para">הסוכה היא כנגד המשכן, חדר היחוד עם בורא עולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · החתונה השלישית</div>
+      <h3 class="story-title">🧳 "וקבצך" ו"והביאך"</h3>
+      <p>איפה כתובה הגאולה השלישית בתורה? המילה "משיח" אינה מופיעה בתורה. אבל הגאולה מופיעה, בפרשת ניצבים: "וְשָׁב ה' אֱלֹקֶיךָ אֶת שְׁבוּתְךָ וְרִחֲמֶךָ, וְשָׁב וְקִבֶּצְךָ מִכָּל הָעַמִּים... אִם יִהְיֶה נִדַּחֲךָ בִּקְצֵה הַשָּׁמָיִם, מִשָּׁם יְקַבֶּצְךָ... וֶהֱבִיאֲךָ ה' אֱלֹקֶיךָ אֶל הָאָרֶץ". הרב חזר והדגיש שקיבוץ כזה, מכל קצוות העולם, מתיישב רק על דורנו, כי מעולם לא היה כמותו.</p>
+      <p>ושימו לב: הפסוק מחלק את הגאולה לשני חלקים. קודם "מִשָּׁם יְקַבֶּצְךָ", וזה נגמר. ורק אחר כך "וֶהֱבִיאֲךָ אֶל הָאָרֶץ". המלבי"ם עומד על כך, ונאמרו בזה פירושים רבים. לכאורה, קיבוץ גלויות הוא עצמו השיבה לארץ. למה לחלק את המקרא לשניים?</p>
+      <p>ולפי מה שלמדנו, זה מובן נפלא. היציאה מארץ הגולה היא האירוסין. מה זה אירוסין? "סור מרע": לעזוב את ארץ העמים, להחליט עד כאן. עם ישראל נתן כביכול גט לארצות העמים, והחליט שאינו רוצה לגור שם יותר.</p>
+      <p>הרב תיאר נער יהודי שאחרי השואה, בגיל שש עשרה, החליט: עד כאן. אינני רוצה להישאר כאן, בארץ העמים. ואף שהיה בן יחיד, והדרך הייתה קשה מאוד, עלה בדרך לא חוקית, עם המעפילים, עבר את מחנות קפריסין, והגיע. "החלטתי: עד כאן ארץ העמים, עכשיו רק ארץ ישראל." זה שלב האירוסין.</p>
+      <p class="bold-para">לפי המלבי"ם, הקיבוץ מן הגלות לחוד וההבאה לארץ לחוד, ומכאן שעזיבת הגולה היא אירוסין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · החתונה השלישית</div>
+      <h3 class="story-title">🏡 בית בארץ – חדר היחוד</h3>
+      <p>השלב השני הוא ההבאה לארץ ישראל. זה הנישואין: עם ישראל מגיע לארץ ישראל, אוהב אותה ושמח בה.</p>
+      <p>והשלב השלישי קורה באופן אישי: היחוד. מה הוא כאן? הבית. כאשר אדם בונה בית בארץ ישראל, חלק מן הארץ נעשה שייך לו באופן פרטי. וכך כתוב בישעיה: "לֹא יֵאָמֵר לָךְ עוֹד עֲזוּבָה, וּלְאַרְצֵךְ לֹא יֵאָמֵר עוֹד שְׁמָמָה, כִּי לָךְ יִקָּרֵא חֶפְצִי בָהּ וּלְאַרְצֵךְ בְּעוּלָה, כִּי חָפֵץ ה' בָּךְ וְאַרְצֵךְ תִּבָּעֵל". "בעולה" היא ההפך משממה: ארץ בנויה בבתים ונטועה בעצים.</p>
+      <p>מכאן רואים שכאשר אדם בונה בית בשעה טובה ומוצלחת וגר בו, זה השלב השלישי, כביכול היחוד. ולכן, כמה יפה, התורה נותנת לאדם שבונה בית שנה שלמה של שמחה: כי עכשיו הוא התחתן עם ארץ ישראל. כמו שחתן נקי לביתו שנה אחת ומשמח את אשתו, כך בונה הבית נקי לביתו ומשמח את כלתו, הארץ.</p>
+      <p>וכך מתחברים כל חלקי השיעור: הגלות כגירושין, השיבה כחתונה, ושנת השמחה של בונה הבית כשמחת חתן וכלה. מי שזכה לבית בארץ ישראל, נמצא בחדר היחוד של החתונה הגדולה שבין העם לארצו.</p>
+      <p>ומה זה אומר למעשה? מי שנכנס לבית חדש בארץ ישראל אינו צריך להסתפק בסידור הרהיטים ובתיקון התקלות. השנה הראשונה היא זמן לשמוח בארץ, להתבונן בה, להודות על כל פינה בבית, ולהתעורר לאהבתה. כמו חתן שאינו מתעסק בשנה הראשונה בעסקיו אלא בכלתו, כך מי שזכה לבית בארץ מקדיש את השנה הזאת לקשר עם הארץ. ומי שעושה כך, משמח את הכלה, ומקרב את הגאולה, כמו שאמר הכוזרי: "כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ".</p>
+      <p class="bold-para">הביאה לארץ היא הנישואין, ובניית בית פרטי בארץ היא היחוד, ולכן לבונה בית יש שנה של שמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · החתונה השלישית</div>
+      <h3 class="story-title">🌐 ומה עם אלה שנשארו?</h3>
+      <p>משתתפים שאלו: אבל רוב היהודים עדיין בחוץ לארץ. כבר שבעים שנה אנחנו כאן, ושם לא עושים כלום. אחד סיפר שהוא מדבר עם משפחתו, ואומרים לו: כשיבוא משיח, נבוא. הרב השיב שצריך לפעול ולדבר. אבל צריך לדעת שזה לא מהיום.</p>
+      <p>מה כתוב ביציאת מצרים? "וַחֲמֻשִׁים עָלוּ בְנֵי יִשְׂרָאֵל מֵאֶרֶץ מִצְרָיִם". ואומר רש"י: אחד מחמישה יצאו. כלומר, רוב העם לא יצא ממצרים, כי לא רצו לצאת. משה רבנו הודיע להם שיוצאים, והם לא רצו. גם היום יש התבוללות, וזה לא פשוט. אבל זו ההיסטוריה: כך קרה גם במצרים.</p>
+      <p>וגם בבית שני. הפסוקים בתנ"ך מספרים כמה עלו בפעם הראשונה, בימי כורש. כמה עלו אחר כך, בימי עזרא ונחמיה, אחרי המן? אין לנו מספרים מדויקים. נראה שגם אז עלו רק מיעוט מן היהודים.</p>
+      <p>אבל יש דבר מעניין מאוד. בכל תקופת בית שני כמעט אין שום סיפור על אדם גדול שחי בחוץ לארץ. לא נביא, לא חכם, לא תנא. יש מי שעלו, כמו הלל הבבלי, אבל על מי שנשאר כמעט אין דבר. כאילו היהדות בחוץ לארץ באותה תקופה הייתה חסרת משמעות, כי היו נטמעים בין העמים.</p>
+      <p class="bold-para">גם ביציאת מצרים רוב העם לא רצה לצאת; צריך לפעול, אבל יש לכך ניסיון היסטורי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · החתונה השלישית</div>
+      <h3 class="story-title">📚 ספרייה שנכתבת כאן</h3>
+      <p>והרב הוסיף שמשהו דומה קורה היום. אם תעבור על הספרייה התורנית שנכתבה בדורות האחרונים, כמעט לא תמצא ספר חשוב שנכתב בחוץ לארץ, לפחות מאז קום המדינה. לפני כן ודאי שהיו גדולים בחוץ לארץ, והרב לא אמר שזה כלל גמור. אבל ברוב הספרות התורנית החדשה זה כך.</p>
+      <p>דוגמה בולטת היא אחד ממפעלי התרגום הגדולים של הש"ס. המפעל נוסד ומנוהל בחוץ לארץ, ושם נעשה התרגום לאנגלית. אבל כשהחליטו להוציא מהדורה בעברית, באו לארץ ועשו אותה כאן. הרב שמע מאחד שהיה שותף בעבודה הזאת, שהמהדורה העברית נמכרת בחוץ לארץ אפילו יותר מאשר בארץ ישראל. גם בהוצאות ספרים גדולות אחרות זה כך: המנהלים והמממנים בחוץ לארץ, והכתיבה עצמה נעשית כאן.</p>
+      <p>כלומר, הכסף אולי בחוץ לארץ, אבל החכמה נמצאת בארץ. וכמו שבבית שני מי שנשאר בחוץ כמעט לא הותיר רושם, כך גם היום עיקר התורה צומחת כאן.</p>
+      <p>ומכאן לשלב הבא בשיעור. מה יוצא מן החתונה הזאת? כמו שמחתונה של איש ואישה נולדים ילדים, כך גם מן החתונה בין עם ישראל לארצו.</p>
+      <p class="bold-para">גם היום, רוב הספרות התורנית נכתבת בארץ ישראל, אף שרבים מן המממנים נמצאים בחוץ לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הילדים של החתונה</div>
+      <h3 class="story-title">🌳 קץ מגולה</h3>
+      <p>כשם שמזיווג איש ואישה נולדים ילדים, כך מזיווג הקדוש ברוך הוא וישראל נולדים ילדים: התורה שבעל פה, החידושים שעם ישראל מרבה בתורה. וגם מזיווג עם ישראל וארץ ישראל נולדים ילדים: פירות ארץ ישראל.</p>
+      <p>הגמרא במסכת סנהדרין דנה בסוגיה ארוכה ויפה: מה יבוא קודם, התשובה או הגאולה? ובסוף הסוגיה אומר רבי אבא: אם יהיו לך ספקות מתי מגיעה הגאולה, אם חזרו בתשובה או לא, יש לי סימן בשבילך. "אֵין לְךָ קֵץ מְגֻלֶּה מִזֶּה, שֶׁנֶּאֱמַר: וְאַתֶּם הָרֵי יִשְׂרָאֵל עַנְפְּכֶם תִּתֵּנוּ וּפֶרְיְכֶם תִּשְׂאוּ לְעַמִּי יִשְׂרָאֵל, כִּי קֵרְבוּ לָבוֹא". כאשר אתה רואה את ארץ ישראל פורחת ונותנת פירות, זה הסימן הגדול ביותר שהגאולה הגיעה.</p>
+      <p>וזה נכון. ארץ ישראל הייתה שוממה, וכמה קשה היה לגדל בה. הסיפורים על ראשית פתח תקווה מראים כמה סבלו המתיישבים. והיום, ברוך ה', כל מי שמגדל בגינה מצליח. הרב סיפר שבאותו שבוע אמר לו אדם שבגינה הפרטית שלו, בתוך העיר, יש ארבעים עצים. פעם יכולת לעבור את כל העיר ולא לראות דבר כזה.</p>
+      <p>ולמה דווקא פירות הם הסימן הטוב ביותר לגאולה? המהרש"א מסביר על דרך הפשט: נאמר על ארץ ישראל שבזמן החורבן תהיה שממה, ולכן אם היא פורחת, זה סימן שהחורבן נגמר.</p>
+      <p class="bold-para">רבי אבא אומר שאין קץ מגולה יותר מארץ ישראל שנותנת את פירותיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הילדים של החתונה</div>
+      <h3 class="story-title">👶 תסתכל בילדים</h3>
+      <p>אבל לפי מה שלמדנו, יש בזה עומק יפה עוד יותר. פירות ארץ ישראל הם התוצאה של הנישואין בין עם ישראל לארץ ישראל. ארץ ישראל היא ארץ רוחנית. כאשר החתן אינו נמצא, לכלה אין ילדים.</p>
+      <p>ולכן במשך כל הדורות באו עמים ומנסים ליישב את ארץ ישראל, ואיש אינו מצליח. אם החתן לא מגיע, הכלה אינה מסכימה. עוברים כאן אלפיים שנה, כולם מנסים, מנסים להפריח את השממה, לייבש את הביצות, להשקיע, ושום דבר אינו הולך. עד שלא באו היהודים, הכל עמד שומם. וכאשר עם ישראל הגיע, החתן הגיע, ואז הכלה מתחילה ללדת.</p>
+      <p>משל: אתה רואה זוג יהודים הולכים ברחוב עם עגלת תינוק. מה הסימן שהייתה חתונה? לא היית בחתונה, אבל אתה רואה את הילד. כך אומר רבי אבא: יש מחלוקות. אלה אומרים שהייתה חתונה, אלה אומרים שלא. יש מי שאומר שהמדינה טובה, ויש מי שאומר שאינה טובה. אתה לא יודע מה לחשוב? תסתכל בילדים. אם יש ילדים, סימן שהייתה חתונה. כנראה רבי אבא ידע מראש שיהיה ויכוח, ונתן סימן שאי אפשר להתווכח עליו.</p>
+      <p>ויש עוד רמז, שהגמרא מביאה: בתפילת שמונה עשרה, אחרי ברכת השנים באה ברכת "תקע בשופר גדול לחרותנו". כאשר תראה שהשנים מבורכות, דע שמגיע קיבוץ הגלויות.</p>
+      <p class="bold-para">פירות הארץ הם הילדים של החתונה בין העם לארץ, ומי שרואה ילדים יודע שהייתה חתונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הילדים של החתונה</div>
+      <h3 class="story-title">🎶 עוד ישמע</h3>
+      <p>לפי זה, אומר הרב, אין לנו מה לדון. כך הגמרא אומרת: אין לך סימן טוב מזה. אנחנו נמצאים היום בגאולה. אדם צריך לחיות את זה. והגאולה אינה תלויה דווקא בכך שהמשיח כבר בא.</p>
+      <p>אבל הרבה פעמים בני אדם אינם שמים לב לכל הטוב שיש להם. הם נמצאים בשפע אדיר שאין כדוגמתו, הכל פורח, והם אינם מרגישים. מה עושים? צריך להזכיר להם: תתעורר, תשים לב כמה טוב לך.</p>
+      <p>הרב נתן דוגמה. בכל חתונה שרים "עוֹד יִשָּׁמַע בְּעָרֵי יְהוּדָה וּבְחֻצוֹת יְרוּשָׁלָיִם, קוֹל שָׂשׂוֹן וְקוֹל שִׂמְחָה, קוֹל חָתָן וְקוֹל כַּלָּה". שרים את זה שנים, ואיש אינו שם לב. הרי זה כבר נשמע! בכל הרי יהודה ובחוצות ירושלים שומעים קול חתן וקול כלה. אבל שרים "עוד ישמע" כאילו זה רק בעתיד.</p>
+      <p>ומה עשה הקדוש ברוך הוא? בתקופת הקורונה, לזמן קצר, נסגרו האולמות. פתאום לא נשמע קול ששון וקול שמחה בחוצות ירושלים. החתונות היו בפחד, כל רגע חששו שתגיע המשטרה. ואז, ברוך ה', האולמות נפתחו בחזרה. אולי עכשיו, אמר הרב, אנשים ישמעו סוף סוף מה הולך כאן, וידעו להעריך את "עוד ישמע" שמתקיים לנגד עינינו.</p>
+      <p class="bold-para">אנשים אינם שמים לב לשפע שיש להם, ולפעמים צריך שיחסר לרגע כדי שנשמע אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הילדים של החתונה</div>
+      <h3 class="story-title">📖 וישן מפני חדש תוציאו</h3>
+      <p>וכך גם בילדים של החתונה בין הקדוש ברוך הוא לעם ישראל: התורה שבעל פה. בימינו, ברוך ה', כמות הספרים החדשים שיצאו היא, לפי הערכת הרב, כמעט כמו כל הספרים שיצאו מאז משה רבנו ועד קום המדינה. משתתפים הזכירו מרצה שיש לו עשרות אלפי ספרים במאגר, והתווכחו איך סופרים: כל כרך בנפרד או כל חיבור. אבל העיקר ברור: התורה פורחת.</p>
+      <p>הרב סיפר על פירוש נאה ששמע פעם. בפרשת בחוקותי יש ברכה: "וִישָׁן מִפְּנֵי חָדָשׁ תּוֹצִיאוּ". כל כך הרבה חדש, שצריך להוציא את הישן כדי לפנות מקום. והיום זה מתקיים ממש. לפעמים אתה רואה רהיט שהוצא לרחוב, יפה כל כך, שאתה לא יודע אם מישהו זרק אותו או שהוא בדרך לבית חדש. ובבתי הכנסת: תורמים סידורים חדשים בכמויות, ואין מקום, ומוציאים את הישנים.</p>
+      <p>ואז נאמר שם דבר יפה: היום יש ברכה גדולה עוד יותר. הקדוש ברוך הוא המציא מכשיר קטן, מרובע קטן, שבו יש רבבות ספרים. וכל הזמן מוסיפים לו ספרים חדשים, ואין צורך להוציא את הישנים. הכל נכנס, גם הישן וגם החדש. ברכה שאפילו התורה לא כתבה. משתתף העיר שלמרות זאת רוב הזמן הוא לומד דווקא מן הספרייה שעל המדף. הרב הסכים, והזכיר בחיוך שגם צריך שיהיה מי שיודע ללמוד, ולא רק לחפש.</p>
+      <p class="bold-para">בדורנו יצאו ספרי תורה רבים כמו בכל הדורות שקדמו, ושוב מתקיימת הברכה "וישן מפני חדש תוציאו".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הילדים של החתונה</div>
+      <h3 class="story-title">🌸 ברכת האילנות</h3>
+      <p>לסיום, ברכת האילנות, שעומדים לברך אותה בתחילת ניסן. אמרו בגמרא: "הַאי מַאן דְּנָפֵיק בְּיוֹמֵי נִיסָן וַחֲזָא אִילָנֵי דְּקָא מְלַבְלְבִי, אוֹמֵר: בָּרוּךְ שֶׁלֹּא חִסַּר בְּעוֹלָמוֹ כְּלוּם, וּבָרָא בוֹ בְּרִיּוֹת טוֹבוֹת וְאִילָנוֹת טוֹבוֹת לְהִתְנָאוֹת בָּהֶן בְּנֵי אָדָם".</p>
+      <p>הכף החיים דן בשאלה למה דווקא בניסן. מה הדין אם רואים פריחה באדר? מה הדין באוסטרליה, שבה העונות הפוכות? זה נושא הלכתי בפני עצמו. אבל לפי מה שלמדנו, יש בזה דבר נפלא.</p>
+      <p>למה דווקא בניסן? כי ניסן הוא חודש הגאולה. בניסן נגאלו, ובניסן עתידים להיגאל. ואין סימן לגאולה גדול יותר מלראות אילנות פורחים, שמוכיחים לנו על החתונה שהתחילה בין עם ישראל לארצו, ובין הבורא לעמו. לכן ביום הראשון של חודש ניסן יוצאים החוצה, מחפשים אילנות פורחים, ומברכים.</p>
+      <p>וכשאתה מברך, חוץ מן ההנאה מן האילנות, תראה את הגאולה בעיניים שלך. אל תראה רק פריחה באילנות. תראה את פריחת הגאולה. הנה הגאולה מול העיניים שלך, פורחת, גאולתם של ישראל. תשמח, תשיר ותודה מכל הלב. ומצד שני, תתפלל שנזכה שהגאולה תמשיך הלאה והלאה ותגדל, עד שנזכה לגאולה השלמה במהרה בימינו.</p>
+      <p class="bold-para">בחודש ניסן, חודש הגאולה, יוצאים לראות אילנות פורחים, ורואים בהם את פריחת הגאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/ibsbSl1K7jo · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הכלה היא הארץ","icon":"👰","color":"#c62b6b","stories":[{"id":1,"title":"לשמח את הכלה","icon":"👰"},{"id":2,"title":"כאלמנה, ולא אלמנה ממש","icon":"💔"},{"id":3,"title":"הכוס החמישית","icon":"🍷"},{"id":4,"title":"כי רצו עבדיך את אבניה","icon":"🧱"}]},{"id":2,"name":"אירוסין, נישואין ויחוד","icon":"💍","color":"#6d28d9","stories":[{"id":5,"title":"למה \"אירוסין\"?","icon":"📝"},{"id":6,"title":"שלושה שלבים","icon":"🪜"},{"id":7,"title":"פסח – אירוסין","icon":"🧹"},{"id":8,"title":"שבועות – החופה","icon":"🌸"},{"id":9,"title":"סוכות – חדר היחוד","icon":"🛖"}]},{"id":3,"name":"החתונה השלישית","icon":"🏡","color":"#e08e00","stories":[{"id":10,"title":"\"וקבצך\" ו\"והביאך\"","icon":"🧳"},{"id":11,"title":"בית בארץ – חדר היחוד","icon":"🏡"},{"id":12,"title":"ומה עם אלה שנשארו?","icon":"🌐"},{"id":13,"title":"ספרייה שנכתבת כאן","icon":"📚"}]},{"id":4,"name":"הילדים של החתונה","icon":"🍇","color":"#1e88b8","stories":[{"id":14,"title":"קץ מגולה","icon":"🌳"},{"id":15,"title":"תסתכל בילדים","icon":"👶"},{"id":16,"title":"עוד ישמע","icon":"🎶"},{"id":17,"title":"וישן מפני חדש תוציאו","icon":"📖"},{"id":18,"title":"ברכת האילנות","icon":"🌸"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
