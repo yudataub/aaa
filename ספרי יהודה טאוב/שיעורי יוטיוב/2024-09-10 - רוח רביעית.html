@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 רוח רביעית</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 רוח רביעית</h1>
+  <p>דיני מצור במלחמת הרשות: שיטות הרמב"ם והרמב"ן, דרכם של הנצי"ב וספר תורת המלך, והלקח ממעשה אחאב ובן הדד</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ רוח רביעית" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/AbBPO50cqBE?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/AbBPO50cqBE/hqdefault.jpg" alt="רוח רביעית" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=AbBPO50cqBE" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פתיחה: מלחמה ושבי</div>
+      <h3 class="story-title">📜 "כי תצא למלחמה"</h3>
+      <p>פרשת כי תצא נפתחת בפסוק שעוסק ביציאה למלחמה על האויבים, ומבטיח: "וּנְתָנוֹ ה' אֱלֹקֶיךָ בְּיָדֶךָ". הפסוק מדבר על יציאה למלחמה, על ניצחון שה' נותן, ועל שבי שנלקח מן האויב. בשיעור הזה הציע הרב ללמוד את הנושא לעומקו: איך התורה מציגה את המלחמה, מה הדרך שבה היא מצווה להילחם, ומה הם הדינים המפורטים.</p>
+      <p>ובהמשך אותו פסוק נזכר גם השבי שנלקח מן האויב, ועל השבי הזה תעמוד השאלה הראשונה של השיעור.</p>
+      <p>לימוד כזה אינו רק עיון בפסוקים רחוקים. התורה עצמה קושרת בין הדרך שבה נלחמים לבין הניצחון. מי שהולך בדרכה, היא מבטיחה לו שה' ייתן את האויב בידו. לכן הלימוד הוא גם תפילה: שנזכה להבין מה התורה רוצה מאיתנו בשעה כזו.</p>
+      <p>רש"י על הפסוק מעיר שמדובר כאן במלחמת הרשות. במלחמת מצווה נגד שבעת העממים נאמר "לֹא תְחַיֶּה כָּל נְשָׁמָה", ושם אין מקום לשבי כלל. רק במלחמה שאינה נגד שבעת העממים יש שבויים, ועליה מדברת הפרשה.</p>
+      <p>מכאן יוצאת השאלה הראשונה שתלווה את כל השיעור: אם במלחמת הרשות יש שבי, מי הם השבויים? והתשובה לשאלה הזו תוביל אותנו אל אחד הדינים המעניינים ביותר בהלכות מלחמה: הדין של רוח רביעית.</p>
+      <p class="bold-para">הפרשה פותחת בדיני מלחמה, והשיעור מבקש ללמוד אותם כסוגיה הלכתית שלמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פתיחה: מלחמה ושבי</div>
+      <h3 class="story-title">❓ מי נשאר לשבי?</h3>
+      <p>בפרשה הקודמת, פרשת שופטים, קראנו את סדר המלחמה: קודם "וְקָרָאתָ אֵלֶיהָ לְשָׁלוֹם". אם העיר מסכימה, יש לכך דינים מיוחדים. ואם לא, התורה אומרת: "וְצַרְתָּ עָלֶיהָ", ובהמשך, כשה' נותן את העיר בידך: "וְהִכִּיתָ אֶת כָּל זְכוּרָהּ לְפִי חָרֶב".</p>
+      <p>אם כך, נשאלת שאלה פשוטה. אם כל הזכרים שבעיר נהרגים, מאין יש שבי? אפשר היה לומר שהשבי שהתורה מדברת עליו הוא נשים בלבד. אבל זה לא נשמע כך בפסוקים. בפרשת כי תצא כתוב "וְשָׁבִיתָ שִׁבְיוֹ" באופן כללי, בלי הגבלה לנשים. אמנם מיד אחר כך כתוב "וְרָאִיתָ בַּשִּׁבְיָה אֵשֶׁת יְפַת תֹּאַר", אבל קשה להעמיד את כל השבי בתורה על נשים וטף בלבד.</p>
+      <p>לכן צריך לבדוק: האם באמת על פי התורה לא נשאר אף אחד? האם הדין של "כל זכורה" חל על כל אדם שבעיר בלי יוצא מן הכלל? הרב הודיע שיש דין נוסף שמשנה את התמונה, ושננסה לראות איך כל הפסוקים מסתדרים יחד. הדין הזה הוא החובה להשאיר לנצורים דרך לברוח.</p>
+      <p class="bold-para">פסוקי התורה נראים כסותרים: מצד אחד הורגים כל זכר, ומצד שני לוקחים שבי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצוות רוח רביעית</div>
+      <h3 class="story-title">🧭 לא מקיפים מארבע רוחות</h3>
+      <p>גם הרמב"ם וגם הרמב"ן מביאים דין מיוחד: כאשר עושים מצור על עיר, לא סוגרים אותה מכל הצדדים. מקיפים אותה משלוש רוחות, ומשאירים את הרוח הרביעית פתוחה. מי שרוצה לברוח ולהציל את נפשו, יש לו דרך לצאת.</p>
+      <p>הרמב"ן מונה את הדין הזה כמצווה ממש, במניין המצוות שהוא מוסיף על מניינו של הרמב"ם. בלשונו, כשנצור על עיר, יש להניח אחת מן הרוחות בלי מצור, כדי שאם ירצו לברוח תהיה להם דרך לנוס בה.</p>
+      <p>מאין לומדים את הדין? המקור הוא במלחמת מדין. בתורה כתוב שם: "וַיִּצְבְּאוּ עַל מִדְיָן כַּאֲשֶׁר צִוָּה ה' אֶת מֹשֶׁה". חז"ל שואלים: מה היה הציווי המיוחד שנאמר כאן? ומביא הספרי שהציווי היה להשאיר להם רוח רביעית. כלומר, אפילו במלחמת מדין, שהייתה מלחמה של נקמה, נצטוו ישראל שלא לסגור את העיר לגמרי.</p>
+      <p>זהו דין מפתיע. היינו חושבים שמצור טוב הוא מצור הרמטי, שאינו מאפשר לאיש לצאת. והנה התורה מלמדת שהדרך הנכונה אחרת: סוגרים שלושה צדדים, ומשאירים פתח. השאלה היא למה.</p>
+      <p class="bold-para">כאשר צרים על עיר, משאירים צד אחד פתוח למי שרוצה לברוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצוות רוח רביעית</div>
+      <h3 class="story-title">💡 רחמים או חכמה?</h3>
+      <p>יש בטעם הדין שני פירושים מעניינים מאוד, ויש ביניהם הבדל גדול. הרמב"ן אומר שהטעם הוא כדי שנלמד לנהוג במידת רחמנות, אפילו עם אויבינו בשעת מלחמה. גם מי שנלחם בנו, אם הוא רוצה לברוח, נרחם עליו ונאפשר לו.</p>
+      <p>לעומתו, לפי הסבר הרב לשיטת הרמב"ם, יש כאן טעם אחר לגמרי, טעם של חכמת מלחמה. כאשר אדם יודע שאין לו ברירה, שזה או חיים או מוות, הוא נלחם בכל כוחו עד הסוף. אין לו מה להפסיד. אבל אם יש לו אפשרות לברוח, הוא רואה שהעניין אבוד ובורח. כך רבים מן הלוחמים נוטשים, והמלחמה נעשית קלה הרבה יותר.</p>
+      <p>מן ההבדל בטעם יוצא גם הבדל בהגדרה. הרמב"ן מונה את הדין במניין המצוות, כי לדעתו זו מידה שהתורה מצווה עליה. הרמב"ם אינו מונה אותו בספר המצוות שלו, ולפי ההסבר שהובא בשיעור, משום שאצלו זו עצה טובה ונכונה בדרכי המלחמה ולא מצווה עצמאית.</p>
+      <p>שני הטעמים אינם סותרים זה את זה בהכרח. אבל ההבדל ביניהם ישפיע מאוד כשנבוא לשאול מתי בדיוק חל הדין, ועל מי.</p>
+      <p class="bold-para">הרמב"ן רואה ברוח הרביעית מידת רחמים, והרמב"ם רואה בה עצה טובה לניצחון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצוות רוח רביעית</div>
+      <h3 class="story-title">🏃 כשהאויב בוחר לברוח</h3>
+      <p>הרב הביא דוגמה לטעמו של הרמב"ם מתקופת מלחמת העצמאות. לדבריו, באותם ימים היו בארץ הרבה יותר ערבים מיהודים, ומבחינה טבעית הקמת מדינה בתנאים כאלה נראתה כמעט בלתי אפשרית.</p>
+      <p>מה שקרה בפועל הוא שחלק גדול מן הערבים עזב את הארץ במהלך המלחמה. היו לכך סיבות שונות: חלקם נענו לקריאות מבחוץ לצאת זמנית ולחזור אחרי הניצחון, וחלקם ברחו מפחד. לדעת הרב, הייתה זו יד ה': בזכות הבריחה הזו כמעט לא היה צורך להילחם בתוך הארץ עצמה, וברבות השנים התרבו היהודים בעלייה מכל קצוות העולם.</p>
+      <p>הלקח שהרב למד מכאן נוגע ישירות לסוגיה. אויב שיש לו לאן לברוח, ורבים ממנו אכן בורחים, אינו נלחם עד מוות. זה בדיוק מה שאומר הרמב"ם: השאר רוח רביעית, כדי שלא יילחמו איתך עד הסוף, ותהיה להם דרך לצאת. המלחמה נעשית קלה יותר, והניצחון מגיע מהר יותר.</p>
+      <p>וכאן חוזרת השאלה שפתחנו בה ומתחדדת עוד יותר. אם יש מצווה, או לפחות עצה של התורה, להשאיר דרך בריחה, איך היא מתיישבת עם הציווי להכות את כל הזכרים?</p>
+      <p class="bold-para">לפי טעמו של הרמב"ם, מלחמה שבה רבים מן האויבים בורחים היא מלחמה קלה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · סתירה ויישובה</div>
+      <h3 class="story-title">⚖️ הסתירה בין הדינים</h3>
+      <p>נעמיד את הקושיה בבירור. מצד אחד, התורה מצווה לצור על העיר, ומצד שני מצווה לא לסגור את כל הצדדים. מצד אחד, כשנכנסים לעיר מכים את כל הזכרים, ומצד שני משאירים להם דרך לברוח. אם הורגים את כולם, מה הטעם בפתח? ואם משאירים פתח, איך זה מצור?</p>
+      <p>לכאורה הדינים סותרים. אם אני משאיר להם רוח רביעית, הם יכולים לצאת ולהיכנס, לקבל אספקה, ולהמשיך להחזיק מעמד. ואם אני מכה את כולם עד הסוף, אין שום משמעות לרחמים שגיליתי קודם.</p>
+      <p>אפשר היה לחשוב שאחד הדינים פשוט גובר על השני. אבל דרכה של תורה היא שכל דין עומד במקומו, ותפקיד הלומד הוא למצוא איך שניהם מתקיימים יחד.</p>
+      <p>השאלות האלה אינן רק עיוניות. הן נוגעות בלב השאלה: איך עושים מלחמה על פי התורה? מצור הרמטי או לא? הורגים את כולם או לוקחים שבי? מי נכלל ב"כל זכורה", ומי ניצל?</p>
+      <p>הרב הציג שתי שיטות ביישוב הדברים. השיטה הראשונה פשוטה ומסתדרת היטב עם לשון הפסוקים, אבל יש עליה קושיות. השיטה השנייה מסבירה את הדין באופן אחר, ומשנה גם את ההבנה של מי שנשאר בעיר. נלמד את שתיהן לפי הסדר.</p>
+      <p class="bold-para">מצור עם פתח ומכה כוללת נראים כשני דברים שאינם מתיישבים יחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · סתירה ויישובה</div>
+      <h3 class="story-title">🕰️ שיטת הנצי"ב: פתח בזמן ההצעה</h3>
+      <p>הנצי"ב בפירושו העמק דבר מיישב את הסתירה בחלוקה של זמנים. בתחילה, כשבאים אל העיר, קוראים לה לשלום. אבל כדי שתרצה בשלום, צריך שתחשוש ממה שיקרה אם תסרב. לכן מקיפים אותה משלוש רוחות, ומשאירים את הרביעית פתוחה. בשלב הזה יש לתושבים בחירה: לקבל את תנאי השלום, לברוח, או להישאר.</p>
+      <p>אם סירבו לשלום ונפתחה המלחמה, המצב משתנה. עכשיו סוגרים את כל הרוחות, ואין עוד רוח רביעית. המצור נעשה גמור: אין אוכל, אין אספקה, עד שכובשים את העיר. ואז מתקיים הפסוק "וְהִכִּיתָ אֶת כָּל זְכוּרָהּ".</p>
+      <p>לפי זה, המצווה של רוח רביעית שייכת לזמן שבו מציעים שלום. היא חלק מן ההזדמנות שהתורה נותנת לעיר לבחור. מי שלא ניצל את ההזדמנות, ולא ברח ולא השלים, נשאר בתוך מלחמה שהולכת עד הסוף.</p>
+      <p>השיטה הזו מסתדרת יפה עם סדר הפסוקים: קודם קריאה לשלום, אחר כך מצור, אחר כך כיבוש. כל שלב בא בזמנו, ולכל שלב דין משלו. הפתח הרביעי אינו סותר את המכה הכוללת, משום שהם שייכים לשני זמנים שונים: האחד לזמן ההצעה, והשני לזמן הכיבוש. אבל, כפי שנראה, יש על השיטה הזו שתי קושיות חזקות.</p>
+      <p class="bold-para">לפי הנצי"ב, הרוח הרביעית פתוחה רק בשלב שבו מציעים שלום, ומשנפתחה המלחמה סוגרים הכל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · סתירה ויישובה</div>
+      <h3 class="story-title">🤝 שלום בתנאים</h3>
+      <p>כדי להבין את דברי הנצי"ב צריך להבין מה פירוש "שלום" בתורה. התורה מפרטת מה קורה אם העיר עונה לשלום, והשלום הזה אינו בחינם. יש לו תנאים: העיר נפתחת לפני ישראל, תושביה משלמים מס, והם נכנסים לעבודה.</p>
+      <p>הרב תיאר זאת בלשון חדה: לפי התורה יש מושג של "שטחים תמורת שלום", אבל בכיוון ההפוך. לא אנחנו נותנים שטחים כדי לקבל שלום, אלא הצד השני פותח את שטחו לפנינו, ובתמורה מקבל שלום. בהרחבה נלמד את התנאים האלה בשיעור נפרד על דיני השלום.</p>
+      <p>ולמה צד שני יסכים לתנאים כאלה? כאן נכנס הדין של "כל זכורה". הוא יודע שאם יסרב, תבוא מלחמה, והיא תהיה מלחמה עד הסוף. מי שרוצה להינצל, יכול לברוח בזמן ההצעה. הפחד מן התוצאה הוא שנותן לשלום את ערכו.</p>
+      <p>לדעת הרב, כאן נעוץ גם קושי של ימינו: כאשר הצד השני יודע שהסירוב לא יעלה לו דבר, אין לו שום סיבה לקבל תנאים. לעומת זאת, מלחמה כפי שהתורה מתארת אותה יוצרת הרתעה, והיא שמביאה בסופו של דבר לשלום.</p>
+      <p class="bold-para">שלום על פי התורה אינו ויתור חינם: יש לו תנאים ברורים, והאיום שבצדו הוא מה שנותן לו ערך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · סתירה ויישובה</div>
+      <h3 class="story-title">🔍 שתי קושיות על הנצי"ב</h3>
+      <p>על שיטת הנצי"ב מקשים בעיקר שתי קושיות. הקושיה הראשונה היא מטעמו של הרמב"ם. אם הרמב"ם אומר שהרוח הרביעית נועדה למנוע מן האויב להילחם עד מוות, הרי לפי הנצי"ב בדיוק זה מה שיקרה: ברגע שהמלחמה מתחילה, סוגרים את כל הצדדים, והנצורים נלחמים בייאוש עד הסוף. מה הרווחנו מן הפתח שהיה פתוח קודם?</p>
+      <p>הקושיה השנייה מעניינת עוד יותר. כפי שראינו, המקור לדין רוח רביעית הוא מלחמת מדין, שבה נאמר "כַּאֲשֶׁר צִוָּה ה' אֶת מֹשֶׁה". אבל במלחמת מדין לא הייתה שום הצעת שלום. כל המלחמה הייתה נקמה על מה שעשו המדיינים לישראל, ולא השאירו שם דבר.</p>
+      <p>אם כך, איך אפשר לומר שהרוח הרביעית קיימת רק בזמן שמציעים שלום? הרי המקור עצמו הוא מלחמה שלא הייתה בה הצעת שלום כלל, ובכל זאת נצטוו להשאיר פתח.</p>
+      <p>בגלל הקושיות האלה יש שהלכו בדרך אחרת. אחד הספרים שעסקו בכך בהרחבה הוא ספר תורת המלך, שנכתב בישיבת עוד יוסף חי, הישיבה שהייתה בעבר בקבר יוסף שבשכם. הרב סיפר שזהו ספר מעניין מאוד, שמסביר את הדינים בצורה מסודרת.</p>
+      <p class="bold-para">טעם הרמב"ם ומקור הדין במדין קשים על הנצי"ב, ולכן יש שהסבירו אחרת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · סתירה ויישובה</div>
+      <h3 class="story-title">🚪 שיטת תורת המלך: הפתח תמיד פתוח</h3>
+      <p>ספר תורת המלך מסביר, כמו שלמדו רבים, שמצוות רוח רביעית נוהגת תמיד. אין זמן שבו היא בטלה. בכל שלבי המצור צריך לתת לנצורים אפשרות לברוח.</p>
+      <p>למה? משום שאי אפשר לדעת מי בדיוק נמצא בעיר. יש שם אנשים שאינם רוצים להיות מעורבים במלחמה. יש כאלה שנתקעו שם במקרה, ויש כאלה שהגיעו לשם בלי קשר לשום דבר. אי אפשר לדעת על כל אחד ואחד אם הוא אויב או לא. לכן התורה מצווה להשאיר פתח, כדי שמי שאינו קשור יוכל לצאת מן האזור.</p>
+      <p>ואיך עושים את זה בלי לשבור את המצור? צריך לדאוג שהפתח יהיה ליציאה בלבד ולא לכניסה. מעמידים שומרים בדרך הרוח הרביעית, כדי לוודא שרק יוצאים מן העיר, ושאין מכניסים דרכה אספקה או לוחמים.</p>
+      <p>לפי זה גם "כל זכורה" מתפרש אחרת. הציווי חל על מי שהחליט להישאר בעיר אף על פי שהייתה לו דרך לצאת. לפי ההסבר הזה, מי שנשאר הוא בדרך כלל מי שמחובר למקום ולמלחמה: אויב בפועל, מי שמסייע לאויב, או מי שספק הוא אויב. ומי שרצה לברוח, היה לו זמן לעשות זאת כל עוד לא נכנסו לעיר.</p>
+      <p>ומה עם השבי? לפי זה אפשר להעמיד שהשבי הוא הנשים והטף שבעיר, כפשט הפסוק "רַק הַנָּשִׁים וְהַטַּף". וכך מתיישבת גם השאלה שפתחנו בה.</p>
+      <p class="bold-para">לפי ספר תורת המלך, הרוח הרביעית נועדה לאפשר לכל מי שאינו מעורב לצאת, והיא קיימת בכל שלבי המצור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מקרים ושאלות</div>
+      <h3 class="story-title">🗺️ כשאין לאן לברוח</h3>
+      <p>עכשיו עולות שאלות מעשיות. מה עושים כשיש אנשים שרוצים לצאת מן העיר ואינם יכולים? ומה עושים כשהשארת רוח רביעית תאפשר בהכרח הכנסת אספקה לאויב? ומה כשאין בכלל לאן לברוח, למשל כשהצד הפתוח גובל במדינה שאינה מוכנה לקלוט איש?</p>
+      <p>הרב הביא את ההצעה המעשית שבספר תורת המלך למצב כזה. במקום רוח רביעית שפונה החוצה, מכשירים שטח איסוף למי שרוצה להיכנע. השטח הזה מוכשר ומפוקח באופן שלא יאפשר שום פעולה של טרור, הסתה או סיוע ללוחמים, ומי שבוחר להגיע אליו נשאר שם בלי שיינזק, ומקבל מזון.</p>
+      <p>בנוסף, בזמן הלחימה משאירים מסדרונות מילוט שיאפשרו להגיע אל שטח האיסוף. במידת האפשר משתדלים שכל מי שרוצה לברוח יוכל לעשות זאת. כך מתקיים רעיון הרוח הרביעית גם כשאין דרך פיזית לצאת מן האזור.</p>
+      <p>יש כאן עיקרון חשוב. ההלכה אינה מסתפקת בדין מופשט של "פתח בצד אחד". היא מחפשת את המטרה שמאחורי הדין, ומנסה להגשים אותה גם בתנאים שהפסוקים לא תיארו במפורש. המטרה היא שמי שאינו מעורב יוכל להינצל, ושהמלחמה תתנהל רק מול מי שבחר להילחם.</p>
+      <p class="bold-para">גם כשהפתח הרביעי אינו אפשרי, יש להשתדל להעמיד דרך יציאה בטוחה למי שרוצה להיכנע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מקרים ושאלות</div>
+      <h3 class="story-title">🏙️ מקרה מבחן: ביירות</h3>
+      <p>הרב הביא מקרה היסטורי כדי לבחון את השיטה. במלחמת לבנון הראשונה, בשנת 1982, התקדם צה"ל עד ביירות והטיל עליה מצור. בסופו של דבר הוסכם שאלפי לוחמים נצורים ייצאו מן העיר, והם יצאו עם נשקם.</p>
+      <p>השאלה ששאל הרב את הלומדים הייתה: האם על פי התורה היה מותר לתת להם לצאת? אולי זו בדיוק הרוח הרביעית?</p>
+      <p>ספר תורת המלך טוען שאסור היה לתת להם לצאת. ההסבר נובע מן הטעם שהספר עצמו נתן לדין. כל הרעיון של רוח רביעית הוא לתת למי שאינו שייך למקום, למי שאינו לוחם, אפשרות לברוח. מכיוון שאי אפשר לדעת מי בדיוק נמצא בעיר, משאירים פתח בתקווה שמי שאינו קשור יצא.</p>
+      <p>אבל לוחמים שנלחמו עד הרגע האחרון, ורק כשהגיעו מים עד נפש ביקשו לצאת, אינם בגדר הזה. הם היו יכולים לצאת מזמן, ולא רצו. הם בחרו להילחם. במקרה כזה, לפי שיטה זו, אין להם רוח רביעית. הפתח נועד למי שאינו מעורב, ולא למי שידוע בבירור שהוא אויב.</p>
+      <p>כדי לחזק את הדברים, הרב הביא סיפור מן התנ"ך שדומה מאוד למקרה הזה, ואולי יש בו ראיה לשיטה.</p>
+      <p class="bold-para">לפי ספר תורת המלך, הרוח הרביעית אינה נועדה ללוחמים שנלחמו עד הרגע האחרון וביקשו לצאת רק כשנלכדו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אחאב ובן הדד</div>
+      <h3 class="story-title">📖 "כל מחמד עיניך"</h3>
+      <p>בספר מלכים מסופר על אחאב מלך ישראל ועל בן הדד מלך ארם. ארם הטרידה את ישראל במלחמות חוזרות, ופעם אחת עלה בן הדד וצר על שומרון. הוא שלח שליחים אל אחאב ודרש את כספו וזהבו, את נשיו ואת בניו. אחאב, שראה את עצמו חלש, הסכים: "לְךָ אֲנִי וְכָל אֲשֶׁר לִי".</p>
+      <p>אבל בן הדד לא הסתפק בזה. הוא שלח שוב ואמר שעבדיו יחפשו בבתי ישראל ויקחו "כָּל מַחְמַד עֵינֶיךָ". ואומרים חז"ל: מחמד עיניך זה ספר התורה. בן הדד דרש שימסרו לו את ספר התורה.</p>
+      <p>ופה, דבר מעניין מאוד: אחאב, שהיה עובד עבודה זרה, סירב. לגבי ספר התורה היה ברור לו שאין גבול שאפשר לחצות. זה כבודה של האומה, ואין אפשרות שישראל ימסרו את התורה האלוקית שלהם. את הכסף ואת הזהב אפשר לתת, אבל את התורה לא.</p>
+      <p>בן הדד היה בטוח בניצחון. כוחו היה גדול לאין שיעור, והוא התרברב ואמר שעפר שומרון לא יספיק כדי שכל אחד מחייליו ימלא ממנו את כף ידו. מבחינה טבעית לא היה לאחאב שום סיכוי. ואז ניגש אליו נביא ובישר לו שהוא ינצח.</p>
+      <p class="bold-para">אחאב, אף שעבד עבודה זרה, לא הסכים למסור את ספר התורה לאויב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אחאב ובן הדד</div>
+      <h3 class="story-title">📜 גבול שאין חוצים</h3>
+      <p>הרב עמד על נקודה זו של הסיפור, משום שיש בה לימוד חשוב. אחאב לא היה צדיק. הוא עבד עבודה זרה, והתנ"ך מתאר אותו כמי שהרע לעשות. ובכל זאת, כשהגיעה הדרישה למסור את ספר התורה, הוא ידע לומר "לא".</p>
+      <p>יש דברים שאומה מוכנה לוותר עליהם כדי להינצל: רכוש, כסף, ואפילו דברים יקרים מאוד. אבל יש נקודה שבה נגמרת הגמישות. מי שמוותר גם עליה, כבר אינו מציל את עצמו, אלא מאבד את מה שהוא בשבילו קיים. אחאב הבין שספר התורה הוא הנקודה הזו. בלי התורה, אין טעם לשום הצלה.</p>
+      <p>והנה, דווקא אחרי הסירוב הזה, כשמבחינה טבעית אין שום סיכוי, בא הנביא ומבשר על ניצחון. אחאב לא נענה לכל דרישה מתוך פחד, אלא עמד על כבוד התורה, וה' עמד לצידו. כך גם במלחמה: עמידה על מה שחשוב באמת אינה חולשה, והיא שמביאה את הישועה.</p>
+      <p>אבל הסיפור לא נגמר כאן. דווקא אחרי הניצחון הגדול נכשל אחאב בטעות אחרת, הפוכה, ועליה נלמד עכשיו.</p>
+      <p class="bold-para">גם מלך חוטא ידע שיש דברים שאין מוסרים בשום מחיר, ובזכות זה זכה לישועה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אחאב ובן הדד</div>
+      <h3 class="story-title">⚔️ ניצחון ורחמים</h3>
+      <p>הנביא הסביר את סיבת הניצחון: ארם ביזו את שם שמים. הם אמרו שאלוקי ישראל הוא "אֱלֹקֵי הָרִים", ואינו יכול להושיע במישור. לכן ה' יראה להם את גבורתו. אחרי שבעה ימים שבהם חנו המחנות זה מול זה, פרצה המלחמה, ונאמר: "וַיַּכּוּ בְנֵי יִשְׂרָאֵל אֶת אֲרָם מֵאָה אֶלֶף רַגְלִי בְּיוֹם אֶחָד".</p>
+      <p>בן הדד רואה שהעסק נגמר. המצור מתהדק סביבו, ואין לו עוד צבא. הוא מכנס את יועציו לרגע האחרון ושואל מה לעשות. והם מציעים לו: "הִנֵּה נָא שָׁמַעְנוּ כִּי מַלְכֵי בֵּית יִשְׂרָאֵל כִּי מַלְכֵי חֶסֶד הֵם". נשים שקים במותנינו וחבלים בראשנו, ונצא אל מלך ישראל, אולי יחיה אותנו.</p>
+      <p>כך עשו. הם באו אל אחאב ואמרו בשם בן הדד: עבדך מבקש שתחיה את נפשו. ואחאב משיב: "הַעוֹדֶנּוּ חַי? אָחִי הוּא". הוא לא רק מחיה אותו, הוא קורא לו אחיו, מעלה אותו למרכבה שלו, וכורת איתו ברית. בן הדד מבטיח להחזיר את הערים שלקח אביו, ואחאב משלח אותו לחופשי.</p>
+      <p>לכאורה זה מעשה של רחמים ושל גדלות. אויב נכנע, הרים ידיים, וביקש על נפשו, ומלך ישראל חס עליו. אבל התגובה של הנביא מלמדת שהתורה ראתה את הדברים אחרת לגמרי.</p>
+      <p class="bold-para">אחרי ניצחון גדול, בחר אחאב לחוס על בן הדד ולכרות עמו ברית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אחאב ובן הדד</div>
+      <h3 class="story-title">⚠️ "נפשך תחת נפשו"</h3>
+      <p>מיד אחרי שאחאב שלח את בן הדד, ניגש אליו נביא ואמר לו: "יַעַן שִׁלַּחְתָּ אֶת אִישׁ חֶרְמִי מִיָּד וְהָיְתָה נַפְשְׁךָ תַּחַת נַפְשׁוֹ וְעַמְּךָ תַּחַת עַמּוֹ". אתה שחררת אותו, אתה תמות במקומו.</p>
+      <p>והנבואה התקיימה. לאחר זמן פרצה שוב מלחמה בין ישראל לארם, ברמות גלעד. מלך ארם ציווה את שרי הרכב שלו: "לֹא תִּלָּחֲמוּ אֶת קָטֹן וְאֶת גָּדוֹל כִּי אִם אֶת מֶלֶךְ יִשְׂרָאֵל לְבַדּוֹ". את מי שעשה איתו ברית ושחרר אותו, אותו בדיוק ביקש להרוג.</p>
+      <p>אחאב התחפש כדי שלא יזהו אותו, אבל כתוב: "וְאִישׁ מָשַׁךְ בַּקֶּשֶׁת לְתֻמּוֹ וַיַּכֶּה אֶת מֶלֶךְ יִשְׂרָאֵל בֵּין הַדְּבָקִים וּבֵין הַשִּׁרְיָן". חץ שנורה בלי כוונה פגע בו, ואחאב מת. נכון שאחאב נענש גם על חטאים אחרים, כמו מעשה נבות, אבל הנביא קשר במפורש את מותו לשחרורו של בן הדד.</p>
+      <p>ומכאן השאלה: למה נענש אחאב? בן הדד נכנע. הוא הרים ידיים ואמר שאינו רוצה עוד להילחם. בן הדד לא היה משבעת העממים, ולא היה בתוך גבולות הארץ. האם לא זו בדיוק הרחמנות שהתורה רוצה? האם לא זה רעיון הרוח הרביעית?</p>
+      <p class="bold-para">על ששלח את בן הדד, נענש אחאב בכך שנפשו תהיה תחת נפשו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אחאב ובן הדד</div>
+      <h3 class="story-title">🔁 הרחמן במקום אכזרי</h3>
+      <p>הרב הציע שתי תשובות. התשובה הראשונה מבוססת על מה שלמדנו בספר תורת המלך: כל הרחמים שבדין רוח רביעית נועדו לאדם שאינו מעורב במלחמה. בשבילו משאירים פתח. אבל מי שעמד בראש המלחמה, מי שהלך ונלחם, אם נפל בידיך אין לשחרר אותו. אם לא היום, בשבוע הבא הוא יחזור, ובכוח כפול.</p>
+      <p>לדברי הרב, זה כתוב בתורה עצמה. על הפסוק שבו עיר שאינה משלימה "עושה מלחמה", מבאר רש"י שהתורה מודיעה מראש: עיר שלא השלימה, בסופה תילחם. אויב שלא השלים באמת, סופו לחזור. וכך מהשאלה הזו נגזר שאסור לשחרר את מי שידוע כאויב.</p>
+      <p>התשובה השנייה היא שבמקרה של אחאב היה ציווי מפורש של נביא שבן הדד הוא "אִישׁ חֶרְמִי", שנידון להיהרג. אבל הרב הוסיף שגם בלי הציווי המיוחד, אויב מובהק שנפל בידיך אינו משוחרר.</p>
+      <p>הרב השווה זאת למעשה שאול ואגג. שאול חס על אגג מלך עמלק ולא הרגו, ושמואל הוא שהרג אותו. ועל שאול אמרו חז"ל: כל מי שנעשה רחמן במקום אכזרי, לבסוף נעשה אכזרי במקום רחמן. שאול שחס על אגג, הוא שלבסוף הרג את נוב עיר הכהנים. רחמים שלא במקומם אינם רחמים.</p>
+      <p class="bold-para">רחמים נועדו לשאינם מעורבים, אבל ראש האויב שנפל בידיך אינו משוחרר, שמא ישוב ויילחם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · השקפה וסיכום</div>
+      <h3 class="story-title">🌍 שתי השקפות</h3>
+      <p>בסוף השיעור ביקש הרב להבין מדוע יש פער כה גדול בין מה שהתורה אומרת לבין מה שרואים היום בפועל. לדעתו, אין זה רק עניין של לחץ מבחוץ. זו השקפה שלמה, שחודרת גם למוסדות ולמערכות של המדינה עצמה.</p>
+      <p>המוסר המערבי, כפי שהרב תיאר אותו, יוצא מן ההנחה שכל בני האדם שווים לגמרי, ואין להעדיף את חייו של אחד על חייו של אחר. לפי השקפה זו אי אפשר לומר שחיי חייל עדיפים על חייו של אזרח בצד השני.</p>
+      <p>התורה, לעומת זאת, אומרת לנו שה' בחר בעם ישראל. אנו מברכים בכל בוקר "אֲשֶׁר בָּחַר בָּנוּ מִכָּל הָעַמִּים וְנָתַן לָנוּ אֶת תּוֹרָתוֹ". עם ישראל הוא המייצג של בורא עולם בעולם, זה שמלמד את האמונה ואת התורה. לכן, לפי התורה, הדאגה לקיומו של עם ישראל קודמת.</p>
+      <p>יחד עם זאת הדגיש הרב: חביב אדם שנברא בצלם, ואסור להרוג אדם סתם, גם אם אינו יהודי. אין כאן היתר לפגוע במי שאינו נלחם. הדיון הוא רק על השאלה מי עדיף כאשר יש התנגשות בשעת מלחמה, ועל כך התורה אומרת שיש לדאוג קודם לעם ישראל, כדי שיוכל להתקיים ולמלא את שליחותו.</p>
+      <p class="bold-para">לדעת הרב, ההבדל בין דרך התורה לגישה המקובלת היום נובע מהבדל עמוק בהשקפה על האדם ועל עם ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · השקפה וסיכום</div>
+      <h3 class="story-title">🪞 לתקן קודם את עצמנו</h3>
+      <p>במהלך השיעור עלתה שוב ושוב טענה מוכרת: גם אם היינו רוצים לנהוג כפי שהתורה מתארת, העולם לא היה מאפשר זאת. האומות, הלחץ הבינלאומי, החשש מתגובה. הרב לא ביטל את השיקולים האלה, אבל אמר שלדעתו אין הם העיקר.</p>
+      <p>לדעת הרב, הדבר הראשון שצריך לתקן, לפני האומות ולפני הכל, הוא את עצמנו. גם אילו לא היה שום לחץ מבחוץ, הכיוון עצמו אינו לנהוג כפי שהתורה מלמדת. הרב הזכיר את פירוש רש"י ל"וְצַרְתָּ עָלֶיהָ", שהמצור הוא מצור מלא, ואמר שבפועל אין שאיפה כזו כלל. לכן, לדבריו, השאלה אינה רק מה מותר לנו לעשות, אלא לאן אנו רוצים ללכת.</p>
+      <p>יש בדברים אלה יסוד שחוזר בכל לימוד תורה. הצעד הראשון אינו שינוי המציאות שבחוץ, אלא שינוי ההבנה שבפנים. מי שמבין מה התורה רוצה, גם אם אינו יכול לקיים זאת מיד, כבר מכוון את עצמו לדרך הנכונה. ומי שאינו מבין, גם כשתבוא ההזדמנות, לא ידע מה לעשות בה.</p>
+      <p>וזו גם אחת הסיבות שהרב בחר ללמד את הסוגיה בהרחבה: כדי שהלימוד עצמו ישפיע, ושיותר ויותר אנשים יבינו מה דרכה של תורה.</p>
+      <p class="bold-para">לדעת הרב, המכשול העיקרי בדרך ללחימה על פי התורה אינו הלחץ מבחוץ אלא ההשקפה שבתוכנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · השקפה וסיכום</div>
+      <h3 class="story-title">🕊️ סיכום: הדרך שהתורה מציעה</h3>
+      <p>נסכם את מה שלמדנו. התורה מלמדת איך נלחמים, ומבטיחה שבדרך הזו גם מנצחים. בתחילה קוראים לעיר לשלום, ולשלום יש תנאים: העיר נפתחת, תושביה משלמים מס ונכנסים לעבודה. אם סירבו, צרים עליה.</p>
+      <p>במצור משאירים רוח רביעית. לפי הנצי"ב, זה בזמן הקריאה לשלום. לפי ספר תורת המלך, הפתח קיים תמיד, ונועד למי שאינו מעורב, וצריך לדאוג שיהיה ליציאה בלבד. מי שבחר להישאר בעיר נחשב לפי שיטה זו לאויב או לספק אויב, ועליו נאמר "כל זכורה". והאויב המובהק, שנלחם עד הסוף ונפל בידיך, אינו משוחרר, כפי שלמדנו ממעשה אחאב ובן הדד וממעשה שאול ואגג.</p>
+      <p>לדעת הרב, הדרך שהתורה מציעה היא הדרך הטובה ביותר, והיא אף הדרך לסיים מלחמות מהר. הוא אמר שאנשים מתחילים להבין זאת לאט לאט, אף שהדבר לוקח זמן רב.</p>
+      <p>חשוב לזכור גם את מה שלא נאמר כאן. השיעור עסק בדין כפי שהוא נלמד מן הפסוקים ומן המפרשים, ובשיטות השונות שבו. ההכרעה מתי ואיך לנהוג לפיו בפועל מסורה למי שמוסמך לכך.</p>
+      <p>והוא סיים בתפילה: שה' יעזור, שנזכה להבין את דרכה של תורה, ושתתקיים ההבטחה "כִּי מָלְאָה הָאָרֶץ דֵּעָה אֶת ה' כַּמַּיִם לַיָּם מְכַסִּים".</p>
+      <p class="bold-para">התורה מציעה סדר שלם: קריאה לשלום בתנאים, מצור, פתח למי שאינו מעורב, ונחישות מול האויב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/AbBPO50cqBE · 2024-09-10 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"פתיחה: מלחמה ושבי","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"\"כי תצא למלחמה\"","icon":"📜"},{"id":2,"title":"מי נשאר לשבי?","icon":"❓"}]},{"id":2,"name":"מצוות רוח רביעית","icon":"🧭","color":"#6d28d9","stories":[{"id":3,"title":"לא מקיפים מארבע רוחות","icon":"🧭"},{"id":4,"title":"רחמים או חכמה?","icon":"💡"},{"id":5,"title":"כשהאויב בוחר לברוח","icon":"🏃"}]},{"id":3,"name":"סתירה ויישובה","icon":"⚖️","color":"#e08e00","stories":[{"id":6,"title":"הסתירה בין הדינים","icon":"⚖️"},{"id":7,"title":"שיטת הנצי\"ב: פתח בזמן ההצעה","icon":"🕰️"},{"id":8,"title":"שלום בתנאים","icon":"🤝"},{"id":9,"title":"שתי קושיות על הנצי\"ב","icon":"🔍"},{"id":10,"title":"שיטת תורת המלך: הפתח תמיד פתוח","icon":"🚪"}]},{"id":4,"name":"מקרים ושאלות","icon":"🗺️","color":"#1e88b8","stories":[{"id":11,"title":"כשאין לאן לברוח","icon":"🗺️"},{"id":12,"title":"מקרה מבחן: ביירות","icon":"🏙️"}]},{"id":5,"name":"אחאב ובן הדד","icon":"👑","color":"#c62b6b","stories":[{"id":13,"title":"\"כל מחמד עיניך\"","icon":"📖"},{"id":14,"title":"גבול שאין חוצים","icon":"📜"},{"id":15,"title":"ניצחון ורחמים","icon":"⚔️"},{"id":16,"title":"\"נפשך תחת נפשו\"","icon":"⚠️"},{"id":17,"title":"הרחמן במקום אכזרי","icon":"🔁"}]},{"id":6,"name":"השקפה וסיכום","icon":"🕊️","color":"#6d28d9","stories":[{"id":18,"title":"שתי השקפות","icon":"🌍"},{"id":19,"title":"לתקן קודם את עצמנו","icon":"🪞"},{"id":20,"title":"סיכום: הדרך שהתורה מציעה","icon":"🕊️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
