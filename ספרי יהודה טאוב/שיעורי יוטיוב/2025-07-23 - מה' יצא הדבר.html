@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מה' יצא הדבר</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מה' יצא הדבר</h1>
+  <p>חלק ב: ארבעה הסברים למה מותר היום לצאת מן הערים הגדולות של תורה, המעלות של מקום קטן, ואיך שומעים את מה שה' אומר לנו דרך המציאות</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מה' יצא הדבר" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/Utc7AHMkSFU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/Utc7AHMkSFU/hqdefault.jpg" alt="מה' יצא הדבר" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=Utc7AHMkSFU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעה הסברים</div>
+      <h3 class="story-title">⏪ היכן עצרנו</h3>
+      <p>בחלק הקודם של השיעור עסקנו במהפך שעובר על הציבור החרדי בתוך שנים ספורות: משפחות רבות עוברות לגור בערים מעורבות ובפריפריה. והשאלה הייתה: איך מסתכלים על זה מבחינה תורנית? לא מבחינה כספית ולא מבחינת פרנסה, אלא מבחינת התורה.</p>
+      <p>ראינו את בני גד ובני ראובן, שבחירתם בעבר הירדן לא התקבלה בעין יפה בגלל המניע שלה. ראינו את רבי יוסי בן קסמא, שאמר "איני דר אלא במקום תורה". וראינו את הגמרא בכתובות, שאסור לצאת מבבל לשאר ארצות, כי רק בה היו ישיבות.</p>
+      <p>לכאורה, על פני הדברים, מן המקורות האלה עולה שאם רק אפשר – עדיף להישאר במקום תורה. ואם כך, אולי אותם אנשים שבמשך שנים מסרו את נפשם להקים מקום תורה בעיר קטנה, טעו? אולי צדקו דווקא אלה שעזבו?</p>
+      <p>הרב אומר שלא. בחלק הזה של השיעור הוא מביא כמה הסברים שמראים שיש הבדלים מהותיים בין המקרים שבמקורות לבין המקרה שלנו. ואחר כך יראה שלא רק שמותר, אלא שיש בכך גם מעלות גדולות.</p>
+      <p class="bold-para">בחלק הראשון נראה היה מן המקורות שעדיף להישאר במקום תורה; עכשיו בא הרב להסביר למה אין הכרח בכך בימינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעה הסברים</div>
+      <h3 class="story-title">👥 הסבר ראשון: יחיד מול קבוצה</h3>
+      <p>ההסבר הראשון נאמר כבר לפני שנים רבות: יש הבדל עצום בין אדם יחיד לבין קבוצה.</p>
+      <p>רבי יוסי בן קסמא היה אדם בודד. הציעו לו ללכת לגור לבד, בעיר שאין בה מי שילמד איתו. והוא אמר: לא. למה? כי גם עליי זה ישפיע. אין לי שם חברים, אין לי עם מי ללמוד, אין לי עם מי לדבר בדברי תורה.</p>
+      <p>אבל כשקבוצה גדולה באה יחד, הכל שונה. יש בית מדרש, יש חברותות, יש מניין, יש מוסדות לילדים. הקבוצה עצמה יוצרת מקום תורה. מה שמסוכן ליחיד, הרבה הרבה יותר קל לקבוצה.</p>
+      <p>עלתה כאן שאלה: הרי יש שלוחים שיוצאים לבדם למקומות רחוקים בעולם, ולפעמים נשארים שם שנים רבות. הרב השיב שיש בזה דרכים שונות. יש מי שיוצא לשליחות לזמן מוגבל וחוזר כשהילדים מגיעים לגיל מסוים, כדי לשמור על חינוכם; ויש מי שמוסר את נפשו ונשאר בכל מחיר. כל דרך והשיקולים שלה. אבל ההבחנה העקרונית נשארת: אדם בודד במקום ללא תורה – זה מסוכן; קבוצה שבאה יחד – זה משהו אחר.</p>
+      <p class="bold-para">רבי יוסי בן קסמא היה אדם יחיד; קבוצה שבאה יחד למקום חדש נמצאת במצב שונה לגמרי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעה הסברים</div>
+      <h3 class="story-title">🎩 "רצונך שתדור עמנו"</h3>
+      <p>יש עוד דיוק בלשון המשנה, שמפרשים אחדים עמדו עליו. האיש לא אמר לרבי יוסי: בוא לחזק אותנו, בוא למסור לנו שיעורים, אין פה מי שילמד תורה. הוא אמר: "רצונך שתדור עמנו במקומנו?" – רק שתגור אצלנו.</p>
+      <p>כלומר, הם רצו שיהיה אצלם "רב" כסמל. שיהיה מי שיישא דרשה בשבת, מי שאפשר להתייעץ איתו, מי שייתן למקום כבוד. אבל לא שישנה משהו, לא שיחזק, לא שיביא תורה. הם רצו להמשיך לחיות כמו שהם חיים, רק עם תואר של רב בעיר.</p>
+      <p>הרב מספר ששאל פעם אחד מגדולי ישראל אם לקבל משרה של רב בבית ספר. והתשובה הייתה: זה תלוי. אם הם מחפשים רב רק כדי שיהיה מי שידבר במסיבת החומש ובמסיבת הסידור, ויהיה כתוב "רב" – אל תלך, אין לך מה לחפש שם. אבל אם הם מחפשים באמת חיזוק, מי שילמד כמה חשוב לקיים מצוות, ללמוד תורה, להתפלל – זו מצווה גדולה מאוד.</p>
+      <p>זה בדיוק ההבדל. לרבי יוסי לא ביקשו לחזק. לכן סירב. מי שהולך כדי לחזק, נמצא במצב אחר לגמרי.</p>
+      <p class="bold-para">המשנה מדייקת: הציעו לרבי יוסי לבוא לגור כסמל, לא כדי לחזק ולהרביץ תורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעה הסברים</div>
+      <h3 class="story-title">📱 הסבר שני: אז והיום</h3>
+      <p>ההסבר השני, אומר הרב, מבאר את הדברים מאוד. יש הבדל עצום בין אז להיום.</p>
+      <p>חשבו: כשאדם רוצה היום ללמוד בערב, מה הוא עושה? יש לו אפשרויות רבות. הוא יכול ללכת לשיעור, לפתוח ספר, לשמוע שיעור מוקלט, להצטרף ללימוד מרחוק. יש תוכנות שבהן עשרות אלפי ספרים, אוצר שלא היה אפילו בספריות הגדולות של פעם. אפשר לחפש נושא ולמצוא מיד את כל מה שנכתב עליו.</p>
+      <p>ועכשיו חזרו לימי המשנה. אדם חוזר מן העבודה בערב ורוצה ללמוד. מה יש לו בבית? אולי ספר תורה, אולי כלום. ואיך יבין? איך ידע את הפירוש? בזמנם, כל התורה שבעל פה עברה מפה לאוזן, בבית המדרש. ישבו ולמדו, אחד מפי השני. מי שלא היה לו בית מדרש ורב, לא היה לו כלום.</p>
+      <p>לכן אמר רבי יוסי: מה אעשה אצלכם? עם מי אלמד? והיום – המציאות שונה מאוד. אדם שרוצה ללמוד, יכול ללמוד כמעט בכל מקום.</p>
+      <p>הרב מסייג: זה נכון לאדם מבוגר שכבר יודע ללמוד. בחור צעיר צריך ישיבה, צריך ללמוד איך לומדים, וזה דבר אחר. אבל לגבי משפחה, אין הכרח שמה שהיה אסור בעבר יהיה אסור גם היום.</p>
+      <p class="bold-para">בימי המשנה, מי שלא גר ליד בית מדרש לא יכול היה ללמוד; היום אוצר של תורה נמצא בהישג יד בכל מקום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעה הסברים</div>
+      <h3 class="story-title">⚖️ הסבר שלישי: ודאי מול ספק</h3>
+      <p>ההסבר השלישי עלה שוב ושוב בשיעור, ויש בו הבדל עצום. רבי יוסי בן קסמא גר בעיר של תורה, ולא היו לו בעיות. לא היו לו משכנתאות ולא חובות. הציעו לו עושר רב, משכורת גדולה, כדי שיעזוב מקום שבו טוב לו וילך למקום שאינו יודע מה יש בו.</p>
+      <p>הוא אמר: אני גר במקום תורה, יש לי הכל טוב. למה ללכת למקום שאיני יודע אם אצליח בו?</p>
+      <p>אבל המקרה שלנו הפוך. אנחנו דנים על אדם שאין לו כסף לשלם משכנתא. אם יישאר, ייקח על עצמו חובות כבדים שאינו יודע איך יחזיר. לחיות כך זה לא פשוט בכלל. הנזק כאן הוא ודאי.</p>
+      <p>ומה יקרה אם יעבור? אולי יצליח, אולי לא. זה ספק. וכשעומדים ודאי מול ספק, השיקול שונה לגמרי. רבי יוסי עמד מול הצעה לעזוב מקום טוב בשביל רווח. היום, אדם עומד מול נזק ודאי אם יישאר, ומול סיכוי טוב אם יעבור.</p>
+      <p>ולכן אי אפשר להשוות. המשנה דיברה על מי שמוותר על מקום תורה בשביל כסף, לא על מי שאין לו ברירה אחרת.</p>
+      <p class="bold-para">רבי יוסי היה בעל בית בעיר תורה והציעו לו עושר; היום הנידון הוא אדם שאינו יכול לעמוד בחובות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעה הסברים</div>
+      <h3 class="story-title">🎯 הסבר רביעי: למה אתה הולך?</h3>
+      <p>ההסבר הרביעי, לדעת הרב, הוא המשמעותי ביותר, והוא חוזר למה שעלה כבר בחלק הראשון: הכל תלוי למה אדם הולך למקום.</p>
+      <p>אם אדם הולך בשביל כסף, כמו בני גד ובני ראובן שראו "מקנה רב", זה פעמים רבות לא פשוט. אבל אם אדם הולך כדי לזכות את הרבים, כדי להפיץ תורה במקומות חדשים, יש לזה כוח עצום. אדם שהולך עם אידיאל, כדי להקים ולחזק, מקבל כוח מן המצווה עצמה.</p>
+      <p>והיו אומרים תמיד משל מעולם ההלכה: כלי שפולט אינו בולע. כלי שעסוק בהוצאת מה שבתוכו, אינו סופג מבחוץ. כך גם אדם שעסוק כל הזמן בלהשפיע על אחרים, בלחזק ובלהאיר – אינו מתקלקל, כי הוא עסוק בנתינה.</p>
+      <p>לכן גרעין תורני הוא משהו אחר לגמרי. אנשים שבאים יחד כדי לחזק מקום, נמצאים במצב שונה מאוד ממי שבא רק בשביל דירה זולה.</p>
+      <p>וזה מחזיר אותנו לבני גד ובני ראובן. אולי לא הייתה בעיה בעצם רצונם לגור בעבר הירדן. הבעיה הייתה המניע. "גִּדְרֹת צֹאן נִבְנֶה לְמִקְנֵנוּ פֹּה" – זה מה שעמד לנגד עיניהם. כשהמטרה רוחנית, הכל שונה.</p>
+      <p class="bold-para">מי שהולך בשביל כסף – זה לא פשוט; מי שהולך לחזק ולהפיץ תורה – יש לזה כוח עצום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התורה חסה על ממונם של ישראל</div>
+      <h3 class="story-title">💧 "והשקית את העדה ואת בעירם"</h3>
+      <p>הרב מוסיף כלל חשוב מאוד: התורה חסה על ממונם של ישראל. היכן רואים זאת?</p>
+      <p>כשמשה רבנו הוציא מים מן הסלע, נאמר לו: "וְהִשְׁקִיתָ אֶת הָעֵדָה וְאֶת בְּעִירָם". למה צריך להזכיר גם את הבהמות? מפרש רש"י: מכאן שחס הקדוש ברוך הוא על ממונם של ישראל.</p>
+      <p>וכן בנגעי בתים: כשהכהן בא לראות בית שיש בו נגע, התורה מצווה לפנות את הבית לפני שהכהן נכנס, "וְלֹא יִטְמָא כָּל אֲשֶׁר בַּבָּיִת". למה? כדי שהכלים לא ייטמאו. כלי חרס שנטמא אין לו תקנה וצריך לשבור אותו. התורה דואגת שלא יפסיד אותם. שוב: התורה חסה על ממונם של ישראל.</p>
+      <p>ומה הלימוד לענייננו? כשאדם שואל איפה לגור, ההבדל בין מחיר אחד למחיר אחר יכול להיות עצום – סכומים שמכריעים את כל חייו הכלכליים. זה לא סתם. התורה חסה על ממונו. צריך לחשוב הרבה לפני שמשלמים פי כמה, ולשאול: האם באמת יש חובה? אנשים הולכים פעמים רבות אחרי מה שמקובל, ואינם עוצרים לשאול אם זה באמת מה שהתורה דורשת מהם.</p>
+      <p class="bold-para">בכמה מקומות בתורה רואים שהתורה חסה על ממונם של ישראל, ולכן אין להתעלם מן הנזק הכספי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התורה חסה על ממונם של ישראל</div>
+      <h3 class="story-title">🧭 הוראת הרב מרמת השרון</h3>
+      <p>הרב מביא שוב את המעשה עם רבי יעקב אדלשטיין זצ"ל, רבה של רמת השרון. היה אברך שלמד בכולל בעירו של הרב, וילדיו למדו במוסדות ביישוב סמוך. כל יום הסיע אותם הלוך וחזור. הוא רצה לעבור לגור ביישוב שבו למדו ילדיו.</p>
+      <p>הוא נסע לרבי יעקב ואמר: אני רוצה לעבור. והרב השיב: לא. האברך שאל: למה? קשה לי לנסוע כל יום. והרב הסביר: תראה, אם אתה תעבור, גם החבר שלך יעבור, וגם עוד אחד. ומצוקת הדיור היום אינה פשוטה. המחירים עולים בצורה שהציבור אינו מסוגל לעמוד בה.</p>
+      <p>הפתרון, אמר, הוא שיבואו לגור בערי הפריפריה, שבהן הפער במחיר עצום. אבל אם כולם יעזבו, לא יהיה שם מקום תורה. חייבים שכמה ימסרו את נפשם, יתחילו, ואחר כך הדבר ימשיך מעצמו. ולכן פסק לו: אתה צריך להישאר.</p>
+      <p>כאן רואים שגדול בתורה ראה את השיקול הכלכלי של הציבור כשיקול תורני של ממש. לא "עניין של כסף", אלא דאגה לכך שזוגות צעירים לא ישקעו בחובות, ושיהיה להם מקום לבנות בו בית.</p>
+      <p class="bold-para">רבי יעקב אדלשטיין הורה לאברך להישאר בעירו, כדי שיישאר לציבור מקום לגור בו במחיר שפוי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · התורה חסה על ממונם של ישראל</div>
+      <h3 class="story-title">⛓️ המחיר הנסתר של החובות</h3>
+      <p>הרב מביא מאמר שכתב אחד הרבנים על הנזקים של מגורים במקום יקר מעבר ליכולת. והרשימה מבהילה.</p>
+      <p>ראשית, הבריאות. אנשים שנושאים חובות כבדים חיים במתח מתמיד, ולפעמים זה פוגע בבריאותם ממש. הרב אומר שהוא מכיר אנשים שלקחו על עצמם חובות גדולים כדי לעזור לילדיהם בדירות, והמשא הזה עלה להם בבריאותם.</p>
+      <p>שנית, הלוואות. אדם שאין לו כסף נאלץ לפעמים ללוות בתנאים קשים, ולשלם במשך שנים. הכסף הולך לתשלומים, במקום שילך לצדקה, לחינוך, לחיים עצמם.</p>
+      <p>ושלישית, ההשפעה על בחירות אחרות. כשאדם זקוק מאוד לכסף, הוא עלול לבחור גם את שידוכו לפי שיקולים כספיים – מי ייתן יותר – ולא לפי מה שבאמת טוב מבחינה רוחנית. וזה לא דבר פשוט, כי לבית ולאם יש השפעה עצומה על הילדים.</p>
+      <p>את כל אלה צריך להכניס לחשבון. עד כאן החלק שמסביר למה אפשר להתיר: קבוצה שונה מיחיד; היום יש אמצעים ללמוד בכל מקום; ויש נזקים כבדים לחוסר הכסף. ועכשיו עוברים לחלק שלישי: לא רק מותר, אלא יש גם מעלות.</p>
+      <p class="bold-para">חובות כבדים גורמים לנזקים רבים – בבריאות, בשלווה, ואפילו בשיקולים של שידוכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המעלות של מקום קטן</div>
+      <h3 class="story-title">🌾 נצא השדה – חיים פשוטים יותר</h3>
+      <p>"לְכָה דוֹדִי נֵצֵא הַשָּׂדֶה, נָלִינָה בַּכְּפָרִים". מה הטוב שבמגורים במקום קטן? הרב מונה כמה מעלות.</p>
+      <p>המעלה הראשונה: החיים בדרך כלל פשוטים הרבה יותר. במקום שקט אדם אינו צריך ללבוש בגדים מפוארים, אינו צריך בית מפואר כל כך. הוא חושב יותר מה מתאים לו באמת, ופחות משועבד למה שכולם עושים.</p>
+      <p>בעיר גדולה האווירה משפיעה מאוד. לא שאדם חייב, אבל הוא מרגיש לחץ. כולם מתלבשים כך, כולם מעצבים את הבית כך, כולם עושים שמחות כך. וזה עולה כסף רב, וגם עולה בשלווה.</p>
+      <p>אחד המשתתפים הביא דוגמה ממקומות קטנים שבהם האווירה פשוטה כל כך שאנשים הולכים בבגדים פשוטים ובסנדלים, ואיש אינו מתפעל. והרב הסכים: יש לסביבה השפעה עצומה על רמת החיים שאדם מרגיש שהוא חייב לה.</p>
+      <p>מי שגר במקום קטן יכול לחיות בפשטות, בלי שאיש יעיר לו ובלי שירגיש חריג. וזו מתנה גדולה. הפשטות משחררת את האדם מן המרוץ אחרי עוד ועוד, ומשאירה לו זמן וכוח לדברים החשובים באמת: לתורה, למשפחה, לחסד.</p>
+      <p class="bold-para">במקום קטן החיים פשוטים יותר, ואדם פחות משועבד למה שמקובל סביבו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המעלות של מקום קטן</div>
+      <h3 class="story-title">🙋 כשצריכים אותך</h3>
+      <p>המעלה השנייה: במקום קטן, פעמים רבות, האדם מתפתח הרבה יותר. למה? כי הוא אינו מתעסק בשטויות. הוא מרגיש כמה השפעה יש לו, כמה הוא יכול לתרום, כמה צריכים אותו.</p>
+      <p>כשאדם יודע שאם לא יבוא לבית הכנסת לא יהיה מניין – הוא מרגיש כמה הוא חשוב. יש אנשים רבים שמתפללים בשעה מסוימת רק משום שאם לא יבואו, לא יהיה מניין. אם הוא לא יקרא בתורה, לא יהיה בעל קורא. אם הוא לא ייקח על עצמו תפקיד, איש לא ייקח.</p>
+      <p>הרב מספר שהציעו לו תפקיד חינוכי באחד המוסדות. הוא לא ביקש אותו; פנו אליו ואמרו: אם לא תבוא, אין מי שיבוא. במקום קטן אין כמעט אדם בלי תפקיד, כי צריכים כל אחד.</p>
+      <p>לעומת זאת, בעיר גדולה – באת או לא באת, אתה נמצא או לא נמצא – מי שם לב? על מי אתה משפיע? אין את ההשפעה הזאת, וזה גובה מן האדם מחיר רב. כשאדם מרגיש שאינו נחוץ, הוא נחלש. וכשהוא מרגיש שהוא נחוץ, הוא גדל.</p>
+      <p>זו מעלה גדולה, שרבים אינם מעריכים עד שהם חווים אותה בעצמם.</p>
+      <p class="bold-para">במקום קטן אדם מרגיש כמה הוא חשוב, כי אם לא יבוא – לא יהיה מניין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · המעלות של מקום קטן</div>
+      <h3 class="story-title">🕯️ שכן שאפשר לשאול</h3>
+      <p>המעלה השלישית, ולדעת הרב אולי החשובה מכולן, היא ההשפעה של אנשים שומרי תורה על המקום. אדם חזק, אדם מאיר, שבא לגור במקום – משפיע מאוד על הסביבה.</p>
+      <p>הרב מביא את דבריו של אחד מראשי ארגוני הקירוב, שהיה אומר: שימו לב, במשך שנים רבות לא הצליחו להקים עוד עיר חרדית, למרות כל המאמצים. למה? לדעתו, הקדוש ברוך הוא רוצה שהציבור התורני יבוא לגור בתוך הערים המעורבות – לא לבד, אלא בקבוצות, עם מקום תורה – כי זה גורם להשפעה עצומה.</p>
+      <p>כשלאדם שאינו שומר מצוות יש שכן שומר מצוות, יש לו את מי לשאול. איך עושים כך, ומה עושים בחג, ואיפה מתפללים. כל אדם חווה מדי פעם רגעים של קרבה לבורא עולם – בעת צרה, בעת שמחה. ואז הוא צריך מישהו: מי שייתן לו דוגמה, מי שייקח אותו לבית הכנסת, מי שיראה לו איך מדליקים נרות חנוכה. לבד הוא לא ילך.</p>
+      <p>הרב מספר שהוא מכיר בעירו אנשים רבים שהתחזקו בזכות לימוד משותף, ובניהם הלכו ללמוד בישיבה. וכל זה קורה רק כשגרים יחד. מי שגר רחוק, לא ישפיע.</p>
+      <p class="bold-para">יהודי שומר מצוות שגר בסביבה מעורבת הוא כתובת למי שמחפש קרבה לה', ויש לו השפעה אדירה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמוע את קול ה'</div>
+      <h3 class="story-title">👂 "מה' יצא הדבר"</h3>
+      <p>לסיום הרב מבקש להראות שאפשר לשמוע מה הקדוש ברוך הוא רוצה גם היום. איך? מפסוק מפורש בתורה.</p>
+      <p>כשאליעזר שאל את לבן ובתואל אם ייתנו את רבקה, הם ענו: "מֵה' יָצָא הַדָּבָר, לֹא נוּכַל דַּבֵּר אֵלֶיךָ רַע אוֹ טוֹב. הִנֵּה רִבְקָה לְפָנֶיךָ, קַח וָלֵךְ". והשאלה: היכן דיבר ה' עם לבן? לא כתוב שנגלה אליו בחלום או בנבואה. מה פירוש "מה' יצא הדבר"?</p>
+      <p>התשובה: הקדוש ברוך הוא יכול לדבר עם האדם בעוד צורה – כשהוא רואה ניסים ונפלאות בהשגחה. אליעזר ביקש סימן, ובדיוק כך קרה. רבקה יצאה, ואמרה "גַּם לִגְמַלֶּיךָ אַשְׁקֶה", בדיוק כמו שביקש. לבן ראה את ההשגחה הפרטית המדהימה, והבין: ה' מדבר כאן.</p>
+      <p>כך גם היום. אין לנו נביאים שיאמרו לנו היכן לגור. אבל הקדוש ברוך הוא מדבר איתנו דרך המציאות שהוא מסובב. כשאנחנו רואים השגחה ברורה, שכל הדרכים נסגרות לכיוון אחד ונפתחות לכיוון אחר, אפשר לומר: מה' יצא הדבר.</p>
+      <p>ובשאלה העצומה של מקום המגורים, אולי זו הדרך שבה הוא מדבר איתנו.</p>
+      <p class="bold-para">לבן ובתואל הבינו מן ההשגחה הפרטית שה' מדבר איתם; כך אפשר לשמוע את רצון ה' גם היום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לשמוע את קול ה'</div>
+      <h3 class="story-title">🗺️ לכו לגור בערי הארץ</h3>
+      <p>מה אומר לנו הקדוש ברוך הוא? הרב מציע: הוא מראה לציבור התורני שאין אפשרות לגור בכל המשפחות בערים הגדולות. המחירים הגיעו לרמה שאי אפשר לעמוד בה. ערים חדשות אינן קמות. ובאותה עת, ערי הפריפריה פתוחות ומחכות. כביכול הקדוש ברוך הוא אומר: לכו לגור בערי הפריפריה.</p>
+      <p>ולגבי ציבורים אחרים, הרב מודה שאין לו תשובה חד משמעית. לשם יש אפשרויות שונות, ביישובים ובמקומות אחרים, והשאלה שונה. אבל לגבי מי שעומד בין עיר יקרה שאינו יכול לעמוד בה לבין עיר בפריפריה – לדעתו כאן הקדוש ברוך הוא מדבר ומראה מה הוא רוצה.</p>
+      <p>רק דבר אחד צריך: כוונה. לבוא כדי לחזק את המקום, כדי להשפיע, כדי להקים. כשאדם עושה זאת בכוונה טובה, הוא זוכה, והמצווה שומרת עליו – כמו הכלי שפולט ואינו בולע.</p>
+      <p>ונאמר: "כִּי מִצִּיּוֹן תֵּצֵא תוֹרָה וּדְבַר ה' מִירוּשָׁלָיִם". הרב מוסיף פירוש לפי דרכו: בני התורה יוצאים מירושלים ומן הערים הגדולות, ומתפזרים בכל ארץ ישראל, ומביאים איתם את התורה לכל מקום. "וּמָלְאָה הָאָרֶץ דֵּעָה אֶת ה'". יהי רצון שנזכה לכך במהרה בימינו.</p>
+      <p class="bold-para">כשהמחירים בערים הגדולות נעשים בלתי אפשריים, אפשר לראות בכך קריאה של ה' לצאת ולחזק את ערי הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/Utc7AHMkSFU · 2025-07-23 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ארבעה הסברים","icon":"🔍","color":"#c62b6b","stories":[{"id":1,"title":"היכן עצרנו","icon":"⏪"},{"id":2,"title":"הסבר ראשון: יחיד מול קבוצה","icon":"👥"},{"id":3,"title":"\"רצונך שתדור עמנו\"","icon":"🎩"},{"id":4,"title":"הסבר שני: אז והיום","icon":"📱"},{"id":5,"title":"הסבר שלישי: ודאי מול ספק","icon":"⚖️"},{"id":6,"title":"הסבר רביעי: למה אתה הולך?","icon":"🎯"}]},{"id":2,"name":"התורה חסה על ממונם של ישראל","icon":"💰","color":"#6d28d9","stories":[{"id":7,"title":"\"והשקית את העדה ואת בעירם\"","icon":"💧"},{"id":8,"title":"הוראת הרב מרמת השרון","icon":"🧭"},{"id":9,"title":"המחיר הנסתר של החובות","icon":"⛓️"}]},{"id":3,"name":"המעלות של מקום קטן","icon":"🏡","color":"#e08e00","stories":[{"id":10,"title":"נצא השדה – חיים פשוטים יותר","icon":"🌾"},{"id":11,"title":"כשצריכים אותך","icon":"🙋"},{"id":12,"title":"שכן שאפשר לשאול","icon":"🕯️"}]},{"id":4,"name":"לשמוע את קול ה'","icon":"👂","color":"#1e88b8","stories":[{"id":13,"title":"\"מה' יצא הדבר\"","icon":"👂"},{"id":14,"title":"לכו לגור בערי הארץ","icon":"🗺️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
