@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מקרר לשבת</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מקרר לשבת</h1>
+  <p>מפה של השוק והשיטות: מה קורה במקרר כשפותחים אותו בשבת, ומה עושה כל אחד מסוגי ההכשרים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מקרר לשבת" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/pyWbcP8HcS0?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/pyWbcP8HcS0/hqdefault.jpg" alt="מקרר לשבת" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=pyWbcP8HcS0" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לפני שקונים</div>
+      <h3 class="story-title">🛒 מקרר לבית החדש</h3>
+      <p>לפני שממשיכים, צריך לעמוד על עוד דבר חשוב שקשור לכניסה לבית חדש. בדרך כלל, מי שקונה בית קונה גם מקרר. וגם מי שאינו עובר דירה, יגיע יום שבו יצטרך להחליף מקרר. באותו רגע כדאי מאוד לדעת מה עומד לפניו, כי מקרר הוא מכשיר שפותחים אותו פעמים רבות בכל שבת.</p>
+      <p>בשוק בישראל יש היום, מבחינת ההתאמה לשבת, ארבעה סוגי מקררים עיקריים. יש מקרר בלי שום הכשר. יש מקרר עם הכשר של מכון צומת. יש מקרר עם הכשר של המכון של הרב הלפרין, המכון הטכנולוגי להלכה. ויש מקרר עם הכשר של "משמרת השבת". נעבור עליהם אחד אחד, ונראה מה ההבדל ביניהם.</p>
+      <p>חשוב להקדים: מטרת השיעור הזה היא להכיר את המציאות בשוק ואת הדעות השונות. הרב הדגיש שאינו בא להכריע כאן הלכה בין כל השיטות; זה דורש כתפיים רחבות. המטרה היא שכל אחד יבין מה קורה בפועל, יידע לשאול את השאלות הנכונות, ויפנה לרב שלו כדי לקבל הכרעה למעשה.</p>
+      <p class="bold-para">מי שנכנס לבית חדש קונה בדרך כלל גם מקרר, וכדאי לדעת מראש מול מה הוא עומד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לפני שקונים</div>
+      <h3 class="story-title">🏷️ מקרר זול ומקרר חינם</h3>
+      <p>נתחיל במקרר בלי הכשר. זה המצב הנפוץ ביותר בקצה הזול של השוק. לפי מה שבירר הרב, המקררים הזולים, במחירים של כאלפיים שקל ובנפחים קטנים, נמכרים בדרך כלל בלי שום הכשר לשבת. היצרנים פשוט אינם מתעסקים בזה בדגמים האלה.</p>
+      <p>ויש גם אפשרות זולה עוד יותר: באתרי יד שנייה אפשר למצוא מקררים שנמסרים בחינם. אנשים שקונים מקרר חדש אינם רוצים לטרוח על מכירת הישן, ומוסרים אותו לכל מי שמוכן לבוא לקחת. ההוצאה היחידה היא ההובלה, שעולה כמה מאות שקלים, ולא תמיד ברור אם זה משתלם.</p>
+      <p>אבל גם מקרר כזה, בלי הכשר, אינו פסול לשבת לגמרי. צריך רק לדעת מה קורה בתוכו כשפותחים אותו, ואיזה פתרונות יש. לשם כך צריך להבין קודם את ההבדל בין מקרר מכני למקרר דיגיטלי, ואת הבעיות השונות שעלולות להתעורר בשבת.</p>
+      <p class="bold-para">מקררים זולים נמכרים בדרך כלל בלי שום התאמה לשבת, ולכן צריך לדעת איך להתמודד איתם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קורה בתוך המקרר</div>
+      <h3 class="story-title">⚙️ מכני או דיגיטלי</h3>
+      <p>המקררים של פעם היו מכניים. איך מקרר מכני יודע מתי להדליק את הקירור? יש בו טרמוסטט, שבתוכו גז מסוים. כשהטמפרטורה עולה, הגז מתנפח, ובשלב מסוים ההתנפחות מחברת שני מגעים, והמנוע נדלק. הגז עצמו אינו קשור לחשמל. אין שם חיישן אלקטרוני, אין גלים ואין אותות. הגז פשוט מגיב לחום.</p>
+      <p>המשמעות לשבת: כשפותחים מקרר מכני, באותו רגע לא קורה כלום. נכנס אוויר חם, הגז מתחמם מעט, ורק אחר כך, אם הטמפרטורה מגיעה לנקודה מסוימת, המנוע נדלק. ושינוי בגז כשלעצמו אינו מלאכה.</p>
+      <p>במקרר דיגיטלי המצב שונה. מן הרגע שפותחים את הדלת, החיישנים מתחילים לרשום: הטמפרטורה עולה מעלה אחר מעלה, ובכל שינוי עוברים אותות חשמליים במעגלים, עד שמגיעים לנקודה שבה המערכת מדליקה את הקירור. בחלק מן המקררים רואים אפילו את המספרים משתנים על צג. כלומר, בדיגיטלי הפעולה מתחילה באותה שנייה, ולא אחר כך.</p>
+      <p>כיום רוב המקררים החדשים דיגיטליים. מקרר מכני עדיין אפשר להשיג, אבל זה נעשה נדיר.</p>
+      <p class="bold-para">במקרר מכני הטרמוסטט פועל בלי חשמל; במקרר דיגיטלי חיישנים אלקטרוניים רושמים כל שינוי מיד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קורה בתוך המקרר</div>
+      <h3 class="story-title">💡 המנורה</h3>
+      <p>נמנה את הבעיות שעלולות להתעורר כשפותחים מקרר בשבת. הבעיה הראשונה, והמוכרת ביותר, היא המנורה. כמעט בכל מקרר נדלקת מנורה כשפותחים את הדלת. מי שפותח את הדלת בשבת ומדליק בכך את המנורה – זו בעיה ודאית, וצריך לדאוג שהמנורה לא תידלק.</p>
+      <p>במקררים מכניים הפתרון הפשוט היה להוציא את הנורה לפני שבת, או לנתק אותה. אבל צריך להיזהר: לא להיות בטוח מדי שהבעיה נפתרה. במקררים החדשים יש עוד דברים שתלויים בפתיחת הדלת, ונראה מיד שהוצאת הנורה לבדה לא תמיד מספיקה.</p>
+      <p>אחת האפשרויות שהוזכרה בשיעור היא בקר שבת מתוכנת, שמכיר מראש את מועדי השבתות והחגים לשנים רבות קדימה. הוא יודע מתי נכנסת שבת לפי המיקום, גם אם מקבלים שבת מוקדם, וגם מתי יש יום טוב. בשבת הוא מנטרל את המנורה ואת שאר הבעיות. זה פתרון נוח, אבל יש לו עלות, ולא בכל מקרר אפשר להתקין אותו.</p>
+      <p>ובכל מקרה, כדאי להרגיל את בני הבית לבדוק לפני כל שבת שהמנורה אכן מנוטרלת. מספיק שפעם אחת מישהו החזיר את הנורה באמצע השבוע, או ניקה את המקרר והזיז משהו, כדי שבשבת תידלק המנורה בלי שאיש ישים לב. בדיקה קצרה בערב שבת, יחד עם שאר ההכנות, חוסכת הרבה עוגמת נפש ושאלות בשבת עצמה.</p>
+      <p class="bold-para">הבעיה הראשונה והפשוטה: פתיחת הדלת מדליקה את המנורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קורה בתוך המקרר</div>
+      <h3 class="story-title">🌀 המאוורר</h3>
+      <p>הבעיה השנייה היא המאוורר. במקררים מן השנים האחרונות יש מאוורר בתוך תא הקירור. למה צריך אותו? אילו הקור היה יוצא ממקום אחד בלבד, הוא היה נשאר למעלה, והמדפים התחתונים לא היו מתקררים כראוי. לכן יש מאוורר שמסובב את האוויר הקר בכל המקרר.</p>
+      <p>וכשפותחים את הדלת, המקרר חייב לעצור את המאוורר. אחרת המאוורר היה דוחף את כל הקור החוצה. לכן יש מתג בדלת: כשהיא נפתחת, המאוורר נעצר; כשהיא נסגרת, הוא חוזר לפעול. מי שפותח מקרר כזה בשבת, באותו רגע מפסיק פעולה חשמלית, וזו בעיה.</p>
+      <p>וכאן הסכנה: אדם לוקח מקרר כזה, מוציא את הנורה, וחושב שגמר. הוא לא שם לב שבכל פתיחה של הדלת הוא עוצר את המאוורר. במקררים רבים זה המצב. לכן במקררים החדשים, הוצאת הנורה לבדה אינה פתרון, ולפעמים היא אפילו מטעה, כי היא נותנת תחושה של ביטחון.</p>
+      <p class="bold-para">במקררים החדשים פתיחת הדלת מפסיקה את המאוורר, ולכן הוצאת הנורה לבדה אינה פותרת את הבעיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קורה בתוך המקרר</div>
+      <h3 class="story-title">🔧 איך בודקים ומה עושים</h3>
+      <p>איך יודעים אם המקרר שלכם מושפע מן הדלת? בודקים: פותחים את הדלת, לוחצים בעצמכם על המתג שהדלת לוחצת עליו כשהיא נסגרת, ומחכים מעט. שומעים אם המאוורר חוזר לפעול או נעצר. אם יש שינוי – סימן שהמתג משפיע, וצריך לנטרל אותו.</p>
+      <p>איך מנטרלים? זה תלוי במקרר. בחלק מן המקררים יש לחצן פשוט בדלת, ואפשר לקבע אותו במצב לחוץ בעזרת דבק או סרט. בכך המקרר "חושב" כל השבת שהדלת סגורה. במקררים מסובכים יותר החיישן מגנטי, וצריך למצוא היכן הוא, ולשים לידו מגנט שיחקה את הדלת הסגורה.</p>
+      <p>במקרר מכני בלי הכשר, אחרי שמנטרלים את המתג של הדלת, נפתרות רוב הבעיות. אין מנורה, אין עצירת מאוורר. נשארת בעיה אחת, שנגיע אליה מיד: האוויר החם שנכנס עם הפתיחה. אבל לפני כן כדאי לדעת שיש גם פתרון של פנייה לגוי, כשנשכח לנטרל לפני שבת.</p>
+      <p class="bold-para">בודקים אם מתג הדלת משפיע על המאוורר, ומנטרלים אותו בדבק או במגנט כך שהמקרר "יחשוב" שהדלת סגורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קורה בתוך המקרר</div>
+      <h3 class="story-title">📈 המדחס והרישומים</h3>
+      <p>הבעיה השלישית: כשפותחים את הדלת, נכנס אוויר חם. בעקבות זה המדחס, המנוע שמייצר את הקור, יתחיל לפעול מוקדם יותר. מתי? תלוי. אם הטמפרטורה הייתה קרובה לנקודת ההדלקה, הוא יידלק כעבור שניות; אם הייתה רחוקה, אולי רק כעבור כמה דקות. בכל מקרה, הפתיחה גורמת שהמדחס יידלק מוקדם יותר ממה שהיה נדלק בלעדיה. האם זו מלאכה? בזה נחלקו השיטות, ונראה זאת בהמשך.</p>
+      <p>הבעיה הרביעית שייכת רק למקרר הדיגיטלי: הרישומים. כל מה שעושים, כל כניסה של אוויר, כל שינוי בטמפרטורה – הכל נרשם. אין אפשרות למנוע את הרישום, הוא חלק מן הדרך שבה המכשיר פועל.</p>
+      <p>אם כן, יש ארבע בעיות: המנורה, המאוורר, הקדמת המדחס, והרישומים הדיגיטליים. ההבדל בין סוגי ההכשרים הוא בשאלה באילו מן הבעיות האלה כל אחד מהם מטפל, ובאילו הוא סובר שאין צורך לטפל.</p>
+      <p class="bold-para">האוויר החם שנכנס מקדים את הפעלת המדחס, ובמקרר דיגיטלי כל פתיחה נרשמת באותות חשמליים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קורה בתוך המקרר</div>
+      <h3 class="story-title">🤝 לבקש מגוי</h3>
+      <p>מה עושה מי ששכח לנטרל את המנורה לפני שבת? כאן הובא בשיעור היתר מוכר: מותר לבקש מגוי לפתוח את המקרר. למה?</p>
+      <p>כדי להבין צריך להכיר את המושג "פסיק רישא". כשאדם עושה פעולה מותרת, ובעקבותיה נגרמת בוודאות מלאכה שאינו מתכוון אליה – זה נקרא פסיק רישא. למשל: אני רוצה רק לפתוח את הדלת, אבל בוודאות תידלק המנורה. אצל יהודי זה אסור, ואין כאן היתר. אבל כשמבקשים מגוי לעשות פעולה שהיא פסיק רישא, התירו.</p>
+      <p>לכן, לפי מה שהובא, מי שנתקע בלי פתרון, יכול לבקש מגוי לפתוח את המקרר, אפילו כדי להוציא משקה. הבקשה היא לפתוח את הדלת, לא להדליק את המנורה, והדלקת המנורה היא תוצאה שאין בה כוונה.</p>
+      <p>בפרטי ההיתר הזה, כמו בכל הלכות אמירה לגוי, יש דקויות רבות, ומי שנקלע למצב כזה ישאל את רבו מה מותר לבקש ובאיזה אופן. אבל טוב לדעת שהפתרון קיים, וששכחה של רגע אינה צריכה להשבית את השבת כולה.</p>
+      <p class="bold-para">מי ששכח לנטרל לפני שבת, יכול לפי מה שהובא בשיעור לבקש מגוי לפתוח את המקרר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קורה בתוך המקרר</div>
+      <h3 class="story-title">🧩 מושגי יסוד: גרמא ופסיק רישא</h3>
+      <p>לפני שנכנסים להכשרים, כדאי להבין שני מושגים שחוזרים שוב ושוב בכל הדיון. המושג הראשון הוא "גרמא". יש הבדל בין אדם שעושה מלאכה בידיו, באופן ישיר, לבין אדם שעושה פעולה שבעקבותיה, אחר כך ובאופן עקיף, נגרמת המלאכה. המקרה השני נקרא גרמא, ודינו קל יותר. כשפותחים מקרר והמדחס נדלק רק כעבור זמן, בגלל האוויר החם, השאלה היא אם זו גרמא.</p>
+      <p>המושג השני הוא "פסיק רישא". זו פעולה מותרת שבעקבותיה נגרמת בוודאות מלאכה, אף שהאדם אינו מתכוון לה ואינו רוצה בה. אצל יהודי בשבת, פסיק רישא אסור. ויש מצבים שבהם שני המושגים מצטרפים: גרמא שהיא גם פסיק רישא.</p>
+      <p>כמעט כל המחלוקות בעניין המקרר נוגעות בשאלות האלה: האם הפעולה ישירה או עקיפה, האם היא ודאית, האם יש בה כוונה, והאם מדובר בכלל במלאכה מן התורה או רק באיסור מדרבנן. מי שמבין את המושגים, יבין גם למה כל הכשר בחר בדרך שלו.</p>
+      <p class="bold-para">כדי להבין את המחלוקות צריך להכיר שני מושגים: גרמא, ופסיק רישא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ארבעה סוגים</div>
+      <h3 class="story-title">🏷️ מכון צומת</h3>
+      <p>נעבור להכשרים. ההכשר הראשון הוא של מכון צומת. מה הוא עושה? בעצם, הוא דואג שבמצב שבת המקרר יתנהג כאילו הדלת סגורה תמיד. כלומר: המנורה לא תידלק, והמאוורר לא ייעצר ולא יופעל בגלל הפתיחה. שתי הבעיות הראשונות נפתרות.</p>
+      <p>אבל ברישומים הדיגיטליים הם אינם מטפלים כלל. הם אומרים את זה בגלוי: דע לך שכשאתה פותח את הדלת במקרר שלנו, המערכת ממשיכה לרשום כרגיל. גם בהקדמת המדחס אינם מטפלים: הפתיחה עדיין גורמת שהמדחס יידלק מוקדם יותר.</p>
+      <p>למה זה לא מפריע להם? כי הם סומכים על שיטה מסוימת בהבנת איסור החשמל בשבת. לפי השיטה הזאת, המלאכה מן התורה בחשמל היא לקחת מכשיר "מת" ולהפוך אותו ל"חי" – להפעיל דבר שלא פעל. אבל מכשיר שכבר פועל, כמו מקרר שמחובר וחי, שינוי בפעולה שלו – יותר זרם, פחות זרם, אות כאן ואות שם – אינו יוצר דבר חדש. והרישומים הם בסך הכל אותות שעוברים במעגלים בתוך מכשיר שכבר פועל.</p>
+      <p class="bold-para">הכשר צומת מטפל במנורה ובמאוורר, ואינו מתעסק ברישומים הדיגיטליים ובהקדמת המדחס.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ארבעה סוגים</div>
+      <h3 class="story-title">📚 שיטת הגרש"ז אויערבאך</h3>
+      <p>השיטה שעליה סומך מכון צומת היא שיטתו של הגאון רבי שלמה זלמן אויערבאך. הוא כתב על המקרר תשובה מפורסמת. מה הוא אמר על הקדמת המדחס?</p>
+      <p>הסברא שלו: כשאני פותח את הדלת, אני אינני מדליק את המדחס. המדחס אינו נדלק ברגע הפתיחה, אלא אחר כך. ומי מדליק אותו? האוויר החם שנכנס. אני רק פתחתי, והאוויר החם הוא שגרם. זו גרמא, ולא מעשה ישיר. ועוד: אני כלל אינני מעוניין שייכנס אוויר חם, ההפך – אני רוצה שהמקרר יישאר קר. גרמא שאינה מכוונת.</p>
+      <p>ובנוסף, לשיטתו, גם הדלקת מנוע במקרר שכבר מחובר וחי היא לכל היותר איסור דרבנן. כי לדעתו, האיסור מן התורה הוא רק להפוך גוף מת לחי, והמקרר חי כל הזמן. כשמצרפים את הכל – גרמא, שאינה מכוונת, באיסור דרבנן – הוא התיר.</p>
+      <p>גם לעניין העומס על המנוע הוזכר בשיעור שנבדק בפועל שפתיחת הדלת מגבירה את צריכת החשמל של המנוע, שצריך להתאמץ יותר. אבל לפי השיטה הזאת אין בזה בעיה, כי המכשיר כבר פועל, ואין כאן יצירה של דבר חדש.</p>
+      <p class="bold-para">הגרש"ז אויערבאך סבר שהקדמת המדחס בפתיחת הדלת היא גרמא, וההכשר הבסיסי נשען על כך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ארבעה סוגים</div>
+      <h3 class="story-title">⏲️ המכון של הרב הלפרין</h3>
+      <p>ההכשר השני הוא של המכון הטכנולוגי להלכה של הרב הלפרין, מכון שקיים שנים רבות. הוא דומה בחלקו למכון צומת, אבל משתדלים להדר יותר. גם הם דואגים למנורה ולמאוורר, ובנוסף הם דואגים שהפתיחה לא תשפיע על המדחס.</p>
+      <p>איך זה אפשרי, אם בכל זאת נכנס אוויר חם? מכניסים למכשיר כרטיס חכם. כשמעבירים את המקרר למצב שבת, המדחס כבר אינו פועל לפי הטמפרטורה, אלא לפי זמן. נניח: כמה דקות אחרי שנכבה, הוא נדלק שוב, בלי קשר לשום דבר. פתחת או לא פתחת, הדלת פתוחה כל הזמן או סגורה כל הזמן – לא משנה.</p>
+      <p>ואם כן נשאלת השאלה: מה יקרה אם פתחתי והוצאתי את הקור? האם הכל לא יפשיר? כאן יש פתרון יפה: כשהמדחס נדלק, הוא אינו נכבה עד שהטמפרטורה מגיעה לנקודה נמוכה מאוד. וזה, לדעתם, אינו בעיה: הפתיחה אינה מדליקה דבר, היא לכל היותר גורמת שהמדחס ימשיך לפעול עוד זמן, ואינה גורמת לו להיכבות.</p>
+      <p>הם המשילו זאת למי שמונע ממישהו לכבות אור. אם מישהו רוצה לכבות מנורה דולקת, ואני אומר לו "אל תכבה", לא עשיתי כלום. כך גם כאן: כשהמדחס פועל, פתיחת הדלת רק דוחה את הרגע שבו המנגנון יכבה אותו.</p>
+      <p class="bold-para">במקרר של המכון של הרב הלפרין המדחס פועל לפי זמן קבוע בשבת, כך שהפתיחה אינה משפיעה עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · ארבעה סוגים</div>
+      <h3 class="story-title">🛡️ משמרת השבת</h3>
+      <p>ומה עם הרישומים הדיגיטליים במקרר של הרב הלפרין? גם אצלם הרישומים נשארים. אבל הם טוענים שבמקרר שלהם, מכיוון שהמדחס עובד לפי זמן, לרישומים אין שום השפעה: הם אינם גורמים לשום פעולה. אצל צומת הרישומים משפיעים, כי הם גורמים בפועל שהמדחס יידלק מוקדם; אצלם – לא.</p>
+      <p>הסוג הרביעי הוא "משמרת השבת". הם מחמירים מאוד, ועובדים קשה בשביל זה. כשפותחים מקרר בהכשרם, לא קורה שום דבר: לא נדלקת מנורה, לא נעצר ולא מופעל מאוורר, אין השפעה על המדחס, וגם אין שום רישום דיגיטלי. המערכת פשוט אינה רושמת בשבת לא את הפתיחה, לא את הכניסה ולא את היציאה של האוויר. גם המדחס, כמו אצל הרב הלפרין, עובד לפי זמן קבוע.</p>
+      <p>ואיך המקרר יודע אם המקפיא מתחמם או לא, אם אינו רושם? הוא אינו צריך לדעת. הוא עובד לפי דקות: מדליק ומכבה במחזור קבוע, בלי קשר למה שקורה בפנים.</p>
+      <p>הרב אמר במפורש: משמרת השבת היא חומרה, ולא עיקר הדין. מי שרוצה להחמיר – בוודאי שזה טוב.</p>
+      <p class="bold-para">משמרת השבת מנטרלת גם את הרישומים הדיגיטליים, והרב הגדיר זאת כחומרה ולא כעיקר הדין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מתי פותחים ומה עושים</div>
+      <h3 class="story-title">🚪 שלוש שיטות: מתי פותחים</h3>
+      <p>עד כאן עסקנו במקרר עצמו. עכשיו שאלה שנוגעת לאדם: מתי מותר לפתוח את המקרר בשבת? גם בזה יש שלוש שיטות עיקריות.</p>
+      <p>השיטה הראשונה היא של הגרש"ז אויערבאך: מותר לפתוח את המקרר בין כשהמדחס פועל ובין כשאינו פועל. אם הוא פועל – הפתיחה רק ממשיכה דבר קיים, ולא עושה כלום. אם אינו פועל – הפתיחה גורמת שיידלק מוקדם, אבל זו גרמא, ולדעתו היא מותרת כאן. על השיטה הזאת בנוי בעיקר ההכשר של צומת.</p>
+      <p>השיטה השנייה: רבים חלקו עליו כבר בזמנו, ובהם רבי משה פיינשטיין, שכתב לפתוח את המקרר רק כשהמנוע פועל. למה? כי אז הפתיחה רק ממשיכה את הפעולה הקיימת, ואינה יוצרת דבר חדש. בדרך כלל, כשפותחים מקרר שהמנוע שלו עובד, הוא ממשיך לעבוד, ולא נוצרת הדלקה חדשה.</p>
+      <p>השיטה השלישית מחמירה יותר. עוד לפני שהיו מקררים בהכשר של משמרת השבת, היו יהודים שחיברו את המקרר לשעון שבת, ופתחו אותו רק כשהוא מנותק לגמרי מן החשמל. כך לא הייתה לפתיחה שום השפעה כלל.</p>
+      <p class="bold-para">יש המתירים לפתוח תמיד, יש שפותחים רק כשהמנוע פועל, ויש שפתחו רק כשהמקרר מנותק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מתי פותחים ומה עושים</div>
+      <h3 class="story-title">🔌 האם שעון שבת מזיק</h3>
+      <p>השיטה השלישית מעוררת שאלה מעשית: האם לא מזיק למקרר שמנתקים ומחברים אותו שוב ושוב? על כך אמרו שאם עושים זאת במרווחים סבירים, למשל פעם ברבע שעה או פעם בשעה, ובשבת בלבד, אין נזק של ממש. מה שמזיק הוא ניתוק וחיבור תכופים מאוד.</p>
+      <p>הובא בשיעור גם מה ששמע הרב מטכנאי מזגנים: לדעתו, הפעלת מזגן בשעון שבת מכני על השקע אינה בריאה למזגן, ועדיף להפעיל אותו דרך הלחצנים והתוכנית שלו. מצד שני, כמעט כולם מפעילים מזגנים בשעון שבת, ויש מי שאומר שהנזק אינו בא מן השעון אלא מקפיצות מתח שיש ממילא ברשת החשמל.</p>
+      <p>מה הלקח? כשבונים פתרון לשבת, כדאי לבדוק גם את הצד הטכני: מה ההוראות של היצרן, האם המכשיר תומך בזה, והאם יש דרך טובה יותר להשיג את אותה מטרה. שמירת שבת לא צריכה לבוא על חשבון קלקול המכשירים, וגם לא להפך.</p>
+      <p class="bold-para">ניתוק וחיבור תכופים של מכשירים בשעון שבת עלולים להזיק להם, וכדאי לבדוק לפני שנוהגים כך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מתי פותחים ומה עושים</div>
+      <h3 class="story-title">📋 סיכום: מקרר בלי הכשר</h3>
+      <p>נסכם את המצב של מקרר בלי הכשר. אם המקרר מכני – הבעיה פשוטה יחסית. מנתקים את המנורה, ושמים דבק או מקבעים את המתג במקום שבו הדלת נפתחת. כך נפתרות בעיות המנורה והמאוורר. ואז: מי שאינו מחמיר, פותח את המקרר מתי שהוא רוצה, כשיטת הגרש"ז. ומי שנוהג להחמיר, פותח אותו רק כשהמנוע פועל, כשיטת רבי משה פיינשטיין.</p>
+      <p>אם המקרר דיגיטלי – חובה לנטרל את מתג הדלת, בדבק או במגנט. הוצאת המנורה לבדה לא תעזור, כי המאוורר עדיין יופעל וייעצר בכל פתיחה. ואחרי שנטרלו, נשארים הרישומים הדיגיטליים, והקדמת המדחס בעקבותיהם.</p>
+      <p>בזה יש מחלוקת. לפי שיטת מכון צומת ורבים נוספים, האותות הדיגיטליים אינם יוצרים דבר חדש במכשיר שכבר פועל, והקדמת המדחס היא גרמא. לכן יש המתירים לפתוח גם מקרר דיגיטלי בלי הכשר, אחרי שנוטרלו המנורה והמאוורר. אחרים חוששים לזה. כאן כל אחד צריך לשאול את רבו.</p>
+      <p>ושוב: במקררים החדשים, מי שרק מוציא את המנורה וחושב שגמר, לא פתר את הבעיה, ולפעמים אף החמיר אותה.</p>
+      <p class="bold-para">במקרר מכני מנטרלים את מתג הדלת ופותחים; במקרר דיגיטלי חובה לנטרל את המתג, ובשאלת הרישומים יש מחלוקת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מתי פותחים ומה עושים</div>
+      <h3 class="story-title">📝 שאלות לחנות</h3>
+      <p>מכל מה שלמדנו אפשר להכין רשימת שאלות קצרה למי שעומד לקנות מקרר. ראשית: האם המקרר מכני או דיגיטלי? ממנה נגזר כמה בעיות יש בו. שנית: האם יש לו מצב שבת, ובאיזה הכשר? צומת, המכון של הרב הלפרין או משמרת השבת – וכל אחד מהם פותר דברים אחרים.</p>
+      <p>שלישית: האם יש בו מאוורר שתלוי בפתיחת הדלת, והיכן נמצא המתג או החיישן של הדלת? אם אין הכשר, צריך לדעת איך לנטרל אותו לפני שבת. רביעית: האם זה מקרר "ללא כפור" עם גוף חימום, ומה כתוב בהוראות על הפעלתו.</p>
+      <p>ועוד שאלה, שאינה טכנית: מה הרב שלי פוסק? האם אני נוהג כשיטה המקלה או כשיטה המחמירה בעניין פתיחת המקרר? כדאי לברר את זה לפני הקנייה, ולא אחריה. כך אפשר לבחור מקרר שמתאים גם לתקציב וגם למנהג, ולהיכנס לבית החדש עם שבת שקטה.</p>
+      <p class="bold-para">לפני שקונים מקרר כדאי לברר כמה שאלות פשוטות, וכך נמנעים מהפתעות בשבת הראשונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מתי פותחים ומה עושים</div>
+      <h3 class="story-title">✅ עדיף לקנות מהודר</h3>
+      <p>לבסוף, עצה מעשית. מי שיכול, טוב לכל השיטות שיקנה מקרר מהודר. למה להסתבך? גם מכון צומת עצמו אינו טוען שהמקרר שלו מהודר. מטרתו להבטיח שמירת שבת בסיסית לציבור רחב, ולא לעסוק בהידורים. הם אומרים במפורש: מי שרוצה להדר, שיפתח רק כשהמנוע פועל, או שיקנה מקרר בהכשר מהודר יותר.</p>
+      <p>ויש עוד נקודה, שנוגעת למקררים המודרניים מסוג "ללא כפור". כדי שלא ייווצר קרח, יש בהם גוף חימום שמפשיר את הקרח מעת לעת. לפי ההוראות של חלק מן המקררים, הפעלתו קשורה גם לשימוש במקרר ולפתיחת הדלת. אם כך, פתיחה בשבת עלולה לגרום להפעלת גוף חימום, שאלה חמורה יותר. זו עוד סיבה שבגללה עדיף מקרר שהותאם לשבת כראוי.</p>
+      <p>המטרה של כל הבירור הזה אינה להפחיד, אלא לדעת. מי שמבין מה קורה במקרר שלו, יכול לבחור נכון, לשאול את השאלות הנכונות, ולשמור את השבת בשמחה ובשלווה, בלי להתלבט מחדש בכל פעם שהוא פותח את הדלת. ומי שעושה את הבירור הזה פעם אחת, כשהוא קונה את המקרר, חוסך לעצמו ולבני ביתו שאלות רבות בכל שבתות השנה.</p>
+      <p class="bold-para">מי שיכול, טוב שיקנה מקרר בהכשר מהודר, כדי לא להסתבך בשאלות קשות בכל שבת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/pyWbcP8HcS0 · 2024-09-22 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"לפני שקונים","icon":"🛒","color":"#c62b6b","stories":[{"id":1,"title":"מקרר לבית החדש","icon":"🛒"},{"id":2,"title":"מקרר זול ומקרר חינם","icon":"🏷️"}]},{"id":2,"name":"מה קורה בתוך המקרר","icon":"⚙️","color":"#6d28d9","stories":[{"id":3,"title":"מכני או דיגיטלי","icon":"⚙️"},{"id":4,"title":"המנורה","icon":"💡"},{"id":5,"title":"המאוורר","icon":"🌀"},{"id":6,"title":"איך בודקים ומה עושים","icon":"🔧"},{"id":7,"title":"המדחס והרישומים","icon":"📈"},{"id":8,"title":"לבקש מגוי","icon":"🤝"},{"id":9,"title":"מושגי יסוד: גרמא ופסיק רישא","icon":"🧩"}]},{"id":3,"name":"ארבעה סוגים","icon":"🏷️","color":"#e08e00","stories":[{"id":10,"title":"מכון צומת","icon":"🏷️"},{"id":11,"title":"שיטת הגרש\"ז אויערבאך","icon":"📚"},{"id":12,"title":"המכון של הרב הלפרין","icon":"⏲️"},{"id":13,"title":"משמרת השבת","icon":"🛡️"}]},{"id":4,"name":"מתי פותחים ומה עושים","icon":"🚪","color":"#1e88b8","stories":[{"id":14,"title":"שלוש שיטות: מתי פותחים","icon":"🚪"},{"id":15,"title":"האם שעון שבת מזיק","icon":"🔌"},{"id":16,"title":"סיכום: מקרר בלי הכשר","icon":"📋"},{"id":17,"title":"שאלות לחנות","icon":"📝"},{"id":18,"title":"עדיף לקנות מהודר","icon":"✅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
