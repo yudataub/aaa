@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 חלקה לנצח נצחים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 חלקה לנצח נצחים</h1>
+  <p>למה קרקע בארץ ישראל היא "כחלק העולם הבא": גדולי ישראל שקנו מגרש שלא ראו, ההבטחה היחידה לאבות, ארץ ישראל כגוף ועולם הבא כנשמה, וחלקת השדה של אלימלך</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ חלקה לנצח נצחים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/XJf2ci-hSRU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/XJf2ci-hSRU/hqdefault.jpg" alt="חלקה לנצח נצחים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=XJf2ci-hSRU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · כאילו היום ניתנה לך</div>
+      <h3 class="story-title">📅 "כאילו נתנה לך בו ביום"</h3>
+      <p>השיעור נאמר סמוך לתאריך מיוחד: כ"ט בנובמבר, ט"ז בכסלו. ומיד עלה פסוק שכל יהודי אומר בכל יום שהוא מניח תפילין, בפרשת "קדש": "וְהָיָה כִּי יְבִאֲךָ ה' אֶל אֶרֶץ הַכְּנַעֲנִי כַּאֲשֶׁר נִשְׁבַּע לְךָ וְלַאֲבֹתֶיךָ וּנְתָנָהּ לָךְ".</p>
+      <p>רש"י שואל: אם כבר נאמר "כי יביאך", למה צריך להוסיף "ונתנה לך"? ומפרש: תהא בעיניך כאילו נתנה לך בו ביום, ואל תהי בעיניך כירושת אבות.</p>
+      <p>כלומר, יש כאן הוראה מן התורה איך להרגיש בארץ ישראל. לא כמו ירושה ישנה, שאבא שלי וסבא שלי קיבלו, והיא כבר מובנת מאליה. אלא כאילו היום, ממש עכשיו, נתן לי הקדוש ברוך הוא את הארץ.</p>
+      <p>ומה פירוש להרגיש שהיום נתנו לך? הרב שאל: האם יש תאריך שבו אנשים יצאו ורקדו ברחובות על כך שקיבלו את הארץ? ויש תאריך כזה. ממנו אפשר ללמוד איך נראית הרגשה של "בו ביום".</p>
+      <p class="bold-para">מצווה להרגיש שארץ ישראל ניתנה לנו היום, ולא כירושה ישנה מן האבות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · כאילו היום ניתנה לך</div>
+      <h3 class="story-title">💃 הלילה שבו רקדו ברחובות</h3>
+      <p>בכ"ט בנובמבר, ט"ז בכסלו תש"ח, במוצאי שבת, יצאו כולם לרחובות ורקדו. גברים ונשים, חרדים ודתיים ומי שאינם שומרי מצוות. כולם יחד. מה קרה? אומות העולם הצביעו בעד הקמת מדינה יהודית בארץ ישראל.</p>
+      <p>על ההצבעה הזאת מסופרים סיפורים רבים. הרב הביא סיפור שמובא בשם אחד מגדולי הרבנים, על איש כנסייה רם מעלה בארצות הברית, שהייתה לו השפעה רבה על מדינות דרום אמריקה. ניסו לשכנע אותו, והוא אמר לבסוף שלדעתו לא תבוא גאולה לעולם אם היהודים לא יגורו בארץ ישראל. הוא פרסם את דעתו, ובכך השפיע על מדינות רבות להצביע בעד.</p>
+      <p>מסופר גם שהיהודים פנו לכל מי שרק אפשר, ושנציג אחד שהבטיח להצביע בעד ניסה להתחמק בשעת ההצבעה, ומי שליווה אותו הלך אחריו והחזיר אותו לאולם. בסוף הצביע בעד. הרוב הדרוש הושג.</p>
+      <p>וכך, במוצאי שבת, כשהגיעה הידיעה, העם כולו יצא לשמוח. זו הייתה הרגשה של "נתנה לך בו ביום". איש לא היה צריך להסביר להם שיש כאן מתנה. הם הרגישו אותה בכל גופם.</p>
+      <p class="bold-para">בכ"ט בנובמבר כל העם יצא לרקוד, וזו דוגמה חיה להרגשה שהארץ ניתנה לנו היום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · כאילו היום ניתנה לך</div>
+      <h3 class="story-title">☀️ לשמוח כל יום</h3>
+      <p>יש מי שעד היום עושים בתאריך הזה סעודת הודיה. הרב סיפר על יהודי בירושלים שבכל שנה, בט"ז בכסלו, עורך אירוע, מזמין רבנים ועושה סעודת תודה לקדוש ברוך הוא. ובספר שעוסק בתולדות הרבנות הראשית מסופר שבתחילה חשבו לקבוע את יום ההודיה בתאריך הזה, ורק לאחר מכן נקבע תאריך אחר.</p>
+      <p>אבל העיקר אינו תאריך זה או אחר. ההלכה היא שאדם צריך לשמוח כך כל יום. כמו בכ"ט בנובמבר, כך צריך להרגיש יהודי שמח על ארץ ישראל בכל יום ויום.</p>
+      <p>ומתי במיוחד? בברכת המזון. שם אנו מודים בכל יום על הארץ. וכאן מגיעה שאלה מעניינת: איך מודים? האם די לומר "תודה"? הפיוט שאנו שרים בשבת מלמד אותנו משהו אחר.</p>
+      <p>זה מה שרש"י מבקש: שבכל יום תהא הארץ בעיניך כאילו היום ניתנה. ומי שמרגיש כך, אינו יכול להודות בשפתיים בלבד. השמחה פורצת החוצה.</p>
+      <p class="bold-para">ההלכה היא שיהודי צריך להודות על הארץ בכל יום, בשמחה של יום הקבלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · כאילו היום ניתנה לך</div>
+      <h3 class="story-title">🎶 "בשיר וקול תודה"</h3>
+      <p>בפיוט "צור משלו אכלנו" אנו אומרים: "בְּשִׁיר וְקוֹל תּוֹדָה נְבָרֵךְ לֵאלֹקֵינוּ עַל אֶרֶץ חֶמְדָּה טוֹבָה שֶׁהִנְחִיל לַאֲבוֹתֵינוּ". מאין לקח מחבר הפיוט שצריך לברך על הארץ בשיר? הפסוק אומר רק "וברכת".</p>
+      <p>וכך גם בחנוכה, שהיה קרוב לזמן השיעור. ב"מעוז צור" אומרים: "בְּנֵי בִינָה יְמֵי שְׁמוֹנָה קָבְעוּ שִׁיר וּרְנָנִים". והגמרא אומרת רק שקבעו את ימי החנוכה "בהלל והודאה". מאין לקח המחבר שקבעו "שיר"?</p>
+      <p>התשובה היא שהמילה "להודות" אין פירושה לומר "תודה רבה" כמו שאומרים "שלום" ו"להתראות". הודיה פירושה שאדם אוהב את מי שנתן לו, שמח בו, וכולו מלא רגשות אהבה עצומים. ואדם ששמח כך, מה הוא עושה? הוא שר.</p>
+      <p>הראיה: מה עשו כל האנשים בכ"ט בנובמבר? יצאו החוצה ושרו. איפה כתוב שצריך לשיר? לא כתוב. כך פשוט עושה אדם שמח. ולכן, אם כתוב בתורה שצריך להודות על הארץ הטובה, ברור למחבר הפיוט שההודיה הזאת היא בשיר. וגם הגננת שמלמדת את הילדים לשיר "ואכלת ושבעת וברכת", יש לה על מה לסמוך.</p>
+      <p class="bold-para">הודיה אמיתית אינה "תודה רבה" יבשה, אלא שמחה ואהבה שמתבטאות בשיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גדולי ישראל קנו קרקע</div>
+      <h3 class="story-title">📜 החזון איש והסטייפלר</h3>
+      <p>בשיעור הקודם למדנו את דברי האבן עזרא: "מי שיש לו בה חלק, חשוב כחלק העולם הבא". עכשיו נראה שגדולי ישראל ראו בדברים האלה הלכה למעשה.</p>
+      <p>מסופר שמרן החזון איש קנה בשותפות עם רב נוסף חלקת אדמה בארץ ישראל, משום מצוות ישוב ארץ ישראל. ודבר מעניין: החזון איש עצמו גר בשכירות. הבית שבו גר לא היה שייך לו. ובכל זאת קנה חלקת אדמה, כדי שיהיה לו חלק בארץ.</p>
+      <p>הגר"ח קניבסקי סיפר שהחזון איש היה מייעץ ומזרז לקנות קרקע בארץ ישראל. וסיפר עוד, שגם לאביו, הסטייפלר, היה חלק במגרש בארץ ישראל, ורק אחרי פטירתו מכרו אותו בגלל המיסים הגדולים שרבצו עליו. משמע שהסטייפלר עצמו לא רצה למכור, למרות המיסים, משום חשיבות הדבר.</p>
+      <p>חשבו על זה: הם לא הרוויחו מן הקרקע כלום. החזון איש לא גר בה. הסטייפלר שילם עליה מיסים. זו הייתה קרקע שעלתה כסף ולא הכניסה דבר. והם החזיקו בה רק כדי שתהיה להם קרקע בארץ ישראל.</p>
+      <p class="bold-para">גדולי ישראל קנו קרקע בארץ ישראל לא כהשקעה, אלא כדי שיהיה להם חלק בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גדולי ישראל קנו קרקע</div>
+      <h3 class="story-title">🗺️ המגרש שלא ראה מעולם</h3>
+      <p>סיפור נוסף מובא על הגאון רבי יחזקאל אברמסקי. בסוף ימיו רכש מכספו חלקת אדמה קטנה בארץ הגליל. הוא סיפר שמעולם לא ביקר במקום ההוא, ולא ראה את המגרש בעיניו.</p>
+      <p>ולמה קנה? כך אמר: קניתי אותו אך ורק על פי דברי האבן עזרא, שביאר את הטעם שהזכיר הכתוב שיעקב אבינו קנה חלקת שדה: להודיע כי מעלה גדולה יש לארץ ישראל, ומי שיש לו בה חלק, חשוב כחלק העולם הבא.</p>
+      <p>הסיפור מובא בספר "משמר הלוי" על פרשת וישלח, שמחברו היה מקורב לגדולי ישראל ורשם מפיהם סיפורים רבים.</p>
+      <p>יש כאן לימוד גדול. אדם קונה קרקע שאינו רואה, שאינו גר בה, שאינו מרוויח ממנה. מבחינה כלכלית זו אינה עסקה. אבל מבחינה רוחנית זו העסקה הטובה ביותר שיש. גדולי ישראל לקחו את דברי האבן עזרא כפשוטם, ופעלו לפיהם.</p>
+      <p class="bold-para">הגאון רבי יחזקאל אברמסקי קנה מגרש בגליל רק כדי לקיים את דברי האבן עזרא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גדולי ישראל קנו קרקע</div>
+      <h3 class="story-title">⚖️ עסקה שאינה עסקה</h3>
+      <p>כדאי לעצור ולהתבונן במה שמשותף לכל הסיפורים האלה. החזון איש גר בשכירות, ובכל זאת קנה קרקע. הסטייפלר שילם מיסים על מגרש שלא הכניס לו דבר, ולא מכר אותו. רבי יחזקאל אברמסקי קנה מגרש שמעולם לא ראה.</p>
+      <p>אף אחד מהם לא חיפש רווח. אף אחד מהם לא קנה כדי לגור. ואף אחד מהם לא היה אדם שמבזבז כסף לשווא. אלה היו אנשים שכל מעשה שלהם נשקל בשיקול דעת תורני מדויק.</p>
+      <p>ואם הם, שידעו להעריך כל רגע וכל פרוטה, ראו בקנייה הזאת דבר שכדאי להשקיע בו, סימן שהם הבינו משהו שרוב בני האדם אינם מבינים. הם הבינו שקרקע בארץ ישראל אינה נמדדת בתשואה שלה, אלא בערך הנצחי שלה.</p>
+      <p>ומכאן לכל אחד מאיתנו. מי שקונה דירה בארץ ישראל, גם אם קנה מסיבות מעשיות לגמרי, יכול לצרף לקנייה את הכוונה של גדולי ישראל. ואז אותה דירה, אותם קירות, נעשים חלק מאותו קניין נצחי שעליו דיבר האבן עזרא.</p>
+      <p class="bold-para">גדולי ישראל לימדו במעשיהם שקרקע בארץ ישראל נמדדת בערך הנצחי שלה ולא בתשואה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מקורות ושאלת הכוונה</div>
+      <h3 class="story-title">📖 משנה מפורשת</h3>
+      <p>ובאמת, דברי האבן עזרא אינם חידוש של יחיד. יש להם מקור במשנה שכל יהודי מכיר. במסכת סנהדרין, ואנו אומרים אותה לפני כל פרק בפרקי אבות: "כָּל יִשְׂרָאֵל יֵשׁ לָהֶם חֵלֶק לָעוֹלָם הַבָּא, שֶׁנֶּאֱמַר: וְעַמֵּךְ כֻּלָּם צַדִּיקִים, לְעוֹלָם יִירְשׁוּ אָרֶץ, נֵצֶר מַטָּעַי, מַעֲשֵׂה יָדַי לְהִתְפָּאֵר".</p>
+      <p>ודברי המשנה קשים מאוד. הפסוק בישעיהו מדבר על העתיד לבוא, שעם ישראל יירש את ארץ ישראל ולא יגלה ממנה עוד. כך מפרשים כל המפרשים. אם כן, איך לומד התנא מן הפסוק הזה שלכל ישראל יש חלק בעולם הבא? הפסוק מדבר על ארץ, לא על עולם הבא!</p>
+      <p>אלא רואים מכאן כדברי האבן עזרא: מי שיש לו חלק בארץ ישראל, ממילא יש לו חלק בעולם הבא. המשנה מחברת את שני הדברים, כי הם דבר אחד.</p>
+      <p>נמצא שמה שנראה כחידוש של האבן עזרא הוא בעצם משנה מפורשת. וכל פעם שאנו אומרים את המשנה הזאת לפני פרקי אבות, אנחנו בעצם אומרים: החלק בעולם הבא עובר דרך ירושת הארץ.</p>
+      <p class="bold-para">"כל ישראל יש להם חלק לעולם הבא, שנאמר: ועמך כולם צדיקים לעולם יירשו ארץ".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מקורות ושאלת הכוונה</div>
+      <h3 class="story-title">✨ הזוהר והשפת אמת</h3>
+      <p>ויש עוד מקורות. בזוהר הקדוש מובא, לפי מה שהובא בשיעור, שהקדוש ברוך הוא נתן לישראל תורה ומצוות כדי שיירשו את הארץ הקדושה, שכל מי שזוכה בארץ הקדושה הזאת יש לו חלק לעולם הבא, כמו שנאמר: "ועמך כולם צדיקים לעולם יירשו ארץ". הזוהר אומר את זה במפורש.</p>
+      <p>וכך גם בשפת אמת. הוא כותב על המשנה "כל ישראל יש להם חלק לעולם הבא": "ארץ" שבפסוק פירושה כפשוטו, ארץ ישראל. ומכל מקום, זהו הסימן שיש להם חלק לעולם הבא: במה שזוכים בעולם הזה להידבק בארץ ישראל.</p>
+      <p>הנה ראינו שהאבן עזרא אינו יחיד. כך כתוב גם בשאר הראשונים, כמו הרמב"ן ורבנו בחיי. כך כתוב במשנה, בזוהר ובשפת אמת. בזה כולם מסכימים.</p>
+      <p>ואם כן, השאלה אינה האם יש קשר בין קרקע בארץ ישראל לעולם הבא. השאלה היא למה. מה הסוד שגורם לחלקת אדמה בעולם הזה להיות חלק בעולם שכולו רוחני? לזה נגיע. אבל קודם יש שאלה אחרת שעוררה ויכוח.</p>
+      <p class="bold-para">גם בזוהר ובשפת אמת מובא שהזכייה בארץ הקדושה היא סימן וזכות לעולם הבא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מקורות ושאלת הכוונה</div>
+      <h3 class="story-title">🧠 האם צריך לדעת?</h3>
+      <p>יש מן הרבנים שסוברים שמה שאמר האבן עזרא, שמי שקונה קרקע בארץ ישראל קונה חלק בעולם הבא, נאמר רק על אדם שיודע ומבין מה הוא עושה. אדם שמבין מהי ארץ ישראל, ומבין את ערך המצווה. מי שאינו יודע, אינו זוכה בזה. כך מובא בשם הגאון רבי חיים שמואלביץ, ראש ישיבת מיר, בשיחותיו על פרשת דברים.</p>
+      <p>הרב סיפר שכשהביא את הדברים האלה בספרו, היו רבנים שכעסו עליו מאוד. הם טענו: מצוות ישוב ארץ ישראל אינה תלויה בכוונה. עצם המציאות היא דבר טוב. אדם גר בארץ ישראל, היישוב גדל, ובכך מתקיימת המצווה, בין אם התכוון ובין אם לא.</p>
+      <p>הרב השיב שלדעתו שני הדברים נכונים. נכון שעצם המעשה הוא מצווה, ואולי בזכותו מקבלים שכר בעולם הזה. אבל בשביל העולם הבא, צריך כוונה. מי שרוצה שהקרקע שלו תהיה חלקה בעולם הבא, צריך לדעת מה הוא קונה.</p>
+      <p>ולכן כל כך חשוב ללמוד את הדברים. לא כדי לדעת עוד פרט, אלא כדי שהקנייה עצמה, שאדם עושה בכל מקרה, תהפוך לקניין נצחי. מי שכבר קנה בית ולא ידע, יכול לחשוב על כך עכשיו, ולהוסיף לקנייה את הכוונה שחסרה בה.</p>
+      <p class="bold-para">יש שסוברים שרק מי שמבין מה הוא עושה זוכה בחלק בעולם הבא בקנייתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מקורות ושאלת הכוונה</div>
+      <h3 class="story-title">⚰️ קבר עד ביאת המשיח</h3>
+      <p>על הדרך עלתה בשיעור שאלה: אדם שקונה חלקת קבר, האם יש לו קרקע בארץ ישראל? הרב סיפר שבירר זאת עם אחת מחברות הקדישא, ונאמר לו שמבחינה חוקית הקבר אינו שייך לאדם. הוא קונה רק זכות להיקבר שם. הקרקע עצמה שייכת לחברה. יש לו מעין שכירות לעולמים.</p>
+      <p>ובהקשר זה סיפר סיפור על החתם סופר. היה אדם שהלווה בריבית, ולקח מיהודים רבים כסף רב, ולצדקה לא נתן פרוטה. כשנפטר, חברה קדישא רצתה סוף סוף לגבות ממנו מה שמגיע, ודרשה ממשפחתו פי שלושה מן המחיר הרגיל. המשפחה פנתה לשלטונות והתלוננה על אפליה.</p>
+      <p>בא החתם סופר לבית המשפט, ולפי הסיפור אמר כך: אנו מוכרים לכל אחד קרקע לזמן מסוים, עד שיבוא המשיח ויקומו המתים לתחייה. ואמרו חז"ל שמלווה בריבית אינו קם בתחיית המתים. הוא צריך את הקבר לזמן ארוך הרבה יותר. לכן אין כאן אפליה.</p>
+      <p>הסיפור מלמד בדרך אגב כמה הקבר בארץ ישראל קשור לתחיית המתים, ונראה מיד שזה בדיוק הסוד.</p>
+      <p class="bold-para">מסופר על החתם סופר שהסביר: מי שלא יקום לתחיית המתים, צריך את הקבר לזמן ארוך הרבה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · למה דווקא עולם הבא</div>
+      <h3 class="story-title">🤝 ההבטחה היחידה</h3>
+      <p>ועכשיו השאלה הגדולה: למה קניית חלק בארץ ישראל היא קניית חלק בעולם הבא? מה הקשר?</p>
+      <p>יש כאן יסוד חשוב, שכל אחד צריך לדעת. בכל פעם שהקדוש ברוך הוא נגלה לאבות האומה, לאברהם, ליצחק וליעקב, הוא הבטיח להם בעיקר דבר אחד: את ארץ ישראל. כשנגלה לאברהם לראשונה, אמר לו: "לְזַרְעֲךָ אֶתֵּן אֶת הָאָרֶץ הַזֹּאת". וכך שוב ושוב, בכל התגלות.</p>
+      <p>גם ליעקב הבטיח ה' את הארץ, כשישן בדרך לחרן: "הָאָרֶץ אֲשֶׁר אַתָּה שֹׁכֵב עָלֶיהָ לְךָ אֶתְּנֶנָּה". ובפרשת וישלח קורה דבר מדהים. ה' משנה את שמו של יעקב: "שִׁמְךָ יַעֲקֹב לֹא יִקָּרֵא שִׁמְךָ עוֹד יַעֲקֹב כִּי אִם יִשְׂרָאֵל יִהְיֶה שְׁמֶךָ". שם חדש הוא כביכול אדם חדש. ומה נותנים לאדם חדש? מיד אחר כך: "וְאֶת הָאָרֶץ אֲשֶׁר נָתַתִּי לְאַבְרָהָם וּלְיִצְחָק לְךָ אֶתְּנֶנָּה". כשיש ברית חדשה, צריך לתת שוב את ארץ ישראל.</p>
+      <p>ואת זה אנו אומרים בכל יום בתפילה, ב"הודו": "וַיַּעֲמִידֶהָ לְיַעֲקֹב לְחֹק, לְיִשְׂרָאֵל בְּרִית עוֹלָם, לֵאמֹר לְךָ אֶתֵּן אֶת אֶרֶץ כְּנָעַן". ליעקב, ואחר כך לישראל, שוב.</p>
+      <p class="bold-para">בכל פעם שה' נגלה לאבות, הוא הבטיח להם דבר אחד: את ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · למה דווקא עולם הבא</div>
+      <h3 class="story-title">🏠 ביתו של ה'</h3>
+      <p>אם הקדוש ברוך הוא מבטיח לאבות רק את זה, שוב ושוב, ואינו מבטיח דבר אחר, מכאן שזהו השכר הגדול ביותר שקיים בעולם. אבל למה? תגיד לאדם בחוץ לארץ שנותנים לו מתנה: חלקה בארץ ישראל. נחמד. אבל מה המתנה כאן?</p>
+      <p>התשובה: ארץ ישראל היא ביתו של ה'. והבית הזה הולך ומשתבח, נעשה טוב יותר ויותר, עד ימות המשיח ואחריהם. ובסוף, ארץ ישראל עצמה תהפוך להיות עולם הבא: מקום שכולו תענוג רוחני. כשה' אומר לאבות "אתן לכם את הארץ", אין הכוונה רק לאדמה. הכוונה היא: אתן לכם להיות בבית שלי.</p>
+      <p>בדורנו קל יותר להבין את זה. רואים איך הארץ פורחת, וקצב ההתפתחות שלה מן המהירים בעולם. ולאן זה אמור להגיע? כולנו שרים את זה: "כִּי נִחַם ה' צִיּוֹן, נִחַם כָּל חָרְבֹתֶיהָ, וַיָּשֶׂם מִדְבָּרָהּ כְּעֵדֶן וְעַרְבָתָהּ כְּגַן ה'". עד שהארץ תהיה גן עדן.</p>
+      <p>וגם תחיית המתים תהיה כאן. מובא בגמרא שהמתים שבחוץ לארץ יתגלגלו במחילות לארץ ישראל, ושם יקומו. ולכן יעקב ויוסף ביקשו כל כך להיקבר בארץ ישראל. הם חששו שמא אינם צדיקים די הצורך כדי לזכות לגלגול מחילות, ולכן רצו להיות כבר כאן, במקום שבו תתחיל התחייה.</p>
+      <p>נמצא שכל מה שיהיה בעתיד, השלמות, הגאולה ותחיית המתים, קשור למקום הזה. מי שיש לו בו חלק, כבר עכשיו מחובר לכל מה שעתיד להתגלות בו.</p>
+      <p class="bold-para">ארץ ישראל היא ביתו של ה', והיא הולכת ומשתבחת עד שתהיה כגן ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · למה דווקא עולם הבא</div>
+      <h3 class="story-title">🕊️ גוף ונשמה</h3>
+      <p>נמצא שארץ ישראל היא כרגע גוף גשמי של מציאות רוחנית. כמו גוף ונשמה: האדמה שאנו רואים כאן היא הגוף, ובתוכה יש חלקה רוחנית, שהולכת ומתגלה עד שתהיה גלויה לגמרי. ארץ ישראל היא הגוף, והעולם הבא הוא נשמתה של הארץ. ומי שיש לו חלק בגוף, קונה חלק בנשמה. לכן יש שקוראים לארץ ישראל "עולם הבא התחתון".</p>
+      <p>במילים פשוטות: כשה' אמר לאבות "אתן לכם את ארץ ישראל", פירושו "אתן לכם לגור בביתי". ולגור בביתו של ה' פירושו שיהיה לך חלק בכל מה שקשור לבורא עולם לנצח נצחים, כולל תחיית המתים וכל מה שיבוא אחריה.</p>
+      <p>ועכשיו מובנים דברי האבן עזרא. לא די שאדם גר בארץ ישראל. צריך שיהיה לו חיבור לארץ ישראל. מי שקונה קרקע בארץ ישראל, קנה חלק בעולם הבא, כי עכשיו יש לו חיבור לארץ, ועל ידי זה הוא מחובר לעולם הבא. שהרי ארץ ישראל היא כביכול העולם הבא בעצמו.</p>
+      <p>זה לא משל. זו המציאות כפי שהתורה מתארת אותה: מה שנראה כאדמה הוא בעצם הפתח לנצח.</p>
+      <p class="bold-para">ארץ ישראל היא הגוף, והעולם הבא הוא נשמתה. מי שיש לו חלק בגוף, קונה חלק בנשמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · למה דווקא עולם הבא</div>
+      <h3 class="story-title">🎁 "לתת" פעמיים</h3>
+      <p>השפת אמת מוסיף דבר נפלא על הפסוקים שאנו אומרים בכל יום בתפילת שחרית: "וְכָרוֹת עִמּוֹ הַבְּרִית לָתֵת אֶת אֶרֶץ הַכְּנַעֲנִי הַחִתִּי הָאֱמֹרִי וְהַפְּרִזִּי וְהַיְבוּסִי וְהַגִּרְגָּשִׁי, לָתֵת לְזַרְעוֹ, וַתָּקֶם אֶת דְּבָרֶיךָ כִּי צַדִּיק אָתָּה".</p>
+      <p>למה נאמר פעמיים "לתת"? כך מובא בשם השפת אמת: ללמדך שכאשר נתן הקדוש ברוך הוא לאברהם את ארץ ישראל, נתן לו שתי מתנות. האחת, ארץ ישראל הגשמית. והשנייה, ארץ ישראל הרוחנית. לכן "לתת" פעמיים.</p>
+      <p>ובספרים מובא עוד, שהעולם הבא נקרא "נחלה", כמו שארץ ישראל נקראת נחלה. ולכן כשאדם בא לפני הקדוש ברוך הוא אחרי מאה ועשרים שנה, הוא יכול להביא איתו את חלקו בארץ ישראל. ומי שחלקו בארץ ישראל היה כראוי, הקדוש ברוך הוא ייתן לו את כל תענוגי העולם הבא.</p>
+      <p>הנה שוב אותו יסוד: יש ארץ שרואים, ויש ארץ שאינה נראית. ומי שאוחז באחת, אוחז גם בשנייה.</p>
+      <p class="bold-para">בברית עם אברהם נכתב "לתת" פעמיים: ארץ ישראל הגשמית וארץ ישראל הרוחנית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלקת השדה של אלימלך</div>
+      <h3 class="story-title">🪧 רחוב חלקת השדה</h3>
+      <p>הרב סיפר שפעם התקשר אליו רב אחד, שגם הוא חיבר ספר יפה על ארץ ישראל. הוא שמח מאוד שיצא ספר על המצווה, וביקש שישלחו לו אותו. הרב שאל: איפה אתה גר? והוא ענה שהוא גר ברחוב בשם "חלקת השדה".</p>
+      <p>אמר לו הרב: אתה יודע באיזה רחוב קדוש אתה גר? "חלקת השדה" הוא בדיוק הביטוי שנאמר על יעקב אבינו בשכם: "וַיִּקֶן אֶת חֶלְקַת הַשָּׂדֶה".</p>
+      <p>אבל יש כאן עוד עומק. הביטוי "חלקת השדה" מופיע בתנ"ך במקום מפורסם נוסף. איפה? אצל בועז, במגילת רות. כשבא בועז אל הגואל הקרוב, הוא אומר לו: "חֶלְקַת הַשָּׂדֶה אֲשֶׁר לְאָחִינוּ לֶאֱלִימֶלֶךְ מָכְרָה נָעֳמִי הַשָּׁבָה מִשְּׂדֵה מוֹאָב".</p>
+      <p>והגואל מסכים לגאול את השדה. אבל אז בועז אומר לו: אם אתה קונה את השדה, אתה לוקח גם את רות. והגואל נסוג. מי שקורא את המגילה, אולי עייף אחרי ליל שבועות, עובר על זה מהר. אבל כדאי לעצור ולשאול.</p>
+      <p>מה הקשר בין שדה לבין אישה? למה הגואל הראשון מוכן לקנות את השדה, ונסוג כשהוא שומע על רות? ולמה התורה, או ליתר דיוק המגילה, משתמשת דווקא באותן מילים שנאמרו על יעקב אבינו? התשובה תחבר את כל מה שלמדנו.</p>
+      <p class="bold-para">הביטוי "חלקת השדה" מופיע אצל יעקב בשכם וגם אצל בועז במגילת רות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלקת השדה של אלימלך</div>
+      <h3 class="story-title">🌾 למה לגאול את השדה?</h3>
+      <p>מה העניין הגדול לגאול את השדה של אלימלך? אלימלך כבר נפטר. גם מחלון וכליון אינם בחיים. לנעמי אין ילדים שיירשו את השדה. ובועז הוא עשיר גדול, ויכול לפרנס את נעמי ואת רות בדרך אחרת. אם כן, מה ההבדל אם השדה ביד יהודי זה או ביד יהודי אחר? ומה ה"עסקת חבילה" הזאת, שמי שגואל את השדה חייב לשאת את רות?</p>
+      <p>תלמיד חכם בארץ ישראל חידש כאן חידוש נפלא. מן המסופר במגילה ברור שגאולת השדה היא עניין גדול יותר מן העניין הכלכלי. כמו שאנו משתוקקים לגאולה, ומבינים כמה היא נחוצה, כך היה צורך דחוף לגאול את השדה ולהשיבו למשפחת אלימלך.</p>
+      <p>למה? כי זה חלק העולם הבא של אלימלך ובניו. קרקע בארץ ישראל, כמו שלמדנו, היא חלק העולם הבא של האדם. אם נמכרה הקרקע של אלימלך, כביכול נמכר חלקו בעולם הבא. ומאחר שנעמי נאלצה למכור את השדה מפני העוני, מצווה גדולה לגאול אותו. זו גאולה לנשמתם של אלימלך ובניו.</p>
+      <p>ולכן זו עסקת חבילה. רות קשורה לנשמת בני אלימלך, שהרי הייתה אשת מחלון. מי שנושא אותה מקים זכר למת. וכך גם מי שגואל את הקרקע. שני הדברים הם עניין אחד: "לְהָקִים שֵׁם הַמֵּת עַל נַחֲלָתוֹ".</p>
+      <p class="bold-para">גאולת שדהו של אלימלך היא גאולה של חלקו בעולם הבא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלקת השדה של אלימלך</div>
+      <h3 class="story-title">🔗 גזירה שווה</h3>
+      <p>ולכן, לפי אותו חידוש, השתמש הכתוב בביטוי לשוני שווה, כדי לרמוז על הלימוד. את חשיבות גאולת השדה שברות אפשר להבין רק אם מכירים קודם את ערכה העצום של קרקע בארץ ישראל, כפי שנלמד מ"חלקת השדה" של יעקב.</p>
+      <p>כלומר, מי שכתב את מגילת רות אומר לנו: אתה רוצה להבין מה זה "חלקת השדה"? עיין ערך "חלקת השדה" בספר בראשית. בשביל מה קנה יעקב את השדה בשכם? כדברי האבן עזרא: כדי ללמד שמי שיש לו חלק בארץ ישראל, חשוב כחלק העולם הבא. וגם כאן, אצל אלימלך, זה אותו עניין.</p>
+      <p>ההבדל הוא רק בזה: יעקב קנה בשביל עצמו, שיהיה לו חלק בעולם הבא. בועז גאל בשביל אחר, בשביל נשמתו של אלימלך. אבל העיקרון זהה. הקרקע היא החלק הנצחי.</p>
+      <p>ומכאן לימוד גם לחסד: מי שעוזר ליהודי אחר שלא תאבד ממנו נחלתו בארץ, עושה עמו חסד שנמשך גם אחרי מאה ועשרים.</p>
+      <p class="bold-para">כדי להבין את "חלקת השדה" שברות, צריך להכיר את "חלקת השדה" של יעקב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלקת השדה של אלימלך</div>
+      <h3 class="story-title">♾️ פנסיה לאין סוף</h3>
+      <p>עכשיו מבינים את מה שנאמר בתחילת הדרך. אדם בארץ ישראל משלם עשרים וחמש שנה על הדירה שלו. זה לא קל, תשלום גדול בכל חודש. אבל אם אדם לומד ומבין, הוא אומר: אני לא סתם משלם. זו השקעה נצחית. אני משלם על חלקת הנצח שלי.</p>
+      <p>הרב הציע לדמיין: אילו היה מגיע מישהו עם עורך דין מטעם בורא עולם, ומוכר קרקעות בעולם הבא, עם חתימה של הקדוש ברוך הוא, חלקה נצחית שתהיה שלך לנצח נצחים. כל אחד היה משקיע הון. לא פנסיה לעשרים או שלושים שנה, אלא עד אין סוף.</p>
+      <p>וזה בדיוק מה שאומרים האבן עזרא, הרמב"ן, רבנו בחיי והזוהר: אם אתה קונה קרקע בארץ ישראל, ומבין מה אתה קונה, קנית חלקה לנצח נצחים.</p>
+      <p>לכן, אמר הרב, כל יהודי שגר בארץ צריך לדעת לפחות את המקורות האלה: את פרשת השבוע, את האבן עזרא, את המשנה ואת הזוהר. שיידע מה הוא עושה כשהוא משלם, לא יום אחד אלא עשרים וחמש שנה. ושיספר זאת גם לילדיו ולנכדיו, כדי שחלקתם תהיה קדושה לנצח נצחים.</p>
+      <p class="bold-para">מי שמשלם על דירה בארץ ישראל ויודע מה הוא קונה, משקיע בחלקה לנצח נצחים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/XJf2ci-hSRU · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"כאילו היום ניתנה לך","icon":"🎶","color":"#c62b6b","stories":[{"id":1,"title":"\"כאילו נתנה לך בו ביום\"","icon":"📅"},{"id":2,"title":"הלילה שבו רקדו ברחובות","icon":"💃"},{"id":3,"title":"לשמוח כל יום","icon":"☀️"},{"id":4,"title":"\"בשיר וקול תודה\"","icon":"🎶"}]},{"id":2,"name":"גדולי ישראל קנו קרקע","icon":"📜","color":"#6d28d9","stories":[{"id":5,"title":"החזון איש והסטייפלר","icon":"📜"},{"id":6,"title":"המגרש שלא ראה מעולם","icon":"🗺️"},{"id":7,"title":"עסקה שאינה עסקה","icon":"⚖️"}]},{"id":3,"name":"מקורות ושאלת הכוונה","icon":"📚","color":"#e08e00","stories":[{"id":8,"title":"משנה מפורשת","icon":"📖"},{"id":9,"title":"הזוהר והשפת אמת","icon":"✨"},{"id":10,"title":"האם צריך לדעת?","icon":"🧠"},{"id":11,"title":"קבר עד ביאת המשיח","icon":"⚰️"}]},{"id":4,"name":"למה דווקא עולם הבא","icon":"🌳","color":"#1e88b8","stories":[{"id":12,"title":"ההבטחה היחידה","icon":"🤝"},{"id":13,"title":"ביתו של ה'","icon":"🏠"},{"id":14,"title":"גוף ונשמה","icon":"🕊️"},{"id":15,"title":"\"לתת\" פעמיים","icon":"🎁"}]},{"id":5,"name":"חלקת השדה של אלימלך","icon":"🌾","color":"#c62b6b","stories":[{"id":16,"title":"רחוב חלקת השדה","icon":"🪧"},{"id":17,"title":"למה לגאול את השדה?","icon":"🌾"},{"id":18,"title":"גזירה שווה","icon":"🔗"},{"id":19,"title":"פנסיה לאין סוף","icon":"♾️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
