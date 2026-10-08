@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 שם שמגלה מהות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 שם שמגלה מהות</h1>
+  <p>השמות שנתן אדם הראשון לבעלי החיים, לאשתו ולעצמו – ומה כל שם מלמד על מהותו של הנקרא בו</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ שם שמגלה מהות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/UbrNSrlKZJQ?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/UbrNSrlKZJQ/hqdefault.jpg" alt="שם שמגלה מהות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=UbrNSrlKZJQ" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדם קורא שמות</div>
+      <h3 class="story-title">🏷️ לא סתם תווית</h3>
+      <p>בפרשת בראשית מסופר שהקדוש ברוך הוא הביא את כל בעלי החיים אל האדם: "וַיָּבֵא אֶל הָאָדָם לִרְאוֹת מַה יִּקְרָא לוֹ, וְכֹל אֲשֶׁר יִקְרָא לוֹ הָאָדָם נֶפֶשׁ חַיָּה הוּא שְׁמוֹ". ה' ממנה את האדם לתפקיד: לקרוא שמות לכל בעלי החיים.</p>
+      <p>אפשר לחשוב שזה תפקיד פשוט, כמו שבכל שפה בוחרים מילה לכל חיה. באנגלית קוראים לכלב בשם אחד ולחתול בשם אחר, ואין בשמות האלה שום סוד. אבל בלשון הקודש זה לא כך.</p>
+      <p>אדם הראשון היה חכם מאוד, חכם מכל האדם. התפקיד שלו היה להבין איזו חכמה מונחת בכל בעל חיים: מה התכונה שלו, מה המיוחד בו. ואז קרא לו שם שמבטא את המהות הזאת.</p>
+      <p>השיעור הזה הוא כמה פנינים קלות ויפות על השמות האלה. כל שם הוא עולם קטן, והרב הזמין את השומעים להוסיף רעיונות משלהם – כי הרשימה ארוכה מאוד, ובכל שם אפשר לגלות עוד דבר.</p>
+      <p class="bold-para">אדם הראשון לא בחר שמות שרירותיים, אלא הבין את מהותו של כל בעל חיים וקרא לו שם שמבטא אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדם קורא שמות</div>
+      <h3 class="story-title">🐕 כלב – כולו לב</h3>
+      <p>נתחיל בשם המפורסם ביותר: כלב. למה נקרא שמו כלב? כי הוא "כולו לב". מה מיוחד בכלב, שאנשים כל כך אוהבים אותו? הוא מראה לבעליו אהבה ונאמנות. כשאתה מגיע הביתה, הוא שמח, נובח בהתלהבות, קופץ עליך.</p>
+      <p>הרב סיפר שבזמנו עלה רעיון לתת כלב לכל אדם זקן ובודד. לצערנו, יש זקנים שילדיהם כמעט אינם באים לבקר אותם. אין מי שיגיד להם שלום כשהם חוזרים הביתה, אין מי שישמח בהם. והרעיון היה: שלפחות יהיה יצור אחד בעולם שישמח כשהוא מגיע.</p>
+      <p>יש גם כלבים שמאמנים אותם ללוות אנשים חולים, שנוטים לשכוח את הדרך, והכלב מחזיר אותם הביתה. כלב טוב יודע לאהוב ולשמור.</p>
+      <p>מכאן רואים כמה האדם צריך שיאהבו אותו. זה צורך עמוק שנטע בו הבורא. ועוד דבר רואים: האדם גם אוהב לתת, להעניק למישהו שמכיר בזה ומחזיר אהבה.</p>
+      <p class="bold-para">הכלב נקרא כך כי הוא כולו לב: נאמנות ואהבה לבעליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדם קורא שמות</div>
+      <h3 class="story-title">🧭 אדם אינו כלב</h3>
+      <p>מן הצורך הזה לתת, הרב הגיע לנקודה עמוקה יותר. התורה מצווה "פְּרוּ וּרְבוּ", ודרכו הטבעית של האדם היא להעניק לילדיו, לגדל אותם ולשמוח בהם. כשאדם אינו זוכה לכך, או אינו רוצה בכך, לפעמים הוא מביא כלב כדי למלא את הצורך לתת.</p>
+      <p>לצערנו יש רבים שבמקום עוד ילד מגדלים עוד כלב. יש מי שאפילו שואלים בגלוי: מה עדיף, ילד או כלב? מה ההבדל? והתשובה היא שמי שאינו מבין שהאדם הוא יצור אלוקי, שיש לו תפקיד בעולם, באמת לא יבין מה ההבדל.</p>
+      <p>אבל מי שמבין, יודע: הילד לומד תורה, מקיים מצוות, ממשיך את השרשרת. הכלב יכול להיות כולו לב, אבל אין לו נשמה של אדם ואין לו תפקיד כמו של אדם.</p>
+      <p>כך שם אחד קטן, "כלב", מוביל אותנו לשאלה גדולה: מה המקום של האדם בבריאה, ובשביל מה נברא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדם קורא שמות</div>
+      <h3 class="story-title">🐈 חתול – המחתל</h3>
+      <p>ומה עם החתול? הרב העיר שברחובות אין בעיה עם חתולים מן הסוג שיש עם כלבים. הבעיה הגדולה ברחובות היא הלכלוך שמשאירים הכלבים, וערים שלמות נאבקות בזה. עם חתולים אין בעיה כזאת. למה?</p>
+      <p>כי החתול תמיד דואג לכסות. אחרי שהוא עושה את צרכיו, הוא מחפש מקום מתאים ומכסה את הפסולת. ולכן נקרא שמו חתול – מלשון "מחתל", שמכסה ועוטף.</p>
+      <p>ויש עוד דבר שמראה על הצניעות של החתול. כמעט אף פעם לא רואים סתם גופה של חתול ברחוב, למרות שחתולים אינם חיים שנים רבות. רואים חתול מת בעיקר כשנדרס. כשהחתול מרגיש שהוא הולך למות, הוא הולך למקום צנוע ונסתר, שלא יפריע לאף אחד.</p>
+      <p>יש כאן לימוד גם לנו: יש בבריאה בעל חיים שמלמד אותנו צניעות ודרך ארץ – לא להשאיר את הלכלוך שלנו לאחרים, ולדעת להיות בצד ולא במרכז.</p>
+      <p class="bold-para">החתול נקרא כך כי הוא מחתל ומכסה את הפסולת שלו – בעל חיים צנוע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדם קורא שמות</div>
+      <h3 class="story-title">🐪 גמל ונמר</h3>
+      <p>למה נקרא שמו גמל? מי שהולך במדבר הולך עם גמלים. למה דווקא גמלים ולא חמורים? כי לגמל נותנים לשתות לפני שיוצאים לדרך, והשתייה הזאת מספיקה לו לזמן ארוך מאוד, ימים רבים. אין עוד בעל חיים שמסוגל לזה.</p>
+      <p>כלומר, הגמל מסוגל "להיגמל" מן המים – להחזיק מעמד בלי שתייה במשך תקופה ארוכה. ולכן נקרא שמו גמל.</p>
+      <p>ומה עם הנמר? כאן השם בא ממראהו. לנמר יש כתמים, צבעים רבים על עורו, כלומר הוא "מנומר". אדם הראשון ראה את בעל החיים, וקרא לו לפי מה שראה.</p>
+      <p>כך רואים שהשמות מבוססים לפעמים על תכונה פנימית, כמו הכלב והגמל, ולפעמים על מראה חיצוני, כמו הנמר. אבל תמיד השם אומר משהו אמיתי על הנקרא בו, ואינו מילה ריקה.</p>
+      <p class="bold-para">הגמל מסוגל להיגמל מן המים זמן רב, והנמר נקרא על שם מראהו המנומר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדם קורא שמות</div>
+      <h3 class="story-title">🫏 חמור – חומר</h3>
+      <p>למה נקרא החמור חמור? כי אין דבר חומרי כמו החמור. ומכאן מובן פסוק מפורסם בישעיהו: "יָדַע שׁוֹר קֹנֵהוּ וַחֲמוֹר אֵבוּס בְּעָלָיו, יִשְׂרָאֵל לֹא יָדַע, עַמִּי לֹא הִתְבּוֹנָן".</p>
+      <p>השור אינו יודע הרבה, אבל הוא מכיר את בעליו. הוא יודע מי מביא לו את האוכל. כך רוב בעלי החיים: אפילו חתול שנתת לו פעם חלב, זוכר אותך ובא אליך.</p>
+      <p>החמור – לא. הוא שקוע כל כך בחומר, שהוא מכיר רק דבר אחד: את האבוס. הוא יודע שזה המקום שממנו הוא אוכל. מי הביא את האוכל, איך הגיע – הוא אינו יודע ואינו מתעניין. הוא שקוע שם, בתוך האבוס.</p>
+      <p>והנביא צועק בשם ה': ישראל, איך אינכם מתבוננים? מי עוזר לכם, מי הביא אתכם אל הארץ, מי נותן לכם את כל השפע? אל תהיו כמו החמור, שמכיר רק את האבוס. תסתכלו מי ממלא אותו.</p>
+      <p class="bold-para">החמור שקוע כולו בחומר: הוא מכיר את האבוס, אבל לא את מי שממלא אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדם קורא שמות</div>
+      <h3 class="story-title">🐸 אריה וצפרדע</h3>
+      <p>למה נקרא האריה אריה? מלשון יראה. כשאריה שואג, מי לא ירא? הוא מטיל פחד על כל מי שרואה אותו. וכך אומר הנביא: "אַרְיֵה שָׁאָג מִי לֹא יִירָא".</p>
+      <p>ולמה נקראת הצפרדע צפרדע? הרב הביא פירוש מעניין: "ציפור דעה". מובא שהציפורים יודעות היכן יש מים לפי הקרקור של הצפרדעים. הן שומעות את הקול, ויודעות שבמקום הזה יש מים. כלומר, הצפרדע נותנת דעה לציפור.</p>
+      <p>הרב אמר בגלוי שלא בדק את הדבר מבחינה מדעית, ומי שיודע על כך יותר יוכל לבדוק. אבל הרעיון יפה: יש בעל חיים שכל כולו כמעט שירות לאחר, נותן לו ידיעה שהוא צריך לה כדי לחיות.</p>
+      <p>ובכל השמות האלה רואים דבר אחד: הבריאה כולה מלאה חכמה. כל יצור, אפילו הקטן ביותר, נברא עם תכונה מיוחדת, ומי שמתבונן בו לומד עליה.</p>
+      <p class="bold-para">האריה נקרא על שם היראה שהוא מטיל, והצפרדע – "ציפור דעה".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדם קורא שמות</div>
+      <h3 class="story-title">🐜 נמלה – שמלה את הגרעין</h3>
+      <p>ויש שם שהוא פלא של הבריאה: נמלה. הנמלה אוספת במשך כל חודשי הקיץ המון גרעינים ותבואה. כולנו ראינו אותן רצות ומובילות גרגרים. והיא מכניסה אותם לבורות באדמה.</p>
+      <p>עכשיו חשבו: אם תיקח גרעינים רבים ותשים אותם בבור באדמה, ואחר כך ירד גשם – מה יקרה? על פי הטבע יצמח שם צמח. אבל אצל הנמלים, הגרעינים נשארים כמו שהם. הבוץ והלחות מגיעים גם לשם, ובכל זאת שום דבר לא נובט.</p>
+      <p>התשובה, כך הביא הרב, מדהימה: הנמלה חותכת כל גרעין שהיא לוקחת, עושה בו חור, ורק אחר כך מכניסה אותו לבור. וגרעין שאינו שלם אינו יכול לצמוח.</p>
+      <p>ולכן נקראת נמלה – מלשון "מל", חותך. היא מלה את הגרעין לפני שהיא מאחסנת אותו. מי לימד אותה את זה? הבורא כך ברא אותה. ואדם הראשון, שהבין את מהותה, קרא לה בשם שמבטא בדיוק את מעשיה.</p>
+      <p class="bold-para">הנמלה חותכת כל גרעין שהיא אוגרת, כדי שלא יצמח בבור שלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אישה וחוה</div>
+      <h3 class="story-title">💞 "לזאת ייקרא אישה"</h3>
+      <p>אחרי בעלי החיים, אדם הראשון קורא שם לאשתו. בתחילה הוא אומר: "לְזֹאת יִקָּרֵא אִשָּׁה כִּי מֵאִישׁ לֻקֳחָה זֹּאת". את חלק ממני, נוצרת ממני.</p>
+      <p>וחז"ל דרשו מזה יסוד גדול. איש ואישה – יש בשניהם את האותיות "אש". באיש יש גם יו"ד, ובאישה יש גם ה"א, ויחד הן יוצרות את שם ה'. אם זכו – שכינה ביניהם. לא זכו – נשאר רק "אש" ו"אש", ואש אוכלתם.</p>
+      <p>כלומר, בטבעם, שני בני אדם שונים אינם אמורים להסתדר זה עם זה בקלות. זה לא דבר קל. הרב ציין שבעולם שיעור הגירושין גבוה מאוד, ובמקומות מסוימים רוב הזוגות אינם מצליחים להמשיך לחיות יחד.</p>
+      <p>אבל כשזוכים ומשרים שכינה בבית – יו"ד באיש וה"א באישה – אז שורים ביניהם אהבה ואחווה, שלום ורעות. הבית נעשה מקום שבו ה' נמצא.</p>
+      <p class="bold-para">איש ואישה – אם זכו, שכינה ביניהם; לא זכו, אש אוכלתם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אישה וחוה</div>
+      <h3 class="story-title">⚠️ "האישה אשר נתת עמדי"</h3>
+      <p>אבל אז בא החטא. האישה נותנת לאדם מן העץ, והוא אוכל. אדם הראשון עובר משבר עמוק, והוא כועס עליה מאוד.</p>
+      <p>וכשה' שואל אותו: "הֲמִן הָעֵץ אֲשֶׁר צִוִּיתִיךָ לְבִלְתִּי אֲכָל מִמֶּנּוּ אָכָלְתָּ?" – הוא עונה: "הָאִשָּׁה אֲשֶׁר נָתַתָּה עִמָּדִי הִוא נָתְנָה לִּי מִן הָעֵץ וָאֹכֵל".</p>
+      <p>חז"ל רואים כאן חטא נוסף. אדם יכול היה לתקן את המצב. אילו הודה באשמתו, אולי היה ה' מוחל לו. אבל לא רק שלא הודה – הוא האשים כביכול את ה': אתה נתת לי אותה. נתת לי דבר לא טוב, והיא החטיאה אותי.</p>
+      <p>חז"ל כעסו מאוד על הדברים האלה, ואמרו שאדם הראשון היה כפוי טובה. ה' נתן לו מתנה נפלאה, והוא הפך אותה לטענה. ולכן נענש בחומרה: לא רק שלא הכיר בטובה, אלא כפר בה.</p>
+      <p class="bold-para">חטאו הגדול של אדם הראשון היה שלא הודה, ואף כפר בטובה שעשה לו ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אישה וחוה</div>
+      <h3 class="story-title">💍 שבעה ימים של הודיה</h3>
+      <p>חז"ל ראו בזה ערך עליון, עד כדי כך שתיקנו דבר שכמעט אין לו אח ורע ביהדות כולה. כל אדם שמתחתן עושה עסק גדול מאוד מהכרת הטוב לה': מברכים שבע ברכות של הודיה.</p>
+      <p>מברכים "שהכל ברא לכבודו", מברכים "יוצר האדם", מברכים על כך שה' ברא את האדם בצלמו ובנה ממנו בניין עדי עד. ולא רק ביום אחד – שבעה ימים שלמים קבעו חז"ל שמברכים את ה' על המציאות הנפלאה שברא אישה בעולם.</p>
+      <p>זה התיקון של החטא הראשון. אדם הראשון אמר "האישה אשר נתת עמדי" בתלונה. וכל חתן מאז אומר את ההפך: ברוך אתה ה' על המתנה שנתת לי.</p>
+      <p>ומכאן לימוד לכל בית: לא לראות את בן הזוג כמובן מאליו, ובוודאי לא כמקור לטענות, אלא כמתנה מה' שעליה צריך להודות שוב ושוב.</p>
+      <p class="bold-para">כדי לתקן את כפיות הטובה, תיקנו חז"ל שבע ברכות שבעה ימים על בריאת האישה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אישה וחוה</div>
+      <h3 class="story-title">🌳 "בגן עדן מקדם"</h3>
+      <p>בשבע הברכות אומרים: "שַׂמֵּחַ תְּשַׂמַּח רֵעִים הָאֲהוּבִים כְּשַׂמֵּחֲךָ יְצִירְךָ בְּגַן עֵדֶן מִקֶּדֶם". מה פירוש "מקדם"? רש"י בתורה מסביר שגן עדן היה בצד מזרח. אבל קשה: למה כל חתן צריך לשמוע באיזה כיוון היה גן עדן?</p>
+      <p>יש פירוש אחר, שמובא כבר בגמרא ובתרגום: "מקדם" – כלומר, גן עדן נברא קודם שנברא העולם. יש כמה דברים שקדמו לעולם, ואחד מהם הוא גן עדן.</p>
+      <p>למה זה חשוב? העולם הזה הוא עולם גשמי, מוגבל בזמן ובמקום. אין בו אפשרות להיות רוחני לגמרי. אבל גן עדן היה יצירה אלוקית שאין לה גבולות, ולכן נברא לפני העולם הגשמי.</p>
+      <p>והשפת אמת מסביר: ברור שאנחנו חיים בעולם הזה. אבל לפעמים יכול להגיע ניצוץ אלוקי, ניצוץ מגן עדן, ולזרוח על האדם גם כאן. וזה מה שמבקשים לזוג: שתהיה להם שמחה כזאת, שירגישו בה קצת מגן העדן שנברא לפני העולם.</p>
+      <p class="bold-para">מברכים את הזוג שיזכה לניצוץ מגן העדן שנברא לפני העולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אישה וחוה</div>
+      <h3 class="story-title">🌸 שם חדש – חוה</h3>
+      <p>אחרי החטא גורש האדם מגן עדן, וחרב מתהפכת שומרת על הדרך. ואז הוא עושה מעשה של תשובה. הוא משנה את שם אשתו: "וַיִּקְרָא הָאָדָם שֵׁם אִשְׁתּוֹ חַוָּה כִּי הִוא הָיְתָה אֵם כָּל חָי".</p>
+      <p>מה הכוונה? הרב הסביר שזו דרכו של אדם עד היום: קל לו מאוד לצעוק, לכעוס, להתעצבן על השני, ולשמור בלב את כל מה שעשה לו. אבל כשצריך להמשיך לחיות יחד, הכעס הזה אינו תורם לאף אחד.</p>
+      <p>אדם הראשון ידע שיש לו פצע, משבר אמיתי. והוא החליט שמהיום יעמוד לנגד עיניו הדבר הטוב שבה. מה הטוב? ממנה יבוא כל העולם כולו. היא אם כל חי. ולכן, בכל פעם שיקרא לה בשמה, לא ייזכר בכל מה שקרה, אלא במעלתה.</p>
+      <p>זו תשובה קטנה, אבל עמוקה: לבחור לראות את הטוב, ולקרוא לאדם על שם המעלה שלו ולא על שם הטעות שלו.</p>
+      <p class="bold-para">אדם הראשון עשה תשובה בכך שקרא לאשתו על שם המעלה הטובה שבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · אישה וחוה</div>
+      <h3 class="story-title">🧥 כותנות שתפר ה'</h3>
+      <p>מיד אחרי שינוי השם מופיע פסוק מעניין: "וַיַּעַשׂ ה' אֱלֹקִים לְאָדָם וּלְאִשְׁתּוֹ כָּתְנוֹת עוֹר וַיַּלְבִּשֵׁם". ה' בעצמו עושה להם בגדים ומלביש אותם.</p>
+      <p>צריך לדמיין מה הרגיש אדם הראשון באותה שעה. הוא הרגיש נזוף מאוד. הוא חשב שה' כועס עליו, שהקשר ביניהם נותק. ואז ה' בא ומלביש אותו בעצמו. מובא שהכותנות האלה היו מיוחדות מאוד, ובעלי החיים פחדו מפני מי שלבש אותן.</p>
+      <p>מה זה עשה לאדם? הוא הרגיש: ה' עדיין איתי. לא זרק אותי. עדיין אכפת לו ממני, הוא דואג לי ושומר עליי. אני עדיין אהוב וחשוב בעיניו.</p>
+      <p>ולמה עשה זאת ה'? מידה כנגד מידה. רגע לפני כן, אדם במקום לצעוק על אשתו חיפש את המעלה שבה. וה' התנהג איתו באותה מידה: חיפש את המעלה שבו, קירב אותו והלביש אותו. מי שמחפש את הטוב בשני, ה' מחפש את הטוב בו.</p>
+      <p class="bold-para">ה' התנהג עם אדם מידה כנגד מידה: כמו שחיפש טוב באשתו, חיפש ה' טוב בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה נקרא אדם</div>
+      <h3 class="story-title">🌱 כולם נבראו מן האדמה</h3>
+      <p>ולבסוף – השם שה' קורא לאדם עצמו: אדם, מלשון אדמה. כאן שואלים המפרשים שאלה פשוטה: למה דווקא הוא נקרא על שם האדמה? הרי גם החתול, הפיל וכל בעלי החיים נבראו מן האדמה.</p>
+      <p>הרב הסביר את הקושיה במשל. אם תלמיד אשכנזי מגיע לבית ספר שכל תלמידיו ספרדים, יקראו לו "האשכנזי". למה? כי הוא היחיד. אבל אם הוא נמצא בין אשכנזים, איש לא יקרא לו כך. קוראים לאדם על שם תכונה רק כאשר היא מבדילה אותו מכל השאר.</p>
+      <p>אם כן, אם כל היצורים נבראו מן האדמה, מה מיוחד באדם שנקרא על שמה? היה מתאים יותר לקרוא לו בשם שמבדיל אותו מבעלי החיים, ולא בשם שמשותף לכולם.</p>
+      <p>את השאלה הזאת שואל הספורנו, והתשובה שלו משנה את כל הדרך שבה אנו מסתכלים על האדם.</p>
+      <p class="bold-para">השאלה: אם כל היצורים נבראו מן האדמה, למה דווקא האדם נקרא על שמה?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה נקרא אדם</div>
+      <h3 class="story-title">✨ חצי מלאך, חצי אדמה</h3>
+      <p>הספורנו אומר: יש לנו טעות. אל תשווה את האדם לבעלי החיים, כאילו כולם מן האדמה וגם הוא. האדם הוא יצור אלוקי. הוא שייך לעולם המלאכים – יש שרפים, חיות ואופנים, ויש אדם. יש בו נשמה, חלק אלוקה ממעל.</p>
+      <p>בין המלאכים, הוא היחיד שיש בו גם אדמה. הם רוחניים לגמרי, והוא שילוב של עליונים ותחתונים. ולכן נקרא אדם: כמו התלמיד היחיד בין כולם, הוא נקרא על שם מה שמבדיל אותו מקבוצתו – מקבוצת המלאכים.</p>
+      <p>זה מרומם מאוד. האדם יכול להגיע לדרגות נפלאות בהכרת ה'. הוא אינו בעל חיים משוכלל, אלא חצי מלאך שירד לעולם עם גוף.</p>
+      <p>אבל יש בזה גם אחריות. לצערנו, יש בני אדם שחיים כמו בעלי חיים, ואין הבדל גדול בין חייהם לחיי הפרה והסוס. הם לא זכו להגיע. וצריך האדם לזכות שהחלק הרוחני שבו יהיה העיקר, כדי שיהיה ראוי למעלה הנשגבה שבה ברא אותו ה'.</p>
+      <p class="bold-para">האדם אינו נמדד מול בעלי החיים אלא מול המלאכים – ובינם הוא היחיד שיש בו אדמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/UbrNSrlKZJQ · 2024-09-22 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"אדם קורא שמות","icon":"🐾","color":"#c62b6b","stories":[{"id":1,"title":"לא סתם תווית","icon":"🏷️"},{"id":2,"title":"כלב – כולו לב","icon":"🐕"},{"id":3,"title":"אדם אינו כלב","icon":"🧭"},{"id":4,"title":"חתול – המחתל","icon":"🐈"},{"id":5,"title":"גמל ונמר","icon":"🐪"},{"id":6,"title":"חמור – חומר","icon":"🫏"},{"id":7,"title":"אריה וצפרדע","icon":"🐸"},{"id":8,"title":"נמלה – שמלה את הגרעין","icon":"🐜"}]},{"id":2,"name":"אישה וחוה","icon":"💞","color":"#6d28d9","stories":[{"id":9,"title":"\"לזאת ייקרא אישה\"","icon":"💞"},{"id":10,"title":"\"האישה אשר נתת עמדי\"","icon":"⚠️"},{"id":11,"title":"שבעה ימים של הודיה","icon":"💍"},{"id":12,"title":"\"בגן עדן מקדם\"","icon":"🌳"},{"id":13,"title":"שם חדש – חוה","icon":"🌸"},{"id":14,"title":"כותנות שתפר ה'","icon":"🧥"}]},{"id":3,"name":"למה נקרא אדם","icon":"🌱","color":"#e08e00","stories":[{"id":15,"title":"כולם נבראו מן האדמה","icon":"🌱"},{"id":16,"title":"חצי מלאך, חצי אדמה","icon":"✨"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
