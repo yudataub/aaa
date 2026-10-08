@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 שלוש הנאות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 שלוש הנאות</h1>
+  <p>סדנת האושר: שיעור שנולד בכיתה של בנות – הנאת הגוף, הנאת השכל והנאת הנשמה, כמה זמן כל אחת נמשכת, ומה פירוש "לחזות בנועם ה'"</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ שלוש הנאות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/PMaQMwcG9wc?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/PMaQMwcG9wc/hqdefault.jpg" alt="שלוש הנאות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=PMaQMwcG9wc" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שיעור בכיתה</div>
+      <h3 class="story-title">🏫 האם יש שיעור איך ליהנות?</h3>
+      <p>הרב סיפר שהוא נמצא היום גם בבית ספר, ושהשיעור הזה נולד שם. יום קודם מסר שיעור לכיתה ו' של בנות, ושאל אותן בתחילה: האם יש בבית הספר שיעור על "איך ליהנות מן החיים"? הן הסתכלו עליו כאילו נפל מן השמים.</p>
+      <p>ובתחילת השיעור, כששאל מה פירוש ליהנות מן החיים, התשובה הייתה: ללכת להפסקה. זה מה שנקרא אצלן ליהנות. ובסוף השיעור, אמר הרב, זה היה עולם אחר לחלוטין.</p>
+      <p>הנקודה החשובה, לדבריו, הייתה הדרך. אילו היה בא לכיתה ו' ומתחיל להסביר מושגים מופשטים, היו מסתכלות עליו בלי להבין, והמורות היו מתפללות שמישהו יבין אותו. אבל אם מוצאים משחק – והיום זו אחת השיטות הטובות ביותר בחינוך – אפשר לפתח דברים שנראו בלתי אפשריים.</p>
+      <p>ומטרת השיעור הייתה להגיע לפסוק מתהילים כ"ז, שאומרים בתקופת אלול: "אַחַת שָׁאַלְתִּי מֵאֵת ה', אוֹתָהּ אֲבַקֵּשׁ: שִׁבְתִּי בְּבֵית ה' כָּל יְמֵי חַיַּי, לַחֲזוֹת בְּנֹעַם ה' וּלְבַקֵּר בְּהֵיכָלוֹ".</p>
+      <p class="bold-para">שיעור לכיתה ו' על הנאה מן החיים פתח עולם שלם, דרך משחק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שיעור בכיתה</div>
+      <h3 class="story-title">❓ שאלות על הפסוק</h3>
+      <p>הרב שאל את התלמידות כמה שאלות על הפסוק. ראשית: "לחזות בנועם ה'" – אלה מילים לא רגילות. לחזות פירושו לראות. איך רואים נועם? נועם מרגישים, טועמים. איך אפשר לראות הרגשה? היה צריך לומר "לטעום בנועם ה'".</p>
+      <p>שנית: "שבתי בבית ה' כל ימי חיי" – מה זה בית ה'? התלמידות אמרו: בית המקדש, בית המדרש. אבל דוד המלך לא ישב כל ימיו בבית המקדש. הוא היה מלך, עם תפקיד. האם רצה להתפטר? והאם הפסוק הוא רק לבנים, שיושבים בבית המדרש?</p>
+      <p>ושלישית: "אחת שאלתי" – אחת? הוא מבקש שלושה דברים: לשבת בבית ה', לחזות בנועם ה', ולבקר בהיכלו. ומה התשובה? הכל אחד: מי שיושב בבית ה', רואה את נועם ה', ונמצא בהיכלו – זה דבר אחד.</p>
+      <p>הרב אמר שאת התשובה לשאלה הראשונה, על "לחזות", יגלה בסוף. ובינתיים פתח במשחק. והמשחק הזה, כפי שיתברר, הוא שהוביל את התלמידות בעצמן אל התשובה, צעד אחר צעד.</p>
+      <p class="bold-para">"לחזות בנועם" – איך רואים נועם? ומה פירוש "בית ה'"?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כמה זמן זה נשאר</div>
+      <h3 class="story-title">⏱️ המשחק</h3>
+      <p>המשחק היה פשוט. הרב קרא חוויות, והתלמידות היו צריכות לחשוב כמה זמן ההרגשה הטובה נשארת: האם היא נמסה ונגמרת תוך רגע, או נשארת בלב זמן רב?</p>
+      <p>החוויה הראשונה: "קיבלתי לייק חדש בטלפון". כמעט כולן אמרו שזה נגמר אחרי שנייה. אחד המשתתפים בשיעור של המבוגרים העיר שזה תלוי באיך שאדם תופס את זה: אם הלייק פירושו "מישהו שם לב אליי" – נגמר מהר; אם פירושו "מישהו נהנה ממה שעשיתי והפיק מזה תועלת" – זה יכול להחזיק יותר.</p>
+      <p>השנייה: "אמרתי מילה טובה לחברה שהייתה עצובה". כאן לא היה ויכוח: זה נשאר הרבה זמן. עזרת לאדם, הקמת אותו, והוא עומד שמח בזכותך – זה מחזיק מעמד.</p>
+      <p>השלישית: "קניתי בובה חדשה". עד שאקנה עוד בובה, אמרו. וכמו שכולנו יודעים מרכב חדש או נעליים חדשות – מתלהבים שבוע, ואחר כך מתרגלים. אבל אחת התלמידות אמרה: אם זו בובה שאני אוהבת מאוד, זה יכול להחזיק הרבה זמן. והרב אמר שזו הגדרה טובה, ושתכף יתברר למה.</p>
+      <p class="bold-para">קוראים חוויה, וכולם צריכים לומר: האם ההרגשה הטובה נמסה תוך רגע, או נשארת בלב?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כמה זמן זה נשאר</div>
+      <h3 class="story-title">🎮 שיר, סרט ומשחק מחשב</h3>
+      <p>עוד חוויה: "שרתי עם כל הכיתה שיר". אחד הילדים השיב: תלוי איזה שיר וכמה התחברתי אליו. אם זה שיר עם רגש – זה מחזיק זמן רב; אם סתם שיר – נגמר מיד. "ראיתי סרט מרגש" – לפעמים יכול להישאר זמן רב.</p>
+      <p>ואז הביא הרב דוגמה הפוכה: משחק מחשב. הוא נזכר במשחקים מפעם, שישבו מולם שעות. ומה מרגישים כשגומרים? הרב אמר שהוא זוכר את ההרגשה: איזה בזבוז. כמה זמן שרפתי. מה יצא לי מזה? כלום. ועכשיו מאוחר בלילה, ומחר אהיה עייף. אחרי שעה שלמה – לא נשאר כלום, חוץ מן הדאגה איך אקום מחר.</p>
+      <p>ולעומת זאת, כשאדם קיבל משהו טוב, והודה לה' מכל הלב – התחושה יכולה להישאר זמן רב מאוד.</p>
+      <p>ואז שאל את התלמידות: נסו להבין את העיקרון. לא כל מקרה לחוד – מה עומד מאחורי הדברים? מתי אדם מרגיש "נהניתי, ונגמר", ומתי ההנאה נמשכת?</p>
+      <p class="bold-para">שיר עם רגש נשאר; משחק מחשב של שעתיים משאיר תחושת ריקנות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כמה זמן זה נשאר</div>
+      <h3 class="story-title">🧠 מה נשאר אחרי שבוע</h3>
+      <p>הרב הדגיש שהמשחק אינו רק דרך לעניין תלמידות. זו בדיקה שכל אדם יכול לעשות לעצמו. אחרי כל חוויה – לשאול: כמה זמן זה נשאר? האם אני עוד זוכר את זה, ונהנה מזה, אחרי שעה? אחרי יום? אחרי שבוע?</p>
+      <p>רוב הדברים שאדם רודף אחריהם נבחנים מהר מאוד. קניות, בידור, משחקים – ההנאה נמסה מיד, ולפעמים משאירה אחריה דווקא תחושה של בזבוז. ואילו דברים שלא נראים מושכים במבט ראשון – עזרה לאחר, לימוד, תפילה בכוונה, שיחה טובה עם הורים – משאירים חותם שנמשך.</p>
+      <p>והרב אמר שזו הסיבה שהשיעור הזה מתאים דווקא לבית ספר. הילדות חיות בעולם שמציע להן כל הזמן הנאות של רגע. אם הן לומדות לשאול את השאלה הזאת, הן יכולות לבחור בעצמן במה להשקיע.</p>
+      <p>ועל השאלה למה זה כך – למה יש הנאות שנמשכות ויש שנגמרות – ענו התלמידות בעצמן, דרך החלוקה לשלוש.</p>
+      <p class="bold-para">הבדיקה הפשוטה "כמה זמן זה נשאר" מגלה מה באמת חשוב לאדם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גוף, שכל ונשמה</div>
+      <h3 class="story-title">🔺 שלושה חלקים</h3>
+      <p>הרב הסביר שהחלוקה לשלושה מופיעה במקומות רבים. גוף האדם: ראש, גוף ורגליים. היום: בוקר, צהריים וערב. וגם חיי האדם, כפי שכתוב בספר "היקרים", מתחלקים לשלוש תקופות: גיל הצעירות, גיל הבגרות, והגיל השלישי.</p>
+      <p>ובאופן מקביל, אמר הרב, יש בחיי האדם שלושה סוגים של הנאה: הנאת הגוף, הנאת השכל והנאת הנשמה. הוא אמר שאינו יודע אם מישהו הגדיר זאת בצורה כזאת, אבל זה יפה מאוד, ומסביר את כל מה שעלה במשחק.</p>
+      <p>הנאת הגוף מוכרת לכולם: אכלתי משהו טעים, מזגן טוב, מקלחת טובה. רוב היום אדם מסתובב סביב הנאות הגוף.</p>
+      <p>הנאת השכל: פתרת תשבץ, הבנת דבר קשה, התעמקת בסוגיה. הרב אמר שהרבה פעמים בחור ישיבה אינו שם לב שהוא נהנה, אבל כך נברא המוח: כשאדם חושב, מופרש חומר שגורם להנאה. ככל שחושבים עמוק יותר, נהנים יותר – בתנאי שזה לא מביא לתסכול. ולכן בחור ישיבה אמור להיות אדם שנהנה מאוד מחייו.</p>
+      <p class="bold-para">כמו שהגוף מתחלק לשלושה וחיי האדם לשלושה, כך ההנאות מתחלקות לשלוש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גוף, שכל ונשמה</div>
+      <h3 class="story-title">📖 בחור ישיבה שנהנה</h3>
+      <p>הרב חזר על הנקודה של הנאת השכל, משום שהיא מפתיעה רבים. אנשים חושבים שלימוד הוא מאמץ, ושההנאה היא בהפסקה. אבל המוח בנוי כך שמחשבה עצמה גורמת הנאה. כשאדם מתמודד עם שאלה קשה, מתאמץ, ומצליח להבין – הוא נהנה.</p>
+      <p>הרב תיאר את זה במונחים פשוטים: בין תאי המוח עוברים אותות, ובשעת חשיבה מופרש חומר שגורם תחושה טובה. אדם שאינו נהנה כלל מן החשיבה – משהו אצלו אינו כשורה. ולכן, אמר, בחור ישיבה שיושב ושואל "מה אמרו התוספות, מה אמר הרשב"א", אמור להיות אדם שנהנה מאוד מחייו.</p>
+      <p>יש תנאי אחד: שהקושי לא יהפוך לתסכול. מי שנכנס לדבר עמוק מדי בשבילו, ומרגיש שאינו מצליח, אינו נהנה. לכן חשוב ללמוד ברמה שמאתגרת אבל אפשרית.</p>
+      <p>וכשמצרפים לזה את הנאת הנשמה – תחושת הקרבה לבורא עולם בלימוד התורה – מקבלים את ההנאה השלמה ביותר.</p>
+      <p class="bold-para">לפי מבנה המוח, מי שחושב לעומק אמור ליהנות מאוד, ולכן לימוד תורה אמור להיות הנאה גדולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גוף, שכל ונשמה</div>
+      <h3 class="story-title">🎻 הנאת הנשמה</h3>
+      <p>והחלק השלישי: הנאת הנשמה. מה זה? למשל מוזיקה. אבל, אמר הרב, תלוי איזו. יש מוזיקה שמה שמדבר בה הוא בעיקר הקצב, והגוף רוצה לקפוץ; זו הנאת הגוף. ולכן מבוגרים רבים בורחים ממנה באולמות. ויש מוזיקה שמגיעה אל הנשמה.</p>
+      <p>ואיך יודעים? הרב נתן כלל, שראה באחד הספרים, ואמר שהוא עובד על פי רוב: אם אפשר לנגן את השיר לאט, והוא עדיין יפה – זו הנאת הנשמה. אם אפשר לנגן אותו רק מהר – זו הנאת הגוף. ולכן בספרים כתוב לשיר "במשך וניגון", לאט. והספרדים, אמר, מומחים לזה: הם יודעים להאריך במילה אחת וליהנות מכל צליל.</p>
+      <p>עוד דוגמה: מישהו אומר לך בסוף ההרצאה שהיא הייתה מעולה. איפה אתה נהנה? לא בגוף, וגם לא בשכל – השכל לא עבד. הנשמה נהנית. בבוקר אומרים "לְמַעַן יְזַמֶּרְךָ כָבוֹד", והמפרשים אומרים שהנשמה נקראת "כבוד", כי היא רוצה מאוד להרגיש כבוד. השאלה היא איזה כבוד: יש מי שמחפש כבוד מאחרים, ויש מי שמחפש כבוד פנימי – להרגיש שהוא עושה דברים טובים.</p>
+      <p class="bold-para">מוזיקה טובה, אהבה, נתינה, כבוד פנימי – אלה הנאות של הנשמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גוף, שכל ונשמה</div>
+      <h3 class="story-title">👑 כבוד חיצוני וכבוד פנימי</h3>
+      <p>הרב התעכב על הנקודה של הכבוד, משום שהיא מסבירה הרבה מן ההתנהגות של בני אדם. הנשמה נקראת "כבוד", והיא רוצה מאוד להרגיש מכובדת. זה טבעה, ואין בזה פגם.</p>
+      <p>השאלה היא איפה מחפשים את הכבוד. יש אדם שמחפש אותו רק בעיני אחרים: מה יאמרו, כמה יחמיאו, כמה לייקים יקבל. הכבוד הזה תלוי באחרים, ולכן הוא חולף ולא יציב. היום מחמיאים לו, ומחר שוכחים.</p>
+      <p>ויש אדם שמחפש כבוד פנימי: שבורא עולם יעריך אותו, שירגיש בתוכו שהוא עושה דברים טובים. הכבוד הזה אינו תלוי באף אחד. גם אם איש לא יודע מה עשה, הוא יודע, והנשמה שלו מרגישה את זה.</p>
+      <p>והרב קשר את זה ללייק מן המשחק: מי שמחפש בלייק תשומת לב, ההנאה נגמרת מיד; מי שרואה בו סימן שעשה משהו מועיל לאחרים, יש בזה משהו מן הכבוד הפנימי, והוא נשאר יותר.</p>
+      <p class="bold-para">הנשמה משתוקקת לכבוד, אבל הכבוד האמיתי הוא התחושה הפנימית שאדם עושה דברים טובים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גוף, שכל ונשמה</div>
+      <h3 class="story-title">🍬 סבא שמחלק</h3>
+      <p>עוד דוגמה להנאת הנשמה: אהבה ונתינה. הרב תיאר סבא שהנכד שלו מגיע, והוא נותן לו ממתק. פעם, כשהנכד כבר גדל, אמר לסבא: אני כבר גדול, אינני צריך. והסבא השיב בכנות: זה לא בשבילך, זה בשבילי.</p>
+      <p>וכך גם סבתא שמחלקת לכל הנכדים. אם יבוא מישהו ויאמר לה "סבתא, לא צריך, יש לנו מספיק" – הוא לא מבין. היא צריכה לתת, בשבילה. תנו לה לחלק וליהנות.</p>
+      <p>איפה נהנים מזה? בחוש האהבה, בנשמה. כשאתה אוהב מישהו, וכשמישהו אוהב אותך – הנשמה היא שנהנית.</p>
+      <p>ומכאן אפשר להבין גם את מה שאמרה התלמידה על הבובה: אם הבובה היא "עוד חפץ חדש", ההנאה ממנה היא של הגוף, ונגמרת בתוך יומיים. אבל אם זו בובה שהיא אוהבת, יש בה אהבה – וזה כבר עניין של הנשמה, ולכן זה נשאר.</p>
+      <p class="bold-para">ההנאה של סבא וסבתא לתת לנכדים היא הנאה של הנשמה, ולכן לא מונעים ממנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גוף, שכל ונשמה</div>
+      <h3 class="story-title">🗂️ תרגילי מיון</h3>
+      <p>בהמשך המשחק נתן הרב לתלמידות למיין חוויות לפי שלושת הסוגים, והדיון היה ער. "ארוחת בוקר טעימה" – כולן אמרו: הנאת הגוף. "פתרתי תרגיל חשבון קשה" – הנאת השכל. "עזרתי לחברה שנפלה" – כאן לא היה ויכוח בכיתה: הנשמה. "קיבלתי תעודת הצטיינות" – גם זו, לפי רוב התלמידות, נוגעת בנשמה, בכבוד הפנימי.</p>
+      <p>אבל היו גם מקרים מורכבים. "אני קוראת ספר מעניין" – איזו הנאה? תלוי בספר. אם זה ספר שמפעיל את המחשבה – שכל; אם זה ספר על ערכים, על חברה, על משמעות – נשמה. הרב העיר שילדות בדרך כלל לא קוראות ספרים על משמעות החיים; מבוגרים יותר נמשכים לספרים כאלה. וזה מתאים לחלוקה לתקופות החיים.</p>
+      <p>ועוד מקרה: "פתרתי שאלה קשה, ותוך כדי שמעתי ניגון מרגש". כאן נהנים גם השכל וגם הנשמה. אדם הוא גוף, שכל ונשמה יחד, וחוויות רבות נוגעות ביותר מאחד.</p>
+      <p>המטרה לא הייתה למיין בדיוק, אלא שהתלמידות ישימו לב שיש סוגים שונים של הנאה, ושיש ביניהם הבדל.</p>
+      <p class="bold-para">התלמידות התאמנו למיין חוויות לפי סוג ההנאה, וגילו שיש חוויות שמשלבות כמה סוגים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · גוף, שכל ונשמה</div>
+      <h3 class="story-title">🌳 שלוש תקופות בחיים</h3>
+      <p>הרב הראה שהחלוקה מקבילה גם לתקופות החיים. ילד קטן, עד גיל שש או שבע, נהנה כמעט רק מהנאות הגוף: סוכרייה, שוקולד. הוא מכיר גם אהבה, אבל רוב מה שמדבר אליו הוא מה שנוגע בגוף.</p>
+      <p>האדם הבוגר: מה שמדבר אליו בעיקר הוא התועלת. מה יצא לי מזה? איך אצליח? בוא נעשה עסקים. זה עולם השכל.</p>
+      <p>ובגיל השלישי, כך כתוב בספר "היקרים", אנשים אוהבים עיון: מה חשוב בחיים, מה המטרה, מה האידיאלים, מוסר וערכים. דברים ששייכים יותר לעולם הנשמה.</p>
+      <p>והרב הזכיר שגם בפסיכולוגיה מדברים על זה. פרויד דיבר בעיקר על שני הרבדים הראשונים: על הדחפים ועל ההכרה. ובא ויקטור פרנקל ואמר שיש רובד שלישי, גבוה יותר, והוא הדומיננטי: המשמעות. האדם מחפש משמעות. יש לו כסף, יש לו הכל, ועדיין הוא מחפש משמעות. ופרנקל טען שהמשמעות היא שנותנת לאדם שמחת חיים וכוח לעבור הכל. בלשון שלנו: הנאת הנשמה. הנשמה צריכה סיפוק, והיא לא מקבלת אותו מאוכל ומשתייה, אלא מדברים משמעותיים.</p>
+      <p class="bold-para">ילד נהנה בעיקר מהנאות הגוף, המבוגר מן השכל והתועלת, ובגיל השלישי מחפשים משמעות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יופי ומשמעות</div>
+      <h3 class="story-title">🌄 למה כלבים לא עולים לתצפית</h3>
+      <p>בהמשך המשחק שאל הרב: "ראיתי ציור יפה במוזיאון" או "עמדתי בתצפית ולא יכולתי להפסיק להסתכל" – איזו הנאה זו? והוא תיאר את התצפית בחיפה, מעל הכרמל, ליד מערת אליהו: נוף שאי אפשר לתאר, כל העיר והים לרגליך. אפשר לעמוד שם חצי שעה ולא להפסיק להתפלא.</p>
+      <p>והוא נתן כלל: האם ראיתם פעם כלב שהולך לתצפית כדי להסתכל? יש שם גם כלבים, אבל אף כלב לא עומד ומסתכל על הנוף. למה רק בני אדם הולכים? ולמה דווקא שם, אמר, נהגו זוגות להצטלם, ולמה ביום של אהבה היה הרכבל שם בחינם?</p>
+      <p>התשובה: הנאת היופי שייכת לנשמה. וכשאתה רואה יופי, מה קורה בעומק? אתה רואה דבר שמראה שמישהו הוא בעל כוח אדיר, שיכול ליצור דברים שאינם נתפסים. זה נראה בעיניך מרומם, והנשמה מרגישה משהו מבורא עולם.</p>
+      <p>ולכן הכלב אינו מבין מה מיוחד שם. מה שמדבר אליו הוא הריח של האוכל – הנאת הגוף. הנאת הנשמה אין לו.</p>
+      <p>ומכאן כלל פשוט שהרב הציע לכל אחד: אם אינך בטוח איזו הנאה זו, שאל אם גם בעל חיים היה נהנה ממנה. אוכל טעים ומקום חמים – גם בעל חיים נהנה מהם. נוף, מוזיקה עדינה, חסד, אהבה, תחושת משמעות – רק לאדם יש כלים ליהנות מהם, כי רק לו יש נשמה.</p>
+      <p class="bold-para">רק בני אדם הולכים לראות נוף יפה, כי ההנאה מן היופי היא הנאת הנשמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יופי ומשמעות</div>
+      <h3 class="story-title">📖 הרמב"ם ואהבת ה'</h3>
+      <p>והרב חיבר את זה לדברי הרמב"ם בתחילת ספר המדע. איך מגיע אדם לאהבת ה'? כותב הרמב"ם: בשעה שיתבונן האדם במעשיו וברואיו הנפלאים הגדולים, ויראה מהם חכמתו שאין לה ערך ולא קץ – מיד הוא אוהב ומשבח ומפאר ומתאווה תאווה גדולה לידע השם הגדול.</p>
+      <p>הרב הדגיש שזו הדרך שהרמב"ם פותח בה את ספרו: לא דווקא דרך לימוד התורה, אלא דרך ההתבוננות בבריאה. אדם מתפעל מכמה גדול בורא עולם, ומשם הוא מגיע לאהבה.</p>
+      <p>ולכן הנשמה נהנית כל כך מן היופי. היא רואה בו את טביעת האצבע של הבורא.</p>
+      <p>והרב אמר שזו דוגמה טובה במיוחד לילדות בבית ספר יסודי: אין כמעט ילדה שלא הייתה פעם בנוף יפה ונהנתה ממנו. כשמביאים דוגמה כזו, היא תופסת מיד: יש כזה דבר – הנאת הנשמה. מדברים אליה בשפה שהיא מבינה.</p>
+      <p class="bold-para">ההתבוננות ביופי הבריאה היא, לפי הרמב"ם, הדרך לאהבת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יופי ומשמעות</div>
+      <h3 class="story-title">♾️ למה הנשמה נמשכת</h3>
+      <p>ועכשיו התשובה לשאלה של המשחק: למה יש הנאות שנגמרות תוך רגע, ויש שנשארות זמן רב? התלמידות הגיעו בעצמן למסקנה: מה שנוגע לנשמה – מחזיק הרבה יותר זמן.</p>
+      <p>והרב הסביר את העיקרון. גוף האדם זמני: הוא נמצא כאן מאה שנה, ואחר כך הולך ונגמר. ולכן גם הנאות הגוף הן כאלה: נהנים, ונגמר. מי יכול ליהנות עכשיו מן האוכל שאכל בארוחת הבוקר?</p>
+      <p>אבל הנשמה אינה נגמרת. כשאדם נפטר, הנשמה ממשיכה. היא דבר רוחני, נצחי. ולכן גם ההנאות של הנשמה יכולות להחזיק זמן רב מאוד.</p>
+      <p>זה הכלל שעומד מאחורי כל הדוגמאות: מחשב חדש, לייק, בובה – הנאות של גוף, נגמרות מהר. לעומת זאת, כשאדם עוזר לחבר, אוהב, מודה לה' מכל הלב, או מכין שולחן שבת – זה יכול להחזיק זמן רב מאוד.</p>
+      <p class="bold-para">הגוף זמני ולכן הנאותיו חולפות; הנשמה נצחית ולכן הנאותיה נמשכות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יופי ומשמעות</div>
+      <h3 class="story-title">🕯️ שולחן שבת</h3>
+      <p>כאן שאל הרב את התלמידות שאלה שנועדה "לתפוס" אותן: האם הכנת שולחן שבת היא תמיד הנאה? כולן אמרו כן. הוא לא ציפה לתשובה כזאת, ורצה להראות שהחיים מורכבים יותר.</p>
+      <p>אז נתן דוגמה: אמא אומרת לך חצי שעה לפני שבת, כשאת עסוקה: "תסדרי את השולחן". את לחוצה, נחפזת, ואולי עוד צועקים עלייך. האם נהנית? סוף סוף הבינו כולן: זה לא כל כך פשוט.</p>
+      <p>ואחת התלמידות הסבירה: אם נפלה עליי השראה, ורציתי להכין משהו יפה לשבת, וכל המפיות והכלים התאימו – זה מוצלח מאוד. אבל אם הכנתי, ואחי הקטן הזיז את המזלגות, ולא היו מספיק מפיות באותו צבע – זה כבר לא.</p>
+      <p>ומשם הגיע הרב לנקודה החשובה: לא רק מה שעושים קובע את ההנאה, אלא איך מסתכלים על זה. אפשר לעשות דבר נשמתי ולא ליהנות ממנו כלל, אם לא שמים לב.</p>
+      <p class="bold-para">גם הנאת הנשמה תלויה במה שאדם בוחר לראות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יופי ומשמעות</div>
+      <h3 class="story-title">🏡 מה מחזיק בבית</h3>
+      <p>מן החלוקה הזאת אפשר ללמוד גם על הבית. הרב הזכיר שוב את שולחן השבת: משפחה שיושבת יחד, שרה, מספרת, מודה. זו הנאה של נשמה, ולכן היא אינה מתיישנת. גם אחרי שנים של שבתות, יש בה משהו שנשאר.</p>
+      <p>ולעומת זאת, בית שבו כל ההנאות הן של הגוף – קניות, מכשירים, בידור – תמיד צריך עוד, כי כל הנאה נגמרת מהר. ומי שמבין את זה, יודע במה כדאי להשקיע.</p>
+      <p>אין הכוונה לוותר על הנאות הגוף. הן חלק מן הבריאה, ויש בהן טוב. אבל מי שרוצה שמחה שנמשכת, צריך לוודא שיש בחייו גם הנאות של שכל, וגם – ובעיקר – הנאות של נשמה.</p>
+      <p>וזה מה שהרב רצה שהתלמידות ייקחו הביתה: לא רק לדעת להבחין, אלא לבחור. לשים בחייהן יותר ממה שנשאר.</p>
+      <p class="bold-para">בית שבו יש הנאות של נשמה – אהבה, נתינה, שבת – הוא בית שהשמחה בו נמשכת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לחזות בנועם ה'</div>
+      <h3 class="story-title">📚 "הם רוצים ללמוד"</h3>
+      <p>התלמידות אמרו לרב שכשלמדו הלכה חדשה וקיימו אותה, ההנאה נשארה. והוא הציע להן: לכו לכיתה ו' של הבנים ושאלו אם כולם נהנו היום בשיעור. הן היו בטוחות שהבנים יענו שכן. והרב אמר: לא כך. הרבה פעמים, רוב האנשים אינם נהנים, אף שיש להם הזדמנות.</p>
+      <p>והרב סיפר על פגישה שזכר. פגש בחור בתיכון דתי ושאל מה הוא עושה. הבחור אמר שהוא מלמד "נערים מרוגזים" – נערים שבאים אליו כי רוצים ללמוד תורה. איך ייתכן? אמר. אני כל היום בורח מן הלימוד, אין לי כוח, והם באים אליך?</p>
+      <p>הוא בא לראות, ושאל את הנערים: למה אתם באים? והם ענו: כיף. נהנים ללמוד גמרא, דברים מעניינים.</p>
+      <p>מה ההבדל? אצל הבחור בתיכון, הגמרא הייתה מקצוע לבגרות: צריך לעבור את המבחן, לזכור כך וכך דפים, ולצאת מזה. הראש שלו היה מונח רק באיך לעבור. ולפעמים לוקח שנים רבות עד שהמבט של אדם משתנה. ההנאה תלויה במבט.</p>
+      <p class="bold-para">בחור שבורח מן הלימוד ובחור שנהנה ממנו – לומדים אותה גמרא, אבל רואים אותה אחרת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לחזות בנועם ה'</div>
+      <h3 class="story-title">💡 "בחיים לא שמעו כזה מושג"</h3>
+      <p>הרב סיפר שהמורה של הכיתה, שהייתה בשיעור, אמרה לו אחר כך: הבנות בחיים לא שמעו על מושג כזה. הן חוות הנאות של נשמה כל הזמן – כשהן עוזרות לחברה, כשהן מכינות לשבת, כשהן שרות יחד – אבל אין להן מילים לזה. הן לא יודעות להגדיר מאיפה זה בא.</p>
+      <p>וזה, לדברי הרב, מה שהיה מיוחד בשיעור. לא לימדו את הבנות משהו שאין להן; נתנו שם למשהו שיש להן. וכשיש שם, אפשר לשים לב. וכששמים לב, ההנאה גדלה.</p>
+      <p>והוא הוסיף שזה נכון גם למבוגרים. רוב האנשים אינם מנתחים כל דבר בחייהם; הם פשוט חיים. אבל מי שעוצר לרגע ושואל "איזו הנאה זו?", מגלה שיש בחייו הרבה יותר נועם ממה שחשב.</p>
+      <p>ובכך מתחברים הדברים לפסוק: הנועם כבר כאן. צריך רק לחזות בו.</p>
+      <p class="bold-para">רבים חווים הנאות נשמה בלי לדעת לקרוא להן בשם, וכשמגדירים אותן – הן מתחזקות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לחזות בנועם ה'</div>
+      <h3 class="story-title">👁️ לחזות בנועם ה'</h3>
+      <p>ועכשיו חזר הרב לשאלה הראשונה: למה אמר דוד המלך "לחזות בנועם ה'", ולא "לטעום"? והוא הציע תשובה: נועם ה' הוא מציאות. הוא קיים. הנאת הנשמה קיימת אצל כל אדם, כי אין אדם שאין לו נשמה. הבעיה היא איך אתה רואה את הדברים. איך אתה מביט.</p>
+      <p>ולכן דוד מבקש: "לחזות" – שאראה. שאפקח את עיניי, ואראה את הנועם שכבר נמצא סביבי. אדם יכול לעבור ליד הנאת הנשמה ולא לראות אותה, כמו התלמיד שהיה עסוק בבגרות, כמו מי שמסדר שולחן שבת בלחץ.</p>
+      <p>וזה גם הקשר ל"שבתי בבית ה'": מי שחי את התחושה שהוא נמצא בבית ה', בכל מקום שהוא הולך, רואה את נועם ה' בכל דבר. ואז זה "אחת": לשבת בבית ה', לחזות בנועמו ולבקר בהיכלו – הכל אותו דבר.</p>
+      <p>וזה, אמר הרב, השיעור שהוא רצה שהתלמידות יקחו: הנועם קיים, צריך רק ללמוד לראות אותו.</p>
+      <p class="bold-para">נועם ה' קיים תמיד; השאלה היא אם האדם רואה אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לחזות בנועם ה'</div>
+      <h3 class="story-title">📔 היומן</h3>
+      <p>בסוף השיעור נתן הרב לתלמידות משימה: לנהל יומן. כל יום לרשום דבר אחד שעשה אותן שמחות בגוף, דבר אחד בשכל, ודבר אחד בנשמה.</p>
+      <p>למה? כפי שאמרה אחת המשתתפות: הרבה פעמים אנחנו נהנים, אבל לא שמים לב. ואם לא שמים לב, אפילו לא נהנים באמת. האדם נהנה לפי מה שהוא רואה. אם לאט לאט התלמידות ישימו לב ויתחילו לרשום, ההנאה תלך ותגדל מאוד.</p>
+      <p>והרב אמר שהוא הולך לראות איך זה יצליח. יש סיכוי רב, לדבריו, שהנשמה שלהן תיהנה הרבה יותר – כי מה שנרשם, נראה; ומה שנראה, נחווה.</p>
+      <p>ובשיעור למבוגרים הסביר שזה בדיוק "לחזות בנועם ה'" במעשה: לפתוח את העיניים לנועם שכבר קיים, ולתרגל את המבט עד שיהיה טבעי. ומי שעושה זאת, זוכה להנאה שאינה נמסה תוך רגע, אלא נשארת בלב.</p>
+      <p class="bold-para">התלמידות התבקשו לרשום כל יום דבר אחד שעשה אותן שמחות בגוף, בשכל ובנשמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/PMaQMwcG9wc · 2025-09-03 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שיעור בכיתה","icon":"🏫","color":"#c62b6b","stories":[{"id":1,"title":"האם יש שיעור איך ליהנות?","icon":"🏫"},{"id":2,"title":"שאלות על הפסוק","icon":"❓"}]},{"id":2,"name":"כמה זמן זה נשאר","icon":"⏱️","color":"#6d28d9","stories":[{"id":3,"title":"המשחק","icon":"⏱️"},{"id":4,"title":"שיר, סרט ומשחק מחשב","icon":"🎮"},{"id":5,"title":"מה נשאר אחרי שבוע","icon":"🧠"}]},{"id":3,"name":"גוף, שכל ונשמה","icon":"🔺","color":"#e08e00","stories":[{"id":6,"title":"שלושה חלקים","icon":"🔺"},{"id":7,"title":"בחור ישיבה שנהנה","icon":"📖"},{"id":8,"title":"הנאת הנשמה","icon":"🎻"},{"id":9,"title":"כבוד חיצוני וכבוד פנימי","icon":"👑"},{"id":10,"title":"סבא שמחלק","icon":"🍬"},{"id":11,"title":"תרגילי מיון","icon":"🗂️"},{"id":12,"title":"שלוש תקופות בחיים","icon":"🌳"}]},{"id":4,"name":"יופי ומשמעות","icon":"🌄","color":"#1e88b8","stories":[{"id":13,"title":"למה כלבים לא עולים לתצפית","icon":"🌄"},{"id":14,"title":"הרמב\"ם ואהבת ה'","icon":"📖"},{"id":15,"title":"למה הנשמה נמשכת","icon":"♾️"},{"id":16,"title":"שולחן שבת","icon":"🕯️"},{"id":17,"title":"מה מחזיק בבית","icon":"🏡"}]},{"id":5,"name":"לחזות בנועם ה'","icon":"👁️","color":"#c62b6b","stories":[{"id":18,"title":"\"הם רוצים ללמוד\"","icon":"📚"},{"id":19,"title":"\"בחיים לא שמעו כזה מושג\"","icon":"💡"},{"id":20,"title":"לחזות בנועם ה'","icon":"👁️"},{"id":21,"title":"היומן","icon":"📔"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
