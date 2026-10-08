@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 לחיות ולא רק להתקיים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 לחיות ולא רק להתקיים</h1>
+  <p>ויקטור פרנקל והאדם המחפש משמעות: נפש בריאה וגוף בריא, הריק הקיומי של הדור, הנשמה בשפת הפסיכולוגיה, ומהו אדם חי באמת</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ לחיות ולא רק להתקיים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/dXAT-bvjY30?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/dXAT-bvjY30/hqdefault.jpg" alt="לחיות ולא רק להתקיים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=dXAT-bvjY30" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נפש בריאה, גוף בריא</div>
+      <h3 class="story-title">📖 ספר בן שמונים שנה</h3>
+      <p>השיעור נפתח בשאלה פשוטה: איך ייתכן שספר שנכתב לפני כשמונים שנה נמכר בכשנים עשר מיליון עותקים, ועד היום הוא נקרא ומתורגם? זה אינו רומן מתח ואינו ספר הדרכה קליל. זהו ספרו של הפסיכיאטר ויקטור פרנקל, "האדם מחפש משמעות". משהו בו נוגע במקום עמוק מאוד אצל בני אדם.</p>
+      <p>כדי להבין מה מסתתר מאחורי ההצלחה הזאת, צריך להתחיל דווקא מחדר ההמתנה של הרופא. אדם חולה מגיע לרופא, מספר על הכאבים, והרופא נותן לו כדור, טיפול או ניתוח. ההנחה הפשוטה היא שהבעיה נמצאת בגוף, ולכן גם הפתרון צריך להיות בגוף.</p>
+      <p>אבל הרב מסביר שהתמונה מורכבת הרבה יותר. במקרים רבים מאוד – הרב לא נקב באחוז מדויק, אבל אמר שמדובר בחלק גדול – הגוף אינו מייצר מחלה סתם, "מעצמו". קודם כול יש לאדם בעיה בנפש: עצב, דיכאון, בדידות, חוסר מוטיבציה, חיסרון של משהו שהוא זקוק לו. ומתוך המצוקה הזאת הגוף מתחיל לייצר כל מיני בעיות.</p>
+      <p>נפש בריאה וגוף בריא הולכים יחד. מי שרוצה להבין את הספר של פרנקל, צריך להבין קודם את הקשר הזה, כי עליו בנוי כל הרעיון.</p>
+      <p class="bold-para">כשספר ישן נעשה רב מכר עולמי, כדאי לשאול איזה צורך עמוק הוא ממלא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נפש בריאה, גוף בריא</div>
+      <h3 class="story-title">🪖 האישה שדאגה לבעלה</h3>
+      <p>הרב סיפר דוגמה ששמע מרופא. לרופא הגיעה אישה שסבלה מכמה תסמינים שונים. הוא בדק אותה, ונתן לה את הטיפול המתאים. אבל הוא ידע היטב מה עומד מאחורי המחלה: בעלה שירת בצבא, והיא לא ידעה מה קורה איתו. מרוב דאגה הגוף שלה התחיל לייצר מחלה.</p>
+      <p>הרופא אמר: אני כותב לה מרשם, אבל אני יודע שהגוף לא התחיל פתאום לחלות. הסיבה היא הדאגה. כל עוד הדאגה נשארת, גם המחלה עלולה להישאר, או לחזור בצורה אחרת.</p>
+      <p>זה נשמע פשוט, אבל יש בזה עומק גדול. אנחנו רגילים לחשוב שהנפש והגוף הם שני עולמות נפרדים: הרופא מטפל בגוף, ומישהו אחר אולי יטפל בנפש. בפועל הם קשורים זה בזה כל כך, שאי אפשר לרפא באמת את האחד ולהתעלם מן השני.</p>
+      <p>ומכאן עולה השאלה הגדולה: אם כל כך הרבה מחלות נולדות בנפש, מה בדיוק צריך לרפא בנפש? מה האדם צריך כדי שתהיה לו נפש בריאה? על השאלה הזאת חלקו שניים מגדולי הפסיכולוגים.</p>
+      <p class="bold-para">לפעמים המחלה היא רק הסימן החיצוני של דאגה פנימית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נפש בריאה, גוף בריא</div>
+      <h3 class="story-title">🌉 הגשר של חלם</h3>
+      <p>כדי להמחיש את הדבר הביא הרב את הסיפור הידוע על הגשר של חלם. בחלם היה גשר, ובאמצעו היה חור. אנשים שעברו עליו נפלו ונפצעו. התכנסו חכמי חלם לחשוב מה לעשות, והחליטו: נבנה בית חולים ליד הגשר. כך כל מי שייפול יקבל טיפול מיד.</p>
+      <p>כולם צוחקים על חכמי חלם. הרי הפתרון ברור: לתקן את הגשר! אבל הרב מסביר שלעיתים קרובות אנחנו עושים בדיוק את אותו הדבר. אדם הולך לרופא, מקבל כדור, והכאב עובר. אבל הסיבה שבגללה נפל לא תוקנה. הבעיה תחזור, אולי בצורה אחרת.</p>
+      <p>מי שרוצה לרפא אדם באמת, צריך לשאול למה הוא חולה. אם יצליחו לבנות אדם בעל נפש בריאה, במקרים רבים הוא כלל לא יגיע לבית החולים. לכן רפואת הנפש חשובה כל כך. היא אינה מותרות, והיא אינה רק תוספת לרפואת הגוף. במקרים רבים היא הדרך לתקן את הגשר עצמו, ולא רק לטפל בנופלים.</p>
+      <p class="bold-para">מי שמטפל רק בתוצאה ולא בסיבה, דומה לבונה בית חולים ליד גשר שבור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · פרויד מול פרנקל</div>
+      <h3 class="story-title">⚖️ עונג או תקווה</h3>
+      <p>כאן מגיעה מחלוקת גדולה ועקרונית בין זיגמונד פרויד לבין ויקטור פרנקל. המחלוקת ביניהם קיצונית מאוד, והיא נוגעת בשאלה הבסיסית ביותר: מה מניע את האדם?</p>
+      <p>פרויד טען שמה שמעניין את האדם הוא בעיקר מה שקרא "עקרון העונג". אם יש לאדם הנאות ותענוגות בחיים, יש לו מוטיבציה וכוח לחיות. לפי זה, הדרך לעזור לאדם היא לחפש מה מונע ממנו הנאה ומה דוחף אותו אליה. ההנאה היא, לשיטתו, הדבר החשוב ביותר לבני האדם.</p>
+      <p>פרנקל חלק עליו לחלוטין. הוא לא אמר שהנאה אינה עוזרת. ודאי שהיא עוזרת. אבל הוא טען שלא זה העיקר. מה שגורם לאדם להמשיך הלאה בחיים, גם כשקשה, הוא שיש לו בשביל מה לחיות: תקווה, מטרה, משמעות. ההנאה היא תוספת; המשמעות היא היסוד.</p>
+      <p>בשיעור נשאלה שאלה מן הקהל: אולי העיקר הוא השמחה? הרב השיב שהשמחה היא אכן דבר גדול, אבל קשה מאוד ליצור אותה ישירות. לפי פרנקל, השמחה מגיעה כתוצאה, כשיש לאדם משמעות.</p>
+      <p class="bold-para">פרויד אמר שהאדם מונע בעיקר מן הרצון להנאה; פרנקל אמר שמה שמחזיק אותו הוא המשמעות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · פרויד מול פרנקל</div>
+      <h3 class="story-title">🧭 לוגותרפיה – ריפוי באמצעות משמעות</h3>
+      <p>את השיטה שלו כינה פרנקל "לוגותרפיה". השם מורכב משתי מילים יווניות: "לוגוס" – משמעות, ו"תרפיה" – טיפול. כלומר: ריפוי באמצעות משמעות. המטפל עוזר לאדם למצוא משמעות לחייו, והמשמעות היא שמרפאת אותו.</p>
+      <p>ההבדל מן הדרך של פרויד גדול. בשיטה של פרויד המטפל יושב עם האדם הסובל, מדבר איתו על מה שעבר עליו, מחפש טראומות מן העבר, ומנסה להבין מה דחף אותו מבפנים. בלוגותרפיה הכיוון אחר: מחפשים מה יכול למלא את חייו של האדם הזה. בשביל מה הוא חי? מה הוא יכול לתת? לאן הוא חותר?</p>
+      <p>לפי פרנקל, זה מה שירפא אותו. כשאדם מוצא בשביל מה לקום בבוקר, כוחות רבים מתעוררים בו מעצמם. הרב הדגיש שזו אינה רק תיאוריה יפה. לדבריו, השיטה הוכיחה את עצמה במציאות, ולכן התפרסמה כל כך בעולם.</p>
+      <p class="bold-para">הלוגותרפיה אינה חופרת בעבר של האדם אלא מחפשת בשבילו בשביל מה לחיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · פרויד מול פרנקל</div>
+      <h3 class="story-title">🔭 לעומק או לגובה</h3>
+      <p>משפט אחד של פרנקל מסכם את כל ההבדל, והרב ביקש לשים אליו לב במיוחד: "בעוד שפרויד חקר את עומקו של האדם, אני חוקר את גובהו".</p>
+      <p>מה פירוש הדבר? פרויד שאל מה גורם לאדם, בעומק נפשו, לעשות את מה שהוא עושה. ותשובתו הייתה: האדם מחפש ליהנות מן החיים. אם הוא לומד, הוא חושב איזו הנאה תצמח לו מזה. אם הוא עובד, גם כן. כל העומק של האדם, לפי פרויד, הוא הרצון ליהנות.</p>
+      <p>פרנקל אומר: אני לא מסתכל למטה, אל היסודות האפלים שבאדם. אני מסתכל למעלה, אל הרובד העליון שלו. שם האדם מחפש משמעות. כשהוא מוצא דבר שנותן לחייו משמעות, זה מעניק לו מרץ וחיות עצומים.</p>
+      <p>זה הבדל בין שתי השקפות על מהותו של האדם. האם הוא בעיקרו יצור שמחפש עונג, או יצור שמחפש תכלית? התשובה לשאלה הזאת קובעת איך נחנך ילדים, איך נטפל באדם במצוקה, ואיך נחיה בעצמנו.</p>
+      <p class="bold-para">פרויד חקר מה דוחף את האדם מלמטה; פרנקל חקר מה מושך אותו מלמעלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הריק הקיומי של הדור</div>
+      <h3 class="story-title">🏚️ בפחונים, ובכל זאת שמחים</h3>
+      <p>כדי להמחיש את הרעיון, הרב השווה בין ימינו לבין הימים שבהם קמה המדינה, לפני כשבעים שנה. מבחינת הנאה ועונג, המצב אז היה כמעט אפס. רבים גרו בפחונים, החיים היו קשים מאוד, והעבודה הייתה מפרכת. מי שמצא עבודה בסלילת כבישים היה מאושר.</p>
+      <p>הרב סיפר על עובדי הניקיון בתל אביב של אותם ימים. הם היו מתחילים לעבוד בארבע לפנות בוקר, גומרים לקראת הצהריים, מתרחצים ונחים מעט. ואז, בשעות אחר הצהריים, היו מתכנסים בבית כנסת משלהם ולומדים יחד, עם שיעורים קבועים, עד סמוך למנחה. הם היו אנשים פשוטים, עם עבודה קשה, והרגישו מאושרים שיש להם עבודה ויש להם מקום ללמוד בו.</p>
+      <p>הרב שאל: כמה חולי נפש היו אז? ודאי היו, תמיד יש, אבל מעט מאוד. למה? כי הייתה לבני האדם משמעות עצומה. כולם רצו להקים מדינה, לבנות אותה מן ההתחלה, אחרי השואה. המשמעות הזאת תפסה את כולם. אולי הנאה לא הייתה להם, אבל משמעות הייתה להם בשפע.</p>
+      <p class="bold-para">בשנים הראשונות של המדינה היה מעט עונג אבל הרבה משמעות, ולכן הייתה בהן פחות מצוקה נפשית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הריק הקיומי של הדור</div>
+      <h3 class="story-title">🔄 הגלגל שהתהפך</h3>
+      <p>היום, אומר הרב, הגלגל התהפך. עונג יש בשפע. מכל עבר דוחפים את האדם: עוד תהנה, ועוד תהנה, ועוד תהנה. אבל כשמחפשים משמעות, קשה למצוא. במה הדור מוצא את טעם חייו? אולי במושג כללי כזה או אחר, אבל קשה להצביע על משמעות של ממש שממלאת את הלב.</p>
+      <p>והתוצאה ניכרת. נסו לקבוע תור לפסיכולוג או לפסיכיאטר, אמר הרב, ותראו כמה זמן צריך לחכות. לפעמים חצי שנה ויותר. הביקוש עצום, והמטפלים אינם מספיקים.</p>
+      <p>פרנקל עצמו כתב שהאדם המודרני, שיש בידו את כל האמצעים אך חסרה לו התכלית, סובל מתחושת ריקנות וחוסר משמעות. את התחושה הזאת כינה "הריק הקיומי", וסימנה העיקרי הוא שעמום. הוא כבר ראה את התופעה מתפתחת בימיו, והיא רק הלכה וגדלה מאז.</p>
+      <p>לפי פרנקל, ברגע שהאדם ימלא את החלל הפנימי וימצא משמעות לחייו בדבר שמחוץ לו – דבר שאליו יוכל לכוון, לשאוף ולשכוח בו את עצמו – יתגלה לו מה שחסר לו באמת, ורוב הבעיות שליוו אותו ייפתרו.</p>
+      <p class="bold-para">היום יש הרבה עונג ומעט משמעות, והתורים לפסיכולוגים רק מתארכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הריק הקיומי של הדור</div>
+      <h3 class="story-title">🏘️ כשהדת והקהילה נעלמו</h3>
+      <p>למה דווקא בדורות האחרונים נוצר הריק הזה? פרנקל מסביר שהסיבה היא שקיעת המסורת והדת. עד לפני כמאתיים שנה כמעט כל בני האדם בעולם היו דתיים, כל אחד לפי דתו. כמעט לא היה אדם בלי דת. לאט לאט רוב העולם עזב את זה.</p>
+      <p>בעבר, אומר הרב, האדם לא היה צריך לחפש הרבה משמעויות. היא הייתה לו מעצמה: דת, מסורת שעוברת מדור לדור, קהילה וציבור. היום לרוב האנשים בעולם אין דת ואין מסורת שמכוונת את חייהם.</p>
+      <p>וגם הקהילה התפרקה. פעם כל אדם היה שייך לקהילה מסוימת, הכירו זה את זה ושמרו זה על זה. היום, בבניין מגורים גדול, אפשר לגור שנים ולא להכיר את השכנים. יורדים במעלית ישר לחניון, נכנסים לרכב, נוסעים עד היעד וחוזרים – ולא פוגשים אף אדם. וגם כשכבר מדברים, רבים מסתפקים בהודעות בטלפון.</p>
+      <p>האדם איבד את החברה שסביבו. ובמקומה, כך תיאר פרנקל, החלו אנשים לחפש משמעות בכל מיני מקומות, תנועות ודרכים, כי משהו בתוכם זועק לה.</p>
+      <p class="bold-para">בעבר הדת, המסורת והקהילה נתנו לאדם משמעות מעצמן; כשהן נחלשו, נוצר הריק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הריק הקיומי של הדור</div>
+      <h3 class="story-title">🍞 רעב שאינו ללחם</h3>
+      <p>הרב הראה שמה שתיאר פרנקל כתוב כבר בנביא. עמוס הנביא אומר: "הִנֵּה יָמִים בָּאִים... וְהִשְׁלַחְתִּי רָעָב בָּאָרֶץ, לֹא רָעָב לַלֶּחֶם וְלֹא צָמָא לַמַּיִם, כִּי אִם לִשְׁמֹעַ אֵת דִּבְרֵי ה'".</p>
+      <p>יבוא יום, אומר הנביא, שאנשים ירגישו רעב. לא רעב של הגוף. יהיה להם מה לאכול ומה לשתות. הם ירגישו רעב פנימי, ויחפשו משהו רוחני שימלא אותם.</p>
+      <p>והפסוק שאחריו ממשיך: "וְנָעוּ מִיָּם עַד יָם וּמִצָּפוֹן וְעַד מִזְרָח, יְשׁוֹטְטוּ לְבַקֵּשׁ אֶת דְּבַר ה' וְלֹא יִמְצָאוּ". יחפשו הרבה, בעיקר הצעירים. ינסו כאן, ינסו שם, ויתקשו מאוד למצוא את הדבר שימלא אותם.</p>
+      <p>הרב ציין שבהמשך הדרך, לפי הנבואה, יגיע מצב שבו ימצאו את התורה. אבל לפני כן יהיה שלב של חיפוש, שבו אנשים ישאלו את עצמם: מה ייתן לי כוח? מה ייתן לי משמעות בחיים? זו בדיוק התמונה שהספר של פרנקל מתאר, וזו הסיבה שאנשים כה רבים נמשכים אליו.</p>
+      <p class="bold-para">הנביא תיאר דור שירגיש רעב פנימי לדבר ה', יחפש אותו בכל מקום ויתקשה למצוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הנשמה בשפת הפסיכולוגיה</div>
+      <h3 class="story-title">👑 בת המלך שנישאה לכפרי</h3>
+      <p>בפילוסופיה ניסו הרבה להסביר מה חסר לאדם שיש לו את כל ההנאות שבעולם. למה הוא אינו מסוגל להסתפק בהן? למה הוא מרגיש ריק? הרב לא נכנס לכל התשובות של הפילוסופים, אבל הביא את התשובה של היהדות, והיא מעניינת מאוד.</p>
+      <p>הנשמה של האדם משתוקקת למזון רוחני. על כך נאמר: "וְגַם הַנֶּפֶשׁ לֹא תִמָּלֵא". הנשמה אינה מוצאת סיפוק בדברים חומריים, כי היא עצמה רוחנית ומבקשת חיי רוח.</p>
+      <p>חז"ל המשילו זאת במדרש לבת מלך שנישאה לבן כפר. גם אם יביא לה את כל מעדני העולם, הוא אינו יוצא ידי חובתו כלפיה. למה? כי היא בת מלך. כל מה שבן הכפר מכיר כטוב ביותר, אינו מדבר אליה. היא חיה ברמה אחרת לגמרי.</p>
+      <p>כך האדם. יש בו גוף, נפש, רוח ונשמה. כשהאדם רק נהנה, חווה חוויות ועובר את העולם מקצה לקצה, הגוף אולי נהנה. אבל לנשמה אין מזה כלום. היא מרגישה תסכול, ומשדרת לאדם: לא טוב לי. ומכאן נולדות בעיות רבות, כי בלי משמעות קשה מאוד לחיות.</p>
+      <p class="bold-para">הנשמה היא בת מלך, ושום הנאה גשמית אינה יכולה להשביע אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הנשמה בשפת הפסיכולוגיה</div>
+      <h3 class="story-title">🕯️ הלא מודע הרוחני</h3>
+      <p>בלוגותרפיה, הלא מודע של האדם אינו כולל רק יצרים מודחקים, כפי שטען פרויד. הוא כולל גם ממד רוחני. לא רק יצרים ודחפים מניעים את האדם, אלא גם כוח רוחני שבתוכו.</p>
+      <p>הרב עמד על כך שזה דבר מפתיע מאוד. פסיכיאטר בעל שם עולמי, בעל תארים גבוהים, טוען בשפה מדעית שמה שמניע את האדם אינו רק הכוח היצרי, אלא כוח רוחני. ואיך הוא קורא לו? "הלא מודע הרוחני".</p>
+      <p>במקום לומר "נשמה", כפי שאומר יהודי מאמין, אומר פרנקל בשפה של פסיכולוגים: לא מודע רוחני. זו בעצם הנשמה שה' נתן בתוך האדם, והיא זו שדורשת משמעות. מי שרוצה לומר "נשמה" בשפה פסיכולוגית, יאמר "הלא מודע הרוחני".</p>
+      <p>הרב ציין שגם הרבי מלובביץ' ראה חשיבות רבה בהפצת שיטתו של פרנקל. כשאדם בעל מעמד מדעי כזה אומר לעולם שיש באדם כוח רוחני, הדבר מגיע לאוזניים שלא היו מקשיבות לרב או למטיף.</p>
+      <p class="bold-para">מה שהיהדות קוראת לו נשמה, קרא פרנקל בשפה מדעית "הלא מודע הרוחני".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הנשמה בשפת הפסיכולוגיה</div>
+      <h3 class="story-title">🪽 בעל חיים מעודן או מלאך מודחק</h3>
+      <p>פרנקל כתב משפט חריף נגד פרויד: אי אפשר להאמין שהאדם הוא בעל חיים מעודן, ברגע שמבינים שהוא מלאך מודחק.</p>
+      <p>פרויד טען שהאדם הוא בעל חיים מעודן. יש בו כוח יצרי עצום, והאדם רק לומד להשתלט על הבהמה שבו. פרנקל טען את ההפך: האדם הוא מלאך מודחק. עמוק בפנים יש בו משהו עליון, רוחני, שמבקש לצאת. ההבדל בין שתי ההשקפות עצום.</p>
+      <p>ומכאן הגיע פרנקל למסקנה חריפה עוד יותר: מי שמדחיק את המלאך שבתוכו, המלאך הופך לשטן. ומי שמדחיק את הדתיות שבתוכו, היא הופכת לאמונה שפלה. כלומר, אם לוקחים מן האדם את הדת, בסופו של דבר הוא יגיע לפסיכולוג. הוא ירגיש רע, ולעיתים גם יעשה רע.</p>
+      <p>בלשונו של הרב: אם אתה מוריד מן האדם את הדת, בסופו של דבר תפגוש אותו אצל הפסיכולוג. הנשמה שלא קיבלה את מזונה אינה נעלמת. היא מתבטאת במצוקה, בריקנות ובחולי.</p>
+      <p class="bold-para">פרויד ראה באדם בעל חיים שלמד לשלוט בעצמו; פרנקל ראה בו מלאך שהודחק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הנשמה בשפת הפסיכולוגיה</div>
+      <h3 class="story-title">🏛️ מה שמקובל באמריקה ונדחק בישראל</h3>
+      <p>הרב תיאר הבדל מעניין בין ארצות הברית לישראל. בארצות הברית הלוגותרפיה היא שיטת טיפול לכל דבר. יש פסיכולוגים שמתמחים בה, לומדים אותה באוניברסיטאות, ואדם יכול ללכת למטפל לוגותרפי כמו שהולכים לפסיכולוג או לפסיכיאטר. המטפל עוזר לו למצוא משמעות לחייו, והדבר מרפא אותו.</p>
+      <p>בישראל, לעומת זאת, שיטתו של פרנקל התקבלה לפי דברי הרב בעיקר כתיאוריה ספרותית ולא כשיטת טיפול מקצועית. יש מי שלומדים אותה באופן פרטי, אבל בקופות החולים קשה למצוא מטפל לוגותרפי.</p>
+      <p>למה? הרב הביא את ההסבר שנכתב בעניין: השיטה פתוחה מאוד כלפי האלוקות וכלפי המשמעות העליונה של החיים. היא טוענת שלאדם יש נשמה, ושלעקור ממנו את הדת פירושו להפוך אותו ממלאך לשטן. מסקנה כזאת אינה נוחה למי שרואה בחילון דבר טוב.</p>
+      <p>ובכל זאת, הספר הוא מרבי המכר הגדולים גם בישראל. אנשים מחפשים פתרון, ומרגישים בתוכם שאם ימצאו משמעות לחייהם, הדבר ירפא אותם מאוד.</p>
+      <p class="bold-para">בארצות הברית הלוגותרפיה היא שיטת טיפול מוכרת; בישראל היא נשארה בעיקר תיאוריה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · משמעות גם לסבל</div>
+      <h3 class="story-title">📻 המשמעות מחכה לנו</h3>
+      <p>האם לכל אדם יש משמעות? פרנקל ענה במשל יפה: כשם שגלי הרדיו ממלאים את האוויר, אבל אפשר לשמוע אותם רק אם יש לנו מקלט, כך גם המשמעות נמצאת בחיינו וקוראת לנו בכל רגע. היא מחכה רק שנסכים לפתוח את המקלט.</p>
+      <p>לפי פרנקל, המשמעות אינה דבר קבוע שמחכה במקום אחד. האדם מגלה אותה כשהוא מסתכל בחייו שלו: מה החיים מאתגרים אותו, מה הם מזמנים לפניו, איפה הוא נמצא. כל אדם שיבדוק היטב את חייו, ימצא בהם משמעות.</p>
+      <p>וכאן יש שאלה: האם צריך למצוא משמעות, או ליצור אותה? הוגה צרפתי אחד, שלא היה מאמין, טען שאין משמעות קיימת, ושהאדם צריך ליצור אותה בעצמו. פרנקל, כאדם מאמין, סבר שהמשמעות כבר קיימת, כי בורא העולם שם בחייו של כל אדם משמעות. כל מה שצריך הוא לא לוותר על החיפוש.</p>
+      <p>ולכן גם בתקופות קשות, כשנדמה שהמשמעות אבדה, אין לאבד תקווה. היא אולי נעלמה מן העין לזמן מה, אבל מי שימשיך לחפש, ימצא אותה שוב.</p>
+      <p class="bold-para">לכל אדם יש משמעות בחייו, כמו גלי רדיו שממלאים את האוויר; צריך רק לפתוח את המקלט.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · משמעות גם לסבל</div>
+      <h3 class="story-title">⛰️ לא רגיעה אלא שאיפה</h3>
+      <p>הרב הביא כמה משפטים חכמים מן הספר. הראשון: מה שהאדם צריך אינו מצב של רגיעה בלי מתח, אלא השאיפה והמאבק לקראת מטרה הראויה לו.</p>
+      <p>פרנקל טוען שאין זה בריא לאדם שחייו רגועים ושקטים מדי, שהכול ברור לו ואין לו על מה להתלבט. דווקא המתח של "מה כדאי לעשות", של חיפוש הדרך הנכונה, של התמודדות – הוא שנותן לאדם חיות וכוח.</p>
+      <p>גם האתגרים והקשיים, שנראים לנו כמכשול, יכולים להפוך לכוח. אדם שיש לו אתגר ויש לו מטרה, מתחבר לחיים בעוצמה רבה יותר. לא בזכות הנוחות אלא דווקא בזכות ההתמודדות.</p>
+      <p>וזה מסר חשוב לדורנו. כולם מחפשים איך לחיות בלי מאמץ, בלי לחץ, בלי קושי. אבל אדם שאין לו על מה להיאבק, אין לו גם בשביל מה לקום. השאיפה היא שממלאת את החיים, לא הרוגע.</p>
+      <p>אפשר לראות זאת גם בחיים הרוחניים. מי שמתלבט איך להתפלל טוב יותר, איך ללמוד יותר, איך לעזור לאחר – אינו אדם אומלל שחסרה לו מנוחה. להפך, ההתלבטות הזאת היא סימן שיש לו מטרה. היא מחזיקה אותו ער וחי. מי שכבר אינו שואף לשום דבר, אולי נח, אבל מנוחתו ריקה. מי שיש לו מטרה ראויה, גם המאמץ שלו מלא טעם.</p>
+      <p class="bold-para">האדם אינו זקוק לחיים בלי מתח, אלא למטרה ראויה שעליה הוא נאבק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · משמעות גם לסבל</div>
+      <h3 class="story-title">🌧️ משמעות גם לסבל</h3>
+      <p>פרנקל כתב: אם יש בכלל טעם לחיים, צריך שתהיה משמעות גם לסבל. אין חיים שלמים בלי סבל. והדרך שבה אדם מקבל על עצמו את גורלו ואת הסבל הכרוך בו, נותנת לו הזדמנות, גם בתנאים הקשים ביותר, להוסיף לחייו משמעות עמוקה יותר.</p>
+      <p>פרנקל דיבר על כך הרבה, כי הוא עצמו עבר סבל נורא. הוא לימד שאם אדם נותן משמעות לסבל שלו – לשם מה הוא סובל, מה הסבל תורם לו, איך הוא מרומם אותו – הוא יכול לעבור אותו בקלות רבה יותר, ויש סיכוי גדול יותר שיצא ממנו.</p>
+      <p>ועוד כתב: אל ישאל האדם מה פשר חייו. החיים הם ששואלים אותו. והוא יכול להשיב רק כשהוא עושה חשבון: מה אני יכול לתת כאן, במצב הזה שאני נמצא בו?</p>
+      <p>הרב הדגיש שאין זו משימה פשוטה. למצוא משמעות לסבל זה אתגר גדול. אבל כשאדם מבין מה הייסורים נותנים לו ואיך הם מרימים אותו, הם נעשים מקור של כוח לחיים ולא רק משא.</p>
+      <p class="bold-para">מי שמבין לשם מה הוא סובל, יכול לעבור את הסבל בקלות רבה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לחיות ולא רק להתקיים</div>
+      <h3 class="story-title">🕰️ המשפט שצריך לזכור</h3>
+      <p>בשלב הזה ביקש הרב לעצור ולשים לב למשפט אחד שהוא רוצה מאוד שיזכרו. משפט קצר מאוד, אבל עמוק מאוד: "לחיות הוא אחד הדברים הנדירים ביותר. רוב האנשים פשוט קיימים".</p>
+      <p>מה פירוש הדבר? רוב בני האדם נמצאים בעולם. הגוף זז ממקום למקום, הולך ובא, עושה דברים. אבל האדם עצמו אינו חי. הוא קיים.</p>
+      <p>הרב המשיל זאת לרובוט או למחשב. גם הם זזים, גם הם עושים המון פעולות. אבל הם אינם חיים. הם אינם נהנים משום דבר ואינם מתרגשים משום דבר. כך יש בני אדם, אולי עשירים מאוד, שהכול אצלם יבש. כלום אינו מלהיב אותם. אם קרה כך או קרה אחרת – הכול שווה בעיניהם. רואים על פניהם שהם כבויים.</p>
+      <p>לעומתם, אדם חי הוא אדם שיש בו חיות. הוא מתלהב מדברים, מתרגש מדברים, החיים שלו מלאים התלהבות. החיים אצלו אינם רק פעילות, אלא חוויה של כל רגע.</p>
+      <p class="bold-para">לחיות באמת זה דבר נדיר; רוב האנשים רק קיימים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לחיות ולא רק להתקיים</div>
+      <h3 class="story-title">☀️ רואה חמה ואינו מברך</h3>
+      <p>הרב הראה שהרעיון הזה מופיע כבר בחז"ל. בתהילים נאמר: "לֹא הַמֵּתִים יְהַלְלוּ... וְלֹא כָּל יֹרְדֵי דוּמָה". ודרשו חז"ל שהכוונה לרשעים, שנקראים מתים אף בחייהם.</p>
+      <p>ולמה רשע נקרא מת? הרי הוא חי, הולך ומדבר. אמרו חז"ל: משום שהוא רואה את החמה שוקעת וזורחת ואינו מברך "יוצר המאורות". הוא רואה את נפלאות הבריאה, ואינו אומר כלום. גם תרנגול רואה את השמש, אמר הרב בחיוך, אבל הוא אינו מברך.</p>
+      <p>זהו בדיוק ההבדל בין חי לקיים. אדם שרואה את העולם ואינו מתפעל, אינו מתרגש ואינו מודה, נקרא מת, גם אם גופו פועל כרגיל. ואדם שמתרגש מן הטוב שבחייו, שמתפעל מן הבריאה ומודה עליה, הוא אדם חי.</p>
+      <p>כך מתברר שהחיות אינה תלויה במה שיש לאדם, אלא באופן שבו הוא מסתכל על מה שיש לו. אפשר להחזיק את כל העולם ולהיות מת, ואפשר להחזיק מעט ולהיות חי מאוד.</p>
+      <p class="bold-para">חז"ל קראו לרשעים "מתים" בחייהם, כי הם רואים את נפלאות הבריאה ואינם מתרגשים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לחיות ולא רק להתקיים</div>
+      <h3 class="story-title">🎶 חי חי הוא יודך</h3>
+      <p>חזקיהו המלך, אחרי שנרפא מחוליו, אמר: "חַי חַי הוּא יוֹדֶךָ כָּמוֹנִי הַיּוֹם". למה כפל את המילה "חי"? הרב הסביר: לא מספיק שאדם חי בגופו. צריך שיהיה חי גם בנשמתו. החי באמת הוא מי שיודע להתרגש מן הטוב, ומתוך כך – להודות.</p>
+      <p>ויש לכך רמזים נפלאים בהלכה. בשולחן ערוך, בהלכות ארבעת החייבים להודות, נכתב סימן: "וְכָל הַחַיִּים יוֹדוּךָ סֶּלָה" – "חיים" ראשי תיבות: חבוש, ייסורים, ים, מדבר. הרב שאל: מה ראה השולחן ערוך לכתוב סימן כזה דווקא כאן? ותשובתו: כי מי שיודע להודות הוא החי באמת.</p>
+      <p>וכך גם במספר הימים שבהם גומרים את ההלל בארץ ישראל: שמונה ימי סוכות ושמיני עצרת, שמונה ימי חנוכה, יום טוב ראשון של פסח ושבועות. יחד – שמונה עשר ימים, "ח"י". אדם שמתרגש מן הישועות שעוברות עליו, ומודה עליהן, הוא אדם חי.</p>
+      <p class="bold-para">מי שמתרגש מן הטוב ויודע להודות עליו, הוא אדם חי – בגופו ובנשמתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · לחיות ולא רק להתקיים</div>
+      <h3 class="story-title">🌱 המשמעות שמחזירה את החיים</h3>
+      <p>הרב סיפר שבסקרים שבדקו מי האזרח המאושר ביותר נמצא דבר מעניין. אף שההכנסות של הציבור החילוני היו גבוהות יותר, דווקא בציבור הזה רבים אמרו שאינם מאושרים. וככל שאדם היה דתי יותר, כך הרגיש מאושר יותר.</p>
+      <p>למה? כי האושר בסופו של דבר עמוק יותר מן ההנאות, כמו שחשב פרויד. הוא מגיע כשאדם רואה משמעות בחייו: לאן הוא חותר, מה הוא רוצה, לאן הוא שואף. כשהמשמעות חסרה, האדם מרגיש ריק. הוא אולי קיים, אבל אינו חי.</p>
+      <p>והרב הוסיף שזה נוגע לכולנו, לא רק לאחרים. ככל שאדם מוצא יותר משמעות במה שהוא עושה, וככל שהוא מתבגר ויודע למה הוא עושה את מה שהוא עושה, הוא מלא אנרגיה והתלהבות, גם כשהדרך קשה. וכשהוא מאבד את המשמעות ואינו מוצא בשביל מה, הוא אולי ממשיך לפעול, אבל החיות נעלמת.</p>
+      <p>השיעור נחתם בתפילה: "כי לא שאול תודך מוות יהללך", "חי חי הוא יודך" – שנזכה כולנו להיות אנשים חיים, ולא רק קיימים, בעזרת ה'.</p>
+      <p class="bold-para">האושר אינו בא מן ההנאות אלא מן המשמעות; מי שיש לו בשביל מה לחיות, חי באמת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/dXAT-bvjY30 · 2025-06-12 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"נפש בריאה, גוף בריא","icon":"🩺","color":"#c62b6b","stories":[{"id":1,"title":"ספר בן שמונים שנה","icon":"📖"},{"id":2,"title":"האישה שדאגה לבעלה","icon":"🪖"},{"id":3,"title":"הגשר של חלם","icon":"🌉"}]},{"id":2,"name":"פרויד מול פרנקל","icon":"⚖️","color":"#6d28d9","stories":[{"id":4,"title":"עונג או תקווה","icon":"⚖️"},{"id":5,"title":"לוגותרפיה – ריפוי באמצעות משמעות","icon":"🧭"},{"id":6,"title":"לעומק או לגובה","icon":"🔭"}]},{"id":3,"name":"הריק הקיומי של הדור","icon":"🕳️","color":"#e08e00","stories":[{"id":7,"title":"בפחונים, ובכל זאת שמחים","icon":"🏚️"},{"id":8,"title":"הגלגל שהתהפך","icon":"🔄"},{"id":9,"title":"כשהדת והקהילה נעלמו","icon":"🏘️"},{"id":10,"title":"רעב שאינו ללחם","icon":"🍞"}]},{"id":4,"name":"הנשמה בשפת הפסיכולוגיה","icon":"🕯️","color":"#1e88b8","stories":[{"id":11,"title":"בת המלך שנישאה לכפרי","icon":"👑"},{"id":12,"title":"הלא מודע הרוחני","icon":"🕯️"},{"id":13,"title":"בעל חיים מעודן או מלאך מודחק","icon":"🪽"},{"id":14,"title":"מה שמקובל באמריקה ונדחק בישראל","icon":"🏛️"}]},{"id":5,"name":"משמעות גם לסבל","icon":"🌧️","color":"#c62b6b","stories":[{"id":15,"title":"המשמעות מחכה לנו","icon":"📻"},{"id":16,"title":"לא רגיעה אלא שאיפה","icon":"⛰️"},{"id":17,"title":"משמעות גם לסבל","icon":"🌧️"}]},{"id":6,"name":"לחיות ולא רק להתקיים","icon":"🌅","color":"#6d28d9","stories":[{"id":18,"title":"המשפט שצריך לזכור","icon":"🕰️"},{"id":19,"title":"רואה חמה ואינו מברך","icon":"☀️"},{"id":20,"title":"חי חי הוא יודך","icon":"🎶"},{"id":21,"title":"המשמעות שמחזירה את החיים","icon":"🌱"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
