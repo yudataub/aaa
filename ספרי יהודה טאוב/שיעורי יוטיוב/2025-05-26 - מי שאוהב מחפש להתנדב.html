@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מי שאוהב מחפש להתנדב</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מי שאוהב מחפש להתנדב</h1>
+  <p>למה רק בחנוכה יש מהדרין? הודיה שמגיעה לאהבה, פרחים מן הפח, מעוז צור על כל ההיסטוריה, עיטור הביכורים, ונר שמאיר את חושך החורף</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מי שאוהב מחפש להתנדב" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/gHe4sjBEg1Q?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/gHe4sjBEg1Q/hqdefault.jpg" alt="מי שאוהב מחפש להתנדב" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=gHe4sjBEg1Q" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סופגניות ושמן</div>
+      <h3 class="story-title">📚 ספר שלם על סופגניות</h3>
+      <p>השיעור נפתח בחיוך. בימינו יש מי שכותבים ספרים על נושאים קטנים מאוד, ולפעמים מלקטים מעט ועושים מזה ספר. אבל הגיע לידי הרב ספר מפתיע במיוחד: ספר שלם, מאות עמודים, על מנהג אכילת סופגניות בחנוכה.</p>
+      <p>יש בו דיונים של ממש: האם סופגנייה אפויה טובה כמו מטוגנת? כמה צריך לאכול? כזית או כביצה? כמה פעמים בחנוכה? ויש בו גם מתכונים. אבל מעבר לחיוך, יש בו רעיון יפה, שאולי לא נאמר כך קודם.</p>
+      <p>כל עניינו של חנוכה הוא להודות ולהלל. ומה היה מביא אדם שמודה לה' בבית המקדש? קרבן תודה, ואיתו לחמים רבים. ומה היה משותף לכל הלחמים האלה? כולם היו עשויים בשמן: חלות בלולות בשמן, רקיקים משוחים בשמן, ורבוכה מטוגנת בשמן.</p>
+      <p>ומכאן הטעם: גם היום, כשמודים לה' בחנוכה, אוכלים מאכלים מלאים שמן. זה זכר להודיה של קרבן התודה. רעיון יפה, ויש בו עומק.</p>
+      <p>יש ברעיון של הסופגניות עומק נוסף. כל נס חנוכה מתרכז בשמן: פך קטן של שמן טהור, שדלק שמונה ימים. ועל הנס הזה אנו מודים. ובקרבן תודה, הדרך שבה הודו לה' בבית המקדש, כל הלחמים היו קשורים בשמן.</p>
+      <p>כך יוצא שהשמן הוא כמעט סמל של הודיה. ומי שאוכל בחנוכה מאכל מטוגן בשמן, יכול לחשוב לרגע: אני אוכל זכר לקרבן התודה. גם האכילה עצמה יכולה להיות חלק מן ההודיה.</p>
+      <p>כמובן, אין זה עיקר החג, ואין צורך להגזים. אבל יש ביהדות דרך יפה: גם המנהגים הפשוטים ביותר, כמו מאכל של חג, יכולים להתמלא תוכן ולהזכיר לנו את העיקר.</p>
+      <p class="bold-para">יש מי שכתב ספר שלם על מנהג אכילת הסופגניות, ומצא בו טעם יפה הקשור להודיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סופגניות ושמן</div>
+      <h3 class="story-title">❓ למה דווקא בחנוכה</h3>
+      <p>אחרי שלמדנו שמטרת הדלקת נרות חנוכה היא להודות ולהלל, אפשר להבין שאלה גדולה: למה דווקא במצווה הזו תיקנו חז"ל "מהדרין" ו"מהדרין מן המהדרין"? בשום מצווה אחרת לא מצאנו שחז"ל קבעו מראש דרגות של הידור.</p>
+      <p>התשובה: אדם שמרגיש רגשי הודיה לה' אינו מסתפק במה שמחויב. הוא מחפש תמיד לעשות מעל ומעבר לחובתו. הוא אוהב את בורא עולם, ורוצה לעשות לו נחת רוח כמה שיותר.</p>
+      <p>וכדי להבין זאת לעומק, צריך להבין קודם מהי הודיה אמיתית, ומה ההבדל בין הודיה רגילה לבין הודיה שמגיעה לאהבה.</p>
+      <p>בשאר המצוות יש שיעור קבוע: כזית מצה, ארבעה מינים, תפילין בראש וביד. ההידור הוא תוספת שאדם יכול לעשות מעצמו. אבל בנר חנוכה, חז"ל עצמם קבעו שלוש דרגות, כאילו הזמינו כל אחד לבחור לעצמו כמה רוצה הוא להרבות. ובזה יש סוד גדול, שמתגלה כשמבינים מה פירוש הודיה.</p>
+      <p class="bold-para">מצוות נר חנוכה היא המצווה היחידה שתיקנו בה במפורש דרגות של מהדרין ומהדרין מן המהדרין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הודיה שמתרחבת</div>
+      <h3 class="story-title">🎶 מה עניין פרעה לחנוכה</h3>
+      <p>אחרי הדלקת הנרות שרים "מעוז צור". ומה שרים שם? לא רק על חנוכה. מודים על פרעה שטבע בים, על גלות בבל, על המן הרשע שביקש להשמיד, ורק אחר כך על היוונים. ובסוף אף מבקשים על העתיד: "חֲשֹׂף זְרוֹעַ קָדְשֶׁךָ וְקָרֵב קֵץ הַיְשׁוּעָה".</p>
+      <p>לכאורה תמוה: מה עניין פרעה להדלקת נרות חנוכה? השאר אותו לפסח! ומה עושה המן באמצע חנוכה? יש לו את פורים.</p>
+      <p>ולא רק כאן. בליל הסדר, אחרי שגמרו לספר ביציאת מצרים ולשיר את ההלל, מתחילים פתאום "אחד מי יודע": אחד אלוקינו, שני לוחות הברית, שלושה אבות, ארבע אמהות, חמישה חומשי תורה. מה הקשר לפסח? אין שם אפילו מילה על פסח.</p>
+      <p class="bold-para">ב"מעוז צור" מודים על כל ההיסטוריה – פרעה, בבל, המן – ולא רק על נס חנוכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הודיה שמתרחבת</div>
+      <h3 class="story-title">📍 נס במקום אחר</h3>
+      <p>ויש לזה גם מקור בהלכה. מי שנעשו לו נסים רבים במקומות שונים, כשהוא מגיע לאחד מהם ומברך על הנס שנעשה לו שם, הוא מזכיר גם את המקומות האחרים. ולמה? הרי הוא עומד עכשיו במקום אחד.</p>
+      <p>התשובה לכל השאלות האלה אחת: ביהדות, ההודיה אינה רק החזרת טובה. אין מטרתה רק לומר "תודה" על דבר מסוים שקיבלתי, ולהיפטר מן החוב. המטרה היא להכיר כמה בורא עולם אוהב אותך, כמה הוא חפץ בך, ועל ידי זה להגיע לאהוב אותו.</p>
+      <p>וכשההודיה מגיעה לאהבה, היא כבר לא מצטמצמת לנס אחד. מי שאוהב, נזכר בכל מה שעשה לו האהוב, ומודה על הכול. החשבון הפרטי של נס אחד מתבטל, ובמקומו באה הכרה גדולה: כל מה שיש לי, וכל מה שהיה לאבותיי, הכול מאהבתו של בורא עולם.</p>
+      <p class="bold-para">מי שנעשו לו נסים במקומות רבים, מזכיר את כולם כשהוא מברך על אחד מהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני סוגי הכרת טובה</div>
+      <h3 class="story-title">💐 פרחים מן הפח</h3>
+      <p>הרב הביא משל. בעל חוזר מאוחר בלילה מן העבודה, עולה במדרגות, ומביא לאשתו זר פרחים ענק. היא נרגשת מאוד: איך זכרת שיש לי יום הולדת? והפרחים כל כך יפים! היא מתפעלת שעה שלמה. ופתאום היא חושבת: כל החנויות סגורות בשעה כזו. מאיפה הבאת את הפרחים?</p>
+      <p>והוא, שלא היה חכם במיוחד, עונה בתמימות: עליתי במדרגות, וראיתי אותם מונחים ליד הפח. חשבתי שחבל שייזרקו, אז הבאתי לך.</p>
+      <p>מיד ירד מצב הרוח. אחד הילדים שאל אחר כך: אמא, את כל כך אוהבת פרחים. מה זה משנה אם הם עלו מאתיים שקל או שמצא אותם? אדרבה, הוא חסך מאתיים שקל!</p>
+      <p>והתשובה ברורה: היא לא שמחה רק מן הפרחים עצמם. היא שמחה ממה שהם מוכיחים: שהוא חשב עליה, שהוא מעריך אותה, שהוא אוהב אותה. הפרחים היו רק הסימן. כשהתברר שלא הייתה מחשבה, לא נשארה השמחה.</p>
+      <p class="bold-para">משל: אשה ששמחה בזר פרחים, ונעצבה כשגילתה שבעלה מצא אותו ליד הפח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני סוגי הכרת טובה</div>
+      <h3 class="story-title">💭 המחשבה היא העיקר</h3>
+      <p>המשל של הפרחים מלמד גם משהו על המצוות שלנו. הקדוש ברוך הוא אינו צריך את הנרות שלנו, כמו שהאשה לא הייתה צריכה דווקא את הפרחים. מה שחשוב הוא המחשבה שמאחורי המעשה: האם חשבתי על בורא עולם? האם רציתי לשמח אותו?</p>
+      <p>שני אנשים יכולים להדליק בדיוק אותה חנוכייה. אחד עושה זאת כי כך מקובל, בלי לחשוב. השני עושה זאת מתוך אהבה, ומחפש איך לשמח את בורא עולם. מבחוץ אין הבדל. מבפנים, ההבדל עצום.</p>
+      <p>ולכן כדאי לפני ההדלקה לעצור רגע ולחשוב: למה אני מדליק? על מה אני מודה? כמה ה' אוהב אותי? ואז הנר הופך מסתם חפץ, מפרחים שנמצאו ליד הפח, למתנה של אהבה, שהקדוש ברוך הוא מקבל בשמחה.</p>
+      <p class="bold-para">מה שמשמח באמת במתנה הוא המחשבה שמאחוריה, וכך גם במצוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני סוגי הכרת טובה</div>
+      <h3 class="story-title">❤️ השבת טובה ואהבה</h3>
+      <p>מכאן יש שני סוגי הודיה. יש אדם שמודה באופן טכני: קיבלתי, אני מחזיר. הוא משיב טובה. זה טוב, אבל זו רק דרגה ראשונה.</p>
+      <p>והדרגה הנפלאה היא שאדם מכיר טובה, ומתוך כך מכיר כמה מי שהיטיב לו אוהב אותו ושמח בו. ומתוך ההכרה הזו הוא אוהב אותו בחזרה. לא בגלל מה שהביא לו, אלא בגלל שהוא מרגיש כמה הוא אהוב.</p>
+      <p>וכשההודיה מגיעה לאהבה, האדם כבר אינו מחשב כמה קיבל וכמה עליו להחזיר. הוא פשוט אוהב. ולכן בחנוכה, כשמכירים כמה טובה הביא לנו הקדוש ברוך הוא, לא מודים רק על חנוכה. מי שאוהב את בורא עולם ושמח בו, מודה על הכול ביחד: על פרעה, על המן, ועל כל מה שהיה.</p>
+      <p class="bold-para">יש הכרת טובה שמחזירה את מה שקיבלה, ויש הכרת טובה שמגיעה לאהבת הנותן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני סוגי הכרת טובה</div>
+      <h3 class="story-title">🎁 רשימות המתנות</h3>
+      <p>רואים זאת גם בחיים. יש אנשים שכשיש בר מצווה לחבר, הם הולכים לבדוק ברשימות מה הוא הביא להם, ולפי זה מחליטים מה להביא. הם מחפשים להחזיר בדיוק את מה שקיבלו.</p>
+      <p>ויש אנשים שמעולם לא בדקו רשימות. אם הם אוהבים את החבר, הם מביאים. לא משנה אם הוא הביא להם או לא. הם אינם מחפשים להחזיר חוב, אלא לבטא אהבה. ולפעמים הם אפילו שמחים יותר לתת למי שלא נתן להם, כי שם ברור שהמתנה באה רק מן הלב.</p>
+      <p>זה ההבדל בין שתי הדרגות של הכרת הטוב. הראשונה מחשבת. השנייה אוהבת. והקדוש ברוך הוא אינו מבקש מאיתנו חשבונות. הוא מבקש שנגיע לאהבה.</p>
+      <p class="bold-para">יש מי שמביא מתנה לפי מה שקיבל, ויש מי שמביא כי הוא אוהב, בלי לבדוק רשימות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני סוגי הכרת טובה</div>
+      <h3 class="story-title">⚖️ "לא תקום" ומעגלי חברים</h3>
+      <p>ויש לזה גם נפקא מינה הלכתית, מן הצד השני. אדם מוזמן לחתונה, ואשתו שואלת אם ילך. והוא עונה: לא. הוא לא בא אליי, אני לא בא אליו. נשאלה שאלה: האם יש כאן איסור דאורייתא של "לא תקום"? הרי אסור לנקום בחבר על כך שלא עשה לי טובה.</p>
+      <p>והתשובה שניתנה בשיעור: תלוי איך האדם חושב. אם הוא אינו הולך כדי להחזיר לחברו – "לא באת אליי, אז גם אני לא אבוא" – זו בעיה. אבל לכל אדם יש מעגלים של חברים: מעגל קרוב, מעגל שני ומעגל שלישי. כשחברו לא בא לשמחתו, הוא הבין שהם אינם במעגל הראשון זה של זה. ולמעגל רחוק יותר אין חובה לטרוח ולהגיע.</p>
+      <p>אם כך, אין זו נקמה אלא הבנה של מידת הקשר. זה דבר דק, וצריך האדם לבדוק את עצמו ביושר. אבל זה מראה שוב את שני הסוגים: מי שמחשב "שמור לי ואשמור לך", ומי שפועל מתוך הקשר האמיתי.</p>
+      <p>ומכאן מובן גם סדר ליל הסדר. במשך הערב עולים דרגה אחר דרגה. מספרים איך ה' הוציא אותנו ממצרים, מודים, אוכלים מצה, שרים את ההלל. ולאט לאט מרגישים כמה בורא עולם דאג לנו ואהב אותנו.</p>
+      <p>ואחרי שגמרו את ההלל, והלב כבר מלא אהבה, מתחילים "אחד מי יודע". עכשיו כבר לא מודים רק על יציאת מצרים. מתחילים למנות את כל המתנות שה' נתן לנו: את האמונה, את הלוחות, את האבות, את התורה, עד שלוש עשרה מידות הרחמים. ואחר כך שיר השירים.</p>
+      <p>כי מי שהגיע לאהבה, אינו מחשב עוד מה קיבל ומה עליו להחזיר. הוא רק רוצה להמשיך ולמנות, בלי סוף.</p>
+      <p class="bold-para">מי שאינו בא לשמחת חברו משום שהלה לא בא אליו, צריך לבדוק אם זו נקמה או הבנה של מעגלי קרבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להדר מתוך אהבה</div>
+      <h3 class="story-title">🌹 מי שאוהב מחפש לתת</h3>
+      <p>איך אדם מבטא אהבה? הוא מחפש לתת משהו שאינו חייב לתת. מי שמרגיש אהבה, מחפש להביא פרח, מתנה, הפתעה. לא משום שמישהו דרש ממנו, אלא משום שהוא רוצה לשמח.</p>
+      <p>וזה מה שאמרנו על מתנות החתונה ובר המצווה: מי שאוהב, מביא מתנה לא משום שהוא חייב, אלא משום שהוא רוצה לשמח את חברו.</p>
+      <p>וחז"ל רצו שבנר חנוכה, שהוא נר של הודיה, תהיה לכל יהודי הזדמנות לתת לקדוש ברוך הוא, כביכול, יותר ממה שהוא חייב. לחפש בעצמו מה עוד הוא יכול לתת. וזה בדיוק המהדרין.</p>
+      <p>שימו לב למבנה של מצוות נר חנוכה. החובה היא נר אחד בכל לילה לכל הבית. אם אדם רוצה רק לצאת ידי חובה, הוא מדליק נר אחד קטן, וגמר. כל המשפחה יוצאת בו.</p>
+      <p>ומשם חז"ל השאירו מקום לבחירה. אתה רוצה – תדליק נר לכל אחד מבני הבית. אתה רוצה – תוסיף נר בכל לילה. איך להדר, כמה להדר, זה בידך. לא נקבע לך.</p>
+      <p>למה? כי רק אם נותנים לאדם את הבחירה, ההידור יהיה שלו. אילו קבעו בדיוק מה לעשות, זו הייתה עוד חובה, ולא ביטוי של אהבה. בכוונה נתנו לך את הבחירה, כדי שתוכל לבטא את אהבתך לבורא עולם בדרך שאתה בוחר.</p>
+      <p class="bold-para">אהבה מתבטאת בנתינה שאינה חובה; מי שאוהב מחפש מה עוד יוכל להביא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להדר מתוך אהבה</div>
+      <h3 class="story-title">🧭 דור של בחירה</h3>
+      <p>הרב העיר הערה על הדור שלנו. אם נשאל מה ההבדל העיקרי בין הדור שלנו לדורות שקדמו לו, מלבד השפע, אפשר לומר: בעבר הרבה מאוד דברים נעשו מתוך מסגרת קבועה, מתוך לחץ חברתי ומתוך יראה מן הסביבה. כמעט כולם שמרו מצוות, כי כך עשו כולם, וכמעט לא היה אפשר אחרת.</p>
+      <p>היום המציאות שונה. האדם צריך לבחור בעצמו. יש בזה חיסרון, כי לא כולם בוחרים נכון. אבל יש בזה גם יתרון גדול: מי שבוחר, מחובר הרבה יותר למה שהוא עושה. הוא עושה מתוך אמונה ואהבה, ולא רק מתוך הרגל.</p>
+      <p>וזה מתבטא גם בשפע של היום. כמעט בכל מצווה יש אפשרויות רבות: תפילין בדרגות שונות, ארבעת המינים בדרגות שונות, ועוד. זה לא במקרה. כל אדם יכול לבחור איפה ואיך לבטא את אהבתו לבורא עולם.</p>
+      <p>יש שתי שאלות שאדם יכול לשאול מול כל מצווה. השאלה הראשונה: מה המינימום שאני חייב? מה צריך כדי לצאת ידי חובה? זו שאלה לגיטימית, והלכה צריכה לענות עליה.</p>
+      <p>אבל יש גם שאלה שנייה: מה עוד אני יכול לעשות? איך אוכל לשמח את בורא עולם יותר? זו שאלה של מי שאוהב. הוא אינו מחפש את הגבול התחתון, אלא את ההזדמנות להוסיף.</p>
+      <p>בנר חנוכה חז"ל ענו על שתי השאלות. התשובה לשאלה הראשונה: נר אחד לבית. והתשובה לשאלה השנייה נשארה פתוחה: כמה שתרצה, ככל שליבך מבקש. ולכן עם ישראל כולו נוהג להדר, כי בחנוכה, יותר מבכל מצווה אחרת, הלב מבקש להוסיף.</p>
+      <p class="bold-para">בעבר הרבה נעשה מתוך לחץ ומסגרת; היום האדם בוחר יותר, ויש בזה גם הזדמנות לבטא אהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להדר מתוך אהבה</div>
+      <h3 class="story-title">🧺 עיטור הביכורים</h3>
+      <p>עוד מצווה שכולה הודיה היא מצוות הביכורים. וגם בה מצאנו הידור. במשנה מתואר איך הביאו את הביכורים לירושלים: השור הולך לפניהם, קרניו מצופות זהב ועטרת של זית בראשו. העשירים מביאים את ביכוריהם בכלי כסף וזהב. ויש "עיטור ביכורים" ו"תוספת ביכורים".</p>
+      <p>התורה לא חייבה את כל זה. אפשר היה להביא פרי אחד בסל פשוט. אבל היו שעשו מזה מעשה שלם, קישטו ועיטרו, עד שנעשה זר מפואר, כמו עיצוב מתנות של ימינו.</p>
+      <p>ולמה דווקא בביכורים? כי הביכורים הם הודיה לה' על הפירות ועל ארץ ישראל. וכשיש רגשי הודיה, האדם רוצה מטבעו להוסיף ולהדר, מרוב אהבה למי שהיטיב לו. וכך הביכורים, שהיו יכולים להיות מצווה יבשה של הפרשת פירות, נעשו לחגיגה שלמה של הודיה, עם שירה, חליל ותהלוכה עד בית המקדש, וכל העם יוצא לקראת המביאים.</p>
+      <p class="bold-para">גם בביכורים, מצווה של הודיה, נהגו להדר ולקשט בזהב, בכסף ובעיטורים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להדר מתוך אהבה</div>
+      <h3 class="story-title">🎀 למה עוטפים מתנה</h3>
+      <p>וזה מסביר גם מנהג פשוט: למה עוטפים מתנה? הרי אפשר פשוט לתת אותה. היום זה כבר נעשה מתוך הרגל, ולפעמים מתוך לחץ חברתי, כי כך כולם עושים. אבל מי שעשה זאת לראשונה רצה להביע משהו.</p>
+      <p>הוא רצה להראות שהוא אוהב, ושהמתנה היא יותר מן החפץ. הוא עטף אותה, וכאילו אמר: אילו יכולתי, הייתי מביא לך את כל העולם. דמיין שכאן בפנים יש הכול. העטיפה הופכת את המתנה לסמל של אהבה גדולה.</p>
+      <p>ויש כאן גם אזהרה. היום, הרבה פעמים, גם ההידור במצוות נעשה מתוך הרגל או מתוך לחץ: כולם קונים אתרוג מהודר, כולם מדליקים חנוכייה יפה. זה בעיה מסוימת. צריך האדם להתעורר ולשאול את עצמו: למה אני מהדר? האם מתוך אהבה לבורא עולם, או משום שכך עושים כולם?</p>
+      <p class="bold-para">עטיפת המתנה נולדה מרצון להראות שהמתנה היא סמל לאהבה גדולה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להדר מתוך אהבה</div>
+      <h3 class="story-title">🍞 קרבן תודה – מתוך הלב</h3>
+      <p>גם בקרבן תודה רואים את זה. בפשטות, קרבן תודה לא היה חובה. אף אחד לא חייב אדם שקרה לו נס להביא קרבן. אם הרגיש בעצמו שהוא רוצה להודות לקדוש ברוך הוא, הביא.</p>
+      <p>וכך היה הקרבן ביטוי של אהבה. לא תשלום של חוב, אלא נתינה מרצון. האדם בחר לתת, ובזה ביטא את אהבתו לבורא עולם.</p>
+      <p>ומכאן לימוד לכל השנה: כשאנו מרגישים הכרת טובה לה', לא נסתפק במילים. נחפש איך לעשות את המצוות בהידור. כל אדם יכול למצוא את המקום שבו הוא רוצה לבטא את אהבתו – זה בתפילין, זה בצדקה, זה בלימוד, זה בחסד. ההודיה שבלב צריכה לצאת החוצה בבחירה, בנתינה.</p>
+      <p class="bold-para">קרבן תודה לא היה חובה; מי שהביא אותו ביטא בכך את אהבתו לה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · להדר מתוך אהבה</div>
+      <h3 class="story-title">🔍 לחפש את המקום שלך</h3>
+      <p>לא כל אדם צריך להדר בכל דבר באותה מידה. יש מי שמרגיש קשר מיוחד לתפילין, ומשקיע בתפילין מהודרות. יש מי שמהדר בארבעת המינים. יש מי שמשקיע בצדקה, ויש מי שמשקיע בלימוד או בחסד.</p>
+      <p>החשוב הוא שיהיה לאדם מקום כזה, תחום שבו הוא בוחר לתת יותר ממה שהוא חייב. מקום שבו הוא אומר לבורא עולם: כאן אני רוצה להראות לך כמה אני אוהב אותך.</p>
+      <p>ונר חנוכה הוא הזדמנות שניתנה לכולם. גם מי שאין לו אמצעים להדר בדברים יקרים, יכול להוסיף נר, להדליק בשמחה, לשיר אחר כך, ולעשות את המצווה באהבה. ההידור אינו תלוי בכסף, אלא בלב. נר פשוט שמודלק באהבה גדול בעיני ה' מחנוכייה יקרה ומפוארת שמודלקת מתוך הרגל בלבד, בלי מחשבה ובלי לב, רק משום שכך נוהגים כולם בכל שנה ושנה מתוך הרגל ישן.</p>
+      <p class="bold-para">כל אדם יכול למצוא את התחום שבו הוא רוצה להדר במיוחד, ובו לבטא את אהבתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אור בחושך</div>
+      <h3 class="story-title">🌙 נר בסוף החודש ובחורף</h3>
+      <p>לסיום שאל הרב: למה מודים דווקא סביב הנרות? יש בזה דבר יפה. היום יש אנשים שמרגישים כל היום שהחיים הם צרות. בכל מקום הם רואים בעיות. במיוחד בתקופה קשה, ומי ששומע חדשות כל הזמן, לא קל לו להישאר רגוע.</p>
+      <p>איך יוצאים מזה? כשאדם מתרגל להודות, לחפש זמנים שבהם הוא מודה לה' ורואה את הדברים הטובים, החיים שלו נעשים מאירים. הוא נעשה אדם שמח, כי הוא רואה גם את הצד הטוב והיפה של החיים.</p>
+      <p>וזה מה שהנרות מסמלים. הם דולקים בלילה, בחושך. חנוכה חל בסוף החודש, כשהירח כמעט אינו נראה. ובשיא החורף, כשהלילות הארוכים ביותר, והחורף בדרך כלל מעורר עצב וכבדות. ודווקא שם מדליקים נר.</p>
+      <p>גם אם אתה בחושך, בסוף החודש, בחורף – אם תדע להודות לה' ולחפש את הטוב, החיים שלך יתחילו להאיר, עוד ועוד, מוסיף והולך, עד שנזכה לגאולה במהרה.</p>
+      <p>הרב העיר שבתקופה קשה, כשיש מלחמות ובשורות לא טובות, קל מאוד לשקוע בתחושה שהחיים הם צרות. מי ששומע חדשות כל הזמן, שומע וקורא ורואה רק את הקשיים, מתקשה להישאר אדם רגוע ושמח.</p>
+      <p>העצה היא לא להתעלם מן המציאות, אלא לאזן אותה. לקבוע לעצמו זמנים של הודיה, שבהם מסתכלים על הטוב. לראות גם את מה שבסדר, את החסדים הקטנים של כל יום, את הנסים שקורים לנגד עינינו.</p>
+      <p>וכך עושים בחנוכה: בתוך החושך, מדליקים נר. לא מכחישים את החושך, אבל מוסיפים בו אור. ומי שמתרגל לעשות כך, מגלה שהחושך הולך ומתמעט, והאור הולך ומתרבה.</p>
+      <p class="bold-para">חנוכה חל בלילה, בסוף החודש ובשיא החורף, כדי ללמד שההודיה מאירה גם את החושך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אור בחושך</div>
+      <h3 class="story-title">✨ סיכום</h3>
+      <p>למדנו שמצוות נר חנוכה מיוחדת מאוד. הרמב"ם כתב עליה שהיא "מצווה חביבה היא עד מאוד". עיקרה אינו רק הדלקת הנרות, אלא ההודיה וההלל שסביבם. ולכן כל כך מקפידים לשיר אחר ההדלקה, ולומר "הנרות הללו".</p>
+      <p>ומכיוון שעיקרה הודיה, ומכיוון שהודיה אמיתית מגיעה לאהבה, תיקנו בה חז"ל דרגות של הידור. מי שאוהב, מחפש להתנדב. הוא אינו מסתפק בחובה, אלא בוחר להוסיף, נר אחר נר.</p>
+      <p>יהי רצון שנזכה שההודיה שלנו לא תישאר רק במילים, אלא תהפוך לאהבה, ושהאהבה תתבטא במעשים, בהידור ובשמחה, ותאיר את חיינו ואת העולם כולו.</p>
+      <p>וכשנעמוד השנה מול הנרות, נזכור שאיננו רק מקיימים חובה. אנו מקבלים הזדמנות לבטא אהבה. נר אחד הוא החובה, וכל נר נוסף הוא מתנה שאנו בוחרים לתת. ומי שנותן מתוך אהבה, מגלה שהוא עצמו מקבל יותר מכולם: לב מלא אור, ושמחה שאינה נגמרת.</p>
+      <p class="bold-para">נר חנוכה הוא נר של הודיה, וההודיה שמגיעה לאהבה מבקשת תמיד להוסיף ולהדר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/gHe4sjBEg1Q · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"סופגניות ושמן","icon":"🍩","color":"#c62b6b","stories":[{"id":1,"title":"ספר שלם על סופגניות","icon":"📚"},{"id":2,"title":"למה דווקא בחנוכה","icon":"❓"}]},{"id":2,"name":"הודיה שמתרחבת","icon":"🌊","color":"#6d28d9","stories":[{"id":3,"title":"מה עניין פרעה לחנוכה","icon":"🎶"},{"id":4,"title":"נס במקום אחר","icon":"📍"}]},{"id":3,"name":"שני סוגי הכרת טובה","icon":"💐","color":"#e08e00","stories":[{"id":5,"title":"פרחים מן הפח","icon":"💐"},{"id":6,"title":"המחשבה היא העיקר","icon":"💭"},{"id":7,"title":"השבת טובה ואהבה","icon":"❤️"},{"id":8,"title":"רשימות המתנות","icon":"🎁"},{"id":9,"title":"\"לא תקום\" ומעגלי חברים","icon":"⚖️"}]},{"id":4,"name":"להדר מתוך אהבה","icon":"🕎","color":"#1e88b8","stories":[{"id":10,"title":"מי שאוהב מחפש לתת","icon":"🌹"},{"id":11,"title":"דור של בחירה","icon":"🧭"},{"id":12,"title":"עיטור הביכורים","icon":"🧺"},{"id":13,"title":"למה עוטפים מתנה","icon":"🎀"},{"id":14,"title":"קרבן תודה – מתוך הלב","icon":"🍞"},{"id":15,"title":"לחפש את המקום שלך","icon":"🔍"}]},{"id":5,"name":"אור בחושך","icon":"🌙","color":"#c62b6b","stories":[{"id":16,"title":"נר בסוף החודש ובחורף","icon":"🌙"},{"id":17,"title":"סיכום","icon":"✨"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
