@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מתי מחברים ומתי מפרידים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מתי מחברים ומתי מפרידים</h1>
+  <p>הכללים והטעמים של חיבור הפרשיות והפרדתן: "פקדו ופסחו", "סגרו ופסחו", "מנו ועצרו", "צומו וצלו", "קומו ותקעו" – ומה כל אחד מהם מלמד על המועדים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מתי מחברים ומתי מפרידים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/lB04PkdhmRU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/lB04PkdhmRU/hqdefault.jpg" alt="מתי מחברים ומתי מפרידים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=lB04PkdhmRU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הפרשיות שמתחברות</div>
+      <h3 class="story-title">❓ שאלה מן השבוע שעבר</h3>
+      <p>השיעור נפתח בשאלה ששאלו את הרב רבים בשבוע שעבר. השנה הייתה שנה פשוטה, לא מעוברת, ובכל זאת הפרידו את ויקהל ופקודי. בדרך כלל בשנה פשוטה הן מחוברות. מה גרם השנה להפריד ביניהן?</p>
+      <p>כדי לענות צריך להכיר את הכללים של חיבור הפרשיות והפרדתן. אלה כללים שטוב לדעת לכל החיים. מי שמבין אותם, יכול לדעת מראש בכל שנה אילו פרשיות יחוברו ואילו יופרדו, וכמעט לכתוב לוח שנה בעצמו.</p>
+      <p>ולא רק הכללים חשובים, אלא גם הטעמים. כל כלל מבטא קשר בין הפרשה שקוראים לבין המועד שמגיע אחריה. וכשמבינים את הקשר, רואים כמה מכוון הסדר שבו קוראים את התורה במשך השנה.</p>
+      <p>השיעור הזה שייך לכל השנה, אבל הוא נוגע במיוחד לעונה שבה נמסר, הימים שלפני פסח, כשהשאלה על ויקהל ופקודי עוד הייתה טרייה. ובסופו נראה שגם הכלל הראשון, זה שעוסק בפסח, מתחבר לשבת הגדול ולסיפור הנס.</p>
+      <p class="bold-para">השנה, אף שאינה מעוברת, הופרדו ויקהל ופקודי, והשאלה הובילה לבירור הכללים כולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הפרשיות שמתחברות</div>
+      <h3 class="story-title">🔗 שבעה זוגות</h3>
+      <p>יש בתורה שבעה זוגות של פרשיות שיכולות להיות מחוברות או נפרדות, לפי השנה. הזוג הראשון: ויקהל ופקודי בספר שמות.</p>
+      <p>אחר כך שלושה זוגות בספר ויקרא: תזריע ומצורע, אחרי מות וקדושים, בהר ובחוקותי. זה הספר עם הכי הרבה חיבורים. מיד נראה למה דווקא ויקרא.</p>
+      <p>אחר כך בספר במדבר: חוקת ובלק. החיבור הזה כמעט אינו קורה בארץ ישראל. הוא קורה בעיקר בחוץ לארץ, בשנים שבהן יום טוב שני גורם לפער בין הקריאה שם לקריאה כאן, והם צריכים להשלים. אחר כך מטות ומסעי, שהן בדרך כלל מחוברות, ויחד הן הקריאה הארוכה ביותר בשנה.</p>
+      <p>והזוג האחרון, בספר דברים: נצבים וילך. כאן החיבור אינו תלוי כלל בשנה מעוברת, אלא ביום בשבוע שבו חל ראש השנה.</p>
+      <p class="bold-para">יש בתורה שבעה זוגות של פרשיות שלפעמים מחוברות ולפעמים נפרדות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הפרשיות שמתחברות</div>
+      <h3 class="story-title">✈️ הפער של חוץ לארץ</h3>
+      <p>בשיעור עלתה שאלה על החיבור של חוקת ובלק, שאינו מוכר כמעט בארץ ישראל. התברר שהעניין קשור ליום טוב שני של גלויות.</p>
+      <p>בארץ ישראל חוגגים יום אחד של יום טוב, ובחוץ לארץ שניים. כשהיום השני של החג חל בשבת, בחוץ לארץ קוראים בו את קריאת החג, ואילו בארץ ישראל כבר חוזרים לפרשת השבוע. כך נוצר פער: בארץ ישראל מקדימים בפרשה אחת.</p>
+      <p>הפער הזה יכול להימשך זמן רב, לפעמים חודשים. ובסוף משלימים אותו: בחוץ לארץ מחברים פרשיות שבארץ ישראל קוראים לבד, עד שהקריאה מתיישרת. מכאן מגיעים חיבורים כמו חוקת ובלק, שמוכרים בעיקר לבני חוץ לארץ, ושרבים בארץ ישראל לא שמעו עליהם כלל.</p>
+      <p>ויש בזה גם שאלה מעשית למי שנוסע בתקופה כזו בין הארץ לחוץ לארץ: הוא עלול לשמוע פרשה פעמיים, או להחמיץ פרשה. מי שנמצא במצב כזה, טוב שיברר מראש איך להשלים את מה שהחסיר.</p>
+      <p>הראשונים סיכמו את כל הכללים בכמה מילים, והן מובאות גם בשולחן ערוך: "פקדו ופסחו, סגרו ופסחו, מנו ועצרו, צומו וצלו, קומו ותקעו".</p>
+      <p>במלואם: בשנה פשוטה – פקדו ופסחו. בשנה מעוברת – סגרו ופסחו. ולעולם – מנו ועצרו, צומו וצלו, קומו ותקעו.</p>
+      <p>בשיעור נעשה ניסיון לפענח את הסימנים יחד. מה הם "פקדו" ו"סגרו"? מה הם "מנו", "צומו" ו"קומו"? כל מילה רומזת לפרשה, והמילה שאחריה רומזת למועד. מיד נראה את כולם אחד אחד. ומי שזוכר את חמשת הסימנים, יודע את כל מה שצריך לדעת.</p>
+      <p class="bold-para">בחוץ לארץ, כשיום טוב שני חל בשבת, נוצר פער בקריאה, והם משלימים אותו בחיבור פרשיות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · פקדו ופסחו</div>
+      <h3 class="story-title">🍷 "פקדו ופסחו"</h3>
+      <p>"בפשוטה פקדו ופסחו". מה הוא "פקדו"? זו פרשת צו. "צַו אֶת אַהֲרֹן" הוא ציווי, פקודה, כמו "פִּקּוּדֵי ה' יְשָׁרִים". כלומר: בשנה פשוטה, פרשת צו נקראת תמיד לפני פסח, ואחריה בא החג.</p>
+      <p>הרב אמר שהוא זוכר זאת בסימן נוסף: פרשת צו, שבה נאמרים דיני קרבן תודה, הולכת תמיד יחד עם שבת הגדול. ובסוף השיעור נראה כמה הקשר הזה עמוק.</p>
+      <p>והשנה, שהייתה פשוטה, מה קרה? פסח חל ביום ראשון. אילו חיברו את ויקהל ופקודי, היה יוצא שבשבת שלפני פסח קוראים כבר את שמיני, ולא את צו. לכן הפרידו את ויקהל ופקודי, כדי שהחשבון יגיע בדיוק לצו לפני פסח.</p>
+      <p>מתי קורה דבר כזה? יש לזה סימן: בשנה פשוטה שבה ראש השנה חל ביום חמישי, והחודשים חשוון וכסלו מלאים, ויקהל ופקודי נפרדות.</p>
+      <p>ואפשר להבין זאת בפשטות. כשראש השנה חל ביום חמישי, וחשוון וכסלו מלאים, יוצא שיש עוד שבת אחת עד פסח, ופסח נדחה ליום ראשון. ממילא יש שבת נוספת שצריך למלא, ולכן מפרידים את ויקהל ופקודי.</p>
+      <p>זה החשבון. וכל זה בגלל הכלל: "פקדו ופסחו". הכול נבנה כך שפרשת צו תהיה לפני פסח. השאלה שנשאלה בשבוע שעבר נענתה מתוך הכלל הראשון.</p>
+      <p class="bold-para">בשנה פשוטה קוראים את פרשת צו לפני פסח, ו"פקדו" רומז ל"פקודי ה' ישרים".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · פקדו ופסחו</div>
+      <h3 class="story-title">🔤 סימן א"ת ב"ש</h3>
+      <p>באמצע הדיון הזכירו המשתתפים סימן ידוע, שעוזר לדעת מראש על איזה יום בשבוע יחולו המועדים. הוא מובא בשולחן ערוך, נפתח באותיות "א"ת ב"ש ג"ר ד"ק", ובנוי על ימי חג הפסח.</p>
+      <p>א"ת: היום הראשון של פסח חל באותו יום בשבוע שבו יחול תשעה באב. ב"ש: היום השני של פסח חל באותו יום כמו שבועות. ג"ר: היום השלישי – כמו ראש השנה הבא. ד"ק: היום הרביעי – כמו קריאת התורה, הוא שמחת תורה. ויש בסימן עוד אותיות, לשאר ימי החג.</p>
+      <p>מי שזוכר את הסימן הזה, יודע כבר בפסח על איזה יום יחול כל אחד מן המועדים הבאים. וזה עוזר גם לחשב את סדר הפרשיות: אם יודעים מתי חל ראש השנה, יודעים גם אם נצבים וילך יחוברו.</p>
+      <p>כל זה מראה כמה הלוח העברי בנוי בחוכמה. הכול מחובר: הפרשיות, המועדים והימים, כמו מנגנון אחד שלם.</p>
+      <p>"במעוברת סגרו ופסחו". "סגרו" הוא פרשת מצורע, שבה מסגירים את המצורע. בשנה מעוברת, פרשת מצורע נקראת לפני פסח.</p>
+      <p>בשנה מעוברת יש חודש נוסף, ולכן עד פסח מגיעים כבר רחוק יותר בספר ויקרא. כמעט כל ההבדל בין שנה פשוטה למעוברת עדיין לא נכנס לחשבון עד פסח. ולכן הפרשה שלפני פסח היא כבר מצורע.</p>
+      <p>ובשנה מעוברת תזריע ומצורע נפרדות כמעט תמיד. יש שנים מעוברות נדירות שבהן אחרות מתחברות, אבל הכלל הוא שבמעוברת יש די שבתות כדי לקרוא כל פרשה לבדה.</p>
+      <p class="bold-para">לפי יום השבוע של פסח אפשר לדעת על איזה יום יחולו שאר המועדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · פקדו ופסחו</div>
+      <h3 class="story-title">🧭 למה פסח נקבע לפי צו</h3>
+      <p>אם מסתכלים על הכלל הראשון, רואים שהוא משמש כעוגן. כל החיבורים שבין שמחת תורה לפסח נקבעים כך שהפרשה שלפני פסח תהיה צו בשנה פשוטה, ומצורע בשנה מעוברת. לכן ויקהל ופקודי, שהן הזוג היחיד בספר שמות, מחוברות או נפרדות לפי מה שצריך כדי להגיע לעוגן הזה.</p>
+      <p>בשנה מעוברת יש חודש שלם נוסף לפני פסח, ארבע או חמש שבתות נוספות. לכן ויקהל ופקודי נפרדות בה תמיד, ועדיין יש מספיק שבתות כדי להגיע עד מצורע. בשנה פשוטה הן מחוברות בדרך כלל, חוץ מן המקרה הנדיר שראינו, שבו יש שבת אחת עודפת.</p>
+      <p>וכך הלוח בנוי כולו מעוגנים: פסח, שבועות, תשעה באב וראש השנה. בין עוגן לעוגן, חיבור הפרשיות או הפרדתן הוא שמאזן את החשבון.</p>
+      <p class="bold-para">הפרשה שלפני פסח היא נקודת העוגן הראשונה בלוח, וכל החיבורים שלפניה נקבעים לפיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · פקדו ופסחו</div>
+      <h3 class="story-title">🫕 צו, מצורע והגעלת כלים</h3>
+      <p>למה דווקא צו ומצורע לפני פסח? יש לזה טעם יפה. בפרשת צו נאמר על קרבן שבושל בכלי: "וּכְלִי חֶרֶשׂ אֲשֶׁר תְּבֻשַּׁל בּוֹ יִשָּׁבֵר, וְאִם בִּכְלִי נְחֹשֶׁת בֻּשָּׁלָה וּמֹרַק וְשֻׁטַּף בַּמָּיִם". חז"ל למדו מכאן שמירוק הוא הגעלה במים חמים, ושטיפה היא שטיפה במים קרים אחר כך.</p>
+      <p>ובפרשת מצורע נאמר: "וּכְלִי חֶרֶשׂ אֲשֶׁר יִגַּע בּוֹ הַזָּב יִשָּׁבֵר, וְכָל כְּלִי עֵץ יִשָּׁטֵף בַּמָּיִם". שם מדובר בטומאה, לא בבליעת טעם, אבל גם שם נזכר עניין של הכשרת כלים.</p>
+      <p>ודיני הגעלת כלים נוגעים מאוד לפסח. פעם אנשים לא קנו כלים מיוחדים לפסח, אלא הגעילו את כל כליהם. ולכן יש רמז יפה: לפני פסח קוראים את הפרשה שבה נזכרים דיני הגעלה. הרב העיר שאינו בטוח שזה הטעם העיקרי, אבל זה רמז נאה.</p>
+      <p>וכדאי להוסיף שיש בדיני הגעלה פרטים רבים, ומי שצריך להכשיר כלים, ישאל את רבו מה לעשות למעשה.</p>
+      <p class="bold-para">יש מי שמסביר שצו ומצורע נקראות לפני פסח משום שבשתיהן נרמזים דיני הגעלת כלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מנו ועצרו</div>
+      <h3 class="story-title">📖 "מנו ועצרו"</h3>
+      <p>"ולעולם מנו ועצרו". "מנו" הוא פרשת במדבר, שבה מונים את בני ישראל. ו"עצרו" הוא חג השבועות, שנקרא בלשון חז"ל "עצרת". הכלל הוא שתמיד, בשנה פשוטה ובשנה מעוברת, קוראים את פרשת במדבר לפני חג השבועות.</p>
+      <p>מה הטעם? הגמרא אומרת שעזרא תיקן שיקראו את הקללות שבתורת כהנים, בפרשת בחוקותי, לפני עצרת, ואת הקללות שבמשנה תורה לפני ראש השנה. למה? "כדי שתכלה שנה וקללותיה".</p>
+      <p>ומה הקשר לשבועות? הגמרא שואלת: וכי עצרת ראש השנה היא? ועונה: כן, עצרת ראש השנה היא, שהרי במשנה נאמר: בעצרת נידונים על פירות האילן. אם כן, רוצים לסיים את הקללות לפני יום הדין על הפירות.</p>
+      <p>אבל לא רוצים להצמיד את הקללות ממש ליום הדין. לכן יש הפסקה של שבת אחת ביניהם, ובה קוראים את פרשת במדבר.</p>
+      <p class="bold-para">תמיד, בכל שנה, קוראים את פרשת במדבר, שבה מונים את ישראל, לפני חג השבועות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מנו ועצרו</div>
+      <h3 class="story-title">✨ נשא – הפרשה הגדולה</h3>
+      <p>יש בזה עוד רמז יפה. מה הפרשה הארוכה ביותר בתורה? פרשת נשא. ומתי קוראים אותה? בדרך כלל מיד אחרי חג השבועות.</p>
+      <p>וזה מתאים מאוד. אחרי שקיבלנו את התורה מחדש בשבועות, יש לנו כוח, התלהבות ושמחה בתורה. ודווקא אז קוראים את הפרשה הגדולה ביותר. כמו אדם שהתמלא כוחות, ויכול עכשיו לשאת משא גדול.</p>
+      <p>ומכאן מובן גם למה רוב החיבורים נמצאים בספר ויקרא. לחג השבועות צריך להגיע תמיד לאותה נקודה, לפרשת במדבר, בין בשנה פשוטה ובין בשנה מעוברת. ואחרי פסח יש בין פשוטה למעוברת פער של כמה שבתות. איפה מתקנים את הפער? בספר ויקרא. בשנה פשוטה מחברים שם כמה זוגות, ובשנה מעוברת קוראים כל פרשה לבדה. כך מגיעים בשתי השנים בדיוק לבמדבר לפני שבועות.</p>
+      <p class="bold-para">אחרי שבועות קוראים את פרשת נשא, הארוכה בתורה, כשיש כוח מחודש מקבלת התורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מנו ועצרו</div>
+      <h3 class="story-title">📚 מי חילק את הפרקים</h3>
+      <p>בשיעור עלתה שאלה מעניינת: מתי חילקו את התורה לפרשיות כפי שיש לנו היום? בארץ ישראל בימי חז"ל היו נוהגים לסיים את התורה פעם בשלוש שנים, ובבבל בכל שנה. המנהג שלנו הוא מנהג בבל, שהתפשט לכל ישראל.</p>
+      <p>אבל צריך להבחין בין חלוקת הפרשיות לחלוקת הפרקים. הפרשיות הן מסורת ישראל. הפרקים, לעומת זאת, לא נקבעו בידי חכמי ישראל. את חלוקת הפרקים עשו חוקרים מבני עמים אחרים, לצורכיהם, ולאט לאט היא נכנסה גם לספרים שלנו, כי היה נוח להשתמש בה כדי למצוא פסוקים.</p>
+      <p>ואפשר לראות זאת כבר בפרק הראשון של התורה. איפה הוא נגמר? לפני "וַיְכֻלּוּ הַשָּׁמַיִם". אבל "ויכלו" הוא סיום מעשה בראשית, היום השביעי. כל יהודי היה מסיים את הפרק אחרי השבת, ולא לפניה. הסימן הזה מלמד שמי שחילק את הפרקים לא חשב כמו מסורת ישראל. ובכל זאת, אחרי שהחלוקה התקבלה, קשה כבר לשנות אותה.</p>
+      <p class="bold-para">חלוקת הפרשיות היא מסורת ישראל, אבל חלוקת הפרקים נעשתה בידי אחרים, ולכן יש בה מוזרויות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מנו ועצרו</div>
+      <h3 class="story-title">🌱 "תכלה שנה וקללותיה"</h3>
+      <p>כדאי להתעכב על הביטוי "תכלה שנה וקללותיה". יש בו רעיון עמוק. חכמים רצו שהשנה תיגמר יחד עם הקללות שלה. כל מה שהיה קשה בשנה שעברה, כל הקללות והצרות, יישארו מאחור.</p>
+      <p>וכשנכנסים ליום הדין, בין אם זה ראש השנה לאילנות בשבועות ובין אם זה ראש השנה של תשרי, נכנסים אליו נקיים. לא עם משא הקללות, אלא עם פתח לשנה חדשה וטובה.</p>
+      <p>ובכל זאת חכמים הקפידו שלא להצמיד את הקללות ממש ליום הדין. כאילו אמרו: אל תיכנס ליום הדין כשהקללות עוד מהדהדות באוזניך. סגור את השנה, עצור שבת אחת, ורק אז היכנס ליום החדש.</p>
+      <p>יש בזה גם לימוד לחיים. כשאדם מסיים תקופה קשה, טוב שיעשה הפסקה קטנה, יסגור את מה שהיה, ורק אחר כך יתחיל את הדבר הבא. כך אפשר להתחיל באמת מחדש.</p>
+      <p class="bold-para">הקללות נקראות לפני יום הדין, כדי שהשנה החדשה תתחיל בלי משא הקללות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · צומו וצלו</div>
+      <h3 class="story-title">🕯️ "צומו וצלו"</h3>
+      <p>"ולעולם צומו וצלו". "צומו" הוא תשעה באב, ו"צלו" הוא פרשת ואתחנן, שבה התפלל משה: "וָאֶתְחַנַּן אֶל ה'". הכלל הוא שאחרי תשעה באב קוראים תמיד את פרשת ואתחנן.</p>
+      <p>וממילא, לפני תשעה באב קוראים תמיד את פרשת דברים. ויש לזה סימן מפורסם: "אֵיכָה אֶשָּׂא לְבַדִּי טָרְחֲכֶם וּמַשַּׂאֲכֶם וְרִיבְכֶם". המילה "איכה" מופיעה בפרשת דברים. ויש שלוש "איכה": בתורה – בפרשת דברים; בנביאים – בהפטרה של שבת חזון, "אֵיכָה הָיְתָה לְזוֹנָה קִרְיָה נֶאֱמָנָה"; ובכתובים – במגילת איכה, שקוראים בתשעה באב עצמו.</p>
+      <p>ולמה ואתחנן אחרי תשעה באב? כי בה נמצאים עשרת הדיברות. אחרי האבל על החורבן, מקבלים על עצמם מחדש לקיים את התורה, כאילו קיבלו אותה עכשיו. וגם נקראת אז הפטרת "נַחֲמוּ נַחֲמוּ עַמִּי", הראשונה משבע דנחמתא.</p>
+      <p class="bold-para">תמיד קוראים את פרשת דברים לפני תשעה באב, ואת ואתחנן אחריו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · צומו וצלו</div>
+      <h3 class="story-title">🏕️ מטות ומסעי</h3>
+      <p>ומה עם מטות ומסעי? בדרך כלל הן מחוברות, ויחד הן הקריאה הארוכה ביותר בשנה. אבל יש שנים שבהן הן נפרדות. מה קובע?</p>
+      <p>גם כאן הכלל "צומו וצלו" מכריע. בשבת שלפני תשעה באב קוראים תמיד את פרשת דברים, ואחריו ואתחנן. אם כן, צריך לבדוק כמה שבתות נשארו מחג השבועות ועד השבת שלפני תשעה באב, ולפי זה לחלק את הפרשיות. אם יש מספיק שבתות, מפרידים את מטות ומסעי. אם אין, מחברים אותן.</p>
+      <p>בארץ ישראל, אחרי שכבר הגענו לבמדבר לפני שבועות, כמעט אין עוד מה לשנות, וכל ההכרעה היא בעיקר במטות ומסעי. בחוץ לארץ, שבו יש לפעמים פער מיום טוב שני, עשוי להיות צורך גם בחיבור של חוקת ובלק.</p>
+      <p>כך רואים שוב שכל הכללים בנויים סביב המועדים. לא הפרשיות קובעות את המועדים, אלא המועדים קובעים איך יחולקו הפרשיות.</p>
+      <p class="bold-para">החיבור של מטות ומסעי נקבע לפי מה שנשאר עד השבת שלפני תשעה באב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · צומו וצלו</div>
+      <h3 class="story-title">🕊️ היארצייט היחיד בתורה</h3>
+      <p>בשיעור העיר אחד המשתתפים הערה יפה. אהרן הכהן נפטר בפרשת חוקת, ושם לא כתוב התאריך. אבל בפרשת מסעי, בתוך רשימת המסעות, כתוב: "וַיָּמָת שָׁם בִּשְׁנַת הָאַרְבָּעִים לְצֵאת בְּנֵי יִשְׂרָאֵל מֵאֶרֶץ מִצְרַיִם בַּחֹדֶשׁ הַחֲמִישִׁי בְּאֶחָד לַחֹדֶשׁ".</p>
+      <p>זה פלא: אהרן הוא האדם היחיד בתורה שתאריך פטירתו כתוב. אפילו של משה רבנו לא כתוב בתורה. למה דווקא אהרן?</p>
+      <p>ההסבר הפשוט: מידתו של אהרן הייתה "אוהב שלום ורודף שלום". וראש חודש אב הוא תחילת הימים הקשים ביותר, שבהם מתאבלים על החורבן שבא בגלל שנאת חינם. מה הדבר החשוב ביותר להתחזק בו לקראת תשעה באב? במידתו של אהרן. ולכן התורה כתבה את יום פטירתו, ופרשת מסעי נקראת תמיד בשבת שלפני ראש חודש אב או סמוך לה, כדי שנזכור את אהבת השלום שלו בדיוק כשהיא נחוצה ביותר.</p>
+      <p class="bold-para">אהרן הכהן הוא היחיד שתאריך פטירתו כתוב בתורה, וקוראים אותו לפני ראש חודש אב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · צומו וצלו</div>
+      <h3 class="story-title">🤝 לפני תשעה באב – אהבת שלום</h3>
+      <p>הלימוד מאהרן הכהן אינו רק רמז יפה. יש בו הדרכה מעשית לימים שבין ראש חודש אב לתשעה באב.</p>
+      <p>חז"ל אמרו שבית המקדש השני נחרב בגלל שנאת חינם. ואם החורבן בא משנאה, התיקון שלו הוא אהבה. ומי מסמל את האהבה הזו יותר מאהרן הכהן, שהיה רודף שלום, שהשכין שלום בין איש לרעהו ובין איש לאשתו? כשמת, בכו עליו "כָּל בֵּית יִשְׂרָאֵל", כולם, כי הוא היה של כולם.</p>
+      <p>לכן כשקוראים בפרשת מסעי את יום פטירתו של אהרן, סמוך לראש חודש אב, זו הזמנה: לקחת על עצמנו משהו ממידתו. לפייס את מי שכעסנו עליו, לוותר במחלוקת, לדון לכף זכות. כך האבל על החורבן אינו רק בכי על העבר, אלא גם עבודה שמקרבת את הבניין.</p>
+      <p class="bold-para">קריאת פטירת אהרן לפני ראש חודש אב מזכירה מה צריך לתקן כדי שהחורבן ייבנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קומו ותקעו</div>
+      <h3 class="story-title">📯 "קומו ותקעו"</h3>
+      <p>"ולעולם קומו ותקעו". "קומו" הוא פרשת נצבים: "אַתֶּם נִצָּבִים הַיּוֹם כֻּלְּכֶם", עמידה. ו"תקעו" הוא ראש השנה, יום תרועה. הכלל הוא שפרשת נצבים נקראת תמיד לפני ראש השנה.</p>
+      <p>ויש לכך שני טעמים. הראשון: פרשת נצבים היא פרשת התשובה. "וְשַׁבְתָּ עַד ה' אֱלֹקֶיךָ וְשָׁמַעְתָּ בְקֹלוֹ" – המילה "תשובה" ושורשה חוזרים בה פעמים רבות. אין מתאים ממנה לפני ימי הדין.</p>
+      <p>והטעם השני: זה אותו כלל שראינו בשבועות. בפרשת כי תבוא נמצאות הקללות של משנה תורה, ו"תכלה שנה וקללותיה". אבל לא רוצים להצמיד את הקללות לראש השנה. לכן קוראים את נצבים באמצע, כהפסקה בין הקללות לבין יום הדין.</p>
+      <p>והכלל האחרון נוגע לחיבור נצבים וילך. כאן אין זה תלוי בשנה מעוברת, אלא ביום שבו חל ראש השנה.</p>
+      <p>אם ראש השנה חל ביום שני או ביום שלישי, יש שתי שבתות בין ראש השנה לסוכות: אחת בין ראש השנה ליום הכיפורים, ואחת בין יום הכיפורים לסוכות. צריך שתי פרשיות לשבתות האלה: וילך והאזינו. לכן נצבים נקראת לבדה לפני ראש השנה, ווילך נקראת אחריו.</p>
+      <p>אבל אם ראש השנה חל בסוף השבוע, ביום חמישי או בשבת, נשארת רק שבת אחת עד סוכות. אז מחברים את נצבים וילך לפני ראש השנה, ובשבת שאחריו קוראים האזינו.</p>
+      <p>וזה הכלל: ראש השנה בתחילת השבוע – שתי שבתות, ונצבים וילך נפרדות. ראש השנה בסוף השבוע – שבת אחת, ונצבים וילך מחוברות.</p>
+      <p class="bold-para">תמיד קוראים את פרשת נצבים לפני ראש השנה, כי היא פרשת התשובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קומו ותקעו</div>
+      <h3 class="story-title">📋 סיכום הכללים</h3>
+      <p>נחזור על הכללים כולם. בשנה פשוטה – "פקדו ופסחו": צו לפני פסח. בשנה מעוברת – "סגרו ופסחו": מצורע לפני פסח. ולעולם – "מנו ועצרו": במדבר לפני שבועות. "צומו וצלו": אחרי תשעה באב ואתחנן, ולפניו דברים. "קומו ותקעו": נצבים לפני ראש השנה.</p>
+      <p>ואם יודעים את הכללים, כל השאר נובע מהם. כמה פרשיות יחוברו בספר ויקרא? כמה שצריך כדי להגיע לבמדבר לפני שבועות. האם מטות ומסעי יחוברו? לפי מה שנשאר עד שבת שלפני תשעה באב, שבה תמיד דברים. האם נצבים וילך יחוברו? לפי היום שבו חל ראש השנה.</p>
+      <p>מי שתופס את הרעיון, אינו צריך להסתכל בלוח. הוא יודע מראש. וחשוב מזה: הוא מבין שסדר הקריאה אינו מקרי. כל פרשה מכינה את המועד שבא אחריה, וכל מועד מקבל את הפרשה שמתאימה לו.</p>
+      <p class="bold-para">מי שזוכר את חמשת הסימנים ואת הטעמים שלהם, יודע את כל סדר הפרשיות בשנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קומו ותקעו</div>
+      <h3 class="story-title">🎓 סדר שמלמד</h3>
+      <p>כשמסתכלים על כל הכללים יחד, רואים תמונה מרשימה. לפני פסח – דיני כלים וקרבן תודה. לפני שבועות – סיום הקללות, ומיד אחריו הפרשה הגדולה של נשא. לפני תשעה באב – "איכה" של משה, ופטירת אהרן רודף השלום. אחרי תשעה באב – עשרת הדיברות ונחמה. לפני ראש השנה – פרשת התשובה.</p>
+      <p>זה לא סידור טכני של פרשיות כדי שהחשבון יסתדר, ולא מקרה שכך יצא הלוח. זו דרך שבה התורה מלווה את האדם במשך השנה, ומכינה אותו לכל מועד. מי שקורא את הפרשה בשבת שלפני החג, ושם לב לקשר, נכנס לחג מוכן יותר.</p>
+      <p>ולכן כדאי לא רק לדעת את הכללים, אלא גם להשתמש בהם. בכל שבת שלפני מועד, לשאול: מה הקשר בין הפרשה הזו לבין מה שמחכה לי השבוע? כך הקריאה בתורה נעשית חלק חי מחוויית המועד.</p>
+      <p class="bold-para">סדר הקריאה מכין כל מועד בפרשה המתאימה לו, ומלמד לחיות את השנה כמחזור אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · שבת הגדול וקרבן תודה</div>
+      <h3 class="story-title">📕 מה שאין בשולחן ערוך</h3>
+      <p>לסיום רצה הרב להסביר למה קוראים את צו דווקא בשבת הגדול. ולשם כך הקדים יסוד מעניין: למה אין בשולחן ערוך הלכה "משנכנס אדר מרבים בשמחה"? הרי זה כתוב בגמרא במפורש, ואין מי שחולק על כך. ולעומת זאת "משנכנס אב ממעטים בשמחה" מופיע בשולחן ערוך. מה ההבדל?</p>
+      <p>יש כלל: השולחן ערוך כותב רק דברים שעושים אותם במעשה, בידיים, ברגליים, בפה. רגשות לבדם אינם נכתבים בו כהלכה. ואיך מרבים בשמחה? אחד שותה, אחד שומע מוזיקה, אחד רוקד. אין דרך אחת מוגדרת, ולכן אין זה נכתב כסעיף.</p>
+      <p>אבל "ממעטים בשמחה" באב יש בו מעשים מוגדרים: לא אוכלים בשר, לא שותים יין, לא שומעים כלי זמר, לא מתחדשים. לכן זה נכתב. אין זה אומר שמה שאינו כתוב אינו חובה. רק שהשולחן ערוך הגדיר לעצמו לכתוב מעשים.</p>
+      <p class="bold-para">השולחן ערוך כותב רק דברים שעושים במעשה, ולכן "משנכנס אדר" אינו בו ו"משנכנס אב" כן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · שבת הגדול וקרבן תודה</div>
+      <h3 class="story-title">🐑 לקרוא לה שבת הגדול</h3>
+      <p>ועכשיו: בשולחן ערוך כתוב שהשבת שלפני פסח קוראים אותה "שבת הגדול". לכאורה, איזו הלכה יש כאן? הרי השולחן ערוך אינו כותב סיפורים או שמות!</p>
+      <p>אלא שלפי הכלל שלמדנו, אם זה כתוב, זה מעשה. ויש מן האחרונים שמבארים: "קורין אותה" אינו תיאור, אלא הוראה. יש מצווה לקרוא לה בפה "שבת הגדול". כשאדם מגיע הביתה ואומר "היום שבת הגדול", ישאלו אותו: למה היא גדולה? ואז הוא יספר.</p>
+      <p>ומה יספר? את הנס הגדול שהיה באותה שבת במצרים. ישראל לקחו שה, השה שהיה האליל של מצרים, וקשרו אותו לעיני כולם, כדי לשחוט אותו לקרבן פסח. והמצרים לא יכלו לעשות להם דבר. זה היה נס גדול, ולכן מצווה לספר אותו.</p>
+      <p class="bold-para">השולחן ערוך כותב שקוראים לשבת שלפני פסח "שבת הגדול" – לשון מעשה, כדי לספר את הנס.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · שבת הגדול וקרבן תודה</div>
+      <h3 class="story-title">🗣️ לספר נסים גם היום</h3>
+      <p>יש בזה לימוד גדול לכל אחד. ההלכה אינה מסתפקת בכך שהנס קרה. היא רוצה שיספרו אותו. ולכן היא מבקשת מן האדם לעשות מעשה קטן – לקרוא לשבת בשם מיוחד – כדי שיישאל, ויספר.</p>
+      <p>גם בחיים שלנו קורים נסים, גדולים וקטנים. אבל אם אין מי ששואל, ואין רגע שבו מספרים, הם נשכחים. מי שרוצה לזכור את חסדי ה', צריך ליצור לעצמו הזדמנויות לספר: בשולחן שבת, עם הילדים, עם חברים. לומר בקול: ראו מה ה' עשה לנו.</p>
+      <p>זה גם עומק קרבן התודה. אדם שעבר ישועה אינו מסתפק בתודה בלבו. הוא עושה סעודה גדולה, מזמין רבים, ומספר. כך הנס שלו נעשה קידוש ה' ברבים, וכל מי ששומע מתחזק באמונה.</p>
+      <p class="bold-para">המצווה לקרוא לשבת "שבת הגדול" מלמדת שצריך ליצור הזדמנויות לספר את נפלאות ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · שבת הגדול וקרבן תודה</div>
+      <h3 class="story-title">🍞 ארבעים חלות של תודה</h3>
+      <p>ומה קוראים בפרשת צו? את קרבן התודה. ובקרבן תודה מביאים ארבעים חלות: עשר חמץ, ושלושים מצה מסוגים שונים. למה כל כך הרבה? מי יאכל את כולן? והרי את בשר התודה ולחמה צריך לאכול ביום אחד ובלילה שאחריו.</p>
+      <p>התשובה: מי שמביא קרבן תודה מזמין את כל ירושלים, את העניים, את כולם, לבוא לסעודה, כדי שלא יישאר דבר מן הלחם והבשר. ומה הוא עושה שם? מספר לכולם את הנס הגדול שקרה לו. הלחמים הרבים נועדו לכך שיהיו הרבה שומעים.</p>
+      <p>ומכאן מובן כמה יפה שפרשת צו נקראת תמיד בשבת הגדול. שבת הגדול היא שבת של סיפור הנס, וקרבן תודה הוא קרבן של סיפור הנס. אותו עניין עצמו. ולכן בשנה פשוטה, "פקדו ופסחו": צו לפני פסח, יחד עם שבת הגדול.</p>
+      <p>יזכה אותנו ה' לראות עוד הרבה נסים גדולים, ולספר תמיד את נפלאותיו.</p>
+      <p class="bold-para">קרבן תודה בא עם לחמים רבים כדי לספר את הנס לרבים, ולכן הוא שייך לשבת הגדול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/lB04PkdhmRU · 2025-03-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הפרשיות שמתחברות","icon":"🔗","color":"#c62b6b","stories":[{"id":1,"title":"שאלה מן השבוע שעבר","icon":"❓"},{"id":2,"title":"שבעה זוגות","icon":"🔗"},{"id":3,"title":"הפער של חוץ לארץ","icon":"✈️"}]},{"id":2,"name":"פקדו ופסחו","icon":"🍷","color":"#6d28d9","stories":[{"id":4,"title":"\"פקדו ופסחו\"","icon":"🍷"},{"id":5,"title":"סימן א\"ת ב\"ש","icon":"🔤"},{"id":6,"title":"למה פסח נקבע לפי צו","icon":"🧭"},{"id":7,"title":"צו, מצורע והגעלת כלים","icon":"🫕"}]},{"id":3,"name":"מנו ועצרו","icon":"📖","color":"#e08e00","stories":[{"id":8,"title":"\"מנו ועצרו\"","icon":"📖"},{"id":9,"title":"נשא – הפרשה הגדולה","icon":"✨"},{"id":10,"title":"מי חילק את הפרקים","icon":"📚"},{"id":11,"title":"\"תכלה שנה וקללותיה\"","icon":"🌱"}]},{"id":4,"name":"צומו וצלו","icon":"🕯️","color":"#1e88b8","stories":[{"id":12,"title":"\"צומו וצלו\"","icon":"🕯️"},{"id":13,"title":"מטות ומסעי","icon":"🏕️"},{"id":14,"title":"היארצייט היחיד בתורה","icon":"🕊️"},{"id":15,"title":"לפני תשעה באב – אהבת שלום","icon":"🤝"}]},{"id":5,"name":"קומו ותקעו","icon":"📯","color":"#c62b6b","stories":[{"id":16,"title":"\"קומו ותקעו\"","icon":"📯"},{"id":17,"title":"סיכום הכללים","icon":"📋"},{"id":18,"title":"סדר שמלמד","icon":"🎓"}]},{"id":6,"name":"שבת הגדול וקרבן תודה","icon":"🎉","color":"#6d28d9","stories":[{"id":19,"title":"מה שאין בשולחן ערוך","icon":"📕"},{"id":20,"title":"לקרוא לה שבת הגדול","icon":"🐑"},{"id":21,"title":"לספר נסים גם היום","icon":"🗣️"},{"id":22,"title":"ארבעים חלות של תודה","icon":"🍞"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
