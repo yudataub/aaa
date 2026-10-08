@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 כוחה של פרשנות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 כוחה של פרשנות</h1>
+  <p>לא מה שקרה קובע אם נשמח, אלא איך נפרש אותו: הורוסקופ, סידור במחנה, כוס חצי מלאה, ובשמים בדרך למצרים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ כוחה של פרשנות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/KxY35RKa_mw?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/KxY35RKa_mw/hqdefault.jpg" alt="כוחה של פרשנות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=KxY35RKa_mw" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הפרשנות היא בחירה</div>
+      <h3 class="story-title">🔍 הגורם החזק ביותר</h3>
+      <p>לקראת סוף חודש השמחה עסק השיעור בשאלה שנראית פשוטה, אבל היא אולי החשובה ביותר: מה הגורם החזק ביותר שקובע אם אדם יהיה שמח בחיים ובמצוות, או לא יהיה שמח?</p>
+      <p>השיעור נבנה על שיעור מפורסם של המחנך הרב יעקב זון, שמוכר מאוד בציבור החרדי, ונלמד מתוך סיכומים כתובים של דבריו. היסוד שעולה ממנו ברור וחד: לא הדבר שקרה הוא שיגרום לך להיות עצוב או שמח, אלא האופן שבו תפרש את מה שקרה.</p>
+      <p>אדם יכול לבחור להסתכל על אותה מציאות בדיוק בשתי צורות שונות לחלוטין: בעין טובה או בעין רעה, באופטימיות או בפסימיות, בשמחה או בעצב. בחסידות, ובמיוחד בחב"ד, מדגישים יסוד דומה: הכל תלוי במחשבה. איך שהמחשבה שלך תפרש את הדבר, כך תרגיש.</p>
+      <p>זו, כנראה, הנקודה שמבדילה בין אנשים שמחים לאנשים עצובים. לא מה שעבר עליהם, אלא איך הם התרגלו לפרש את מה שעבר עליהם.</p>
+      <p class="bold-para">הדבר שקובע יותר מכל אם אדם יהיה שמח הוא האופן שבו הוא מפרש את מה שקורה לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הפרשנות היא בחירה</div>
+      <h3 class="story-title">🤔 האם באמת יש בחירה?</h3>
+      <p>רבים אומרים על עצמם: אני פשוט פסימי, ככה אני, ככה נולדתי. כאילו הדרך שבה הם רואים את העולם היא תכונה קבועה שאין לה שינוי. השאלה היא: האם באמת יש לאדם בחירה בדרך שבה הוא רואה את המציאות?</p>
+      <p>התשובה היא כן. אבל רוב בני האדם אינם מודעים לכך. תהליך הבחירה מוסתר מאיתנו. הוא קורה מהר כל כך, עד שנדמה לנו שהדרך שבה אנו רואים את העולם היא האמת האובייקטיבית. בפועל, זו פרשנות שלנו.</p>
+      <p>ולכן, גם מי שמרגיש שהוא "פשוט כזה", יכול להשתנות. כמו כל הרגל, גם הרגל הפרשנות נקנה ונבנה. מי שמתרגל לחפש את הטוב, מוצא אותו יותר ויותר. מי שמתרגל לחפש את הרע, מוצא גם אותו. השאלה היא רק במה בוחרים להתאמן.</p>
+      <p>וזו בשורה גדולה. אילו השמחה הייתה תלויה רק במה שקורה לנו, היינו נתונים לגמרי בידי הנסיבות. אבל אם היא תלויה גם בפרשנות שלנו, הרי שיש בידינו מפתח. אי אפשר תמיד לשנות את מה שקרה, אבל תמיד אפשר לעבוד על האופן שבו אנו רואים אותו. ובזה כל אדם יכול להתחיל כבר היום, בדבר הקטן הראשון שיקרה לו.</p>
+      <p class="bold-para">רוב בני האדם בטוחים שהם רואים את האמת עצמה, ואינם מודעים לכך שהם בוחרים איך לראות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הפרשנות היא בחירה</div>
+      <h3 class="story-title">🙊 אל תאמר זאת לאדם עצוב</h3>
+      <p>כאן הוסיף הרב הערה מעשית חשובה. נניח שאתה רואה אדם עצוב, ושואל אותו למה. הוא עונה: קרה לי כך וכך. ואתה אומר לו: לא, אדוני, אתה לא עצוב בגלל מה שקרה לך. אתה עצוב בגלל הפרשנות שלך למה שקרה. מה יקרה? הוא יהיה עצוב פי שניים.</p>
+      <p>הוא גם יתרגז עליך, ובצדק מבחינתו: לא מספיק מה שקרה לי, עכשיו אתה גם אומר שאני אשם בזה שאני עצוב? הדברים, נכונים ככל שיהיו, לא יעזרו לו באותו רגע, ורק יכאיבו.</p>
+      <p>היסוד של כוח הפרשנות הוא כלי שאדם לוקח לעצמו, לעבודה הפנימית שלו. מול אדם אחר שנמצא בצער, הדרך היא להשתתף בצערו, ולאט לאט, בעדינות, לעזור לו לראות גם את הטוב. לא להאשים, אלא להאיר.</p>
+      <p class="bold-para">את היסוד הזה לומדים לעצמנו, ולא מטיחים אותו באדם שנמצא בצער.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הפרשנות היא בחירה</div>
+      <h3 class="story-title">🦷 שני צדדים לאותו מקרה</h3>
+      <p>כמעט בכל מקרה יש אפשרות לפרש גם לטובה. גם כשנפטר אדם זקן, אפשר לראות רק את הכאב, ואפשר לומר גם: כמה שנים נתן לו הקדוש ברוך הוא! הוא זכה להגיע עד גיל תשעים. מי זוכה לזה? אין בזה ביטול של הצער, אבל יש בו גם הודיה.</p>
+      <p>ודוגמה יומיומית: אדם הולך לטיפול שיניים. הוא יכול לומר: איזה מסכן אני, כמה אני סובל, כמה זה כואב. והוא יכול לומר: איזה נפלא, יש מי שיכול להציל לי את השן! לפני שנים, שן חולה פשוט עקרו. היום עושים טיפול שורש, ובזמן קצר מצילים אותה.</p>
+      <p>אותו כיסא, אותו רופא, אותו כאב. אחד יוצא ממנו מדוכדך, והשני יוצא ממנו מודה. ההבדל אינו במה שקרה בפה, אלא במה שקרה בראש. ומי שמתרגל לשאול את עצמו בכל מקרה "מה הטוב שיש כאן?", מגלה שהתשובה כמעט תמיד נמצאת.</p>
+      <p class="bold-para">כמעט בכל מצב אפשר למצוא נקודה של טוב, אם רק מחפשים אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רואים את מה שמצפים לראות</div>
+      <h3 class="story-title">🔮 סוד ההורוסקופ</h3>
+      <p>כדי להמחיש את כוחה של הפרשנות, הובאה דוגמה מעולם שרחוק מאיתנו: אמונות בלתי רציונליות כמו הורוסקופים ומזלות. אנשים רבים בעולם פותחים בכל שבוע את העיתון, קוראים מה כתוב על המזל שלהם, ומנהלים לפי זה את חייהם.</p>
+      <p>והמפליא הוא שהם בטוחים שזה אמיתי. שאל אחד מהם, והוא יספר לך חמישים סיפורים כמה זה מדויק. איך זה ייתכן? הרי ברור שאין בתחזיות האלה שום ממש.</p>
+      <p>התשובה היא שהאמונות, גם כשאין להן בסיס, משפיעות באופן ממשי על איך שאנשים חווים את המציאות. אדם קורא שהשבוע הוא הולך להרוויח, ובסוף השבוע הוא מצביע לך: הנה, השקעתי כאן וזה הצליח, מצאתי כאן מציאה בזול, קניתי משהו מוצלח. עשר ראיות! ובשבוע הבא כתוב שיפסיד, ובסוף השבוע: הפסדתי כאן, והפסדתי כאן, והפסדתי שם.</p>
+      <p>בכך נעשות התחזיות "אמיתיות" – לא בגלל שהן צודקות, אלא בגלל שהאדם רואה דרכן את חייו.</p>
+      <p class="bold-para">אמונות, גם כשאין להן שום בסיס, משפיעות מאוד על האופן שבו אנשים חווים את המציאות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רואים את מה שמצפים לראות</div>
+      <h3 class="story-title">📒 הניסוי במחברות</h3>
+      <p>המרצה סיפר שפעם רצה להראות לבחורים שכל העניין הזה הוא שטות. הוא אמר להם: אני אוכיח לכם. אני אעתיק את ההורוסקופ בכתב ידי, ולא תקראו את העיתון עצמו. נעשתה התערבות.</p>
+      <p>הוא העתיק את התחזיות, אבל בכוונה הפך אותן. למי שהיה כתוב לו בעיתון שיצליח, כתב שייכשל; ולמי שהיה כתוב שייכשל, כתב שיצליח. בסוף השבוע הגיעו כולם, וכל אחד הביא עשר ראיות לכך שההורוסקופ צדק לגמרי.</p>
+      <p>אז הוציא את העיתון, והראה להם שהוא הפך הכל. והסביר: במשך השבוע כל אדם חווה הרבה דברים – גם הצלחות וגם כישלונות. מי שקרא ביום שישי שהשבוע הבא יהיה של הצלחות, פתח במוח מגירה של הצלחות. כל פעם שקורה משהו טוב, הוא מכניס אותו למגירה: הנה, בזכות ההורוסקופ. וההפסדים? הם לא קשורים לסיפור. הוא אפילו לא שם לב אליהם.</p>
+      <p>וכך, בסוף השבוע, המגירה מלאה, וההוכחה מוכנה.</p>
+      <p class="bold-para">כשהעתיקו להם תחזיות הפוכות, כולם מצאו להן עשר ראיות בדיוק כמו קודם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רואים את מה שמצפים לראות</div>
+      <h3 class="story-title">🗂️ המגירות שבמוח</h3>
+      <p>היסוד שעולה מן הניסוי רחב מאוד: אנשים נוטים לפרש את המציאות בהתאם לציפיות ולאמונות שלהם. אנו רואים את מה שאנו מצפים לראות. כשמשהו מתאים לציפיות שלנו, אנו מתייחסים אליו כראיה לצדקת דרכנו. וכשמשהו סותר אותן, אנו פשוט מתעלמים ממנו.</p>
+      <p>אפשר לראות זאת גם בוויכוחים ציבוריים. כל צד בטוח בצדקת דרכו, וכל אחד מביא עשר ראיות. לך לצד אחד – הוא יראה לך כאן וכאן וכאן כמה הוא צודק. לך לצד השני – הוא יביא לך עשר ראיות הפוכות. מה קורה כאן? כל אחד מתמקד בדברים מסוימים, ובונה מהם את התמונה שלו.</p>
+      <p>ומכאן היסוד המעשי לעבודת השמחה: אם המגירות שבמוח קובעות מה נראה, כדאי לפתוח מגירה של טוב. מי שמחליט מראש לחפש את החסדים שה' עושה עמו בכל יום, יתחיל לראות אותם בכל מקום, ויגלה שהם היו שם כל הזמן.</p>
+      <p class="bold-para">אנו רואים את מה שאנו מצפים לראות, ומתעלמים ממה שסותר את אמונתנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רואים את מה שמצפים לראות</div>
+      <h3 class="story-title">📕 הסידור במחנה</h3>
+      <p>סיפור קיצוני מעט ממחיש עד כמה זה עמוק. אדם הגיע לרב וסיפר לו שאחרי השואה זרק את הכיפה ועזב הכל. למה? הוא סיפר: הייתי במחנה, והיה שם אדם אחד שהיה לו סידור. כל מי שרצה להתפלל מן הסידור שלו, היה צריך לשלם לו פרוסת לחם. אנשים רעבים כל כך, והוא סוחט מהם את הלחם בשביל סידור! איך אפשר להאמין אחרי זה?</p>
+      <p>הרב שמע ואמר לו: אתה מספר לי על אדם אחד מרושע שהיה שם. ולמה לא ראית שהיו שם מאות אנשים שהסידור נתן להם כל כך הרבה כוח, כל כך הרבה טוב, עד שהסכימו לוותר על פרוסת הלחם שלהם – בתוך הרעב הנורא – כדי להתפלל מתוך סידור? למה את זה לא ראית? למה התמקדת ברשע אחד ולא במאות היהודים האלה?</p>
+      <p>זה מדהים. אותה מציאות בדיוק יכלה להיות הסיבה לעזוב, ויכלה להיות העדות הגדולה ביותר לכוחה של האמונה. לאדם יש כוח לבחור במה להתמקד, ולפי זה הוא מפרש את כל חייו.</p>
+      <p class="bold-para">מי שמתמקד ברשע אחד, אינו רואה את מאות האנשים שהתפילה הייתה להם יקרה מלחם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הכוס המלאה</div>
+      <h3 class="story-title">🦽 צעד אחד יותר מאתמול</h3>
+      <p>המרצה סיפר על אדם שעבר תאונה קשה, איבד את ההכרה, והגיע לבית החולים במצב קשה מאוד. כשהתעורר, הרופאים לא נתנו לו תחזית אופטימית. הם היו בטוחים שיישאר מרותק לכיסא גלגלים לתמיד.</p>
+      <p>למרות התחזית הקודרת, הוא בחר בגישה אחרת. במקום להתמקד במגבלות שלו, הוא התמקד בכל התקדמות קטנה. בכל יום חגג את ההישג של אותו יום: צעד אחד יותר מאתמול, יכולתי לעמוד דקה נוספת. כל נקודה כזו הייתה בעיניו ניצחון.</p>
+      <p>ודווקא בגלל שהתמקד כל פעם בנקודה הקטנה שהצליח בה, הדבר הלך וגדל. התהליך שהיה יכול להיות סדרה של תסכולים, נהפך לסדרה של ניצחונות קטנים. מכיסא גלגלים לקביים, ומקביים להליכה עצמאית. והיום, סופר, הוא מסתובב בכל הארץ על רגליו. הבחירה לראות את הכוס המלאה ולא את החצי הריקה, עזרה לו להחלים מהר הרבה יותר ממה שציפו הרופאים.</p>
+      <p>הרב העיר שבסיכום הכתוב הסיפור תפס עשרים שניות, ובשיעור עצמו סופר באריכות. הסיכום טוב לחזרה, אבל חלק מן הסיפור הוא החוויה.</p>
+      <p class="bold-para">מי שחוגג את ההישגים הקטנים, מגיע לבסוף להישגים גדולים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הכוס המלאה</div>
+      <h3 class="story-title">🥛 הכוס של רבי יעקב גלינסקי</h3>
+      <p>דוגמה מפורסמת לכך הוא המגיד רבי יעקב גלינסקי, שדבריו נאספו אחר כך לסדרת ספרים. הוא היה נמוך מאוד, בערך בגובה השולחן. כשבא לדרוש בישיבה, היה עומד על כיסא, אחרת לא היו רואים אותו.</p>
+      <p>שאלו אותו פעם: איך אתה תמיד שמח כל כך, אדם במצב כזה? ענה להם בחיוך: אגיד לכם. כשיש כוס על השולחן, אתם הגבוהים רואים את כל הכוס – גם את החצי המלא וגם את החצי הריק. ואני נמוך. מה אני רואה? רק את החצי התחתון, המלא. את החצי הריק אני לא רואה בכלל.</p>
+      <p>תשובה שנונה, אבל יש בה עומק גדול. הוא לקח דווקא את מה שאחרים היו רואים כחיסרון, והפך אותו לסיבה לשמחה. אדם במצב כזה יכול להיות שמח ומאושר כל ימי חייו, ולמצוא את הטוב בכל דבר. הכל תלוי במה אתה מחליט להתרכז.</p>
+      <p class="bold-para">אדם נמוך מאוד אמר: אתם הגבוהים רואים גם את החצי הריק, ואני רואה רק את החצי המלא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הכוס המלאה</div>
+      <h3 class="story-title">👑 וכל זה איננו שווה לי</h3>
+      <p>ובמגילת אסתר יש לנו את הדוגמה ההפוכה. המן הרשע הוא הסמל של אדם שמחליט להתמקד במה שחסר. היה לו הכל: עושר עצום, בנים רבים, מעמד שני רק למלך. ומה הפיל אותו? אדם אחד שלא השתחווה לו.</p>
+      <p>הוא בא לביתו, ומונה לפני אוהביו ואשתו את כל כבודו ועושרו. ואז הוא אומר: "וְכָל זֶה אֵינֶנּוּ שֹׁוֶה לִי" – כל זמן שמרדכי היהודי יושב בשער המלך ואינו משתחווה לו. אדם מיליונר, בעל השפעה עצומה, מרגיש שאין לו שום דבר. למה? כי התמקד באחד הזה.</p>
+      <p>וההתמקדות הזאת היא שגרמה לו ליפול, עד שאבד לגמרי. זה אינו סתם פרט בסיפור. זה לימוד: מי שמסתכל רק על הנקודה שחסרה, הופך את כל מה שיש לו לכלום. ומי שמסתכל על מה שיש לו, גם כשחסר משהו, יכול להיות עשיר באמת.</p>
+      <p class="bold-para">המן היה הסמל של אדם שמתמקד במה שאין לו, וזה מה שהפיל אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הכוס המלאה</div>
+      <h3 class="story-title">☀️ שנה וחצי שנהפכו לתשע שנים</h3>
+      <p>בשיעור סופר על אישה שחלתה במחלה קשה באמצע החיים. הרופאים אמרו לה שנותרה לה, כנראה, שנה וחצי. היא החליטה דבר אחד, והלכה איתו עד הסוף: שהשנה וחצי האחרונות יישארו לילדיה כזיכרון של אמא שמחה. היה לה חשוב מאוד שהילדים יזכרו אמא שמחה, אמא שנתנה להם אופטימיות לחיים.</p>
+      <p>איך עשתה זאת? בכל יום חיפשה במה אפשר לשמוח. היא הלכה לראות את הזריחה ואת השקיעה, צילמה את השמיים היפים, ושמחה בהם. ולאט לאט קרה פלא: אדם שמח, גם גופו בריא יותר. היא התחילה לחזק את עצמה, למסור הרצאות, לעודד חולים אחרים, ולהרים אנשים רבים שהיו שבורים.</p>
+      <p>ובמקום שנה וחצי, חיה עוד כתשע שנים. בתקופה הזאת הוציאה ספרים, והרצתה בארץ ובעולם. היא הגיעה בתקופה הזאת גם להתקרבות גדולה לתורה ולאמונה. הכל מתוך כך שהצליחה, בכל מצב, להתמקד בדברים הטובים.</p>
+      <p class="bold-para">אישה שחלתה במחלה קשה החליטה להשאיר לילדיה זיכרון של אמא שמחה, וחייה השתנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הכוס המלאה</div>
+      <h3 class="story-title">🌿 איפה הבשמים?</h3>
+      <p>באחד מספריה הביאה אותה אישה דבר תורה שתפס אותה מאוד, והובא בשם הגאון רבי חיים שמואלביץ. כשיוסף הצדיק נמכר והורד למצרים, מספרת התורה שהשיירה שלקחה אותו נשאה "נְכֹאת וּצְרִי וָלֹט" – בשמים. ושואלים חז"ל: מה חשוב לנו לדעת מה היה בשיירה? וכי מי שנלקח בשבי שם לב מה נשאו הגמלים?</p>
+      <p>והתשובה: דרכם של הסוחרים הישמעאלים הייתה לשאת נפט וכדומה, דברים שריחם רע. והנה, דווקא הפעם הם נושאים בשמים. יוסף ראה שקורה כאן נס קטן. נגזר עליו לרדת למצרים, ואין מזה מנוס. אבל הקדוש ברוך הוא החליט לרחם עליו, ולהוריד אותו לשם בריח טוב, בצורה נעימה ככל האפשר.</p>
+      <p>יוסף ראה שאפילו במצב הקשה הזה, ה' עדיין מחפש איך לתת לו טוב. זה נתן לו חיזוק עצום: ה' נמצא איתי גם כאן. והאישה לקחה את דבר התורה הזה, ובכל יום חיפשה: איפה הבשמים שה' שלח לי היום, בתוך המחלה? והיא ביקשה גם ממי שעקבו אחריה: שלחו בכל בוקר, איפה מצאתם את הבשמים של ה'.</p>
+      <p class="bold-para">גם כשה' גוזר על אדם קושי, הוא מחפש איך לרכך לו אותו, ומי שמחפש את הבשמים – מוצא אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · הכוס המלאה</div>
+      <h3 class="story-title">🗝️ השמחה אינה תלויה במה שקורה</h3>
+      <p>"עִבְדוּ אֶת ה' בְּשִׂמְחָה" – כך אומר הפסוק, וחז"ל חזרו והדגישו את חשיבות השמחה בעבודת ה'. אבל איך מגיעים לשמחה אמיתית? איך אדם באמת זוכה להיות שמח?</p>
+      <p>המפתח הוא בהבנה שהשמחה אינה תלויה במה שקורה לנו, אלא באופן שבו אנו מפרשים את מה שקורה. אדם יכול להיות בעל ייסורים קשים, ובכל זאת להיות שמח בחלקו, כי הוא בוחר לראות את הטוב שיש בחייו. במצבים קשים זה ודאי קשה הרבה יותר. אבל עדיין זו בחירה.</p>
+      <p>זו מהות עבודת ה' בשמחה: היכולת לראות את היד האלוקית בכל דבר, להודות על הטוב, ולקבל את הקשיים באהבה מתוך אמונה שהכל לטובה. הסיפורים ששמענו – האיש שחזר ללכת, המגיד הנמוך, האישה שחיפשה בשמים – כולם אותו יסוד: לא המצב קבע את השמחה, אלא העיניים.</p>
+      <p class="bold-para">המפתח לשמחה הוא ההבנה שהיא תלויה באופן שבו אנו מפרשים את מה שקורה, ולא במה שקורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לחנך לעין טובה</div>
+      <h3 class="story-title">👨‍👩‍👧 הילדים לומדים מן הטון</h3>
+      <p>אחת הדרכים המרכזיות לחנך את הילדים לעבודת ה' בשמחה היא ללמד אותם לראות את הטוב בכל דבר. והדרך היעילה ביותר לכך היא הדוגמה האישית.</p>
+      <p>ילד ששומע את הוריו מדברים על הקשיים בחיים, או על המצוות, בטון של תלונה, של סבל ושל מרירות, לומד לפרש את עבודת ה' כנטל כבד. הוא אינו צריך שיסבירו לו. הוא קולט את זה מן הטון.</p>
+      <p>ולעומת זאת, כשהורים מראים שמחה וסיפוק בקיום המצוות, כשהם מדגישים את הברכה והטוב שבחייהם, הילד לומד לפרש את המציאות בצורה חיובית. כך נבנה דור שעובד את ה' מתוך שמחה אמיתית, ולא מתוך תחושת עול וכפייה. ילדים אינם עושים מה שאומרים להם, אלא מה שהם רואים אצל הוריהם, ולכן כל מילה של שמחה בבית היא שיעור. הורה שרוצה ילדים שמחים במצוות, צריך קודם כל לבדוק איך הוא עצמו מדבר עליהן.</p>
+      <p class="bold-para">ילד ששומע את הוריו מדברים על המצוות בטון של תלונה, לומד לראות בהן נטל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לחנך לעין טובה</div>
+      <h3 class="story-title">📚 השמחה שבלימוד הגמרא</h3>
+      <p>הנה דוגמה מרכזית בעבודת ה': לימוד גמרא. יש לומד שקשה לו, ויכול לראות רק את הקושי. אבל הכל תלוי במה הוא מתמקד.</p>
+      <p>הקדוש ברוך הוא ברא את האדם בצורה כזו, שכאשר המוח עובד ומתרכז, הגוף משחרר חומרים שגורמים לאדם שמחה. כשאדם מפעיל את המוח, הדבר עצמו ממלא אותו שמחת חיים. כך ברא ה' את האדם.</p>
+      <p>נכון, זה גם מאמץ, זה עמל. אבל בדרך כלל דווקא המאמץ מביא לסיפוק. אתה חופר וחופר, ועדיין אינך מוצא. ואז, אחרי כל העמל, אתה מצליח: מגיע להבנה, מסדר סוגיה עד הסוף. השמחה הזאת אין לה שיעור. מי שמתמקד רק בקושי, מפסיד אותה. ומי שיודע שהקושי הוא הדרך אל השמחה, לומד בחשק ובשמחה גם כשקשה.</p>
+      <p class="bold-para">ה' ברא את האדם כך שכשהמוח עובד ומתאמץ, וכשמגיעים להבנה, נולדת שמחה גדולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לחנך לעין טובה</div>
+      <h3 class="story-title">👓 המשקפיים הפנימיים</h3>
+      <p>אחד הסיכומים ניסח את היסוד בצורה מסודרת. העולם הפנימי של האדם נבנה מן הפרשנויות שהוא נותן למציאות. השאלה אינה רק אם העובדות נכונות, אלא איך אנו בוחרים לפרש אותן. ואלה המשקפיים הפנימיים, שמובילים את האדם לתפיסת עולם כזו או אחרת.</p>
+      <p>המשקפיים האלה משפיעים ישירות על היכולת של האדם להתמודד עם אתגרי החיים. ומכאן נגזרת גם יכולתו החינוכית להשפיע על אחרים. מי שמסתכל על העולם באור טוב, יכול להאיר גם את עיני מי שסביבו.</p>
+      <p>רבים מתייחסים לאופטימיות ולפסימיות כאל תכונה מולדת: יש מי שרואה את החיים בוורוד, ויש מי שרואה אותם בשחור. אבל בפועל מדובר בבחירה. הבחירה לראות את העולם באור חיובי, גם כשהמציאות מורכבת, היא בחירה מודעת שמעצבת את החיים. ואדם שמתרגל לראות את הטוב בכל מצב, מרוויח בכך באופן עמוק ומשמעותי, לא רק ברגע אחד אלא לאורך כל ימיו.</p>
+      <p class="bold-para">השאלה אינה רק מה העובדות, אלא באילו משקפיים אנו בוחרים להסתכל עליהן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לחנך לעין טובה</div>
+      <h3 class="story-title">🌻 אופטימיות שמחנכת</h3>
+      <p>הבחירה בעין טובה אינה רק עניין פרטי. יש לה כוח חינוכי רב עוצמה. הורים ומחנכים שבוחרים באופטימיות מחזקים את הילדים שלהם. הם מסוגלים לעודד אותם להתפתח, להשתפר, ולראות את העולם בצורה חיובית ובריאה.</p>
+      <p>ילד שגדל ליד מבוגר שמחפש תמיד את מה שלא בסדר, לומד לחפש גם הוא את מה שלא בסדר – בעולם, באחרים, ובעיקר בעצמו. וילד שגדל ליד מבוגר שרואה את הטוב, לומד להאמין שגם בו יש טוב, ושהוא מסוגל להצליח.</p>
+      <p>זה נכון גם בעבודת ה'. מחנך שמדבר על התורה בשמחה, שמראה לתלמידים את היופי בסוגיה ואת המתיקות במצווה, נותן להם משהו שאי אפשר ללמד בשום שיעור: את הטעם. ומי שטעם את הטעם, ימשיך לחפש אותו כל ימי חייו.</p>
+      <p class="bold-para">הורים ומחנכים שבוחרים באופטימיות נותנים לילדים כוח לגדול ולהשתפר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להפוך את העול לשמחה</div>
+      <h3 class="story-title">🧹 ניקיונות פסח: שעבוד או מצווה?</h3>
+      <p>חג הפסח מתקרב, ואיתו שאלה שתלווה את הילדים כל חייהם: איך להסתכל על הניקיונות? יש מי שרואה בהם שעבוד ממש. עבדו קשה במצרים, ועכשיו יש לנו שבועיים של עבודת פרך. ומי שמסתכל כך, מגיע לחג עייף וממורמר.</p>
+      <p>אבל אפשר לראות זאת אחרת לגמרי. מי שרוצה בית נקי ומסודר, חייב לעשות פעם בשנה ניקיון יסודי. גם מי שאין לו פסח עושה זאת. אם לא עוברים פעם בשנה על כל הבית, הכל מתמלא אבק, ואדם כבר אינו זוכר מה יש לו ואיפה כל דבר מונח.</p>
+      <p>ומה עשה הקדוש ברוך הוא? נתן לנו מצווה. למה שנעבוד סתם? אנחנו מנקים לכבוד פסח, ועל ידי זה זוכים למצווה. ובסוף יש בית נקי ונפלא, ורגש של חירות. כך הופכים כל הניקיונות למצווה, לשמחה ולחוויה. זו השאלה: במה אתה מתמקד. וזה עובר לילדים בצורה שאי אפשר לתאר.</p>
+      <p class="bold-para">אפשר לראות בניקיון לפסח זכר לשעבוד מצרים, ואפשר לראות בו מתנה שהופכת עבודה רגילה למצווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להפוך את העול לשמחה</div>
+      <h3 class="story-title">🕯️ שבת של מנוחה או שבת של איסורים</h3>
+      <p>וכך גם בשבת. יש כאלה שחווים את השבת כדבר נפלא, ויש מי שחווה אותה כסבל. במה זה תלוי? לא במה שעובר עליהם בשבת, אלא במה שהם מתמקדים בו.</p>
+      <p>אחד מתמקד בכך שסוף סוף אפשר לנוח. סוף סוף מניחים את הטלפון, יש שקט, לא צריך לעשות כלום, כל המשפחה יחד ויש רוגע. השני מתמקד בכך שאי אפשר להדליק את האור, אי אפשר לעשות כך, אי אפשר לעשות אחרת. כל מיני דברים קטנים שאי אפשר.</p>
+      <p>השבת זהה לשניהם. אבל אחד רואה את החיים שלו כשמחה, והשני רואה אותם כסבל. לכן החינוך לשבת צריך להתחיל לא במה שאסור, אלא במה שנותנים לנו: יום שלם של מנוחה, של קרבה ושל משפחה. מי שמתמקד במתנה, אוהב אותה.</p>
+      <p class="bold-para">אותה שבת יכולה להיות עונג או סבל, לפי מה שאדם בוחר לראות בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להפוך את העול לשמחה</div>
+      <h3 class="story-title">📝 ארבעה עקרונות</h3>
+      <p>אפשר לסכם את יסודות השיעור בארבעה עקרונות. ראשון: האופן שבו אנו רואים את העולם הוא בחירה. אנחנו יכולים לבחור להתמקד בטוב או ברע, בחיובי או בשלילי.</p>
+      <p>שני: האמונות שלנו יוצרות את המציאות שלנו. כשאדם מאמין שהמצוות הן שמחה, הן אכן נהפכות לשמחה. אם תחליט שיש כאן שמחה, תמצא את השמחה במצוות, ותגלה כמה טוב הן גורמות לך.</p>
+      <p>שלישי: פרשנות חיובית מובילה להתמודדות טובה יותר עם קשיים. כשאדם רואה בקושי אתגר שהקדוש ברוך הוא נתן לו, ולא מכשול, קל לו הרבה יותר להתגבר עליו. רביעי: שמחת החיים היא כלי עוצמתי בעבודת ה'. היא מאפשרת לעבוד את ה' מתוך אהבה ולא מתוך פחד, ונותנת לאדם הרבה יותר כוח.</p>
+      <p>ומעל כולם: הדוגמה האישית. מי שחי כך, מלמד את ילדיו לראות את הברכה במצוות, את היופי בתורה ואת היד האלוקית בכל רגע בחיים.</p>
+      <p class="bold-para">הפרשנות היא בחירה, אמונות יוצרות מציאות, קושי הוא אתגר, ושמחה היא כלי לעבודת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להפוך את העול לשמחה</div>
+      <h3 class="story-title">🚗 בפקק התנועה</h3>
+      <p>באחד מן הסיכומים הובאה דוגמה פשוטה מן החיים. שני אנשים עומדים באותו פקק תנועה. אחד עצבני, לחוץ ומתלונן. השני מנצל את הזמן לחשיבה, לתפילה, או סתם לרגע של מנוחה. אותה סיטואציה, ושתי נקודות מבט שונות לחלוטין.</p>
+      <p>הפסימי רואה בעיקר את הבעיות והחסרונות. האופטימי רואה הזדמנות לצמיחה ולמידה. הבחירה בפסימיות מביאה תסכול, כעס ודכדוך. והבחירה באופטימיות מאפשרת התמדה, יצירה ושמחת חיים.</p>
+      <p>ולמה בכל זאת אנשים נשארים פסימיים? כי זה נותן תחושת ביטחון מזויפת. קל יותר להאשים גורמים חיצוניים, מאשר לקחת אחריות מלאה על הרגשות ועל המצב שלנו. ולכן העצות פשוטות: להתמקד במה שטוב, להתייחס לבעיות כאתגרים שאפשר להתגבר עליהם, לחפש את הלקח החיובי בכל קושי, ולא לחפש אשמים.</p>
+      <p>הרב העיר שבסיכום הזה נשמטה משום מה האמונה בה' לגמרי, ובלעדיה חסר העיקר: אצלנו האופטימיות נשענת על הידיעה שה' מוביל הכל לטובה.</p>
+      <p class="bold-para">שני אנשים באותו פקק: אחד מתלונן, והשני מנצל את הזמן לתפילה ולמחשבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להפוך את העול לשמחה</div>
+      <h3 class="story-title">📖 הסיפור שאתה מספר לעצמך</h3>
+      <p>יסוד נוסף שעלה באחד הסיכומים: כל אדם מספר לעצמו סיפור על חייו. והדרך שבה הוא מספר אותו קובעת איך יחיה אותו. אותו סיפור בדיוק יכול להיות סיפור של כאב וסבל, ויכול להפוך למקור של כוח ועוצמה.</p>
+      <p>שני אנשים יכולים לעבור את אותו משבר. אחד יספר לעצמו: תראה כמה נפגעתי, תראה מה לקחו ממני. והשני יספר: תראה מה עברתי, ובכל זאת עמדתי. תראה מה למדתי, ואיך ה' היה איתי בכל שלב. העובדות זהות, אבל הסיפור שונה, והחיים שאחריו שונים לגמרי.</p>
+      <p>אנשים רבים שעברו קשיים גדולים הצליחו להפוך את המשבר שלהם למקפצה. הבחירה לראות בקושי הזדמנות היא שאפשרה להם לצמוח. בכל מצב בחיים יש נקודת אור, וצריך לחפש אותה באופן פעיל. היא לא תמיד קופצת מעצמה. זו בחירה מודעת: להחליט שאני מחפש את החיובי בתוך הסיטואציה.</p>
+      <p>וכשאדם מאמין, הסיפור שלו מקבל עומק נוסף: הוא אינו רק גיבור שהתגבר, אלא אדם שה' ליווה אותו בדרך, גם כשלא ראה זאת.</p>
+      <p class="bold-para">הדרך שבה אדם מספר לעצמו את סיפור חייו קובעת איך יחיה אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להפוך את העול לשמחה</div>
+      <h3 class="story-title">💛 מתוך אהבה ולא מתוך פחד</h3>
+      <p>למה כל כך חשוב לעבוד את ה' בשמחה? כי השמחה היא כלי עוצמתי. היא מאפשרת לעבוד את ה' מתוך אהבה ולא מתוך פחד.</p>
+      <p>מי שעושה מצוות מתוך פחד בלבד, עושה אותן כמו מי שמשלם חוב. הוא עושה את המינימום, ומחכה שזה ייגמר. ומי שעושה אותן מתוך אהבה ושמחה, מחפש עוד. הוא אינו שואל "כמה אני חייב", אלא "מה עוד אני יכול לתת". וזה נותן לו כוח שאינו נגמר.</p>
+      <p>והשמחה הזאת אינה תלויה במצב. היא תלויה בעיניים. כשאדם רואה בכל מצווה זכות, בכל שבת מתנה, ובכל קושי אתגר שה' שלח לו – הוא נעשה שמח. ומתוך השמחה הוא אוהב, ומתוך האהבה הוא עובד. כך נסגר המעגל: הפרשנות הטובה מביאה שמחה, השמחה מביאה אהבה, והאהבה מביאה עבודת ה' שלמה.</p>
+      <p class="bold-para">השמחה מאפשרת לעבוד את ה' מתוך אהבה, וזה נותן לאדם כוח שאינו נגמר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · להפוך את העול לשמחה</div>
+      <h3 class="story-title">🔁 לחזור על השיעור</h3>
+      <p>בסוף השיעור עמד הרב על ערכה של חזרה. לצערנו, קשה לנו מאוד להתרכז. שומעים שיעור של שעה שלמה, ובאמצע נודדת המחשבה לכמה דקות: כאן חסר קטע, ושם חסר קטע. אבל כשיש לפניך את השיעור כתוב ומסודר, אתה יכול לחזור עליו, לדעת בדיוק מה שמעת ומה לקחת ממנו.</p>
+      <p>גם סיכום קצר של שתי דקות, שמי ששמע את השיעור יכול לקרוא אחר כך, הוא דבר נפלא. אפשר לחזור בשתי דקות על שיעור של שעה. ובכך הלימוד אינו נשאר רגע חולף, אלא נקנה.</p>
+      <p>וזה מתחבר ליסוד השיעור עצמו. כמו שאדם בוחר במה להתמקד בחייו, כך הוא בוחר מה ייקח מן השיעור. מי שחוזר על הדברים הטובים, מכניס אותם למגירה של הלב, ושם הם מתחילים לשנות את העיניים. יהי רצון שנזכה לראות את הטוב בכל דבר, ולעבוד את ה' בשמחה.</p>
+      <p class="bold-para">סיכום כתוב של שיעור מאפשר לחזור עליו ולהשלים את מה שהוחמץ בזמן ההקשבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/KxY35RKa_mw · 2025-03-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הפרשנות היא בחירה","icon":"🔍","color":"#c62b6b","stories":[{"id":1,"title":"הגורם החזק ביותר","icon":"🔍"},{"id":2,"title":"האם באמת יש בחירה?","icon":"🤔"},{"id":3,"title":"אל תאמר זאת לאדם עצוב","icon":"🙊"},{"id":4,"title":"שני צדדים לאותו מקרה","icon":"🦷"}]},{"id":2,"name":"רואים את מה שמצפים לראות","icon":"🗂️","color":"#6d28d9","stories":[{"id":5,"title":"סוד ההורוסקופ","icon":"🔮"},{"id":6,"title":"הניסוי במחברות","icon":"📒"},{"id":7,"title":"המגירות שבמוח","icon":"🗂️"},{"id":8,"title":"הסידור במחנה","icon":"📕"}]},{"id":3,"name":"הכוס המלאה","icon":"🥛","color":"#e08e00","stories":[{"id":9,"title":"צעד אחד יותר מאתמול","icon":"🦽"},{"id":10,"title":"הכוס של רבי יעקב גלינסקי","icon":"🥛"},{"id":11,"title":"וכל זה איננו שווה לי","icon":"👑"},{"id":12,"title":"שנה וחצי שנהפכו לתשע שנים","icon":"☀️"},{"id":13,"title":"איפה הבשמים?","icon":"🌿"},{"id":14,"title":"השמחה אינה תלויה במה שקורה","icon":"🗝️"}]},{"id":4,"name":"לחנך לעין טובה","icon":"👨‍👩‍👧","color":"#1e88b8","stories":[{"id":15,"title":"הילדים לומדים מן הטון","icon":"👨‍👩‍👧"},{"id":16,"title":"השמחה שבלימוד הגמרא","icon":"📚"},{"id":17,"title":"המשקפיים הפנימיים","icon":"👓"},{"id":18,"title":"אופטימיות שמחנכת","icon":"🌻"}]},{"id":5,"name":"להפוך את העול לשמחה","icon":"🎉","color":"#c62b6b","stories":[{"id":19,"title":"ניקיונות פסח: שעבוד או מצווה?","icon":"🧹"},{"id":20,"title":"שבת של מנוחה או שבת של איסורים","icon":"🕯️"},{"id":21,"title":"ארבעה עקרונות","icon":"📝"},{"id":22,"title":"בפקק התנועה","icon":"🚗"},{"id":23,"title":"הסיפור שאתה מספר לעצמך","icon":"📖"},{"id":24,"title":"מתוך אהבה ולא מתוך פחד","icon":"💛"},{"id":25,"title":"לחזור על השיעור","icon":"🔁"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
