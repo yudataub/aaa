@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מתנה עם הקדשה אישית</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מתנה עם הקדשה אישית</h1>
+  <p>למה נותנת התורה שנה שלמה למי שקנה בית: שני מבטים על העולם הזה, בית שנגזר לפני הלידה, נטע רבעי בפתח תקווה, ושנה של הודיה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מתנה עם הקדשה אישית" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/b71XHrtS_7k?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/b71XHrtS_7k/hqdefault.jpg" alt="מתנה עם הקדשה אישית" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=b71XHrtS_7k" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שנה למה?</div>
+      <h3 class="story-title">❓ פטור משמירה, ואולי גם מארנונה</h3>
+      <p>השיעור נפתח בשאלה ששאל יהודי מבני ברק. הוא עמד לעשות חנוכת הבית, ושאל אנשים רבים שאלה אחת, ולא מצא לה תשובה: כתוב ברש"י על פרשת השבוע שמי שבונה בית מקבל שנה שלמה של פטור. פטור מן הצבא, ופטור מכל חובה ציבורית.</p>
+      <p>כדי להבין את גודל הפטור, הרב תיאר את היישובים בשומרון. שם כל תושב צריך לעשות שמירה מדי פעם, לפי מספר התושבים, פעם בחודש או יותר. מי שאינו יכול, צריך להעמיד מישהו אחר שישמור במקומו. ושם, חתן בשנה הראשונה פטור מן השמירה, וגם מי שבנה בית, בשנה הראשונה אחרי שבנה, פטור. ויש אפילו דיון באחרונים אם הוא חייב בארנונה, עד כדי כך מגיע הפטור.</p>
+      <p>ועל זה שאל אותו יהודי: אצל חתן אני מבין. הוא צריך להכיר את אשתו, לבנות קשר לכל החיים. אחר כך יבואו ילדים ועבודה, ולא יהיה זמן. אבל אדם שבנה בית, מה הוא אמור לעשות שנה שלמה? לחפש חורים בקירות? לשאלה הזאת מוקדש השיעור. והתשובה נוגעת להשקפה כללית: איך צריך אדם להסתכל על הטוב שיש לו בעולם הזה.</p>
+      <p class="bold-para">התורה פוטרת את מי שבנה בית מכל חובה ציבורית לשנה שלמה, וצריך להבין מה הוא אמור לעשות בשנה הזאת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שנה למה?</div>
+      <h3 class="story-title">🪑 הפשטות של גדולי ישראל</h3>
+      <p>בשאלה איך להתייחס להנאות העולם הזה יש דעות שונות. יש רבנים גדולים שלא רצו בשום פנים להכניס לביתם ארון חדש או שולחן חדש. הדוגמה המפורסמת ביותר בדורנו היא הרב שטינמן. מי שראה את ביתו, בפועל או בתמונות, ראה פשטות מוחלטת. הוא ישן על מיטה פשוטה ביותר, המקרר היה ישן מאוד, והקירות היו כמו שהיו לפני עשרות שנים.</p>
+      <p>ולא שלא הציעו לו. נגידים באו אליו אין ספור פעמים והציעו לו בית חדש, ריהוט, כל מה שירצה. והוא סירב. לא הסכים בשום אופן לקבל.</p>
+      <p>האם זו דרך טובה? לגדול כמוהו, ודאי. אבל השאלה היא אם זו הדרך לכל אדם. האם התורה רוצה שכל יהודי יחיה בצמצום, ויתרחק כמה שאפשר מכל דבר נעים? או שיש דרך אחרת, שבה אדם רגיל נהנה מן העולם, ודווקא דרך ההנאה מגיע לקרבת ה'?</p>
+      <p>השיעור עונה על השאלה הזאת מתוך המקורות. והתשובה תסביר גם את השנה של מי שבנה בית: לא שנה של פטור מחובות, אלא שנה שיש לה תפקיד.</p>
+      <p class="bold-para">יש צדיקים שבחרו בפשטות קיצונית, אבל זו אינה הדרך שהתורה מבקשת מכל אדם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בית פלוני לפלוני</div>
+      <h3 class="story-title">📖 למה דווקא בכי תצא</h3>
+      <p>בפרשת שופטים נאמר: "מִי הָאִישׁ אֲשֶׁר בָּנָה בַיִת חָדָשׁ וְלֹא חֲנָכוֹ יֵלֵךְ וְיָשֹׁב לְבֵיתוֹ". מי שקורא את הפסוק כפשוטו מבין: דווקא מי שלא חנך חוזר. אבל מי שכבר חנך, גמרנו, ילך לצבא. בפרשה שאחריה, כי תצא, באה התורה ומוסיפה: "כִּי יִקַּח אִישׁ אִשָּׁה חֲדָשָׁה לֹא יֵצֵא בַּצָּבָא... נָקִי יִהְיֶה לְבֵיתוֹ שָׁנָה אֶחָת וְשִׂמַּח אֶת אִשְׁתּוֹ אֲשֶׁר לָקָח".</p>
+      <p>למה הדין הזה לא נכתב כבר בפרשת שופטים? הסבר פשוט: פרשת שופטים עוסקת בהלכות השלטון. השופט, המלך, הנביא, הסנהדרין, ומי שעורך את המלחמה. המצווה הזאת אינה נוגעת רק לממשלה, אלא לכל אדם פשוט. לכן מקומה בפרשת כי תצא, אחרי הלכות קידושין וגירושין.</p>
+      <p>ולמדו חז"ל: נושא אישה לא ללמד על עצמו יצא, אלא ללמד על הכלל כולו יצא. זו דוגמה קלאסית לאחת משלוש עשרה המידות שהתורה נדרשת בהן, של רבי ישמעאל: "כָּל דָּבָר שֶׁהָיָה בִּכְלָל וְיָצָא מִן הַכְּלָל, לֹא לְלַמֵּד עַל עַצְמוֹ יָצָא, אֶלָּא לְלַמֵּד עַל הַכְּלָל כֻּלּוֹ יָצָא". היה כלל של שלושה: אישה, כרם ובית. יצאה מן הכלל האישה, שיש לה שנה שלמה. והיא מלמדת על כולם: גם בונה בית וגם נוטע כרם, לשלושתם יש שנה אחת.</p>
+      <p class="bold-para">הדין נאמר בנושא אישה, ולפי מידת "דבר שהיה בכלל ויצא" הוא חל גם על בונה בית ועל נוטע כרם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בית פלוני לפלוני</div>
+      <h3 class="story-title">🌱 ארבעים יום לפני יצירת הוולד</h3>
+      <p>הרב סיפר מה ששמע באותו שבוע מאדם אחד. לפני חתונת בנו הבכור הלך לבקש ברכה מאדמו"ר. אמר לו האדמו"ר: מיד אחרי החתונה, עוד בתוך שבע הברכות, תקנה דירה לזוג. האב תמה: דירה בתוך שבע הברכות? ענה לו האדמו"ר: הגמרא בתחילת מסכת סוטה אומרת שגם הבית נגזר מראש. אל תדאג. הקדוש ברוך הוא קבע את הבית. לך, תראה בית שמתאים, ותקנה.</p>
+      <p>האיש שמע בקול רבו. הוא מצא בית מתאים, קנה אותו לזוג ולקח הלוואות. וסיפר שברוך ה', בתוך חצי מן הזמן שהיה מתוכנן לפירעון ההלוואות, גמר לשלם הכל.</p>
+      <p>הרב פתח את הגמרא וראה שכך כתוב. כולם מכירים את תחילת הדברים: "אַרְבָּעִים יוֹם קֹדֶם יְצִירַת הַוָּלָד, בַּת קוֹל יוֹצֵאת וְאוֹמֶרֶת: בַּת פְּלוֹנִי לִפְלוֹנִי". אבל מעטים מכירים את ההמשך: "בַּיִת פְּלוֹנִי לִפְלוֹנִי, שָׂדֶה פְּלוֹנִי לִפְלוֹנִי". שלושה דברים נגזרים: אישה, בית ושדה. בדיוק שלושת הדברים שבפרשה. והמהר"ל בגור אריה כותב שהדברים מקבילים זה לזה. וגם הרמב"ם מביא את שלושתם להלכה, ומונה תחילה בית, אחר כך כרם, ואחר כך אישה.</p>
+      <p class="bold-para">הגמרא בסוטה מלמדת שגם הבית של האדם נגזר עליו עוד לפני שנוצר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בית פלוני לפלוני</div>
+      <h3 class="story-title">📍 למה זה משנה איזה בית</h3>
+      <p>יש כאן תמיהה. אישה, מובן שנגזרת מראש. היא משפיעה על כל החיים, על הילדים, על צורת החיים. אבל בית? רוב האנשים, כשהם קונים דירה, חושבים רק על מספרים. מתווך סיפר לרב שכשהוא מראה דירות, הלקוחות שואלים רק: כמה אקבל שכירות, אלפיים או אלפיים ומאה? כמה תעלה הדירה בעוד עשר שנים? הם מחשבים תשואות, ולא יותר. אז למה הבית נגזר מן השמיים לפני יצירת הוולד?</p>
+      <p>התשובה קשורה לירושלמי, שמבאר שכל מה שנאמר בתורה על מי שבנה בית, נאמר על בית בארץ ישראל דווקא. אם כן, גם "בית פלוני לפלוני" שבגמרא מדבר על בית בארץ ישראל. ובארץ ישראל, לכל מקום יש השפעה רוחנית משלו. השבטים התחלקו בגורל, ושום דבר לא היה סתם. מי שגר בצפון גר בנחלת שבט אחד, ומי שגר במרכז גר בנחלת שבט אחר, וכל מקום משפיע לפי עניינו. לכן לפני יצירת האדם קובעים מה תפקידו, וממילא גם היכן יגור.</p>
+      <p>ומה לומדים מזה למעשה? ראשית, כמו שאמר האדמו"ר, ללכת בזריזות, בלי פחד. ושנית, להתפלל לפני שהולכים לקנות דירה, שבורא עולם יעזור שזה יהיה המקום שמתאים לי, בגשמיות וברוחניות. כמו שאדם מתפלל לפני שידוך שימצא את האישה המתאימה לו, כך צריך להתפלל לפני קניית בית.</p>
+      <p class="bold-para">בארץ ישראל לכל מקום יש השפעה רוחנית, ולכן צריך להתפלל לפני קניית בית כמו לפני שידוך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בית פלוני לפלוני</div>
+      <h3 class="story-title">🗓️ שנה לעבודה או שנה לשמחה</h3>
+      <p>המשנה במסכת סוטה מונה את מי שאינם זזים ממקומם: "בָּנָה בַיִת וַחֲנָכוֹ, נָטַע כֶּרֶם וְחִלְּלוֹ, הַנּוֹשֵׂא אֶת אֲרוּסָתוֹ". אדם שבנה בית יש לו פטור של שנה שלמה. ועכשיו השאלה: מדוע? בשביל להסתכל על הקרמיקה החדשה?</p>
+      <p>אצל מי שנושא אישה, מובן שיש עניין גדול להיות עם אשתו בשנה הראשונה, כדי לבנות את הבית כראוי. אבל מה עם בונה הבית ונוטע הכרם? אולי הפטור נועד לכך שיוכל לעבוד בשדה ובכרם לפרנסתו? אם כן, היה צריך לתת לו את הזמן הזה דווקא בשנה השנייה והשלישית, כשהעבודה בשדה נחוצה, ולא בשנה הראשונה. ובשנה הראשונה של הבית, איזו עבודה יש בכלל? ובעיקר: מה פירוש "נקי לביתו" אצל בית, ומה יעשה אדם עם ביתו שנה שלמה?</p>
+      <p>בספרו של הרב, בפרק "שנה של שמחה", מובאות שתי תשובות. האחת: שנה של הודיה. השנייה: שנה של דבקות בארץ ישראל. השיעור הזה עוסק בתשובה הראשונה, שנה של הודיה. וכדי להבין אותה צריך קודם להבין איך התורה רוצה שנסתכל על כל הטוב שיש לנו.</p>
+      <p class="bold-para">השנה הראשונה אינה נועדה לעבודה ולפרנסה, אלא לשני דברים: הודיה ודבקות בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני מבטים על השולחן</div>
+      <h3 class="story-title">📚 השיעור של יום חמישי</h3>
+      <p>את ההסבר הראשון שמע הרב כשהיה ילד. בכל יום חמישי היה מגיע לשכונה מחבר הספר "לקח טוב" על פרשת השבוע, ומוסר שיעור, והרב היה הולך לשמוע. ושם שמע את הרעיון הזה, שהמרצה אמר שהוא שמע מרב גדול, והתלהב ממנו מאוד.</p>
+      <p>הרב סיפר שהספר "לקח טוב" היה מן הספרים המפורסמים ביותר בארץ בזמנו. הוא היה הלקט הראשון על פרשת השבוע, עוד לפני כולם. היום יש שפע כזה של ספרים, שאדם אינו יודע מאיפה להתחיל, וכל מרצה מוציא כמה ספרים. אבל אז, לפני כשלושים שנה, כמעט כל בית החזיק את הספר הזה. הדור הצעיר כבר בקושי מכיר אותו.</p>
+      <p>לימים, הרב חיפש את הדברים במאגרי הספרים הממוחשבים, שבהם יש עשרות אלפי ספרים, יותר מכל ספרייה גדולה שאדם ראה. ומצא את השיחה כתובה, כמו ששמע אותה בילדותו. הוא הביא את הדברים למי שמסר אז את השיעור, וזה שמח מאוד לראות שהרעיון נשמר.</p>
+      <p>ומה כתוב שם? שיש שתי צורות להתבונן בעולם. וההבדל ביניהן מתגלה ברגע הפשוט ביותר: כשאדם ניגש לשולחן לאכול.</p>
+      <p class="bold-para">את הרעיון על שני המבטים שמע הרב בילדותו, ולימים מצא אותו כתוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני מבטים על השולחן</div>
+      <h3 class="story-title">🍽️ כשאני אוכל, הכל מת</h3>
+      <p>אדם ניגש לשולחן, והמאכלים מונחים לפניו. מה הוא רואה? יש אדם שכל מה שהוא רואה לפניו הוא אמצעי למילוי רצונותיו ותאוותיו. הוא רואה בשר, והכל עולה לו לראש. הוא רואה אוכל, ושוכח את כל העולם.</p>
+      <p>הרב סיפר על כך משל. אורח הגיע לעיר אחרת, ביקש מבעל הבית שיביא לו אוכל, וישב לאכול. שאל אותו בעל הבית: מאיפה אתה? אמר: מקרקוב. אמר בעל הבית: אה, בקרקוב יש לי ידיד, פלוני, מה שלומו? אמר האורח: אל תשאל, נפטר לפני חודש. שאל: ודוד של אשתי, פלוני? ענה: לפני חודשיים לקה בליבו. וכן הלאה, כל מי ששאל עליו, נפטר. לבסוף שאל בעל הבית: מה קורה אצלכם בקרקוב? אמר לו האורח: אתה לא מבין. כשאני אוכל, הכל מת.</p>
+      <p>יש אנשים כאלה. כשהם אוכלים, שום דבר אחר אינו קיים. ומולם יש המבט האמיתי: השולחן עם המאכלים הוא שולחן ערוך בטובו של הקדוש ברוך הוא. לפני האכילה מברכים "המוציא לחם מן הארץ". את כזית הלחם שלפניך, הקדוש ברוך הוא הוציא מן הארץ. הוא ברא עולם שלם, ודאג שבקצה העולם יעמלו פועלים לקצור חיטים, כדי שתהיה לך פרוסת לחם לארוחת בוקר. מי שמבין שזו מתנת ה', מבין גם שהכל ניתן לתכלית: כדי שנוכל לקיים את תפקידנו בעולם.</p>
+      <p class="bold-para">יש מי שרואה באוכל רק מילוי תאווה, ויש מי שרואה בו שולחן שה' ערך בשבילו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני מבטים על השולחן</div>
+      <h3 class="story-title">🌳 לחם שגדל על העץ</h3>
+      <p>הרב סיפר על אישה שאמרה שהיא מרגישה בגן עדן. מה קרה? היא קראה מדרש, לא בספר עמוק, סתם בדף לילדים, שמספר מה היה מיוחד בגן עדן: הלחם גדל על העץ. אדם היה מגיע ולוקח לחם מוכן.</p>
+      <p>והיא חשבה לעצמה: לפני מאה שנה, כדי שיהיה לחם, האישה הייתה קמה בארבע לפנות בוקר. מדליקה את התנור, טוחנת, לשה, אופה, ובשמונה בבוקר, כשהבעל חוזר מתפילה, יש לחם. והיום? בדרך חזרה מבית הכנסת, בלי ללכת במיוחד, בכל פינה ברחוב יש מכולת או מינימרקט. נכנסים, לוקחים לחם עטוף, משלמים סכום שאינו מורגש בכלל, ואפילו אינו נרשם כשורה בתקציב הבית. מגיעים הביתה ויש לחם מוכן.</p>
+      <p>אמרה אותה אישה: מה ההבדל בין גן עדן למה שיש לנו? אני לא יודעת מה קל יותר, לקטוף לחם מן העץ או לקחת אותו מן המדף. ממש גן עדן.</p>
+      <p>זו התחושה שאדם יכול להרגיש: שבורא עולם אוהב אותנו, ורוצה שיהיה לנו נעים ונחמד. וזו לא הרגשה מיוחדת לאוכל. היא שייכת לכל דבר שיש לאדם. הדברים הפשוטים ביותר, שאנחנו רגילים אליהם עד שאיננו רואים אותם, הם בדיוק המקום שבו אפשר לגלות כמה אנחנו אהובים.</p>
+      <p class="bold-para">מי שמתבונן במה שיש לו היום מגלה שהוא חי כמעט בגן עדן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שני מבטים על השולחן</div>
+      <h3 class="story-title">✍️ ספר עם הקדשה</h3>
+      <p>המאמר ממשיך בדוגמה נוספת. הכותב ראה יהודי שיש לו בביתו את הספר "אבן האזל" עם הקדשה אישית בכתב ידו של רבי איסר זלמן מלצר, ואת ספרי החזון איש שקיבל במתנה מידי החזון איש עצמו, שטרח לכתוב עליהם הקדשה מיוחדת. מאז חלפו עשרות שנים. יש היום מהדורות חדשות, מתוקנות וברורות יותר. ובכל זאת, היהודי הזה לעולם לא יסכים להחליף את הספרים הישנים בחדשים. אפילו אם יקנה מהדורה חדשה, את הישנה ישמור מכל משמר. למה? כי יש עליה הקדשה אישית.</p>
+      <p>מי שקיבל מתנה מרב גדול, עם הקדשה בכתב ידו, לא ימכור אותה בשום מחיר. זה לא סתם ספר. זה ספר שקיבלתי ממנו.</p>
+      <p>ועכשיו, אומר המאמר, כך צריך אדם להרגיש על כל חפץ שיש לו. הקדוש ברוך הוא נתן לו אותו, עם הקדשה: "לבני היקר, באהבה". אילו אדם היה מתייחס כך לכל חפצי העולם הזה שלו, כל צורת חייו הייתה נראית אחרת. מי שמאמין באמת שה' מטיב, צריך להתבונן בכל טובה שמגיעה אליו, להסיק ממנה כמה בורא עולם אוהב אותו, ולהודות לו בשמחה ובשירה.</p>
+      <p>הרב הזכיר שיש מי שמדליק מזגן ומרגיש שהקדוש ברוך הוא רוצה להנעים לנו את הישיבה בארץ ישראל. כך נאמר בישעיה: "כֹּל הַנִּקְרָא בִשְׁמִי וְלִכְבוֹדִי בְּרָאתִיו". לכל דבר יש מטרה: להרבות כבוד שמיים. אדם כזה אינו בורח מן העולם. הוא מרגיש שבורא עולם רוצה לפנק אותו.</p>
+      <p class="bold-para">כל חפץ שיש לאדם הוא מתנה מן הקדוש ברוך הוא, עם הקדשה אישית: לבני היקר, באהבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הילולים</div>
+      <h3 class="story-title">🍎 נטע רבעי בחוץ לארץ</h3>
+      <p>כדי להבין את השנה של בונה הבית, הספר לומד אותה מן הנוטע כרם. גם הוא נקי שנה שלמה, וכדאי להבין מה הוא עושה בה. מובא בירושלמי: יכול אפילו נטע כרם בחוץ לארץ יחזור מעורכי המלחמה? תלמוד לומר "וְלֹא חִלְּלוֹ" – את שמצווה לחללו, יצא זה שאין מצווה לחללו.</p>
+      <p>ויש בירושלמי הזה שאלה למי שאוהב עיון. ערלה נוהגת גם בחוץ לארץ, מהלכה למשה מסיני: אסור לאכול פירות בשלוש השנים הראשונות גם שם. אמנם ספק ערלה בחוץ לארץ מותר, ולכן למעשה זה נוגע רק לבעל הכרם עצמו. מי שקונה בחנות בחוץ לארץ, תמיד זה ספק, ותמיד מותר.</p>
+      <p>בארץ ישראל המצב שונה. כאן צריך לדעת את שיעור הערלה בכל פרי: יש מחלוקת בין הדעות אם הפרי מותר כשהערלה פחות מחצי אחוז או פחות מחמישה אחוזים, ובפירות מסוימים צריך להיזהר יותר. יש גופים שמפרסמים מדי שנה רשימה מדויקת. מי שקונה בחנות עם השגחה אינו צריך לדאוג, כי מראש אין מביאים לשם פירות ערלה. רק מי שקונה בשוק הפתוח צריך לבדוק.</p>
+      <p>ומה עם נטע רבעי בחוץ לארץ? לא כתוב במשנה ובגמרא אם יש שם שנה רביעית. והירושלמי הזה משמע ממנו, לכאורה, שאין מצווה לחלל בחוץ לארץ. אבל זה נידון, והוא הוזכר רק כדי להראות כמה יש לחשוב בירושלמי אחד.</p>
+      <p class="bold-para">הירושלמי מלמד שהפטור של נוטע כרם נאמר רק בכרם שיש מצווה לחללו, ויש בזה גם שאלה הלכתית מעניינת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הילולים</div>
+      <h3 class="story-title">🌾 השמחה בפתח תקווה</h3>
+      <p>מי שנטע כרם ולא חיללו, בשלוש השנים הראשונות, יוצא לעורכי המלחמה וחוזר לעבוד בתפקידי הספקה ותחזוקה. רק בשנה הרביעית הוא פטור לגמרי, נקי לביתו. למה זה היה חשוב כל כך? כי בזמנם הכרם היה הפרנסה של האדם, כמו שמסביר הרמב"ם.</p>
+      <p>מי שקורא את סיפורי העלייה לארץ ישראל בשנים 1840 עד 1870 רואה שכולם התפרנסו מחקלאות. אם העצים הצליחו, היו לאדם פרנסה וחיים. אם לא, לא היה לו כלום. בפתח תקווה, למשל, בהתחלה החקלאות כמעט לא הצליחה, והרבה נראה אבוד. וכשסוף סוף הצליחה, הייתה שם שמחה אדירה. יש סיפור שמתאר איך אנשי פתח תקווה עלו לירושלים בשנה הרביעית וחגגו שם.</p>
+      <p>אנחנו כבר כמעט לא מבינים זאת. אבל לפני פחות ממאה שנה, הפרדס היה כל החיים של האדם. גם סיפורי שנת השמיטה של אז מראים עד כמה. וכשאדם ראה שברוך ה' הכרם הצליח, אמרה לו התורה: תעשה שנה של שמחה. עלה לירושלים, הבא את הפירות, אכול אותם שם בקדושה ובטהרה, והודה.</p>
+      <p>זו הייתה גם מצוות יישוב ארץ ישראל. המושבות הוקמו על החקלאות, והכרם שהצליח היה סימן שהארץ נבנית.</p>
+      <p class="bold-para">בזמנם הכרם היה כל הפרנסה, ולכן השנה הרביעית הייתה רגע של שמחה עצומה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הילולים</div>
+      <h3 class="story-title">🍇 ונאכל מפריה ונשבע מטובה</h3>
+      <p>אבל למה צריך לעלות לירושלים? אם אדם רוצה להודות לה' על כך שהכרם הצליח, שיודה בביתו. התשובה: מהותה של קדושת ירושלים ובית המקדש הייתה ששם הלב נפתח להרגיש יותר הודיה לה'.</p>
+      <p>וכך אנו אומרים בברכה מעין שלוש: "וְהַעֲלֵנוּ לְתוֹכָהּ וְשַׂמְּחֵנוּ בְּבִנְיָנָהּ, וְנֹאכַל מִפִּרְיָהּ וְנִשְׂבַּע מִטּוּבָהּ, וּנְבָרֶכְךָ עָלֶיהָ בִּקְדֻשָּׁה וּבְטָהֳרָה". הרב הביא את השאלה שנשאלה על כך: איזו בקשה מוזרה! יהודי מבקש שתיבנה ירושלים, כדי לאכול מפירותיה? בשביל זה מתפללים על בניין ירושלים?</p>
+      <p>אבל צריך להמשיך לקרוא. "וּנְבָרֶכְךָ עָלֶיהָ בִּקְדֻשָּׁה וּבְטָהֳרָה". נאכל, נשבע, ועל ידי זה נברך את ה'. וזה בדיוק היסוד שנלמד קודם. ההשקפה הנכונה לאדם רגיל אינה לברוח מהנאות העולם הזה, אלא לקחת מהן במידה הנכונה, לשבוע מן הטוב בדרך טובה, כדי שעל ידי זה יתעורר הלב, יתרומם, ויודה לקדוש ברוך הוא מכל הלב.</p>
+      <p>לאדם רגיל לא כדאי להיות פרוש מדי. זה אף מסוכן בשבילו. אנו מצפים לבניין ירושלים כדי שנוכל לאכול מפירותיה ולהודות לשם ה' באופן מושלם, כפי שאי אפשר להשיג בשום מקום אחר.</p>
+      <p class="bold-para">בירושלים הלב נפתח להודות, והאכילה שם אינה המטרה אלא הדרך אל הברכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · קודש הילולים</div>
+      <h3 class="story-title">💃 וחולות בכרמים</h3>
+      <p>והרמב"ן מוסיף פירוש מעניין במילים "וְלֹא חִלְּלוֹ". רש"י מפרש שהכוונה לפדיון, להוציא את הפירות לחולין. הרמב"ן מפרש אחרת: המנהג היה שבשעה שהכרם נתן פירות בפעם הראשונה, היו שרים שם ורוקדים במחולות והולכים בחלילים. ולכן נקרא הדבר "חילול" הכרם. "ולא חיללו" פירושו: לא עשה עדיין את השמחה הגדולה על כך שברוך ה' יש לו פירות.</p>
+      <p>לפי זה, אומר הרב, יש לרמב"ן גם פירוש במשנה של ט"ו באב, שבו "בְּנוֹת יְרוּשָׁלַיִם יוֹצְאוֹת וְחוֹלוֹת בַּכְּרָמִים". מה פירוש "חולות"? רוקדות במחול. ונשאלה שאלה יפה: האם השם בא מן המחול, הריקוד בעיגול, או מן החליל שניגנו בו? אולי שניהם יחד: רקדו במעגל לצלילי החליל. אותו שורש.</p>
+      <p>ומוסיף הרמב"ן: התורה ציוותה שיהיה כל פריו "קֹדֶשׁ הִלּוּלִים לַה'". זו מצווה דומה לביכורים. את הפרי הראשון, הטוב, נותנים כביכול לה'. לא ממש נותנים: עולים לירושלים, אוכלים שם ומודים. וזה שאדם אוכל שם ושמח לפני ה', זו הנתינה. כך מתברר שהשנה הרביעית היא שנה שלמה של שמחה והודיה על הכרם שזכה לו בארץ ישראל.</p>
+      <p class="bold-para">לפי הרמב"ן, "חילול" הכרם הוא חגיגה במחולות ובחלילים, כמו שהבנות יצאו וחולות בכרמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שנה של הודיה</div>
+      <h3 class="story-title">🏡 שינוח עליו נועם ה'</h3>
+      <p>ספר החינוך כותב בשורש מצוות נטע רבעי, שרצה ה' שיתעורר האדם להודות לה' בתחילת פירותיו, "כדי שינוח עליו נועם ה' וברכתו", ויתברכו פירותיו. כלומר, על ידי שאדם עושה "חנוכת הכרם", ובפעם הראשונה שהכרם נותן פרי הוא מודה לאלוקים, הוא זוכה שתהיה ברכה בכרם.</p>
+      <p>ומכאן לחנוכת הבית. כאשר אדם חונך את ביתו ומודה לאלוקים על הבית שנתן לו, הוא זוכה שינוחו עליו נועם ה' וברכתו, ותהיה ברכה והצלחה בבית, כי הקדוש ברוך הוא חפץ בטובת בריותיו. יוצא מכל זה שהתורה מעדיפה שהאדם הזה יישב בביתו בארץ ישראל ויודה לה', על פני יציאתו למלחמה.</p>
+      <p>וזו התשובה לשאלה מבני ברק. מה עושה מי שבנה בית שנה שלמה? הוא מודה. ברוך ה', סוף סוף קנית בית. זו הוצאה עצומה מאוד, וברוך ה' זכית. בשנה הראשונה אתה מודה לקדוש ברוך הוא, כדי שתתברך בבית ותזכה לשלם בקלות את כל החובות על הדירה.</p>
+      <p>ועכשיו מובן גם למה דווקא שנה, ולמה דווקא בתחילה. בתחילה, כשהדבר עוד חדש, הלב מרגיש את הטובה. אחרי זמן הכל נעשה רגיל, ואדם כבר אינו שם לב לקירות שמגינים עליו ולגג שמעל ראשו. התורה נותנת שנה שלמה, בדיוק בזמן שבו הלב עוד פתוח, כדי שההודיה תיקבע בו. ומי שהתרגל להודות בשנה הראשונה, ימשיך להרגיש גם אחר כך שהבית הוא מתנה עם הקדשה אישית.</p>
+      <p>וזה גם מה שעונה על השאלה מתחילת השיעור. אין צורך לבחור בין פשטות קיצונית לבין שקיעה בעולם הזה. הדרך של התורה לאדם רגיל היא ליהנות, ולהפוך כל הנאה להודיה.</p>
+      <p class="bold-para">כמו בכרם, כך בבית: מי שמודה בשנה הראשונה זוכה שינוחו עליו נועם ה' וברכתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · שנה של הודיה</div>
+      <h3 class="story-title">🎉 ושמחת בכל הטוב</h3>
+      <p>הרב סיים בדברי הכוזרי שכדאי מאוד לזכור. רבי יהודה הלוי כותב שיש מצווה מן התורה לשים לב למתנות הרבות שה' נותן לנו, ולחוש את השמחה שבהן. לא לומר: מה זה חשוב, העולם הזה אינו כלום. קיבלת משהו מאלוקים, מזגן נפלא, רכב, ספר יפה, בית חדש – אל תתעלם. תראה איזה שפע ה' נתן לך, ותשמח בו, כמו שכתוב בפרשת כי תבוא: "וְשָׂמַחְתָּ בְכָל הַטּוֹב אֲשֶׁר נָתַן לְךָ ה' אֱלֹקֶיךָ". ומוסיף הכוזרי שחוסר קיום המצווה הזאת הוא סיבת הגלות והתוכחה: "תַּחַת אֲשֶׁר לֹא עָבַדְתָּ אֶת ה' אֱלֹקֶיךָ בְּשִׂמְחָה וּבְטוּב לֵבָב מֵרֹב כֹּל". רק מי שמרגיש את הטוב מגיע להכרת טובה שלמה, ולקבלת מלכות ה' באהבה.</p>
+      <p>והרב נתן דוגמה מזמננו. כשהומצא חוק הפנסיה, רק חלק קטן מן האוכלוסייה הגיע בכלל לגיל הזה. והיום אדם יוצא לפנסיה, ויש לו עשר וחמש עשרה שנה שבהן הוא יכול לשבת ללמוד, בלי לדאוג לכסף. יש בתי מדרש, יש הכל. לאורך כל ההיסטוריה לא היה דבר כזה: או שאדם לא הגיע לגיל הזה, או שאם הגיע, איש לא שילם לו, והוא עבד בחנות כל עוד גופו יכול.</p>
+      <p>יש מי שרואים זאת ומתמלאים אהבת ה': איזה יופי נתן לי אלוקים, בוא ננצל את זה לדברים טובים. וזו מטרת שנת השמחה: לשבת, לשים לב מה קיבלת מן הקדוש ברוך הוא, ולשיר לו תודה. מי שיעשה כך, יזכה לשמוח לא מעט, אלא "בְכָל הַטּוֹב".</p>
+      <p class="bold-para">הכוזרי כותב שיש מצווה מן התורה לשים לב לטוב ולשמוח בו, ומי שמתבונן גם בטובות של זמננו מתמלא אהבת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/b71XHrtS_7k · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שנה למה?","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"פטור משמירה, ואולי גם מארנונה","icon":"❓"},{"id":2,"title":"הפשטות של גדולי ישראל","icon":"🪑"}]},{"id":2,"name":"בית פלוני לפלוני","icon":"🏠","color":"#6d28d9","stories":[{"id":3,"title":"למה דווקא בכי תצא","icon":"📖"},{"id":4,"title":"ארבעים יום לפני יצירת הוולד","icon":"🌱"},{"id":5,"title":"למה זה משנה איזה בית","icon":"📍"},{"id":6,"title":"שנה לעבודה או שנה לשמחה","icon":"🗓️"}]},{"id":3,"name":"שני מבטים על השולחן","icon":"🍞","color":"#e08e00","stories":[{"id":7,"title":"השיעור של יום חמישי","icon":"📚"},{"id":8,"title":"כשאני אוכל, הכל מת","icon":"🍽️"},{"id":9,"title":"לחם שגדל על העץ","icon":"🌳"},{"id":10,"title":"ספר עם הקדשה","icon":"✍️"}]},{"id":4,"name":"קודש הילולים","icon":"🍇","color":"#1e88b8","stories":[{"id":11,"title":"נטע רבעי בחוץ לארץ","icon":"🍎"},{"id":12,"title":"השמחה בפתח תקווה","icon":"🌾"},{"id":13,"title":"ונאכל מפריה ונשבע מטובה","icon":"🍇"},{"id":14,"title":"וחולות בכרמים","icon":"💃"}]},{"id":5,"name":"שנה של הודיה","icon":"🙏","color":"#c62b6b","stories":[{"id":15,"title":"שינוח עליו נועם ה'","icon":"🏡"},{"id":16,"title":"ושמחת בכל הטוב","icon":"🎉"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
