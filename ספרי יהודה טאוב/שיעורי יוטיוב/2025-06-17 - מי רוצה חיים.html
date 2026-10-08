@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מי רוצה חיים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מי רוצה חיים</h1>
+  <p>סדנת האושר: הרוכל שצעק "מי רוצה חיים", חטא המרגלים כחטא של מחשבה, מודל "אירוע – מחשבה – תוצאה", וכוחו של מבט חיובי להאריך ימים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מי רוצה חיים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/l7rnkYn1O5U?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/l7rnkYn1O5U/hqdefault.jpg" alt="מי רוצה חיים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=l7rnkYn1O5U" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הרוכל והפסוק</div>
+      <h3 class="story-title">🛒 "מאן בעי חיי?"</h3>
+      <p>השיעור השלישי בסדרת "סדנת האושר" עומד בפני עצמו, ופותח בשאלה עתיקת יומין: איך זוכים לחיים ארוכים? הגמרא במסכת עבודה זרה, ובמדרש בפרשת מצורע, מספרת על רוכל שהסתובב עם עגלה בעיירות, וצעק: "מי רוצה חיים? מי רוצה חיים?".</p>
+      <p>כולם התאספו סביבו. מי לא רוצה לחיות? "כֹּל אֲשֶׁר לָאִישׁ יִתֵּן בְּעַד נַפְשׁוֹ". כל אדם מחפש איך להאריך את חייו. ורבי ינאי, שישב בביתו, שמע את הקריאה. הוא הסתקרן: מה הרוכל הזה מוכר? יצא החוצה, והרוכל אמר לו: אתה, הרב, לא צריך את זה. אבל רבי ינאי התעקש.</p>
+      <p>הרוכל גמר למכור לכולם, ונכנס לביתו של רבי ינאי. הרב הושיב אותו ונתן לו כוס מים, וביקש לדעת מה הוא מוכר. והרוכל הוציא מכיסו ספר תהילים, פתח בפרק ל"ד, והראה לו את הפסוק: "מִי הָאִישׁ הֶחָפֵץ חַיִּים, אֹהֵב יָמִים לִרְאוֹת טוֹב. נְצֹר לְשׁוֹנְךָ מֵרָע, וּשְׂפָתֶיךָ מִדַּבֵּר מִרְמָה. סוּר מֵרָע וַעֲשֵׂה טוֹב, בַּקֵּשׁ שָׁלוֹם וְרָדְפֵהוּ".</p>
+      <p>ואמר רבי ינאי: כל ימיי קראתי את הפסוק הזה, ולא ידעתי היכן הוא מתפרש, עד שבא הרוכל הזה והודיע.</p>
+      <p>כלומר, אפילו תנא גדול כרבי ינאי, שקרא את הפסוק כל ימיו, גילה בו דבר חדש דרך רוכל פשוט. ומכאן שגם בפסוקים המוכרים ביותר יש עומק שלא תמיד שמים לב אליו.</p>
+      <p class="bold-para">רוכל הסתובב ברחוב וצעק "מי רוצה חיים", וכולם התאספו סביבו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הרוכל והפסוק</div>
+      <h3 class="story-title">❓ מה מכר הרוכל?</h3>
+      <p>הרב שאל: הסיפור מוזר. כולנו קוראים את הפסוק הזה. מה החידוש? ואם הרוכל רק קרא להם פסוק, על מה שילמו? מה הייתה ההמולה?</p>
+      <p>ברור, אמר הרב, שהרוכל לא רק קרא פסוק. הוא הסביר משהו. והשיעור כולו ינסה להבין מה הסביר, ואיך זה עובד. ולדבריו, התשובה גם עובדת במחקר: פרופסור לפסיכולוגיה יאמר לך את אותו הדבר. הרב סיפר שקיבל מפרופסור באוניברסיטה כתובת של אתר שמציג מחקרים לפיהם מי שנוהג כך, כפי שנלמד בשיעור, סיכוייו לעבור את גיל שמונים וחמש גבוהים בחמישים אחוז, ובממוצע הוא חי כשמונה שנים יותר.</p>
+      <p>ועוד הערה על לשון הגמרא: הרוכל צעק "מאן בעי חיי, מאן בעי חיי" – פעמיים. הבן איש חי מסביר שהכפילות רומזת לשני סוגים של אריכות ימים: בכמות ובאיכות. אף אחד אינו מחפש לחיות שנים רבות ולשכב בלי לזוז. כל אחד רוצה לחיות הרבה, ובגוף בריא: ללכת לשיעורים, לבריתות ולחתונות. וזה מה שמובטח בפסוק.</p>
+      <p class="bold-para">הסיפור מוזר: אם רק קרא פסוק, על מה שילמו לו?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הרוכל והפסוק</div>
+      <h3 class="story-title">💪 חיים באיכות ובכמות</h3>
+      <p>הרב התעכב על הפירוש של הבן איש חי, משום שהוא נוגע בלב העניין. כשאדם שואל "מי רוצה חיים", הוא אינו מתכוון רק למספר השנים. יש אנשים שחיים שנים רבות, אבל אינם יכולים לזוז, ואינם נהנים מדבר. אף אחד אינו מבקש חיים כאלה.</p>
+      <p>מה שכל אחד רוצה הוא שני הדברים יחד: לחיות הרבה, ולחיות טוב. להיות בריא, ללכת לבית הכנסת ולשיעורים, להשתתף בשמחות של המשפחה, לראות נכדים. זו אריכות ימים באיכות ובכמות.</p>
+      <p>והפסוק עצמו רומז לשני הצדדים: "מִי הָאִישׁ הֶחָפֵץ חַיִּים" – זה הצד של החיים עצמם, של החיות; "אֹהֵב יָמִים לִרְאוֹת טוֹב" – ימים רבים, שיש בהם טוב.</p>
+      <p>והחידוש של השיעור הוא שהמפתח לשניהם הוא אותו מפתח: האופן שבו האדם מסתכל על העולם. מי שרואה טוב – חי טוב, וגם חי יותר.</p>
+      <p class="bold-para">כל אחד רוצה לא רק לחיות שנים רבות, אלא לחיות אותן בבריאות ובשמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · עונש על מחשבה?</div>
+      <h3 class="story-title">📅 יום לשנה</h3>
+      <p>בפרשת שלח קוראים על המרגלים, ועל העונש: "בְּמִסְפַּר הַיָּמִים אֲשֶׁר תַּרְתֶּם אֶת הָאָרֶץ אַרְבָּעִים יוֹם, יוֹם לַשָּׁנָה יוֹם לַשָּׁנָה תִּשְׂאוּ אֶת עֲוֹנֹתֵיכֶם אַרְבָּעִים שָׁנָה". התרגלנו לפסוק, אבל הרב ביקש לדמיין אותו בבית משפט.</p>
+      <p>גנב פרץ לחנות ונתפס. השופט שואל: כמה זמן תכננת את השוד? "שנתיים עקבתי אחרי החנות". אמר השופט: אם כן, על כל יום של תכנון – שנה של מאסר. עורך הדין יקום וימחה: לא שמעתי על שום משפט בעולם שמעניש אדם על התכנון. מענישים על הביצוע.</p>
+      <p>והתורה אומרת כאן: ארבעים שנה כנגד ארבעים הימים שהלכתם. אבל מה רע בהליכה? הם טיילו בארץ ישראל, עלו בנגב, הגיעו להר. העבירה הייתה שהוציאו דיבה, לא שהלכו.</p>
+      <p>ואחד המשתתפים הציע: אולי כבר כשהלכו תכננו להוציא דיבה, ולכן ההליכה עצמה הייתה חלק מן החטא. הרב השיב שזה עדיין לא מסביר: על תכנון לא מענישים. ואם כך, למה נענשו על הימים?</p>
+      <p class="bold-para">המרגלים נענשו שנה על כל יום שהלכו, וזה תמוה: העונש על ההליכה, לא על הדיבור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · עונש על מחשבה?</div>
+      <h3 class="story-title">🗣️ למה דווקא לשון הרע?</h3>
+      <p>ועוד שאלה, שהגמרא עצמה שואלת: כולנו יודעים שהמרגלים נענשו על שהוציאו דיבת הארץ. אבל הם עברו עבירות חמורות הרבה יותר! הם אמרו "כִּי חָזָק הוּא מִמֶּנּוּ", ודרשו חז"ל: כביכול, ממנו – מן הקדוש ברוך הוא. הם אמרו שה' אינו יכול להם. הם אמרו "בְּשִׂנְאַת ה' אֹתָנוּ הוֹצִיאָנוּ מֵאֶרֶץ מִצְרָיִם".</p>
+      <p>הרב המחיש: אם יבוא מרצה ויאמר דברים שליליים על הארץ – אפשר אולי להתווכח. אבל אם יאמר שבורא עולם אינו יכול – זו כפירה, וכולם יקומו וימחו. אם כן, למה נתפסו דווקא על לשון הרע?</p>
+      <p>והרב העיר עוד: בדרך כלל, הקדוש ברוך הוא אינו מעניש על מחשבות. "מחשבה רעה אין הקדוש ברוך הוא מצרפה למעשה". בכל התורה אין כמעט מקרה שבו מישהו נענש על מחשבה. ובכל זאת כאן נראה שהעונש הוא על הימים, על מה שהיה לפני הדיבור.</p>
+      <p>כדי לענות, הרב הקדים יסוד מעולם הפסיכולוגיה.</p>
+      <p class="bold-para">המרגלים אמרו דברים חמורים הרבה יותר, ובכל זאת חטאם מוגדר כדיבת הארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · עונש על מחשבה?</div>
+      <h3 class="story-title">🧩 מחשבה ומעשה</h3>
+      <p>כדי להבין את עומק השאלה, הרב חזר על הכלל: "מחשבה רעה אין הקדוש ברוך הוא מצרפה למעשה". אדם שחשב לעשות עבירה ולא עשה – אינו נענש. יש לכך יוצאים מן הכלל מעטים, כמו בעבודה זרה, שבה המחשבה עצמה חמורה. אבל בדרך כלל, בכל התורה כולה, העונש הוא על המעשה.</p>
+      <p>ואם כן, מה פשר העונש של המרגלים על הימים? הם לא הוציאו דיבה במשך ארבעים יום; הם הוציאו אותה ביום אחד, כשחזרו. מה היה בימים עצמם שהצדיק שנה לכל יום?</p>
+      <p>ועוד יותר קשה: גם אם נאמר שבימים האלה תכננו לדבר, הרי תכנון אינו מעשה. ושום בית משפט אינו מעניש על תכנון.</p>
+      <p>התשובה, כפי שנראה, היא שבימים האלה הם עשו משהו – לא בפה, אלא בעיניים ובמחשבה. הם ראו את הארץ בעין רעה. וזה לא תכנון של עבירה, אלא העבירה עצמה, שהדיבור היה רק התוצאה שלה.</p>
+      <p class="bold-para">בדרך כלל אין הקדוש ברוך הוא מעניש על מחשבה, ולכן חטא המרגלים צריך הסבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אירוע, מחשבה, תוצאה</div>
+      <h3 class="story-title">🧠 מודל "אמת"</h3>
+      <p>בפסיכולוגיה מדברים הרבה על מודל שנקרא "אפר"ת" – אירוע, פירוש, רגש, תוצאה. הרב בחר לפשט אותו למודל "אמ"ת": אירוע, מחשבה, תוצאה. והיסוד שלו חשוב מאוד, כי הוא משנה את החיים.</p>
+      <p>כשאדם אומר: "התעצבנתי כי יצחק לא הגיע לפגישה בזמן" – זו טעות. הוא לא כעס בגלל שיצחק איחר. הוא כעס בגלל המחשבה שחשב כשיצחק איחר.</p>
+      <p>ההוכחה: אילו שמע קודם ברדיו שיש פקק גדול בצומת, לא היה כועס כלל. מה כבר יכול יצחק לעשות? אז למה כעס? כי חשב: יצחק לא מתחשב, לא אכפת לו, הוא לא עומד בהתחייבויות, הוא מזלזל בי. וכך, שלב אחר שלב, הגיע למסקנה שיצחק "שם עליו פס", ובא לפגישה כועס.</p>
+      <p>אם כן, לא האירוע גרם לתוצאה, אלא המחשבה. ואם המחשבה היא שגורמת לתוצאה – האדם יכול לבחור אותה.</p>
+      <p class="bold-para">לא האירוע גורם לתוצאה, אלא המחשבה שאדם חושב עליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אירוע, מחשבה, תוצאה</div>
+      <h3 class="story-title">🧱 שני הסבלים</h3>
+      <p>הרב סיפר משל, שסיפר גם מרצה ידוע כדי להמחיש לעובדים שלא העבודה עושה את התוצאה, אלא היחס אליה. חכם יהודי הלך ברחוב לפני שנים רבות, וראה שני אנשים סוחבים עגלות עם אבנים. ניגש לראשון: "מה אתה עושה?". "הרב לא רואה? אני סוחב עגלה מלאה אבנים, סוללים כאן כביש. חם, השמש קופחת, העבודה קשה, והכסף מועט. זה מה יש".</p>
+      <p>המשיך הלאה, וניגש לשני: "מה אתה עושה?". "אני עושה חסד! אתמול ראיתי אישה הולכת כאן עם עגלת תינוק לטיפת חלב, והעגלה לא זזה בחצץ. אני גומר היום, ומחר היא תיסע כאן בקלות. ועוד: אני בונה את ארץ ישראל! אלפיים שנה לא היו כאן יהודים, וברוך ה' זכיתי". גם הוא הזיע, אבל לא הרגיש. כולו קרן מאוזן לאוזן.</p>
+      <p>מכאן: לא המעשה שאתה עושה הוא שגורם לתוצאה, אלא מה שאתה חושב בזמן שאתה עושה אותו. אפשר לסחוב אבנים כמו עבד במצרים, ואפשר לסחוב אותן ולהרגיש "אשרינו מה טוב חלקנו".</p>
+      <p>והרב הוסיף שאותו הדבר נכון בכל עבודה: מורה, פקיד, אב ואם בבית. אפשר לראות בעבודה עול שצריך לסבול עד שייגמר היום, ואפשר לראות בה שליחות. האבנים אותן אבנים, השמש אותה שמש, והזיעה אותה זיעה. ההבדל כולו הוא בראש, ובראש הזה אדם יכול לשלוט.</p>
+      <p class="bold-para">אותה עבודה בדיוק יכולה להיות עבדות קשה או זכות גדולה – לפי מה שחושבים בזמן העבודה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אירוע, מחשבה, תוצאה</div>
+      <h3 class="story-title">🌋 הכעס מתחיל בראש</h3>
+      <p>הרב תיאר בפירוט את התהליך שעובר על אדם שמחכה לפגישה. הוא מסתכל בשעון. יצחק לא הגיע. מחשבה ראשונה: הוא כנראה שכח. מחשבה שנייה: הוא אף פעם לא עומד בזמנים. מחשבה שלישית: לא אכפת לו ממני. מחשבה רביעית: הוא מזלזל בי. וכשיצחק סוף סוף מגיע, הוא כבר פוגש אדם רותח.</p>
+      <p>מה קרה כאן? יצחק איחר חצי שעה. כל השאר נבנה בתוך הראש של מי שחיכה. מכאן שהכעס אינו תגובה הכרחית לאירוע, אלא תוצאה של שרשרת מחשבות.</p>
+      <p>וזו גם הסיבה שאותו איחור עצמו יכול לא לעורר שום כעס: אם המחשבה הראשונה הייתה "בטח יש פקק" או "אולי קרה לו משהו", השרשרת הייתה הולכת לכיוון אחר לגמרי, ואולי אפילו לדאגה ולרחמים.</p>
+      <p>והבנה הזאת נותנת לאדם כוח: אם הכעס נבנה במחשבה, אפשר לעצור אותו במחשבה, עוד לפני שהגיע לתוצאה.</p>
+      <p class="bold-para">הכעס אינו מתפרץ ממקום ריק, אלא בונה את עצמו שלב אחר שלב בתוך המחשבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · אירוע, מחשבה, תוצאה</div>
+      <h3 class="story-title">📝 "אמ"ת" בכל יום</h3>
+      <p>הרב חזר והדגיש את הלקח המעשי של המודל. אדם צריך לדעת תמיד: קרה אירוע, אבל לא האירוע גורם לי לתוצאה. המחשבה שלי היא שתגרום. אם אחשוב שלילי – אהיה עצוב, מדוכדך. אם אחשוב חיובי – אהיה שמח, מאושר. מאותו אירוע בדיוק.</p>
+      <p>מכאן אפשר להתאמן. כשמשהו מעצבן קורה – המחשב נתקע, הארוחה לא מוכנה, מישהו איחר – לעצור לרגע ולשאול: מה אני חושב עכשיו? האם יש פירוש אחר? אולי יש פקק בצומת. אולי קרה משהו לא צפוי.</p>
+      <p>הרב הוסיף שבפסיכולוגיה משתמשים בעיקר במודל המלא, עם "פירוש" ו"רגש", אבל העיקר אחד: בין האירוע לבין התוצאה עומדת המחשבה, והיא בידי האדם.</p>
+      <p>וזו, כפי שנראה, גם הדרישה של התורה. לא רק לא לדבר רע, אלא לא לחשוב רע: לפרש את המציאות בעין טובה, ככל שאפשר.</p>
+      <p class="bold-para">מי שמבין את המודל יכול להתאמן: לעצור, לבחון את המחשבה, ולבחור פירוש אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אותו אירוע – שני עולמות</div>
+      <h3 class="story-title">😷 הגבאי והמסכות</h3>
+      <p>הרב נתן דוגמאות מן החיים. בתקופת הקורונה, בבית הכנסת, אחרי התפילה ולפני תחנון, ראה הגבאי שני מתפללים בלי מסכה. הוא קם ונאם: רבותיי, זה מסוכן! יש בתי כנסת שנסגרו, והמשטרה נתנה קנסות. מי שבלי מסכה יהיה אחראי לכל. היה בלגן: חלק כעסו מאוד על הגבאי, וחלק שמחו מאוד.</p>
+      <p>למה כעסו? כי הפסיק באמצע התפילה, לפני תחנון; כי יש כללים מתי מדברים. ולמה שמחו? כי היו מתפללים שלא הגיעו לבית הכנסת כמה ימים, מפחד, בגלל אלה שלא שמו מסכה. כשראו שהגבאי עומד על זה, נרגעו והרגישו שיוכלו לבוא.</p>
+      <p>אותו אירוע בדיוק: אחד מאושר מאוד, ואחד כועס כל כך שאולי לא יבוא יותר לבית הכנסת הזה. שוב, לא האירוע גרם לתוצאה, אלא מה שכל אחד חשב עליו.</p>
+      <p class="bold-para">אותו נאום בבית הכנסת גרם לחלק לכעוס ולחלק לשמוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אותו אירוע – שני עולמות</div>
+      <h3 class="story-title">🏗️ הבניין החדש</h3>
+      <p>דוגמה נוספת: ליד בית של אדם עמד בית חד-קומתי, ובו גרו זוג זקנים. שנים של שקט ושלווה. יום אחד מכרו את הבית לקבלן, והוא הרס אותו ובנה בניין של עשרים משפחות. רעש והמולה מן הבוקר.</p>
+      <p>חלק מן השכנים כעסו ועצבו: התרגלו לשקט, ועכשיו הכל השתנה. ואחרים שמחו. למה? המשתתפים הציעו: יש שאוהבים לראות חיים, ילדים, פעילות. ויש ששמחים שבמקום בית מוזנח עומד בניין יפה.</p>
+      <p>והרב סיפר על רב שבא לבקר את נכדו, וראה מן החלון בונים בניין גבוה. הוא עמד ליד החלון והסתכל שוב ושוב. שאל אותו הנכד: מה מעניין שם? ענה: אני נהנה לראות שבונים את ארץ ישראל. היה כאן שממה, ותראה כמה יהודים רוצים לגור כאן.</p>
+      <p>ומסופר על רבי יעקב משה חרל"פ, שבזקנותו, באירוע לכבודו, ביקש בנו מראש העיר לעשות משהו נגד רעש הפטישים מן הבנייה ליד הבית. והרב הזקן קם ואמר: בשום פנים ואופן! אני לא שומע פטישים, אני שומע מנגינות. כל חיי חלמתי שיבנו את ארץ ישראל. שיבנו הלאה והלאה.</p>
+      <p class="bold-para">יש ששומעים בבנייה רעש, ויש ששומעים בה מנגינה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אותו אירוע – שני עולמות</div>
+      <h3 class="story-title">🏠 אותה קורונה</h3>
+      <p>גם על תקופת הקורונה נתן הרב דוגמה. אחד עצוב: איבד את פרנסתו, אולי נפטרו קרובים, בתי הכנסת נסגרו. ואחר מאושר. איך ייתכן?</p>
+      <p>הרב סיפר ששלח פעם, באמצע אותה תקופה, דברים על "מתנת הקורונה", וקיבל מכתבים מאמהות רבות שכתבו שהן מאושרות מאוד. הן התנצלו שהן שמחות מדבר כזה, אבל מבחינתן זו הייתה מתנה. תמיד חלמו להיות בבית. במקום לרוץ משמונה בבוקר עד ארבע ולהגיע הביתה מותשות, סוף סוף היה זמן להיות עם הילדים, בנחת. זה היה לפני פסח, והיה זמן לנקות עם כל המשפחה יחד.</p>
+      <p>ואחרים ראו באותה תקופה השגחה פרטית: הם ראו מה קרה בעולם, ומה קרה בארץ ישראל, והתמלאו התפעלות מן ההבדל. "אֶרֶץ אֲשֶׁר... תָּמִיד עֵינֵי ה' אֱלֹקֶיךָ בָּהּ".</p>
+      <p>אותו אירוע – ואחד קורן ואחד עצוב. וכל אחד מהם, בעצם, בחר במה להתמקד: במה שנלקח ממנו, או במה שניתן לו.</p>
+      <p class="bold-para">אותה תקופה יכולה להיות משבר נורא או מתנה, לפי איך שמסתכלים עליה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אותו אירוע – שני עולמות</div>
+      <h3 class="story-title">🔒 הדלת הנעולה בליל שבת</h3>
+      <p>ודוגמה אחרונה, מן המציאות. אדם גר בבניין שיש בו דלת כניסה חשמלית, ובשבת משאירים אותה פתוחה עד שעה מסוימת בלילה. בליל שבת אחד יצא לשלום זכר, פגש חברים שלא ראה זמן רב, התלהב ושכח את השעון. חזר אחרי השעה – והדלת נעולה. מה עושים?</p>
+      <p>אחד עצוב, וזה מובן. אחד כועס – על עצמו: איך לא זכרתי? למה לא חשבתי? הרב העיר שזה מצב לא בריא בכלל; כעס על עצמך יוצר לחץ, ולחץ כזה מסוכן לבריאות.</p>
+      <p>אחד רגוע: קרה, מה אפשר לעשות. יש לי הזדמנות לטייל קצת. אני אדם מאמין, ואם זה קרה – זה רצון ה'.</p>
+      <p>ויש גם אדם אחד, נדיר יותר, ששמח. הוא נזכר בעקדת יצחק: אברהם אבינו עמד בניסיון ומסר נפשו לעשות רצון ה'. "והנה גם לי יש הזדמנות. אני יכול ללחוץ – ואינני לוחץ, כי אני עושה רצון ה'. אוכל לספר לנכדים שפעם ישבתי בחוץ כי שמרתי שבת. מה שלא אצליח לחנך בשנתיים, אעשה בלילה אחד". ובסוף הגיע מישהו ופתח, והוא שמח שעמד בניסיון.</p>
+      <p class="bold-para">אדם שננעל מחוץ לביתו בשבת יכול לכעוס על עצמו, ויכול לשמוח בניסיון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אותו אירוע – שני עולמות</div>
+      <h3 class="story-title">🔑 מה משותף לכל הדוגמאות</h3>
+      <p>אם נעבור שוב על הדוגמאות, נראה דבר אחד חוזר. הגבאי שנאם בבית הכנסת – אותו נאום, ושתי תגובות. הבניין שנבנה ליד הבית – אותו רעש, ושתי תגובות. תקופת הקורונה – אותה תקופה, ושתי תגובות. הדלת הנעולה בליל שבת – אותו מצב, וארבע תגובות שונות לגמרי.</p>
+      <p>בכל המקרים האלה, מי שכעס לא טעה בעובדות. הרעש באמת היה רעש, הנאום באמת הפסיק את התפילה, והדלת באמת הייתה נעולה. אבל הוא בחר לראות את הצד הקשה. ומי ששמח לא התעלם מן העובדות; הוא פשוט ראה בהן גם צד אחר: בניין ארץ ישראל, ביטחון למתפללים, זמן עם המשפחה, ניסיון של שמירת שבת.</p>
+      <p>הרב אמר שזה עולה לא רק מן הפסיכולוגיה, אלא מן הסיפורים של גדולי ישראל עצמם, כמו רבי יעקב משה חרל"פ, ששמע מנגינות במקום פטישים.</p>
+      <p>וזה מכין אותנו להבנת התורה: אם המבט הוא שקובע, הרי שגם האחריות היא על המבט.</p>
+      <p class="bold-para">בכל אחת מן הדוגמאות, ההבדל בין הכועס לשמח לא היה במה שקרה, אלא במה שחשב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · טוב עין</div>
+      <h3 class="story-title">🤔 פרישותו של משה</h3>
+      <p>עכשיו חזר הרב לתורה, דרך משל מודרני. גבאי רואה אדם נשוי, מבוגר, שנשאר לישון בבית הכנסת כמה לילות ברציפות. הוא שואל אותו, והאיש מסביר: אני נוהג פרישות בין פסח לשבועות. הגבאי הולך לספר לרב: יש כאן מקרה לא תקין, צריך לדבר איתו. נשמע נורמלי לגמרי.</p>
+      <p>וכך בדיוק קרה בפרשה הקודמת. ציפורה סיפרה למרים שמשה, בעלה, פירש ממנה. מרים לא הבינה: גם היא נביאה, ומעולם לא פרשה. היא דיברה עם אהרן, שידבר עם משה. ונענשה. על מה?</p>
+      <p>הרב אמר שלומדים מכאן דבר קשה, ולכן בחר במקרה קיצוני: בורא עולם דורש מן האדם ראייה חיובית, או לפחות אפשרות לראייה חיובית, גם במקרה מוזר מאוד. אם האדם צדיק, אל תהיה בטוח שזה שלילי. לך ושאל אותו: מאין זה לקוח? יש לך מקור? אל תחליט מיד לפרש לרעה.</p>
+      <p>ומכאן לשאלה על המרגלים.</p>
+      <p class="bold-para">מרים ראתה מקרה מוזר ופירשה אותו לרעה, וזה היה חטאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · טוב עין</div>
+      <h3 class="story-title">👀 מה ראו המרגלים</h3>
+      <p>המרגלים יצאו לארץ, ומה ראו? לפי חז"ל, ראו לוויות בכל מקום – ה' עשה שימותו שם רבים, כדי שיהיו עסוקים ולא ישימו לב למרגלים. הרב המחיש זאת במראות מן התקופה, כשבערים בעולם היו לוויות רבות כל יום. והם חזרו ואמרו: "אֶרֶץ אֹכֶלֶת יוֹשְׁבֶיהָ". זה מה שראו!</p>
+      <p>אז מה רצה מהם הקדוש ברוך הוא? אם בורא עולם אמר שהארץ טובה, אתה צריך להתאמץ, לחשוב בכוח: מה יכול להיות שזה טוב? תברר, אל תחליט מיד. זה לא קל, אבל התורה דורשת מיהודי להתאמץ לחשוב באופן חיובי בכל מקום.</p>
+      <p>ולכן נענשו על הימים. העוון שלהם לא היה הדיבור – הדיבור הוא רק התוצאה. העוון היה שראו בצורה שלילית. כשאתה רואה דבר, אתה מצווה על פי התורה לראות אותו בעין טובה.</p>
+      <p>וזו הסיבה שהעונש נמשך יום לשנה: לא על תכנון ולא על הליכה, אלא על המבט השלילי שליווה אותם בכל יום ויום.</p>
+      <p class="bold-para">התורה דרשה מן המרגלים להתאמץ לפרש לטובה גם את מה שנראה רע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · טוב עין</div>
+      <h3 class="story-title">📰 לא תלך רכיל</h3>
+      <p>איך יודעים שהאיסור מתחיל לפני הדיבור? הרב הראה: לא כתוב בתורה "לא תדבר לשון הרע", אלא "לֹא תֵלֵךְ רָכִיל". מה פירוש "תלך רכיל"? כמו רוכל, כמו מרגל. מה עושה מרגל? מחפש איפה יש נקודות תורפה, איפה אפשר להיכנס.</p>
+      <p>בשפה של היום, אמר הרב, "אל תהיה כמו עיתונאי שמחפש מומים": מי שהולך כל היום ומחפש חסרונות, תמיד ימצא. אפשר לקחת את האדם הטוב ביותר ולמצוא עליו דברים רעים.</p>
+      <p>הרב סיפר, בלי שמות, על אדם שעמד בראש ארגון חסד גדול, ושחיפשו עליו פגמים עד שמצאו משהו. ובבית המשפט, אמר, השופט התבייש לשים אדם צדיק כזה בכלא, וגזר עליו עבודות שירות. למה לחפש רע באדם כל כך טוב? תראה כמה טוב יש בו.</p>
+      <p>וזה הפשט בפסוק: "מִי הָאִישׁ הֶחָפֵץ חַיִּים, אֹהֵב יָמִים לִרְאוֹת טוֹב". מי שרוצה לחיות – שיאהב לראות טוב.</p>
+      <p class="bold-para">איסור לשון הרע מתחיל לא בדיבור, אלא במבט שמחפש את החסרונות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · טוב עין</div>
+      <h3 class="story-title">🏋️ זה לא קל</h3>
+      <p>הרב לא הציג את הדברים כפשוטים. הוא אמר בפירוש: לפעמים קשה מאוד לחשוב חיובי. המרגלים ראו דברים קשים באמת. מרים שמעה דבר שנשמע מוזר באמת. ולפעמים המציאות שלפנינו נראית רעה לגמרי.</p>
+      <p>אבל דווקא משום כך זו דרישה. אילו היה קל לראות טוב, לא היה צורך לצוות על כך. התורה דורשת מיהודי להתאמץ: לחפש את האפשרות הטובה, לשאול ולברר לפני שמחליטים, לא לקפוץ למסקנה הרעה.</p>
+      <p>והרב אמר שמי שמתאמן בזה, לאט לאט זה נעשה טבעי. כמו כל הרגל, גם המבט הטוב נבנה בחזרה. בהתחלה צריך לעצור ולחשוב בכוח; אחר כך המחשבה הטובה באה מעצמה.</p>
+      <p>וזה מה שהרוכל מכר: לא פסוק, אלא דרך חיים. מי שרוצה חיים – שיתאמן לראות טוב, ולא רק ישמור את פיו.</p>
+      <p class="bold-para">לפרש לטובה דורש מאמץ, ולפעמים מאמץ גדול, אבל זו דרישת התורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · טוב עין</div>
+      <h3 class="story-title">🌞 לראות טוב</h3>
+      <p>עכשיו מובן מה מכר הרוכל. הוא לא רק קרא פסוק. הוא הסביר: "נְצֹר לְשׁוֹנְךָ מֵרָע" אינו רק לסגור את הפה. הוא לפתוח את העיניים לטוב. תחפש תמיד לראות בכל דבר את החיובי. תהיה אופטימי.</p>
+      <p>והמחקר המודרני, אמר הרב, טוען אותו דבר: אדם אופטימי, שרואה טוב בכל דבר ומפרש לטובה, הוא אדם מאושר, בריא, ומאריך ימים. וזו התשובה גם לשאלה מן השיעור הקודם, על הקשר בין אושר לאריכות ימים.</p>
+      <p>הרב נתן דוגמה מן ההיסטוריה של המדינה: בשעתו, מלחמה עם צבאות שכנים נראתה כמו "גיבורים בני ענק" – דבר מאיים ורע. ובדיעבד, אמר, אותה מלחמה היא שהביאה לכך שהגבולות התרחבו. מה שנראה כמכשול היה ברכה. כך גם "הגיבורים בני הענק" שראו המרגלים יכלו להיות ברכה, אילו ראו אותם בעין טובה.</p>
+      <p>ואדם שחי כך, באופן חיובי – הוא שזוכה, בעזרת ה', לחיים נפלאים וטובים, באיכות ובכמות.</p>
+      <p class="bold-para">מי שמחפש בכל דבר את הטוב, הוא המאושר, הבריא, והחי ימים ארוכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · טוב עין</div>
+      <h3 class="story-title">📜 סיכום: מה מכר הרוכל</h3>
+      <p>בסוף השיעור אפשר לחבר את כל החלקים יחד. פתחנו ברוכל שצעק "מי רוצה חיים", ובפסוק שהראה לרבי ינאי. שאלנו מה כבר יש בפסוק שכולם מכירים, ולמה שילמו לרוכל.</p>
+      <p>אחר כך עברנו לשתי שאלות על המרגלים: למה נענשו על הימים ולא על הדיבור, ולמה נתפסו דווקא על לשון הרע כשעברו עבירות חמורות יותר.</p>
+      <p>ובאמצע למדנו את מודל "אירוע – מחשבה – תוצאה": לא מה שקורה קובע את מצבו של האדם, אלא איך שהוא מפרש את מה שקורה. ראינו זאת בסבלים שסחבו אבנים, בגבאי, בבניין, בקורונה ובדלת הנעולה.</p>
+      <p>ומכאן התשובה לכל השאלות. המרגלים חטאו בימים עצמם, כשראו את הארץ בעין רעה; הדיבור היה רק התוצאה. ולשון הרע מתחילה בעין, ב"לא תלך רכיל". והרוכל לימד שהדרך לחיים ארוכים וטובים היא לאהוב לראות טוב.</p>
+      <p class="bold-para">מבט חיובי הוא הסם של אריכות ימים, וחטא המרגלים היה חטא של מבט.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · טוב עין</div>
+      <h3 class="story-title">🏡 מה לוקחים הביתה</h3>
+      <p>הרב סיים בקריאה מעשית. כל אחד יכול להתחיל מחר בבוקר. כשקורה משהו מרגיז – לעצור ולשאול: מה המחשבה שלי עכשיו? האם אני בונה שרשרת של "לא אכפת לו", "מזלזלים בי", "הכל רע"? ואם כן – האם יש פירוש אחר?</p>
+      <p>כשרואים מישהו עושה דבר מוזר – לא להחליט מיד. לשאול, לברר, לתת את האפשרות שיש לו סיבה טובה. במיוחד כשמדובר באדם צדיק.</p>
+      <p>וכשמסתכלים על המציאות הכללית, על הארץ, על הקהילה – לחפש את הטוב שבה, ולא רק את החסרונות. לא להיות כמו "עיתונאי שמחפש מומים", אלא כמו רבי יעקב משה חרל"פ, ששמע מנגינות.</p>
+      <p>ומי שמתרגל כך, לפי השיעור, זוכה לא רק לחיים שמחים יותר, אלא גם, בעזרת ה', לחיים ארוכים ובריאים יותר.</p>
+      <p class="bold-para">בכל פעם שמשהו קורה, אפשר לשאול: מה אני חושב עכשיו, והאם יש דרך טובה יותר לראות את זה?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/l7rnkYn1O5U · 2025-06-17 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הרוכל והפסוק","icon":"🛒","color":"#c62b6b","stories":[{"id":1,"title":"\"מאן בעי חיי?\"","icon":"🛒"},{"id":2,"title":"מה מכר הרוכל?","icon":"❓"},{"id":3,"title":"חיים באיכות ובכמות","icon":"💪"}]},{"id":2,"name":"עונש על מחשבה?","icon":"⚖️","color":"#6d28d9","stories":[{"id":4,"title":"יום לשנה","icon":"📅"},{"id":5,"title":"למה דווקא לשון הרע?","icon":"🗣️"},{"id":6,"title":"מחשבה ומעשה","icon":"🧩"}]},{"id":3,"name":"אירוע, מחשבה, תוצאה","icon":"🧠","color":"#e08e00","stories":[{"id":7,"title":"מודל \"אמת\"","icon":"🧠"},{"id":8,"title":"שני הסבלים","icon":"🧱"},{"id":9,"title":"הכעס מתחיל בראש","icon":"🌋"},{"id":10,"title":"\"אמ\"ת\" בכל יום","icon":"📝"}]},{"id":4,"name":"אותו אירוע – שני עולמות","icon":"🔀","color":"#1e88b8","stories":[{"id":11,"title":"הגבאי והמסכות","icon":"😷"},{"id":12,"title":"הבניין החדש","icon":"🏗️"},{"id":13,"title":"אותה קורונה","icon":"🏠"},{"id":14,"title":"הדלת הנעולה בליל שבת","icon":"🔒"},{"id":15,"title":"מה משותף לכל הדוגמאות","icon":"🔑"}]},{"id":5,"name":"טוב עין","icon":"👁️","color":"#c62b6b","stories":[{"id":16,"title":"פרישותו של משה","icon":"🤔"},{"id":17,"title":"מה ראו המרגלים","icon":"👀"},{"id":18,"title":"לא תלך רכיל","icon":"📰"},{"id":19,"title":"זה לא קל","icon":"🏋️"},{"id":20,"title":"לראות טוב","icon":"🌞"},{"id":21,"title":"סיכום: מה מכר הרוכל","icon":"📜"},{"id":22,"title":"מה לוקחים הביתה","icon":"🏡"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
