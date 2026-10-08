@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ארבע מאות כרמים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ארבע מאות כרמים</h1>
+  <p>רבי אמי שכתב פסוק אחד ורבי ינאי שנטע חמש גפנים: מצווה שיש בה גם תוצאה וגם לב, ואהבת ארץ ישראל במעשים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ארבע מאות כרמים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/A4Wo_BZF2z4?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/A4Wo_BZF2z4/hqdefault.jpg" alt="ארבע מאות כרמים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=A4Wo_BZF2z4" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני סיפורים בגמרא</div>
+      <h3 class="story-title">🌱 לא רק בט"ו בשבט</h3>
+      <p>השיעור נאמר סמוך לט"ו בשבט, ועסק במצוות נטיעת אילנות בארץ ישראל. יש מנהג לנטוע בט"ו בשבט, אבל האמת היא שאין צורך דווקא ביום הזה. אפשר לנטוע כל השנה. ט"ו בשבט מזכיר לנו את ארץ ישראל ואת פירותיה, ולכן בימים האלה רבים נזכרים במצווה ומתעוררים אליה.</p>
+      <p>וצריך לזכור: נטיעת עצים אינה רק מנהג יפה. זו מצווה מן התורה. נאמר: "וְכִי תָבֹאוּ אֶל הָאָרֶץ וּנְטַעְתֶּם כָּל עֵץ מַאֲכָל". מכאן למדו חז"ל שיש מצווה לנטוע עצי מאכל בארץ ישראל. המנהג של ט"ו בשבט הוא תזכורת; המצווה עצמה עומדת כל השנה.</p>
+      <p>ובשיעור הזה נלמד שאלה עמוקה במצווה הזאת: מה בדיוק היא דורשת מאיתנו? האם העיקר הוא שיהיו עצים בארץ ישראל, לא משנה מי נטע אותם? או שהעיקר הוא שהאדם עצמו יעשה את המעשה? כדי להבין, נתחיל משני סיפורים קצרים ומפליאים בגמרא.</p>
+      <p>התשובה תוביל אותנו דרך הלכות ספר תורה, קידושין והכנות לשבת, אל מצוות לימוד התורה, ועד לאהבת ארץ ישראל. ובסוף נחזור לשאלה מעשית: האם מספיק לשלם כדי שיטעו בשבילי?</p>
+      <p class="bold-para">נטיעת אילנות בארץ ישראל היא מצווה מן התורה, ובט"ו בשבט רק נזכרים בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני סיפורים בגמרא</div>
+      <h3 class="story-title">📜 ארבע מאות ספרי תורה</h3>
+      <p>הגמרא במסכת בבא בתרא מספרת שאמרו לפני אחד החכמים: כתב רבי אמי ארבע מאות ספרי תורה. ארבע מאות ספרי תורה! לא שמענו על דבר כזה אפילו בספרי השיאים. איך אדם יכול לכתוב כל כך הרבה? הרי כתיבת ספר תורה אחד אורכת חודשים רבים.</p>
+      <p>ומיד הגמרא דוחה: אמר ליה, שמא "תּוֹרָה צִוָּה לָנוּ מֹשֶׁה" כתב. כלומר, אולי כתב רק את הפסוק הזה ארבע מאות פעמים. ורש"י מסביר: אי אפשר לאדם לכתוב ארבע מאות ספרי תורה, ולכן מוכרחים לומר שהכוונה למשהו אחר.</p>
+      <p>מיד אחר כך מביאה הגמרא סיפור שני. אמרו לרבי זירא: נטע רבי ינאי ארבע מאות כרמים. לפי מה שהוסבר בשיעור, רבי זירא היה תלמידו של רבי ינאי, ולכן מספרים לו על רבו. ושוב הגמרא דוחה: שמא "שתים כנגד שתים ואחת יוצאת זנב" נטע.</p>
+      <p>"שתים כנגד שתים ואחת יוצאת זנב" הוא השיעור המינימלי שהתורה קוראת לו כרם: חמש גפנים, שתיים מול שתיים ואחת בקצה. כמו צורת חמש הנקודות שבקובייה של משחק ילדים, או שהאחת יוצאת מן הצד. כלומר, אולי נטע רבי ינאי ארבע מאות פעמים כרם קטן כזה.</p>
+      <p class="bold-para">רבי אמי כתב ארבע מאות ספרי תורה – ופירשה הגמרא שכתב בכולם פסוק אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני סיפורים בגמרא</div>
+      <h3 class="story-title">❓ למה דווקא שני הסיפורים האלה?</h3>
+      <p>הסיפורים האלה מעוררים תמיהה. אם הכוונה היא רק לחמש גפנים, למה לספר זאת כסיפור גדול? ארבע מאות כרמים הם דבר עצום. כרם רגיל יש בו מאות ואלפי עצים. למה לומר "נטע ארבע מאות כרמים" על מי שנטע חמש גפנים כמה פעמים? גם על אדם שנטע אלפיים עצים בחייו היינו אומרים שזה יפה מאוד, אבל לא "ארבע מאות כרמים".</p>
+      <p>וכך גם בספר התורה. אם רבי אמי כתב רק פסוק אחד, למה לומר עליו שכתב ארבע מאות ספרי תורה?</p>
+      <p>ועוד שאלה: הגמרא מביאה שני דברים בלבד, זה אחר זה, ספר תורה וכרם בארץ ישראל. מה הקשר ביניהם? למה הם מופיעים יחד?</p>
+      <p>התשובה, כפי שתתברר, היא שבשני המקרים מדובר במצווה מיוחדת: מצווה שבה אדם יכול לעשות חלק קטן, ובכל זאת נחשב לו כאילו עשה את כולה. אבל כדי להבין למה, צריך ללמוד מה כתבו הראשונים על הסוגיה, ואחר כך להבחין בין שני סוגים של מצוות.</p>
+      <p>וכשנבין את היסוד הזה, נבין גם משהו חשוב על מצוות נטיעת העצים שלנו, ועל השאלה איך מקיימים אותה בזמננו.</p>
+      <p class="bold-para">שני הסיפורים יחד מרמזים על יסוד אחד שקושר את ספר התורה ואת הכרם בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני סיפורים בגמרא</div>
+      <h3 class="story-title">👶 "תורה צוה לנו משה" – לילדים</h3>
+      <p>התוספות מביאים הסבר ראשון. בגמרא במסכת סוכה נאמר: קטן היודע לדבר, אביו מלמדו תורה. ומה מלמדים אותו? "תּוֹרָה צִוָּה לָנוּ מֹשֶׁה מוֹרָשָׁה קְהִלַּת יַעֲקֹב". זה הפסוק הראשון שמלמדים ילד קטן.</p>
+      <p>ולמה דווקא הפסוק הזה? כי הוא מלמד את הילד מהי התורה: לא סתם ספר, אלא מורשה. "מורשה" פירושה שמורישים אותה הלאה. התורה ניתנה לנו לא רק בשבילנו, אלא כדי להעביר אותה לכל קהילת יעקב, מדור לדור. ומכאן גם יסוד שאדם לומד תורה כדי ללמד אותה לאחרים.</p>
+      <p>לפי זה, אומרים התוספות, אולי כתב רבי אמי את הפסוק הזה ארבע מאות פעמים כדי שיהיה לילדים ממה ללמוד. כמו כרטיסים קטנים שמכינים לילדים, כשאין להם ספרים לקרוא בהם.</p>
+      <p>זה הסבר יפה, אבל הוא אינו מסביר למה קוראים לזה "ארבע מאות ספרי תורה". ובעיקר, אינו מסביר את הקשר לכרמים של רבי ינאי. לכן נעבור להסבר אחר, של אחד מגדולי הראשונים, שמאיר את שני הסיפורים יחד.</p>
+      <p class="bold-para">לפי תוספות, אולי כתב רבי אמי את הפסוק הזה פעמים רבות כדי שילדים ילמדו ממנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני סיפורים בגמרא</div>
+      <h3 class="story-title">✍️ הפסוק שכתב בעצמו</h3>
+      <p>תוספות הרא"ש – הרא"ש, אביו של בעל הטורים – מביא פירוש אחר. יש הלכה חשובה מאוד: מי שמזמין ספר תורה ומממן אותו, צריך שגם הוא עצמו יעשה משהו בכתיבה. אי אפשר שהסופר יעשה הכל לבדו. למה? כי נאמר בתורה: "וְעַתָּה כִּתְבוּ לָכֶם אֶת הַשִּׁירָה הַזֹּאת". הסופר כותב בשליחות, אבל המצווה מוטלת על האדם עצמו.</p>
+      <p>ומה עושים בפועל? הכל לפי חכמתו של האדם. מי שיודע לכתוב היטב, כותב פסוק בעצמו. מי שאינו יודע, מכינים לו אות בקווי מתאר והוא ממלא אותה. ומי שאינו יודע כלום, אוחז בידו של הסופר בשעה שהוא כותב. כל אחד לפי כוחו, ובלבד שיהיה לו חלק במעשה.</p>
+      <p>וזה, לפי תוספות הרא"ש, פשט הגמרא. רבי אמי הזמין סופרים רבים שיכתבו ספרי תורה, ואמר להם: כשתגיעו לפסוק "תורה צוה לנו משה", קראו לי, ואני אכתוב אותו. וכיוון שכתב בעצמו פסוק אחד בכל ספר, והשאר נכתב בשליחותו ועל חשבונו, נחשב לו כאילו כתב את כל ספרי התורה.</p>
+      <p>וגם הריטב"א מפרש בדרך דומה: רבי אמי היה עשיר, והחזיק סופרים רבים. הם כתבו, והוא השתתף בכל ספר בכתיבת הפסוק הזה.</p>
+      <p class="bold-para">לפי תוספות הרא"ש, רבי אמי מימן סופרים וכתב בעצמו פסוק אחד, ונחשב לו כאילו כתב את כל הספר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני סיפורים בגמרא</div>
+      <h3 class="story-title">🍇 חמש גפנים בכל כרם</h3>
+      <p>ועכשיו מבינים גם את הסיפור השני. רבי ינאי ישב בארץ ישראל. הוא רצה לעסוק בתורה, ולא לעבוד כל היום בשדות. אבל כשהיו נוטעים כרם חדש, אמר: הזמינו אותי. וכשהגיע לשם, נטע במו ידיו "שתים כנגד שתים ואחת יוצאת זנב", חמש גפנים. ומפני שעשה זאת, נחשב לו כאילו נטע את כל הכרם.</p>
+      <p>יש כאן דבר מעניין. בדרך כלל, כשמכבדים אדם בנטיעה, הוא נוטע עץ אחד. כך גם בחנוכת יישובים מכבדים את הרב לנטוע עץ אחד. ורבי ינאי נטע דווקא חמש. למה?</p>
+      <p>הרב אומר שלא מצא לכך מקור, ומציע סברה: חמש גפנים הן השיעור שנקרא כרם בהלכה, לעניין כלאי הכרם, לעניין "מי שנטע כרם ולא חיללו" החוזר מעורכי המלחמה, ועוד. רבי ינאי רצה שיהיה לו חלק חשוב בכרם, ולא רק סמל. לכן נטע כרם שלם בזעיר אנפין.</p>
+      <p>וזה מקביל בדיוק לרבי אמי. גם הוא לא הסתפק באחיזת יד הסופר. הוא כתב פסוק שלם וחשוב. כך יוצא שראוי לכל אדם לחשוב: איך עושים חלק אמיתי במצווה, ולא רק נגיעה סמלית. כל אחד לפי כוחו, אבל חלק של ממש.</p>
+      <p class="bold-para">רבי ינאי נטע בעצמו חמש גפנים בכל כרם חדש, כדי שיהיה לו חלק של ממש בכרם כולו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שני סיפורים בגמרא</div>
+      <h3 class="story-title">🙌 הרב קוק שנטע בידיו</h3>
+      <p>בהקשר הזה הובא גם סיפור על הרב אברהם יצחק הכהן קוק. כשהוקם היישוב מגדיאל, לפני כמאה שנה, הזמינו את הרב קוק לנטוע עצים בחנוכת היישוב. מרוב התלהבות לא רצה לחפור בכלי. הוא חפר בידיו, ונטע את העצים בידיו.</p>
+      <p>אחר כך שאלו אותו: מה פשר ההתרגשות הגדולה? נראית כמו דבקות גדולה יותר מבשעת קריאת שמע. השיב להם הרב קוק: כתוב "אַחֲרֵי ה' אֱלֹקֵיכֶם תֵּלֵכוּ". איך אפשר לאדם ללכת אחרי הקדוש ברוך הוא? יש מדרשים שמסבירים שהכוונה ללכת במידותיו. אבל יש מדרש שאומר שהקדוש ברוך הוא נתעסק במטע תחילה, שנאמר "וַיִּטַּע ה' אֱלֹקִים גַּן בְּעֵדֶן מִקֶּדֶם", ואף אתם כשתיכנסו לארץ תתעסקו במטע תחילה.</p>
+      <p>ואם תשאל: הרי העצים נבראו רק ביום השלישי? המפרשים מסבירים לפי תרגום אונקלוס ש"מקדם" פירושו מלפנים, עוד לפני בריאת העולם. הקדוש ברוך הוא ברא את גן עדן ונטע בו עצים, וזה הדבר הראשון שמסופר שעשה.</p>
+      <p>לכן אמר הרב קוק: יש לי הזדמנות להידבק בפעולה הראשונה של בורא עולם. איך לא אהיה כולי נרגש? גם הסיפור הזה מלמד שהנטיעה אינה רק תוצאה. יש בה לב, דבקות ומעשה אישי.</p>
+      <p class="bold-para">כשאדם נוטע עץ בארץ ישראל הוא הולך בדרכו של הבורא, שהתחיל את הבריאה בנטיעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצווה על האדם ומצווה על החפץ</div>
+      <h3 class="story-title">🚪 מזוזה ומעקה – מצוות על החפץ</h3>
+      <p>כדי להבין מה הולך כאן, צריך להכיר הבחנה ידועה: יש מצוות שהן "חפצא" ויש מצוות שהן "גברא". מצווה של חפצא היא מצווה שעיקרה החפץ, התוצאה. מצווה של גברא היא מצווה שעיקרה האדם, המעשה של האדם עצמו.</p>
+      <p>דוגמה למצווה של חפצא: מזוזה. מותר להזמין רב חשוב שיקבע את המזוזה בבית החדש או בחנות. יש מי שעורכים טקס, מצלמים, ויש לבעל החנות גם פרסום. אין בזה שום בעיה. העיקר הוא שתהיה מזוזה על הפתח. מי קבע אותה, אני או אתה או הוא, אינו משנה את עיקר המצווה.</p>
+      <p>וכך גם מעקה. העיקר הוא שיהיה מעקה על הגג, כדי שלא ייפול הנופל. אפשר לשכור פועל, ואין זה משנה מי בנה אותו. יש אמנם שאומרים שיש מעלה להשתתף בעצמך, להניח לפחות לבנה אחת, אבל עיקר המצווה הוא התוצאה. וגם השכן שהביא לבנה אחת לבניין המעקה של חברו, עשה דבר טוב והשתתף, אבל המצווה עצמה כבר הייתה מתקיימת גם בלעדיו.</p>
+      <p>אלה מצוות שבהן התורה רוצה מצב בעולם: שתהיה מזוזה, שיהיה מעקה. כשהמצב קיים, המצווה מקוימת.</p>
+      <p class="bold-para">יש מצוות שעיקרן שהחפץ יהיה במקומו, ואין חשיבות רבה למי שעשה את המעשה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצווה על האדם ומצווה על החפץ</div>
+      <h3 class="story-title">📿 תפילין ומגילה – מצוות על האדם</h3>
+      <p>ויש מצוות שהן של גברא. למשל תפילין. אין שייך לומר למישהו: תניח תפילין בשבילי. המצווה היא שאתה תניח תפילין, על ידך ועל ראשך. אין כאן תוצאה בעולם שאפשר להשיג על ידי אחר.</p>
+      <p>וכך גם מגילה. בפורים יש אנשים עסוקים מאוד. האם אדם יכול לשלם למישהו שיקרא את המגילה במקומו? לא. כי המצווה אינה שהמגילה תיקרא. המצווה היא שאתה תקרא את המגילה, או תשמע אותה. אילו המצווה הייתה שהמגילה תיקרא, היה מספיק שמישהו בעולם קורא אותה. אבל המצווה מוטלת על כל אדם בגופו.</p>
+      <p>וזה ההבדל: גברא פירושו האדם, חפצא פירושו החפץ. ויש מצוות שבהן החיוב מוטל על האדם, אבל עיקרו הוא החפץ. למשל ציצית: החיוב הוא על האדם שלובש בגד בן ארבע כנפות, אבל אין זה משנה מי קשר את הציציות. העיקר שיהיו ציציות בבגד.</p>
+      <p>ברית מילה, הוזכר בשיעור, היא נושא מורכב יותר. יש בה חיוב על האב, ויש בה עניין בגופו של הבן, והשאלה מה בדיוק המצווה של האב היא נושא לעיון בפני עצמו. לא נאריך בה כאן.</p>
+      <p>עד כאן שני סוגים ברורים. אבל השאלה הגדולה היא מה קורה במצוות שהן באמצע. ועליהן נלמד מסוגיה מפורסמת במסכת קידושין.</p>
+      <p class="bold-para">במצוות של "גברא" המצווה היא המעשה של האדם עצמו, ואין לשלם למישהו שיעשה אותה במקומו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצווה על האדם ומצווה על החפץ</div>
+      <h3 class="story-title">🐟 "מצוה בו יותר מבשלוחו"</h3>
+      <p>הפרק השני של מסכת קידושין פותח: "האיש מקדש בו ובשלוחו". שואלת הגמרא: אם אדם יכול לקדש על ידי עצמו, למה צריך לומר שגם על ידי שליח? ומשיבה: מצווה בו יותר מבשלוחו. מותר לשלוח שליח, אבל עדיף שאדם יעשה בעצמו.</p>
+      <p>ושם מביאה הגמרא שחכמים היו טורחים בעצמם לכבוד שבת. רבא היה מולח דגים בעצמו, ואמוראים אחרים היו עושים פעולות אחרות בבית: זה מכין את הבשר, זה מכין את העצים. אף שיכלו בקלות למסור זאת לאחרים, הם עשו בעצמם, כי מצווה בו יותר מבשלוחו.</p>
+      <p>ושואלים האחרונים שאלה פשוטה מאוד: אם כך, למה לא נשמע זאת בכל המצוות? האם גדול הדור צריך לבנות בעצמו את הסוכה שלו? האם רב חשוב צריך לכתוב בעצמו את המגילה שהוא קורא בה, או לאפות בעצמו את המצות? הרי גם שם מצווה בו יותר מבשלוחו.</p>
+      <p>ואם תאמר שחכמים טרחו בהכנות לשבת רק כמה רגעים, כדי שיהיה להם חלק, אז למה לא נאמר כך גם על מצוות אחרות? למה דווקא בקידושין ובשבת? מה מיוחד בהן?</p>
+      <p class="bold-para">חכמי הגמרא טרחו בעצמם בהכנות לשבת אף שיכלו לשלוח אחרים, כי מצווה בו יותר מבשלוחו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מצווה על האדם ומצווה על החפץ</div>
+      <h3 class="story-title">💍 החתן ששלח שליח</h3>
+      <p>בעל השולחן ערוך הרב מסביר: יש מצוות מורכבות, שיש בהן שני חלקים, גם גברא וגם חפצא. וקידושין הם הדוגמה הבולטת.</p>
+      <p>תארו לעצמכם: אתה מגיע לחתונה. אולם מפואר, תזמורת עם כל הכלים, הכל מוכן. אתה מגיע לחופה ומחפש את החתן, ואינך רואה אותו. אתה שואל את אבי החתן: איפה החתן? והוא משיב: החתן עסוק מאוד, הוא שלח שליח לקדש את הכלה. הרי כתוב "האיש מקדש בו ובשלוחו".</p>
+      <p>מה תחשוב? תחשוב שקשה לבנות בית כך. אם החתן לא טרח לבוא אפילו לחתונה שלו, איך יחזיק הבית? כל אחד מבין שחתונה אינה כמו קניית פטיש בחנות. פטיש אפשר לשלוח לקנות. אבל קידושין אינם רק קניין חיצוני. הם חיבור של אהבה, של נפש לנפש. מבחינה הלכתית השליחות מועילה, אבל זו לא הצורה.</p>
+      <p>וכך גם שבת. מצוות כבוד שבת אינה רק שיהיה שולחן ערוך, מפה לבנה, נרות דולקים ומאכלים טובים. זה חלק מן המצווה, אבל לא העיקר. העיקר הוא שאתה בעצמך תטרח ותכין לכבוד השבת. למה? כי השבת נקראת כלה ומלכה. ומי שמכבד ואוהב, טורח בעצמו. אם לא טרחת, השבת אמנם הגיעה, אבל איפה אתה בתמונה?</p>
+      <p>במצוות כאלה, שהחלק הנפשי שבהן חשוב מאוד, ראוי שאדם יעשה בעצמו.</p>
+      <p class="bold-para">קידושין ושבת הן מצוות שבהן החלק הנפשי של האדם הוא עיקר, ולכן ראוי שיעשה בעצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תורה – לא רק בשביל לעשות</div>
+      <h3 class="story-title">⛰️ "נעשה ונשמע"</h3>
+      <p>עכשיו נעבור ללימוד התורה, ומשם לארץ ישראל. בשעת מתן תורה אמרו ישראל "נַעֲשֶׂה וְנִשְׁמָע". והגמרא אומרת שבשעה שהקדימו ישראל נעשה לנשמע, באו מלאכי השרת וקשרו לכל אחד שני כתרים.</p>
+      <p>אבל יש לשאול: מה פירוש "נעשה ונשמע"? אם אמרת "נעשה", ברור שכבר שמעת מה לעשות. אחרת איך תעשה? מה מוסיף "נשמע" אחרי "נעשה"?</p>
+      <p>הבית הלוי מבאר יסוד נפלא. אילו אמרו "נשמע ונעשה", היה משמע שכל לימוד התורה הוא רק בשביל לדעת מה לעשות. לומדים כדי לעשות, ואחרי שיודעים, אין צורך עוד ללמוד. וזה אינו נכון. לומדים תורה גם כדי לעשות, אבל לומדים תורה גם בשביל ללמוד.</p>
+      <p>מה פירוש? כשאדם לומד תורה, הוא מתחבר לבורא עולם. בעצם הישיבה והלימוד הוא לומד מה הקדוש ברוך הוא רוצה, ומתקשר אליו. עצם הלימוד הוא מטרה. לכן אמרו "נעשה" קודם, ואחר כך "ונשמע": גם אחרי שעשינו, נשב ונלמד, לשם מצוות לימוד התורה.</p>
+      <p>וזה מה שמייחד את לימוד התורה: אין לו סוף. גם מי שכבר יודע מה לעשות, ממשיך ללמוד, כי הלימוד עצמו הוא החיבור.</p>
+      <p class="bold-para">ישראל הקדימו "נעשה" ל"נשמע" כדי ללמד שלימוד התורה אינו רק אמצעי למעשה, אלא מטרה בפני עצמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תורה – לא רק בשביל לעשות</div>
+      <h3 class="story-title">🍯 "והערב נא" – רק על התורה</h3>
+      <p>והראיה: בכל בוקר אנו מברכים "וְהַעֲרֶב נָא ה' אֱלֹקֵינוּ אֶת דִּבְרֵי תוֹרָתְךָ בְּפִינוּ". "והערב" אינו מלשון ערב ולילה, אלא מלשון עָרֵב, מתוק. אנו מבקשים שהתורה תהיה מתוקה בפינו.</p>
+      <p>ולמה לא מבקשים זאת גם על מצוות אחרות? היו צדיקים שאהבו מאוד את מצוות התפילין. למה לא מבקשים "והערב נא את מצוות התפילין", או את מצוות הציצית? למה דווקא על התורה?</p>
+      <p>התשובה: כי במצוות לימוד התורה עצמה יש חלק כזה. בעל אגלי טל כותב שעיקר מצוות לימוד התורה הוא להיות שש ושמח ומתענג בלימודו. לימוד תורה אינו הכנסת חומר לראש, כמו לפני מבחן בגרות. גם הידיעה חשובה, אבל המצווה היא להתענג, לשמוח, ועל ידי זה להתחבר לתורה ולבורא עולם.</p>
+      <p>ועכשיו מבינים את רבי אמי. ספר תורה אינו חפץ בלבד. מי שכותב ספר תורה צריך גם להתחבר אליו. לכן אינו יכול להסתפק במימון. הוא צריך לכתוב בעצמו, לפחות פסוק אחד, כדי שיהיה לו חלק אישי בספר. ומכיוון שכתב, ועשה זאת מתוך חיבור, נחשב לו כאילו כתב את כל הספר.</p>
+      <p class="bold-para">עיקר מצוות לימוד התורה הוא להיות שש ושמח בלימוד, ועל ידי זה להתחבר לבורא עולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לאהוב את הארץ</div>
+      <h3 class="story-title">🪨 "כי רצו עבדיך את אבניה"</h3>
+      <p>ומה עם ארץ ישראל? רבים אינם יודעים: יש מצווה לא רק לגור בארץ ישראל, ולא רק לבנות אותה, אלא גם לאהוב אותה. מניין? כתוב בתהלים: "אַתָּה תָקוּם תְּרַחֵם צִיּוֹן... כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ, וְאֶת עֲפָרָהּ יְחֹנֵנוּ". "יחוננו" פירושו שהם מחבבים את העפר שלה, אוהבים אותו.</p>
+      <p>מסופר שבקהילות בצפון אפריקה, כשהיה מגיע שליח מארץ ישראל, היו כולם מתלהבים. היו מנשקים את בגדיו, והיו רואים בו כמעט כמו את הכותל המערבי. וכשנכנס לבית, היו מבקשים את נעליו, מגרדים מהן מעט עפר, ואומרים: זה עפר מארץ ישראל. את העפר הזה היו מערבבים במים ושותים.</p>
+      <p>זה נשמע מוזר למי שאינו מבין. אבל זו בדיוק האהבה שהפסוק מתאר: "ואת עפרה יחוננו". ורבי יהודה הלוי בשירו על ציון מתאר את הגעגועים לחונן את אבניה ואת עפרה.</p>
+      <p>וזה לא רק רגש של יחידים. התורה עצמה אומרת: "כִּי אִישׁ בְּנַחֲלַת מַטֵּה אֲבֹתָיו יִדְבְּקוּ בְּנֵי יִשְׂרָאֵל". לשון דבקות, כמו שנאמר "וְדָבַק בְּאִשְׁתּוֹ". אין זה רק חובה לגור, אלא חיבור של אהבה.</p>
+      <p class="bold-para">יש מצווה לא רק לגור בארץ ישראל ולבנות אותה, אלא גם לאהוב אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לאהוב את הארץ</div>
+      <h3 class="story-title">💋 לנשק את אבניה</h3>
+      <p>והדבר נפסק להלכה. הרמב"ם כותב בהלכות מלכים שגדולי החכמים היו מנשקים על תחומי ארץ ישראל, ומנשקים את אבניה, ומתגלגלים על עפרה, וכן הוא אומר: "כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ וְאֶת עֲפָרָהּ יְחֹנֵנוּ".</p>
+      <p>הרב העיר כמה מפליא הדבר. מנהג נשיקת חפצי מצווה ידוע לנו מספרי הפוסקים, אבל ברמב"ם, על פי רוב, אין תיאורים כאלה. ודווקא כאן, על ארץ ישראל, מתאר הרמב"ם בהלכה איך החכמים מנשקים את אבניה. זה מלמד כמה האהבה לארץ היא חלק מן התורה עצמה.</p>
+      <p>ולכן גם דינים אחרים נוגעים בזה. מי שרואה את ערי יהודה בחורבנן קורע את בגדו, כמו על אדם קרוב. הצער על הארץ, כמו האהבה אליה, הוא רגש שהתורה רוצה שנרגיש.</p>
+      <p>ומה לומדים מזה למעשה? שצריך לחפש דרכים לעורר את האהבה. אהבה אינה באה מעצמה. כמו בכל אהבה, צריך לטפח אותה, להתבונן, לעשות מעשים שמקרבים. ובשיעור הובאה לכך דוגמה פשוטה מאוד, מן החנות הקרובה לבית.</p>
+      <p class="bold-para">הרמב"ם פוסק שגדולי החכמים היו מנשקים את תחומי הארץ ואת אבניה ומתגלגלים על עפרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לאהוב את הארץ</div>
+      <h3 class="story-title">🌴 תמר שהוא דבש</h3>
+      <p>בימי ט"ו בשבט רבים קונים פירות יבשים, ורבים מהם באים מחוץ לארץ. כדאי לשאול בחנות: איפה כאן פירות של ארץ ישראל? לפעמים יש בדיוק בפינה אחת תמרים מן הארץ, ולא יבשים אלא תמרים רכים ומלאים.</p>
+      <p>תמר כזה אפשר כמעט למרוח על הלחם. כשאוכלים אותו, הידיים נעשות דביקות, ממש כמו מדבש. ואז מבינים קצת למה התורה אומרת על הארץ "זָבַת חָלָב וּדְבָשׁ". המפרשים מסבירים שהדבש של הפסוק הוא דבש הפירות, ובהם התמרים. וכשטועמים אותו, רואים שזה באמת דבש.</p>
+      <p>אפשר לקנות שקדים, פיצוחים ופירות יבשים מכל העולם, אבל מי שאוהב את ארץ ישראל מחפש דווקא את פירותיה. אין זו הקפדה של סתם, אלא דרך לעורר את הלב.</p>
+      <p>וזה כלל גדול: אהבה מתעוררת דרך מעשים קטנים. כל פרי מן הארץ, כל ברכה עליו, כל רגע שבו אדם מתבונן בטוב שנתן לנו הקדוש ברוך הוא בארץ הזאת, מוסיפים לאהבה. ואהבה זו מצווה. ומי שמרגיל את עצמו לכך, ירגיש עם הזמן שהארץ אינה רק מקום שהוא גר בו, אלא מתנה שהוא אוהב.</p>
+      <p class="bold-para">גם בחירה בפירות ארץ ישראל היא דרך לעורר אהבה לארץ, ולהבין מהו "זבת חלב ודבש".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלק במעשה, חלק בכל</div>
+      <h3 class="story-title">🌊 העץ שנסחף בשיטפון</h3>
+      <p>ועכשיו נחזור לנטיעת העצים. האם מצוות הנטיעה היא חפצא או גברא? נראה שהיא מצווה משולבת, ויש לה את שני הצדדים.</p>
+      <p>ראשית, יש בה צד של תוצאה. מניין? הגמרא דנה במקרה כזה: שיטפון גדול עקר עצים משדה של אדם, וסחף אותם אל שדה חברו, ושם נקלטו באדמה. בעל העצים רואה אותם ואומר: זה העץ שלי, אני רוצה אותו בחזרה. ופוסקת ההלכה שאינו יכול לדרוש לעקור אותו. בעל השדה ישלם לו את דמי העץ, והעץ יישאר במקומו.</p>
+      <p>ולמה? מפני יישוב ארץ ישראל. הרב מבאר: אם יעקרו את העץ, הוא אולי ישתול אותו שוב, ואולי לא. ואם יקבל כסף, אולי יקנה עץ אחר ויטע, ואולי לא. אבל אם העץ יישאר במקומו, הרי יש עוד עץ בארץ ישראל. ההלכה מעדיפה את המצב שבו נשאר העץ נטוע.</p>
+      <p>רואים מכאן שעצם קיומם של עצים בארץ ישראל הוא מטרה בפני עצמה. גם כשאיש לא נטע את העץ, כשהמים הם שהביאו אותו, התוצאה טובה וחשובה. זה צד החפצא שבמצווה.</p>
+      <p>והדבר מלמד גם על סדר העדיפויות של ההלכה. בדרך כלל, מי שחפצו נמצא אצל אחר יכול לדרוש אותו בחזרה. כאן ההלכה מוותרת על כך, ומסתפקת בתשלום, רק כדי שלא ייעקר עץ אחד מארץ ישראל. כמה חשוב לתורה שהארץ תהיה נטועה.</p>
+      <p class="bold-para">ההלכה קובעת שעץ שנסחף לשדה חברו ונקלט שם לא ייעקר, מפני יישוב ארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלק במעשה, חלק בכל</div>
+      <h3 class="story-title">💚 אבל איפה הלב?</h3>
+      <p>אבל התוצאה לבדה אינה מספיקה. שאלה ששאלו בשיעור: יש היום אפשרות לשלם כסף לגוף ציבורי, והוא נוטע עץ בשבילך, ואולי אף שולח לך תמונה או תעודה. בעבר היו מקומות שנטעו עץ לכל תינוק שנולד. האם בזה מקיימים את המצווה?</p>
+      <p>התשובה בשיעור: יש בזה צד גדול. התוצאה היא טובה, עוד עץ בארץ ישראל. אבל זה לא הכל. כי מצוות הנטיעה, כמו כתיבת ספר תורה, כמו קידושין וכבוד שבת, יש בה גם צד של גברא: צד של חיבור ואהבה. וכדי להתחבר לארץ ישראל ולאהוב אותה, צריך לעשות מעשים.</p>
+      <p>כשאדם לוחץ על כפתור או מוסר כרטיס אשראי, הלב שלו אינו עובר דרך המכשיר. הוא אינו נוגע באדמה, אינו מרגיש את המצווה. ואהבה אינה נבנית דרך תשלום בלבד. היא נבנית דרך המעשה.</p>
+      <p>לכן, מצווה כזאת, שיש בה גם תכלית בעולם וגם חיבור של האדם, דורשת את שני הצדדים. ואיך עושים זאת? בדיוק כמו רבי אמי ורבי ינאי.</p>
+      <p class="bold-para">התוצאה חשובה, אבל כדי להתחבר לארץ ולאהוב אותה צריך לעשות מעשה בעצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · חלק במעשה, חלק בכל</div>
+      <h3 class="story-title">🌳 חלק במעשה – חלק בכל</h3>
+      <p>ועכשיו מתבררת הגמרא שבה פתחנו. "כתב רבי אמי ארבע מאות ספרי תורה" – איך ייתכן? היה ספר תורה לקראת סיומו, והוא כתב בעצמו את הפסוק "תורה צוה לנו משה", ושילם לסופר על השאר. וכיוון שכתיבת ספר תורה היא מצווה משולבת, שיש בה גם תוצאה וגם חיבור, נחשב לו כאילו כתב את כל הספר.</p>
+      <p>"נטע רבי ינאי ארבע מאות כרמים" – גם הוא, את רוב העבודה עשו הפועלים, והוא שילם להם. אבל הוא בעצמו נטע "שתים כנגד שתים ואחת יוצאת זנב", כרם קטן ושלם. הוא השתתף במעשה, ובזה נחשב לו כאילו נטע את כל הכרם.</p>
+      <p>זו הסיבה ששני הסיפורים מופיעים יחד. בשניהם מדובר במצווה שיש בה צד של תוצאה וצד של לב. התוצאה מושגת גם על ידי שליחים, אבל הלב צריך את האדם עצמו. ומי שעושה חלק אמיתי בידיו, ומשלים את השאר בשליחות, זוכה במצווה כולה.</p>
+      <p>ומכאן לנו: מי שמשלם כדי שיטעו עצים, עושה דבר טוב. אבל כדאי שגם יטע בעצמו, לפחות עץ אחד, לפחות כמה. יזכנו ה' לגור בארץ, לבנות אותה ולאהוב אותה, לעשות בה מעשים ועל ידם להתחבר אליה, עד שנזכה למה שנאמר: "אַתָּה תָקוּם תְּרַחֵם צִיּוֹן... כִּי רָצוּ עֲבָדֶיךָ אֶת אֲבָנֶיהָ וְאֶת עֲפָרָהּ יְחֹנֵנוּ".</p>
+      <p class="bold-para">מי שעושה בעצמו חלק אמיתי במצווה המשולבת, נחשב לו כאילו עשה את כולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/A4Wo_BZF2z4 · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שני סיפורים בגמרא","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"לא רק בט\"ו בשבט","icon":"🌱"},{"id":2,"title":"ארבע מאות ספרי תורה","icon":"📜"},{"id":3,"title":"למה דווקא שני הסיפורים האלה?","icon":"❓"},{"id":4,"title":"\"תורה צוה לנו משה\" – לילדים","icon":"👶"},{"id":5,"title":"הפסוק שכתב בעצמו","icon":"✍️"},{"id":6,"title":"חמש גפנים בכל כרם","icon":"🍇"},{"id":7,"title":"הרב קוק שנטע בידיו","icon":"🙌"}]},{"id":2,"name":"מצווה על האדם ומצווה על החפץ","icon":"⚖️","color":"#6d28d9","stories":[{"id":8,"title":"מזוזה ומעקה – מצוות על החפץ","icon":"🚪"},{"id":9,"title":"תפילין ומגילה – מצוות על האדם","icon":"📿"},{"id":10,"title":"\"מצוה בו יותר מבשלוחו\"","icon":"🐟"},{"id":11,"title":"החתן ששלח שליח","icon":"💍"}]},{"id":3,"name":"תורה – לא רק בשביל לעשות","icon":"📖","color":"#e08e00","stories":[{"id":12,"title":"\"נעשה ונשמע\"","icon":"⛰️"},{"id":13,"title":"\"והערב נא\" – רק על התורה","icon":"🍯"}]},{"id":4,"name":"לאהוב את הארץ","icon":"❤️","color":"#1e88b8","stories":[{"id":14,"title":"\"כי רצו עבדיך את אבניה\"","icon":"🪨"},{"id":15,"title":"לנשק את אבניה","icon":"💋"},{"id":16,"title":"תמר שהוא דבש","icon":"🌴"}]},{"id":5,"name":"חלק במעשה, חלק בכל","icon":"🌳","color":"#c62b6b","stories":[{"id":17,"title":"העץ שנסחף בשיטפון","icon":"🌊"},{"id":18,"title":"אבל איפה הלב?","icon":"💚"},{"id":19,"title":"חלק במעשה – חלק בכל","icon":"🌳"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
