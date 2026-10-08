@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ושלום תענך</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ושלום תענך</h1>
+  <p>מה נקרא שלום על פי התורה: תנאי השלום, מצור ושלבי המלחמה, ומי מוסמך להחליט על יציאה למלחמה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ושלום תענך" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/oINW_13lGag?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/oINW_13lGag/hqdefault.jpg" alt="ושלום תענך" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=oINW_13lGag" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פסוקים שחזרו לחיים</div>
+      <h3 class="story-title">📜 בין לימוד למעשה</h3>
+      <p>השיעור נפתח בהקדמה חשובה. בדיני מלחמה עולות היום המון שאלות: מה מותר, מה אסור, מה מוסרי ומה לא. כדי לגשת אליהן צריך קודם לראות מה כתוב בתורה. ומיד מתגלה דבר מפתיע: אפילו מה שכתוב אינו פשוט כל כך.</p>
+      <p>הרב הציג כלל גדול: יש הבדל של שמים וארץ בין ללמוד לבין ללכת וליישם את מה שלמדת. כל עוד הלימוד נשאר בבית המדרש, הכל נראה ברור. כשמגיעים לביצוע, נפתח עולם אחר לגמרי. צצות שאלות רבות, ספקות רבים, ודברים שנראו פשוטים מתגלים כמורכבים.</p>
+      <p>במשך אלפי שנים קראו יהודים את פרשיות המלחמה שבספר דברים. קראו, למדו, דנו, והמשיכו הלאה. השאלה איך מקיימים אותן הלכה למעשה לא נגעה לאיש. ואז, אחרי כל הדורות האלה, ברוך ה' חזרנו לארץ ישראל, ופתאום כל הפסוקים האלה נוגעים לחיים עצמם.</p>
+      <p>זה דומה למי שלמד את הלכות שבת מן הספר, ופתאום נדרש להכריע בשאלה שעלתה באמצע שבת בבית חולים. הידיעה הכללית קיימת, אבל המקרה המסוים דורש עיון חדש. כך גם כאן, רק בהיקף גדול הרבה יותר: עם שלם חוזר אל פסוקים שעמדו בצד במשך דורות.</p>
+      <p>במצב כזה מתחילות לעלות שאלות שאיש לא שאל קודם. לפעמים אין לנו כמעט בסיס: אין דיונים מפורטים, אין דיוקים קטנים, כי כל זה לא היה מעשי. אנחנו עומדים ומנסים לגשש, ימינה ושמאלה, כדי להבין מה ברור ומה מסופק.</p>
+      <p class="bold-para">יש הבדל עצום בין ללמוד פסוק לבין לנסות ליישם אותו, ובדיני מלחמה הפער הזה גדול במיוחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פסוקים שחזרו לחיים</div>
+      <h3 class="story-title">❓ שאלה שאף אחד לא שאל</h3>
+      <p>הרב הביא דוגמה לשאלה שעלתה רק כשהנושא נעשה מעשי. בפרשת כי תצא מדובר על יציאה למלחמה, ונאמר שם "וְשָׁבִיתָ שִׁבְיוֹ". והנה, בפרשה הקודמת למדנו שכאשר כובשים עיר שלא השלימה, מכים את כל הזכרים שבה. אם כך, מאין יש שבי? האם כל השבי הוא נשים בלבד?</p>
+      <p>על השאלה מדוע מותר לקחת שבי, ואילו במקום אחר נאמר "לֹא תְחַיֶּה כָּל נְשָׁמָה", רש"י כבר עונה: שם מדובר בשבעת העממים, וכאן במלחמת הרשות. אבל השאלה על הזכרים נשארת. האם באמת אין שבויים זכרים כלל, והשבי הוא רק נשים, כמו שמשתמע מדין אשת יפת תואר?</p>
+      <p>ומה שמעניין במיוחד: כשמחפשים את השאלה הזו במפרשים, כמעט לא מוצאים אותה. היא שאלה פשוטה, ובכל זאת כמעט אף אחד לא שואל. למה? כי במשך כמעט שלושת אלפים שנה, מאז ימי כיבוש הארץ, הפסוקים האלה לא היו רלוונטיים למעשה.</p>
+      <p>זו התמונה הכללית שבתוכה צריך ללמוד את הסוגיה: המצווה ברורה, אבל אופן קיומה דורש בירור רב. הדוגמה של השבי היא רק אחת מני רבות. בכל פרט כמעט, מן הקריאה לשלום ועד המצור, מתגלות שאלות דומות, שהתשובה עליהן אינה כתובה במפורש, וצריך לחלץ אותה מתוך הפסוקים והמפרשים בזהירות.</p>
+      <p class="bold-para">גם קושיה פשוטה על השבי בפרשת כי תצא כמעט לא נשאלה במפרשים, משום שהעניין לא היה מעשי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פסוקים שחזרו לחיים</div>
+      <h3 class="story-title">✅ מה כן ברור</h3>
+      <p>חשוב לא לטעות. כשהרב מדבר על ספקות ועל שאלות פתוחות, הוא אינו מערער על עצם הדינים. דיני המלחמה והשלום הם מצוות התורה, ואין שום ספק בכך. מה שאינו פשוט הוא איך מקיימים אותם בפועל, בתנאים של היום.</p>
+      <p>ההבחנה הזו חשובה מאוד. יש מי שמסיק מן הקושי המעשי שהדינים עצמם אינם רלוונטיים, או שאפשר להניח להם. ויש מי שמסיק מן הוודאות שבדינים שאין צורך בעיון ובזהירות. שתי המסקנות שגויות.</p>
+      <p>הדרך הנכונה היא ללכת צעד אחר צעד: לקרוא את הפסוק, לראות מה אומרים עליו רש"י והרמב"ם והמפרשים, להבחין בין מה שמוסכם לבין מה שנחלקו בו, ולסמן במפורש את מה שאיננו יודעים. כך נעשה בשיעור הזה, ונתחיל מן החלק הראשון: הקריאה לשלום.</p>
+      <p class="bold-para">החובה עצמה אינה מוטלת בספק; הספקות נוגעים לאופן הקיום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · למי מציעים שלום</div>
+      <h3 class="story-title">📖 רש"י: רק במלחמת הרשות</h3>
+      <p>נתחיל מן הפסוק הראשון, שבו מצווה התורה, כשמתקרבים אל עיר כדי להילחם בה, לקרוא אליה קודם לשלום. על איזו מלחמה מדובר? כאן נחלקו הראשונים.</p>
+      <p>רש"י אומר שהפסוק מדבר במלחמת הרשות. בשבעת העממים, לדעתו, אין בכלל אפשרות של שלום. שם הציווי הוא שלא להשאיר נפש, ואין פותחים בקריאה לשלום. הקריאה לשלום, והתנאים שבאים אחריה, שייכים רק למלחמה שאינה נגד אומות הארץ.</p>
+      <p>לפי השיטה הזו, יש הבחנה חדה בין שני סוגי מלחמות. מלחמה בשבעת העממים היא מלחמה שאין בה פשרה. מלחמה עם אומות אחרות היא מלחמה שאפשר להימנע ממנה, אם האומה מקבלת את תנאי השלום.</p>
+      <p>השיטה הזו פשוטה ומסתדרת עם לשון הפסוקים, שבהמשך הפרשה מבחינים במפורש בין "הֶעָרִים הָרְחֹקֹת מִמְּךָ מְאֹד" לבין ערי העמים האלה. אבל הרמב"ם הולך בדרך אחרת, ומשיטתו נולדות שאלות מעניינות.</p>
+      <p class="bold-para">לפי רש"י, הקריאה לשלום נאמרה רק במלחמת הרשות, ולא בשבעת העממים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · למי מציעים שלום</div>
+      <h3 class="story-title">🎭 הרמב"ם ותחבולת הגבעונים</h3>
+      <p>הרמב"ם סובר שהדין של קריאה לשלום נאמר בכל מלחמה, גם בשבעת העממים. עם כל אומה אפשר לעשות שלום, ואם היא מסכימה לתנאים, אין חובה להילחם בה.</p>
+      <p>אבל אם כך, נשאלת שאלה גדולה מספר יהושע. הגבעונים, שהיו מיושבי הארץ, באו אל יהושע בתחפושת. הם לבשו בגדים בלויים, לקחו לחם יבש ונאדות קרועים, וטענו שבאו מארץ רחוקה. למה היו צריכים את כל זה? אם לפי הרמב"ם אפשר לעשות שלום עם כולם, היו יכולים לבוא בגלוי ולבקש שלום.</p>
+      <p>ועוד שאלה: אחרי שהתגלה מי הם, ישראל כעסו עליהם מאוד. אם השלום עמם מותר, על מה הכעס?</p>
+      <p>הרב הביא שתי תשובות. האחת, שהגבעונים עצמם לא ידעו שאפשר לעשות שלום. הם היו בטוחים שישראל חייבים להרוג את כל יושבי הארץ, ולכן העדיפו להתחפש. והשנייה, שיש הבדל בין שלום לבין ברית. השלום מותר, אבל ברית אסורה. הגבעונים ביקשו ברית, ועל כך היה הכעס.</p>
+      <p class="bold-para">לפי הרמב"ם קוראים לשלום לכל עם, ומכאן שאלה: מדוע הוצרכו הגבעונים להתחפש?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · למי מציעים שלום</div>
+      <h3 class="story-title">📜 בין שלום לברית</h3>
+      <p>מה ההבדל בין שלום לבין ברית? לפי ההסבר שהובא בשיעור, שלום פירושו שהאומה נכנעת לתנאים, נכנסת תחת שלטון ישראל, וממשיכה לחיות. ברית פירושה הסכם בין שני צדדים שווים, שכל אחד מהם שומר על מעמדו.</p>
+      <p>ברית כזו אי אפשר לכרות עם מי שנמצא בתוך הארץ. למה? הקדוש ברוך הוא ציווה עלינו לרשת את הארץ. הארץ ניתנה לעם ישראל. מי שכורת ברית עם אומה שיושבת בה, נותן לה כביכול שלטון וזכות בארץ, ודבר כזה אינו בידינו לתת.</p>
+      <p>לכן, לדעת הרב, שלום עם יושבי הארץ אפשרי רק במסגרת של התנאים שהתורה מפרטת, כשהשלטון כולו בידי ישראל. כל הסכם שמעניק לצד השני שליטה על חלקים מן הארץ אינו "שלום" במובן של התורה.</p>
+      <p>הרב הוסיף שבזמן הזה רוב הדברים האלה אינם מעשיים, וכי שבעת העממים עצמם אינם קיימים עוד. אבל העיקרון חשוב כדי להבין מה התורה מכנה "שלום", ובכך עוסק החלק הבא.</p>
+      <p class="bold-para">שלום עם יושבי הארץ אפשרי, אבל ברית שמעניקה להם שלטון בארץ אינה אפשרית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה נקרא שלום</div>
+      <h3 class="story-title">🔓 "ופתחה לך"</h3>
+      <p>מה זה שלום? היום רגילים לחשוב ששלום הוא יחסים בין מדינות: יחסי שכנות, הסכמים, כל צד בתחומו. אבל התורה, כשהיא מדברת על אומה שנמצאת בתוך הארץ או תחת שליטת ישראל, מגדירה שלום אחרת לגמרי. כתוב: "וְהָיָה אִם שָׁלוֹם תַּעַנְךָ וּפָתְחָה לָךְ וְהָיָה כָּל הָעָם הַנִּמְצָא בָהּ יִהְיוּ לְךָ לָמַס וַעֲבָדוּךָ".</p>
+      <p>התנאי הראשון הוא "וּפָתְחָה לָךְ". העיר פותחת את שעריה. מהיום יש לישראל רשות להיכנס לכל מקום בה, לבדוק מה קורה שם, להיכנס ולצאת. אין מושג של שטח סגור או אזור שאסור להיכנס אליו.</p>
+      <p>הרב הביא את דבריו של כותב אחד, שהגדיר זאת באופן חד: לפי התורה יש "שטחים תמורת שלום", אבל בכיוון הנכון. לא אנחנו נותנים שטחים ומקבלים שלום, אלא הם פותחים לפנינו את שטחם, ובתמורה מקבלים מאיתנו שלום.</p>
+      <p>הכל כאן עובד בכיוון הפוך מן המקובל. לא ישראל מבקשים שלום ומשלמים עליו, אלא הצד השני מבקש שלום, ומשלם עליו בפתיחת שטחו.</p>
+      <p class="bold-para">התנאי הראשון לשלום הוא פתיחה מלאה: כל השטח פתוח לפני ישראל, בלי אזורים סגורים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה נקרא שלום</div>
+      <h3 class="story-title">💰 "למס ועבדוך"</h3>
+      <p>פתיחת השטח עדיין אינה מספיקה. התורה ממשיכה: "יִהְיוּ לְךָ לָמַס וַעֲבָדוּךָ". יש כאן שני תנאים נוספים.</p>
+      <p>התנאי השני הוא מס. כל תושב משלם מס לשלטון ישראל, ולא לגורם אחר. לא קיים מצב שבו התושבים משלמים לשלטון משלהם, שמנהל את ענייניו בנפרד.</p>
+      <p>התנאי השלישי הוא "וַעֲבָדוּךָ". לדעת הרב, אפשר לממש זאת בימינו כשירות אזרחי: לא בצבא, שממילא אינו רוצה בהם, אלא כל אחד מן התושבים יעבוד שלוש שנים בעבודות למען המדינה, בכבישים, בבניין וכדומה. והשכר יהיה כשכר חייל בשירות חובה. כך, לדבריו, יתקיים התנאי באופן הוגן.</p>
+      <p>אלה שלושת התנאים להסכם שלום על פי התורה: פתיחה מלאה, מס, ועבודה. רק כשהם מתקיימים יחד, יש שלום. אבל מה קורה אם לא? על זה ממשיכה התורה, ובפסוק הבא יש שתי קריאות אפשריות, וההבדל ביניהן גדול.</p>
+      <p class="bold-para">התנאי השני והשלישי הם תשלום מס ועבודה, ורק בשלושתם יחד יש שלום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה נקרא שלום</div>
+      <h3 class="story-title">🔄 שני מושגים של שלום</h3>
+      <p>כדאי לעצור ולהשוות בין שני המושגים. השלום המקובל היום מבוסס על הסכם בין שני צדדים שכל אחד מהם עצמאי. כל צד מוותר על משהו, וכל צד שומר על ריבונותו בתחומו. בעיני רבים, ככל שמוותרים יותר, כך השלום קרוב יותר.</p>
+      <p>השלום של התורה, בעניין אומה שנמצאת תחת שליטת ישראל, בנוי אחרת. הוא אינו הסכם בין שווים, אלא קבלה של תנאים. האומה פותחת את שעריה, משלמת מס ונכנסת לעבודה, ובתמורה זוכה לחיות בשקט ובביטחון. היא אינה מוותרת על חייה, אלא על המאבק.</p>
+      <p>לפי זה, לא ישראל הם שמבקשים את השלום ומשלמים עליו. הצד השני הוא שמבקש, משום שהוא יודע מה האלטרנטיבה. ומכיוון שהתנאים ברורים, גם אין מקום לאי הבנות: מי שקיבל אותם, נמצא בשלום, ומי שלא קיבל, אינו בשלום.</p>
+      <p>הרב הדגיש שזהו מבנה פשוט וברור. הקושי אינו בהבנתו, אלא בנכונות לחשוב במונחים שלו.</p>
+      <p class="bold-para">השלום המקובל היום הוא הסכם בין שווים; השלום של התורה הוא קבלת מרות בתמורה לחיים בשקט.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה נקרא שלום</div>
+      <h3 class="story-title">⛰️ לקח מספר שופטים</h3>
+      <p>הרב ביקש להראות שהשאלה של השארת עמים בתוך הארץ אינה חדשה. כבר בתנ"ך מתואר אותו מצב בדיוק.</p>
+      <p>התורה הבטיחה שהגירוש יהיה הדרגתי: "מְעַט מְעַט אֲגָרְשֶׁנּוּ מִפָּנֶיךָ". אבל בספר שופטים רואים שהשבטים לא השלימו את המשימה. הם השאירו את העמים בתוכם. לדברי הרב, הם היו בטוחים שהעמים יהיו נוחים, ישלמו מסים, ויהיו לעזר.</p>
+      <p>בפועל, אותם עמים עשו לישראל צרות רבות. ספר שופטים כולו מלא בסיפורים על עמים שקמו על ישראל ושעבדו אותם. הפלשתים, למשל, הציקו לישראל דורות ארוכים, ושמשון הגיבור נלחם בהם, גם בעזה. רק בימי דוד המלך הגיע שלטון ישראל לשליטה מלאה בארץ.</p>
+      <p>יש בסיפור הזה גם עדות לכך שהתורה ידעה מראש מה עלול לקרות. האזהרה מפני השארת יושבי הארץ נאמרה עוד לפני הכניסה לארץ, והמציאות בימי השופטים הוכיחה את צדקתה.</p>
+      <p>לדעת הרב, הבעיה אינה שנעשתה טעות, אלא שלא לומדים ממנה. מה שקרה בימי השופטים יכול לקרות שוב, וההיסטוריה מלמדת שהשארת אויבים בתוך הארץ בלי שהם מקבלים את תנאי השלום אינה מביאה שקט.</p>
+      <p class="bold-para">בימי השופטים השאירו ישראל את העמים בתוך הארץ, ואלה הפכו למקור צרות במשך דורות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כשאין שלום</div>
+      <h3 class="story-title">⚖️ "ואם לא תשלים": שתי קריאות</h3>
+      <p>התורה ממשיכה: "וְאִם לֹא תַשְׁלִים עִמָּךְ וְעָשְׂתָה עִמְּךָ מִלְחָמָה וְצַרְתָּ עָלֶיהָ". את הפסוק הזה אפשר לקרוא בשתי דרכים.</p>
+      <p>הקריאה הראשונה רואה כאן שני תנאים. רק אם האומה גם אינה משלימה וגם יוצאת להילחם, יוצאים נגדה למלחמה. סירוב לשלום לבדו אינו מספיק, וצריך לחכות עד שהיא תפתח בקרב.</p>
+      <p>הקריאה השנייה רואה כאן תנאי אחד. אם האומה אינה מסכימה לשלום, זה כבר מספיק. והמילים "וְעָשְׂתָה עִמְּךָ מִלְחָמָה" אינן תנאי נוסף, אלא תיאור של מה שיקרה. כך מפרש רש"י: "הַכָּתוּב מְבַשֶּׂרְךָ שֶׁאִם לֹא תַשְׁלִים עִמָּךְ, סוֹפָהּ לְהִלָּחֵם בְּךָ". אל תחשוב שתוכל להשאיר אותה בשקט. אם לא השלימה, בסוף היא תילחם בך.</p>
+      <p>לדעת הרב, הניסיון ההיסטורי מאשר את פירוש רש"י. כאשר אויבים שלא השלימו הורשו לצאת ולהמשיך בדרכם, הם חזרו לאחר זמן בכוח גדול יותר. מי שלא קיבל את תנאי השלום, לא ישקוט.</p>
+      <p class="bold-para">אפשר לקרוא את הפסוק כשני תנאים, או כתנאי אחד שמבשר את ההמשך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כשאין שלום</div>
+      <h3 class="story-title">🔭 על שם סופה</h3>
+      <p>הרב הביא מפרש שמבאר את דברי רש"י. לדבריו, רש"י למד זאת מן הספרי, ולא פירש את הפסוק כפשוטו. כי לפי הפשט, אפשר היה לחשוב שהאומה מתחייבת רק אם היא באמת עושה מלחמה ועומדת להרוג את ישראל.</p>
+      <p>למה רש"י לא הסביר כך? כי אז קשה מה כתוב בפסוק. אם התורה התכוונה שמלחמה מותרת רק כשהאומה פותחת בה, מה מוסיפות המילים "וְאִם לֹא תַשְׁלִים"? לכן מפרש רש"י שהסירוב לשלום עצמו הוא הדבר הקובע, והמלחמה היא תוצאתו הוודאית. האומה נידונה על שם סופה.</p>
+      <p>הרב הסביר שהדברים מסתדרים גם עם ההיגיון המעשי. אם ידוע מראש שבסוף תבוא מלחמה, עדיף להקדים. כשיוזמים, רוב הסיכויים שהמלחמה תהיה קטנה יותר. כשמחכים, האיום רק הולך וגדל, כמו גור שהופך לאריה.</p>
+      <p>וכך מסכם הרמב"ם להלכה: אין מצב ביניים. או שאומה מקבלת את תנאי השלום, או שבסוף תהיה מלחמה.</p>
+      <p class="bold-para">לפי רש"י והספרי, אומה שאינה משלימה נידונה על שם סופה, משום שבוודאי תילחם בסוף.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כשאין שלום</div>
+      <h3 class="story-title">🚫 הנצי"ב: אין עוזבים באמצע</h3>
+      <p>הנצי"ב בפירושו העמק דבר מוסיף חידוש חשוב על הפסוק. הוא מסביר את רש"י כך: התחלת המלחמה היא עניין של רשות. אין חובה לצאת אל העיר. אבל אחרי שהתחלת להילחם בה, אסור להניח לה וללכת, כי סופה להתגרות בך. לכן נאמר "וְצַרְתָּ עָלֶיהָ".</p>
+      <p>יש כאן דבר מעניין. אם לא התחלת עם העיר, אין לך שום חובה להתחיל. אין חובה לתפוס בני אדם ולכפות עליהם דבר. אבל אם מסיבה כלשהי כבר הגעת למצור, כבר הקפת את העיר, אסור לעזוב אותה. יש רק שתי אפשרויות: או שהם מקבלים את תנאי השלום, או מלחמה. אין אפשרות שלישית.</p>
+      <p>הסיבה היא מה שלמדנו מרש"י. מי שעוצר באמצע, האויב חוזר אליו, ובכוח גדול יותר.</p>
+      <p>לדעת הרב, הדברים נוגעים גם לשאלות של ימינו. ההחלטה אם לפתוח במערכה היא החלטה של שיקול דעת, ואין בה חובה. אבל אחרי שנפתחה, לדעתו, יש לפי התורה איסור להפסיקה לפני הכרעה. ועכשיו נשאר לראות איך התורה מתארת את המלחמה עצמה.</p>
+      <p class="bold-para">אין חובה להתחיל במצור, אבל מי שהתחיל אינו רשאי לעזוב לפני הכרעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כשאין שלום</div>
+      <h3 class="story-title">🏰 "וצרת עליה"</h3>
+      <p>איך עושים מלחמה? התורה אומרת שתי מילים: "וְצַרְתָּ עָלֶיהָ". ומפרש רש"י: "אַף לְהַרְעִיבָהּ וּלְהַצְמִיאָהּ וּלְהָמִיתָהּ מִיתַת תַּחֲלוּאִים". כלומר, מצור מוחלט על העיר, בלי אספקה, עד שהיא נכנעת. ברגע שנכנעה ופתחה את שעריה, המצור נגמר.</p>
+      <p>הרב העיר שקשה למצוא בעולם מדינה שיצאה להילחם באויב, ובאותו זמן היא עצמה סיפקה לו מזון. לדבריו, התורה כאילו הכירה מראש את הטעויות שאנו עלולים לעשות, וכתבה מראש את הדרך הנכונה.</p>
+      <p>אבל מיד הוסיף הרב הסתייגות חשובה: אין כאן תמונה ודאית במאה אחוז. יש בדיני המצור כמה הלכות שאינן ברורות, משום שאין לנו ניסיון רב בהן. אחת מהן היא הדין של רוח רביעית, הפתח שנותר בצד אחד של המצור כדי שמי שחפץ בכך יוכל לנוס.</p>
+      <p>מתי חל הדין הזה? הנצי"ב סובר שהוא נאמר רק בהתחלה, כשבאים אל העיר ומציעים שלום. יש אחרים שסוברים שתמיד משאירים פתח, ורק דואגים שישמש ליציאה בלבד ולא לכניסה. זה נושא ארוך, שנידון בהרחבה בשיעור נפרד.</p>
+      <p class="bold-para">התורה מתארת מצור מלא, אבל הרב הדגיש שיש בדיני המצור שאלות פתוחות רבות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כשאין שלום</div>
+      <h3 class="story-title">🪜 סיכום ביניים: שלבי המלחמה</h3>
+      <p>לפני שנמשיך, הרב סיכם את מה שיצא עד כאן. כאשר מחליטים לצאת למלחמה, השלב הראשון הוא קריאה לשלום. לפי רש"י זה במלחמת הרשות בלבד, ולפי הרמב"ם בכל מלחמה.</p>
+      <p>השלום אינו סתם הפסקת אש. יש לו שלושה תנאים: פתיחת השטח, תשלום מס, ועבודה. אומה שמקבלת אותם, נכנסת תחת שלטון ישראל וחיה בשלום.</p>
+      <p>אם האומה אינה משלימה, הרי לפי רש"י סופה להילחם, ולכן אין מצב ביניים. אין חובה להתחיל, אבל לפי הנצי"ב מי שהתחיל אינו עוזב באמצע. והמלחמה עצמה מתחילה במצור, שנמשך עד שהעיר נכנעת או נכבשת, כשהשאלה מתי משאירים בו רוח רביעית נשארת במחלוקת.</p>
+      <p>זהו השלד של דיני המלחמה בתורה. כל אחד מן השלבים מעלה שאלות רבות, והרב הדגיש שוב שחלק מהן אינן מוכרעות. אבל הכיוון הכללי ברור, וממנו אפשר להתחיל לחשוב על השאלות של ימינו.</p>
+      <p class="bold-para">התורה בונה סדר ברור: הצעת שלום בתנאים, ואם אין שלום, מצור עד הכרעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כשאין שלום</div>
+      <h3 class="story-title">🌐 על מי סומכים</h3>
+      <p>בהקשר של מצור עלתה בשיעור שאלה על התלות של ישראל בתמיכה מבחוץ. הרב אמר שהשאלה אם התמיכה הזו מועילה יותר משהיא מזיקה היא שאלה גבוהה מאוד, שצריך לשאול עליה גדולים, והוא אינו הכתובת להכריע בה. אבל הוא סיפר סיפור שקשור לכך.</p>
+      <p>כפי שסיפר הרב, ערב הקמת המדינה חזר משה שרת מארצות הברית ומסר לבן גוריון שהממשל האמריקאי מתנגד לחלוטין להכרזה. לא רק שלא יכירו במדינה ולא יעזרו, אלא אף איימו בצעדים קשים. ההערכה הצבאית שם הייתה שליהודים אין כמעט סיכוי לנצח, ושאם יוכרזו, בסוף יצטרכו האמריקאים להתערב, דבר שלא רצו בו.</p>
+      <p>בן גוריון החליט להכריז בכל זאת. ולפי הסיפור, ביקש משרת למסור למועצת העם את עמדת ארצות הברית, אבל לא לספר את כל האיומים, כדי לא להפחיד את חבריה יותר מדי.</p>
+      <p>המדינה הוכרזה ביום שישי. וכאשר הגיעה הבקשה להכרה אל נשיא ארצות הברית, טרומן, הוא חתם עליה דקות ספורות אחרי ההכרזה, אף על פי שיועציו התנגדו לכך בתוקף.</p>
+      <p class="bold-para">הרב סיפר כיצד הוכרזה המדינה בניגוד לעמדת הממשל האמריקאי, וכיצד בסוף הכיר בה נשיא ארצות הברית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כשאין שלום</div>
+      <h3 class="story-title">📖 "אמי לימדה אותי תנ"ך"</h3>
+      <p>לימים, כך סיפר הרב, שאלו את טרומן: איך עשית דבר כזה? הסתכנת ושיתפת את ארצות הברית בסיכון גדול. מה היית עושה אילו המדינה הייתה נופלת?</p>
+      <p>והוא השיב, לפי מה שמסופר: בילדותי לימדה אותי אמי תנ"ך, ובתנ"ך כתוב שאלוקים נתן את ארץ ישראל ליהודים. איזו זכות יכולה להיות לבן אנוש גדולה יותר מאשר לעזור להבטחה האלוקית להתקיים? ידעתי שיש לי הזדמנות חד פעמית לעזור לכך. לא עניין אותי מה יקרה אחר כך, גם אם יפטרו אותי למחרת.</p>
+      <p>הרב ראה בתשובה הזו דבר מדהים. אדם שאינו יהודי ראה את הקמת המדינה כחלק מקיום דבר ה', ופעל בהתאם, גם במחיר אישי. לפעמים דווקא מי שעומד מבחוץ רואה בבהירות את מה שמבפנים מתקשים לראות.</p>
+      <p>והסיפור מחזיר אותנו אל הסוגיה. ההחלטה להכריז על המדינה, כמו ההחלטה לצאת למלחמה, הייתה החלטה גורלית שקיבל מנהיג. ועולה מכאן שאלה הלכתית חשובה: מי בכלל מוסמך על פי התורה להחליט על יציאה למלחמה?</p>
+      <p class="bold-para">לפי מה שסופר, טרומן הסביר שראה זכות לעזור לקיום ההבטחה האלוקית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מי מחליט על מלחמה</div>
+      <h3 class="story-title">👑 מלך, סנהדרין ומנהיג</h3>
+      <p>מי מחליט אם יוצאים למלחמה? אם זו מלחמת מצווה, אין שאלה. מלחמת מצווה היא בפשטות מלחמה שהתורה ציוותה עליה, או מלחמה שאין בה ברירה, כשאויב בא ותוקף. אבל לא כל מלחמה היא מלחמת מצווה.</p>
+      <p>במלחמת רשות, המלך הוא שמחליט, ויש שהצריכו לכך גם את הסנהדרין, ותלוי במצב. ומה עושים היום, כשאין מלך ואין סנהדרין?</p>
+      <p>הרב הסביר שבציבור הדתי לאומי סומכים על שיטתו של הרב קוק, שהמנהיג של העם עומד במקום המלך לעניין זה. והראיה: לפני שהיה מלך בישראל, היו שופטים. השופט, כמו שמואל, היה זה שהחליט אם יוצאים למלחמה. מכאן שמי שמנהיג את העם מוסמך להכריע.</p>
+      <p>יש בזה יסוד חשוב: הסמכות להכריע אינה תלויה רק בתואר רשמי, אלא בתפקיד בפועל. מי שנושא באחריות להנהגת העם, הוא שנושא גם באחריות להחלטה הקשה מכל, ההחלטה על מלחמה.</p>
+      <p>הרב הוסיף שלפי מה שנראה, הרב קוק סבר שגם מנהיג שאינו שומר תורה ומצוות, אם הוא המנהיג שהעם סומך עליו, יכול להכריע בעניין הזה. לדבריו, הרב קוק ראה מראש את המציאות שעתידה להתהוות, ודן בשאלות כאלה עוד לפני קום המדינה.</p>
+      <p class="bold-para">במלחמת רשות המלך מחליט, ובציבור הדתי לאומי סומכים על דעת הרב קוק שהמנהיג עומד במקום המלך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מי מחליט על מלחמה</div>
+      <h3 class="story-title">🔮 שאלה שעוד תעלה</h3>
+      <p>בסוף השיעור הצביע הרב על שאלה שעשויה להתעורר בעתיד. שיטת הרב קוק מקובלת בציבור הדתי לאומי, ועליה סומכים שם בשאלה מי מכריע על יציאה למלחמה. אבל לא כל הציבורים מקבלים אותה.</p>
+      <p>לפי ההסבר של הרב, בציבור החרדי מקובלת גישה שונה, שאינה רואה במנהיג שאינו שומר תורה ומצוות סמכות להכריע בשאלות כאלה על פי התורה. אם יותר ויותר מבני הציבור הזה ישרתו בצבא, ייתכן שהשאלה תעלה באופן מעשי: על פי מי הם יכריעו שהמלחמה היא מלחמה שהתורה מכירה בה? הרב הדגיש שכרגע זו שאלה תיאורטית, ושאין לו תשובה סגורה עליה.</p>
+      <p>מה שחשוב ללמוד מכך הוא שהשאלות האלה אינן רק עניין למומחים. הן נוגעות לכל מי שרוצה להבין איך התורה מתייחסת להנהגת העם בשעת מבחן.</p>
+      <p>השאלה הזו מסכמת היטב את רוח השיעור כולו. דיני המלחמה והשלום בתורה ברורים בעיקרם, אבל כשהם פוגשים את המציאות, מתעוררות שאלות רבות שלא נדונו במשך דורות.</p>
+      <p>וזו בדיוק המשימה של הדור: ללמוד את הפסוקים לעומקם, לבחון את דברי הראשונים והאחרונים, לסמן מה ברור ומה מסופק, ולהתפלל שה' יאיר את עינינו ללכת בדרכה של תורה.</p>
+      <p class="bold-para">השאלה מי מוסמך להחליט על מלחמה עשויה להפוך משאלה עיונית לשאלה מעשית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/oINW_13lGag · 2024-09-11 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"פסוקים שחזרו לחיים","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"בין לימוד למעשה","icon":"📜"},{"id":2,"title":"שאלה שאף אחד לא שאל","icon":"❓"},{"id":3,"title":"מה כן ברור","icon":"✅"}]},{"id":2,"name":"למי מציעים שלום","icon":"🤝","color":"#6d28d9","stories":[{"id":4,"title":"רש\"י: רק במלחמת הרשות","icon":"📖"},{"id":5,"title":"הרמב\"ם ותחבולת הגבעונים","icon":"🎭"},{"id":6,"title":"בין שלום לברית","icon":"📜"}]},{"id":3,"name":"מה נקרא שלום","icon":"🕊️","color":"#e08e00","stories":[{"id":7,"title":"\"ופתחה לך\"","icon":"🔓"},{"id":8,"title":"\"למס ועבדוך\"","icon":"💰"},{"id":9,"title":"שני מושגים של שלום","icon":"🔄"},{"id":10,"title":"לקח מספר שופטים","icon":"⛰️"}]},{"id":4,"name":"כשאין שלום","icon":"🏰","color":"#1e88b8","stories":[{"id":11,"title":"\"ואם לא תשלים\": שתי קריאות","icon":"⚖️"},{"id":12,"title":"על שם סופה","icon":"🔭"},{"id":13,"title":"הנצי\"ב: אין עוזבים באמצע","icon":"🚫"},{"id":14,"title":"\"וצרת עליה\"","icon":"🏰"},{"id":15,"title":"סיכום ביניים: שלבי המלחמה","icon":"🪜"},{"id":16,"title":"על מי סומכים","icon":"🌐"},{"id":17,"title":"\"אמי לימדה אותי תנ\"ך\"","icon":"📖"}]},{"id":5,"name":"מי מחליט על מלחמה","icon":"👑","color":"#c62b6b","stories":[{"id":18,"title":"מלך, סנהדרין ומנהיג","icon":"👑"},{"id":19,"title":"שאלה שעוד תעלה","icon":"🔮"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
