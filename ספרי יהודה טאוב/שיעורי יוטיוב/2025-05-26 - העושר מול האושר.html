@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 העושר מול האושר</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 העושר מול האושר</h1>
+  <p>עני, בינוני ועשיר נשאלו אם הגיעו לאושר — ולמה האמת היא שהאושר אינו תלוי בכלל בגודל הכיס</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ העושר מול האושר" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/gwbxvTriLUE?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/gwbxvTriLUE/hqdefault.jpg" alt="העושר מול האושר" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=gwbxvTriLUE" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מי באמת מאושר</div>
+      <h3 class="story-title">❓ מי מאושר — העשיר שהגיע לכל מה שרצה?</h3>
+      <p>בספר ״מכתב מאליהו״ נשאלת השאלה: מי הוא האדם המאושר עלי אדמות? רבים היו עונים שהמאושר הוא מי שיכול להשיג את כל אשר יחפוץ — מי שיש לו כישרון, מר צרף וחריפות ועורמה למסחר, ולכן בקלות מגיע לעושר ולאושר המיוחד.</p>
+      <p>אבל כששואלים את השכבה העשירה בעצמה, התשובה מפתיעה: ״אל תשאל כלל, לחברי יש כזה וכזה ולי עדיין אין״ — צליל של קנאה. יש מהעשירים ממש שחס ושלום רע להם בביתם, צרות משפחה, צרות בנים ובנות. הרואה אותם מבחוץ רואה חליפה, כפתורי זהב, מכוניות — אבל הפנים אינם מאושרות. כל מה שחסר להם, ולו עוד מעט, מספיק להם כדי לשכוח לגמרי את כל מה שכבר יש להם, וכך האושר שהם מחפשים נדחה שוב ושוב, ולעולם לא מגיע.</p>
+      <p class="bold-para">רבים חושבים שהמאושר הוא מי שהשיג את כל אשר חפץ, בעל כישרון ועורמה למסחר. אבל כששואלים את העשירים בעצמם, מתברר שאין להם מנוחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מי באמת מאושר</div>
+      <h3 class="story-title">⚖️ בינוניים ופועלים — גם להם לא נמצא</h3>
+      <p>פונים אל הבינוניים: ״אושר? על מה אתה מדבר? העבודה קשה, אני עובד בשביל אולי להשיג את המונח הזה שנקרא עושר, אולי יום אחד נגיע לעושר״ — כותב בעל המכתב מאליהו שאנשים אלו כל יומם עסוקים רק בהכנה לעושר, ולא בעושר עצמו. גם להם לא נמצא האושר הנכסף.</p>
+      <p>ושואלים גם את הפועלים, העובדים יום ולילה: ״העשירים לקחו לנו את חלקנו, הכל על חשבוננו, ואנחנו עובדים עובדים יום ולילה והם אוכלים״ — כך שגם ברובד הזה לא נמצא האושר. מסקנת בעל המכתב מאליהו, אחרי כל האריכות: אין שום אושר גשמי בעולם, יש רק אושר רוחני — ומי שזוכה לעושר רוחני, הוא הוא המאושר עלי האדמות, ולא אחר. כלומר, חיפוש האושר בכל השכבות הגשמיות, מהעשיר ביותר עד הפועל הפשוט, מגיע לאותה תוצאה בדיוק — כי האושר מעולם לא היה שם, בחוץ, אלא רק במקום אחר לגמרי.</p>
+      <p class="bold-para">הבינוניים עסוקים כל יומם בהכנה לעושר שעוד לא הגיע; הפועלים טוענים שהעשירים לקחו את חלקם. גם בשתי השכבות הללו לא נמצא האושר המיוחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מפתח הפרנסה בידו</div>
+      <h3 class="story-title">🔑 מפתח הפרנסה בידו יתברך</h3>
+      <p>ראשית יש לדעת שכתוב בספרים הקדושים, וחזרו ואמרו חכמים בהרבה מקומות, שמפתח הפרנסה בידו יתברך — כי הוא אל זן ומפרנס לכל, ושולחנו ערוך לכל, והוא הנותן לחם לכל בשר כי לעולם חסדו. אלא שראינו שינוי: לא כל אחד נמצא באותה שכבה, באותה רמה, באותו סגנון פרנסה — כי הכל לפי מעשיו של האדם, והפרנסה והברכה היא לפי מזלו, לפי ידיעתו של תמים דעות שמפלא עצותיו.</p>
+      <p>מביא המדרש על הפסוק ״כִּי לֹא מִמִּזְרָח וְלֹא מִמַּעֲרָב... כִּי אֱלֹקִים שֹׁפֵט, זֶה יַשְׁפִּיל וְזֶה יָרִים״: לא מפני שאדם עמל בסחורה ויצא למרחקים, ממזרח למערב, ולא מפני שקפץ על גבעות ועל הרים או הפליג בספינות, הוא יהיה עשיר. הכל, באשר לכל, תלוי אך ורק בברכת ה׳ — זה שיש לו ריבוי נכסים וזה שיש לו פחות. אדם יכול לדמיין שהוא שולט בגורל פרנסתו לפי כמה שהוא טס וסוחר, אבל הפסוק מגלה שאפילו טיסה למדבר ולהרים אינה הגורם — הגורם האמיתי היחיד הוא רצונו של בורא עולם.</p>
+      <p class="bold-para">כתוב בספרים הקדושים שמפתח הפרנסה בידו של הקדוש ברוך הוא, שזן ומפרנס לכל ושולחנו ערוך לכל. אבל יש הבדלים בין אדם לאדם — לפי מה?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מפתח הפרנסה בידו</div>
+      <h3 class="story-title">🪙 נכסים, זוזים, ממון — מה מגלים השמות</h3>
+      <p>מביא המדרש משל: אדם הולך ברחוב ומוצא שטר כסף מוטל בפינה — אבל עשרים איש עברו לפניו ולא ראו אותו. למה זה נקרא ״נכסים״? כי נכסים (מוסתרים) מזה ונגלים (מתגלים) לזה. והכסף נקרא גם ״זוזים״, שזזים כל הזמן מהכיס של זה לכיס של זה.</p>
+      <p>ולמה נקרא הכסף גם ״ממון״? אם מחלקים את המילה לשניים, מקבלים ״מון״ — מונה. ומה אתה מונה? דבר שהיום פה ומחר איננו. ולמה נקרא גם ״מעות״? שנמצא אצל האדם ״מעת לעת״ בלבד. הפסוקים הללו מאירים את עינינו: ה׳ הוא מוריש ומעשיר, משפיל זה ומרומם זה — ולא בגלל כוח וחריפות אישית, אלא לפי רצונו. שמות אלה בעצמם מזכירים לאדם, בכל פעם שהוא סופר את כספו, שהוא אוחז בדבר חולף וזז — ולא בדבר שהוא יכול לבנות עליו את תחושת הביטחון וההצלחה שלו בחיים.</p>
+      <p class="bold-para">המדרש דורש את שמות הכסף עצמם: "נכסים" כי נכסים מזה ונגלים לזה; "זוזים" כי זזים מכיס לכיס; "ממון" כי מונים אותו — והיום פה, מחר איננו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מפתח הפרנסה בידו</div>
+      <h3 class="story-title">🕰️ לא לטרוד את עצמו יום ולילה</h3>
+      <p>מביא בעל ה״פלא יועץ״ על הפסוק בשיר השירים: ״אָקוּמָה נָּא וַאֲסוֹבְבָה בָעִיר... בִּקַּשְׁתִּיו וְלֹא מְצָאתִיו״ — אם אדם חושב שכל כמה שיסתובב בעיר, בשווקים וברחובות, ישיג את כל צרכיו, הוא לא יגמור לעולם, כמו מים מלוחים שלא מרווים. אבל אם יסתובב ויגיד ״ביקשה נפשי: מתי יהיה לי כבר יישוב הדעת, מתי אוכל להתפלל?״ — כי לתורה ולתפילה צריך זמן פנוי מטרדות היום־יום.</p>
+      <p>ואם כך יעשה האדם, הבטיחו חז״ל שנכסיו יהיו מוצלחים — דבר גדול הוא שמי שנענע כפו ואמר ״טוב לי״, עתים לתורה. מטרת יציאתו לפרנסתו — אם מטרתו שתישאר לו שעה ללמוד תורה בערב, לקבוע עתים לתורה ולתפילה — מחשיבים לו מהשמיים שהוא יוצא לפרנסתו למצווה. ״אם אין אני לי, מי לי?״ — לא ראינו מישהו שעובד וחברו מקבל את המשכורת. ואם לא עכשיו, אימתי? אדם לא יכול לדחות את ההשתדלות לפרנסה למחר או למחרתיים, אבל יחד עם זאת, גם לא ידחה למחר את זמנו הקבוע לתורה — שני הדברים צריכים לעמוד זה לצד זה, לא זה נגד זה.</p>
+      <p class="bold-para">אם היציאה למרחקים הייתה סוד העושר, לא היה זמן לתורה ולתפילה. בעל "הפלא יועץ" מלמד: מי שטורח לפרנסתו רק כדי שיישאר לו זמן פנוי ללימוד, מחשיבים לו פרנסתו למצווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לא עכשיו — מתי</div>
+      <h3 class="story-title">📚 חפץ חיים: עכשיו תוסיף בלימוד</h3>
+      <p>מסופר שבא לפני החפץ חיים אדם שהיה נזקק מאוד לפרנסתו וביקש עצה: האם לפתוח חנות, לעשות כך או כך? ענה לו החפץ חיים: אתה רוצה לצאת למשא ומתן? אדרבה, עכשיו אתה צריך להוסיף בלימוד! שהרי יש הרבה הזהרות וסעיפים בשולחן ערוך — מה מותר ומה אסור במשא ומתן.</p>
+      <p>מי שיוצא לעסקיו צריך להיזהר מאוד מכמה דברים: לא לעבור על גזל, על גניבה, על הונאה, להתרחק משקר ומרמה, לא לעוול במשקל או במידה, לא לגנוב דעת הבריות, לא לשכר שכיר שלא בזמנו, לא לעבור על שבועת שקר. חבילות שלמות של דיני שולחן ערוך צריך לדעת כדי שמשא ומתנו של אדם יהיה באמונה — ואז זוכה להיות ״איש אמונות, רב ברכות״. אם כבר מוציאים אותו לעבודה ולטרחה, שתהיה לפחות מטרת הקודש הזאת ברורה לו: לא רק להרוויח, אלא להרוויח בדרך ישרה שמזכה אותו בברכה ובהצלחה אמיתית, לא רק בהישג חולף.</p>
+      <p class="bold-para">למי שביקש עצה כיצד להרחיב את עסקיו, השיב החפץ חיים: עכשיו, בדיוק לפני שתצא למשא ומתן, צריך להוסיף בלימוד — כי יש כה הרבה אזהרות שצריך לדעת מראש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לא עכשיו — מתי</div>
+      <h3 class="story-title">⏳ לא עכשיו, אולי בגיל שישים</h3>
+      <p>סיפרו על מישהו שאמרו לו: ״כמה אתה מסתובב, קצת תעשה עתים לתורה ותחזור בתשובה?״ וענה: ״אני מבין מה שאתם מבקשים, באמת כדאי לי לחזור בתשובה — כבר כמעט חמישים וחמש שנה אני רץ, עובד משמונה עד ארבע, מסתובב ברחובות. אבל לא עכשיו.״ שאלו אותו: ״אז מתי?״ וענה: ״בגיל שישים, כי אז אצא לפנסיה ואשב בכיף ואשאל את החברים — איך מלביש תפילין, מה זה בורר בשבת, למה עושים סוכה, מה זה לולב, למה צריך מקווה, למה אוכלים כשר.״</p>
+      <p>ברוך השם, הגיע לגיל שישים — ואז שם למכתב: ״עד לכאן, מעכשיו הביתה״. אבל כתוב בתנא דבי אליהו: ״טוֹבִים שְׁנַיִם מֵהַשְּׁלֹשָׁה״ — טוב לאדם שיחזור בתשובה בעודו על שתי רגליו, מאשר שיזדקק לרגל שלישית, מקל הליכה. ה׳ חפץ בכל נפש שחוזרת בתשובה — ולא משנה מתי, אבל עדיף בעוד כוחך במותניך, ואז ״ירווח לך״, תהיה לך נחת. הסיפור הזה לא נועד להמעיט מכל מי שחוזר בתשובה בכל גיל, אלא ללמד שהדחייה עצמה היא הסכנה — כי אין אדם יודע מראש אם יזכה להגיע כלל לגיל שאליו הוא דוחה את עצמו.</p>
+      <p class="bold-para">מישהו ששמע הערה לחזור בתשובה הודה שהוא מבין, אבל אמר "לא עכשיו" — רק בגיל שישים, כשייצא לפנסיה. ישב בבית בחג ולא הגיע לעולם לאותו גיל שישים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · דירה נאה בלב, לא בבית</div>
+      <h3 class="story-title">🏠 דירה נאה — בלב, לא בבית</h3>
+      <p>אפשר לחשוב: חז״ל אמרו ש״דירה נאה, כלים נעים ואישה נעה מרחיבים דעתו של אדם״ — אם כן יש לי המון עבודה, בבקשה תנו לי לעבוד יום ולילה, אני צריך את אלה כדי שתתרחב דעתי. אבל כתוב בזוהר הקדוש פירוש אחר לגמרי: ״דירה נאה״ זהו ליבו של אדם, שצריך שיהיה לו דירה נאה בלב — תואר המחשבות, פנוי מכל מיני רעיונות עקורים.</p>
+      <p>ו״כלים נעים״ מפרש הזוהר: אלו איבריו של האדם, שישגיח שלא יהיו פגומים חס ושלום. ו״אישה נעה״ מפרש הזוהר: זו נשמתו של האדם, שצריכה להיות נאה — כלשון הכתוב ״בְּכׇל עֵת יִהְיוּ בְגָדֶיךָ לְבָנִים״. תיקון הנשמה שתהיה נקייה תמיד — זה רק על ידי תורה ותפילה, שמתקנות הכל. כך מגלה הזוהר שכל שלוש ה״מרחיבות דעת״ שחז״ל הבטיחו אינן תלויות בכלל בגודל הדירה או מספר הכלים שבבית, אלא בעבודה פנימית שכל אדם, עני כעשיר, יכול לעשות אותה בעצמו.</p>
+      <p class="bold-para">חז"ל הבטיחו שדירה נאה, כלים נעים ואישה נעה מרחיבים דעתו של אדם. הזוהר הקדוש מפרש את שלושתם באופן פנימי לגמרי — לא כפשוטם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · דירה נאה בלב, לא בבית</div>
+      <h3 class="story-title">📅 מזונותיו קצובים לו מראש השנה</h3>
+      <p>כך מלמדים חכמים: ״צַדִּיק בֶּאֱמוּנָתוֹ יִחְיֶה״ — תדע שמזונותיו של אדם קצובים לו מראש השנה, ״כי לא לחכמים לחם ולא לקלים המרוץ״. ואמרו עוד: ״אין אדם נוגע במה שמוכן לחברו״ — וממי שיודע את זה, לא יקפיד, לא יעשה מחלוקות, לא יתרעם ולא יתלונן.</p>
+      <p>ולא רק שלא יתלונן, אלא גם ידע שתכלית הכל היא להודות לה׳ יתברך — כי הוא ששולחנו ערוך לכל, והוא הנותן לך חנינה, הכל בחסד ובברכה. כמו שאדם מקבל מתנה מידיד ומברך לו תודה רבה, כך על כל פעולה שאנחנו עושים ומקבלים — יש להודות למי שנותן לנו. ואם האדם יטרח הרבה יותר, לא יוסיף מאומה על מה שנכתב לו; אלא ידע כי ברכת ה׳ היא שמעשרת. הידיעה הזאת לא פוטרת מהשתדלות, אבל היא פוטרת מהדאגה המייאשת — אדם ממשיך לעבוד, אבל בלב שקט, כי הוא יודע שהתוצאה הסופית בידי מי שקבע אותה עוד לפני שהתחיל.</p>
+      <p class="bold-para">מי שיודע שמזונותיו קצובים לו מראש השנה לא יקפיד, לא יעשה מחלוקות ולא יתרעם. העמל לפרנסה הוא רק אמצעי לעיקר הגדול יותר — תורה ותפילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אורח נוטה ללון</div>
+      <h3 class="story-title">🍽️ צדיק אוכל לשובע נפשו</h3>
+      <p>על הפסוק ״צַדִּיק אֹכֵל לָשֹׁבַע נַפְשׁוֹ״ נאמרו כמה פירושים: פירוש ראשון — הצדיק אוכל רק על מנת להשביע את נפשו בדברי תורה; למה הוא רוצה להיות חזק? כדי שיהיה לו כוח ללמוד תורה. פירוש שני — הצדיק אוכל רק כדי שובעה, ולא יתר על המותרות.</p>
+      <p>ופירוש שלישי, סיפור יפה: הצדיק סיים לאכול, ופתאום דופק בדלת אורח. בעל הבית כבר שבע, אבל מגיש לו מאכל כדי שהאורח לא יתבייש לאכול לבדו, ואוכל עימו — אף על פי שהוא עצמו שבע. ״צדיק אוכל ושב על נפשו״ — לימד שהאורח יאכל בהרגשה נוחה יותר. ולכן תיקנו חז״ל ברכה מיוחדת לאורח בברכת המזון, שיברך את בעל הבית שנכסיו יהיו מוצלחים. שלושת הפירושים, למרות שהם נראים שונים, מצטרפים לתמונה אחת: גם האכילה הגשמית ביותר, כשהיא נעשית מתוך מחשבה נכונה, יכולה להיות מעשה של עבודת ה׳ ולא רק צורך הגוף.</p>
+      <p class="bold-para">שלושה פירושים לפסוק "צדיק אוכל לשובע נפשו": אוכל בשביל כוח לתורה, אוכל רק כדי שובע ולא יתר, ומאכיל גם כשהוא שבע עצמו — כדי שהאורח לא יתבייש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אורח נוטה ללון</div>
+      <h3 class="story-title">🌙 אורח נוטה ללון — תמיד ברך את בעל הבית</h3>
+      <p>ידוע שהאורח מברך בברכת המזון את בעל הבית. האדם צריך להרגיש בעולם הזה כ״אורח נוטה ללון״ — ואז תמיד יברך את בעל הבית, שהוא הקדוש ברוך הוא, ויאמר: למי שנותן כל כך טובות, והוא נותן ונותן ונותן — ״טוֹב שִׁמְךָ לָזֹאת, לְךָ נָאֶה לְהוֹדוֹת״.</p>
+      <p>השם יתברך יזכנו להיות מאלה היודעים להעריך נכון, ופיהם מלא תמיד שבח ותהילה לבורא יתברך, אדון כל המעשים שחפץ רק בטובתנו. נודה לו, נשבח למי שאמר והיה העולם, ונבקש ממנו גאולת עולם ושמחת עולם — בעושר האמיתי, שהוא העושר הרוחני, שהוא הוא האושר האמיתי. וכך, בסופו של מסע שהתחיל בשאלה מי מאושר באמת, מגיעים למסקנה שהחיפוש כולו היה צריך להתחיל ולהסתיים באותו מקום אחד: בהכרת הטוב למי שנתן את הכל, ונותן בכל רגע ורגע מחדש.</p>
+      <p class="bold-para">האדם צריך להרגיש בעולם הזה כאורח נוטה ללון, ולברך תמיד את בעל הבית האמיתי — הקדוש ברוך הוא, שנותן ונותן ונותן בלי הפסק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/gwbxvTriLUE · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מי באמת מאושר","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"מי מאושר — העשיר שהגיע לכל מה שרצה?","icon":"❓"},{"id":2,"title":"בינוניים ופועלים — גם להם לא נמצא","icon":"⚖️"}]},{"id":2,"name":"מפתח הפרנסה בידו","icon":"🔑","color":"#6d28d9","stories":[{"id":3,"title":"מפתח הפרנסה בידו יתברך","icon":"🔑"},{"id":4,"title":"נכסים, זוזים, ממון — מה מגלים השמות","icon":"🪙"},{"id":5,"title":"לא לטרוד את עצמו יום ולילה","icon":"🕰️"}]},{"id":3,"name":"לא עכשיו — מתי","icon":"⏳","color":"#e08e00","stories":[{"id":6,"title":"חפץ חיים: עכשיו תוסיף בלימוד","icon":"📚"},{"id":7,"title":"לא עכשיו, אולי בגיל שישים","icon":"⏳"}]},{"id":4,"name":"דירה נאה בלב, לא בבית","icon":"🏠","color":"#1e88b8","stories":[{"id":8,"title":"דירה נאה — בלב, לא בבית","icon":"🏠"},{"id":9,"title":"מזונותיו קצובים לו מראש השנה","icon":"📅"}]},{"id":5,"name":"אורח נוטה ללון","icon":"🙏","color":"#c62b6b","stories":[{"id":10,"title":"צדיק אוכל לשובע נפשו","icon":"🍽️"},{"id":11,"title":"אורח נוטה ללון — תמיד ברך את בעל הבית","icon":"🌙"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
