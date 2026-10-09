@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 דל למגר מכלום</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 דל למגר מכלום</h1>
+  <p>מדוע כל ליל הסדר סובב סביב המספר ארבע, ומה מלמדת אותנו האות ד' על סוד ההודיה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ דל למגר מכלום" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/BAb6MkXVUMk?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/BAb6MkXVUMk/hqdefault.jpg" alt="דל למגר מכלום" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=BAb6MkXVUMk" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המספר ארבע בכל מקום בהגדה</div>
+      <h3 class="story-title">🔢 חידה: כמה פעמים ארבע בליל הסדר</h3>
+      <p>ערב ליל הסדר, אפשר לשאול בבית חידה: כמה פעמים מופיע המספר ארבע בליל הסדר? יש ארבע כוסות ששותים, כנגד ארבע לשונות של גאולה. יש ״ברוך המקום, ברוך הוא״ שנאמר ארבע פעמים — כנגד ארבעה בנים שדיברה תורה לפניהם. יש ארבע קושיות שהילדים שואלים. אוכלים ארבעה כזיתים (מוציא מצה, כורך, אפיקומן). ויש ארבע מצות — כי כששוברים את המצה האמצעית, נשארות ארבע חצאי מצות.</p>
+      <p>מה מונח בדבר הזה שכל ליל הסדר מסתובב סביב המספר ארבע? לכאורה מונח כאן יסוד גדול בהודיה לה׳.</p>
+      <p>ה״בן חכם ישמח אב״ — זוכה לבן חכם, מברך ומודה להשם על שמחתו. אבל גם מי שיש לו בן מאחד הסוגים האחרים — רשע, תם, או שאינו יודע לשאול — צריך להודות עליהם, שהרי אמרו חז״ל: ״חַיָּב אָדָם לְבָרֵךְ עַל הָרָעָה כְּשֶׁם שֶׁמְּבָרֵךְ עַל הַטּוֹבָה״. לכן אומרים ״ברוך המקום, ברוך הוא, ברוך שנתן תורה לעמו ישראל, ברוך הוא״ — ארבע פעמים ״ברוך״, כנגד כל אחד מארבעה הבנים, שעל כולם צריך להודות.</p>
+      <p>ארבע כוסות אנחנו שותים להודות לקדוש ברוך הוא על ״וְהוֹצֵאתִי... וְהִצַּלְתִּי... וְגָאַלְתִּי... וְלָקַחְתִּי״. הנקודה המרכזית של ליל הסדר היא להגיע, על ידי כל ארבע הכוסות, לכך שבכל דור ודור חייב אדם לראות את עצמו כאילו הוא יצא ממצרים, כדי שיוכל להודות ולהלל כראוי.</p>
+      <p>כאשר אדם מספר את יציאת מצרים ובעצמו חי את הדברים, הוא יכול להודות ולהלל כראוי. אם אדם לא חי את זה, קשה לו מאוד להודות ולהלל.</p>
+      <p class="bold-para">ליל הסדר מלא במספר ארבע: ארבע כוסות, ארבעה בנים, ארבע קושיות, ארבע מצות, ארבע לשונות גאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האות ד': דל למגר מכלום</div>
+      <h3 class="story-title">🍞 מצה, להרגיש שאין לי כלום</h3>
+      <p>אוכלים בלילה הזה מצה, ״שֶׁלֹּא הִסְפִּיק בְּצֵקָם שֶׁל אֲבוֹתֵינוּ לְהַחֲמִיץ״. למה אוכלים דווקא מצה? המצה היא ״לֶחֶם עֹנִי״. בשביל להודות ולהלל, צריך האדם להרגיש ״דל למגר מכלום״ — שמעצמו אין לו שום דבר, וכל מה שיש לו, הקדוש ברוך הוא נתן לו.</p>
+      <p>החמץ רומז על החמץ, על הגאווה, על השאור המתנשא שחושב שהכול מגיע לו — וככה לא אפשר להודות. איך עושים מצה? לחם ומים, ולא מוסיפים כלום. לחמץ מוסיפים עוד דברים, זמן, אוויר. בשביל להודות ולהלל, צריך האדם להרגיש כמו המצה: מעצמו אין לו כלום, הכול נתן לו בורא עולם.</p>
+      <p>בליל הזה מתחילים ואומרים ביסוד גדול: ״מִתְּחִלָּה עוֹבְדֵי עֲבוֹדָה זָרָה הָיוּ אֲבוֹתֵינוּ, וְעַכְשָׁיו קֵרְבָנוּ הַמָּקוֹם לַעֲבוֹדָתוֹ״. אנחנו יוצאים מנקודת הנחה שבהתחלה — עובדי עבודה זרה היו אבותינו — וכל מה שיש לנו אחרי זה, הוא חסד המקום עלינו, מתנת בורא עולם.</p>
+      <p>יש דין להתחיל בלילה הזה בגנות: להתחיל ״עבדים היינו״, ״מתחילה עובדי עבודה זרה היו אבותינו״, ואז לאט לאט ללכת ולהוסיף בשבח: כמה הוא נתן לנו.</p>
+      <p class="bold-para">המצה עשויה רק מלחם ומים בלי שום תוספת, וזו מהות ההודיה: להרגיש שמעצמך אין לך כלום, וכל מה שיש לך הוא מתנה מבורא עולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האות ד': דל למגר מכלום</div>
+      <h3 class="story-title">🎁 מתנות או מכות</h3>
+      <p>אמר פעם מישהו דבר נפלא: יש אנשים שמקבלים בחיים כל היום מכות, ויש אנשים שמקבלים בחיים כל היום מתנות. מה הפירוש? אם אדם חי שהכול מגיע לו, אז כל פעם שהוא לא מקבל מה שהוא חושב שמגיע לו, הוא מקבל מכה — כל היום הוא חוטף מכות.</p>
+      <p>לעומת זאת, יש אדם שכל היום מקבל מתנות: הוא יוצא מנקודת הנחה ״מתחילה עובדי עבודה זרה היו אבותינו״, הוא יוצא מנקודת הנחה ״עבדים היינו״, הוא חי כמו שכתוב ״וְזָכַרְתָּ כִּי עֶבֶד הָיִיתָ בְּאֶרֶץ מִצְרָיִם״. הוא זוכר, יוצא מנקודת הנחה שהוא עבד, וכל מה שיש לו משם ואילך, זו מתנה. כמה הודיה הוא חייב לבורא עולם — הכול מלא מתנות עבורו.</p>
+      <p>מספר סיפור על הרב חזקיהו לוינשטיין שכתב פעם לרבי שמואל אוירבך מכתב: היה לו שמחה גדולה מאוד מברכה שנהג לכוון בה בכל יום. איזו ברכה? ״בָּרוּךְ אַתָּה ה׳... שֶׁלֹּא עָשַׂנִי עָבֶד״. מודים אנחנו לקדוש ברוך הוא שלא עשה אותנו עבדים.</p>
+      <p>היה מלא שמחה, ושלח לו מכתב שהוא ממש מודה על הכוונה החדשה שניתנה לו בברכה הזאת. כך יהודי צדיק שכל היום מודה לה׳ שאינו עבד, חי כל חייו מלא במתנות, לא במכות.</p>
+      <p class="bold-para">מישהו אמר: יש אנשים שמקבלים כל היום מכות (כי חייהם חי מתוך תחושה שמגיע להם הכל), ויש שמקבלים כל היום מתנות (כי חייהם חי מתוך "עבדים היינו").</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתנות או מכות</div>
+      <h3 class="story-title">📜 ד' זה דל למגר מכלום</h3>
+      <p>למה כל כך הרבה הודיה הולכת תמיד עם המספר ארבע? ליל הסדר הוא ליל ההודיה; אנחנו מודים על ״והוצאתי, והצלתי, וגאלתי, ולקחתי״; יהודה הוא הבן הרביעי; חג החנוכה הוא החג הרביעי; מי שמביא קורבן תודה מביא ארבעים (4×10) סוגי לחמים, ונותן ארבעה לכהן.</p>
+      <p>מדובר באות ד׳: רומזת ל״דל למגר מכלום״. כאשר אדם ד׳ (דל, חש שאין לו כלום מעצמו) ומודה לקדוש ברוך הוא, הוא זוכה להיות האות ה׳ — כי אות ה׳ מסמנת בכל מקום את הקדוש ברוך הוא. כאשר האדם מודה לקדוש ברוך הוא, בא הקדוש ברוך הוא ושורה בתוכו, כמו שאנו רואים במילה ״יהודה״: י-ה-ו-ד-ה, שם ה׳ חבוי על האות ד׳.</p>
+      <p class="bold-para">האות ד' עצמה רומזת לדל, למגר מכלום — ומי שמרגיש כך, זוכה שבתוכו תשרה אות ה', סימן לנוכחות ה' יתברך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתנות או מכות</div>
+      <h3 class="story-title">🌟 כל מוציאם ממצרים</h3>
+      <p>מדייק אור החיים הקדוש: לא כתוב ״כי הוציאם ממצרים״, אלא ״כל מוציאם ממצרים״ — כל פעם ופעם, כל לילה ולילה. בליל הסדר, הקדוש ברוך הוא מוציא עוד פעם את כל אחד ואחד ממצרים. כאשר אתה חי בעצמך שכל השפע הטוב שיש לך הוא מתנה מה׳, הקדוש ברוך הוא מוציא אותך מכל המיצרים שיש לך.</p>
+      <p>יהי רצון שנזכה להתבונן כמה שאפשר ב״וזכרת כי עבד היית בארץ מצרים״, כל מה שיש לנו, כל השפע הטוב, כל מה שאנחנו בני חורין, כל מה שאנחנו זוכים ללמוד תורה, זה הרבה הרבה יותר טוב ממה שהיה לנו במצרים. נתבונן בכל הדברים הטובים שיש לנו, ואז נזכה שפינו יהיה מלא שירה, קיימים כל ארבעת ההיגדים — דל, הודיה, שירה, וחיים — יחד, לגאולה שלמה.</p>
+      <p class="bold-para">אור החיים מדייק שכתוב "כל מוציאם ממצרים" — כל לילה ולילה הקדוש ברוך הוא מוציא עוד פעם את כל אחד מאיתנו מהמיצרים שלו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/BAb6MkXVUMk · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"המספר ארבע בכל מקום בהגדה","icon":"🔢","color":"#c62b6b","stories":[{"id":1,"title":"חידה: כמה פעמים ארבע בליל הסדר","icon":"🔢"}]},{"id":2,"name":"האות ד': דל למגר מכלום","icon":"📜","color":"#6d28d9","stories":[{"id":2,"title":"מצה, להרגיש שאין לי כלום","icon":"🍞"},{"id":3,"title":"מתנות או מכות","icon":"🎁"}]},{"id":3,"name":"מתנות או מכות","icon":"🎁","color":"#e08e00","stories":[{"id":4,"title":"ד' זה דל למגר מכלום","icon":"📜"},{"id":5,"title":"כל מוציאם ממצרים","icon":"🌟"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
