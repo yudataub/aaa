@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 להודות על הרגע הטוב</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 להודות על הרגע הטוב</h1>
+  <p>האם מברכים על ישועה שאולי לא תחזיק? הלכות, סיפורים ויסוד אחד שחוזר בכל מקום: מברכים על ההווה, לא על הניחושים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ להודות על הרגע הטוב" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/dE0YokccDmQ?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/dE0YokccDmQ/hqdefault.jpg" alt="להודות על הרגע הטוב" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=dE0YokccDmQ" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה של הבוקר השקט</div>
+      <h3 class="story-title">🔁 לפני שמתחילים: שאלה שחוזרת בחיים הרבה פעמים</h3>
+      <p>השיעור נפתח בהערה מקדימה חשובה: השאלה שעלתה אותו בוקר אינה שאלה שנולדה משום מקרה ספציפי בלבד. היא שאלה כללית שחוזרת ועולה בהרבה מאוד הקשרים בחיים, בכל פעם שאדם נמצא ברגע טוב, בלי לדעת מה יהיה מחר.</p>
+      <p>לפני שניגשים למקרה הספציפי, ראוי להבין את השאלה הכללית: האם צריך להודות רק כשברור שהטוב יישאר לתמיד, או שאפשר ואף צריך להודות גם כשהעתיד עדיין לא ידוע, ואין שום ערובה שהמצב הנוכח יתמיד? זו שאלה שכל אדם נתקל בה בחייו שלו, בהקשרים אישיים לגמרי, לא רק בהקשרים כלליים וציבוריים.</p>
+      <p>השיעור הודגש שהוא יבנה את התשובה מתוך מקורות שונים – משנה, גמרא, ראשונים וסיפור מהחיים – כדי שהמסקנה תהיה לא רק תחושה או אינטואיציה, אלא יסוד הלכתי מבורר, שאפשר להישען עליו גם בפעמים הבאות שהשאלה הזאת תעלה.</p>
+      <p class="bold-para">השאלה אם מברכים על טוב שעדיין לא ברור אם יחזיק אינה שאלה חד-פעמית, אלא שאלה שחוזרת בחיים הרבה פעמים, בהקשרים רבים ושונים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה של הבוקר השקט</div>
+      <h3 class="story-title">🌅 בוקר שקט, אחרי תקופה לא פשוטה</h3>
+      <p>השיעור נפתח בתיאור של תקופה ממושכת שבה החיים התנהלו בתוך מתח מתמשך: אנשים הולכים לישון ולא בטוחים שהם יישארו רדומים כל הלילה, הולכים לישון בצהריים ומתפללים שלא יקרה דבר באמצע. היו רגעים קונקרטיים של אזעקות באמצע הלילה, שהזכירו לכולם מה יכול לקרות.</p>
+      <p>ואז, בבוקר מסוים, אחרי תקופה כזאת, הגיע שקט. ועם השקט הגיעה שאלה: האם יש כאן משהו שמחייב הודיה והכרה בטובה, או שמא מוקדם לדבר, כי אין שום ביטחון שהשקט יחזיק. השאלה הזאת לא נשארה תאורטית: היא הייתה שאלה מעשית ממשית, שאנשים התמודדו איתה בעצמם באותו בוקר.</p>
+      <p>השיעור ציין נקודה חברתית מעניינת: למרות השקט המבורך, לא נראתה שום כותרת חוגגת בעיתונים, ולא נראתה שום יציאה פומבית ברורה של רב מרכזי שקורא לציבור להודות ולשמוח. יש הרבה הסברים אפשריים לכך, אבל אחד הפשוטים הוא שאנשים חוששים, ובצדק, שההודיה המהירה תתגלה כמוקדמת מדי.</p>
+      <p class="bold-para">אחרי תקופה ממושכת של מתח וחרדה, הגיע בוקר שקט, ומיד עלתה השאלה: האם מברכים ומודים על הרגיעה, או שמא מוקדם מדי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה של הבוקר השקט</div>
+      <h3 class="story-title">🙂 הפסימיים והאופטימיים</h3>
+      <p>השיעור תיאר שתי תגובות אפשריות לאותו מצב בדיוק. היו שראו ברגיעה רק הפסקה זמנית, הכנה לסבב הבא, ולא היו מוכנים לתת לה שום משקל של הישג. היו גם שראו בה הפסד, כי קיוו ליותר, וכל פחות מהמקסימום הרגיש להם כאובדן.</p>
+      <p>אבל היו גם שראו בדיוק את אותה מציאות, ושמחו: ברוך השם, יש רגיעה, יש אפשרות לנשום. השיעור ציין נקודה חשובה: אלה שרואים דברים כך או כך לא נחלקים במה שקרה בפועל. שניהם ראו את אותה מציאות בדיוק. המחלוקת היא רק בשאלה על מה בוחרים להתמקד, ועל מה בוחרים לשים את תשומת הלב.</p>
+      <p>וכאן עלתה השאלה המרכזית של השיעור: האם ההלכה בכלל מתעניינת בשאלה הזאת? האם יש לה דבר לומר על מי שבוחר להתמקד בטוב, לעומת מי שבוחר להתמקד בחסר? והתשובה, כפי שנראה, היא שיש להלכה דבר ברור לומר, ובצורה שמפתיעה.</p>
+      <p class="bold-para">חלק מהציבור מתרכז בחששות מהעתיד, וחלק מתרכז בטוב שבהווה, אבל שני הצדדים מכירים באותה מציאות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ללמוד מהעבר: חנוכה ומדינה</div>
+      <h3 class="story-title">📖 לקח מההיסטוריה של חנוכה</h3>
+      <p>כדי להבין את השאלה לעומק, הביא השיעור דוגמה מההיסטוריה של חנוכה. הסיפור שמספרים לרוב מצטמצם לכך שהחשמונאים נלחמו ביוונים, ניצחו, והחיים חזרו למוטב. אבל מי שפותח ספר היסטוריה רואה תמונה מורכבת הרבה יותר: היוונים לא נסוגו בלי קרב נוסף, המלחמות המשיכו שנים רבות אחרי כן, ורוב בניו של מתתיהו נפלו במהלכן, אחד אחרי השני.</p>
+      <p>ובכל זאת, מדי שנה בשנה אנחנו חוגגים את כ"ה בכסלו, אף שהסיפור ההיסטורי לא הסתיים שם בניצחון מלא ומוחלט. למה? כי באותו שלב קרה דבר טוב משמעותי: אפשר היה לחזור ולעבוד את הקדוש ברוך הוא, בית המקדש התחיל לחזור לתפקידו, ואפשר היה לשמור מצוות בלי ההגבלות שהיו קודם. זה היה שלב, לא סוף הדרך, ועדיין ראו בו עילה מוצקת לשמחה ולחג.</p>
+      <p>הרמב"ם מוסיף פרט מעניין: זו הייתה הפעם הראשונה שבה עם ישראל עשה דבר של התבצרות עצמית, בלשון "עד שתשוב מלכות לישראל", ולא חיכה רק לישועה שתבוא מעצמה מלמעלה. יש בכך לקח: הכרה בטוב החלקי, ועבודה פעילה על המשכו, הם חלק מהעבודה הרוחנית עצמה, ולא רק הניצחון השלם בסוף.</p>
+      <p class="bold-para">מי שפותח ספר היסטוריה רואה שהניצחון בחנוכה לא היה סוף הסיפור, והמלחמות נמשכו שנים; ובכל זאת קבעו חג על אותו שלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ללמוד מהעבר: חנוכה ומדינה</div>
+      <h3 class="story-title">🌓 אין שמחה מוחלטת בעולם הזה</h3>
+      <p>יש תשובה הלכתית שנכתבה בעקבות שאלה דומה שעלתה בדורות קודמים, ולא במקרה שלנו, שעסקה בשאלה דומה: כיצד אפשר לקבוע יום שמחה והודיה, כשידוע כמה הוא עלה במחיר אנושי כבד. התשובה שם הדגישה שגם כשיש חסרונות גדולים, אין בהם סיבה שלא לשמוח בטוב שיש, מפני שכל מציאות אנושית מעורבת.</p>
+      <p>ההסבר שהובא: בעולם הזה כמעט אין שמחה מוחלטת, בלי שום תערובת של עצב וצער. גם מתחת לחופה, בשעת השמחה הגדולה ביותר, מזכירים את חורבן בית המקדש. גם ביום שמח במיוחד, יש מקום להיזכר במה שעדיין חסר. אין בכך סתירה; זה פשוט אופי החיים בעולם הזה, שבו הטוב והחסר מתערבבים זה בזה, ושני הצדדים מקבלים ביטוי, כל אחד במקומו הראוי.</p>
+      <p>ההלכה לא אומרת שמחמת הצער אין לשמוח על הטוב. היא אומרת שיש לקבוע זמן לזה וזמן לזה: לפעמים נכון לבכות ולהתאבל, ולפעמים נכון לשמוח ולהודות, ושני הדברים יכולים להתקיים באדם אחד, בזמנים שונים, בלי שאחד מבטל את השני. חשבון נפש על מה שחסר ראוי שיבוא בזמנו – לפני המצווה, או בשעה נפרדת של התבוננות – ולא ברגע ההודיה עצמו, כדי שההודיה תהיה שלמה ולא מהוססת.</p>
+      <p class="bold-para">גם כשחוגגים ושמחים, מזכירים את החורבן ואת מה שחסר, מפני שבעולם הזה אין שמחה שאינה מעורבת בעצב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מברכים על ההווה, לא על הניחוש</div>
+      <h3 class="story-title">⚖️ ברכה על ירושה, גם מתוך עצב</h3>
+      <p>ההלכה מביאה מקרה מאלף: אדם שמת אביו, ונפלה לו ירושה. ההלכה קובעת שהוא מברך "ברוך דיין האמת" על מיתת אביו, אבל גם מברך "ברוך הטוב והמטיב" או "שהחיינו" על הירושה שקיבל – שתי ברכות סותרות לכאורה, זו אחר זו, בלי שאחת מבטלת את חברתה או פוגמת בכנותה.</p>
+      <p>ואין כאן שום סתירה פנימית: האדם לא אגואיסט שרוצה במות אביו כדי לקבל כסף; ודאי שהוא היה מעדיף שאביו יישאר בחיים בלי שום ירושה. אבל כיוון שהמציאות היא כפי שהיא, ואביו נפטר והירושה הגיעה, הוא מברך על הטובה שיש, בלי שזה סותר את הצער שבלבו על המיתה.</p>
+      <p>בפועל, בגלל סיבות טכניות (הכסף לא עובר מיידית ביום המיתה עצמו, ולכן אין רגע מוגדר שבו ראוי לברך), לא נוהגים לברך את הברכה הזאת היום בפועל, אבל העיקרון ההלכתי נשאר עומד: אדם מברך על הטוב שיש לו, בלי שום קשר למה שהביא אליו או למה שעדיין חסר.</p>
+      <p class="bold-para">ההלכה קובעת שיורש מברך שהחיינו על הירושה גם כשברור שהוא היה מעדיף שאביו היה נשאר בחיים – כי הטוב שיש כעת ראוי להודיה בפני עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מברכים על ההווה, לא על הניחוש</div>
+      <h3 class="story-title">🔮 מברכים על ההווה, לא על הניחוש</h3>
+      <p>המשנה במסכת ברכות מלמדת יסוד מרכזי: "מברך על הרעה מעין הטובה, ועל הטובה מעין הרעה". כלומר, אם קרה דבר שנראה רע כרגע, מברכים "ברוך דיין האמת", אפילו אם יש סיכוי שבעתיד תצא מזה טובה. ואם קרה דבר שנראה טוב כרגע, מברכים "הטוב והמטיב", אפילו אם יש חשש שבעתיד יצא מזה רע.</p>
+      <p>הגמרא מביאה דוגמאות: שדה שהציף אותו מים – נראה כרגע הפסד ודאי, אף שבעתיד אולי יהפוך לשדה דייג טוב יותר; מי שמצא מציאה בזמן שהחוק מחייב למסור אותה לרשויות, ויש חשש שימסרו אותו לעונש בהמשך – נראה כרגע טוב, אף שהעתיד מעורפל.</p>
+      <p>הכלל שעולה מכאן ברור: ההלכה לא מצפה מאיתנו לנחש את העתיד, ולא נותנת לניחוש הזה שום משקל בשאלה איך לברך. מברכים לפי מה שידוע כרגע, בלי להמר על מה שאולי יקרה או לא יקרה. אם עכשיו טוב – מודים על הטוב, ולא דוחים את ההודיה בגלל חשש למה שעלול להשתנות בעתיד הלא ידוע.</p>
+      <p class="bold-para">המשנה קובעת שמברכים לפי מה שידוע כרגע, בלי להמר על מה שעלול לקרות בעתיד – כי העתידות אינן ידועות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מברכים על ההווה, לא על הניחוש</div>
+      <h3 class="story-title">🏠 חנוכת הבית, גם עם משכנתה</h3>
+      <p>דוגמה מהחיים שהובאה בשיעור: אנשים שפנו בשאלות הלכה על חנוכת בית חדש, וסיפרו שהם לקחו משכנתה כבדה, ולא בטוחים אם יעמדו בתשלומים בעתיד, ולכן מתקשים לברך מתוך לב שלם. ההלכה, שהיא משנה מפורשת, אומרת שמברכים "הטוב והמטיב" על הבית, בלי קשר לדאגה מהעתיד.</p>
+      <p>התשובה שניתנה להם הייתה: עכשיו יש לך ברוך השם בית. זה מה שיש כרגע. למה אתה מסתכל על המציאות הנוכחית מתוך העתיד הבלתי בטוח, במקום לשמוח במה שיש לך בפועל עכשיו? דווקא ההפך הוא הנכון: שמחה והודיה על הטוב הקיים הן בעצמן סגולה וכוח להמשיך ולהצליח.</p>
+      <p>זו בדיוק נקודת ההשוואה לשאלה שבה פתח השיעור: אדם שזכה לרגיעה, אפילו אם אין לו שום ביטחון שהיא תחזיק, לא צריך לדחות את ההודיה שלו עד שיתבהר העתיד. העתיד לא ידוע לאף אחד, וההלכה בדיוק קובעת שאין צורך שהוא יהיה ידוע כדי להודות על מה שיש כבר עכשיו. העצה המעשית, אם כן, זהה לגמרי: לברך על הבית שיש, לשמוח ברגיעה שיש, ולהשאיר את הדאגה מהעתיד לפרק זמן אחר, נפרד מרגע ההודיה.</p>
+      <p class="bold-para">מי שקנה בית וחושש אם יוכל להמשיך לעמוד בתשלומים, מברך בכל זאת על הבית שיש לו כרגע, ולא דוחה את הברכה לעתיד הבלתי ידוע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מברכים על ההווה, לא על הניחוש</div>
+      <h3 class="story-title">🙇 אברהם אבינו משתחווה פעמיים</h3>
+      <p>סיפור קניית מערת המכפלה מגלה יסוד נוסף. אברהם אבינו, שרצה לקבור את שרה, היה צריך לעבור שני שלבים: ראשית, לקבל רשות כללית מבני חת, תושבי המקום, לקבור מתים בתוך תחומם; ושנית, לקנות בפועל את החלקה הספציפית, מערת המכפלה, מידי עפרון.</p>
+      <p>התורה מספרת שכאשר בני חת הסכימו לשלב הראשון – הרשות הכללית, בלי שעדיין נקבע מאיפה בדיוק יקבור – "וישתחו אברהם לפני העם". הוא הודה והשתחווה כבר על ההתחלה, אף שעדיין לא היה לו שום ודאות שעפרון יסכים למכור לו את המקום הספציפי שרצה. רק בהמשך, אחרי שהעסקה עם עפרון הושלמה, מופיעה השתחוויה השנייה.</p>
+      <p>אותו דבר מדויק קורה בסיפור אליעזר, שחיפש אישה ליצחק: הוא קד והשתחווה להשם כששמע את רבקה עונה לו בחסד, לפני שידע אם משפחתה תסכים לשידוך בכלל. המדרש רבה מדייק בדיוק בנקודה הזאת: שתי ההשתחוויות הראשונות, ולא השניות, הן אלו שמלמדות את היסוד. מכאן, אומר המדרש, שמודים על בשורה טובה ראשונית, גם אם העניין עדיין לא נגמר ועדיין יש מה לדאוג עליו בהמשך.</p>
+      <p>היסוד שעולה מכאן חשוב מאוד: אין להמתין עם ההודיה רק למטרה הסופית והמושלמת. כל שלב של גילוי חסד השם, גם אם הוא חלקי ואף אם הוא רק תחילת הדרך, ראוי להכרה ולהודיה משל עצמו, ואין לבטל אותו רק מפני שהעתיד עדיין לא ברור ועדיין יש מקום לדאגה.</p>
+      <p>יש בהנהגה הזאת גם עצה נפלאה, לא רק חיוב הלכתי: הכרה בחסד שכבר ניתן פותחת, כביכול, את השערים לחסד הבא. מי שיודע ומכיר שהקדוש ברוך הוא מתנהג עמו בחסד, מזמין בכך עוד חסד; ומי שמתעלם מהחסד שכבר קיבל, מתוך דאגה בלבד למה שעוד לא הגיע, עוצר בעצמו את זרימת השפע הבאה.</p>
+      <p class="bold-para">המדרש מגלה שאברהם אבינו הודה לבני חת כבר על האישור החלקי הראשון לקנות את מערת המכפלה, לפני שהעסקה הושלמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · סיפור על הכרת הטוב</div>
+      <h3 class="story-title">🕊️ קרבן תודה גם לאחר מלחמה כואבת</h3>
+      <p>הרמב"ן בפירושו לתורה מביא פרט מפתיע מסיפור המלחמה בין שאר שבטי ישראל לבין בני בנימין: אחרי שחזרו מהמלחמה, ולמרות שנפלו בה רבבות משני הצדדים, הקריבו הנמלטים קרבן שלמים, ולדעת הרמב"ן קרבן זה היה קרבן תודה. על מה הודו? על עצם זה שניצלו וחזרו בחיים, אף שרבים אחרים לא חזרו.</p>
+      <p>הרמב"ן מסביר שזהו דין כללי בכל מי שחש עצמו כ"פלטים מחרב": עליהם להקריב תודה. אין בכך זלזול באלה שלא שרדו, ואין בכך מחיקת הכאב והאבל על מי שנפל. יש כאן שתי תחושות שמתקיימות יחד: צער עמוק על מה שקרה לאחרים, והודיה אמיתית על עצם ההישרדות.</p>
+      <p>השיעור ציין שתי תגובות אנושיות אפשריות למי ששרד אירוע שבו אחרים לא שרדו: תחושת אשמה כבדה ("למה אני נשארתי, ולא הוא"), או חיפוש משמעות ותכלית רוחנית בהישרדות הזאת. דברי הרמב"ן מציעים כיוון שלישי, מאוזן: אפשר, ואף צריך, להודות על הטוב שיש – עצם החיים – בלי שזה סותר את הכאב על מה שאבד.</p>
+      <p class="bold-para">הרמב"ן מגלה שאחרי מלחמה כואבת מאוד, בה נפלו רבים משני הצדדים, הקריבו הנמלטים קרבן תודה – על עצם זה שנשארו בחיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · סיפור על הכרת הטוב</div>
+      <h3 class="story-title">🧩 שני כיוונים לתגובה, ושני צדדים לבחור ביניהם</h3>
+      <p>השיעור העמיק בשתי התגובות האפשריות של מי ששרד אירוע קשה כשאחרים לא שרדו. התגובה האחת היא תחושת אשמה כבדה: "למה דווקא אני נשארתי בחיים", תחושה שמלווה אנשים רבים, בפרט מי שהיה בחברת אנשים שחלקם לא שרדו. זו תגובה טבעית, אך היא עלולה להיות הרסנית אם היא נשארת לבדה, בלי שום איזון.</p>
+      <p>התגובה השנייה, שגם לה יש בסיס, היא חיפוש תכלית ומשמעות רוחנית בעצם ההישרדות: אם ניצלתי, סימן שיש לי עוד תפקיד לעשות בעולם. גם זו תגובה שיכולה לעזור, אבל היא לא חובה הלכתית, ולא כל אחד מצליח או צריך למצוא תכלית מיוחדת כזאת.</p>
+      <p>דברי הרמב"ן מציעים כיוון שלישי, פשוט יותר ונגיש לכל אדם: להודות. לא להסביר למה שרדתי, לא לחפש תכלית נשגבת, אלא פשוט להכיר בטובה של עצם החיים, ולהודות עליה לבורא עולם, בלי קשר לשאלות הגדולות שאין להן תשובה ברורה. זו תגובה שכל אדם יכול לאמץ, בלי תנאים מוקדמים.</p>
+      <p class="bold-para">מי שחווה אירוע שבו אחרים לא שרדו עומד בפני שתי תגובות אפשריות, ודברי הרמב"ן מכוונים לתגובה הבריאה והנכונה מבין השתיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · סיפור על הכרת הטוב</div>
+      <h3 class="story-title">💪 הראיה החזקה ביותר</h3>
+      <p>אחרי שהביא את הרמב"ן והמשנה, ציין השיעור שזו, לדעתו, הראיה החזקה ביותר מכל מה שהובא בדיון. היא לא מבוססת רק על אינטואיציה או על רגש, אלא על יסוד הלכתי מפורש שחזר פעמיים – גם במשנה בברכות, וגם בפירוש הרמב"ן על אירוע היסטורי קונקרטי של מלחמה כואבת.</p>
+      <p>המסר שעולה מכל המקורות ביחד הוא אחד: הציווי להודות על הטוב הקיים אינו מתבטל בגלל אי-ודאות לגבי העתיד, ואינו מתבטל בגלל צער שקיים במקביל על מה שחסר או על מי שאבד. שני הדברים – הודיה על הטוב, וצער על החסר – יכולים ואף צריכים להתקיים זה לצד זה, בלי שאחד דוחק את רגליו של השני.</p>
+      <p class="bold-para">מי שרואה בדברי הרמב"ן ובדין המשנה יסוד אחד ברור, מבין שיש כאן תשובה חזקה מאוד לשאלה שממנה התחיל השיעור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה לוקחים מכל זה</div>
+      <h3 class="story-title">📗 סיפור על ספר שנפל ביד</h3>
+      <p>השיעור הביא סיפור שהתרחש כהמחשה ליסוד נוסף. ביקשו ממישהו לכתוב מאמר לקראת חנוכה, ובתחילה לא עלה בדעתו שום דבר מתאים. כמה ימים אחר כך הוא נזכר שכתב בעבר חוברת, ושיש בה מאמר שמתאים בדיוק לנושא, אלא שהחוברת לא הייתה בביתו.</p>
+      <p>בעוד הוא יושב באמצע שיעור אחר, באקראי, הרים את עיניו לכיוון ארון הספרים שלמד שם שנים רבות, וראה בדיוק באותו יום, במקום שבו מעולם לא שם לב לכך לפני כן, את הספר המבוקש מונח על המדף הגבוה. הוא פתח אותו ומצא שם את המאמר המדויק שחיפש.</p>
+      <p>המאמר עצמו, שהתגלה כך בדרך מופלאה, דיבר על יסוד מעניין: בורא עולם שולח ניסים בהתאם לכלי האמונה של האדם. מי שחי בביטחון עמוק זוכה לניסים גלויים כמו רבי חנינא בן דוסה, שחומץ הפך לו לשמן; מי שרמת האמונה שלו מצומצמת יותר, מקבל ניסים קטנים יותר, שדי בהם כדי להתחיל.</p>
+      <p class="bold-para">סיפור על מאמר שהתגלה בדיוק בזמן הנכון, שלימד יסוד חשוב: ניסים נשלחים לפי מידת האמונה שמוכנים לקבל אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה לוקחים מכל זה</div>
+      <h3 class="story-title">⏰ המאמר שהגיע באיחור ובכל זאת בזמן</h3>
+      <p>השתלשלות הסיפור הייתה מעניינת בפני עצמה. גוף שמוציא עלון תורני לכבוד חנוכה ביקש מאמר מתאים, ומי שנתבקש לא זכר בהתחלה שום דבר שמתאים. רק כמה ימים אחר כך הוא נזכר בחוברת ישנה שכתב, ושיש בה מאמר שמתאים בול לנושא – אבל החוברת לא הייתה אצלו, אלא במקום אחר, ולא היה לו דרך פשוטה להשיג אותה בזמן.</p>
+      <p>כשהתברר לו שמצא את הספר ובו המאמר, הוא פנה בחזרה לעלון, אבל כבר נאמר לו שהתאריך עבר ומאוחר מדי לכלול אותו בגיליון של חנוכה. במקום להתייאש, הוא הציע: אפשר לכתוב על חנוכה גם בראש חודש טבת, הרי חלק מחנוכה חל בו, וכך בדיוק נעשה.</p>
+      <p>השרשרת הזאת של עיכובים ותזכורות, שבסופה בכל זאת הגיע המאמר הנכון בעיתוי הנכון, מראה שגם סדר הזמנים שבו דברים מתגלגלים אינו בהכרח תחת שליטתנו המלאה. מה שבידינו הוא להישאר פתוחים וערניים לרגע שבו ההזדמנות באה, גם אם היא מגיעה בדרך עקלקלה או בעיתוי שלא תיכננו.</p>
+      <p class="bold-para">המאמר שהתגלה כבר היה מאוחר מדי לכאורה, אבל דווקא ההשתלשלות שבה הגיע לימדה שהעיתוי, כמו כל דבר אחר, אינו תלוי בנו בלבד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה לוקחים מכל זה</div>
+      <h3 class="story-title">🏺 כלי של אמונה, לפי מידתו של כל אחד</h3>
+      <p>המאמר שהתגלה פתח ביסוד: הקדוש ברוך הוא לא מוריד שפע וברכה לאדם אלא אם כן הוא מכין לכך כלים של אמונה, ובפרט כאשר מדובר בנס של ממש. לכל אדם יש מידה אחרת של כלי אמונה, ולפי המידה הזאת נראים לו הניסים בחייו.</p>
+      <p>רבי חנינא בן דוסא זכה לכך שחומץ יהפוך לו לשמן, מפני שהוא חי בדרגת אמונה כזאת שלגביו זה היה טבעי ומתאים. לא כל אדם זוכה לניסים כאלה, לא מפני שהקדוש ברוך הוא מונע מהם, אלא מפני שהכלי של האמונה שלהם עדיין לא בנוי למדרגה הזאת.</p>
+      <p>אבל יש כאן נקודה מעודדת: הכלי הזה אינו קבוע וסגור. אדם שמתחיל להכיר בניסים הקטנים שכבר קרו לו, בונה בכך בעצמו כלי גדול יותר, שמאפשר לו לקבל ניסים גדולים יותר בהמשך. זו הסיבה שהתגובה הראשונית לחסד הקטן היא כל כך קריטית – היא לא רק תגובה, היא בניית הכלי להמשך.</p>
+      <p class="bold-para">לא כל אדם מקבל ניסים גלויים כמו רבי חנינא בן דוסא; כל אחד מקבל ניסים לפי מידת הכלי של האמונה שהוא בנה בעצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה לוקחים מכל זה</div>
+      <h3 class="story-title">💰 100 אלף שקל, או 10 אלף שקל</h3>
+      <p>המאמר שהתגלה המשיך בדוגמה מעשית: אדם מתפלל לישועה גדולה, נגיד סכום כסף נכבד שהוא צריך לצורך חשוב. הקדוש ברוך הוא, שרואה שאין לאדם עדיין את הזכויות המספיקות לישועה המלאה, שולח לו בשלב ראשון רק חלק קטן ממנה.</p>
+      <p>מה שהאדם עושה עם החלק הקטן הזה הוא ההבדל הגדול. אם הוא מגיב בשמחה ובהכרת הטוב, ומרגיש שהקדוש ברוך הוא התחיל לעזור לו, הוא בעצם מכין כלי שמאפשר להמשיך ולשלוח לו עוד ועוד ניסים, עד שהישועה תגדל ותגיע לשלמותה. אם לעומת זאת הוא מגיב בפנים חמוצות, ומתרכז רק בחלק החסר, בלי להתבונן בטוב שכבר ניתן לו, הוא בעצם סוגר את הצינור וחוסם את המשכו של השפע.</p>
+      <p>זה בדיוק אותו יסוד שחוזר בכל השיעור: הכרת הטוב על מה שיש כבר עכשיו היא לא רק תגובה נעימה, היא בעצמה כוח שמביא עוד טוב. ומי שדוחה את ההודיה עד שיהיה לו "הכל", מפסיד את ההזדמנות שההודיה החלקית עצמה יכולה לפתוח, ולעיתים אף גורם לכך שהשלב הבא יתעכב יותר ממה שהיה צריך, פשוט מפני שהוא לא הכין את הכלי הנפשי המתאים לקבל אותו בשמחה.</p>
+      <p class="bold-para">אדם שמבקש ישועה גדולה ומקבל רק חלק ממנה, יכול לבחור להתייחס לזה כניסים שהולכים וגדלים, או כאכזבה – וההבדל קובע אם הישועה תמשיך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה לוקחים מכל זה</div>
+      <h3 class="story-title">🕎 מדוע חוגגים שמונה ימים ולא שבעה</h3>
+      <p>השיעור חיבר את כל היסודות האלה לשאלה קלאסית בחנוכה: אם פך השמן שמצאו החשמונאים הכיל רק מספיק לדליקה של לילה אחד, ורק שאר הלילות היה בו נס, למה חוגגים שמונה ימים ולא שבעה, שבהם היה הנס בפועל?</p>
+      <p>אחד התירוצים המובאים: ביום הראשון עצמו, כשמצאו את הפך הקטן, הם לא התייחסו אליו כאל מעט מדי. להפך – הם שמחו שמחה גדולה ומלאה על עצם זה שנמצא להם פך שמן טהור כלשהו, סימן שהקדוש ברוך הוא איתם ורוצה בטובתם, ולא דחו את השמחה שלהם רק ליום שבו יידעו שהנס יחזיק לאורך כל השבוע.</p>
+      <p>התירוץ הזה מלמד שבדיוק אותה שמחה שלמה על הדבר הקטן, היא זו שגרמה להמשך השפע לכל שמונת הימים. אם הם היו מגיבים בדאגה ("מה יהיה מחר, מה נעשה כשהשמן הזה יכלה"), יתכן שהנס היה נפסק אחרי הלילה הראשון. השמחה המלאה ברגע הראשון היא עצמה שהביאה את המשכו.</p>
+      <p class="bold-para">השמן האבוד נמצא רק ליום אחד, אבל השמחה שהביעו באותו יום הראשון היא שהמשיכה את הנס לשמונה ימים שלמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה לוקחים מכל זה</div>
+      <h3 class="story-title">🚧 דאגה שסוגרת את הצינור</h3>
+      <p>המאמר המשיך ותיאר את האפשרות השנייה, ההפוכה: אדם שמקבל את אותו חלק קטן מהישועה, אבל מגיב בפנים חמוצות, ממשיך להתאונן, ומתמקד רק בתשעת החלקים שעדיין חסרים לו. חבריו שואלים אותו מה נשמע, והוא עונה מתוך תלונה, בלי להזכיר את הטוב שכבר קרה לו.</p>
+      <p>אדם כזה, מתאר המאמר, אינו מביט וחש את ישועת ה' שכבר הושטה לו, ורואה אך ורק את המרחק הנותר. התוצאה, לפי המאמר, היא שהוא בעצמו עוצר את השפע וההמשך, לא מתוך רצון רע, אלא מתוך כך שהוא לא נותן לעצמו להכיר ולחוש בחסד שכבר קיים.</p>
+      <p>ההבדל בין שני האנשים בדוגמה אינו בגובה הסכום שהם קיבלו – הוא זהה. ההבדל הוא רק בתגובה הנפשית לאותו סכום בדיוק. וזו בעצם הנקודה המרכזית שכל השיעור חוזר ומדגיש בדרכים שונות: לא מה שקורה לנו הוא שקובע את המשכו, אלא איך אנחנו בוחרים להגיב למה שכבר קרה.</p>
+      <p>אפשר להעביר את הדימוי הזה בדיוק למצב שבו דיברנו בתחילת השיעור: תקופה ארוכה של חרדה ומתח, ואחריה רגיעה חלקית. מי שמגיב לרגיעה הזאת בתלונה על מה שעדיין לא נפתר, ומתעלם מהטוב שכבר קיים, עושה בדיוק את הטעות שעליה מזהיר המאמר. מי שמגיב בהודיה על הטוב שיש כבר עכשיו, גם אם הדרך עדיין ארוכה, בוחר בדרך שהמאמר ממליץ עליה, ומכין את עצמו לקבל עוד ועוד טוב בעתיד.</p>
+      <p class="bold-para">אדם שמקבל ישועה חלקית ומגיב בדאגה ובתלונה על החסר, במקום בשמחה, עוצר בעצמו את המשכה של אותה ישועה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה לוקחים מכל זה</div>
+      <h3 class="story-title">🎉 לא לסמוך על נס, אבל לשמוח בנס שכבר יש</h3>
+      <p>אפשר לשאול: אם משמחים ביום הראשון של חנוכה על פך השמן, לפני שידוע שהנס יחזיק שמונה ימים, האם זו לא השענות על נס, דבר שההלכה מזהירה ממנו במקומות אחרים? התשובה שהוצעה בשיעור: אין כאן שום הישענות על נס לעתיד. השמחה היא תגובה למה שכבר קרה בפועל – שנמצא פך שמן טהור, סימן גלוי שהקדוש ברוך הוא איתם.</p>
+      <p>ההבדל הזה חשוב: לא מבקשים מאיתנו לסמוך על נס שעדיין לא קרה, ולא לקחת סיכונים מתוך הנחה שהקדוש ברוך הוא יושיע בדרך נס. מבקשים מאיתנו רק לשמוח ולהודות על מה שכבר קרה, בלי קשר לשאלה אם זה יימשך. זה ההבדל הדק אך המכריע בין אמונה תמימה שעלולה להיות מסוכנת, לבין הכרת הטוב המדויקת וההלכתית, שעליה דיבר כל השיעור הזה מתחילתו ועד סופו, בלשון זהירה, מדודה וברורה מאוד וחשובה.</p>
+      <p>וכך, מי ששמח על רגיעה שהגיעה אחרי תקופה קשה, לא "סומך על נס" שהרגיעה תימשך לנצח. הוא פשוט מגיב בצורה הנכונה למה שכבר קרה: הודיה על הטוב שיש כרגע, בלי כל הבטחה או ציפייה כלשהי למה שיביא יום המחרת כלל.</p>
+      <p class="bold-para">השמחה על הנס אינה סמיכה על המשכו האוטומטי, אלא תגובה נכונה וראויה למה שכבר קרה בפועל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מה לוקחים מכל זה</div>
+      <h3 class="story-title">🕯️ מה לוקחים מכל זה</h3>
+      <p>הסיכום ההלכתי שהציע השיעור הוא פשוט וברור: יש להצטער על מה שחסר, ואין לברוח מהצער הזה או להתעלם ממנו; אבל יש גם, ובמקביל, להודות על הטוב שיש כבר עכשיו, בלי לתת לדאגה מהעתיד לבטל את ההודיה הזאת. שני הדברים לא סותרים זה את זה.</p>
+      <p>הכלל המעשי שעולה מכל המקורות – המשנה בברכות, הרמב"ן על קרבן התודה, הסיפור על הבית והמשכנתה, המאמר שהתגלה בדרך מופלאה, והתירוץ על שמונת ימי החנוכה – הוא אחד: אסור לדחות את ההודיה על הטוב הקיים בגלל חוסר ביטחון לגבי העתיד. העתיד, כלשון ההלכה, "אפשר שיהיה ואפשר שלא יהיה", ואין לו מקום בשאלה איך להתייחס להווה.</p>
+      <p>מי שזכה לרגיעה ולשקט, אחרי תקופה ארוכה של מתח וחרדה, מוזמן להודות עליהם בלב שלם, בלי להמתין לוודאות שהם יחזיקו לנצח. וגם אם בעתיד יתברר שהיה עוד דרך לעבור, ההודיה של עכשיו לא הייתה טעות – היא הייתה, ותישאר, הדבר הנכון לעשות ברגע הזה, ועצמה עוד עלולה לפתוח את הדרך להמשך הטוב.</p>
+      <p>ואפשר לסכם את כל היסודות הללו בתמונה אחת: בדיוק כמו שאברהם אבינו הודה כבר על ההסכמה הראשונית של בני חת, לפני שידע אם עפרון יסכים למכור, וכמו שהחשמונאים שמחו ביום הראשון על פך שמן אחד, לפני שידעו אם הוא יחזיק שמונה ימים – כך כל אדם מוזמן להודות על כל שלב של טובה שמגיעה אליו, בלי להמתין לסוף הסיפור. זו דרכה של ההכרת הטוב האמיתית, וזו, בסופו של דבר, הדרך שגם מזמינה עוד ועוד טובה להמשיך ולהגיע, עד שנזכה כולנו, בקרוב, לראות את הטוב המלא והגלוי, בלי שום הסתר פנים.</p>
+      <p class="bold-para">ההלכה מלמדת להצטער על החסר בזמנו, ולהודות על הטוב בזמנו, ולא לתת לדאגה מן העתיד לבטל את ההודיה על מה שכבר יש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/dE0YokccDmQ · 2024-11-27 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"השאלה של הבוקר השקט","icon":"🌅","color":"#c62b6b","stories":[{"id":1,"title":"לפני שמתחילים: שאלה שחוזרת בחיים הרבה פעמים","icon":"🔁"},{"id":2,"title":"בוקר שקט, אחרי תקופה לא פשוטה","icon":"🌅"},{"id":3,"title":"הפסימיים והאופטימיים","icon":"🙂"}]},{"id":2,"name":"ללמוד מהעבר: חנוכה ומדינה","icon":"📖","color":"#6d28d9","stories":[{"id":4,"title":"לקח מההיסטוריה של חנוכה","icon":"📖"},{"id":5,"title":"אין שמחה מוחלטת בעולם הזה","icon":"🌓"}]},{"id":3,"name":"מברכים על ההווה, לא על הניחוש","icon":"⚖️","color":"#e08e00","stories":[{"id":6,"title":"ברכה על ירושה, גם מתוך עצב","icon":"⚖️"},{"id":7,"title":"מברכים על ההווה, לא על הניחוש","icon":"🔮"},{"id":8,"title":"חנוכת הבית, גם עם משכנתה","icon":"🏠"},{"id":9,"title":"אברהם אבינו משתחווה פעמיים","icon":"🙇"}]},{"id":4,"name":"סיפור על הכרת הטוב","icon":"📗","color":"#1e88b8","stories":[{"id":10,"title":"קרבן תודה גם לאחר מלחמה כואבת","icon":"🕊️"},{"id":11,"title":"שני כיוונים לתגובה, ושני צדדים לבחור ביניהם","icon":"🧩"},{"id":12,"title":"הראיה החזקה ביותר","icon":"💪"}]},{"id":5,"name":"מה לוקחים מכל זה","icon":"🕯️","color":"#c62b6b","stories":[{"id":13,"title":"סיפור על ספר שנפל ביד","icon":"📗"},{"id":14,"title":"המאמר שהגיע באיחור ובכל זאת בזמן","icon":"⏰"},{"id":15,"title":"כלי של אמונה, לפי מידתו של כל אחד","icon":"🏺"},{"id":16,"title":"100 אלף שקל, או 10 אלף שקל","icon":"💰"},{"id":17,"title":"מדוע חוגגים שמונה ימים ולא שבעה","icon":"🕎"},{"id":18,"title":"דאגה שסוגרת את הצינור","icon":"🚧"},{"id":19,"title":"לא לסמוך על נס, אבל לשמוח בנס שכבר יש","icon":"🎉"},{"id":20,"title":"מה לוקחים מכל זה","icon":"🕯️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
