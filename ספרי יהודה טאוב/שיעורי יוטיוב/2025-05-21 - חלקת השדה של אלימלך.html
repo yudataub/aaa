@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 חלקת השדה של אלימלך</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 חלקת השדה של אלימלך</h1>
+  <p>מגילת רות – חלק א': למה בועז גאל את השדה ואת רות כעסקה אחת, קרקע בארץ ישראל כחלק העולם הבא, ומה לומדים מזה לשאלת הירושה בימינו</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ חלקת השדה של אלימלך" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/gWKqlBAaxtM?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/gWKqlBAaxtM/hqdefault.jpg" alt="חלקת השדה של אלימלך" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=gWKqlBAaxtM" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נעמי ורות</div>
+      <h3 class="story-title">📝 מה כותבים בצוואה?</h3>
+      <p>השיעור פתח בשאלה מעשית: מה כותבים בצוואה? הרב הבהיר מיד שאין בכוונתו לעסוק בכל דיני הצוואה. יש בזה נושאים רבים: איך מורישים כסף, מה כותבים על פי ההלכה ועל פי החוק, וגם שאלות רפואיות קשות כמו הנחיות מקדימות לסוף החיים. כל אלה נושאים שדורשים מומחים, והרב אמר שאולי יביא פעם מומחה לשיעור.</p>
+      <p>הוא רצה לעסוק בנושא אחד, רעיוני יותר: מה ראוי לאדם לעשות עם הבית שלו בארץ ישראל אחרי מאה ועשרים. ואת התשובה הוא ביקש ללמוד ממגילת רות.</p>
+      <p>הרב אמר בגלוי שגם לו עצמו אין עדיין תשובה מגובשת, ושהוא מזמין כל אחד לחשוב ולהציע רעיונות. אבל לפני השאלה המעשית, צריך להבין מה מלמדת המגילה.</p>
+      <p>כי מי שקורא את מגילת רות בעיון, שם לב לדבר מוזר מאוד בדברי בועז לפלוני אלמוני: הוא מחבר שני עניינים שנראים רחוקים זה מזה, ודורש שייעשו יחד.</p>
+      <p>וכך, מתוך סיפור עתיק של אלמנה ענייה ושדה אחד בבית לחם, עולה שאלה שנוגעת לכל בית בארץ ישראל של היום.</p>
+      <p class="bold-para">השיעור אינו עוסק בדיני צוואה בכלל, אלא בשאלה אחת: מה ראוי לעשות עם הבית בארץ ישראל אחרי מאה ועשרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נעמי ורות</div>
+      <h3 class="story-title">🌾 למה רק רות יוצאת ללקט?</h3>
+      <p>הרב פתח בשאלה פשוטה: נעמי ורות היו עניות מרודות, וחיו ממש על פת לחם. בועז נתן לרות שש שעורים. אם כן, למה רק רות יוצאת ללקט בשדה? למה נעמי אינה יוצאת גם היא?</p>
+      <p>המשתתפים הציעו תשובות, והרב הביא את מה שלמד באותו בוקר: נעמי הייתה אשתו של אלימלך, ואלימלך היה אדם עשיר מאוד, מגדולי הדור. אישה כזו, שירדה מנכסיה, אינה מסוגלת נפשית לצאת ולאסוף שבלים בשדות של אחרים. עדיף לה כמעט למות מאשר לעשות זאת.</p>
+      <p>ורות, שראתה זאת, ריחמה עליה. היא הלכה ולקטה גם בשביל נעמי, כדי לחסוך ממנה את הבושה.</p>
+      <p>וזה מתחבר לדברי הגמרא על מגילת רות. אמר רבי זירא: מגילה זו אין בה לא טומאה ולא טהרה, לא איסור ולא היתר. ולמה נכתבה? ללמדך כמה שכר טוב לגומלי חסדים. ואחד מן החסדים שבמגילה הוא החסד הזה של רות לנעמי.</p>
+      <p class="bold-para">נעמי, אשת עשיר שירדה מנכסיה, לא יכלה לצאת ללקט, ורות עשתה זאת גם בשבילה – וזה חסד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · נעמי ורות</div>
+      <h3 class="story-title">🤲 חסד שחוסך בושה</h3>
+      <p>כדאי להתעכב על סוג החסד שעשתה רות. היא לא רק דאגה שיהיה לנעמי מה לאכול. היא הבינה מה עובר על נעמי: אישה שהייתה פעם מן החשובות בעיר, אשת אדם עשיר וגדול, ועכשיו חזרה ריקה. לצאת ולאסוף שבלים אחרי הקוצרים, לעיני כל אנשי העיר שהכירו אותה בגדולתה – זה היה קשה לה מנשוא.</p>
+      <p>ורות לא שאלה ולא ביקשה. היא פשוט הלכה בעצמה, ולקטה גם בשביל נעמי. כך נעמי לא נאלצה להתבזות, ובכל זאת היה לשתיהן מה לאכול.</p>
+      <p>זהו חסד עדין, שרואה לא רק את הצורך הגשמי אלא גם את הלב. ולכן, אמרו חז"ל, נכתבה המגילה: ללמד כמה שכר טוב לגומלי חסדים. ומן החסד הזה, בסופו של דבר, יצאה מלכות בית דוד.</p>
+      <p>וגם במגילה מסופר שבועז עשה חסד דומה: הוא לא נתן לרות צדקה גלויה, אלא הורה לנעריו להשאיר בשבילה שבלים, כדי שתמצא בלי להתבייש.</p>
+      <p class="bold-para">החסד של רות לא היה רק בלחם שהביאה, אלא בכך שחסכה מנעמי את הבושה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גאולת השדה</div>
+      <h3 class="story-title">🤝 עסקת חבילה</h3>
+      <p>נעמי, בעניותה, עמדה למכור את השדה שהיה שייך לאלימלך עוד לפני שעזבו את ארץ ישראל. ובועז בא בבוקר ואומר לפלוני אלמוני, הגואל הקרוב: יש מצווה לגאול את השדה, ויש מצווה לגאול את רות. וזו עסקת חבילה. מי שעושה את זה, עושה גם את זה.</p>
+      <p>הגואל השיב: את השדה אני מסכים לגאול, את רות לא. ובועז אמר לו: אי אפשר. זה הולך יחד. והגואל ויתר, ובועז עשה את שניהם.</p>
+      <p>מה הקשר בין שני הדברים? מה המצווה שבגאולת השדה, ולמה היא קשורה לנישואין עם רות? אם יש קרקע, יש קרקע. אם יש נישואין, יש נישואין. למה זה בלי זה אי אפשר?</p>
+      <p>הרב הביא פירוש מאוד יפה מספרו של אחד הרבנים, הרב בן־טל, שעוסק בהרחבה בעניין, ואמר שמשם אפשר ללמוד גם למעשה, לימינו.</p>
+      <p>ובאמת, כפי שנראה, התשובה לשאלה הזאת מגלה יסוד גדול על ערכה של קרקע בארץ ישראל, יסוד שנוגע לכל מי שגר בה היום.</p>
+      <p class="bold-para">בועז אומר לגואל: מי שגואל את השדה חייב לגאול גם את רות, ואין לחלק ביניהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גאולת השדה</div>
+      <h3 class="story-title">📜 "חלקת השדה"</h3>
+      <p>הרב בן־טל פותח: לא במקרה התורה משתמשת בביטוי "חלקת השדה". הוא מופיע בקניית יעקב בשכם: "וַיִּקֶן אֶת חֶלְקַת הַשָּׂדֶה אֲשֶׁר נָטָה שָׁם אָהֳלוֹ מִיַּד בְּנֵי חֲמוֹר". והוא מופיע במגילת רות: "חֶלְקַת הַשָּׂדֶה אֲשֶׁר לְאָחִינוּ לֶאֱלִימֶלֶךְ מָכְרָה נָעֳמִי".</p>
+      <p>ומן המסופר ברור שיש כאן עניין גדול יותר מעניין ממוני בין בני אדם. השדה אינו רק קרקע ואינו רק נדל"ן.</p>
+      <p>הרב הסביר את הקרבה המשפחתית: בועז היה בן אחיו של אלימלך, ואילו הגואל הקרוב היה אחיו של אלימלך, ולכן הוא קודם. ובועז אמר לו לפני הזקנים: אם תגאל – גאל, ואם לא – הגד לי, כי אין זולתך לגאול ואנוכי אחריך.</p>
+      <p>הרב סיפר ששמע מאחד האדמו"רים שאביו היה בוכה מהתרגשות כשקרא את מגילת רות. המילה "גואל" חוזרת בה פעמים רבות. ובשם האריז"ל מובא שבמילים "חַי ה' שִׁכְבִי עַד הַבֹּקֶר" רמוז סוד הגאולה, שהרי מרות יצא מלך המשיח.</p>
+      <p>כלומר, המגילה עצמה מאותתת לקורא: שימו לב, יש כאן יותר ממה שנראה.</p>
+      <p class="bold-para">הביטוי "חלקת השדה" מופיע אצל יעקב בשכם ובמגילת רות, ומרמז שהשדה אינו רק נדל"ן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גאולת השדה</div>
+      <h3 class="story-title">❓ איזו מצווה יש בגאולה הזו?</h3>
+      <p>ועדיין השאלה בעינה. בתורה, גאולת קרקע פירושה: אדם מכר את שדהו, ואחיו בא וגואל אותה ומחזיר אותה אליו. אבל כאן אלימלך מת, ואין לו בנים. מחלון וכליון כבר אינם. למי מחזירים? מה נפקא מינה אם השדה יהיה בידי יהודי זה או אחר?</p>
+      <p>בשיעור הציעו: כדי שהנחלה תישאר בשבט. אבל הרי ממילא השדה חוזר ביובל. ועוד: אין לומר שגואלים את השדה כדי שנעמי ורות יתפרנסו ממנה. בועז היה עשיר גדול, והיה יכול לתת להן כסף בדרך אחרת. למה דווקא לגאול את השדה?</p>
+      <p>על כך עונה הרב בן־טל: זו גאולה של ממש. כמו שאנחנו מתפללים על גאולתנו ומבינים כמה היא נחוצה, כך צריך לגאול את השדה מן הקונה ולהשיבה למשפחת אלימלך. כי זהו חלק העולם הבא של אלימלך ובניו. ומאחר שנעמי עמדה למכור את השדה, מצווה גדולה היא לגאול אותו, כי זו גאולה לנשמתם של האב ובניו.</p>
+      <p class="bold-para">אלימלך ובניו כבר מתו, ובועז עשיר – אם כן, מה הטעם לגאול דווקא את השדה?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גאולת השדה</div>
+      <h3 class="story-title">🌍 ארץ כנגד ארץ</h3>
+      <p>היסוד שעליו בנוי כל הפרק: ארץ ישראל אינה רק קרקע. בעיניים היא נראית אדמה, אבל צריך לדעת שהיא כנגד העולם הבא. מה שרואים כאן – קרקעות – יש כנגדו בעולם הבא. כל קרקע בארץ ישראל כנגד קרקע בעולם הבא.</p>
+      <p>כמו שאומרת המשנה: "כָּל יִשְׂרָאֵל יֵשׁ לָהֶם חֵלֶק לָעוֹלָם הַבָּא, שֶׁנֶּאֱמַר: וְעַמֵּךְ כֻּלָּם צַדִּיקִים לְעוֹלָם יִירְשׁוּ אָרֶץ". אם כתוב שיירשו ארץ, סימן שיש להם חלק בעולם הבא, כי הארץ שכאן כנגד הארץ שלמעלה.</p>
+      <p>והאבן עזרא כותב זאת במפורש, על קניית יעקב: הזכיר עניין הקנייה להודיע כי מעלה גדולה יש לארץ ישראל, ומי שיש לו בה חלק, חשוב הוא כחלק העולם הבא. כשאדם קונה קרקע בארץ ישראל, הוא קונה קרקע בעולם הבא.</p>
+      <p>והרב סיפר בחיוך על יהודי שאוהב ספרים על ארץ ישראל, וכשביקש את כתובתו התברר שהוא גר ברחוב "חלקת השדה". אמר לו הרב: זכית לגור בכתובת הנכונה.</p>
+      <p>ומכאן מובן כמה עמוק העניין: מי שמשלם על דירה בארץ ישראל, אינו רק משקיע בנכס. הוא קונה, כביכול, חלקה נצחית.</p>
+      <p class="bold-para">כל קרקע בארץ ישראל מכוונת כנגד חלק בעולם הבא – וכך כותב האבן עזרא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גאולת השדה</div>
+      <h3 class="story-title">🌅 רמז לגאולה העתידה</h3>
+      <p>הרב חזר על דברי האריז"ל, שבפסוק "חַי ה' שִׁכְבִי עַד הַבֹּקֶר" רמוז סוד הגאולה. מגילת רות אינה רק סיפור על גאולת שדה ועל גאולת משפחה. היא רומזת גם על הגאולה הכללית, שהרי מרות ובועז יצא דוד, ומדוד יצא מלך המשיח.</p>
+      <p>הרב סיפר על מקובל שכתב ספר בשם "ונשמחה בישועתו", ובו פירוש לדברי האריז"ל: לאיזה זמן כיוון האריז"ל באמרו "חי ה' שכבי עד הבוקר". הרב לא רצה להיכנס יותר מדי לענייני קבלה, והציע למי שמתעניין לפנות אליו ולשמוע ממנו.</p>
+      <p>אבל העיקר הוא שהמגילה כולה בנויה על המילה "גאולה": גאולת השדה, גאולת הנפש, ולבסוף – גאולת עם ישראל כולו. מי שמבין את גאולת השדה של אלימלך, מתחיל להבין גם את הגאולה הגדולה.</p>
+      <p>ולכן אין פלא שהיה מי שבכה מהתרגשות בקריאת המגילה. כל "גואל" שבה הוא, כביכול, הד של הגאולה שאנו מחכים לה.</p>
+      <p class="bold-para">האריז"ל ראה ב"חי ה' שכבי עד הבוקר" רמז לסוד הגאולה, וגדולי המקובלים ניסו לפענח אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · גאולת השדה</div>
+      <h3 class="story-title">🕊️ גאולה לנשמה</h3>
+      <p>החידוש של הרב בן־טל הוא שגאולת השדה היא גאולה לנשמה. בדרך כלל אנו חושבים על מצוות שבין אדם לחברו כעל מצוות שמועילות לחיים: מי שגואל את שדה אחיו, מחזיר לו את פרנסתו. אבל כאן אין מי שיתפרנס. אלימלך ובניו כבר אינם.</p>
+      <p>ובכל זאת יש מצווה. למה? כי לנשמתם של אלימלך ובניו יש חלק בעולם הבא, והחלק הזה קשור לקרקע שלהם בארץ ישראל. אם השדה יימכר וייצא מן המשפחה, החלק הזה נפגע. ומי שגואל את השדה, גואל כביכול את נשמתם.</p>
+      <p>וזה מסביר גם למה בועז, שהיה עשיר מאוד, לא הסתפק בכך שייתן לנעמי כסף. כסף היה פותר את בעיית הפרנסה, אבל לא את בעיית הנשמה. רק החזרת השדה למשפחה, יחד עם הקמת שם למת, הייתה גאולה שלמה.</p>
+      <p>יש כאן לימוד גדול על מה שאדם עושה לטובת מי שכבר נפטר: לא רק תפילה וצדקה לעילוי נשמתו, אלא גם שמירה על מה שהשאיר בעולם הזה, ועל המשך דרכו.</p>
+      <p class="bold-para">גאולת השדה אינה טובה לבועז או לנעמי בלבד, אלא תיקון לנשמותיהם של אלימלך ובניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה נענש אלימלך</div>
+      <h3 class="story-title">👪 שתי סיבות</h3>
+      <p>ועכשיו נבין את עסקת החבילה. לאלימלך היו שתי סיבות שבגללן, כביכול, חסר לו חלק העולם הבא.</p>
+      <p>הראשונה: אין לו ילדים. "הִנֵּה נַחֲלַת ה' בָּנִים". הנחלה של ה', העולם הבא, באה על ידי בנים. הילדים מזכים את האדם בעולם הבא. ולאלימלך היו בנים, אבל הם מתו בלי ילדים. הרב תיאר כמה זה קשה: הוא הכיר אדם שבגיל שבעים וחמש נולד לו הנכד הראשון, וכל חייו פחד שילך מן העולם בלי שארית.</p>
+      <p>והשנייה: אין לו קרקע בארץ ישראל. השדה שלו עומד להימכר.</p>
+      <p>ולכן בועז אומר לגואל: אם אתה רוצה לדאוג לאלימלך, צריך לדאוג לשני דברים. שתהיה לו קרקע בארץ ישראל – גואלים את השדה. ושיהיו לו ילדים – מייבמים את רות, שהיא קשורה למשפחתו. ועל ידי שניהם יהיה לאלימלך ולבניו עולם הבא. ולכן זו עסקת חבילה: אחד בלי השני אינו מועיל.</p>
+      <p>כך מתבררת עסקת החבילה: לא שתי מצוות נפרדות שבמקרה נעשות יחד, אלא מצווה אחת של דאגה לנשמת המת, שיש לה שני צדדים.</p>
+      <p class="bold-para">לאלימלך חסרו שני דברים שמזכים בעולם הבא: בנים וקרקע בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה נענש אלימלך</div>
+      <h3 class="story-title">🕯️ "שם עולם"</h3>
+      <p>ומה עם מי שאין לו ילדים? הרב הביא את הנבואה בישעיהו, שהאשכנזים קוראים בהפטרת התענית: "כִּי כֹה אָמַר ה' לַסָּרִיסִים אֲשֶׁר יִשְׁמְרוּ אֶת שַׁבְּתוֹתַי וּבָחֲרוּ בַּאֲשֶׁר חָפָצְתִּי וּמַחֲזִיקִים בִּבְרִיתִי, וְנָתַתִּי לָהֶם בְּבֵיתִי וּבְחוֹמֹתַי יָד וָשֵׁם טוֹב מִבָּנִים וּמִבָּנוֹת, שֵׁם עוֹלָם אֶתֶּן לוֹ אֲשֶׁר לֹא יִכָּרֵת".</p>
+      <p>השם "יד ושם" לקוח מן הפסוק הזה. ה' מבטיח למי שאין לו ילדים, אם ישמור שבת, יבחר במה שה' חפץ ויחזיק בברית, שיהיה לו שם טוב מבנים ומבנות.</p>
+      <p>והחפץ חיים כתב ספר שלם בשם "שם עולם", שמסביר מה עושה אדם שאין לו ילדים כדי לזכות בהבטחה הזאת.</p>
+      <p>ובשיעור נשאל: ומה עם מי שאין לו קרקע בארץ ישראל? הרב השיב שלעולם הבא יש דרגות רבות, וכמו שקרקע בארץ ישראל יש בה דרגות רבות של שווי, כך יש דרגות בחלק העולם הבא. אבל מי שגר בארץ ישראל, ודאי יש לו חלק בה.</p>
+      <p class="bold-para">לנביא ישעיהו יש הבטחה למי שאין לו ילדים – "יד ושם" – והחפץ חיים כתב על כך ספר שלם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה נענש אלימלך</div>
+      <h3 class="story-title">⚖️ למה נענש אלימלך?</h3>
+      <p>הרב שאל שאלה ששואל כל קורא במגילה: למה מת אלימלך? למה נענש? בשיעור הציעו: כי עזב את הארץ, ובניו נשאו נשים נוכריות.</p>
+      <p>הרב הביא את דברי רבי שמעון בר יוחאי, שהרמב"ם פוסק כמותו להלכה: אלימלך, שהיה גדול הדור, נענש משום שיצא מארץ ישראל.</p>
+      <p>אבל הרמב"ם מוסיף חידוש עצום: היה מותר לו לצאת על פי ההלכה. אם יש רעב, ואין לאדם פרנסה, מותר לו לצאת. ובכל זאת, אומר הרמב"ם, אף על פי שמותר, אין זו מידת חסידות. ואלימלך, בדרגתו, היה צריך לנהוג במידת חסידות ולא לעזוב. ומשום שעזב את ארץ ישראל, נענש הוא ושני בניו, ומתו.</p>
+      <p>הרב הדגיש שאין מקור לומר שכל מי שעוזב את הארץ מאבד את עולמו. אבל לגבי אדם גדול כמו אלימלך, שהיה עליו להיות דוגמה לדור, העזיבה בשעת רעב נחשבה לחטא.</p>
+      <p>ויש בזה לימוד לכל אדם: לא די לשאול מה מותר. אדם צריך לשאול גם מה ראוי לו לפי מדרגתו ולפי השפעתו על אחרים.</p>
+      <p class="bold-para">לפי הרמב"ם, היה מותר לאלימלך לצאת בשעת רעב, אבל ממידת חסידות לא היה לו לעזוב, ולכן נענש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה נענש אלימלך</div>
+      <h3 class="story-title">🛡️ שלוש שנים של מאורעות</h3>
+      <p>בהקשר זה הרב סיפר שאחד מאדמו"רי סלונים היה בארץ בשנת תרצ"ו, בשנים שבהן פרץ מרד ערבי שנמשך כשלוש שנים, עם שביתות והתקפות. ובכל זאת, אותו אדמו"ר לא עזב.</p>
+      <p>והרב הוסיף התבוננות: דווקא מן הקשיים האלה צמחה ישועה. השלטון הבריטי לא הצליח להשתלט על המצב, ואמר ליהודים שיתחילו להגן על עצמם. הוא נתן להם נשק, לימד אותם להשתמש בו, וארגן משמרות. כך התפתחו כוחות ההגנה, ורבים מאנשיהם רכשו ניסיון בצבא הבריטי.</p>
+      <p>וכשפרצה מלחמת העצמאות, היו כבר אנשים שידעו להגן על היישוב. הקושי שבאותן שנים הכין, בלי שאיש התכוון לכך, את הכוח שהציל את הארץ.</p>
+      <p>זו דוגמה למה שאמר הרמב"ם על אלימלך: מי שנשאר בארץ גם בשעת קושי, זוכה לראות את הישועה שצומחת מתוך הקושי עצמו.</p>
+      <p>והרב הוסיף שיש עוד סיפורים רבים כאלה מאותה תקופה, שבהם מה שנראה כצרה התגלה בדיעבד כהכנה לישועה.</p>
+      <p class="bold-para">גם בדורנו, מתוך הקשיים בארץ צמחה בסופו של דבר היכולת להגן עליה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כל מקום בארץ – עולם</div>
+      <h3 class="story-title">🚶 ארבע אמות בארץ</h3>
+      <p>הרב העיר שבימי קדם לכל אדם היה חלק מסוים בארץ, שקיבל בחלוקה של יהושע על פי הגורל. וכל קרקע בארץ ישראל כוונה כנגד עולמות מסוימים. לא במקרה שבט נפתלי ישב בגליל העליון, בצפת ובטבריה, ושבט אשר לידו. לכל שבט היה קשר מיוחד לחלקו.</p>
+      <p>ובדרך אגב הוא העיר: אין מקור בגמרא או במדרשים לביטוי "ארבע אמות חדשות בארץ ישראל". אבל מישהו שלח לו מקור מעניין, מספר "אריה המסתתר" של רבי יהודה אריה אלטר, נכד השפת אמת: ארץ ישראל מכוונת כנגד העולמות העליונים, ולכן כל אור שיש בעולמות, יש ממנו גם בארץ ישראל.</p>
+      <p>והוא מביא דוגמה: ארבעת היסודות – אש, מים, רוח ועפר – כנגד ארבע ערי הקודש. חברון, שבה קבורים האבות – כנגד העפר, "ישני עפר". ירושלים, מקום המזבח – כנגד האש. טבריה והכנרת – כנגד המים. וצפת, עיר המקובלים, אנשי הרוח – כנגד הרוח.</p>
+      <p>ומכאן, כותב אותו ספר, המנהג לחפש לילך בארץ במקומות חדשים: כל מקום הוא אור אחר. ואברהם אבינו, שנאמר לו "קוּם הִתְהַלֵּךְ בָּאָרֶץ", זכה בכל מקום לטעום מן האור העליון.</p>
+      <p class="bold-para">אין מקור לביטוי "ארבע אמות חדשות", אבל יש מקור לכך שכל מקום בארץ מכוון כנגד עולם עליון אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כל מקום בארץ – עולם</div>
+      <h3 class="story-title">🔄 אז והיום</h3>
+      <p>ועכשיו ההבדל הגדול בין מגילת רות לימינו. בזמנם, לכל אדם הייתה קרקע מסוימת, שקיבל מאת ה' בחלוקת הארץ. היה עניין שהקרקע הזאת דווקא תישאר שלו, כי כנגדה נמצא חלקו בעולם הבא.</p>
+      <p>היום אף אחד אינו יודע איפה החלק שלו. יש אולי מי שמרגיש שייכות למקום מסוים, אבל אין לנו ידיעה. ובשיעור ערך הרב סקר קטן: מי גר באותה עיר שבה נולד? התברר שכמעט כולם עברו ממקום למקום. אין לנו היום "מוצא" קבוע.</p>
+      <p>לכן היום אין עניין מיוחד להחזיק דווקא בקרקע מסוימת. אפשר למכור ולקנות ולעבור.</p>
+      <p>אבל נשארת שאלה: מה קורה אחרי מאה ועשרים? אם הילדים אינם רוצים לגור בבית, והם מוכרים אותו לקבלן ומחלקים את הכסף, האם צריך לחשוש למה שנאמר במגילת רות – שכשמוכרים את הקרקע, חסר כביכול בעולם הבא?</p>
+      <p>וזו השאלה שבה עוסק החלק האחרון של השיעור, ושעליה הרב חזר גם בשיעור הבא.</p>
+      <p class="bold-para">בימי רות לכל אדם היה חלק קבוע בארץ שקיבל מאת ה'; היום כמעט איש אינו גר בחלק שקיבל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כל מקום בארץ – עולם</div>
+      <h3 class="story-title">📏 דרגות של קרקע</h3>
+      <p>בשיעור התעוררה שאלה: אם קרקע בארץ ישראל היא חלק העולם הבא, מה עם מי שאין לו קרקע, או שיש לו מעט? האם יש לו פחות עולם הבא? הרב ענה שלעולם הבא יש דרגות רבות, וכך גם בקרקע עצמה.</p>
+      <p>והוא המחיש זאת בדוגמה מן המציאות. כמה שווה דונם בארץ ישראל? תלוי איפה. דונם חקלאי במקום כפרי שווה אולי מאה אלף שקל. דונם בעיר בצפון, שאפשר לבנות עליו, שווה מיליונים. ודונם בירושלים – מי יודע כמה. ארץ קטנה, שאפשר לעבור אותה בכמה שעות, ויש בה הבדלים של פי חמישים ויותר.</p>
+      <p>כך גם בעולם הבא: אין זה "יש" או "אין". יש דרגות, חלקים שונים, עולמות שונים. כל מעשה טוב של האדם מוסיף לו חלק, וכל קשר שלו לארץ ישראל הוא חלק מזה.</p>
+      <p>ולכן אין להתייאש ואין לחשוש מדי. מי שגר בארץ ישראל, ודאי יש לו חלק בה. והשאלה אינה אם יש לו עולם הבא, אלא איך להגדיל את חלקו.</p>
+      <p class="bold-para">כמו שקרקע בארץ שוויה משתנה מאוד ממקום למקום, כך יש דרגות בחלק העולם הבא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כל מקום בארץ – עולם</div>
+      <h3 class="story-title">🥾 לטייל בארץ</h3>
+      <p>מן הדברים של "אריה המסתתר" עולה גם לימוד מעשי: יש עניין לטייל בארץ ישראל, ללכת במקומות שלא היה בהם קודם. לא בגלל ביטוי שאין לו מקור, אלא משום שכל מקום בארץ מכוון כנגד אור אחר בעולמות העליונים.</p>
+      <p>מי שהולך בחברון, נוגע ביסוד העפר, ביסוד האבות. מי שהולך בירושלים, נוגע באש של המזבח. מי שמגיע לכנרת, נוגע במים. ומי שמגיע לצפת, נוגע ברוח. וכך כל מקום ומקום – ספירה אחרת, אור אחר.</p>
+      <p>הרב אמר שאינו אומר שחובה ללכת לטיולים. אבל מי שהולך, יכול לכוון שהוא מקיים "קוּם הִתְהַלֵּךְ בָּאָרֶץ", ושהוא אוסף בכל מקום עוד אור מן האורות העליונים.</p>
+      <p>וגם זה מתחבר לנושא השיעור: הקשר של אדם לארץ ישראל אינו רק דרך בית אחד או שדה אחד. הוא דרך כל מקום שהוא נוגע בו, הולך בו ומתפעל ממנו.</p>
+      <p class="bold-para">מי שהולך במקומות חדשים בארץ ישראל, טועם מן האור המיוחד של כל מקום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ולמעשה</div>
+      <h3 class="story-title">🏠 השאלה המעשית</h3>
+      <p>בשיעור התנהל דיון ער. היו שאמרו: אם הילדים גרים בבית, אין שום בעיה. אבל אם הם מוכרים אותו, מה יהיה? והרב הבהיר שאין לומר שמי שביתו נמכר אחריו מאבד את עולמו. אין כזה דבר. אבל אפשר לשאול אם יש עניין לנהוג אחרת.</p>
+      <p>הרב הציע מחשבה משלו, ואמר במפורש שאין לו הכרעה: אולי לבקש בצוואה שחלק מן הכסף, לפחות, יוקדש לקניית קרקע בארץ ישראל. גם אם זה סכום קטן, שיהיה "ארבע אמות" בארץ ישראל. משתתף אחד העיר שלפי החוק גם דירה בקומה גבוהה נחשבת כבעלת חלק בקרקע.</p>
+      <p>ונשאל גם: ומה עם קבר בבית הקברות, או חלקה ששמורה? הרב אמר שלא ראה בזה משמעות מיוחדת לעניין הזה.</p>
+      <p>הרב הדגיש: במשך אלפיים שנה אף אחד לא דן בשאלה הזאת, כי כמעט לא גרו יהודים בארץ. היא שאלה חדשה, וכל מי שיכול לשאול רבנים, שישאל. והוא קיווה לחזור לנושא בשיעור הבא, אחרי שישאל בעצמו.</p>
+      <p class="bold-para">הרב אינו מכריע, אבל מציע: שחלק מן הירושה יוקדש לקניית קרקע בארץ ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ולמעשה</div>
+      <h3 class="story-title">🔑 חנוכת הבית</h3>
+      <p>הרב העיר שגם בנושא קרוב, חנוכת הבית בארץ ישראל, כמעט לא נכתב דבר. כל הסידורים שיש בהם סדר חנוכת הבית מעתיקים נוסח שנכתב בחוץ לארץ, ואין בו אפילו מילה אחת על ארץ ישראל.</p>
+      <p>הוא סיפר על יהודי אשכנזי שראה אותו משתמש בסידור עם סדר חנוכת הבית בנוסח מסוים, ואמר לו: אתה מקפיד על מנהגים, אבל מה עם הדין שבתורה עצמה? בתורה כתוב "מִי הָאִישׁ אֲשֶׁר בָּנָה בַיִת חָדָשׁ וְלֹא חֲנָכוֹ". מה הגדרים של זה? והלה שאל: איפה זה כתוב? תביא לי משהו מסודר.</p>
+      <p>והרב אמר שהשאלה הזאת הייתה אחת הסיבות שבגללן הוציא ספר על הבית בארץ ישראל: לאסוף את המקורות מן הגמרא, מן הרמב"ן, מן האבן עזרא ועוד, ולסדר אותם, כדי שמי שקונה בית בארץ ידע מה הוא עושה.</p>
+      <p>זה גם המסר הכללי של השיעור: מי שגר בארץ ישראל צריך להכיר את מקורות התורה על הקרקע ועל הבית, כי אלה דברים שנוגעים אליו יום יום.</p>
+      <p>וכך הספר נועד לענות על שאלתו של אותו יהודי, ולאפשר לכל אחד לחנוך את ביתו בארץ כראוי.</p>
+      <p class="bold-para">גם על חנוכת הבית בארץ ישראל כמעט לא נכתב, והרב הוציא ספר כדי למלא את החסר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ולמעשה</div>
+      <h3 class="story-title">🌱 חלקה טובה</h3>
+      <p>מה יוצא מכל זה למעשה? הרב סיכם: אני יודע מה כתוב במגילת רות. אני רואה שיש עניין שאדם יידע שגם אחרי מאה ועשרים, הקרקע שלו תישאר בידי היורשים שלו. זה נאמר בזמן שלכל אדם הייתה קרקע מסוימת, שקיבל בחלוקה של יהושע. מה הדין היום? אינני יודע.</p>
+      <p>בשיעור נשאל גם מה יהיה לעתיד לבוא, כשיתגלו השבטים וייבנה המקדש: האם יחזור דין היובל, ומאיזו שנה יתחילו למנות? והרב אמר שאלה שאלות פתוחות.</p>
+      <p>ולכן הוא השאיר את השאלה פתוחה, והזמין כל אחד לחשוב, לשאול את רבו, ולהציע רעיונות. העיקר הוא להבין את העיקרון: קרקע בארץ ישראל היא חלק מנצחיותו של אדם.</p>
+      <p>ותפילתו: שנזכה, בעזרת ה', שיהיה יובל, שכל אחד יחזור לנחלתו, ושנזכה כולנו לחלקה טובה בעולם הבא.</p>
+      <p>וכך נשאר השיעור עם שאלה פתוחה, ועם עיקרון ברור.</p>
+      <p class="bold-para">הלימוד ממגילת רות: יש עניין שגם אחרי מאה ועשרים הקרקע תישאר בידי היורשים, וכל אחד יחשוב איך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · ולמעשה</div>
+      <h3 class="story-title">⚖️ בלי לחשוש ובלי לזלזל</h3>
+      <p>חשוב להבין את האיזון שהרב ביקש להציג. מצד אחד, אין לומר שמי שילדיו מכרו את ביתו אחריו מאבד את עולמו הבא. אין כזה דבר, ואין להכניס אנשים לחשש כזה. היום, כשאין לנו חלוקת שבטים וגורל, הדין אינו כפי שהיה בימי רות.</p>
+      <p>מצד שני, אין לזלזל במה שהמגילה מלמדת. יש ערך רוחני לקרקע בארץ ישראל, ויש עניין שהקשר הזה לא ייפסק עם פטירת האדם.</p>
+      <p>ולכן ההצעה היא לחשוב מראש. אדם יכול לכתוב בצוואתו בקשה, יכול לדבר עם ילדיו, יכול להציע שחלק מן הירושה יושקע בקרקע בארץ ישראל, או שאחד מן הצאצאים יגור בבית. כל אחד לפי מצבו.</p>
+      <p>והעיקר: להעביר לדור הבא את ההבנה מה ערכה של ארץ ישראל. מי שמבין זאת, ידאג בעצמו שהקשר לארץ יימשך.</p>
+      <p class="bold-para">אין לחשוש שמכירת בית אחרי פטירה פוגעת בעולם הבא, אבל ראוי לחשוב על המשך הקשר לארץ.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/gWKqlBAaxtM · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"נעמי ורות","icon":"🌾","color":"#c62b6b","stories":[{"id":1,"title":"מה כותבים בצוואה?","icon":"📝"},{"id":2,"title":"למה רק רות יוצאת ללקט?","icon":"🌾"},{"id":3,"title":"חסד שחוסך בושה","icon":"🤲"}]},{"id":2,"name":"גאולת השדה","icon":"🏞️","color":"#6d28d9","stories":[{"id":4,"title":"עסקת חבילה","icon":"🤝"},{"id":5,"title":"\"חלקת השדה\"","icon":"📜"},{"id":6,"title":"איזו מצווה יש בגאולה הזו?","icon":"❓"},{"id":7,"title":"ארץ כנגד ארץ","icon":"🌍"},{"id":8,"title":"רמז לגאולה העתידה","icon":"🌅"},{"id":9,"title":"גאולה לנשמה","icon":"🕊️"}]},{"id":3,"name":"למה נענש אלימלך","icon":"⚖️","color":"#e08e00","stories":[{"id":10,"title":"שתי סיבות","icon":"👪"},{"id":11,"title":"\"שם עולם\"","icon":"🕯️"},{"id":12,"title":"למה נענש אלימלך?","icon":"⚖️"},{"id":13,"title":"שלוש שנים של מאורעות","icon":"🛡️"}]},{"id":4,"name":"כל מקום בארץ – עולם","icon":"🗺️","color":"#1e88b8","stories":[{"id":14,"title":"ארבע אמות בארץ","icon":"🚶"},{"id":15,"title":"אז והיום","icon":"🔄"},{"id":16,"title":"דרגות של קרקע","icon":"📏"},{"id":17,"title":"לטייל בארץ","icon":"🥾"}]},{"id":5,"name":"ולמעשה","icon":"📝","color":"#c62b6b","stories":[{"id":18,"title":"השאלה המעשית","icon":"🏠"},{"id":19,"title":"חנוכת הבית","icon":"🔑"},{"id":20,"title":"חלקה טובה","icon":"🌱"},{"id":21,"title":"בלי לחשוש ובלי לזלזל","icon":"⚖️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
