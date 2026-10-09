@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 אז מלך שמו נקרא</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 אז מלך שמו נקרא</h1>
+  <p>למה יום הדין הוא גם יום ההמלכה: "המלך" בתפילה, מלכויות בקדושת היום, "אדון עולם" ומלכות בכוח ובפועל, הבחירה שעושה את האדם לממליך, ויום תרועה כיום של שירה למלך</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ אז מלך שמו נקרא" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/MJ4Zn6Mb3xk?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/MJ4Zn6Mb3xk/hqdefault.jpg" alt="אז מלך שמו נקרא" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=MJ4Zn6Mb3xk" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המלכה בתפילה</div>
+      <h3 class="story-title">⚖️ דין והמלכה ביום אחד</h3>
+      <p>בשיעור קודם הראה הרב שיש בראש השנה שני דברים: יום הדין ויום ההמלכה. בשיעור הזה הוא רצה להסביר למה הם הולכים יחד. למה דווקא באותו יום שממליכים את הקדוש ברוך הוא, הוא גם דן את העולם?</p>
+      <p>והוא פתח בכמה מקומות בתפילה שבהם רואים כמה ההמלכה היא מהות היום. בנוסח אשכנז, נהגו שהחזן מתחיל את תפילת שחרית במקום אחר בכל מועד: ביום חול ב"ישתבח", בשבת ב"שוכן עד", ביום טוב ב"האל בתעצומות עוזך", ובראש השנה וביום הכיפורים – ב"המלך". ובישיבות אף כותבים בלוח הזמנים "המלך – בשעה כך וכך", במקום "שחרית".</p>
+      <p>הרב סיפר שבישיבת חברון, בראש השנה, הגיעו רבים מאוד לתפילה, יותר מכל השנה. מוקדם בבוקר כבר נשמע רעש הצעדים של כל המגיעים. כולם באו ל"המלך".</p>
+      <p>ההדגשה הזאת אינה מקרית. היא אומרת: זה עיקר היום – להמליך את הקדוש ברוך הוא.</p>
+      <p class="bold-para">השיעור מבקש להבין למה יום הדין ויום ההמלכה הם יום אחד ולא שני עניינים נפרדים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המלכה בתפילה</div>
+      <h3 class="story-title">🏛️ "המלך המשפט"</h3>
+      <p>גם בשמונה עשרה רואים זאת. בעשרת ימי תשובה משנים: "הַמֶּלֶךְ הַקָּדוֹשׁ" ו"הַמֶּלֶךְ הַמִּשְׁפָּט". המשנה ברורה מסביר: בימים אלה הקדוש ברוך הוא יושב ודן את העולם, ובזה הוא מראה את מלכותו וממשלתו.</p>
+      <p>כלומר, הדין אינו דבר נפרד מן המלכות. הוא חלק ממנה. מלך שאינו דן, אינו מלך באמת. הקדוש ברוך הוא מראה את מלכותו בכך שהוא דן את העולם.</p>
+      <p>ובברכת "השיבה שופטינו" הרב הביא פירוש ששמע: "וְהָסֵר מִמֶּנּוּ יָגוֹן וַאֲנָחָה" – לפני שנזכה לשופטים כבתחילה, יש שלב שבו לפחות יוסר מאיתנו שלטון שכולו יגון ואנחה. הגאולה באה בשלבים.</p>
+      <p>ובברכה האמצעית של ראש השנה מבקשים: "מְלֹךְ עַל כָּל הָעוֹלָם כֻּלּוֹ בִּכְבוֹדֶךָ". הרב שאל: למה "כל העולם כולו"? והביא פירוש: בהלכה "רובו ככולו". אנו מבקשים שלא די ברוב – שכל העולם כולו ימליך את ה'.</p>
+      <p class="bold-para">בעשרת ימי תשובה משנים בתפילה ל"המלך", כי חלק מן המלכות הוא הדין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המלכה בתפילה</div>
+      <h3 class="story-title">🗣️ "כל אשר נשמה באפו"</h3>
+      <p>ובאותה ברכה: "וְיֵדַע כָּל פָּעוּל כִּי אַתָּה פְעַלְתּוֹ... וְיֹאמַר כֹּל אֲשֶׁר נְשָׁמָה בְאַפּוֹ: ה' אֱלֹקֵי יִשְׂרָאֵל מֶלֶךְ". למה דווקא "כל אשר נשמה באפו" יאמר?</p>
+      <p>הרב הסביר: בכל הבריאה יש רק יצור אחד שמדבר – האדם. לא בעלי החיים, ואף לא המלאכים במובן שלנו. והוא הזכיר שאנשים שחוו מוות קליני וחזרו מספרים שבעולם ההוא אין דיבור, אלא קריאת מחשבות. הדיבור קיים רק כשיש נשמה בתוך גוף. לכן התרגום מתרגם "וַיְהִי הָאָדָם לְנֶפֶשׁ חַיָּה" – "לרוח ממללא", לרוח מדברת.</p>
+      <p>ולכן רק מי ש"נשמה באפו" – האדם – יכול לומר בפיו: "ה' אלוקי ישראל מלך". ההמלכה היא תפקיד מיוחד של האדם, ונראה בהמשך למה.</p>
+      <p>וחותמים את הברכה: "מֶלֶךְ עַל כָּל הָאָרֶץ, מְקַדֵּשׁ יִשְׂרָאֵל וְיוֹם הַזִּכָּרוֹן". זו הפעם היחידה בשנה שמוסיפים בחתימת קדושת היום "מלך על כל הארץ". זו מהות היום.</p>
+      <p class="bold-para">רק האדם, שהוא שילוב של נשמה וגוף, יכול לדבר ולומר "ה' אלוקי ישראל מלך".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המלכה בתפילה</div>
+      <h3 class="story-title">📯 מלכויות בקדושת היום</h3>
+      <p>בתפילת מוסף של ראש השנה יש ארבעה נושאים באמצע: קדושת היום, מלכויות, זכרונות ושופרות. אבל יש רק שלוש ברכות אמצעיות. הגמרא דנה איך לחלק, ומה ההלכה? מלכויות נאמרות יחד עם קדושת היום. למה? כי זו מהות היום – ההמלכה היא קדושת היום עצמה.</p>
+      <p>ועוד: הגמרא במסכת ראש השנה אומרת בשם רבי עקיבא: מפני מה אמרה תורה הביאו עומר בפסח? כדי שתתברך לכם התבואה. שתי הלחם בעצרת? כדי שיתברכו פירות האילן. ניסוך המים בחג? כדי שיתברכו גשמי השנה. ואמרו לפני בראש השנה מלכויות, זכרונות ושופרות. מלכויות – כדי שתמליכוני עליכם. זכרונות – כדי שיעלה זכרונכם לפני לטובה. ובמה? בשופר.</p>
+      <p>שימו לב: בפסח ובסוכות מביאים קרבן כדי לזכות בדין. ובראש השנה? אין קרבן מיוחד. העצה לזכות בדין היא האמירה, ההמלכה עצמה.</p>
+      <p>אם כן, ההמלכה אינה רק מקבילה ליום הדין. היא הדרך לזכות בו. ובהמשך נבין למה.</p>
+      <p class="bold-para">הגמרא קובעת שמלכויות נאמרות בברכת קדושת היום, כי זו מהות ראש השנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · המלכה בתפילה</div>
+      <h3 class="story-title">⏰ להגיע ל"המלך"</h3>
+      <p>יש משהו מלמד בעובדה שבישיבות כותבים בלוח הזמנים של ראש השנה "המלך" ולא "שחרית". זה מכוון את המתפלל: אל תחשוב שאתה בא עכשיו לעוד תפילה. אתה בא להמליך את המלך.</p>
+      <p>והרב סיפר על ההתעוררות שהייתה בישיבה: גם מי שבימים רגילים מתקשה להגיע מוקדם, בראש השנה מגיע. הרעש של מאות הנכנסים לפני התפילה העיר את מי שעוד ישן. כולם הרגישו שזה הרגע החשוב ביותר בשנה.</p>
+      <p>ויש בזה לימוד לכל אחד: הדרך שבה אדם נכנס לתפילת ראש השנה קובעת הרבה. מי שבא בזמן, מתכונן, ומבין שהוא בא להכתיר מלך, חווה את היום אחרת לגמרי ממי שבא באמצע ומחכה לסוף.</p>
+      <p>וזה הבסיס לכל השיעור: ראש השנה הוא קודם כל יום של המלכה, וממנה נגזר גם הדין.</p>
+      <p class="bold-para">ההקפדה להגיע בזמן ל"המלך" מבטאת את ההבנה שההמלכה היא עיקר היום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קרה בראש השנה</div>
+      <h3 class="story-title">🌍 מה קרה בראש השנה?</h3>
+      <p>כל חג ביהדות קשור למאורע שהיה בעבר, ובכל שנה מתחדש בו האור של אותו מאורע. בפסח יצאנו ממצרים, בשבועות קיבלנו את התורה, בפורים ובחנוכה – הניסים. מה קרה בראש השנה, שבגללו הוא יום המלכה ויום דין?</p>
+      <p>המשתתפים הציעו: בריאת העולם. והרב דייק: העולם לא נברא בראש השנה. בראש השנה נברא האדם. העולם נברא כמה ימים קודם, והאדם נברא ביום השישי, שהוא א' בתשרי.</p>
+      <p>ומה הקשר בין בריאת האדם להמלכה? כאן הביא הרב את הפיוט המוכר לכולם, "אדון עולם", ששרים אותו בכל מקום, במנגינות רבות, ואפילו מי שרחוק מן התורה מכיר אותו. ובפיוט הזה טמון סוד ראש השנה.</p>
+      <p>"אֲדוֹן עוֹלָם אֲשֶׁר מָלַךְ בְּטֶרֶם כָּל יְצִיר נִבְרָא. לְעֵת נַעֲשָׂה בְחֶפְצוֹ כֹּל, אֲזַי מֶלֶךְ שְׁמוֹ נִקְרָא". הרב שאל: האם ה' היה מלך לפני הבריאה, או רק אחריה? השורה הראשונה אומרת שמלך לפני שנברא כל יציר. והשנייה אומרת שרק אחרי שנעשה הכל, "אז" נקרא שמו מלך.</p>
+      <p>ועוד: אם ה' מלך מאז שנברא העולם, מה היה בימים הראשונים, לפני שנברא האדם? האם היה מלך?</p>
+      <p>והתשובה: מלך צריך עם. "אֵין מֶלֶךְ בְּלֹא עָם". לפני הבריאה, ה' היה מלך בכוח, בפוטנציאל. היה בו כל מה שצריך כדי להיות מלך. אבל מלך בפועל נעשה רק כשנברא מי שימליך אותו.</p>
+      <p>הרב המחיש זאת במשל: יש שני סוגי אדמו"רים. יש מי שראוי מאוד להיות אדמו"ר – צדיק, יודע להנהיג, אוהב את כולם – אבל עדיין אין לו חסידים. הוא ראוי, אבל אינו אדמו"ר בפועל. ויש מי שיש לו חסידים. והוא הביא את רבי צדוק הכהן מלובלין, שלא רצה להיות אדמו"ר כלל, אבל אמר דברי תורה, והציבור הגיע אליו מעצמו, עד שנעשה אדמו"ר בעל כורחו.</p>
+      <p class="bold-para">כל חג ביהדות קשור למאורע; בראש השנה נברא האדם – ומאז נעשה ה' מלך בפועל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קרה בראש השנה</div>
+      <h3 class="story-title">👤 "אזי מלך שמו נקרא"</h3>
+      <p>ולכן "אדון עולם אשר מלך בטרם כל יציר נברא" – לא שהיה מלך בפועל, אלא שהיה ראוי להיות מלך. היו לו כל הסמכויות מכוח עצמו, שהרי יכול לברוא מה שירצה. זה מלכות בכוח.</p>
+      <p>"לעת נעשה בחפצו כל" – כשנבראו כל הנבראים, ובמיוחד כשנברא האדם – "אזי מלך שמו נקרא". אז נעשה מלך בפועל. מה חסר קודם? בעלי החיים נבראו, אבל ה' לא נקרא מלך עליהם. למה? כי הם אינם ממליכים. רק האדם יכול להמליך.</p>
+      <p>ולכן הרב אמר: ראש השנה, היום שבו נברא האדם, הוא היום שבו לראשונה ה' נעשה מלך בפועל. מה שהיה בפוטנציאל, נעשה מציאות. ומאז ועד היום, ראש השנה הוא יום ההמלכה.</p>
+      <p>אבל מה מיוחד באדם, שרק הוא יכול להמליך? על כך סיפר הרב סיפור.</p>
+      <p class="bold-para">רק כשנברא האדם, שיכול לבחור להמליך, נעשה ה' מלך בפועל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קרה בראש השנה</div>
+      <h3 class="story-title">⚖️ יום הדין של האדם</h3>
+      <p>ועכשיו אפשר להבין גם למה ראש השנה הוא יום הדין. אם ביום הזה נברא האדם, היצור היחיד שיש לו בחירה, הרי שביום הזה נולדה גם האפשרות לדון. בעלי החיים אינם נידונים, כי אין להם בחירה. האדם נידון, כי הוא בוחר.</p>
+      <p>יש מי שאומר שאדם הראשון נידון באותו יום שבו נברא, ושלכן ראש השנה נעשה יום דין לדורות. הרב העיר שאין לכך מקור מפורש, אבל הרעיון ברור: היום שבו נברא היצור הבוחר, הוא גם היום שבו נבחנת בחירתו.</p>
+      <p>וכך מתחברים שני העניינים. מי שיכול להמליך, יכול גם שלא להמליך. ולכן ביום ההמלכה נבחן האדם: האם בחר להמליך את ה' בשנה שעברה, והאם הוא בוחר בו עכשיו.</p>
+      <p>ההמלכה והדין אינם שני ימים בתוך יום אחד. הם שני צדדים של אותה מתנה: הבחירה החופשית של האדם.</p>
+      <p class="bold-para">ביום שבו נברא האדם בעל הבחירה, נולד גם הדין – כי רק מי שבוחר נידון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מה קרה בראש השנה</div>
+      <h3 class="story-title">🗣️ למה דווקא האדם ממליך</h3>
+      <p>אם נחבר את שני היסודות שהרב הביא – הדיבור והבחירה – נבין למה דווקא האדם הוא הממליך. בעלי החיים נבראו לפני האדם, ואף אחד מהם לא המליך את ה'. לא מפני שאינם משרתים את בוראם, אלא מפני שאין להם לא דיבור ולא בחירה. המלאכים משרתים בלי לבחור, ובעלי החיים נאמנים בלי לבחור. רק האדם, שיש בו נשמה בתוך גוף, יכול לפתוח את פיו ולומר במילים: "ה' אלוקי ישראל מלך".</p>
+      <p>וזה בדיוק מה שאנו עושים בתפילת ראש השנה. לא מקריבים קרבן ולא מביאים ביכורים – אומרים. "אמרו לפני מלכויות". ההמלכה נעשית בדיבור, כי הדיבור הוא הכלי שניתן רק לאדם. ומי שאומר את המילים מתוך בחירה, מתוך הבנה שהיה יכול שלא לומר – הוא שעושה את ה' למלך בפועל.</p>
+      <p>מכאן גם מובן למה הגמרא קובעת שההמלכה עצמה היא העצה לזכות בדין. אדם שממליך בדיבור ובבחירה מראה שהוא מבין את תפקידו בעולם: הוא היצור היחיד שבשבילו נבראה המלכות. ומי שממלא את תפקידו, המלך שמח בו ורוצה להיטיב עמו. זהו הקשר הפנימי בין בריאת האדם, ההמלכה והדין – שלושתם נולדו ביום אחד.</p>
+      <p class="bold-para">רק מי שיש לו גם דיבור וגם בחירה יכול להמליך – ולכן ההמלכה התחילה ביום שנברא האדם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מלך ולא מושל</div>
+      <h3 class="story-title">🐕 הכלב הנאמן</h3>
+      <p>הרב סיפר סיפור שמובא בשם אחד מגדולי המוסר. לעשיר אחד היה כלב נאמן מאוד. יום אחד, כשנסע בכרכרה, קפץ הכלב לפני הסוסים והתחיל לנבוח, ולא נתן להם להתקדם. העשיר ניסה להזיז אותו, גירש אותו, הכה אותו – והכלב חזר שוב ושוב ועמד בדרך. בסוף איבד העשיר את סבלנותו, שלף אקדח וירה בכלב. הכלב פצוע ברח.</p>
+      <p>העשיר המשיך בדרכו, וראה טיפות דם. הלך אחריהן, ומצא את הכלב שוכב על קופת הכסף שלו, שנפלה מן הכרכרה בלי שהרגיש. הכלב ניסה כל הזמן להגיד לו שהכסף נפל, ונשאר לשמור עליו גם אחרי שנורה. העשיר בכה מאוד.</p>
+      <p>שאלו את אותו גדול: איזה עולם הבא יקבל כלב כזה, שמסר את נפשו על אדוניו גם כשאדוניו ירה בו? והוא השיב: אין לו עולם הבא. כי עולם הבא שייך למי שיש לו בחירה – שיכול היה לעשות כך ויכול היה לעשות אחרת, ובחר בטוב. הכלב נברא כך. הוא "כולו לב", מסור לאדוניו בכל מצב, בלי בחירה.</p>
+      <p>והאדם? מאז שנברא, יש לו בחירה. ה' נתן לו עץ אחד ואמר: ממנו לא תאכל. והוא יכול היה לבחור. ולכן רק האדם יכול להמליך – כי ההמלכה שלו היא בחירה.</p>
+      <p class="bold-para">לכלב שמסר נפשו על אדוניו אין עולם הבא – כי לא בחר; האדם, שבוחר, הוא שיכול להמליך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מלך ולא מושל</div>
+      <h3 class="story-title">⚖️ לא יותר מדי פחד</h3>
+      <p>ומכאן מובן עוד דבר: הקדוש ברוך הוא דואג שבעולם הזה לא יהיה יותר מדי "אמת גלויה" ופחד. אילו כל עבירה הייתה נענשת מיד וגלוי לכולם, לא הייתה בחירה. האדם היה נהיה כמו אותו כלב: מציית מתוך הכרח.</p>
+      <p>הרב סיפר שנהג מונית סיפר לו שבחברה שבה עבד, אף נהג לא נסע בשבת, מפני שראו מה קרה לנהג אחד שכן נסע: אחרי שנים של רווחים, עשה תאונה שהביטוח לא כיסה, איבד את כל רכושו ואת משפחתו. והרב הוסיף שיש סיפורים רבים על עסקים שניסו לעבוד בשבת ונתקלו בקשיים. אבל, הדגיש, זה לא דבר שאפשר תמיד להצביע עליו, ובדרך כלל אין זה כך באופן גלוי.</p>
+      <p>למה? כי אם הפחד היה גלוי מדי, לא הייתה בחירה. וה' רוצה להיות מלך, לא מושל. הוא רוצה שהאדם יבחר בו מרצונו. ולכן יש בעולם מספיק כדי להרגיש את ה', אבל לא כל כך הרבה שהבחירה תיעלם.</p>
+      <p class="bold-para">ה' דואג שלא יהיה בעולם פחד גלוי מדי, כדי שתישאר בחירה – ושההמלכה תהיה אמיתית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מלך ולא מושל</div>
+      <h3 class="story-title">👑 מלך ומושל</h3>
+      <p>ומה פירוש המילה "מלך"? מלשון "נמלכים": אנשים מתייעצים, חושבים בדעתם, ומחליטים שהם רוצים בו. מלך אינו נעשה מאליו. העם בוחר בו. וזה ההבדל בין מלך למושל: מושל שולט בכוח, בין שרוצים בו ובין שלא.</p>
+      <p>ולקדוש ברוך הוא אין שום בעיה להיות מושל. ברגע אחד הוא יכול להראות את כוחו לכל העולם, כמו שעשה במבול. אבל להיות מלך – זה אינו יכול לעשות בכוח.</p>
+      <p>כאן, אמר הרב, יש דבר מדהים: הקדוש ברוך הוא, כביכול, זקוק לנו כדי להיות מלך. אם לא נמליך אותו, הוא יהיה אולי מושל, אבל לא מלך. וזה התפקיד שלנו בראש השנה: להמליך אותו.</p>
+      <p>ולכן מבינים למה עזרא, בראש השנה, אמר לעם שבכה: "לְכוּ אִכְלוּ מַשְׁמַנִּים וּשְׁתוּ מַמְתַקִּים... כִּי חֶדְוַת ה' הִיא מָעֻזְּכֶם". אם יהיה רק פחד, זה כבר הופך למושל. מלך ממליכים מתוך שמחה.</p>
+      <p class="bold-para">מלך הוא מי שהעם בוחר בו מרצונו; לה' קל להיות מושל, אבל מלך – רק אם נמליך אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מלך ולא מושל</div>
+      <h3 class="story-title">☯️ שני הצדדים</h3>
+      <p>ומכאן האיזון. מצד אחד, ראש השנה הוא יום דין, וצריך להרגיש זאת. מלך שאינו דן אינו מנהיג את העולם, ואינו מלך. מצד שני, אם יש רק פחד, אם רק רועדים, הקדוש ברוך הוא נעשה בעינינו מושל, ולא מלך.</p>
+      <p>לכן צריך בראש השנה את שניהם יחד. כל צד שנלקח לקיצוניות, מקלקל. רק השילוב יוצר את ההמלכה האמיתית: מלך שמכירים בגדולתו ובמשפטו, ושבוחרים בו מתוך אהבה ושמחה.</p>
+      <p>וזה גם מה שמסביר את הגמרא שראינו: למה ההמלכה היא העצה לזכות בדין? כי מי שממליך את ה' מתוך בחירה ואהבה, מראה שהוא באמת רוצה בו. ואת מי ימנה המלך לתפקידים בשנה הבאה? את מי שאוהב אותו.</p>
+      <p class="bold-para">בראש השנה צריך גם יראת הדין וגם שמחת ההמלכה, כי מלך שאינו דן אינו מלך, ומי שרק מפחד הופך את המלך למושל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מלך ולא מושל</div>
+      <h3 class="story-title">🤝 "אני לדודי ודודי לי"</h3>
+      <p>הרב המחיש: ראש ממשלה, כשהוא בוחר שרים, לפעמים אין לו ברירה, וצריך קואליציה. אבל אם הוא יכול, הוא ממנה את מי שהוא סומך עליו, את מי שרוצה בהצלחתו. כך גם הקדוש ברוך הוא. בראש השנה הוא "בונה את הממלכה" מחדש, ומחליט מי יקבל איזה תפקיד בשנה הבאה.</p>
+      <p>ולפי מה הוא מחליט? לפי מי שרואה בו מלך, שרוצה להמליך אותו ולעשות את רצונו. "אֲנִי לְדוֹדִי וְדוֹדִי לִי": כשאני לדודי, דודי לי. מי שממליך את ה', ה' נותן לו מלכות, הצלחה ותפקיד בשנה הקרובה.</p>
+      <p>ולכן ההמלכה והדין הם עניין אחד. הדין בראש השנה הוא ההחלטה מי יקבל מה. וההמלכה היא הדרך להיות ראוי לקבל.</p>
+      <p class="bold-para">המלך ממנה לתפקידים את מי שרוצה בו; ומי שממליך את ה' זוכה למלכות בשנה הקרובה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מלך ולא מושל</div>
+      <h3 class="story-title">🕯️ דברי הרמח"ל</h3>
+      <p>הרב הביא את דברי הרמח"ל על ראש השנה: עכשיו השעה ראויה להתפלל לפני ה' שיגלה מלכותו לגמרי בעולם. כי בראש השנה התחילה מלכות ה' להתגלות בעולם, ולכן זה יום נפלא לבקש מה' אמונה חזקה, אהבתו ויראתו, הכרת גדולתו, ושנזכה להפיץ את מלכותו בעולם.</p>
+      <p>כלומר, כמו שביום הזה התחילה המלכות, אפשר לבקש בו שתתרבה עוד. וזה נוגע לכל אחד: גם על הכלל, וגם באופן פרטי. אדם יכול לבקש שילדיו יכירו מלכות שמיים, שהוא עצמו יכיר כמה טוב ה' וייהנה בעבודתו, שיזכה לקרב רחוקים, שיהיו לו ילדים צדיקים ויראי שמיים.</p>
+      <p>ראש השנה הוא היום שבו מלכות ה' נולדה, כביכול, בעולם. ולכן הוא היום המתאים לבקש שתגדל.</p>
+      <p class="bold-para">הרמח"ל: כמו שבראש השנה התחילה מלכות ה' להתגלות, זה יום מסוגל לבקש שתתגלה עוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מלך ולא מושל</div>
+      <h3 class="story-title">🍎 הבחירה שבגן עדן</h3>
+      <p>הרב חזר על הנקודה: מהרגע שנברא אדם הראשון, הייתה לו בחירה. הקדוש ברוך הוא ברא גן מלא עצים, ואמר לו: מכולם תאכל, ומעץ אחד לא תאכל. האדם לא היה מוכרח. הוא יכול היה לבחור לאכול או לא לאכול.</p>
+      <p>בעלי החיים אינם עומדים בפני בחירה כזו. הם פועלים לפי טבעם. גם הכלב הנאמן ביותר אינו בוחר להיות נאמן; כך הוא נברא. ולכן הנאמנות שלו, מרגשת ככל שתהיה, אינה "המלכה".</p>
+      <p>ומה שנראה כחולשה של האדם – שהוא יכול לטעות, לחטוא, לבחור ברע – הוא בדיוק גדולתו. רק מי שיכול לבחור ברע, יכול לבחור בטוב באמת. ורק מי שיכול שלא להמליך, ההמלכה שלו שווה משהו.</p>
+      <p>וזו הסיבה שה' המתין, כביכול, עד היום השישי. רק כשנברא האדם, נעשה ה' מלך בפועל.</p>
+      <p class="bold-para">מן הרגע הראשון קיבל האדם בחירה, ובזה נבדל מכל הנבראים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מלך ולא מושל</div>
+      <h3 class="story-title">🍯 חדוות ה' היא מעוזכם</h3>
+      <p>הרב התעכב על סיפור עזרא ונחמיה. בראש השנה, כשהעם שמע את התורה, הם התחילו לבכות. הם הבינו כמה התרחקו, ופחדו מן הדין. ועזרא ונחמיה אמרו להם: "הַיּוֹם קָדוֹשׁ הוּא לַה' אֱלֹקֵיכֶם, אַל תִּתְאַבְּלוּ וְאַל תִּבְכּוּ... לְכוּ אִכְלוּ מַשְׁמַנִּים וּשְׁתוּ מַמְתַקִּים... כִּי חֶדְוַת ה' הִיא מָעֻזְּכֶם".</p>
+      <p>לכאורה, זה מוזר: ביום הדין, כשהעם מתעורר לתשובה, אומרים לו להפסיק לבכות ולשמוח? אבל לפי מה שלמדנו, זה מובן. אם ראש השנה יהיה רק פחד, ה' יהפוך בעינינו למושל. ומלך ממליכים בשמחה, באהבה, ברצון.</p>
+      <p>ולכן גם המנהגים של ראש השנה – הסימנים, האוכל המתוק, התפוח בדבש – אינם סותרים את יום הדין. הם חלק מן ההמלכה. אנו שמחים במלך, ומראים שאנו רוצים בו.</p>
+      <p>"חדוות ה' היא מעוזכם": השמחה בה' היא הכוח שלכם. היא מה שמחזק אתכם בדין.</p>
+      <p class="bold-para">עזרא ציווה את העם לאכול ולשמוח בראש השנה, כי מלך ממליכים בשמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום תרועה</div>
+      <h3 class="story-title">📯 "יום תרועה יהיה לכם"</h3>
+      <p>והרב סיים בפסוק שבתורה: "וּבַחֹדֶשׁ הַשְּׁבִיעִי בְּאֶחָד לַחֹדֶשׁ מִקְרָא קֹדֶשׁ יִהְיֶה לָכֶם... יוֹם תְּרוּעָה יִהְיֶה לָכֶם". בתורה לא כתוב דין ולא משפט. שתי מילים בלבד: "יום תרועה".</p>
+      <p>ונשאלת שאלה: מן התורה חייבים לתקוע תשע תקיעות, שלוקחות כעשרים שניות. בגלל הספק מהי תרועה, תוקעים שלושים, ואחר כך שישים, ונהגו לתקוע מאה – יש שאומרים שזה רמוז ב"תִּקְעוּ כַּף" (כ"ף בגימטריה מאה). אבל עדיין, זה לוקח דקות ספורות. למה התורה קוראת לכל היום "יום תרועה"? הרי לא אומרים "יום אתרוג" על סוכות.</p>
+      <p>התשובה: תרועה אינה רק תקיעה בשופר. היא גם שירה למלך, הרעה בשמחה. כמו שנאמר בתהילים: "בַּחֲצֹצְרוֹת וְקוֹל שׁוֹפָר הָרִיעוּ לִפְנֵי הַמֶּלֶךְ ה'", ו"הָרִיעוּ לֵאלֹקִים בְּקוֹל רִנָּה". כל היום מיועד להיות יום שבו מריעים לה', שרים לו ושמחים בו.</p>
+      <p class="bold-para">התורה אינה מזכירה דין בראש השנה, אלא "יום תרועה" – וכל היום אמור להיות תרועה למלך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום תרועה</div>
+      <h3 class="story-title">🎶 "אשרי העם יודעי תרועה"</h3>
+      <p>ומיד אחרי התקיעות אומרים: "אַשְׁרֵי הָעָם יֹדְעֵי תְרוּעָה, ה' בְּאוֹר פָּנֶיךָ יְהַלֵּכוּן". למה "יודעי" ולא "תוקעי"? מה הקשר בין ידיעה לתרועה?</p>
+      <p>ספר העיקרים מסביר: החסד הנמשך על התחתונים ראוי שיימשך על העם הנבחר, שיודעים להודות לה'. "יודעי תרועה" – יודעים להודות לך, כמו "בזמירות נריע לו". ולכן "ה' באור פניך יהלכון": יימשך להם החסד והאמת מאור פניך. "בְּשִׁמְךָ יְגִילוּן כָּל הַיּוֹם" – כל פעם שקורה להם דבר טוב, הם שמחים ושרים לה'.</p>
+      <p>יש מי שמקבל שפע ואינו מרגיש שמישהו שלח לו אותו. ויש מי שיודע להכיר מי עוזר לו בכל רגע. אשרי העם שיודעים כך – כדאי לתת להם עוד ועוד.</p>
+      <p>והספורנו על "זכרון תרועה" מוסיף שזו תרועת מלך, כמו שמריעים למלך. וראוי לנו לשמוח עוד יותר, שמי שיושב על כסא הדין הוא מלכנו ושופטנו, והוא יושיענו.</p>
+      <p class="bold-para">לפי ספר העיקרים, "יודעי תרועה" הם מי שיודעים להודות לה', ולכן החסד נמשך אליהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום תרועה</div>
+      <h3 class="story-title">⏳ תפילה לאט, מילה במילה</h3>
+      <p>ומכאן מובן מנהג ישראל כמעט בכל מקום: בראש השנה מתפללים לאט, מבטאים את המילים כראוי, מנגנים. זה לא מקרה. כל מהות היום היא להריע למלך.</p>
+      <p>כל השנה, אמר הרב, אין זמן. כולם רצים. אם החזן היה מנגן כל ברכה, לא היה אפשר לעמוד בזה. אבל פעם בשנה, ביום שבו ממליכים את ה', עומדים על כל מילה, שרים אותה ואומרים אותה. "הָאֵל הַגָּדוֹל הַגִּבּוֹר וְהַנּוֹרָא" – וחושבים על כל מילה. וזה חלק מן ה"יום תרועה": האדם שמח בכל מילה.</p>
+      <p>ובזה אדם מראה שהוא ממליך את ה'. ואז, אמר הרב, הקדוש ברוך הוא אומר: אם אתה ממליך אותי, כדאי לתת לך תפקיד טוב.</p>
+      <p>ובברכה הזאת סיים: שתהיה לכולנו שנה טובה ומתוקה, שנה של שמחה, שבה נזכה להמליך את ה' ולהיות ממונים במלכותו.</p>
+      <p class="bold-para">המנהג להתפלל בראש השנה לאט ובנגינה הוא ביטוי של יום תרועה – כך ממליכים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום תרועה</div>
+      <h3 class="story-title">🤗 לשמוח שהשופט הוא אבינו</h3>
+      <p>הספורנו אומר דבר מרגיע: ראוי לנו לשמוח עוד יותר, שמי שיושב על כסא הדין הוא מלכנו. "כִּי ה' שֹׁפְטֵנוּ, ה' מְחֹקְקֵנוּ, ה' מַלְכֵּנוּ, הוּא יוֹשִׁיעֵנוּ".</p>
+      <p>יש הבדל עצום בין אדם שעומד לדין לפני שופט זר, לבין אדם שעומד לדין לפני אביו. השופט הזר אינו מכיר אותו, ואין לו עניין בטובתו. האב רוצה בטובתו, ומחפש כל דרך לזכות אותו.</p>
+      <p>ובראש השנה, מי שדן אותנו הוא המלך שאנו ממליכים, אבינו מלכנו. אנו פונים אליו בשני השמות יחד: "אָבִינוּ מַלְכֵּנוּ". הוא מלך, ולכן דן. הוא אב, ולכן רוצה לזכות.</p>
+      <p>ומי שמבין זאת, יכול לעמוד בראש השנה גם ביראה וגם בשמחה. יראה מן הדין, ושמחה על כך שהדין בידי מי שאוהב אותנו. וזו בדיוק ההמלכה שה' מבקש.</p>
+      <p class="bold-para">השמחה בראש השנה באה מן הידיעה שהשופט הוא מלכנו ואבינו, והוא יושיענו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום תרועה</div>
+      <h3 class="story-title">🔗 יום אחד, שתי פנים</h3>
+      <p>בסוף השיעור אפשר לראות את התמונה כולה. התחלנו בשאלה: למה יום הדין ויום ההמלכה הם יום אחד? והתשובה נבנתה שלב אחר שלב. בתפילה ראינו שהדין הוא חלק מן המלכות: "המלך המשפט" – מלך שאינו דן אינו מלך. בפיוט "אדון עולם" ראינו שהמלכות בפועל התחילה ביום שנברא האדם, כי רק הוא יכול להמליך. ובסיפור הכלב ראינו שההמלכה שווה משהו רק כשיש בחירה – ובחירה מולידה דין.</p>
+      <p>ולכן אי אפשר להפריד. אם היה רק דין, היה ה' מושל ולא מלך, והאדם היה עבד מפוחד ולא ממליך. אם הייתה רק המלכה בלי דין, לא הייתה זו מלכות של ממש. לכן ראש השנה מחזיק את שני הצדדים: יראה מפני הדין, ושמחה על ההמלכה, כמו שציווה עזרא: "חֶדְוַת ה' הִיא מָעֻזְּכֶם".</p>
+      <p>ומכל זה יוצאת הדרכה פשוטה ליום עצמו: לבוא בזמן, לעמוד על כל מילה, לשיר ולהריע למלך, ולזכור שהשופט הוא אבינו. מי שמקבל כך את ראש השנה, לא רק נידון ביום הזה – הוא שותף בהכתרה.</p>
+      <p>וכאן נסגר המעגל עם דברי הרמח"ל: היום שבו התחילה מלכות ה' להתגלות הוא היום המסוגל ביותר לבקש שתתגלה עוד. מי שעמד כל היום והמליך – בתפילה, בתקיעות, בשירה – רשאי לבקש בסוף היום גם על עצמו, על ילדיו ועל כל ישראל: שנזכה להכיר את מלכותו, לשמוח בה, ולהפיץ אותה בשנה הבאה עלינו לטובה. וזו הברכה שבה חתם הרב: שנה טובה ומתוקה, שנת המלכה ושמחה.</p>
+      <p class="bold-para">סיכום השיעור: הדין וההמלכה אינם שני דברים שמקרה חיבר אותם, אלא שני צדדים של מלכות אחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/MJ4Zn6Mb3xk · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"המלכה בתפילה","icon":"📖","color":"#c62b6b","stories":[{"id":1,"title":"דין והמלכה ביום אחד","icon":"⚖️"},{"id":2,"title":"\"המלך המשפט\"","icon":"🏛️"},{"id":3,"title":"\"כל אשר נשמה באפו\"","icon":"🗣️"},{"id":4,"title":"מלכויות בקדושת היום","icon":"📯"},{"id":5,"title":"להגיע ל\"המלך\"","icon":"⏰"}]},{"id":2,"name":"מה קרה בראש השנה","icon":"🌍","color":"#6d28d9","stories":[{"id":6,"title":"מה קרה בראש השנה?","icon":"🌍"},{"id":7,"title":"\"אזי מלך שמו נקרא\"","icon":"👤"},{"id":8,"title":"יום הדין של האדם","icon":"⚖️"},{"id":9,"title":"למה דווקא האדם ממליך","icon":"🗣️"}]},{"id":3,"name":"מלך ולא מושל","icon":"👑","color":"#e08e00","stories":[{"id":10,"title":"הכלב הנאמן","icon":"🐕"},{"id":11,"title":"לא יותר מדי פחד","icon":"⚖️"},{"id":12,"title":"מלך ומושל","icon":"👑"},{"id":13,"title":"שני הצדדים","icon":"☯️"},{"id":14,"title":"\"אני לדודי ודודי לי\"","icon":"🤝"},{"id":15,"title":"דברי הרמח\"ל","icon":"🕯️"},{"id":16,"title":"הבחירה שבגן עדן","icon":"🍎"},{"id":17,"title":"חדוות ה' היא מעוזכם","icon":"🍯"}]},{"id":4,"name":"יום תרועה","icon":"📯","color":"#1e88b8","stories":[{"id":18,"title":"\"יום תרועה יהיה לכם\"","icon":"📯"},{"id":19,"title":"\"אשרי העם יודעי תרועה\"","icon":"🎶"},{"id":20,"title":"תפילה לאט, מילה במילה","icon":"⏳"},{"id":21,"title":"לשמוח שהשופט הוא אבינו","icon":"🤗"},{"id":22,"title":"יום אחד, שתי פנים","icon":"🔗"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
