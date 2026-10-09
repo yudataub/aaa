@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 רבי</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 רבי</h1>
+  <p>מי היה רבי יהודה הנשיא שעד היום קוראים לו בפשטות "רבי", המסע של הסנהדרין מירושלים ליבנה ועד בית שערים, והמערות שבהן הוא קבור</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ רבי" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/E6DRfbDEKEg?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/E6DRfbDEKEg/hqdefault.jpg" alt="רבי" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=E6DRfbDEKEg" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מי זה "רבי"</div>
+      <h3 class="story-title">👑 התואר שאף אחד אחר לא קיבל</h3>
+      <p>השיעור הזה נפתח ומתחיל כבר מראש ובכוונה בשאלה פשוטה אך עמוקה מאוד, שראוי מאוד ובהחלט להתעכב עליה כאן: מי זה בעצם ובדיוק "רבי" הזה שמוזכר כל כך הרבה פעמים במשנה? במשנה אין קוראים לו "רבי יהודה הנשיא" בשמו המלא, אלא פשוט "רבי". וכשחכמים אומרים בסתם "רבי", הכוונה תמיד לאותו אדם אחד: רבי יהודה הנשיא. שום חכם אחר בכל הדורות לא קיבל תואר כזה, סתמי ומיוחד כאחד.</p>
+      <p>רבי היה משושלת בית הלל, צאצא של הלל הזקן, והוא זה שערך את שישה סדרי המשנה – כל התורה שבעל פה שהיה חשוב לקבע אותה בכתב, מחשש שהיא תשתכח בתקופה קשה. יש לו גם תואר מיוחד נוסף: "רבנו הקדוש", כי הוא היה, במידה מסוימת, הרב של כל הרבנים שבאו אחריו.</p>
+      <p>השיעור מציין ומבהיר שחשוב להבדיל בבירור בין התואר "רבי" כשם עצמו, ובין התואר "רב ראשי" המודרני שאנו מכירים כיום בציבוריות הישראלית. הרב הראשי של דורנו הוא מינוי: ציבור או מוסד ממנים אדם לתפקיד, וכשהוא מסיים את תפקידו, ממנים אדם אחר. התואר "רבי" שניתן ליהודה הנשיא לא היה מינוי כזה. הוא לא נבחר בהצבעה ולא התמנה על ידי גוף רשמי, אלא קיבל את התואר הזה מתוך ההיסטוריה עצמה, כהכרה אמיתית בגדולתו שאין לה תחרות. אף חכם אחר, בכל אלפיים השנים שעברו מאז, לא זכה לתואר כזה בלעדי.</p>
+      <p class="bold-para">כשאומרים בלשון חז"ל "רבי" בלי שם נוסף, הכוונה תמיד לרבי יהודה הנשיא, ששום חכם אחר לא זכה לתואר הזה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מי זה "רבי"</div>
+      <h3 class="story-title">✨ הרמב"ם: לא היה כמותו</h3>
+      <p>השיעור מביא את עדות הרמב"ם, שכותב במפורש שלא היה כמותו של רבי יהודה הנשיא. הכוונה אינה רק לדורו שלו, אלא גם לכל הדורות שקדמו לו וגם לאלה שבאו אחריו – הרמב"ם מעמיד אותו כדמות יוצאת דופן ומיוחדת בתולדות התורה שבעל פה, שאין לה אח ורע בכל הדורות שהיו ושיהיו.</p>
+      <p>זו הסיבה שעד היום, אחרי קרוב לאלפיים שנה מפטירתו, ממשיכים לקרוא לו סתם "רבי". זה לא תואר רשמי שממנים אדם אליו, כמו הרב הראשי שממנים אותו היום לפי החלטה ציבורית. זה תואר שההיסטוריה עצמה העניקה לו, מפני שהוא ערך לנו את כל התורה שבעל פה שאנו עדיין לומדים ממנה היום.</p>
+      <p>השיעור מזכיר שבכיתה עצמה קשה לתלמידים לתפוס את ממדי הגדולה הזאת, כי כיום כל אדם יכול לקרוא לעצמו "רב" או שאחרים יקראו לו כך, אפילו אם הוא לא תלמיד חכם גדול. אבל בלשון חז"ל, שם כזה סתמי שמור רק לאדם אחד, ורק לו, מכל התנאים והאמוראים בכל הדורות. זה ממחיש עד כמה ההערכה שחלקו לו חכמי הדורות הבאים הייתה יוצאת דופן, ולא תואר מקרי או שגרתי.</p>
+      <p class="bold-para">הרמב"ם מעיד שלא היה כמותו של רבי בכל הדורות, מה שעד היום מסביר למה אנשים ממשיכים לקרוא לו "רבי" בפשטות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מי זה "רבי"</div>
+      <h3 class="story-title">🧭 איזוהי דרך ישרה</h3>
+      <p>השיעור מראה שרבי יהודה הנשיא הוא זה שפותח את פרק ב' של פרקי אבות, במשנה המוכרת: "רַבִּי אוֹמֵר: אֵיזוֹהִי דֶרֶךְ יְשָׁרָה שֶׁיָּבוֹר לוֹ הָאָדָם? כֹּל שֶׁהִיא תִפְאֶרֶת לְעוֹשֶׂיהָ וְתִפְאֶרֶת לוֹ מִן הָאָדָם". זה עצמו לקח מעניין: פרקי אבות, שמקדימה את לימוד התורה עצמה, פותחת בשאלת המידות הנכונות של האדם.</p>
+      <p>ומה פירוש "תפארת לעושיה ותפארת לו מן האדם"? רבי מלמד שהדרך הנכונה היא דרך מאוזנת: לא דרך שבה האדם נותן ונותן בלי גבול עד שהוא עצמו נשאר בלי כלום ואנשים יבזו אותו; וגם לא דרך שמרוכזת רק בו, בלי לתת לאחרים ליהנות ממנו. הדרך הישרה היא זו שגם מכבדת את עושה אותה, וגם מיטיבה עם מי שפוגש אותו.</p>
+      <p>זה רמז חשוב מאוד ועמוק למי שזוכר תמיד וחוזר ולומד שוב ושוב שגם פרקי אבות עצמו הוא בעצם הכנה ראשונית וחשובה ללימוד התורה כולה, עוד הרבה לפני לימוד ההלכות המעשיות עצמן: המידות הטובות קודמות בזמן וקודמות בחשיבות ללימוד ההלכתי המעשי. חשוב גם מאוד לשים לב ולהתפעל מזה שרבי יהודה הנשיא, שהיה מנהיג כל כך גדול ובעל מעמד ציבורי כל כך חשוב ומכובד, בחר במכוון לפתוח את משנתו בפרקי אבות בשאלה על מידות האדם ולא בהלכה פרטית כלשהי. זה מלמד ומראה שהוא עצמו ראה בחינוך המידות הטובות יסוד מרכזי לכל מה שיבוא אחריו בהמשך חיי האדם, ולא עניין משני וצדדי בלבד.</p>
+      <p class="bold-para">פרקי אבות פרק ב' פותח במשנתו של רבי, המלמדת על הדרך שתביא לאדם תפארת לעצמו ותפארת מאחרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המסע של הסנהדרין</div>
+      <h3 class="story-title">🏛️ לאן הולכים אחרי החורבן</h3>
+      <p>אחרי שהמחיש השיעור בפירוט מי בעצם היה רבי, הוא פונה ועובר לשאלה היסטורית חשובה וחיונית מאוד להבנת כל המשך הסיפור, שאלה שבלעדיה אי אפשר להבין כלל איך בכלל הגיעה הסנהדרין לאזור הצפון: לאן הלכו חכמי ישראל אחרי חורבן בית המקדש הגדול? בזמן שבית המקדש היה קיים, כל החכמים גרו כמעט ביחד, באזור ירושלים: שמעון הצדיק, שמאי והלל, כולם היו קבורים או פעלו באותו אזור.</p>
+      <p>אבל אחרי שבית המקדש נחרב בפועל, והרומאים אסרו באיסור חמור על יהודים להיכנס אפילו לירושלים עצמה, מה בדיוק עשו החכמים הגדולים באותה שעה קשה? הם לא התייאשו ולא הרימו ידיים. הם עברו לאזור הגליל, והקימו שם מרכז תורה חדש. מכאן ואילך, כל התנאים הגדולים נקברים באזור הצפון: רשב"י במירון, ועוד רבים אחרים.</p>
+      <p>המעבר הזה מירושלים לגליל לא היה החלטה טכנית של נוחות, אלא תוצאה ישירה של גזרת האויב. העם היה עצוב ומבולבל מאוד, אחרי שראה את מקום קדושתו העליון נחרב לנגד עיניו. אבל החכמים הבינו שאסור להם לוותר על הנהגת העם, ולכן הקימו מרכז חדש בגליל, שממשיך ומתפתח, במשך דורות רבים, לאחר שהעם הבין שתורת ישראל יכולה להמשיך ולהתקיים גם בלי בית המקדש הפיזי, כל עוד יש חכמים שמלמדים אותה ברבים.</p>
+      <p class="bold-para">בזמן בית המקדש גרו רוב חכמי ישראל בירושלים, אבל כשנחרב הבית, הם עברו בהדרגה לגליל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המסע של הסנהדרין</div>
+      <h3 class="story-title">🗺️ עשרה גלויות של הסנהדרין</h3>
+      <p>השיעור מביא ומסביר בפירוט רב את דברי הגמרא המפורסמת במסכת ראש השנה, שמונה בדייקנות את רשימת כל התחנות שבהן ישבה הסנהדרין במשך השנים: "עֶשֶׂר גָּלֻיּוֹת גָּלְתָה סַנְהֶדְרִין". מלשכת הגזית בבית המקדש, עברה הסנהדרין ליבנה, ומיבנה לאושא, ומאושא לשפרעם, ומשפרעם לבית שערים – ובהמשך לעוד תחנות נוספות, עד לציפורי וטבריה.</p>
+      <p>השיעור מתעכב בהרחבה על החלק הגיאוגרפי הקרוב ביותר לקריית אתא, שרבים מהתלמידים מכירים אותו באופן אישי: אושא האמיתית, שאינה אותה אושא שעל שמה נקרא קיבוץ מודרני בשם דומה, אלא נמצאת ממש ליד הכפר לוקיא, בדרך לשפרעם, אזור שאפשר להגיע אליו בנסיעה קצרה מאוד. הרב מספר שהוא עצמו הלך ברגל בטיול משפחתי בעקבות המסלול הזה, מאושא לשפרעם, ועבר ממש באזור שבו גרה הסנהדרין בתקופה ההיא, והוא מציין שראה בדרך שרידי מבנים ישנים, אם יודעים היכן בדיוק לחפש אותם.</p>
+      <p>חשוב להדגיש שהרב הזהיר את התלמידים שלא לנסות לעשות את אותו טיול בעצמם לבד, אלא רק בלוויית מבוגר אחראי, כי המסלול עובר באזורים שגרים בהם כפרים ערביים, וצריך ללכת בתיאום ובזהירות המתאימה. הוא עצמו הלך שם בלי חשש מיוחד, מתוך הרגשה שהקדוש ברוך הוא שומר על מי שהולך לשם לימוד ההיסטוריה התורנית של עמו, אבל זה אינו פוטר מזהירות סבירה.</p>
+      <p class="bold-para">הגמרא מונה עשר תחנות שאליהן גלתה הסנהדרין, מלשכת הגזית בירושלים ועד בית שערים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · המסע של הסנהדרין</div>
+      <h3 class="story-title">✉️ מכתב ישן על אדמת קודש</h3>
+      <p>השיעור מביא תגלית מעניינת ומרתקת שלא רבים מכירים אותה: מכתב ישן מאוד, מלפני כשמונים וחמש שנה בדיוק, שכתב רב קריית אתא דאז, רב מדנסון, לאדמו"ר מפיאסצנה, שהיה אז בחוץ לארץ. במכתב כתב הרב: "השם עזר לי לגור באדמה מאוד קדושה" – והסביר שהכוונה היא לכך שבאזור קריית אתא גרה הסנהדרין בתקופה שלאחר חורבן הבית.</p>
+      <p>מכאן גם מקור השם שניתן לבית הכנסת המרכזי בקריית אתא העתיקה: "עט", ראשי תיבות של "על טהרת הקודש" – שם שנקשר ישירות למסורת הזאת, שהמקום שבו יושבים הוא בדיוק המקום שבו גרה פעם הסנהדרין הקדושה.</p>
+      <p>השיעור מציג גם לכל התלמידים תצלום ממשי של אותו מכתב ישן ומרתק, מצולם במקור, עם תמונה נוספת שבה אפשר לזהות כמה דמויות מוכרות ומפורסמות שהגיעו לאירוע שבו הוצג המכתב: אדמורים וראשי ישיבות שהגיעו לציין את חשיבות המקום. זה מראה שהידיעה על קדושת האזור לא נשארה סוד שמור, אלא התפשטה בהדרגה בקרב תלמידי חכמים שהבינו את המשמעות ההיסטורית של המקום שבו הם חיים, ורצו לשמר את הזיקה הזאת לדורות הבאים.</p>
+      <p class="bold-para">רב קריית אתא הישן כתב לפני כשמונים וחמש שנה מכתב לאדמו"ר מפיאסצנה, ובו תיאר את המקום כאדמה קדושה בשל ישיבת הסנהדרין שם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בית שערים</div>
+      <h3 class="story-title">🚗 לא כזה רחוק מכאן</h3>
+      <p>אחרי שהסנהדרין עברה לאושא ואחר כך לשפרעם, היא הגיעה בהמשך, בתחנה הבאה במסעה, לבית שערים, לא רחוק כלל מקריית טבעון – נסיעה קצרה של כעשרים וחמש דקות בלבד ברכב מקריית אתא, מרחק שאפשר כמעט לנסוע אותו בלי לשים לב כמה היסטוריה עתיקה עוברת תחתיו. שם, רבי יהודה הנשיא היה המנהיג הגדול של עם ישראל, וגם שם הוא נקבר לבסוף, אחרי שעמד בראש עם ישראל שנים רבות.</p>
+      <p>השיעור מציין נקודה מעניינת: עד לפני כמאה שנה, איש לא ידע כלל היכן נמצא בית שערים, ומי קבור בה. כל האזור היה מכוסה חולות וחורבות, שהצטברו שם עם השנים, ואיש לא ידע לאן נעלם המקום שבו גרה הסנהדרין וקבור רבי.</p>
+      <p>הרב מתאר שהוא עצמו ביקר במקום ממש בימים האחרונים, בזמן חופשת חנוכה, וצילם את התמונות שמוצגות בשיעור. הוא מתאר שהנסיעה לשם קצרה ופשוטה בהרבה ממה שרבים חושבים, וממליץ לכל מי שגר בסביבה לבקר במקום בעצמו, כי קשה להרגיש את עומק הקדושה של המקום רק משמיעת תיאור, ורק מי שעומד שם בעצמו מרגיש באמת את גודל ההיסטוריה הקבורה מתחת לאדמה.</p>
+      <p class="bold-para">בית שערים, שבה נקבר רבי יהודה הנשיא, נמצאת רק כעשרים וחמש דקות נסיעה מקריית אתא, קרוב לקריית טבעון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בית שערים</div>
+      <h3 class="story-title">⛏️ חפירות שגילו עיר שלמה</h3>
+      <p>כשנערכו בבית שערים חפירות ארכיאולוגיות מקיפות לפני כמה עשרות שנים, התגלו שם לפתע מערות קבורה ארוכות מאוד, שהיו חבויות וקבורות באדמה במשך דורות רבים לפני כן, חלקן בעומק של חמישים אמה ואפילו יותר, חקוקות כולן מתוך ההר עצמו. יש מערה אחת שכל כך ארוכה שאפשר ממש להתהלך בה כמו במנהרה שלמה, ובתוכה קברי תנאים וחכמים רבים.</p>
+      <p>מרבית הקברים שם הם אנונימיים: רואים שמות חרוטים על האבן, אבל איש אינו יודע בוודאות למי הם משתייכים. יש רק קבר אחד שמיוחס בבירור יחסי לרבי יהודה הנשיא – נמצא בקצה אחת המערות, והמקום שופץ כדי שיוכלו לבקר בו ולהתפלל שם.</p>
+      <p>כדי שהמבקרים יוכלו לראות משהו בתוך החושך העמוק של המערות הארוכות, הותקנו שם פנסים חשמליים, המדליקים את הדרך לאורך כל המסלול. השיעור מציין שזה לא תוספת מיותרת: בלי האור הזה, קשה היה כלל להבין את גודל המערכת התת־קרקעית, ואת כמות המערות והחללים שנחצבו שם לאורך דורות, במקום שבתחילה נראה כגבעה אחת פשוטה מבחוץ.</p>
+      <p class="bold-para">חפירות ארכיאולוגיות בבית שערים גילו מערות קבורה עתיקות ועיר תת-קרקעית שלמה שהייתה חבויה מתחת לחול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בית שערים</div>
+      <h3 class="story-title">🕎 סמל המנורה על הקברים</h3>
+      <p>השיעור שם לב בהתרגשות לפרט קטן אך מרגש מאוד: על קברים רבים ושונים באותן מערות עתיקות חקוק באבן סמל של מנורה, שוב ושוב, בכמה וכמה קברים נפרדים. למה דווקא בחרו היהודים הקבורים שם, או משפחותיהם האוהבות, לחרוט בדיוק את צורת המנורה הזאת מתוך כל הסמלים האפשריים? כי מאז שחרב בית המקדש, יהודים חלמו כל הזמן: מתי, בעזרת ה', תחזור המנורה למקומה בבית המקדש.</p>
+      <p>השיעור מקשר את זה למטבע הישראלי של עשר אגורות, שעליו מצויר, בטעות, סמל שרבים חושבים שהוא חנוכייה. אבל זו בעצם מנורת בית המקדש, בת שבעה קנים – שלוש ושלוש וקנה אמצעי – ולא חנוכייה בת שמונה קנים. יוצרי המטבע ציירו אותה בהשפעת תיאור המנורה המופיע על שער טיטוס ברומא.</p>
+      <p>זו שאלה שהרב שאל בכיתה, ודרש מהתלמידים לחשוב בעצמם: איך בכלל יודעים האנשים שעיצבו את המטבע איך נראתה מנורת בית המקדש, אלפיים שנה אחרי שהיא נעלמה? התשובה שהגיעה מהתלמידים הייתה נכונה: הם הסתכלו על התיאור החקוק בשער טיטוס עצמו, התיאור הרומי העתיק של המנורה שנלקחה בשלל המלחמה, ומשם שאבו את הדימוי שעליו מבוססת הצורה המוכרת לנו היום בכל סמלי מדינת ישראל.</p>
+      <p>יש בכך גם אירוניה מרתקת, שהשיעור מצביע עליה: השער שבנו הרומאים כדי להנציח את ניצחונם על עם ישראל, הוא עצמו הפך, אלפיים שנה אחר כך, למקור המידע ההיסטורי שעליו מתבססת מדינת ישראל כשהיא מעצבת את סמל המנורה שלה. מה שהיה אמור להיות תיעוד של השפלה והרס, הופך בסופו של דבר לעזר להמשכיות ולחידוש – עוד דוגמה לכך שגם מתוך החורבן יכול לצאת המשך חיים חדש.</p>
+      <p class="bold-para">על קברים רבים בבית שערים חקוק סמל של מנורה, המביע את הציפייה והגעגועים של יהודי אותו דור לחזרת המנורה לבית המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בית שערים</div>
+      <h3 class="story-title">🏺 שער טיטוס ומנורת המקדש</h3>
+      <p>השיעור מזכיר ומתאר בקצרה את שער טיטוס המפורסם, שנבנה ברומא במפורש לזכר כיבוש ירושלים והחרבת בית המקדש, בשנת שבעים לספירה בדיוק, שנה קשה מאוד בתולדות עמנו. בתהלוכת הניצחון המפוארת והגדולה שנערכה אז ברומא לעיני כל העם הרומי, צעדו בראש שבויי המלחמה היהודים, ולאחריהם שלל עצום מאוד של כלי כסף וזהב יקרים מתוך בית המקדש עצמו – ובתוכם מנורת הזהב הגדולה, מובאת ומוצגת כסמל מובהק לניצחון הרומאי על האמונה היהודית.</p>
+      <p>השיעור מדגיש שחשוב לדעת את הסיפור הזה, אבל בלי להישאר שם: המלחמה היהודית ברומאים לא הסתיימה בחורבן הבית, ולמדנו קודם ששנה וחצי אחר כך עדיין המשיכו להחזיק מבצרים כמו הרודיון, ושלוש שנים אחר כך עדיין החזיקו במצדה. עם ישראל לא התייאש אחרי החורבן, אלא המשיך להילחם, וממשיך עד היום לבנות ולשחזר, בדיוק כמו שרבי יהודה הנשיא בנה מחדש את מרכז התורה בגליל.</p>
+      <p>השיעור מציין שהרגשה הטבעית שלנו, כשאנו חוזרים אחורה אל אותם ימים, היא הרגשה של ניצחון רומי מוחלט ושל אבדן יהודי מלא. אבל האמת ההיסטורית מורכבת יותר: הניצחון הרומי היה אמנם צבאי וזמני, אבל האמונה שהביאה לכתיבת המשנה, לבניית בתי הכנסת והמדרש בגליל, ולהמשך קיומו של עם ישראל במשך אלפיים שנה נוספות, היא עצמה ניצחון עמוק הרבה יותר, שלא רואים אותו בתמונה החד־פעמית של המצעד ברומא, אלא רק כשמסתכלים על ההיסטוריה כולה בפרספקטיבה הרחבה.</p>
+      <p class="bold-para">שער טיטוס ברומא מתאר את מצעד הניצחון שבו הובאו שלל בית המקדש, וביניהם מנורת הזהב, בתוך תהלוכה שהציגה את חורבן ירושלים לכל העולם הרומי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בית שערים</div>
+      <h3 class="story-title">📚 מבחן שישה סדרי משנה</h3>
+      <p>השיעור מזכיר שבכיתה נערך לפני כן מבחן על שישה סדרי המשנה: זרעים, מועד, נשים, נזיקין, קדשים וטהרות – ששת הסדרים שרבי יהודה הנשיא ארגן וחיבר. זה המקום להזכיר שוב למה היה חשוב לעשות את זה דווקא בתקופתו.</p>
+      <p>לפני תקופתו של רבי, התורה שבעל פה כולה עברה בעיקר בזיכרון חי ובמסורת מדויקת שבעל פה, מדור לדור, בלי שום דבר ממנה היה כתוב בכתב רשמי ומוסכם. אבל בתקופה קשה מאוד של רדיפות שלטוניות ושל פיזור העם לכל עבר, רבי הבין והרגיש בבירור שיש סכנה אמיתית שהמסורת היקרה הזו תאבד כליל או תשתכן בטעות חמורה. לכן ישב וערך בעצמו את כל התורה שבעל פה לכלל מבנה מסודר וברור מאוד, שאנחנו ממש עדיין לומדים ממנו עד היום הזה, בדיוק כמו שהוא עצמו חיברו וסידרו לראשונה.</p>
+      <p>זה גם מסביר ומבאר היטב למה המשנה שלנו כולה מסודרת ומאורגנת לפי שישה סדרים נושאיים ברורים, ולא לפי סדר כרונולוגי של מי אמר מה ומתי. רבי יהודה הנשיא בחר סדר לוגי: תחילה הלכות הקשורות לעבודת האדמה ולברכות (זרעים), אחר כך מועדי השנה (מועד), ואחר כך דיני אישות (נשים), דיני נזיקין (נזיקין), דיני המקדש (קדשים), ולבסוף דיני טהרה (טהרות). הסדר הזה עצמו הוא יצירה מחשבתית מסודרת, שמראה את רמת העומק שבה רבי ניגש לעבודה האדירה של סידור כל התורה שבעל פה.</p>
+      <p class="bold-para">בכיתה נערך מבחן על שישה סדרי המשנה שרבי יהודה הנשיא חיבר, וזה הזדמנות להיזכר למה חיבורם היה כל כך חשוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בית שערים</div>
+      <h3 class="story-title">🌳 מהר הבית לבית שערים</h3>
+      <p>השיעור מסתכם בתמונה הגדולה: עם ישראל, שהיה מרוכז בירושלים סביב בית המקדש, איבד את מרכזו הפיזי בחורבן, אבל לא איבד את מרכזו הרוחני. הסנהדרין נדדה, מיבנה לאושא, לשפרעם, לבית שערים, ובכל תחנה המשיכו החכמים ללמד תורה ולקיים את עם ישראל.</p>
+      <p>רבי יהודה הנשיא, שהנהיג את עם ישראל בתחנה הזאת של בית שערים, הוא הסמל המושלם לרעיון הזה: הוא לא התרכז בעצב על מה שנחרב, אלא בנה בעצמו דבר חדש וגדול – חיבור שישה סדרי משנה, שעד היום, קרוב לאלפיים שנה אחר כך, הוא יסוד לימוד התורה שבעל פה של כל עם ישראל. זה עצמו הלקח הגדול: גם במקום הנמוך ביותר, חורבן ואבדן, אפשר לבנות דבר שיישאר לדורי דורות. רבי לא בחר להישאר שקוע באבל, אלא מצא בתוך הקושי הגדול הזדמנות ליצור דבר שישרת את עם ישראל אלפי שנים אחר כך.</p>
+      <p>וכך, כשחוזרים ומסתכלים על כל השרשרת: שמעון הצדיק בירושלים, שמאי והלל בירושלים, ואז הגירוש לגליל, יבנה, אושא, שפרעם, ולבסוף בית שערים – רואים שרשרת רצופה של מנהיגות תורנית, שלא נקטעה אפילו פעם אחת, אף על פי שהמקום הפיזי שבו היא פעלה השתנה שוב ושוב. זו, אולי, התמונה החשובה ביותר שהשיעור מבקש להשאיר בלב התלמידים: עם ישראל לא תלוי במקום אחד, אלא בשרשרת האנשים שממשיכים לשאת את התורה מדור לדור, בכל מקום שאליו מגיעים.</p>
+      <p>ולכן, בכל פעם שתלמיד מבקר במקום כזה, שבו ישבו פעם חכמי ישראל, יש לו הזדמנות להרגיש שהוא עצמו חלק מאותה שרשרת: הוא ממשיך את מה שהתחיל אדם הראשון, עבר לאברהם אבינו, להלל, לרבי, ומגיע עד אליו, בכיתה, לומד את אותה תורה בדיוק. זו תחושה שהשיעור מבקש להעביר לכל תלמיד: אתה לא רק שומע סיפור היסטורי מרוחק, אתה עצמו חלק ממנו, וממשיך אותו קדימה, לדור הבא שיבוא אחריך.</p>
+      <p class="bold-para">סיפור הסנהדרין, מירושלים ועד בית שערים, מראה איך עם ישראל, בעוצמת רצונו, בנה מרכז תורה חדש אחרי כל חורבן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/E6DRfbDEKEg · 2025-12-24 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מי זה \"רבי\"","icon":"📖","color":"#c62b6b","stories":[{"id":1,"title":"התואר שאף אחד אחר לא קיבל","icon":"👑"},{"id":2,"title":"הרמב\"ם: לא היה כמותו","icon":"✨"},{"id":3,"title":"איזוהי דרך ישרה","icon":"🧭"}]},{"id":2,"name":"המסע של הסנהדרין","icon":"🗺️","color":"#6d28d9","stories":[{"id":4,"title":"לאן הולכים אחרי החורבן","icon":"🏛️"},{"id":5,"title":"עשרה גלויות של הסנהדרין","icon":"🗺️"},{"id":6,"title":"מכתב ישן על אדמת קודש","icon":"✉️"}]},{"id":3,"name":"בית שערים","icon":"⛰️","color":"#e08e00","stories":[{"id":7,"title":"לא כזה רחוק מכאן","icon":"🚗"},{"id":8,"title":"חפירות שגילו עיר שלמה","icon":"⛏️"},{"id":9,"title":"סמל המנורה על הקברים","icon":"🕎"},{"id":10,"title":"שער טיטוס ומנורת המקדש","icon":"🏺"},{"id":11,"title":"מבחן שישה סדרי משנה","icon":"📚"},{"id":12,"title":"מהר הבית לבית שערים","icon":"🌳"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
