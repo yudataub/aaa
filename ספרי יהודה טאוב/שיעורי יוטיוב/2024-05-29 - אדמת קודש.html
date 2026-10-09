@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 אדמת קודש</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 אדמת קודש</h1>
+  <p>מסע בשבילים שבהם הקים רבי שמעון בר יוחאי ישיבה, חמישה תלמידים שנסמכו במחיר החיים, ועז שעלתה לדיון הלכתי</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ אדמת קודש" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/-NBson3uDvE?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/-NBson3uDvE/hqdefault.jpg" alt="אדמת קודש" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=-NBson3uDvE" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדמת קודש</div>
+      <h3 class="story-title">🚶 לפני שמתחילים: טיול שאפשר כמעט לכולם</h3>
+      <p>הטיול שבמרכז הסיפור הזה אינו טיול מאומץ שמיועד רק לחזקים ומנוסים. המסלול, לפי תיאורו, אורך כחצי שעה הליכה רגילה בין התחנות המרכזיות, ומתאים כמעט לכל גיל – ילדים צעירים, נשים, וגם מי שלא רגיל להליכות ארוכות. אפשר לעשות אותו גם בלי רכב פרטי, בעזרת קווי אוטובוס מקומיים שמגיעים קרוב למקום.</p>
+      <p>מה שמייחד את הטיול הזה הוא שהוא עובר במקום שרוב האנשים כלל לא מכירים, אף שהוא קרוב לבתים שהם גרים בהם. יש בכך תזכורת שלא צריך לנסוע למרחקים כדי למצוא עומק רוחני והיסטורי – לפעמים הוא נמצא ממש מתחת לרגליים, בשבילים שעוברים לצד שכונות מגורים מוכרות.</p>
+      <p>הטיול יוצא ליער שבקריית אתא, אבל לפני שנכנסים לשבילים עצמם, כדאי להכיר את שמו של המקום. במשך תקופה נקרא האזור "כפר עטה", ומאוחר יותר נדרש שינוי לשם מדויק יותר, וכך הפך בהדרגה לקריית אתא של היום.</p>
+      <p>הרב הראשון של היישוב כתב באחד ממכתביו משפט מרגש: "השם יתברך הושיע לנו להתיישב מחדש באדמת קודש בכפר עטא". הוא קרא למקום "אדמת קודש" מפני שהבין שהוא שוכן בקרבת מקום ישיבת הסנהדרין בעיר העתיקה אושה, שהייתה בעבר מרכז רוחני חשוב לעם ישראל. מתוך ההכרה הזאת הוא ראה בזכייתו להתיישב כאן זכות גדולה, לא עניין טכני של מקום מגורים.</p>
+      <p>המכתב הזה עצמו נכתב בהקשר צדדי – לגבי תלמיד שלו שהיה גר במקום – ולא כמסר ציבורי מכוון. ובכל זאת, המשפט הקטן הזה, שנכתב בלי כוונה להשפיע על אף אחד חוץ מהנמען הפרטי, נשאר ברשומות ומגלה לנו היום דרך הסתכלות שלמה על המקום הזה, דרך עינו הרגישה של אדם אחד שראה קדושה היכן שאחרים ראו רק שם של כפר.</p>
+      <p class="bold-para">המסלול שמוביל מאבן השבת ועד קבר רבי יהודה בן בבא מתאים לכל גיל, ואפשר לעבור אותו גם ברגל וגם בלי רכב פרטי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדמת קודש</div>
+      <h3 class="story-title">🏺 הסוד שנגנז 2000 שנה ונתגלה בחפירה</h3>
+      <p>בצד אחד של הדרך, בגבעת אושה העתיקה, יש תגלית מרתקת. לפני כמה עשרות שנים חפרו שם וגילו שפע עצום של מקוואות וגתות (מתקני בד לייצור יין או שמן), כל אחת צמודה למקווה טהרה. לשם מה היו צריכים כל כך הרבה מקוואות במקום הזה, שאינו בית מקדש?</p>
+      <p>התשובה, שמופיעה בגמרא, היא שבאושה לאחר החורבן התיישבו תנאים שהקפידו לאכול חולין על טהרת הקודש – כלומר, שמרו על דרגת טהרה שנדרשה בעבר רק לאכילת קודשים בבית המקדש, אף שהוא כבר לא היה קיים. יש הסברים שונים לכך: חלק רצו לזכור את הבית, וחלק רצו לשמר את אווירת הקדושה שבמקום.</p>
+      <p>הגילוי המרתק ביותר: מסתבר שאותו רב ראשון שקרא למקום "אדמת קודש" כתב כך כעשרים שנה לפני שהגילוי הארכיאולוגי הזה אושש בפועל שתנאים אכן שמרו שם על טהרה מיוחדת. כלומר, הוא קלע בדיוק לאמת ההיסטורית בלי שהיה לו שום ביסוס ארכיאולוגי לכך, רק מכוח המסורת שהכיר, מסורת שעברה מדור לדור בלי להיכתב באף מקור רשמי שהיה ידוע אז.</p>
+      <p class="bold-para">חקלאים ישנים גילו בחפירה ארכיאולוגית עשרות מקוואות וגתות, ואלו אימתו שבאזור חיו תנאים ששמרו על טהרה מיוחדת אחרי חורבן הבית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אדמת קודש</div>
+      <h3 class="story-title">🕯️ אדמור ניצול שואה מגיע ומחדש את השם</h3>
+      <p>השם "אדמת קודש" לא נשאר בשימוש רציף: תוך כעשר שנים מאז נקבע לראשונה, ועדה רשמית קבעה שהשם אינו תקני, וכפר עטא הפך בהדרגה לשם אחר. אבל הסיפור לא הסתיים כאן. בשנת תש"ח (1948) הגיע למקום אדמו"ר צעיר מאוד, רק אחרי נישואיו, שהיה אחד השרידים הבודדים שנותרו ממשפחת האדמורים שלו אחרי השואה.</p>
+      <p>בזכות היותו אחד היחידים שנותרו משורש משפחתו, התקבצו אליו חסידים רבים. הוא התיישב כאן, ומכיוון שהבין את משמעות קרבת המקום לאושה העתיקה, חידש בעצמו את השם ההוא – "אדמת קודש" – בכל המסמכים שלו, בלי שידע כלל שהשם הזה היה כבר בשימוש כעשרים שנה קודם לכן, ושבוטל. כך חזר השם לחיים, מתוך אותה כוונה עצמה: הכרה בקדושת המקום.</p>
+      <p class="bold-para">אדמו"ר צעיר, ניצול שואה שנותר כמעט בודד ממשפחתו, הגיע למקום ומחדש את השם "אדמת קודש" כעשרים שנה אחרי שהוא נשכח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ישיבת אושה</div>
+      <h3 class="story-title">📖 אחרי השמד, מתכנסים כולם מחדש</h3>
+      <p>המדרש מספר: "בשעת השמד, נתכנסו רבותינו לאושה: רבי יהודה, ורבי נחמיה, ורבי מאיר, ורבי יוסי, ורבי שמעון בר יוחאי, ורבי אלעזר בנו של רבי יוסי הגלילי. שלחו לזקני הגליל: כל מי שלמד – יבוא וילמד, וכל מי שלא למד – יבוא וילמד". זה היה מיד לאחר התקופה הקשה של גזרות השמד שבאו בעקבות מרד בר כוכבא.</p>
+      <p>התמונה שמצטיירת כאן היא תמונה של תחייה אחרי משבר. כל מערך הלימוד הקודם התפרק, חלק מהחכמים נספו, וכל מה שנשאר היה צריך להתחיל מחדש. במקום להתייאש, חכמי הדור פתחו ישיבה חדשה, במקום חדש, ופתחו אותה לכולם – למי שלמד כבר ורוצה להמשיך, ולמי שלא התחיל ללמוד בכלל.</p>
+      <p>המיוחד במקום הזה הוא שרבי שמעון בר יוחאי לא רק עבר בו, ולא רק גר בו תקופה מסוימת. הוא קיבל במקום הזה, בפועל, את סמכותו התורנית. התקופה שישב כאן, ופתח ישיבה, היא התקופה שבה הוא עצמו נבנה כתלמיד חכם בעל שיעור קומה.</p>
+      <p>זו הסיבה שהטיול נקרא "רשב"י בשבילי כפר אתא" – לא רק כסיסמה נחמדה, אלא כתיאור מדויק: כאן, במקום הזה, בשבילים האלה, הלך רשב"י בעצמו, למד, ולימד, ובנה את מה שהוא עתיד להיות. מי שמהלך היום באותם שבילים, יכול לחוש שהוא לא רק מטייל בטבע, אלא גם הולך בעקבות צעדים ממשיים של אחד מגדולי התנאים, באותה אדמה עצמה.</p>
+      <p class="bold-para">אחרי גזרות השמד שבאו בעקבות מרד בר כוכבא, התכנסו חכמי הדור באושה ופתחו ישיבה חדשה לכל מי שרוצה ללמוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ישיבת אושה</div>
+      <h3 class="story-title">🚪 ישיבה פתוחה, בלי מבחני כניסה</h3>
+      <p>יש לשים לב לניסוח המדויק של הקריאה שנשלחה לזקני הגליל: "כל מי שלמד – יבוא וילמד, וכל מי שלא למד – יבוא וילמד". אין כאן שום תנאי קבלה, שום מבחן, שום הבחנה בין מי שכבר הישג ומי שלא. הישיבה שנפתחה באושה הייתה פתוחה לכל מי שרוצה להיכנס לעולם התורה, ממש מאותו מקום שהוא נמצא בו.</p>
+      <p>המסר שעולה מכך הוא מסר שחורג מהנסיבות ההיסטוריות הספציפיות: אחרי משבר קשה, הדרך הנכונה להתאושש אינה לסגור את השערים ולהתכנס רק עם מי שכבר השקיע, אלא להרחיב את הפתח ולהזמין כל מי שמוכן להתחיל, מכל נקודה שהוא נמצא בה. זו בעצמה דרך התמודדות עם משבר שראוי ללמוד ממנה בכל דור.</p>
+      <p class="bold-para">הקריאה 'כל מי שלמד יבוא וילמד, וכל מי שלא למד יבוא וילמד' מגלה ישיבה שלא ביקשה הישגים קודמים, אלא פתחה את דלתותיה לכל יהודי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חמישה תלמידים ואבן השבת</div>
+      <h3 class="story-title">👥 חמישה תלמידים שאיש לא ציפה להם</h3>
+      <p>בתוך אותה תקופה קשה, אחרי שישיבתו הגדולה של רבי עקיבא כולה נספתה, הוא לא נשבר והתחיל מחדש עם קבוצה קטנה של תלמידים צעירים מאוד, חסרי שם וניסיון, שהיו רק בתחילת דרכם. אחד מהם, למשל, היה בחור צעיר בשם רבי מאיר – שם שעדיין לא נשא את התואר "בעל הנס" שהוא יכיר אותו בעתיד.</p>
+      <p>רבי עקיבא לימד אותם מהתחלה, בנה אותם צעד אחר צעד, אבל הוא עצמו לא האריך ימים מספיק כדי להסמיך אותם בעצמו. כשהגיע הזמן שהתלמידים האלה ראויים לסמיכה – למעמד הרשמי שמאפשר לפסוק הלכה, כולל בדיני נפשות – רבם המקורי כבר לא היה בין החיים, והם נצרכו לפנות למישהו אחר שיסמיך אותם.</p>
+      <p class="bold-para">אחרי שישיבת רבי עקיבא התפרקה, הוא פתח מחדש עם קבוצה של תלמידים צעירים לחלוטין, חסרי שם, שהיו עתידים להיות גדולי הדור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חמישה תלמידים ואבן השבת</div>
+      <h3 class="story-title">🔑 סמיכה: לא רק תעודה, אלא כוח של ממש</h3>
+      <p>חשוב להבין מה המשמעות של סמיכה בתקופה הזאת. היא לא הייתה ניירת פורמלית, אלא הענקת כוח הלכתי ממשי: הסמכות להכריע בהלכה, ואפילו בדיני נפשות ובענייני ממון מורכבים. מי שקיבל סמיכה כזאת מראשו, מתלמיד חכם מוסמך, יכול היה להמשיך ולהעמיד תלמידים משלו ולהעניק להם בעצמו את אותה סמכות, וכך להבטיח שהשלשלת לא תיקטע גם בדורות הבאים אחריו.</p>
+      <p>חמשת התלמידים האלה פנו אל רבי יהודה בן בבא, תלמיד חכם מוסמך ובעל מעמד, וביקשו שיסמיך אותם. לא היה להם רב אחר שיכול לעשות זאת באותם ימים קשים, אחרי שישיבתם המקורית התפרקה. הם הבינו שבלי הסמיכה הזאת, כל מה שהם למדו במשך שנים לא יוכל להתגלגל לדורות הבאים בצורה הלכתית מחייבת, ולכן ראו בה עניין קיומי ולא רק עניין של כבוד או תואר.</p>
+      <p class="bold-para">סמיכה הייתה מעניקה לתלמיד חכם כוח הלכתי עצום, לפסוק הלכה ואף דיני נפשות, ולא הייתה דבר של מה בכך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חמישה תלמידים ואבן השבת</div>
+      <h3 class="story-title">🚫 הגזרה הרומית ומה שהיא ביקשה להשמיד</h3>
+      <p>הרומאים הבינו היטב מה המשמעות של רצף הסמיכה: הוא מה שמאפשר להעביר את התורה מדור לדור, בלי הפסקה. לכן הם גזרו גזרה קשה מאוד: כל מי שיסמיך – יהרג, וכל מי שייסמך – גם הוא יהרג. אבל הם לא הסתפקו בזה: הם קבעו שגם העיר שבה תתבצע הסמיכה תיחרב כולה, וגם כל האזור שבתוך תחום אותה עיר יושמד, בלי יוצא מן הכלל, כדי שאיש לא יהין לסייע לטקס כזה בתוך תחומו.</p>
+      <p>המטרה הרומית הייתה ברורה: לא רק להרתיע את תלמידי החכמים עצמם מלקבל סמיכה במחיר חייהם, אלא גם להרתיע כל עיר וישוב מלהרשות קיום טקס כזה בתחומם, מחשש שהעיר כולה תיחרב בעקבות כך. כך רצו הרומאים לכרות באופן יסודי את שלשלת מסירת התורה שבעם ישראל.</p>
+      <p class="bold-para">הרומאים גזרו שכל מי שיסמיך או ייסמך יומת, וגם מקום הסמיכה כולו יחרב – כדי לכרות את שלשלת מסירת התורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חמישה תלמידים ואבן השבת</div>
+      <h3 class="story-title">🪧 סמיכה בלי עיר, בלי תחום, בלי סיכון לאחרים</h3>
+      <p>רבי יהודה בן בבא והתלמידים מצאו פתרון חכם: לקיים את טקס הסמיכה במקום שאינו בתוך תחום של אף עיר – לא בתחום אושה, ולא בתחום שפרעם. כך, גם אם הרומאים יתפסו אותם ויממשו את הגזרה, לא תהיה עיר אחת שתיענש בחורבן בגינם, מפני שהמקום לא נמצא בתחום השבת של אף עיר.</p>
+      <p>סמוך למקום הזה נמצאה בעבר אבן עתיקה, שעליה חרוטות אותיות שחוקרים מזהים כרמז למילה "שבת" – כלומר, אבן שסימנה את תחום השבת של העיר אושה, הגבול שמעבר לו לא היה מותר ללכת בשבת מהעיר. השערת החוקרים היא שבדיוק מעבר לאבן הזאת, בנקודה שבין שני התחומים, רבי יהודה בן בבא הסמיך את התלמידים.</p>
+      <p class="bold-para">רבי יהודה בן בבא בחר במקום שנמצא מעבר לתחום שתי ערים, כך שהסמיכה לא תסכן אף יישוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חמישה תלמידים ואבן השבת</div>
+      <h3 class="story-title">📏 מה זה תחום שבת, ולמה זה חשוב כאן</h3>
+      <p>בשבת אסור ליהודי לצאת מעבר ל-2000 אמה מחוץ לעיר מושבו. אבל מדידת הגבול הזה אינה פשוטה: צריך לרבע את העיר – כלומר, לצייר עליה ריבוע הלכתי מדויק – ורק אז למדוד את 2000 האמות מקצות הריבוע. זו מלאכה שדורשת ידע הלכתי מדויק, ולא כל אחד יכול לקבוע אותה בעצמו.</p>
+      <p>הדיוק הזה הוא שהפך את תחום השבת למדד שימושי לתלמידי רבי עקיבא: הם ידעו למדוד בדיוק איפה נגמר תחום העיר אושה, ואיפה מתחיל תחום העיר השכנה, ומצאו רצועה ביניהם שלא נכנסת בתחום אף אחת מהן – ושם, בדיוק, קיימו את הסמיכה המסוכנת. כלומר, הם לא רק ברחו באופן גופני אל מקום מבודד, אלא השתמשו בידע הלכתי מדויק כדי לבחור את המקום הבטוח ביותר שאפשר למצוא.</p>
+      <p class="bold-para">תחום שבת הוא הגבול שמעבר לו אסור ללכת בשבת, ומדידתו דורשת ידע הלכתי מדויק בריבוע העיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חמישה תלמידים ואבן השבת</div>
+      <h3 class="story-title">🌱 רבי מאיר, לפני שהיה בעל הנס</h3>
+      <p>אחד מחמשת התלמידים שרבי עקיבא לימד מחדש, ושבסוף הגיעו לסמיכה במקום הזה, הוא רבי מאיר – שם שמוכר לכולנו היום בתור "רבי מאיר בעל הנס", אחד מגדולי התנאים שדבריו ממלאים את המשנה. אבל באותה תקופה, כשהוא הגיע לרבי עקיבא, הוא היה רק עוד בחור צעיר, חסר שם וניסיון, אחד מתוך קבוצה קטנה שאיש לא ידע מה יצא ממנה.</p>
+      <p>זה מלמד יסוד חשוב: גדולי הדורות שאנחנו מכירים בשמם ובתורתם, לא נולדו גדולים. הם היו בשלב מסוים תלמידים צעירים וחסרי שם, שישבו ולמדו בסבלנות, בתוך קבוצה קטנה, במקום לא מרכזי, בלי לדעת שהם עתידים להיות מגדולי התורה שבעם ישראל. ההתמדה הפשוטה בלימוד, יום אחר יום, היא שהביאה אותם לאן שהגיעו, ולא שום כישרון מיוחד שבלט מראש לעיני הסובבים אותם.</p>
+      <p class="bold-para">אחד מחמשת התלמידים שנסמכו באותו מקום הוא רבי מאיר, שבתקופה הזאת היה עדיין בחור צעיר חסר שם, לפני שהפך לאחד מגדולי התנאים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ללמוד בדרך</div>
+      <h3 class="story-title">🌀 למה אין בזוהר ישיבת קבלה</h3>
+      <p>נקודה מעניינת שראוי להתעכב עליה: ספר הזוהר, שמלא בתורתו המיסטית והקבלית של רבי שמעון בר יוחאי וחבריו, אינו מתאר אותם לומדים בבית מדרש או בישיבה קבועה. כל סיפוריו מתארים אותם הולכים בדרכים – בין טבריה לציפורי, ובין שאר מקומות בארץ – ולומדים זה עם זה בדרך, פוגשים אנשים, ומגלים תורות חדשות באקראיות של המסע.</p>
+      <p>זה הבדל גדול מהישיבה באושה, שבה עסקו בלימוד הפשט – הלכות ומשניות, מה שנקרא היום לימוד "ישיבתי" רגיל, עם סדר קבוע, חברותות ובית מדרש של ממש. תורת הסוד, לעומת זאת, כפי שהיא מתוארת בזוהר, לא התלמדה בשום מסגרת קבועה כזאת. השאלה המתבקשת היא: למה, אם תורת הסוד חשובה לפחות כמו תורת הפשט, היא לא זכתה למסגרת לימוד מסודרת באותה מידה?</p>
+      <p class="bold-para">כל סיפורי הזוהר מתארים את רבי שמעון בר יוחאי וחבריו הולכים בדרכים, לא יושבים בישיבה – וזה בעצמו מלמד יסוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ללמוד בדרך</div>
+      <h3 class="story-title">🛤️ השכינה בגלות נמצאת על הדרך</h3>
+      <p>ההסבר שהובא בטיול הוא עמוק: אחרי חורבן בית המקדש, השכינה עצמה נמצאת בגלות, ואין לה בית קבוע. כשהשכינה נמצאת בגלות, היא שרויה, כביכול, על הדרך – לא במקום מסודר אחד. מי שרוצה לפגוש אותה, ולגלות תורת סוד שמתגלה דווקא ממנה, חייב לפגוש אותה דווקא בדרך, ולא בבית מדרש קבוע וסגור.</p>
+      <p>זו הסיבה שחברת רשב"י בזוהר תמיד "הולכת בדרך": הם לא יכולים לבנות בית מדרש לתורת הסוד, כי תורת הסוד עצמה שייכת למצב של גלות ונדודים. הלימוד שלהם משקף בדיוק את המצב הרוחני של השכינה בזמן הזה – נמצאת איננו יודעים היכן, מתגלית פתאום, בדרכים, אצל אנשים אקראיים, ברגעים לא מתוכננים.</p>
+      <p>יש כאן גם מענה לשאלה למה, בניגוד ללימוד הפשט שנעשה באושה במסגרת מסודרת, אין לתורת הסוד שום מסגרת כזאת בכל ספר הזוהר, אפילו לא רמז לבית מדרש קבוע. ההסבר התורני שהובא הוא שזה לא מקרה או חסר תכנון, אלא ביטוי מדויק למצבה הרוחני של השכינה בתקופה שאחרי החורבן, הנודדת עם עם ישראל ברחבי הארץ.</p>
+      <p class="bold-para">לאחר חורבן הבית השכינה עצמה נמצאת בגלות ובדרך, ומי שרוצה לפגוש אותה חייב לפגוש אותה דווקא בדרך, ולא במקום קבוע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ללמוד בדרך</div>
+      <h3 class="story-title">🚶 חברותא שאינה יושבת במקום אחד</h3>
+      <p>תכונה בולטת בסיפורי הזוהר היא שחברת רשב"י, כשהם הולכים בדרך, לא רק לומדים זה עם זה, אלא פוגשים לאורך הדרך אנשים זרים – זקנים, ילדים, סוחרים – ודווקא מתוך אותם מפגשים אקראיים מתגלות תורות עמוקות ומפתיעות. הדרך אינה רק אמצעי מעבר ממקום למקום, אלא מקום שבו הדברים הסמויים דווקא מתגלים.</p>
+      <p>זה ההבדל המובהק בין לימוד בישיבה קבועה, שבו יודעים מראש איזה חומר ילמדו ובאיזה סדר, לבין לימוד "בדרך", שבו הסקרנות וההפתעה הן חלק מהותי מהתורה עצמה. אפשר לראות בכך גם מסר לדורנו: לפעמים הגילויים הרוחניים הגדולים ביותר לא מגיעים במסגרת מתוכננת, אלא דווקא ברגעים הפתוחים, הלא-מתוכננים, של החיים, כשהאדם פתוח ומוכן לקבל מה שיבוא לפניו.</p>
+      <p class="bold-para">סיפורי הזוהר מתארים חברת לומדים שלא פוגשת רק זה את זה, אלא פוגשת אנשים זרים בדרך, ומגלה תורה דווקא מתוך המפגשים האקראיים האלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ללמוד בדרך</div>
+      <h3 class="story-title">🧭 המסע עצמו הוא הלימוד, ולא רק המסגרת שסביבו</h3>
+      <p>אפשר לחדד את הנקודה כך: בכל מסגרת לימוד אחרת, הדרך היא טפלה, וההישג האמיתי קורה כשמגיעים ליושבים וללימוד המסודר. בחברת הזוהר, ההפך הוא הנכון: הדרך עצמה היא זירת הלימוד. אין נקודת סיום שאליה הם ממהרים כדי להתחיל ללמוד – הלימוד קורה כל הזמן, בכל רגע של ההליכה.</p>
+      <p>זה מתכתב יפה גם עם הטיול עצמו, שמוקדש לאותם שבילים: המטייל שמהלך בשבילים האלה ולומד את ההיסטוריה שלהם, את הסיפורים שקרו בהם, ואת היסודות התורניים שעומדים מאחוריהם, בעצם ממשיך משהו מאותה שיטת לימוד עתיקה – ללמוד מתוך ההליכה עצמה, ולא רק מתוך הכיתה. יש בכך גם עצה מעשית למי שמתקשה להתרכז בלימוד יושב: לפעמים דווקא השינוי במקום, היציאה אל הטבע והדרך, הוא שמעורר את הלב ללמוד ולהתעניין מחדש.</p>
+      <p class="bold-para">בחברת הזוהר הדרך עצמה היא זירת הלימוד, לא רק אמצעי להגיע ממקום שיושבים בו למקום אחר שיושבים בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העז שעלתה לדיון הלכתי</div>
+      <h3 class="story-title">🐐 חסיד שגונח בלבו, וחלב חם שמרפא אותו</h3>
+      <p>הגמרא מספרת מעשה בחסיד אחד – ולדעת רוב המפרשים, זהו רבי יהודה בן בבא עצמו – שהיה גונח בלבו, חולה בכאב לב. שאלו לרופאים, והם אמרו שאין לו תקנה אלא אם ינק חלב רותח, חם, משחר לשחר, כלומר בכל בוקר מחדש. הביאו לו עז, קשרו אותה לכרעי מיטתו, והיה ינק ממנה חלב חם בכל בוקר, כפי שהורו הרופאים.</p>
+      <p>ימים אחר כך נכנסו תלמידי חכמים לבקרו, ומשראו את העז קשורה לכרעי המיטה, חזרו לאחוריהם ואמרו: "לסטים מזוין יש בתוך ביתו של זה, ואנו ניכנס אצלו?!" – כלומר, הם חשבו שהעז עצמה היא מעין "נשק" שמפר הלכה, ולא היו מוכנים להיכנס לביקור בביתו, מתוך הנחה מוקדמת שאיש כזה אינו עוד תלמיד חכם שאפשר לבקר אותו כראוי.</p>
+      <p>התלמידים חששו מהעז מפני שחז"ל תיקנו תקנה חריגה: "אין מגדלים בהמה דקה בארץ ישראל" – איסור לגדל עיזים ושאר בהמה דקה בשטחי ארץ ישראל. הטעם: בהמות כאלה אוכלות כל צמח שבדרכן, כפי שראו בעיניים גם בשטח הטיול עצמו, ועלולות לפגוע בשדות ובנחלאות של אחרים, ללא פיקוח.</p>
+      <p>הגמרא מספרת שבבדיקה שנעשתה אחרי מיתתו של אותו חסיד, לא נמצא בו שום עוון, מלבד עצם גידול העז הזאת, שעברה על התקנה. ולדעת חלק מהמפרשים, הוא אמר בסוף ימיו: "יודע אני בעצמי שאין בי עוון, אלא אותה העז, שעברתי בה על דברי חברי".</p>
+      <p class="bold-para">חסיד אחד חלה בלבו, ורופאיו אמרו שהתרופה היחידה היא חלב עיזים חם, שינק אותו ישירות מן העז.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העז שעלתה לדיון הלכתי</div>
+      <h3 class="story-title">🕊️ סוף המעשה: מיתה על קידוש התורה</h3>
+      <p>המדרש מספר שכאשר הרומאים התקרבו לגלות את מקום הסמיכה, התלמידים שנסמכו ברחו להציל את חייהם, שכן הסמיכה כבר הושלמה, והם לא היו עוד חייבים להישאר במקום. אבל רבי יהודה בן בבא עצמו, המסמיך, לא היה מסוגל לברוח במהירות הנדרשת, ולמרות זאת נשאר במקומו ולא נטש את התלמידים באמצע התהליך, עד שהשלים את מה שהתחיל.</p>
+      <p>הרומאים תפסו אותו במקום ההוא, והוא נהרג על קידוש התורה, כקרבן על מצוות מסירת השלשלת שלא תיפסק. הוא נקבר, לפי המקום שהראו לנו בטיול, באזור שפרעם, קילומטרים אחדים ממקום הסמיכה עצמה. יש הסוברים שהמרחק בין מקום הסמיכה למקום הקבורה מלמד שהתלמידים, או אנשים אחרים, זיהו וקברו אותו היטב אחרי מעשהו, גם אם לא בדיוק באותה נקודה שבה נתפס.</p>
+      <p class="bold-para">רבי יהודה בן בבא לא נמלט כשהגיע הרגע הקריטי, ונותר כדי להשלים את הסמיכה, ושילם על כך בחייו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העז שעלתה לדיון הלכתי</div>
+      <h3 class="story-title">🔍 שני פירושים למה שהתלמידים כעסו עליו</h3>
+      <p>המפרשים התקשו: הרי היה כאן פיקוח נפש ברור – רופאים אמרו שרק חלב חם יציל אותו! איך אפשר לכעוס עליו שעבר על תקנת חכמים, אם מדובר בהצלת חייו? הובאו שני כיוונים לביאור הכעס. הראשון: שלדעת חלק מהמפרשים, אדם בדרגתו היה צריך לבטוח בה' ולא להזדקק לרפואה טבעית בכלל, אלא לסמוך על נס, ולכן התלמידים כעסו שהוא בחר ברפואה ולא בביטחון מלא.</p>
+      <p>הכיוון השני, שמובא בספר חסידים, שונה לגמרי: אין כאן שום בעיה בעצם הסתמכות על פיקוח נפש – זה מותר לגמרי. הבעיה היא חילול השם: מי שרואה עז קשורה בבית, ולא יודע שיש כאן היתר הלכתי מלא מטעמי פיקוח נפש, עלול לחשוב שתלמיד חכם מפר בפרהסיה תקנת חכמים, וזה עצמו עלול לגרום לאחרים לזלזל בהלכה. על כן, מציע הספר, היה ראוי להסתיר את העז, ולא להציגה בפומבי, כדי שלא ילמדו ממנו קולא בטעות.</p>
+      <p class="bold-para">המפרשים נחלקו אם הכעס היה על עצם הסתמכות על נס (ולא על רפואה טבעית), או מחשש לחילול השם אם יחשבו שהוא עובר במזיד על ההלכה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העז שעלתה לדיון הלכתי</div>
+      <h3 class="story-title">🗿 המדרש שמשלים את החידה</h3>
+      <p>המפרשים מתמודדים עם שאלה גיאוגרפית מעניינת: אם הסמיכה בוצעה בנקודה שבין תחומי אושה ושפרעם, ורבי יהודה בן בבא קבור, לפי המקום שמזוהה היום, במרחק של כמה קילומטרים משם, איך זה מתיישב עם המדרש שמתאר אותו נתפס ונהרג כמעט במקום? יש מי שמציע שתחום העיר שפרעם היה בעבר רחב יותר ממה שהוא נראה כיום, ולכן מקום הסמיכה היה בעצם קרוב הרבה יותר לגבולה הקדום.</p>
+      <p>הסבר נוסף, שאינו סותר את הראשון אלא מצטרף אליו: אולי רבי יהודה בן בבא, אחרי שנתפס, עדיין הצליח לנוע כברת דרך קצרה, או שאלה שבאו לקוברו העבירו את גופתו למקום שנחשב להם מתאים יותר, קרוב לריכוז יהודי שהיה פעם בשפרעם עצמה. בכל אופן, המרחק הקטן בין המקומות אינו סותר את עיקר הסיפור, אלא רק מעמיד שאלה גיאוגרפית פתוחה שאין לה הכרעה חדה.</p>
+      <p class="bold-para">לפי אחד המדרשים, רבי יהודה בן בבא נהרג דווקא במקום שבו נסמכו תלמידיו, ולא כפי שסברו רבים, מרחק רב מהמקום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העז שעלתה לדיון הלכתי</div>
+      <h3 class="story-title">🐑 כבשים מותר, עיזים אסור</h3>
+      <p>נקודה שהועלתה בטיול, מתוך התבוננות במראה שהיה לנגד העיניים בשטח עצמו: לא כל בהמה דקה שווה בחומרת האיסור. עדר עיזים שנצפה במהלך הטיול נראה מכרסם בקליפות העצים הסובבים, ולא רק באדמה ובעשבים שמסביב. זו בדיוק הבעיה שחז"ל חששו ממנה כשגזרו את האיסור על גידול בהמה דקה: הרס שדות וגנים, בעיקר על ידי עיזים ותיישים.</p>
+      <p>כבשים, לעומת זאת, נוהגות לאכול בעיקר עשבים ולא עצים ממש, ולכן יש מקום לדיון הלכתי נפרד לגביהן, שאינו דומה בהכרח לדיון על עיזים. גם כאן, כמו בשאלת ה"רוב" וה"כלל ישראל" שראינו בעניינים אחרים, ההלכה אינה מסתפקת בהגדרה גורפת אחת, אלא בוחנת כל מקרה לפי מהותו המדויקת.</p>
+      <p class="bold-para">ההבדל בין עיזים לכבשים בשאלת גידול בהמה דקה בארץ ישראל נעוץ בהרגל האכילה של כל מין: עיזים נוהגות לכרסם עצים, וכבשים בעיקר עשבים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העז שעלתה לדיון הלכתי</div>
+      <h3 class="story-title">🪨 לקח לסיום: מקום אחד, שלוש שכבות של אמת</h3>
+      <p>הטיול הזה מראה דבר מעניין: שטח קטן יחסית, שאפשר לעבור אותו בהליכה של פחות משעה, מכיל בתוכו שלוש שכבות שונות של סיפור תורני: אבן שמסמנת גבול הלכתי של תחום שבת, סיפור מסירות נפש של סמיכת תלמידים במחיר החיים, וסיפור הלכתי מורכב על עז, חלב, ופיקוח נפש. כל שכבה כזאת, בפני עצמה, מספרת פרק אחר ושונה בתולדות עם ישראל, ובכל זאת שלושתן שוכנות זו לצד זו, במרחק הליכה קטן, ממש מתחת לכביש שרבים חולפים עליו מדי יום ברכבם הפרטי, בדרכם לעבודה בכל יום ויום, בלי לדעת כלל ועיקר מה טמון עמוק ממש מתחתיהם.</p>
+      <p>המסר שמסתתר מאחורי כל זה הוא שאין דבר כזה "שטח ריק" בארץ ישראל. כל פיסת קרקע נושאת בתוכה היסטוריה, אם רק עוצרים לשאול מה קרה כאן. זו בעצם אותה נקודה שנפתח בה הטיול, כשדובר על הכלי יקר וערך הראייה של ארץ ישראל: מי שרואה בעיניים פקוחות, ולא רק עובר דרך המקום בלי לשים לב, זוכה לקניין רוחני שאין לו תחליף, ומרגיש שהוא חלק ממשי משרשרת היסטורית שלא נפסקה.</p>
+      <p class="bold-para">אבן השבת, סמיכת התלמידים, והעז שבבית החסיד – שלושה סיפורים שונים שנשזרים בשטח קטן אחד, ומלמדים ששום פיסת קרקע אינה 'סתם שטח'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העז שעלתה לדיון הלכתי</div>
+      <h3 class="story-title">⚖️ האם האיסור עדיין קיים היום</h3>
+      <p>השולחן ערוך פוסק שבזמננו, כשרוב השדות בארץ ישראל שייכים לגויים ולא ליהודים, מותר לגדל בהמה דקה, כי אין כאן חשש פגיעה בשדות של יהודים. אבל מאז חזרו יהודים רבים והתיישבו בארץ ישראל וקנו שדות, יש מחלוקת בין הפוסקים אם האיסור חוזר לתוקפו, או שעדיין נשאר ההיתר שנקבע בשולחן ערוך.</p>
+      <p>יש מהפוסקים שמחמירים ויש שמקילים, ויש הבדל גם בין גידול עיזים לגידול כבשים, שאינם אוכלים עצים באותה מידה. הטיול הזכיר את השאלה כפתוחה, ולא הכריע בה סופית – אבל הדגיש שהיא ממחישה כיצד שאלה הלכתית שהתעוררה לפני כאלפיים שנה, סביב אירוע כמעט שולי לכאורה, יכולה להישאר רלוונטית ונדונה גם בדורנו, בשינוי הנסיבות של חזרת עם ישראל לארצו.</p>
+      <p class="bold-para">האיסור לגדל בהמה דקה בארץ ישראל שרוי במחלוקת פוסקים גם בזמננו, ומכיל שאלות הלכתיות פתוחות שלא הוכרעו באופן אחיד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/-NBson3uDvE · 2024-05-29 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"אדמת קודש","icon":"🏞️","color":"#c62b6b","stories":[{"id":1,"title":"לפני שמתחילים: טיול שאפשר כמעט לכולם","icon":"🚶"},{"id":2,"title":"הסוד שנגנז 2000 שנה ונתגלה בחפירה","icon":"🏺"},{"id":3,"title":"אדמור ניצול שואה מגיע ומחדש את השם","icon":"🕯️"}]},{"id":2,"name":"ישיבת אושה","icon":"📖","color":"#6d28d9","stories":[{"id":4,"title":"אחרי השמד, מתכנסים כולם מחדש","icon":"📖"},{"id":5,"title":"ישיבה פתוחה, בלי מבחני כניסה","icon":"🚪"}]},{"id":3,"name":"חמישה תלמידים ואבן השבת","icon":"⚜️","color":"#e08e00","stories":[{"id":6,"title":"חמישה תלמידים שאיש לא ציפה להם","icon":"👥"},{"id":7,"title":"סמיכה: לא רק תעודה, אלא כוח של ממש","icon":"🔑"},{"id":8,"title":"הגזרה הרומית ומה שהיא ביקשה להשמיד","icon":"🚫"},{"id":9,"title":"סמיכה בלי עיר, בלי תחום, בלי סיכון לאחרים","icon":"🪧"},{"id":10,"title":"מה זה תחום שבת, ולמה זה חשוב כאן","icon":"📏"},{"id":11,"title":"רבי מאיר, לפני שהיה בעל הנס","icon":"🌱"}]},{"id":4,"name":"ללמוד בדרך","icon":"🌀","color":"#1e88b8","stories":[{"id":12,"title":"למה אין בזוהר ישיבת קבלה","icon":"🌀"},{"id":13,"title":"השכינה בגלות נמצאת על הדרך","icon":"🛤️"},{"id":14,"title":"חברותא שאינה יושבת במקום אחד","icon":"🚶"},{"id":15,"title":"המסע עצמו הוא הלימוד, ולא רק המסגרת שסביבו","icon":"🧭"}]},{"id":5,"name":"העז שעלתה לדיון הלכתי","icon":"🐐","color":"#c62b6b","stories":[{"id":16,"title":"חסיד שגונח בלבו, וחלב חם שמרפא אותו","icon":"🐐"},{"id":17,"title":"סוף המעשה: מיתה על קידוש התורה","icon":"🕊️"},{"id":18,"title":"שני פירושים למה שהתלמידים כעסו עליו","icon":"🔍"},{"id":19,"title":"המדרש שמשלים את החידה","icon":"🗿"},{"id":20,"title":"כבשים מותר, עיזים אסור","icon":"🐑"},{"id":21,"title":"לקח לסיום: מקום אחד, שלוש שכבות של אמת","icon":"🪨"},{"id":22,"title":"האם האיסור עדיין קיים היום","icon":"⚖️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
