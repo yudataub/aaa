@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 הדרכה מעשית</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 הדרכה מעשית</h1>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ הדרכה מעשית" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/emAseneDgj8?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/emAseneDgj8/hqdefault.jpg" alt="הדרכה מעשית" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=emAseneDgj8" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 שלום לכולם, צהריים טובים</h3>
+      <p>שלום לכולם, צהריים טובים. אני מניחה ש... לא יודעת מה לגבי רמת הסוכה עם כל מה שקורה במקום, אבל אני מניחה שהיכולת לשמור על קשר בוקר כבר לא משהו, נכון? לכן פה... לכן זה בשביל לגוון פה קצת.</p>
+      <p>אז קודם כול, ברוכות וברוכים הבאים! ברוכות וברוכים הבאים לתוכנית מדהימה, מקסימה ומרגשת. אני אפילו חוויתי את זה איתכם. באמת, ראיית הסיפוק הכי גדולה היא נחלת הסטודנטים שנכנסים לבתי ספר ופשוט רואים את הדברים קורים לנגד עיניהם.</p>
+      <p>אה, קוראים לי שירה, אני פסיכולוגית. אה, אני מנחה את התואר השני של פסיכולוגיה... מי שלא מתעניינת, לא רוצים להמשיך בקריירה, לפנות אליי. אבל אה... זה רק באמת אישית. ואני חוקרת עולמות של חוסן אישי. בשנתיים האחרונות, מהיום שהתחילה הפנדמיה... פתאום מסתבר שזה דבר מאוד מאוד מאוד מאוד חשוב ומשמעותי, כי אם תראו כמה זה גדל. אז היום אני עוזרת...</p>
+      <p>ואנחנו... אני מבינה מאוד את ההרגשה של "טוב, למה הסשן הזה תקוע כאן?". כי זה הסשן הכי חשוב! אה, לא בגלל שאנחנו מעבירות אותו, אלא בגלל שהוא פשוט אמור לצייד אתכם בכלי פרקטי. אני מניחה שעד עכשיו באמת הראו לכם הטובים שבטובים, פרופסור אלון... שהוא סיימון ויטמן, והפרופסור נויגבורן שמר, שבאמת שמם הולך לפניהם. אנחנו באות בצורה מאוד מאוד צנועה להציע לכם אה... את הנוצה של דמבו.</p>
+      <p>כמה שם בקהל ראו את דמבו? אוקיי, זה... זה לא כזה דבר טוב, כי דמבו, אולי בגרסה המחודשת שלו עובר פחות... ממה שאני... מה שאני הייתי רואה את דמבו. אני לא יודעת את המסר המקורי, אבל כשהייתי ילדה... כי כל ילדי העולם חטפו חרדת נטישה והלאה, צמיחה פוסט-טראומטית כזאת, אבל לא משנה.</p>
+      <p>הרעיון... דמבו, יש לו אוזניים מאוד מאוד גדולות, ובזכותן מה הוא יכול לעשות? לעוף. אבל מה קורה בתחילת הדרך? הוא לא מאמין בעצמו. בגלל שהוא לא מאמין בעצמו, יש לו כל מיני חברים קטנים שאומרים לו: "תקשיב, הנה נוצה. זו נוצה קסומה. תחזיק אותה בחדק, ו-וואלה, היא מאפשרת לך את אותן יכולות טבעיות". הוא מאמין לזה, והנה זה עובד, הוא גם מצליח לעוף. חיזוק האמונה ביכולת שלו להאמין שהוא מסוגל – זה הרעיון של הנוצה. בסדר? במקום שנציע אותה כמתנת מוצא, כי בעצם כולכם נמצאים כאן בזכות כל מה שאתם יכולים.</p>
+      <p>אז זה כל הרעיון של הנוצה. אנחנו פה כדי להציע לכם את הנוצה הזאת, שבעצם תעזור לכם להיכנס לעניינים. ואמיתי, בדיוק כמו שאתם הולכים לעשות עם הילדים – בסוף הם הולכים לגלות את החוזקות שלהם הם הולכים לגלות, את היכולות שלהם - אפשר כדי... אה... לאפשר. ובנימה קצת יותר קונקרטית, אנחנו בעצם נעזור לכם להגיע להאיך - מחר בבוקר להתחיל לעבוד בכיתה.</p>
+      <p>אוקיי, אז אנחנו נתחיל ככה, בסתכלות מאוד מאוד רחבה על התוכנית עצמה. רגע להבין איך, איך בנינו אותה, כן? מה, לפי איזה עקרונות. יש כאן פריסה מאוד מאוד מפורטת שאתם רצים איתה שנה שלמה. את השנה... להבין איזה תהליך אתם פותחים ביחד, להבין את המבנה של זה וגם פרקטיקה. ואחר כך ממש לעבור מערך אחד - מבחינתנו אתם יוצאים היום עם V על אחד המערכים, אתם מוכנים לאחד המערכים. אוקיי? הוא לא יהיה ראשון, אבל הוא יהיה במעלה הדרך, והוא ממש תוכנית בנויה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 קודם כל, הגענו להציף כל מיני</h3>
+      <p>קודם כל, הגענו להציף כל מיני... אה... שיקולים. אוקיי, מה השיקולים שצפים לנו פה? [...] מישהו אמר לי פה קודם, בסוף השיעור, כאילו: "זה שיעור אקדמי", אז כאילו, בסדר. אז מה הרעיון? אתם בעצם הולכים להגיד:</p>
+      <p>הייתם לאחרונה, נגיד, בבר מצווה או חתונה או כזה, נכון? איך המוזיקה בהתחלה? שקטה כזאת, נכון? בשביל הקבלת פנים וזה. ולאט לאט, אחרי החופה, הדברים מתחילים להתחמם, וגם אז לאט לאט זה... ובסוף בסוף בסוף, כולם נשארים יחפים, עם העניבות, עם הפנסים, כל הדודות רוקדות וזה.</p>
+      <p>אז פה יש לכם שנה כדי לקחת את הילדים, כן? בסדר? אז השנה צריכה להיות דינמית, עם איזושהי דינמיקה כזאת שאתם לוקחים איתכם את הילדים ולא מכניסים אותם למשהו שלא מתאים להם. מה, ישר הרדקור? "בואו נדבר על הטראומות הכי גדולות"? לא, נכון? אז יש את הסיפור הזה שהוא תהליך הדרגתי, אה... וגם לשמור על מתח. כי שנה שלמה, תלמידים - שנה שלמה זה לא פשוט, אתם יודעים בדיוק.</p>
+      <p>העיקרון השני זה השילוב בין תוכן ותהליך. תוכן ותהליך עובדים יחד. מי יודע מה זה תוכן ותהליך? מי למד פה הנחיית קבוצות? מלבד הקבוצות יש את התכנים. איזה תכנים למשל, לדעתכם, מעבירים בשנה הזאת? איך לפתוח את היום? איך לפתוח את היום במשחק. אבל איזה מיומנויות? מה, חוזקות? מה החוזקות שלי? מה עוד? חברות. אילו משאבים יש לי? אילו כוחות יש לי? יש עוד לא מעט תכנים וכלים ומיומנויות שאתם בעצם מטמיעים, מעבירים, מלמדים ומשכללים דרך זה. זה התוכן.</p>
+      <p>אבל יש תהליך. מה זה תהליך? מי שמנחה מבין משהו אחד: איך אתם עושים פה שנה? איך אתם בונים את היחסים עם הילדים האלה לאורך השנה? איך מגבשים קבוצה? אתם עושים עצימת עיניים, מסכמים בסוף השנה, מפרקים את הציפייה... יש לכם מערכים שיש בהם גם את זה. ואיך מפתחים קשר עם הילדים? זה לא רק להנחית להם כל הזמן. כי אתם יודעים מהמחקרים שלנו מה הכי... אבל לפתח קשר זה הדבר היחיד שאפשר... ליצור קשר טוב... [...] אוקיי.</p>
+      <p>הסיפור השני זה באמת תוכן ותהליך, אמרנו. TJA... עבדתם עם... נכון? מה זה? מיומנויות, מודעות לחוסן ומודעות טראומה, נכון? גלי דיברה איתכם על זה. פה בתוכנית אנחנו עושים את זה גם וגם, את השילוב ביניהם. אז כמו שחלק מהדברים... שוב, מה אני עושה כשאני... כן, כשאני במצב סטרס, חרדה או חוסר...</p>
+      <p>איך אני גוזמה את היכולות שלי לעתיד, איך אני מייצרת את החוזקות שלי במודע. והכי חשוב, חבר'ה, ההתאמה ללו"ז השנתי – שלי, שלכם, של מי עוד? של בית הספר. זה גם כתוב בשקף. אוקיי, אז חשוב מאוד לשים לב.</p>
+      <p>אם יש לכם סשן לפני פסח – רגע, בואו נניח ש... אם יש לכם סשן לפני פסח, מה חשוב שיהיה בו? משהו של פסח. אוקיי, משהו של פסח, להתחברות. אוקיי, מה עוד? תחשבו מבחינת התהליך. אנחנו לא נראה אותם עכשיו [...] אנחנו לא נראה אותו עכשיו שבוע. עכשיו משרד החינוך יכול לשנות... מצב בזק. מה צריך לעשות? אנחנו נפרדים מהם עכשיו לכמה שבועות. מה זה, קודם כול? לא נשים משהו חדש. מה עוד? הכנה למה? הכנה לפרידה, וגם... אוקיי, מה אנחנו נותנים להם לעשות עד שחוזרים חזרה מהחופשה? אולי שומרים על קשר, אולי עושים איזשהו סיכום ביניים. שימו לב, אנחנו מסתכלים על שנה שלמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 אם יש משהו בפורים, אז אולי…</h3>
+      <p>אם יש משהו בפורים, אז אולי צריך לעשות מערך שמתאים יותר לפורים. אם אנחנו לקראת חנוכה, מה צריך לעשות? לצאת באורות, נכון? לצאת, לעוף על עצמנו. רק מסופגניות אולי יקיאו מחר בחדר אוכל אם המורים נכנסים... אוקיי, בסדר. אז כל הדברים האלה אנחנו... ובאמת התוכנית בנויה לפי איזשהו ניווט. כן, ניווט. אפרופו עוגן, ניווט בין לבנות את הקבוצה להתחיל לדבר שפת עוגן. מה זה לדבר שפת עוגן? להבין מה זה רגשות. לא שם דבר, חייב כיף כשלעצמו, זהו, אין אין יותר מדי, רק לפתוח את השפה. להגיד שנייה: אם זה מה שאני מרגישה, אולי זאת קנאה? אולי יש פה [...] סורי, אני מנסה שוב להבין את הדבר הזה. להבין מה זה לחץ, להגיד: אוקיי, הרגשתי פחד, מה זה אומר? אוקיי, ואז כלים לוויסות.</p>
+      <p>אז התוכנית באמת נראית בצורה הזאת. יש לנו באמת ממש ככה עולמות תוכן ומערכים של דית... ומה שאנחנו נעשה עכשיו... אוקיי, אתם תראו את זה. עבדנו המון זמן להוריד כלים. כל אחד מכם קיבל לינק. מה זה לינק? קישור. מה זה קישור? גוגל דרייב. בגוגל דרייב לכולכם תהיה תיקייה, ובתוך התיקייה גם ממש מפורט לכם בדיוק בדיוק בדיוק את כל המערכים, וגם ממש את הנשמה [...] וגם תיקיות כל חומרי העזר.</p>
+      <p>עכשיו, מה אתם זוכרים מה אמרתי בהתחלה? מה זה? רק... זו רק הנוצה. כי כל המערכים האלה הם עבורכם בתור משאב. אם אתם רואים שעכשיו, שנייה רגע, לי לא מתאים להעביר את הדבר הזה, כי אני לא בטוחה שמתאים לעצום עיניים בשלב הזה; או: רגע, אין לנו מרחב בחוץ כדי לרוץ ולהשתולל, לא בשעה שבה אני אעבוד, אולי אני צריך לעשות משהו בתוך הכיתה... בסדר, יש כאן המון המון דברים שצריך לקחת אותם בחשבון, וגם מי אתם בתור מנחות בכיתה. בסדר, לכן הדברים האלה זו הנוצה של דמבו, והיא ברשותכם כדי להמשיך לעבוד עם המערכים.</p>
+      <p>מה שנעשה עכשיו, אחרי שדיברנו ממש על התוכנית כולה וקיבלתם פשוט ממש את הלינקים למה שאתם צריכים, זה ממש להתנסות איתכם באחד המערכים. אנחנו ממש נתנסה בעצמנו ואז נתבונן על זה, אוקיי? על איך מתכוננים למערך הזה. ולכן... לא. אז כמו ששירה אמרה, אנחנו הולכים להתנסות כבר במערך, אנחנו נתנסה במערך שנקרא... נקרא פה ג'ייקובסון. זה שיעור 13 בתוכנית, ובחרנו ספציפית את המערך הזה בגלל שיש בו רק</p>
+      <p>שהיא רלוונטית גם לכם, לחיי היומיום שלכם. וכל התוכנית הזאת היא בנויה לזה שאנחנו נהיה אפקטיביים. מה שתעשו – שיהיה לזה רזוננס, וסיפור שחווים – זה משהו שהם יזכרו ואחר כך ייכנסו, וזה שלהם.</p>
+      <p>אז אני רוצה להתחיל בזה שנראה, קחו שאיפה עמוקה. מי שלא יכול לעצום עיניים – שיעצום עיניים. אני רוצה לשאול אתכם: מה מדד הלחץ שלכם בגוף? מה חי עכשיו? איזה מתח יש? תנסו רגע להתבונן בפנים, איזשהו מספר למתח שאתם מרגישים. ברור, לא תצטרכו לשתף בזה, אני רק רוצה שתכתבו את המספר הזה במחברות שקיבלתם.</p>
+      <p>אנחנו הולכים להתנסות במהלך. פתיחה – המורות שבנו את המערך הזה... אבל כל פתיחה, שימו לב, מתחילה באיזשהו משחק פתיחה. אנחנו קוראים לזה "משם לפה". הילדים מגיעים מתוך ההסחה, מתוך התחושות שלהם, מתוך בלגן, מתוך השיעור הקודם, מתוך ילד שאמר להם משהו, מתוך שהיה להם מאוד מאוד מסעיר. פתאום עכשיו רוצים לשבת ולדבר על הרגשות? זה מורכב. לשנייה עוצרים אותם כאן. הם פוגשים את עצמם, הם פוגשים אחד את השני, הם פוגשים אותנו, ורק אז אנחנו יכולים לגשת לתורה.</p>
+      <p>אז זה במשחק ראשון, אתם תראו אותו במערך, זה כמובן מותאם לכמות יותר גדולה של אנשים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 אז מה שאני רוצה לעשות זה…</h3>
+      <p>אז מה שאני רוצה לעשות זה שכל מי שיושב בכיסא זוגי יסתכל ימינה, וכל מי שיושב בכיסא אי-זוגי יסתכל שמאלה – זה הזוג שלכם. כל מי שיושב אי-זוגי יסתכל שמאלה, אי-זוגי שמאלה, ימינה... אוקיי.</p>
+      <p>ומה שאני רוצה שתעשו... מי ששומע אותי שימחא... מי ששומע אותי שימחא כף... מי ששומע אותי שיהיה בשקט. אז בזוגות שלכם, כל אחד בוחר שאלה אחת ויש לו דקה לענות את התשובה הזאתי, ואז השותף שלו בוחר שאלה אחת מתוך ארבע השאלות האלה ועונה עליה, באמת דקה. אז בואו נתחיל, דקה ראשונה, אני אגיד לכם.</p>
+      <p>אוקיי, אז דקה שנייה... [...] אז מעולה. אני רוצה – אנחנו נחזור לשאלה הקודמת שלנו: מה מדד הלחץ שלכם עכשיו? יש כאלה שהאינטראקציה החברתית מורידה להם את הלחץ, יש כאלה שהאינטראקציה החברתית מעלה להם את הלחץ, יש כאלה שזה מרגיע אותם, יש כאלה שזה מלחיץ אותם.</p>
+      <p>אז נלמד לקחת שאיפה, נראה מה קורה בגוף, מה הרמה שלנו עכשיו של המתח באיזשהו מספר. תרשמו גם פה במחברת.</p>
+      <p>ולעבור שנייה לדבר על הרפיית ג'ייקובסון, שפותחה על ידי הפסיכיאטר אדמונד ג'ייקובסון, אחת השיטות הכי מוכרות בעולמות הרפואה והפסיכולוגיה שרוצים להקים קשר בין גוף ונפש. מה שאנחנו עושים בשיטה הזאתי, אנחנו בעצם בכל פעם מקווצים קבוצת שרירים אחת ואז מרפים אותה, ואז נוצר להבדיל בין מתח להרפיה. השאלה</p>
+      <p>הזאת מתבססת על עיקרון פיזיולוגי מאוד פשוט, שמתח נפשי ומאמץ שרירי הולכים ביחד. אנחנו לא יכולים להיות במצב של מתח נפשי או של חרדה כשהגוף שלנו לרגע לא מתוח. אז בעצם מה שאנחנו עושים כאן, אנחנו משתמשים בגוף שלנו כדי להשפיע על התודעה. כשאנחנו מקווצים את הגוף חזק, מרפים אותו, ברגע אחד המתח השרירי שלנו הופך להיות שהוא יותר נמוך ממה שהוא היה במצב ההתחלתי. ואז המערכת שלנו יכולה באמת לקבל את זה בתור הודעה של: "שלום, הסכנה שהייתה פה חלפה". אם אני רגוע והשרירים שלי רגועים, אז הכל... אני יכול להפעיל את המערכת הפראסימפתטית.</p>
+      <p>וככה, במקום לנסות להרגיע את המחשבות – כי מה שאנחנו אומרים להם: "תנסו להרגיע את המחשבות", זה סתם יותר מתסכל אותם, הם לא באמת יודעים איך לעשות את זה – אז אנחנו עוקפים את המוח החושב, פונים ישר למערכת העצבים [...] אז אני רוצה שמה שתעשו [...] עוזר מאוד. אז אני רגע מריצה את התהליך, תראו מה אנחנו הולכים לעשות. אמרתי, אנחנו בכל פעם נקווץ קבוצת שרירים אחת לשמונה שניות, ואז אנחנו נרפה אותה, ואז אנחנו צריכים לעצור, נראה מה קורה בגוף. בעצם הרעיון הוא שמספרים לגוף: הכל רגוע, לשחרר. הדבר הכי חשוב: כל הזמן לנשום. כי זה המדד של... אז בואו ניקח... אין כל כך הרבה מקום לעשות את זה, אז הראשון... רגע, אגיד חלק ממה שאנחנו הולכים לעבור בזה.</p>
+      <p>אנחנו מבקשים רק שתרימו את הרגליים, שכפות כפות הרגליים אליכם, ואז אתם יכולים להעלות את... להרגיש כאן את המאמץ. זה הדבר... שננסה לקווץ את השרירים: 1, 2, 3, 4, 5, 6, 7, 8. יאללה, לנשום, כל הגברים, נעבור לזה, סבבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 אנחנו נקווץ את הבטן, אנחנו נכניס…</h3>
+      <p>אנחנו נקווץ את הבטן, אנחנו נכניס את הבטן... הכל בבטן. איסוף: 1, 2, 3, 4, 5, לנשום, 6, 7, 8. להתבונן... בבת אחת נרפה... 1, 2, 3, 4, 5, לנשום, 6, 7, 8.</p>
+      <p>תרגישו את השרירים האלה, להדק את המרפקים, שזה יהיה חזק: 1, 2, 3, 4, 5, 6, 7, 8. רגע, להתבונן... 1, 2, 3, 4, 5, 6, 7, 8.</p>
+      <p>להסתכל ממש, משהו קורה פה מאחורה: 1, 2, 3, 4, 5, לנשום, 6, 7, 8... עכשיו שאיפה, ולעוות את הצוואר, קורה לנו משהו מאחורה: 1, 2, 3, 4, 5, 6, 7, 8... לקווץ את השיניים: 1, 2, 3, 4, 5, 6, 7, 8.</p>
+      <p>אנחנו נתכווץ עם כל הפרצוף, נדביק את הלשון לחך העליון, כל הפרצוף מתכווץ למרכז, נכון? 1, 2, 3, 4, 5, 6, 7, 8. פיהוק גדול גדול גדול גדול גדול גדול גדול! 1, 2, 3, 4, 5, 6, 7, 8.</p>
+      <p>כל הגוף ביחד, להסיט ידיים קדימה, את הפנים, הכל: 1, 2, 3, 4, 5, 6, 7, למשוך, 8. תנסו לשנייה... קצת קצת... דקה וחצי רק להתבונן בגוף. בסדר?</p>
+      <p>יש מישהו או מישהי שרוצה לשתף? [...] ירד, זה מה ש... יורד לאט. בתרגיל הקודם שהיה... אמר: "ירד". אז ירד כל הזמן או שלא באמת? זה ירד, מכמה? [...] ירד בתרגיל של הזוגות, זה ירד או לא? ובג'ייקובסון כמה זה ירד? [...] לא מספר, לא זוכר... אז ממה הם לרדת? [...] הכאב הזה, הוא יצא... ממצב לחוץ. בעצם אני צריך להבין פה [...] לא הצלחתי לעשות את זה [...] שגע לעצמך [...] וזה</p>
+      <p>ממש חשוב לדבר הזה, כי זה במקרה לנו בבדיקה – יהיו כאלה שיגיבו, לפחות מה ש... יעבוד להם. יהיו כאלה שילכו... אתה צריכה, יהיו כאלה שיצחקו, יהיו כאלה שיצחקו בלי... יהיו כאלה שסתכלו על החבר שלהם ויגידו: "איך יכול להיות שלזה עבד ולזה לא עבד?".</p>
+      <p>אלה דברים חשובים מאוד שאתם מביאים את זה... אז נורא חשוב – אף פעם אין תשובה נכונה. אין... זה לא שאנחנו עכשיו... תתקבעו שזהו, את זה, את זה, את זה. חברים, ש... לאן? מה עושים? לא אחד... ואילו... לא חבל... שזה לא יראה באיזה... אין, אין, אין, אין דרך אחת! כל אחד קופץ... וגם אין טכניקה אחת שהיא דרך לכולם. הנחתי כאן, מה שנקרא, כל מיני תרגולות כאלה, אז אנחנו 100%... כל כך... מה, יש מישהו אחד ששרד טוב לפני זה, שיש לו לחץ ומה יהיה לו מדהים, נכון?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 אה, רגע שנייה, רק כדי שנהיה…</h3>
+      <p>אה, רגע שנייה, רק כדי שנהיה כולנו עם השאלה של... [...]<br>עדן אומרת: "רגע, מה קורה אם אני מעבירה איזשהו כלי ויש כאלה שממש זה... יש כאלה שזה...".<br>זה קרה פה. אם זה קרה פה, יכול להיות שזה יקרה בכיתה. היו שצחקו. דרך אגב, ג'ייקובסון גורם לצחוקים בכיתה, יש כאלה שמפהקים. אוקיי, מה זה אומר? מה זה שחרור של מתח? זה יכול להיות, אגב, מבוכה. זה יכול להיות התנגדות, אבל זה גם כיווץ של מתח.</p>
+      <p>אוקיי, אז תראו איזה יופי. ילדים יכולים לצחוק, לקחת את הכלים שאנחנו נותנים להם, רק בשפה שלהם. מנהלים את זה אחרת, מגיע לנו כל הזמן באופן ספציפי. כל הרעיון של התוכנית זה סוג של... אה, בופה! כשהדיברנו על חתונות וריקודים וזה – אני ממשיכה את האנלוגיה – זה בופה עם הרבה מאוד כלים. ואני לא... אז אם כן, איך אתם מתמודדים עם לחץ? אבל כל אחד עושה את זה אחרת לגמרי. אני חושבת שזה אחד מאבני היסוד המרכזיות, ולהגיד: "חבר'ה, קחו. כן, זה בתור מנחה".</p>
+      <p>עכשיו אנחנו באים לכאן ונשים לכם... מגוון של ממתקים, בסדר? באנלוגיה שלי, לכל ילד. [...]<br>אבל כל אחד אוהב משהו אחר, נכון? כל אחד אוהב משהו אחר, לכל אחד יש טעם אחר. זה הרעיון! זה להגיד: "איזה יופי ששמת לב מה עובד לך. אז אולי בפעם הבאה... רגע, עשינו משהו אחר, נכון? עשינו במפגשים השונים, בסדר, ב-10 המפגשים האחרונים". אז איזה כיף! אנחנו נותנים לכם פה אפשרות ללכת ולהתחבר למה שנותנים לכם, בסדר? זה הרעיון.</p>
+      <p>הרעיון של... שאני אומרת דבר כזה, איזה מסר זה מעביר לילד? א', יש לו בחירה. מה עוד? הוא נורמלי, ואנחנו שונים. לכל הרגשות יש מקום, והוא מכיר את עצמו, הוא יודע מה טוב לו. זוכרים את הנושא של דווקא? אתה יודע מה עוזר לך, אנחנו פה רק כדי כאילו לשפשף את זה.</p>
+      <p>[...]<br>אוקיי, זאת שאלה מצוינת, כי באמת השאלה הזאת היא פשוט עולה בקהל. חבר'ה, ונכנסנו קצת... השאלה בשלב הזה, זה בדיוק הדבר שאנחנו... אלה הדברים שאנחנו רוצים לשאול.</p>
+      <p>עכשיו אתם מתנסים במערך, נכון? כל המפגשים שעשינו וזה, שיש מערכים שמעוררים כל מיני תגובות שונות, ואיך יכול לעורר את זה. ומה שפשוט זה שמערכים שונים מייצרים תגובות שונות. וכל אחד מכם הוא מנחה שונה, עם רקע אחר, משקפיים אחרות, שמגיע גם לבית ספר אחר, ביישוב אחר, בכיתה שונה. אז אתם... כל אחד מנווט בצורה שונה לגמרי, ומה שאנחנו מציגים לכם עכשיו זה לא רק להתנסות בשיטיפסון, אלא עכשיו להתכונן לג' ולשאר המערכים בכל ראש. [...] אז אנחנו אמרנו שכדי... עכשיו דנו... אני כן רוצה שתענו על השאלות האלה: מאיזה רגש יצאתי? ועם איזה מחשבה יצאתי?</p>
+      <p>עכשיו, מוזר מה שזה... לא באמת... אני לא הולכת לתוך זה. נורא נורא נורא חשוב, אתם תראו במערכים: בסוף כל מערך יש לנו רפלקציה, ואנחנו צריכים לאגוד את העיסוק הזה. כשאנחנו משאירים חוויה היא לא אסופה, היא לא מעובדת... אז גם בשיעור, אם אתם חושבים שנגמר הזמן, תקצרו את הפעילות ותשאירו בזמן הזה שנייה רפלקציה. גם אם זה רפלקציה אישית, גם אם זה שנייה לעצור ולהסתכל מה שעברתי כדי שאני אבין מה שעברתי.</p>
+      <p>אז אני באמת באמת רוצה שתתנסו בזה שנייה, רק כדי שגם אתם תגלו לבד למה זה חשוב לי שאתם תחוו את זה. להסתכל רגע על עצמכם, על הרגע שלכם עכשיו: עם איזה רגש יצאתי? ועם איזה מחשבה? כל זה חצי דקה. מישהו רוצה לשתף במשהו קטן?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 – "הטיימינג של המערך מאוד מאוד…</h3>
+      <p>– "הטיימינג של המערך מאוד מאוד מעניין. זה לא קולקטיבי. אם אני אעשה אותו ב-1:00 בצהריים... זה לא יהיה יעיל כמו לעשות את זה ב-8:00 בבוקר..."<br>– "חיוניים מאוד..." [...]<br>– "את מאוד מאוד צודקת. וזה גם משנה מכיתה לכיתה. יכול להיות שיש כיתה שאת כבר מכירה אותה, ואת יודעת שאין סיכוי שזה יעבוד, ויש... כאילו, זה מאוד נכון. אני גם רוצה להגיד שזה צריך להגיע... שלכם, באמת לדעת מה מתאים. וגם אפילו לא רק טיימינג של השעה, אלא הטיימינג בתקופה. יכול להיות שזו תקופה מאוד סוערת, וזה לא... תקופה שפתאום, אפילו שזה מוקדם, אז צריך פתאום מישהו שמשחרר... אז תודה על ההערה הזאת."</p>
+      <p>אני רואה שחלק מכם התחילו לסרוק את הכל, אז אנחנו מוזמנים לסרוק את הקוד של... יש את המערך עצמו. מה שאתם תראו למעשה, מערך שהוא מאוד מייצג מבחינת צורה ומבנה, אוקיי?</p>
+      <p>המערכים מתחילים ממש במטרות... זה ממש מתפרק בצורה מאוד מאוד מפורטת, עם כל מיני הערות. וגם תוך כדי, במהלך השנתיים האחרונות, הלכנו ושיפרנו, כך שבתחתית יש עוד הצעות לשיפור ושכלול. באמת, מה שיפה זה שכל הזמן חומשים את המציאות, וסטודנטים מעולים כמוכם מוזמנים כל הזמן להביא עוד רעיונות ועוד דוגמאות ועוד התאמות. וזה ארגון כל כך דינמי ומשתף, שהידע והניסיון שנצבר בשטח ישר חוזר חזרה ומהדהד.</p>
+      <p>מה שביקשתי, כי אני מבינה שכולכם עכשיו... לדפדף את הדבר הזה, אז תקראו אותו רגע. אתן לכם בכלל לקרוא אותו ככה... ובזמן שאתם קוראים וקוראות, תנסו לחשוב על בסיס החוויה שלכם, על בסיס ההיכרות שלכם עם עולם... באר שבע, אופקים, נתיבות: מה יכול להיות... איזה התאמות, אולי איזה אימוצים צריך לקחת בחשבון? [...]</p>
+      <p>בואו נסביר רגע, אולי מוקדם... שאלה מספר שלוש: מה מצב... אתם מסתכלים על המערך, אתם אומרים: "אה, רגע רגע, באיזו מציאות... מה..." שאנחנו עושים כסורטי לחלוטין, נכון? מישהו מכם יודע כבר לאיזה כיתה הוא הולך? לאיזה בית ספר? איזה בני זוג? לא כולם יגידו את זה, נכון? ואז אתם... לא פגשתם לא את המורה ולא את התלמידים. אבל מה שקורה זה שמערך למערך כבר יש לכם איזשהו סנס, אוקיי? האופי, אוקיי, האאוטליין. ואני יודעת גם ככה מהיכרות, כן, שאתם עושים הרבה מההיכרות עם עולם ה...</p>
+      <p>אז בואו ננסה ביחד להבין: המערך הזה שאתם עכשיו מסתכלים עליו, איזה אתגר הוא הולך לדרוש בשטח? איזה אילוצים? לעבוד בכיתה שהיא מאוד מאוד היברידית – קפסולות, כיתה היברידית, בהצלחה, כן. הרצון לשמור על העוגן של... כאילו, לפעמים יכולים לאבד את זה ולפספס. אתה יודע להרחיב את זה? יש איזשהן איכויות שעשויות להתפספס.</p>
+      <p>אני חושב שבהתחלה צריך לעשות את אותו הדבר כל הזמן, וגם שגרה לדבר הזה שהוא יהיה אותו הדבר, שיהיה להם איזשהי מסגרת שמכירים אותה. זה כאילו יהיה העוגן שלהם, ההפחתה וההגברה של הפעילות... [...] אז כן, אומרת: אולי בכלל אני אכפיל את השנה ולמצוא... וזה דרך אגב משהו שמאוד מאחר את הפירוק. [...] אולי להגיד: שנייה, רגע, כל פעם נכנס אולי תוכן אחר, אז אולי ספר... כאילו כמו חתונה, כן. התחלנו ב... שמישהו מותח, את הזה, את הדמיון המודרך, את הקופסה. כאילו, נראה לי הילדים עוברים תמיד איזשהו תהליך דומה.</p>
+      <p>מה זה עוזר לילד שהוא עובר אותו תהליך כל שבוע? יציבות. הוא יודע למה לחכות, בהירות, הוא יודע למה לחכות, הוא יותר פנוי להיות איתך. אז אולי... כן, אולי אני אבנה איזשהו ריטואל קבוע, כן? רק איזשהו טקס... זה טקס קבוע, גם סיפור, ואז יהיה קל יותר להיכנס איתם. הוא יוכל להשתלב בתוך... בתוך הקולות הזה שבונים, ואז יכול להיות... להשתלב בתוך... כן, שנסתכל אולי לראות התאמות, כי פה מבנה קבוע. אז אולי בתוך... אנחנו יכולים לראות פה משהו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 ספרי לי, איזה עוד אילוצים אתם…</h3>
+      <p>ספרי לי, איזה עוד אילוצים אתם הולכים לפגוש? רגע, זה מחר בבוקר, מה אתם הולכים לפגוש? אני אעשה כאילו מה שאני עושה בתכלס בתוך המכללה. איזה אילוצים אתה הולך לפגוש, חברים? איזה שיתוף פעולה? חוסר שיתוף פעולה, סליחה, הפרעה, הפרעות, השתוללות, אי-הקשבה. נכנס לכיתה – אולי הייתה אזעקה בלילה, אולי... אמרה: "חזרו מההפסקה, עשו לי...".</p>
+      <p>אוקיי, אז יש לנו פה מרחב מציאותי מאוד גדול. אתם דיברתם בעיקר על מי? על הילדים. איזה עוד אילוצים יכולים לפגוש? רגע, אחד אחד. המורות! איזה מורות אתם תפגשו בכיתה, למשל? משתפות פעולה. משתפות פעולה, מקדמות, אכפתיות, דואגות, יושבות עם הילדים על הרצפה בגובה... בגובה העיניים עושות. איזה עוד מורות? עייפות, שחוקות, עייפות, מבוגרות, עמוסות, כן, בשעת עומס גדולה עכשיו, בדיוק! בדיוק, חייבות לארגן את ה... יודעת מה? אירוע חנוכה, פורים.</p>
+      <p>בסדר, יש כאן כמה דברים לקחת בחשבון. אם המורה איתכם בכיתה, איך תשלבו את ג'ייקובסון? איך תכוונו את ג'ייקובסון שהמורה גם תשתתף? כן, שתשתתף, כן! כי אם היא משתתפת... אמר: היא משתתפת בכיתה בג'ייקובסון – מודל לחיקוי, מודל לחיקוי זה מרגיע. אבל יש פה... אבל יש פור שלא משהו כאילו... כן, אנחנו רוצים לעטוף, להראות כאילו מאוד...</p>
+      <p>אגב, אחת המורות שלנו, תהילה שהתחילה גם איתנו, עשתה ספרון מהלב שאתם תקבלו אותו – איך ליצור תיאום ציפיות עם המורה בתחילת הדרך. וגם... לא, זה לא פשוט, יש כאן... לא פשוט, בסדר.</p>
+      <p>אבל רק... כן, כן, רק השאלה הראשונה: כשאנחנו... התחלתם עכשיו את המערך, ראיתם אותו, מה... מה אתם רוצים ש... כשהם מגיעים לשיעור הזה, יקבלו כלי להרגיע את עצמם? כן, טוב שיהיו רגילים להשתמש בו, לחזק אותם.</p>
+      <p>אוקיי, בואו אולי למישור הקבוצתי. שימו לב, עובדים לא רק על היחידים, אתם עובדים פה גם על הקבוצה. נורא חשוב שכשאנחנו ניגשים למערך ואנחנו קוראים אותו – תראו איזה הבדל יש בין לחוות משהו על עצמי לבין לקרוא את המערך!</p>
+      <p>אז נורא נורא חשוב שתחוו את זה על עצמכם. אם יש תרגול שצריך לפרוק, אז קחו דף ותתרגלו את זה על איזשהי סיטואציה שלכם. אם יש... כל דבר שפוגשים, רגע, קחו אותו לחיים האישיים שלכם. כי אחר כך שתעבירו אותו בעצמכם – זה אחרת כשזה מתחבר לכם לדברים שלכם. ואחרי שאתם קוראים את זה לעצמכם וראיתם איזה תזוזה קטנה זה עשה לכם במציאות שלכם, אתם תדעו לעשות את השאלה הזאת; תדעו מה החוויה שאתם רוצים להביא לתלמידים, ורק מלקרוא מערך אי אפשר לדעת את זה.</p>
+      <p>אז תמיד, כל מה שאתם יכולים – תחוו על עצמכם, תחוו את החבר'ה, תחוו על בן הזוג, תבדקו. זה נורא נורא נורא קריטי להצלחה של החבר'ה. ארבעת השאלות האלה – בדיוק ההכנה של הבנת המערך. תיישמו אותן, תפנימו אותן. תסתכלו על המערך, תסתכלו על השאלות ותתכוננו בהרצאה. זה בעצם ההצעה שאנחנו מציעים לכם. המצגת הזאת תהיה לכם זמינה בקבוצה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 והכלי השני שאנחנו מציעים</h3>
+      <p>והכלי השני שאנחנו מציעים: בסופו של דבר נגמר השיעור. מה הדבר הראשון שאנחנו הולכים לעשות מיד אחרי שהשיעור נגמר? [...] אז יש לכם 60 שניות של רפלקציה, כי זה הדבר שיאפשר לכם להיות מוכנים יותר לשיעור הבא. בינינו, גם הזדמנות להציף, בינינו, לשיתוף, בעזרה ביחד עם הדוקטורנטים המדהימים שלכם, אמן.</p>
+      <p>אז זה הכלי השני. יצאנו עם שני כלים: אחד לפני והשני הוא אחרי. כן, טוב, לפני שנסגור, מישהו... מובן? תודה רבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור ביוטיוב https://youtu.be/emAseneDgj8 · 2026-10-11</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"השיעור","icon":"📖","color":"#c62b6b","stories":[{"id":1,"title":"שלום לכולם, צהריים טובים","icon":"📜"},{"id":2,"title":"קודם כל, הגענו להציף כל מיני","icon":"📜"},{"id":3,"title":"אם יש משהו בפורים, אז אולי…","icon":"📜"},{"id":4,"title":"אז מה שאני רוצה לעשות זה…","icon":"📜"},{"id":5,"title":"אנחנו נקווץ את הבטן, אנחנו נכניס…","icon":"📜"},{"id":6,"title":"אה, רגע שנייה, רק כדי שנהיה…","icon":"📜"},{"id":7,"title":"– \"הטיימינג של המערך מאוד מאוד…","icon":"📜"},{"id":8,"title":"ספרי לי, איזה עוד אילוצים אתם…","icon":"📜"},{"id":9,"title":"והכלי השני שאנחנו מציעים","icon":"📜"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
