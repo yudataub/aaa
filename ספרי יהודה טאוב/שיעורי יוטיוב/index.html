@@ -38,6 +38,10 @@ header.hero p{margin:0 auto;max-width:620px;font-size:1.1rem;opacity:.95;line-he
 .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hi);}
 .card .band{height:84px;display:flex;align-items:center;justify-content:center;font-size:2.6rem;background:linear-gradient(135deg,var(--c1),var(--c2));position:relative;}
 .card .band::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.1) 0 14px,transparent 14px 28px);}
+.card .pic{aspect-ratio:3/2;overflow:hidden;background:linear-gradient(135deg,var(--c1),var(--c2));}
+.card .pic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s;}
+.card:hover .pic img{transform:scale(1.04);}
+.featured .big-pic{flex:0 0 340px;width:340px;aspect-ratio:3/2;object-fit:cover;border-radius:18px;box-shadow:0 8px 20px rgba(0,0,0,.14);}
 .card .body{padding:16px 18px 14px;display:flex;flex-direction:column;gap:8px;flex:1;}
 .card h3{margin:0;font-size:1.15rem;line-height:1.4;}
 .card p{margin:0;color:var(--ink-soft);font-size:.92rem;line-height:1.6;}
@@ -51,7 +55,7 @@ header.hero p{margin:0 auto;max-width:620px;font-size:1.1rem;opacity:.95;line-he
 .new{position:absolute;top:12px;inset-inline-end:12px;background:#fff;color:var(--pink-2);font-weight:800;font-size:.72rem;padding:3px 10px;border-radius:999px;box-shadow:0 3px 10px rgba(0,0,0,.15);z-index:1;}
 .msg{text-align:center;color:var(--ink-soft);padding:50px 10px;font-size:1.05rem;}
 footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 40px;}
-@media (max-width:640px){.featured{flex-direction:column;text-align:center;}.featured .big-icon{flex-basis:auto;width:84px;height:84px;}.cat{align-self:center;}}
+@media (max-width:640px){.featured{flex-direction:column;text-align:center;}.featured .big-icon{flex-basis:auto;width:84px;height:84px;}.featured .big-pic{flex-basis:auto;width:100%;}.cat{align-self:center;}}
 </style>
 <!-- share preview: C:\sfarim-og -->
 <meta property="og:title" content="📺 שיעורי יוטיוב — כתובים כספר | קול תודה">
@@ -89,7 +93,7 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
 (function(){
   var PALETTE = {"חגים ומועדים":["#ff6b9d","#c62b6b"],"פרשת השבוע":["#a78bfa","#6d28d9"],"גמרא":["#60d3ff","#1e88b8"],"הלכה":["#34d399","#047857"],
     "אמונה ומחשבה":["#ffd166","#e08e00"],"מוסר ומידות":["#fb923c","#c2410c"],"סיפורי צדיקים":["#f472b6","#9d174d"],"תפילה":["#818cf8","#4338ca"],"ארץ ישראל":["#d4a373","#8a5a2b"],"אחר":["#94a3b8","#475569"]};
-  var all = [], cat = "", q = "", chm = "";
+  var all = [], cat = "", q = "", chm = "", ART = {};   // ART: video id -> picture of the lesson (art.json, C:\lesson-art)
   var CHUMASH = {"בראשית":"בראשית","נח":"בראשית","לך לך":"בראשית","וירא":"בראשית","חיי שרה":"בראשית","תולדות":"בראשית","ויצא":"בראשית","וישלח":"בראשית","וישב":"בראשית","מקץ":"בראשית","ויגש":"בראשית","ויחי":"בראשית",
     "שמות":"שמות","וארא":"שמות","בא":"שמות","בשלח":"שמות","יתרו":"שמות","משפטים":"שמות","תרומה":"שמות","תצוה":"שמות","כי תשא":"שמות","ויקהל":"שמות","פקודי":"שמות",
     "ויקרא":"ויקרא","צו":"ויקרא","שמיני":"ויקרא","תזריע":"ויקרא","מצורע":"ויקרא","אחרי מות":"ויקרא","קדושים":"ויקרא","אמור":"ויקרא","בהר":"ויקרא","בחוקותי":"ויקרא",
@@ -118,12 +122,13 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
   function href(l){ return encodeURIComponent(l.file); }
   function text(l){ return [l.title, l.subtitle, l.category].concat(l.tags || [], l.cards || []).join(" ").toLowerCase(); }
   function tagsHtml(l){ return (l.tags || []).length ? '<div class="tags">' + l.tags.map(function(t){ return '<span class="tag">#' + esc(t) + "</span>"; }).join("") + "</div>" : ""; }
+  function art(l){ var m = String(l.video || "").match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/); return m ? ART[m[1]] : ""; }
   function card(l){
     var d = new Date(l.date), c = colors(l.category);
     return '<a class="card" href="' + href(l) + '" style="--c1:' + c[0] + ";--c2:" + c[1] + '">' +
       (isNew(d) ? '<span class="new">✨ חדש</span>' : "") +
       (l.edited === false ? '<span class="editing" title="הספר הערוך יעלה בקרוב">⏳ בעריכה</span>' : "") +
-      '<div class="band">' + esc(l.icon || "📖") + "</div>" +
+      (art(l) ? '<div class="pic"><img src="' + esc(art(l)) + '" alt="" loading="lazy"></div>' : '<div class="band">' + esc(l.icon || "📖") + "</div>") +
       '<div class="body"><span class="cat">' + esc(l.category || "אחר") + "</span>" +
       "<h3>" + esc(l.title) + "</h3>" + (l.subtitle ? "<p>" + esc(l.subtitle) + "</p>" : "") + tagsHtml(l) +
       '<div class="foot"><span class="dates">' + esc(hebDate(d) || greg(d)) + "</span>" +
@@ -132,7 +137,7 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
   function featured(l){
     var d = new Date(l.date), c = colors(l.category);
     return '<div class="section-title">✨ מתחילים כאן</div><a class="featured" href="' + href(l) + '" style="--c1:' + c[0] + ";--c2:" + c[1] + '">' +
-      '<div class="big-icon">' + esc(l.icon || "📖") + "</div><div>" +
+      (art(l) ? '<img class="big-pic" src="' + esc(art(l)) + '" alt="">' : '<div class="big-icon">' + esc(l.icon || "📖") + "</div>") + "<div>" +
       '<span class="cat">' + esc(l.category || "אחר") + "</span><h2>" + esc(l.title) + "</h2>" +
       (l.subtitle ? "<p>" + esc(l.subtitle) + "</p>" : "") + tagsHtml(l) +
       '<div class="dates" style="margin-top:8px">📅 ' + esc(hebDate(d)) + " · " + esc(greg(d)) + "</div></div></a>";
@@ -175,7 +180,8 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
     chm = b.getAttribute("data-h"); render();
   });
   document.getElementById("search").addEventListener("input", function(e){ q = e.target.value.trim().toLowerCase(); render(); });
-  fetch("lessons.json?t=" + Date.now(), {cache:"no-store"}).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){
+  var artP = fetch("art.json?t=" + Date.now(), {cache:"no-store"}).then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; });
+  fetch("lessons.json?t=" + Date.now(), {cache:"no-store"}).then(function(r){ if (!r.ok) throw 0; return r.json(); }).then(function(d){ return artP.then(function(a){ ART = a || {}; return d; }); }).then(function(d){
     all = (d.lessons || []).slice().sort(function(a,b){ var x = a.series_order, y = b.series_order; if (x != null && y != null) return x - y; if (x != null) return -1; if (y != null) return 1; var tb = Date.parse(b.date), ta = Date.parse(a.date); return (isNaN(tb) ? 0 : tb) - (isNaN(ta) ? 0 : ta); });
     var cats = {}; all.forEach(function(l){ cats[l.category] = 1; });
     document.getElementById("stats").innerHTML = '<span class="stat">📖 ' + all.length + " שיעורים</span>" +
