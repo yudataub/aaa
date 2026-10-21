@@ -33,6 +33,7 @@ header.hero p{margin:0 auto;max-width:620px;font-size:1.1rem;opacity:.95;line-he
 .featured .big-icon{flex:0 0 96px;height:96px;border-radius:26px;display:grid;place-items:center;font-size:3.2rem;background:linear-gradient(135deg,var(--c1),var(--c2));box-shadow:0 8px 20px rgba(0,0,0,.12);}
 .featured h2{margin:6px 0 6px;font-size:clamp(1.3rem,3vw,1.8rem);}
 .featured p{margin:0 0 10px;color:var(--ink-soft);line-height:1.6;font-size:1.02rem;}
+.ptoc{background:var(--card);border-radius:22px;box-shadow:var(--shadow);padding:14px 18px;margin-bottom:24px;}.ptoc h2{margin:0 0 8px;font-size:1.1rem;color:var(--purple-2);}.ptoc .row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0;}.ptoc .bk{font-weight:800;color:var(--pink-2);min-width:78px;}.ptoc a{text-decoration:none;border:2px solid #ece3fb;background:#fbf8ff;border-radius:999px;padding:3px 11px;font-size:.88rem;font-weight:700;color:var(--ink-soft);}.ptoc a:hover{border-color:var(--purple-1);color:var(--purple-2);}.ptoc a .n{opacity:.6;font-weight:400;margin-inline-start:4px;}.ph{grid-column:1/-1;margin:22px 4px 0;font-size:1.3rem;font-weight:800;color:var(--purple-2);border-bottom:3px solid #e9ddff;padding-bottom:6px;scroll-margin-top:14px;}.ph:first-child{margin-top:0;}.ph .n{font-size:.9rem;color:var(--ink-soft);font-weight:400;margin-inline-start:8px;}.ph a{font-size:.8rem;font-weight:700;color:var(--ink-soft);margin-inline-start:10px;text-decoration:none;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px;}
 .card{position:relative;display:flex;flex-direction:column;background:var(--card);border-radius:22px;box-shadow:var(--shadow);text-decoration:none;overflow:hidden;transition:.2s;}
 .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hi);}
@@ -71,7 +72,7 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
 <meta name="twitter:image" content="https://yudataub.github.io/sfarim-og/img/1a9d310b78527792.jpg">
 <script async src="https://www.kol-toda.co.il/a.js"></script>
 </head>
-<body>
+<body id="top">
 <header class="hero"><div class="hero-inner">
   <h1>📺 שיעורי יוטיוב — כתובים כספר</h1>
   <p>כל שיעור שנמסר — מתומלל, ערוך ומסודר לקריאה, עם פרקים, חיפוש וקישור לכל רעיון</p>
@@ -83,6 +84,7 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
     <div class="chips" id="chips"></div>
     <div class="chips" id="chips2"></div>
   </div>
+  <div id="ptoc"></div>
   <div id="featuredBox"></div>
   <div class="section-title" id="gridTitle"></div>
   <div class="grid" id="grid"></div>
@@ -101,6 +103,47 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
     "דברים":"דברים","ואתחנן":"דברים","עקב":"דברים","ראה":"דברים","שופטים":"דברים","כי תצא":"דברים","כי תבוא":"דברים","נצבים":"דברים","וילך":"דברים","האזינו":"דברים","וזאת הברכה":"דברים"};
   var CH_ORDER = ["בראשית","שמות","ויקרא","במדבר","דברים","שבתות מיוחדות"];
   function chumashOf(l){ var t = l.tags || []; for (var i = 0; i < t.length; i++){ if (t[i] === "שבתות מיוחדות") return "שבתות מיוחדות"; if (CHUMASH[t[i]]) return CHUMASH[t[i]]; } return ""; }
+  // a lesson's parasha (21.10, the user: "חלוקה לפי פרשיות – כל פרשה כותרת משלה וגם בהתחלה")
+  var CANON = {"פנחס":"פינחס","חקת":"חוקת","שלח לך":"שלח","ניצבים":"נצבים","בחקותי":"בחוקותי","תצווה":"תצוה"};
+  var BOOKS = {"בראשית":1,"שמות":1,"ויקרא":1,"במדבר":1,"דברים":1};
+  var PORDER = []; Object.keys(CHUMASH).forEach(function(k){ if (!CANON[k]) PORDER.push(k); });
+  function canon(t){ t = String(t || "").replace(/^פרשת\s+/, "").trim(); return CANON[t] || t; }
+  function parashaOf(l){
+    var found = [];
+    (l.tags || []).forEach(function(t){ var c = canon(t); if (CHUMASH[c] && found.indexOf(c) < 0) found.push(c); });
+    var m = String(l.title || "").match(/פרשת\s+(לך לך|חיי שרה|כי תשא|אחרי מות|כי תצא|כי תבוא|וזאת הברכה|שלח לך|[^\s,.:–-]+)/);
+    if (m) { var c = canon(m[1]); if (CHUMASH[c] && found.indexOf(c) < 0) found.unshift(c); }
+    var notBook = found.filter(function(p){ return !BOOKS[p]; });   // "בראשית" next to "נח" is the book, not the parasha
+    return notBook[0] || found[0] || "";
+  }
+  function pid(p){ return "p-" + p.replace(/\s+/g, "-"); }
+  function ptoc(){
+    var box = document.getElementById("ptoc");
+    if (q || (cat && cat !== "פרשת השבוע")) { box.innerHTML = ""; return; }
+    var counts = {}; all.forEach(function(l){ if ((l.category || "אחר") !== "פרשת השבוע") return; var p = parashaOf(l); if (p) counts[p] = (counts[p] || 0) + 1; });
+    var rows = CH_ORDER.filter(function(b){ return b !== "שבתות מיוחדות"; }).map(function(b){
+      var ps = PORDER.filter(function(p){ return CHUMASH[p] === b && counts[p] && (!chm || chm === b); });
+      return ps.length ? '<div class="row"><span class="bk">חומש ' + esc(b) + '</span>' + ps.map(function(p){
+        return '<a href="#' + pid(p) + '" data-p="' + esc(p) + '">' + esc(p) + '<span class="n">' + counts[p] + "</span></a>"; }).join("") + "</div>" : "";
+    }).join("");
+    box.innerHTML = rows ? '<div class="ptoc"><h2>📖 שיעורי פרשת השבוע – לפי פרשה</h2>' + rows + "</div>" : "";
+  }
+  function goParasha(p){
+    cat = "פרשת השבוע"; q = ""; document.getElementById("search").value = ""; render();
+    var h = document.getElementById(pid(p)); if (h) h.scrollIntoView({behavior:"smooth", block:"start"});
+    try { history.replaceState(null, "", "#" + pid(p)); } catch(e){}
+  }
+  document.getElementById("ptoc").addEventListener("click", function(e){
+    var a = e.target.closest("a[data-p]"); if (!a) return; e.preventDefault(); goParasha(a.getAttribute("data-p"));
+  });
+  function grouped(list){
+    var by = {}, rest = {}, order = [];
+    list.forEach(function(l){ var p = parashaOf(l); if (p) { (by[p] = by[p] || []).push(l); } else { var b = chumashOf(l) || "שונות"; (rest[b] = rest[b] || []).push(l); } });
+    var html = "";
+    PORDER.forEach(function(p){ if (by[p]) html += '<h2 class="ph" id="' + pid(p) + '">פרשת ' + esc(p) + '<span class="n">' + by[p].length + ' שיעורים</span><a href="#top">⬆ לרשימת הפרשות</a></h2>' + by[p].map(function(l){ try { return card(l); } catch(e){ return ""; } }).join(""); });
+    CH_ORDER.concat(["שונות"]).forEach(function(b){ if (rest[b]) html += '<h2 class="ph">' + (b === "שונות" || b === "שבתות מיוחדות" ? esc(b) : "חומש " + esc(b) + " – כללי") + '<span class="n">' + rest[b].length + " שיעורים</span></h2>" + rest[b].map(function(l){ try { return card(l); } catch(e){ return ""; } }).join(""); });
+    return html;
+  }
   function esc(s){ return String(s == null ? "" : s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function colors(c){ return PALETTE[c] || PALETTE["אחר"]; }
   function gem(n){
@@ -165,7 +208,9 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
     document.getElementById("featuredBox").innerHTML = fb;
     var rest = showFeatured ? list.slice(1) : list;
     document.getElementById("gridTitle").textContent = showFeatured ? "📚 שאר השיעורים" : (list.length ? list.length + " שיעורים" : "");
-    document.getElementById("grid").innerHTML = rest.map(function(l){ try { return card(l); } catch(e){ return ""; } }).join("");
+    var byParasha = cat === "פרשת השבוע" && !q;
+    document.getElementById("grid").innerHTML = byParasha ? grouped(rest) : rest.map(function(l){ try { return card(l); } catch(e){ return ""; } }).join("");
+    ptoc();
     var msg = document.getElementById("msg");
     msg.style.display = list.length ? "none" : "block";
     msg.textContent = all.length ? "לא נמצאו שיעורים 🔍" : "עוד אין כאן שיעורים — הראשון בדרך 🍭";
@@ -188,6 +233,8 @@ footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:10px 0 4
       '<span class="stat">🗂️ ' + Object.keys(cats).length + " נושאים</span>" +
       (d.updated ? '<span class="stat">🕒 עודכן ' + esc(hebDate(new Date(d.updated)) || greg(new Date(d.updated))) + "</span>" : "");
     render();
+    var hm = decodeURIComponent(location.hash || "").match(/^#p-(.+)$/);
+    if (hm) goParasha(hm[1].replace(/-/g, " "));
   }).catch(function(){ all = []; render(); });
 })();
 </script>
