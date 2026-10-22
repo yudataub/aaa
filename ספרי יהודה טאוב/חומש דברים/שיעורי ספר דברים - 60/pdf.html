@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מצגת – חומש דברים</title>
+<meta name="robots" content="noindex">
+<style>
+  /* a presentation (PDF) at the full width of the screen – Chrome's own viewer opens it at "fit to page"
+     and cannot be told otherwise from a link; on a phone it does not show PDFs at all (22.10.2026) */
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #2b2118; color: #fff; font-family: "Segoe UI", Arial, sans-serif; }
+  #bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    background: linear-gradient(135deg, #7a4f2b, #a9693a); box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+  #bar a, #bar button { color: #fff; background: rgba(255,255,255,.16); border: 0; border-radius: 9px; padding: 7px 12px;
+    font: inherit; font-size: .95em; text-decoration: none; cursor: pointer; white-space: nowrap; }
+  #bar a:hover, #bar button:hover { background: rgba(255,255,255,.3); }
+  #title { flex: 1; min-width: 0; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #count { opacity: .85; font-size: .9em; white-space: nowrap; }
+  #pages { padding: 10px 0 40px; }
+  .pg { display: block; width: calc(100% - 16px); max-width: 1600px; margin: 0 auto 10px; background: #fff;
+    box-shadow: 0 3px 14px rgba(0,0,0,.45); border-radius: 4px; }
+  #msg { text-align: center; padding: 40px 16px; font-size: 1.1em; }
+  #msg a { color: #f3d9b8; }
+</style>
+</head>
+<body>
+<div id="bar">
+  <a id="back" href="./" title="חזרה לאינדקס השיעורים">→ לכל השיעורים</a>
+  <span id="title"></span>
+  <span id="count"></span>
+  <button id="full" type="button" title="מסך מלא">⛶</button>
+  <a id="dl" href="#" download title="הורדת הקובץ">⬇️ הורדה</a>
+</div>
+<div id="pages"></div>
+<div id="msg">טוען את המצגת…</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function () {
+  var f = new URLSearchParams(location.search).get("f") || "";
+  var msg = document.getElementById("msg"), pagesEl = document.getElementById("pages");
+  // only a file of this folder (a relative path to a PDF), never an address from elsewhere
+  if (!/\.pdf$/i.test(f) || /^[a-z]+:|^\/\/|\.\.\//i.test(f)) { msg.textContent = "לא נמצאה מצגת להצגה."; return; }
+  var url = new URL(f.split("/").map(encodeURIComponent).join("/"), location.href).href;
+  var name = decodeURIComponent(url.split("/").pop()).replace(/\.pdf$/i, "");
+  document.getElementById("title").textContent = name;
+  document.title = name + " – חומש דברים";
+  document.getElementById("dl").href = url;
+  document.getElementById("full").onclick = function () {
+    var d = document.documentElement;
+    if (document.fullscreenElement) document.exitFullscreen(); else if (d.requestFullscreen) d.requestFullscreen();
+  };
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  pdfjsLib.getDocument(url).promise.then(function (pdf) {
+    msg.remove();
+    var count = document.getElementById("count"), canvases = [];
+    count.textContent = pdf.numPages + " שקופיות";
+    function draw(i) {   // a page is drawn when it comes near the screen, at the width it is shown in
+      var c = canvases[i - 1];
+      if (c.dataset.w == c.clientWidth) return;
+      c.dataset.w = c.clientWidth;
+      pdf.getPage(i).then(function (page) {
+        var v1 = page.getViewport({ scale: 1 }), dpr = window.devicePixelRatio || 1;
+        var v = page.getViewport({ scale: c.clientWidth / v1.width * dpr });
+        c.width = v.width; c.height = v.height;
+        page.render({ canvasContext: c.getContext("2d"), viewport: v });
+      });
+    }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) draw(+e.target.dataset.i); });
+    }, { rootMargin: "800px 0px" });
+    var first;
+    for (var i = 1; i <= pdf.numPages; i++) {
+      var c = document.createElement("canvas");
+      c.className = "pg"; c.dataset.i = i;
+      pagesEl.appendChild(c); canvases.push(c);
+      io.observe(c);
+    }
+    // the right height before drawing (16:9 is the usual slide), so scrolling does not jump
+    pdf.getPage(1).then(function (p) {
+      var v = p.getViewport({ scale: 1 });
+      canvases.forEach(function (c) { c.style.aspectRatio = v.width + " / " + v.height; });
+    });
+    window.addEventListener("resize", function () {
+      canvases.forEach(function (c, k) { var r = c.getBoundingClientRect(); if (r.bottom > -800 && r.top < innerHeight + 800) draw(k + 1); });
+    });
+    window.addEventListener("scroll", function () {
+      var mid = innerHeight / 2, n = 1;
+      canvases.forEach(function (c, k) { if (c.getBoundingClientRect().top < mid) n = k + 1; });
+      count.textContent = n + " / " + pdf.numPages;
+    }, { passive: true });
+  }).catch(function () {
+    msg.innerHTML = 'לא הצלחנו להציג את המצגת. <a href="' + url + '">פתיחת הקובץ עצמו</a>';
+  });
+})();
+</script>
+</body>
+</html>
