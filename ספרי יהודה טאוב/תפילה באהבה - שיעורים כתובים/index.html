@@ -52,17 +52,19 @@
   function emo(t){ var e = ""; D.topics.forEach(function(x){ if (x.k === t) e = x.e; }); return e; }
   function sid(s){ return "s-" + s.replace(/[\s"'״׳,–]+/g, "-"); }
   function norm(s){ return String(s || "").replace(/[֑-ׇ]/g, "").replace(/["'״׳]/g, "").toLowerCase(); }
+  // the sub-topic of a lesson inside topic t: its own place, or a place from its video's playlists (l.m), else null
+  function subIn(l, t){ if (l.tp === t) return l.sb; var m = (l.m || []).filter(function(x){ return x[0] === t; })[0]; return m ? m[1] : null; }
   function href(l){ return "l/" + encodeURIComponent(l.f); }
-  function card(l, snip){
-    var c = col(l.tp);
+  function card(l, snip, sb){
+    var c = col(l.tp); sb = sb || l.sb;
     return '<a class="card" href="' + href(l) + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '">' +
       '<div class="pic">' + (l.n > 1 ? '<span class="parts">🎬 ' + l.n + ' חלקים</span>' : "") +
       (l.v ? '<img src="https://i.ytimg.com/vi/' + l.v + '/mqdefault.jpg" alt="" loading="lazy">' : esc(emo(l.tp))) + "</div>" +
-      '<div class="body"><span class="cat">' + esc(emo(l.tp) + " " + l.sb) + "</span><h3>" + esc(l.t) + "</h3>" +
+      '<div class="body"><span class="cat">' + esc(emo(l.tp) + " " + sb) + "</span><h3>" + esc(l.t) + "</h3>" +
       (l.s ? '<span class="sp">🎙️ ' + esc(l.s) + "</span>" : "") + "<p>" + (snip || esc(l.x) + "…") + "</p>" +
       '<div class="foot"><span>' + (l.v ? "📺 סרטון + 📖 טקסט" : "📖 טקסט") + '</span><span class="go">לשיעור ⟵</span></div></div></a>';
   }
-  function counts(){ var c = {}; D.lessons.forEach(function(l){ c[l.tp] = (c[l.tp] || 0) + 1; }); return c; }
+  function counts(){ var c = {}; D.lessons.forEach(function(l){ c[l.tp] = (c[l.tp] || 0) + 1; (l.m || []).forEach(function(x){ c[x[0]] = (c[x[0]] || 0) + 1; }); }); return c; }
   function chips(){
     var c = counts();
     $("chips").innerHTML = '<button class="chip' + (topic ? "" : " on") + '" data-t="">🏠 כל הנושאים<span class="n">' + D.lessons.length + "</span></button>" +
@@ -75,19 +77,19 @@
     $("subtoc").innerHTML = "";
     $("view").innerHTML = '<div class="topics">' + D.topics.filter(function(t){ return c[t.k]; }).map(function(t){
       var p = col(t.k), subs = {};
-      D.lessons.forEach(function(l){ if (l.tp === t.k) subs[l.sb] = 1; });
+      D.lessons.forEach(function(l){ var s = subIn(l, t.k); if (s) subs[s] = 1; });
       return '<button class="topic" data-t="' + esc(t.k) + '" style="--c1:' + p[0] + ';--c2:' + p[1] + '"><div class="band">' + t.e + '<span class="cnt">' + c[t.k] + ' שיעורים</span></div>' +
         '<div class="tb"><h3>' + esc(t.k) + '</h3><div class="subs">' + t.subs.filter(function(s){ return subs[s]; }).map(function(s){ return "<span>" + esc(s) + "</span>"; }).join("") + "</div></div></button>"; }).join("") + "</div>";
   }
   function topicView(){
     var t = D.topics.filter(function(x){ return x.k === topic; })[0], by = {};
-    D.lessons.forEach(function(l){ if (l.tp === topic) (by[l.sb] = by[l.sb] || []).push(l); });
+    D.lessons.forEach(function(l){ var s = subIn(l, topic); if (s) (by[s] = by[s] || []).push(l); });
     var subs = t.subs.filter(function(s){ return by[s]; });
     $("gridTitle").textContent = "";
     $("subtoc").innerHTML = subs.length > 1 ? '<div class="subtoc"><b>' + esc(t.e + " " + t.k) + "</b>" + subs.map(function(s){
       return '<a href="#' + sid(s) + '" data-s="' + sid(s) + '">' + esc(s) + '<span class="n">' + by[s].length + "</span></a>"; }).join("") + "</div>" : "";
     $("view").innerHTML = '<div class="grid">' + subs.map(function(s){
-      return '<h2 class="ph" id="' + sid(s) + '">' + esc(s) + '<span class="n">' + by[s].length + ' שיעורים</span>' + (subs.length > 1 ? '<a href="#top">⬆ לראש הנושא</a>' : "") + "</h2>" + by[s].map(function(l){ return card(l); }).join(""); }).join("") + "</div>";
+      return '<h2 class="ph" id="' + sid(s) + '">' + esc(s) + '<span class="n">' + by[s].length + ' שיעורים</span>' + (subs.length > 1 ? '<a href="#top">⬆ לראש הנושא</a>' : "") + "</h2>" + by[s].map(function(l){ return card(l, "", s); }).join(""); }).join("") + "</div>";
   }
   var TXN = {};   // file -> text without niqqud, for fast matching
   function snippet(text, w, f){
@@ -102,7 +104,7 @@
     var w = norm(q), hits = [];
     if (!TX && !txLoading) { txLoading = true; fetch("texts.json", {cache:"force-cache"}).then(function(r){ return r.json(); }).then(function(t){ TX = t; if (q) render(); }).catch(function(){}); }
     D.lessons.forEach(function(l){
-      if (topic && l.tp !== topic) return;
+      if (topic && !subIn(l, topic)) return;
       var meta = norm([l.t, l.s, l.sb, l.tp].join(" "));
       if (meta.indexOf(w) >= 0) hits.push([0, l, ""]);
       else if (TX && TX[l.f]) { var s = snippet(TX[l.f], w, l.f); if (s) hits.push([1, l, s]); }
@@ -110,7 +112,7 @@
     hits.sort(function(a, b){ return a[0] - b[0]; });
     $("subtoc").innerHTML = "";
     $("gridTitle").textContent = hits.length ? hits.length + " שיעורים נמצאו" + (TX ? "" : " (מחפש גם בתוך הטקסט...)") : "";
-    $("view").innerHTML = '<div class="grid">' + hits.slice(0, shown).map(function(h){ return card(h[1], h[2]); }).join("") + "</div>" +
+    $("view").innerHTML = '<div class="grid">' + hits.slice(0, shown).map(function(h){ return card(h[1], h[2], topic ? subIn(h[1], topic) : ""); }).join("") + "</div>" +
       (hits.length > shown ? '<button class="more" id="more">עוד ' + (hits.length - shown) + " תוצאות</button>" : "");
     return hits.length;
   }
@@ -133,7 +135,7 @@
   fetch("lessons.json", {cache: "no-cache"}).then(function(r){ return r.json(); }).then(function(d){
     D = d;
     var sp = {}; d.lessons.forEach(function(l){ if (l.s) sp[l.s] = 1; });
-    $("stats").innerHTML = '<span class="stat">📖 ' + d.lessons.length + ' שיעורים</span><span class="stat">🗂️ ' + Object.keys(counts()).length + ' נושאים</span><span class="stat">🎙️ ' + Object.keys(sp).length + " מרצים</span>";
+    $("stats").innerHTML = '<span class="stat">📖 ' + d.lessons.length + ' שיעורים</span><span class="stat">🗂️ ' + d.topics.length + ' נושאים</span><span class="stat">🎙️ ' + Object.keys(sp).length + " מרצים</span>";
     var m = decodeURIComponent(location.hash || "").match(/^#t=(.+)$/);
     topic = m && d.topics.some(function(t){ return t.k === m[1]; }) ? m[1] : "";
     render();
