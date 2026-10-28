@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 איסור נקמה ונטירה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/%D7%A2%D7%95%D7%9C%D7%9D%20%D7%94%D7%A8%D7%92%D7%A9%20%D7%94%D7%99%D7%94%D7%95%D7%93%D7%99/">📚 כל השיעורים</a>
+  <h1>🍭 איסור נקמה ונטירה</h1>
+  <p>מה בדיוק אוסרת התורה ב"לא תקום ולא תטור", מתי זכירת העוול מותרת, ושש דרכים להוציא את הפגיעה מן הלב</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ איסור נקמה ונטירה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/7CJF65-lotA?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/7CJF65-lotA/hqdefault.jpg" alt="איסור נקמה ונטירה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=7CJF65-lotA" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פתיחה: נקמה מהי</div>
+      <h3 class="story-title">📜 "לא תקום ולא תטור"</h3>
+      <p>בפרשת קדושים אנו קוראים: "לֹא תִקֹּם וְלֹא תִטֹּר אֶת בְּנֵי עַמֶּךָ וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ אֲנִי ה'". אלה שתי מצוות לא תעשה, ומיד אחריהן המצווה הגדולה של אהבת הרֵעַ. השיעור עוסק בהן כלימוד עיוני: מה בדיוק נאסר, מתי האיסור חל, ואיך אפשר בפועל לקיים אותו.</p>
+      <p>השאלה רחבה יותר ממה שנדמה. יש להבחין בין יחס ליהודי שפגע בנו לבין יחס לאויבים מבחוץ, ובין נקמה שנובעת משנאה לבין פעולה שמטרתה למנוע רע בעתיד. בשיעור הזה עיקר העיון הוא באיסור כלפי בני עמנו, והשאלה כלפי אויבים מבחוץ נשארה להמשך.</p>
+      <p>אחרי השואה נשאלה שאלה כואבת: האם צריך לנקום? היו יחידים שביקשו לצאת לפעולות נקמה. אבל הקול שנשמע אז ברוב העם היה אחר: הנקמה הטובה ביותר היא לבוא לארץ ישראל, לבנות אותה, ולהקים משפחות. כל ילד יהודי שנולד הוא התשובה הגדולה ביותר למי שביקש להשמיד.</p>
+      <p>בשיעור הוצגה תמונה שצולמה ברחבת הכותל ביום השואה: אישה בת מאה וארבע, ניצולת שואה, שביקשה מכל צאצאיה לבוא ולהצטלם יחד. מאישה אחת יצאה משפחה שלמה, רחבה, שממלאת את הרחבה. זו תמונה שאין מה להוסיף עליה.</p>
+      <p class="bold-para">המצווה מלמדת מתי נקמה ונטירה אסורות, וגם מתי זכירת העוול אינה בכלל האיסור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פתיחה: נקמה מהי</div>
+      <h3 class="story-title">🪓 המגל והקרדום</h3>
+      <p>רש"י מביא על הפסוק את דברי חז"ל, ודבריו מוכרים לכולם. אדם אמר לחברו: השאילני את מגלך. אמר לו: לא. למחר בא השני וביקש: השאילני את קרדומך. אמר לו: איני משאיל לך, כשם שלא השאלת לי. זו נקימה.</p>
+      <p>ואם השאיל לו, אבל אמר לו: הא לך, איני כמותך שלא השאלת לי – זו נטירה. כלומר, הוא עשה את הטובה, אבל צירף אליה את החשבון הישן. המעשה נראה נדיב, והמילים מגלות שהפגיעה עדיין שמורה בפנים.</p>
+      <p>מכאן עולה שאלה פשוטה, ויסודית. האם העבירה היא האמירה "איני כמותך"? או שמא עצם הזיכרון בלב – כשאני זוכר מה שעשו לי וכואב לי עליו – כבר הוא איסור נטירה? במילים אחרות: האם האיסור הוא בפה או בלב?</p>
+      <p>השאלה הזאת אינה רק דקדוק. היא קובעת מה נדרש מאיתנו: לשתוק, או לעבוד על הלב עצמו. ואם הדרישה היא על הלב, צריך גם להבין איך אפשר בכלל לעמוד בה.</p>
+      <p class="bold-para">נקמה היא לסרב כפי שסירבו לך; נטירה היא להיטיב ולהזכיר את העוול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נטירה – זיכרון או שמירה</div>
+      <h3 class="story-title">🧹 הרמב"ן והחינוך: מחיקת החטא מן הלב</h3>
+      <p>הרמב"ן בפירושו לתורה מסביר את סדר המצוות בפסוקים. תחילה ציוותה התורה "לא תשנא את אחיך בלבבך". אחר כך הוסיפה: לא רק שלא תשנא, אלא גם לא תנקום ממנו ולא תשמור בלבך את מה שעשה לך. כי ייתכן שאדם אינו שונא את חברו, ובכל זאת זוכר את החטא בלבו. לכן הזהירה התורה שימחה את פשע אחיו מלבו, ורק אחר כך ציוותה שיאהב אותו.</p>
+      <p>יש כאן מדרגות: לא לשנוא, לא לנקום, לא לשמור בלב – ומשם לאהבה. הרמב"ן אומר במפורש שהמצווה היא למחות את החטא מן הלב.</p>
+      <p>גם ספר החינוך כותב כך: נצטווינו שלא נשמור בלבנו את מה שהרע לנו אחד מישראל, ואף על פי שלא נגמול לו על מעשיו – אפילו מזכירת חטאו בלבד נמנענו. וגם הרמב"ם בהלכות דעות כותב שימחה את הדבר מלבו ולא יטור אותו.</p>
+      <p>אם כן, לדעת הראשונים האיסור אינו רק במילים. גם מי שלא אמר דבר, אבל שומר את העוול בלבו, נכנס לגדר נטירה.</p>
+      <p class="bold-para">לדעת הראשונים, האיסור חל גם על השמירה בלב, בלי אמירה כלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נטירה – זיכרון או שמירה</div>
+      <h3 class="story-title">⌨️ כשאין כפתור מחיקה</h3>
+      <p>כאן מתעוררים שני קשיים. הראשון: אם העבירה היא כבר בלב, למה חז"ל תיארו דווקא מקרה שבו הוא אומר "איני כמותך"? גם בלי לומר דבר, כבר עבר.</p>
+      <p>הקושי השני גדול יותר. כל אחד חווה לפחות פעם בחיים שמישהו העליב אותו באמת, לא בדבר קטן. בשיעור הובאה דוגמה של אדם שסיכם מראש תשלום על שירות, ובא הצד השני, יחד עם קרובים רבים, והרעיש עליו בצעקות. בסוף נמצא פתרון והחוב שולם, אבל הצעקות והעלבון נשארו. הוא לא אשם בדבר, והכל סוכם מראש.</p>
+      <p>ואחרי שהסיפור נגמר, נשאלת השאלה: איך מוחקים דבר כזה מן הלב? עוד לא המציאו לאדם כפתור "מחק". אדם אינו שולט על כל המחשבות שעולות בו. הזיכרון עולה מאליו, ואי אפשר לצוות עליו להיעלם.</p>
+      <p>אם כן, מה התורה מבקשת? האם היא דורשת מאיתנו דבר שאינו בידינו? כדי להבין, צריך לדייק במילה שבחרה התורה.</p>
+      <p class="bold-para">אדם אינו שולט על כל מחשבה, ולכן צריך להבין מה בדיוק התורה דורשת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · נטירה – זיכרון או שמירה</div>
+      <h3 class="story-title">🍇 "שָׂמֻנִי נֹטֵרָה אֶת הַכְּרָמִים"</h3>
+      <p>התורה לא אמרה "לא תזכור". היא אמרה "לא תטור". ומה פירוש המילה? בשיר השירים אומרת הכלה: "אַל תִּרְאוּנִי שֶׁאֲנִי שְׁחַרְחֹרֶת שֶׁשְּׁזָפַתְנִי הַשָּׁמֶשׁ... שָׂמֻנִי נֹטֵרָה אֶת הַכְּרָמִים". שמו אותי לשמור על הכרמים, עמדתי בשמש ולכן השחרתי. "נוטרה" היא שומרת.</p>
+      <p>אם כן, "לא תטור" פירושו: לא תשמור. לא נאסר עליך לזכור, נאסר עליך לעשות פעולה של שמירה. וכך מפרש רש"י בגמרא את לשון "נוקם ונוטר": שהדבר שמור בלבו ולא הסיחו מדעתו. הוא אינו מפסיק לחשוב עליו.</p>
+      <p>יש אנשים שעברו פגיעה קשה, והיא חוזרת אליהם שוב ושוב בלי שליטה. זה מצב שצריך לטפל בו בדרכים מקצועיות, והוא אינו ענייננו כאן. אבל גם אצל אדם רגיל יש מנגנון דומה: הוא נפגע, ובמקום לסיים עם הפגיעה הוא חוזר אליה. למה הוא עשה לי את זה? ולמה? וכל רגע הוא מלבה את הכעס מחדש.</p>
+      <p>על זה אומרת התורה: אל תשמור. אל תעשה לזה "שמירה" כמו במחשב. עזוב, הרגע, ותן לדבר להימחק לאט לאט. זו מצווה שאדם יכול לקיים.</p>
+      <p class="bold-para">"לא תטור" פירושו לא תשמור: האיסור הוא על פעולת השמירה, לא על הזיכרון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתי מותר לזכור</div>
+      <h3 class="story-title">🗣️ למה הגמרא תפסה את "איני כמותך"</h3>
+      <p>עכשיו מובן גם הקושי הראשון. קשה מאוד להגדיר מתי אדם "שומר" ומתי הזיכרון פשוט עולה מעצמו. זה תחום לא מוגדר, ואי אפשר לסמן בו קו מדויק.</p>
+      <p>אבל כשאדם אומר "איני כמותך", ברור מה קורה. באותו רגע הוא מעורר מחדש את כל הרגשות, פותח שוב את החשבון ומחזיר אותו לחיים. לכן חז"ל בחרו דווקא במקרה הזה: כאן הוא ודאי עובר.</p>
+      <p>אין זה אומר שבלי אמירה הכל מותר. מי שעושה פעולת שמירה – שאינו מפסיק לחשוב על הפגיעה ומלבה אותה – עובר גם בלי לומר מילה. וכך גם מי שמספר את הדבר לאחרים: אם הוא מספר כדי להירגע ולהתייעץ, זה דבר אחד. אבל אם הוא מספר כדי להתעצבן מחדש ולהחזיק את הכעס חי, גם זו שמירה.</p>
+      <p>הכלל הוא: הזיכרון אינו העבירה. ההזנה של הזיכרון, השמירה הפעילה עליו, היא העבירה.</p>
+      <p class="bold-para">האמירה היא הסימן המובהק לנטירה, אבל גם בלי אמירה – מי ששומר את הכעס עובר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מתי מותר לזכור</div>
+      <h3 class="story-title">🛡️ זכירה לשם העתיד</h3>
+      <p>נשאלה בשיעור שאלה על סיסמה כמו "לא נשכח ולא נסלח", שנשמעה פעמים אחדות בשיח הציבורי. האם מותר לומר כך? והתשובה שנכתבה בזה היא: הכל תלוי במטרה.</p>
+      <p>אם אדם אינו רוצה לסלוח מפני שהוא שונא, ומבקש שיבוא עונש על מי שפגע – זו בדיוק השמירה שהתורה אסרה. אבל אם המטרה אינה העבר אלא העתיד – לזכור כדי שהדבר לא יחזור, ללמוד ממנו ולהישמר – אין בזה בעיה כלל. האיסור הוא על שמירה "סתם", שמירה של טינה.</p>
+      <p>ראיה לכך מדוד המלך. לפני מותו ביקש משלמה בנו לטפל בשמעי בן גרא, שקילל אותו קללה נמרצת. לכאורה זו נקמה. אבל דוד הבין שיש בדבר תועלת לממלכה: כדי להעמיד את המלכות ולחזק את כבודה, צריך שכולם יראו שאין פוגעים במלך.</p>
+      <p>כשפעולה נעשית לתועלת – להעמיד סדר, לחזק את מה שצריך לעמוד – אין בה איסור נקמה ונטירה. וכך גם מי שזוכר מה שהיה כדי ללמוד ממנו ולהישמר בעתיד. החשבון אינו עם האדם שפגע, אלא עם מה שצריך להיבנות הלאה.</p>
+      <p class="bold-para">זכירה שמטרתה למנוע פגיעה עתידית או להעמיד סדר אינה בכלל "לא תטור".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שש דרכים לשחרר את הלב</div>
+      <h3 class="story-title">✋ הירושלמי: היד הימנית והיד השמאלית</h3>
+      <p>אחרי שהבנו מה אסור, נשאלת השאלה המעשית: איך אדם מוריד את זה מן הלב? נאמרו בזה שש דרכים, וקל לזכור אותן: שלוש מן הראשונים – הירושלמי, הרמב"ם והחינוך – ושלוש מדרכי הלימוד – קבלה, חסידות ומוסר.</p>
+      <p>הירושלמי מביא משל. אדם אחז כלי בידו הימנית, ובטעות פגע בידו השמאלית. כאב עצום. האם תחזור היד השמאלית ותיקח את הכלי כדי להכות בחזרה את היד הימנית? הרי זה אותו אדם, ואותו גוף. אף אחד לא עושה כך.</p>
+      <p>וזה, אומר הירושלמי, הקשר בין "לא תקום ולא תטור" לבין "ואהבת לרעך כמוך". אם אדם מרגיש שכולנו עם אחד, גוף אחד, הוא מבין שנקמה בחברו היא מכה בעצמו. מי שנוקם, דופק שוב ושוב על היד שלו.</p>
+      <p>זו הדרך הראשונה: לא לשכנע את עצמך שהפגיעה לא כאבה, אלא להרחיב את ההסתכלות. מי שפגע בך אינו זר. הוא חלק מאותו גוף.</p>
+      <p class="bold-para">כל ישראל גוף אחד, ומי שנוקם בחברו דומה למי שמכה יד אחת בחברתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שש דרכים לשחרר את הלב</div>
+      <h3 class="story-title">🏖️ הרמב"ם: ארגז החול</h3>
+      <p>הדרך השנייה היא של הרמב"ם, שמלמד שמי שמבין כי עסקי העולם הזה הבלים, אינו רואה בהם דבר שכדאי לנקום עליו. בשיעור הומחש הדבר במשל. ילד קטן בנה ארמון בארגז חול, וילד אחר בא ושבר לו אותו. הוא רץ אל אביו, שהוא מלך: אבא, תעניש אותו! תראה לו מה זה! אתה מלך, אתה יכול לעשות לו הכל.</p>
+      <p>המלך אינו מגיב. הוא יודע שארמון בחול אינו שווה דבר, ואין כאן סיבה לנקום. וכך אדם מבוגר: הוא מבין שעסקי העולם הזה, פחות או יותר, הבלים. חבל להרוס חיים שלמים בשביל ארגז חול.</p>
+      <p>ובשיעור הובא סיפור מוכר על הגר הצדק מווילנא, בדורו של הגר"א. כשעמדו להוציא אותו להורג שאלו אותו מה יעשה בשמיים למי שהלשינו עליו. הוא סיפר שכילד, כשבנו שבר את מה שבנה בחול, רצה שאביו יעניש. אביו אמר לו שכשיגדל יבין שאין זה עניין. כך, אמר, כשאגיע לשמיים ואראה כמה הבל הוא העולם הזה, לא יהיה לי שום רצון לנקום בכם.</p>
+      <p>זו מדרגה גבוהה מאוד. אבל גם מי שאינו מגיע אליה יכול לשאול את עצמו בכל פגיעה: האם זה ארמון, או ארגז חול?</p>
+      <p class="bold-para">מי שמבין עד כמה עסקי העולם הזה קטנים, אינו מוצא בהם סיבה לנקום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שש דרכים לשחרר את הלב</div>
+      <h3 class="story-title">📨 החינוך: "ה' אמר לו קלל"</h3>
+      <p>הדרך השלישית, המפורסמת מכולן, היא של ספר החינוך. כשקורה לאדם דבר רע מחברו, עליו להאמין שהכל מאת ה'. אילו לא רצה הקדוש ברוך הוא שהדבר יקרה, הוא לא היה קורה. ואם נתן לו להתקיים, סימן שיש בו תועלת, גם אם אינה נראית.</p>
+      <p>וכך אמר דוד המלך על שמעי בן גרא, כשקילל אותו ואנשיו רצו להתנפל עליו: "ה' אָמַר לוֹ קַלֵּל". דוד לא ראה לפניו את שמעי, אלא את השליחות שמאחוריו.</p>
+      <p>אם כן, למה לנקום באדם? הוא אינו אלא שליח. ומי שכועס על השליח במקום להבין את השליחות, מפספס את מה שבא אליו. במקום לשאול "למה הוא עשה לי", שואלים: מה רוצים ממני מן השמיים.</p>
+      <p>שלוש הדרכים של הראשונים משלימות זו את זו: הירושלמי מלמד לראות את הפוגע כחלק ממני, הרמב"ם מלמד לראות את הפגיעה בגודלה האמיתי, והחינוך מלמד לראות את היד שמאחורי הכל.</p>
+      <p class="bold-para">מה שקרה לאדם בא מאת ה', והפוגע הוא רק שליח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שש דרכים לשחרר את הלב</div>
+      <h3 class="story-title">🌿 קבלה, חסידות ומוסר</h3>
+      <p>שלוש הדרכים הבאות באות מתורת הקבלה, מן החסידות ומספרי המוסר. המקובלים אומרים: כפי שאדם מתנהג למטה, כך מתנהגים עמו למעלה. אם אתה מוחל ומוותר לחברך, גם בשמיים מוחלים לך ומוותרים לך. במחילה אחת קטנה אדם זוכה שימחלו לו על דברים רבים.</p>
+      <p>בחסידות מדברים הרבה על ביטול היש. מי שמבטל את עצמו אינו נפגע כל כך, וגם אינו פוגע באחרים. פגעו בך? למה לעשות מזה עניין גדול כל כך? חלק גדול מן הכאב בא מכך שאדם עושה מעצמו דבר גדול. מי שמקטין את ה"אני", מקטין גם את העלבון.</p>
+      <p>ובספרי המוסר מובאת עצה פשוטה ומעשית: לשבת וללמוד את הלכות נקמה ונטירה. הלימוד עצמו פועל על האדם. מי שעוסק בהלכות האלה, מבין מה נדרש ממנו ומתרגל אליהן, נעשה לאט לאט אדם שאינו נוקם ואינו נוטר.</p>
+      <p>שש הדרכים אינן חלופות זו לזו, וכל אחד יכול למצוא את הדרך שמדברת אליו. כולן מובילות לאותו מקום: לב נקי, שמסוגל לקיים "ואהבת לרעך כמוך".</p>
+      <p class="bold-para">מחילה למטה מביאה מחילה למעלה, ביטול היש מקטין את העלבון, ולימוד ההלכות עצמו מרפא את הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/7CJF65-lotA · 2025-09-10 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"פתיחה: נקמה מהי","icon":"📖","color":"#c62b6b","stories":[{"id":1,"title":"\"לא תקום ולא תטור\"","icon":"📜"},{"id":2,"title":"המגל והקרדום","icon":"🪓"}]},{"id":2,"name":"נטירה – זיכרון או שמירה","icon":"💭","color":"#6d28d9","stories":[{"id":3,"title":"הרמב\"ן והחינוך: מחיקת החטא מן הלב","icon":"🧹"},{"id":4,"title":"כשאין כפתור מחיקה","icon":"⌨️"},{"id":5,"title":"\"שָׂמֻנִי נֹטֵרָה אֶת הַכְּרָמִים\"","icon":"🍇"}]},{"id":3,"name":"מתי מותר לזכור","icon":"⚖️","color":"#e08e00","stories":[{"id":6,"title":"למה הגמרא תפסה את \"איני כמותך\"","icon":"🗣️"},{"id":7,"title":"זכירה לשם העתיד","icon":"🛡️"}]},{"id":4,"name":"שש דרכים לשחרר את הלב","icon":"🌿","color":"#1e88b8","stories":[{"id":8,"title":"הירושלמי: היד הימנית והיד השמאלית","icon":"✋"},{"id":9,"title":"הרמב\"ם: ארגז החול","icon":"🏖️"},{"id":10,"title":"החינוך: \"ה' אמר לו קלל\"","icon":"📨"},{"id":11,"title":"קבלה, חסידות ומוסר","icon":"🌿"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
