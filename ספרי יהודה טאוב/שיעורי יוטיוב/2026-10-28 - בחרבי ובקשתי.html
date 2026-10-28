@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 בחרבי ובקשתי</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 בחרבי ובקשתי</h1>
+  <p>שני סוגי תפילה – החרב של אנשי כנסת הגדולה והקשת של המילים האישיות – ומדוע ההודיה צריכה לצאת במילים שלך</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חרב וקשת של יעקב אבינו</div>
+      <h3 class="story-title">⚔️ שכם שנלקחה בחרב ובקשת</h3>
+      <p>בפרשת ויחי אומר יעקב אבינו ליוסף: "וַאֲנִי נָתַתִּי לְךָ שְׁכֶם אַחַד עַל אַחֶיךָ, אֲשֶׁר לָקַחְתִּי מִיַּד הָאֱמֹרִי בְּחַרְבִּי וּבְקַשְׁתִּי". יוסף מקבל חלק יתר על אחיו, ויעקב מסביר מדוע הוא יכול לתת לו אותו: זה חלק ששייך לי, אני לקחתי אותו בחרבי ובקשתי.</p>
+      <p>שואלת הגמרא במסכת בבא בתרא: וכי בחרבו ובקשתו לקח? והלא כבר נאמר "כִּי לֹא בְקַשְׁתִּי אֶבְטָח וְחַרְבִּי לֹא תוֹשִׁיעֵנִי". אלא "חרבי" זו תפילה, "בקשתי" זו בקשה.</p>
+      <p>מעניין מאוד שגם תרגום אונקלוס אינו מתרגם כאן חרב וקשת כפשוטם, אלא "בצלותי ובבעותי" – בתפילתי ובבקשתי. והרי דרכו של התרגום לפרש את התורה כפשוטה, ולא לדרוש דרשות. מה הכריח אותו לצאת כאן מן הפשט?</p>
+      <p class="bold-para">יעקב אבינו מעיד שלקח את שכם "בחרבי ובקשתי" – אף שלא מצאנו שנלחם בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חרב וקשת של יעקב אבינו</div>
+      <h3 class="story-title">📜 מה הכריח את התרגום</h3>
+      <p>בשיעור הובאו שני הסברים. בספר "אש דת" מוסבר שבתורה לא נזכר בשום מקום שיעקב אבינו נלחם בשכם. מה שכתוב הוא שאחרי מעשה שמעון ולוי "וַיְהִי חִתַּת אֱלֹקִים עַל הֶעָרִים אֲשֶׁר סְבִיבוֹתֵיהֶם, וְלֹא רָדְפוּ אַחֲרֵי בְּנֵי יַעֲקֹב". הפחד מאת ה' הוא שעצר את האויבים. אם כן יעקב לא אחז בחרב ולא בקשת, ועל כורחנו הכוונה לחרב ולקשת האמיתיות – התפילה והבקשה.</p>
+      <p>בספר "לב שלום" של הרב שלום שבדרון מובא הסבר אחר. לכאורה היה הפסוק צריך לומר "בחרב ובקשת". למה מדגיש יעקב "בחרבי ובקשתי"? מה זה משנה אם ניצח בחרב שלו או בחרב של אחר? מכאן למדו הגמרא והתרגום שמדובר בחרב המיוחדת לי, ליעקב. ומהי? "הַקֹּל קוֹל יַעֲקֹב" – כוחו של יעקב הוא התפילה שאדם מתפלל בכוח פיו.</p>
+      <p>למדנו מכאן שיעקב אבינו ניצח את אויביו בתפילתו ובבקשתו. ועכשיו צריך להבין: מה ההבדל בין "תפילה" לבין "בקשה", בין החרב לבין הקשת?</p>
+      <p class="bold-para">החרב המיוחדת ליעקב היא התפילה – "הקול קול יעקב".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שני סוגי תפילה</div>
+      <h3 class="story-title">🗡️ החרב והקשת</h3>
+      <p>בחידושי הגרי"ז מבריסק על פרשת השבוע מובא יסוד גדול בעבודת ה': יש שני דינים בתפילה. כדי להבין אותם, נתבונן בהבדל שבין חרב לקשת.</p>
+      <p>החרב היא כלי שחותך מעצמו. היא כבדה וחדה, ויש בה כוח בפני עצמה. הקשת, לעומת זאת, אינה כלום כשהיא לבדה. אם תכה בה אדם, לא יקרה לו דבר. כל כוחה בא ממה שמכניסים לתוכה: מותחים אותה חזק, והחץ רץ מהר, ומהירות המרוצה היא שנותנת לו את הכוח.</p>
+      <p>כך יש שני סוגי תפילה. האחד הוא התפילה שקבעו אנשי כנסת הגדולה, תפילת שמונה עשרה. זו החרב. בכל מילה ומילה הכניסו חכמים כוונות עמוקות לאין מספר, וכל מילה היא מפתח שפותח עולמות. השני הוא הבקשה שכל יהודי מבקש על צרכיו, מקירות ליבו. זו הקשת. אין לה את חדות החרב, היא אינה מכוונת כנגד כל העולמות, אבל יש בה כוח אחר – כוח הלב.</p>
+      <p class="bold-para">החרב חזקה מעצמה, והקשת חזקה רק מכוח המתח שמכניסים בה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שני סוגי תפילה</div>
+      <h3 class="story-title">💓 הלב שנכנס במילים</h3>
+      <p>כאשר יהודי מבקש בקשה שנובעת מהמילים שלו, הלב שלו נכנס בכל מילה. זהו כוח המתח של הקשת, כוח המרוצה, והוא שפותח את כל השערים. היו שהוסיפו רמז נאה: "בקשתי" – אל תקרי "בְּקַשְׁתִּי" אלא "בַּקָּשָׁתִי", הבקשה שלי.</p>
+      <p>בספר שם משמואל מובא בשם אביו, בעל האבני נזר: הקשת, כל מה שהיא מתוחה יותר, כוחה חזק יותר, והחץ יורד רחוק יותר. כך בקשתו של יהודי. ככל שהלב נרגש יותר, ככל שנפשו מתעטפת בתפילה, עד שהתפילה מתפרצת מליבו כחץ מקשת – תפילה כזאת עולה ובוקעת עד כיסא הכבוד.</p>
+      <p>יש מעלה בזה ויש מעלה בזה, וצריך את שניהם. לתפילת אנשי כנסת הגדולה יש כוח אדיר, כי כל מילה בה מכוונת. ולבקשה האישית יש מעלה עצומה משלה, כי יש בה המון לב.</p>
+      <p class="bold-para">ככל שהלב מתוח ונרגש יותר, הבקשה עולה גבוה יותר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · שני סוגי תפילה</div>
+      <h3 class="story-title">📖 עד כמה חשובה הקשת</h3>
+      <p>עד כמה חשובה הקשת, אפשר לראות מדברים מבהילים שכתב החיי אדם בספרו קיצור ספר חרדים. לדעת הרבה פוסקים, הוא כותב, מצוות עשה להתפלל בכל יום בכוונת הלב, שנאמר "וּלְעָבְדוֹ בְּכָל לְבַבְכֶם", ואמרו חכמינו: איזו היא עבודה שבלב? זו תפילה. המתפלל בלא כוונה, כאילו לא התפלל כלל.</p>
+      <p>ולכן, הוא ממשיך, ראוי לכל אדם שאחרי תפילת שמונה עשרה יתפלל תפילה קצרה, יבקש במילים שלו את מה שהוא צריך, בלב שלם, כדי לקיים את המצווה.</p>
+      <p>מה הוא מלמד אותנו? יכול להיות שאדם התפלל את כל התפילה, אבל הלב ישן. והמצווה מן התורה היא לעבוד בלב. לכן צריך יהודי לבקש מליבו את מה שכואב לו ואת מה שהוא צריך. בלי זה, אפשר שהתפלל הכול ובכל זאת לא קיים את מצוות "ולעבדו בכל לבבכם".</p>
+      <p class="bold-para">החיי אדם מלמד שבלי בקשה מן הלב אפשר להתפלל את כל התפילה ולא לקיים את המצווה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · להודות במילים שלך</div>
+      <h3 class="story-title">🍷 יסוד ושורש העבודה מודה</h3>
+      <p>מכאן עוברים אל ההודיה. מדוע כל כך חשוב שיהודי לא יסתפק בברכות השחר, ולא יסתפק ב"הודו לה'" וב"מזמור לתודה", אלא יודה לה' בכל יום גם במילים שלו?</p>
+      <p>כך היה נוהג בעל "יסוד ושורש העבודה", והוא מביא לכך דוגמאות. כשקרה לו מקרה שכמעט נגרם לו הפסד, ובסוף לא הפסיד כלום, היה אומר בפה מלא: "מודה אני לפניך, יוצרי ובוראי, יתברך שמך, שהצלתני מן ההפסד". כשכאבו לו השיניים ואחר כך הכאב נרגע, היה נותן שבח והודיה בשמחה עצומה: "מודה אני לפניך שמך ששלחת רפואה לכאבי הגדול". כשהתגלגלה כוס מעל השולחן והיה קרוב לה ליפול ולהישבר, והספיק לתפוס אותה, היה מודה ומשבח בפה מלא.</p>
+      <p>ועוד הוא כותב: כשלומד אדם בספר ולא הבין מקום מסוים, ואחר כך נפתחה לו הכוונה האמיתית, ראוי שיודה בשמחה עצומה: "ריבון כל העולמים, אני נותן שבח והודיה לשמך הגדול על שנתת לי שכל ובינה להבין תורתך הקדושה". ויש שם עוד דוגמאות רבות. תן לחכם ויחכם עוד.</p>
+      <p class="bold-para">בעל יסוד ושורש העבודה היה מודה בפה מלא, במילים שלו, על כל דבר קטן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · להודות במילים שלך</div>
+      <h3 class="story-title">🤲 מודים דרבנן</h3>
+      <p>מניין למד בעל יסוד ושורש העבודה שההודיה צריכה להיות בפה מלא, במילים שלך? נתבונן בדבר מעניין. את כל חזרת הש"ץ אנחנו שומעים מן החזן ועונים אמן, ויוצאים בכך ידי חובה. חוץ מחלק אחד.</p>
+      <p>הגמרא במסכת סוטה שואלת: בשעה ששליח הציבור אומר "מודים", העם מה הם אומרים? ומביאה כמה וכמה דעות, ומכאן נוסח "מודים דרבנן". היה פשוט וברור לגמרא שכאשר החזן אומר "מודים", לא די לענות אמן כמו בשאר הברכות. כל אחד חייב להצטרף ולהודות בעצמו. השאלה היחידה היא מה אומרים.</p>
+      <p>מדוע? בתפילה יש גם עבודת הלב, אבל יש מעלה עצומה גם בעצם אמירת המילים שתיקנו אנשי כנסת הגדולה – זו החרב, ולכן אפשר לצאת בשמיעה. ההודיה, לעומת זאת, כל עניינה הוא רגש הלב: אדם שמרגיש הכרת הטוב למלך מלכי המלכים ומעורר את ליבו בדברי פיו. כאן אין חרב. כאן צריך לב, ולכן אין יוצאים בשומע כעונה.</p>
+      <p class="bold-para">על כל התפילה עונים אמן, אבל ב"מודים" כל אחד חייב להודות בעצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · להודות במילים שלך</div>
+      <h3 class="story-title">☀️ כמה דקות של תודה בכל יום</h3>
+      <p>אם התפילה היא עבודה שבלב, ההודיה היא עבודה שבלב פי כמה וכמה. הרב שטיימן, בספרו "ימלא פי תהלתך", מעיר שברכת "מודים" היא הארוכה שבברכות שמונה עשרה. למה? כי בהודיה צריך לפרט הרבה, כדי שהלב יתעורר. לא מספיק לומר מילים. וכמו בווידוי, שאינו מועיל בשמיעה מאחר, כך בהודיה צריך את המילים שלך. צריך את הקשת.</p>
+      <p>לכן חשוב מאוד שלא להסתפק בברכות השחר ובפסוקי דזמרה. כדאי שלכל יהודי יהיו כמה דקות ביום שבהן הוא מפרט ואומר תודה, כמו בעל יסוד ושורש העבודה: "יוצרי ובוראי, יתברך שמך, מודה אני לך שאני בריא, שחידשת לי חידוש בתורה, שזיכית אותי לקום היום, שלא כואב לי כאן", ועל ניסים ונפלאות ועל עוד אין סוף דברים. במילים שלך, בפה מלא.</p>
+      <p>וכמו שכתוב בספר החינוך, שהאדם מתעורר בדברי פיו. הפה מעורר את הלב, והמילים שלך הן הקשת. הן העיקר במצוות ההודיה, שבוראנו כל כך אוהב שנודה לו בכל יום.</p>
+      <p class="bold-para">המילים שלך הן הקשת שמעוררת את הלב להודות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בקו קול תודה של הרב יהודה טאוב · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"חרב וקשת של יעקב אבינו","icon":"🏹","color":"#c62b6b","stories":[{"id":1,"title":"שכם שנלקחה בחרב ובקשת","icon":"⚔️"},{"id":2,"title":"מה הכריח את התרגום","icon":"📜"}]},{"id":2,"name":"שני סוגי תפילה","icon":"🙏","color":"#6d28d9","stories":[{"id":3,"title":"החרב והקשת","icon":"🗡️"},{"id":4,"title":"הלב שנכנס במילים","icon":"💓"},{"id":5,"title":"עד כמה חשובה הקשת","icon":"📖"}]},{"id":3,"name":"להודות במילים שלך","icon":"💬","color":"#e08e00","stories":[{"id":6,"title":"יסוד ושורש העבודה מודה","icon":"🍷"},{"id":7,"title":"מודים דרבנן","icon":"🤲"},{"id":8,"title":"כמה דקות של תודה בכל יום","icon":"☀️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
