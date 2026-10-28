@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 עצם היום הזה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 עצם היום הזה</h1>
+  <p>קדושתו של עשרה בטבת: למה צמים על מצור, מה פירוש "כתוב לך את שם היום", היום שהיה דוחה שבת, ושני מהלכים – של היערות דבש ושל החתם סופר</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ עצם היום הזה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/-Ngan7WzhYA?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/-Ngan7WzhYA/hqdefault.jpg" alt="עצם היום הזה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=-Ngan7WzhYA" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · צום שאינו כשאר הצומות</div>
+      <h3 class="story-title">📅 מאורע של פעם בעשרים שנה</h3>
+      <p>השיעור נאמר בשנה מיוחדת: עשרה בטבת חל ביום שישי. זה דבר שאינו קורה הרבה, בערך פעם בעשר עד עשרים שנה. ובאותה שנה צמים עד צאת הכוכבים, ונכנסים לשבת כשהצום עוד נמשך.</p>
+      <p>הרב פתח בשתי עובדות מפליאות. הראשונה: מכל הצומות, עשרה בטבת הוא היחיד שיכול לחול ביום שישי. שבעה עשר בתמוז, תשעה באב, צום גדליה ותענית אסתר אינם חלים לעולם ביום שישי.</p>
+      <p>והשנייה הפוכה: כל הצומות האחרים חלים לפעמים בשבת, ואז הם נדחים או מוקדמים. עשרה בטבת הוא היחיד שאינו חל לעולם בשבת.</p>
+      <p>הרב אמר שלכל הדברים האלה יש סיבה. אבל כדי להבין אותה, צריך קודם להבין מה הוא עשרה בטבת, ומה טמון בו. ואז יתברר למה הוא הצום היחיד שחל ביום שישי, למה הוא אינו חל בשבת, ולמה אין דוחים אותו.</p>
+      <p>השיעור נבנה כך: תחילה שאלות, אחר כך המקור בנביא, ואחריו שני מהלכים שנאמרו באחרונים. הראשון, של רבי יהונתן אייבשיץ, הולך יותר על דרך הפשט. השני, של החתם סופר, נוגע ביסודות עמוקים יותר, אך גם אותם הסביר הרב בשפה פשוטה. ובסוף מתברר שכל השאלות מתיישבות זו עם זו, ושהיום הזה קדוש הרבה יותר ממה שנראה במבט ראשון.</p>
+      <p class="bold-para">עשרה בטבת הוא הצום היחיד שחל לפעמים ביום שישי, והיחיד שאינו חל לעולם בשבת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · צום שאינו כשאר הצומות</div>
+      <h3 class="story-title">❓ ארבע שאלות</h3>
+      <p>השאלה הראשונה: למה צריך לצום על מצור? הרי במצור עדיין לא נחרב דבר. בשבעה עשר בתמוז נבקעה החומה, ובתשעה באב נחרב הבית. אבל מצור? עוד לא קרה כלום. ויתרה מזו, המצור הזה אף נפסק באמצע. חיל פרעה יצא, מלך בבל הסתלק לזמן מה, ורק אחר כך חזר. אז מה העניין העצום שבו?</p>
+      <p>השאלה השנייה הקשה אחד מבעלי השו"ת: לא מצינו שתיקנו חכמים צום על המצור שצרו הרומאים על ירושלים, כמו שתיקנו הנביאים על מצור מלך בבל. גם בבית שני היה מצור, ובו יצא רבן יוחנן בן זכאי מירושלים, ובכל זאת אין צום על המצור הזה. ובשאר הצומות אנו מתאבלים דווקא על חורבן בית שני. שבעה עשר בתמוז נקבע לפי בית שני, אף שבבית ראשון נבקעה העיר בתשעה בתמוז. רק עשרה בטבת נקבע על בית ראשון בלבד.</p>
+      <p>השאלה השלישית: אם המצור הראשון נפסק, ואחר כך היה מצור שני שהביא לחורבן, מדוע קבעו את הצום דווקא על המצור הראשון?</p>
+      <p class="bold-para">על צום עשרה בטבת עולות כמה שאלות: למה צמים על מצור, למה רק על בית ראשון, ולמה על המצור הראשון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · צום שאינו כשאר הצומות</div>
+      <h3 class="story-title">📜 שלושה ימים בטבת</h3>
+      <p>השאלה הרביעית נוגעת גם לימינו. בשולחן ערוך מובא שבשמונה, בתשעה ובעשרה בטבת אירעו צרות לישראל. בשמונה בטבת נכתבה התורה יוונית בימי תלמי המלך, והיה הדבר קשה לישראל. בתשעה בו כתוב שלא נודע מה הייתה הצרה, ויש שכתבו שבו נפטר עזרא הסופר. ובעשרה בטבת סמך מלך בבל על ירושלים. גם בסליחות של עשרה בטבת מזכירים את שלושת הימים.</p>
+      <p>ועל כך שאל החתם סופר: הרי בדרך כלל "מגלגלין חובה ליום חייב". כולם מכירים את המשנה במסכת תענית: חמישה דברים אירעו את אבותינו בשבעה עשר בתמוז, וחמישה בתשעה באב. הצרות מתרכזות ליום אחד. אם כן, פלא הוא שדווקא בטבת הצרות מתפזרות על פני שלושה ימים. למה לא התרכז הכול ביום אחד?</p>
+      <p>כל השאלות האלה מכוונות לנקודה אחת: יש בעשרה בטבת משהו מיוחד, שאינו כמו בשאר ימי הצום. כדי להבין אותו, צריך לפתוח את המקור שלו בנביא.</p>
+      <p class="bold-para">בשולחן ערוך מובא שגם בשמונה ובתשעה בטבת אירעו צרות, ונשאלת השאלה למה לא נקבעו כולן ליום אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · צום שאינו כשאר הצומות</div>
+      <h3 class="story-title">🏛️ האם צמו בזמן בית שני?</h3>
+      <p>בדרך אגב נגע הרב בנושא מרתק נוסף: האם צמו את ארבעת הצומות בזמן שבית המקדש השני עמד? הוא הביא את פירוש המשניות לרמב"ם על המשנה במסכת ראש השנה, שמונה את החודשים שבהם השלוחים יוצאים להודיע על קידוש החודש: על ניסן מפני הפסח, על אב מפני התענית, וכן הלאה. ומכאן, לפי מה שהביא הרב, עולה שבזמן בית שני צמו רק את תשעה באב.</p>
+      <p>ועוד פרט היסטורי שהרב הדגיש: בין המצור לחורבן עברו קרוב לשנתיים וחצי. המצור לא היה רגע אחד שמיד אחריו בא החורבן. היה תהליך ארוך, עם הפסקה באמצע.</p>
+      <p>ואם כן, השאלה מתחדדת. עשרה בטבת הוא יום שכולו שייך למצור של בית ראשון. לא קבעו יום כזה על בית שני, אף שגם בו היה מצור ארוך. משהו ביום הזה עצמו, ולא רק במאורע שקרה בו, הוא שעושה אותו מיוחד. את המשהו הזה ננסה לגלות מתוך לשון הנביא.</p>
+      <p class="bold-para">לפי מה שהובא בשיעור מדברי הרמב"ם, בימי בית שני לא צמו את כל ארבעת הצומות, ועשרה בטבת קשור כולו לבית ראשון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · "כתוב לך את שם היום"</div>
+      <h3 class="story-title">📖 המקור ביחזקאל</h3>
+      <p>המקור הוא בספר יחזקאל, בפרק כ"ד: "וַיְהִי דְבַר ה' אֵלַי בַּשָּׁנָה הַתְּשִׁיעִית בַּחֹדֶשׁ הָעֲשִׂירִי בֶּעָשׂוֹר לַחֹדֶשׁ לֵאמֹר: בֶּן אָדָם, כְּתָב לְךָ אֶת שֵׁם הַיּוֹם, אֶת עֶצֶם הַיּוֹם הַזֶּה, סָמַךְ מֶלֶךְ בָּבֶל אֶל יְרוּשָׁלִַם בְּעֶצֶם הַיּוֹם הַזֶּה".</p>
+      <p>הרב העיר בדרך אגב על הכינוי "בן אדם". יחזקאל הוא הנביא שהקדוש ברוך הוא קורא לו כך שוב ושוב. יש בזה טעמים נפלאים. אחד מהם קשור לפרק הראשון בספרו, שבו ראה את מעשה המרכבה. מי שראה מראות כאלה, צריך שיזכירו לו: אתה עדיין בן אדם.</p>
+      <p>ועכשיו הרב ביקש מן המשתתפים לשאול: מה קשה בפסוק? מיד עלו שאלות. למה כתוב פעמיים "עצם היום הזה"? מה פירוש "שם היום"? ולמה בכלל יש כאן ציווי לכתוב?</p>
+      <p>הרב הדגיש שזה ציווי אלוקי מיוחד במינו. על הימים האחרים של החורבן אין בנביא ציווי כזה. אפילו על היום שבו נבקעה העיר יש בגמרא כמה אפשרויות, ואין ציווי לכתוב אותו. וכאן, דווקא על יום המצור, אומר הקדוש ברוך הוא לנביא: כתוב לך.</p>
+      <p class="bold-para">בנבואת יחזקאל יש ציווי אלוקי מפורש לכתוב את היום שבו סמך מלך בבל על ירושלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · "כתוב לך את שם היום"</div>
+      <h3 class="story-title">🗓️ אין שמות לימים</h3>
+      <p>השאלה הגדולה היא "כתוב לך את שם היום". מה פירוש שם היום? בשפות אחרות יש שמות לימי השבוע. אבל בעברית אין שמות לימים. ראשון, שני, שלישי – אלה מספרים, לא שמות.</p>
+      <p>ויתרה מזו. מי שמכיר את התנ"ך יודע שמפרק ב' בספר בראשית ועד סוף דברי הימים, כמעט אין מקום שבו כתוב על מאורע באיזה יום בשבוע הוא קרה. רק בפרק הראשון של בראשית, במעשה הבריאה, כתוב יום ראשון, יום שני וכן הלאה. אחר כך, בכל התנ"ך, מופיעים תאריכים בחודש, ולא ימים בשבוע.</p>
+      <p>יש בתורה הוראות לשבת, כמובן. שבת היא "יום השביעי", ויש לה דינים. אבל לא כתוב על מאורע מסוים שקרה ביום פלוני בשבוע.</p>
+      <p>ואם כן, הקושיה כפולה. גם אין שם ליום, וגם אין בתנ"ך מנהג לציין את היום בשבוע. מה פתאום כאן, בפעם היחידה, נאמר "כתוב לך את שם היום"? הרב אמר שזו שאלה מעניינת מאוד מאוד, והמפרשים התקשו בה.</p>
+      <p class="bold-para">בעברית אין שמות לימים אלא מספרים, ובתנ"ך כמעט אין מקום שמציין באיזה יום בשבוע קרה מאורע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · "כתוב לך את שם היום"</div>
+      <h3 class="story-title">🔎 הרד"ק והאברבנאל</h3>
+      <p>הרד"ק על המקום נדחק מאוד להסביר. הוא כותב ש"שם היום" פירושו באיזה יום בשבוע זה היה, כי אין שמות לימים אלא מספר ימי השבוע. ו"עצם היום" פירושו העשור לחודש העשירי. כלומר, לפי הרד"ק, יש כאן חריג: הפעם היחידה בתנ"ך שבה נכתב היום בשבוע.</p>
+      <p>אבל הקושי נשאר. ראשית, גם אחרי הציווי, איננו יודעים באיזה יום בשבוע זה היה. ושנית, למה דווקא כאן?</p>
+      <p>האברבנאל מקשה עוד יותר. מה התועלת והרמז בכתיבה הזאת? הקדוש ברוך הוא לא ציווה את הנביא לכתוב את היום שבו נבקעה העיר, ולא את היום שבו נשרף הבית. ולמה ציווה כל כך על יום המצור? ולמה אמר פעמיים "בעצם היום הזה"?</p>
+      <p>הרב חידד: יש כאן הפוך על הפוך. על חורבן הבית עצמו אין ציווי לכתוב, ועל המצור, שבו לכאורה לא קרה עדיין דבר, יש ציווי אלוקי מפורש. ברור שטמון כאן סוד גדול, עדות אלוקית על משהו אדיר.</p>
+      <p class="bold-para">הרד"ק נדחק לפרש ששם היום הוא היום בשבוע, והאברבנאל שואל מה התועלת בציווי לכתוב דווקא את יום המצור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · "כתוב לך את שם היום"</div>
+      <h3 class="story-title">🕊️ "כמו ביום הכיפורים"</h3>
+      <p>וכאן מגיע חידוש נשגב של האבודרהם, שהבית יוסף מביא את דבריו. הוא כותב שיש הבדל בין הצומות. כל הצומות האחרים חלים לפעמים בשבת, חוץ מעשרה בטבת. אבל עשרה בטבת חל לפעמים ביום שישי, ואז מתענים בו, אף שנכנסים בצום לתוך השבת.</p>
+      <p>ומוסיף האבודרהם: אפילו אילו חל עשרה בטבת בשבת, לא היו יכולים לדחותו ליום אחר, משום שנאמר בו "בעצם היום הזה", כמו ביום הכיפורים. ביום הכיפורים נאמר כמה פעמים "בְּעֶצֶם הַיּוֹם הַזֶּה", ולכן צמים בו גם בשבת. כך גם עשרה בטבת.</p>
+      <p>וזה מסביר את שתי העובדות שבהן פתחנו. כדי שלא יגיעו לצום בשבת, סידרו את הלוח כך שעשרה בטבת לא יחול לעולם בשבת. כך סידרו גם שהושענא רבה לא יחול בשבת, ושיום הכיפורים לא יחול ביום שישי או ביום ראשון. ומכיוון שאין דוחים אותו, כשהוא חל ביום שישי צמים בו כרגיל, ונכנסים בצום לשבת.</p>
+      <p>הבית יוסף מביא את הדין, ומוסיף שלא ידע מניין לו. והרב העיר: כל אחד שואל מאיפה לקח האבודרהם את זה. אבל המקור הוא הפסוק עצמו, הכפילות "בעצם היום הזה".</p>
+      <p class="bold-para">האבודרהם למד מן הלשון "בעצם היום הזה" שעשרה בטבת, אילו חל בשבת, היה דוחה את השבת כמו יום הכיפורים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · "כתוב לך את שם היום"</div>
+      <h3 class="story-title">🤔 דין שאין בו נפקא מינה</h3>
+      <p>ויש כאן שאלה נוספת. הבית יוסף אינו כותב דברים כדי שיהיה חומר יפה לשיעורים. הוא כותב דינים הנוגעים להלכה. ובזמנו של הבית יוסף, הלוח כבר היה קבוע, ועשרה בטבת לא יכול היה לחול בשבת.</p>
+      <p>ואפילו לעתיד לבוא אין לדין הזה נפקא מינה, כי כשיבוא המשיח לא יהיה צום כלל. אם כן, למה כתב הבית יוסף דין שאין בו שום תועלת למעשה?</p>
+      <p>יש מי שאמרו שיש בדין הזה נגיעה גם לימינו. כשעשרה בטבת חל ביום שישי, הצום נמשך אל תוך השבת, וממילא יש כאן במידה מסוימת צום שנוגע בשבת. אבל השאלה העמוקה נשארת: מה יש ביום הזה, עד שהוא דומה ליום הכיפורים, ושיש לו כוח לדחות שבת?</p>
+      <p>באחרונים נאמרו כמה מהלכים לבאר את הדין המיוחד הזה. הרב הביא בשיעור שניים מהם: מהלך של רבי יהונתן אייבשיץ, ומהלך של החתם סופר.</p>
+      <p class="bold-para">הבית יוסף אינו כותב דינים להלכה בלבד, ולכן יש לשאול מה התועלת בדין שאינו יכול להתקיים בזמנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · התחלת הפורענות</div>
+      <h3 class="story-title">🧱 כל ההתחלות קשות</h3>
+      <p>רבי יהונתן אייבשיץ, בספרו יערות דבש, כותב על עשרה בטבת: זה יום צרה ומבוכה, יום שבו הרע אויב בקודש לצור על העיר. והיום ההוא קשה לישראל מאוד, יותר מיום חורבן הבית.</p>
+      <p>יותר מחורבן הבית? למה? הוא מביא את דברי הבית יוסף בשם האבודרהם, שעשרה בטבת היה דוחה שבת כמו יום הכיפורים, ואומר: מזה מופת שהצרה הגדולה הייתה ביום הזה. וכל ההתחלות קשות. כיוון שכבר הותרה הרצועה מלמעלה לצור על העיר, אחר כך הייתה הדרך כבושה לפני האויבים לעשות כרצונם.</p>
+      <p>כלומר, עשרה בטבת הוא "אתחלתא דפורענותא", תחילת הפורענות. ביום הזה נפרצה הגדר בפעם הראשונה. לפני כן איש לא העז לצור על ירושלים. כמו שנאמר במגילת איכה: "לֹא הֶאֱמִינוּ מַלְכֵי אֶרֶץ וְכֹל יֹשְׁבֵי תֵבֵל כִּי יָבֹא צַר וְאוֹיֵב בְּשַׁעֲרֵי יְרוּשָׁלִָם". ישראל היו עם חזק, היה להם בית מקדש, והקדוש ברוך הוא אהב אותם. מי יעז?</p>
+      <p>וביום הזה זה קרה. ומאחר שנפתח הפתח, הכול התגלגל אחריו. זה שורש כל החורבנות.</p>
+      <p class="bold-para">לפי היערות דבש, יום המצור חמור מיום החורבן, כי בו התחילה הפורענות, והכול הולך אחר ההתחלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · התחלת הפורענות</div>
+      <h3 class="story-title">🔥 אתחלתא דפורענותא עדיפא</h3>
+      <p>רבי יהונתן מביא לכך דוגמה מן הגמרא במסכת תענית. בית המקדש הוצת בתשיעי באב לעת ערב, ורובו נשרף בעשירי. אמר רבי יוחנן: אילו הייתי באותו דור, לא קבעתיו אלא בעשירי, שרובו של היכל בו נשרף. ורבנן אמרו: אתחלתא דפורענותא עדיפא, התחלת הפורענות חמורה יותר.</p>
+      <p>וכך אנו נוהגים: צמים בתשעה באב, ולא בעשירי. כי ההתחלה היא השורש של הכול. אחרי שהאש כבר אוחזת, ברור שהיא תמשיך. העיקר הוא הרגע שבו נגזר הדבר ונפרצה הגדר.</p>
+      <p>ואם כך בתשעה באב, קל וחומר בעשרה בטבת. זו לא רק התחלה של יום אחד, אלא התחלה של כל תהליך החורבן. מכאן ואילך הכול הלך והידרדר. לכן היום הזה כל כך חמור, עד שהוא דומה ליום הכיפורים.</p>
+      <p>הרב הוסיף שיש בזה גם צד חיובי. אם הכול הולך אחר ההתחלה בכיוון של פורענות, כך גם בכיוון של ישועה. כמו שנאמר "בְּרֵאשִׁית" – בהתחלה טמון הרבה מאוד.</p>
+      <p class="bold-para">גם בתשעה באב הכריעו חכמים שהתחלת הפורענות חמורה יותר, ולכן צמים בתשיעי ולא בעשירי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · התחלת הפורענות</div>
+      <h3 class="story-title">🌅 דור של התחלה</h3>
+      <p>הרב שאל: אם ההתחלה כל כך חשובה, מה זה אומר עלינו? אנחנו חיים בדור מיוחד. איננו יודעים כמה שלבים יש עד הגאולה השלמה. בתפילת שמונה עשרה רואים סולם ארוך של שלבים, עד שמגיעים ל"את צמח דוד מהרה תצמיח". אבל אל יזלזל אדם בעצמו.</p>
+      <p>עוד יבוא יום, אמר הרב, שילמדו את ההיסטוריה שלנו ויכתבו: הם היו בדור שבו התחילה הגאולה. בדור הזה עשה הקדוש ברוך הוא דבר שלא קרה אלפיים שנה: עם ישראל שב לארץ ישראל ויושב בה.</p>
+      <p>והרב הזכיר את הגדרת הגאולה בתורה. בכל מקום שכתוב גאולה, פירושו יציאה משעבוד. מי שהיה משועבד ונגאל, יצא לחירות. וברוך ה', הודו לה' כי טוב, אנחנו כבר לא משועבדים לאחרים באותה מידה. אמנם יש עוד שלבים רבים עד שייגמר הכול, אבל זו התחלה.</p>
+      <p>וכמו שהיערות דבש אומר על הכיוון השלילי, שהכול הולך אחר ההתחלה, כך גם בכיוון החיובי. ההתחלה היא דבר טוב, ומכאן הכול צומח.</p>
+      <p class="bold-para">כשם שבפורענות הכול הולך אחר ההתחלה, כך גם בגאולה, ויש ערך עצום לדור שבו היא מתחילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום דין על המקדש</div>
+      <h3 class="story-title">🌙 תענית חלום בשבת</h3>
+      <p>לפני המהלך של החתם סופר, הקדים הרב שאלה: איזה צום צמים בשבת? חוץ מיום הכיפורים, יש עוד תענית שמותר להתענות בשבת: תענית חלום. בשולחן ערוך נפסק שאסור להתענות בשבת, אבל מי שחלם חלום רע מותר לו להתענות בשבת תענית חלום, וצריך אחר כך להתענות עוד יום, כדי לכפר על כך שביטל את עונג השבת.</p>
+      <p>מה ההבדל? מסביר החתם סופר: על צרה שעברה, כמו יום שמת בו אביו, אין מתענים בשבת. התענית היא צער על העבר, ובשבת אסור להצטער. אבל תענית חלום באה לבטל צרה העתידה לבוא. ומי שיודע שבתעניתו הוא מבטל גזירה רעה, יש לו בזה עונג. ממילא אין זה עינוי, ומותר.</p>
+      <p>הרב העיר בדרך אגב שכיום אין נוהגים בדרך כלל בתענית חלום. כיום אנשים חולמים בעיקר את הרהורי לבם, ממה שחשבו במשך היום, ולכן חלום של ממש נדיר מאוד.</p>
+      <p>ועכשיו בא החתם סופר אל עשרה בטבת. אם הצום הזה היה דוחה שבת, סימן שאינו צער על צרה שעברה. הוא צום שבא לפעול על העתיד.</p>
+      <p class="bold-para">לפי החתם סופר, אסור להתענות בשבת על צרה שעברה, אבל מותר להתענות כדי לבטל צרה העתידה לבוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום דין על המקדש</div>
+      <h3 class="story-title">⚖️ בית דין של מעלה</h3>
+      <p>החתם סופר שואל: למה קבעו תענית על המצור? הרי היו עוד ימים קשים. ומשיב: הטעם הוא שבאותו יום, כשסמך מלך בבל למטה על ירושלים, ישבו בדין למעלה. אלו מימינים ואלו משמאילים, עד שגברו המשמאילים, ונחרב הבית. כלומר, ביום הזה נגזר בשמים על החורבן. לקח זמן עד שהדבר התממש, אבל הגזירה נחתמה ביום ההוא.</p>
+      <p>ומוסיף החתם סופר חידוש עצום. אמרו חז"ל: כל דור שלא נבנה בית המקדש בימיו, כאילו נחרב בימיו. נמצא שבכל שנה ושנה מתחדש חורבן חדש. ומתי? בכל פעם שמגיע עשרה בטבת, היום שבו התחיל למעלה משפט החורבן. בכל שנה, ביום הזה, יושבים בבית דין של מעלה ודנים מה ייעשה עם בית המקדש: ייבנה או לא ייבנה.</p>
+      <p>ולכן, אומר החתם סופר, עשרה בטבת אינו צום על צרה שעברה. הוא צום על הדין העתידי. אנחנו צמים כדי לבטל את הגזירה של אותה שנה. ובצום כזה יש עונג, כמו בתענית חלום. ולכן, אילו חל בשבת, היה דוחה שבת.</p>
+      <p>ויש לזה רמז בספרי הקבלה, שטבת הוא חודש של דין על הבניין.</p>
+      <p class="bold-para">לפי החתם סופר, בעשרה בטבת ישבו בשמים בדין על ירושלים, ובכל שנה חוזר ונידון ביום הזה בניין המקדש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · יום דין על המקדש</div>
+      <h3 class="story-title">🧩 כל השאלות מתיישבות</h3>
+      <p>בדבריו של החתם סופר מתיישבות השאלות שבהן פתחנו.</p>
+      <p>שאלנו למה צמים על המצור, הרי לא נחרב בו דבר. התשובה: ביום המצור החליטו בשמים על החורבן. זה לקח זמן, היו הפסקות, המצור אף נפסק לזמן מה, אבל הגזירה נקבעה כבר באותו יום.</p>
+      <p>שאלנו למה אין צום על המצור של בית שני. התשובה: עשרה בטבת אינו רק זכר למצור מסוים. הוא היום שבו בכל שנה מחליטים מה ייעשה עם בית המקדש. לכן אין צורך לקבוע עוד יום על מצור אחר. היום הזה הוא יום הדין על המקדש, בכל שנה ושנה.</p>
+      <p>ושאלנו למה היה דוחה שבת. התשובה: זה צום על העתיד, צום שיש בו כוח לבטל גזירה, ולכן אין בו עינוי של צער על העבר.</p>
+      <p>הרב סיכם: לפי דברי החתם סופר, עשרה בטבת הוא יום מאוד מאוד מיוחד. זה לא פשוט בכלל. זה יום שבו דנים בשמים מה ייעשה עם בית המקדש. ומכאן ממשיך החתם סופר לחלק שני, עמוק יותר, שמסביר מה מיוחד בתאריך עצמו.</p>
+      <p class="bold-para">לפי החתם סופר מובן למה צמים על המצור, למה רק על בית ראשון, ולמה היום הזה דוחה שבת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העשירי שבעשירי</div>
+      <h3 class="story-title">🏔️ יראה ושלם</h3>
+      <p>החתם סופר מקדים: ידוע שהשם ירושלים מצורף משני שמות. אברהם אבינו קרא למקום "ה' יִרְאֶה", כמו שנאמר: "אֲשֶׁר יֵאָמֵר הַיּוֹם בְּהַר ה' יֵרָאֶה". ומלכי צדק, שמלך שם קודם לכן, נקרא "מֶלֶךְ שָׁלֵם", וקרא למקום שלם. מה עשה הקדוש ברוך הוא? חיבר את שני השמות יחד. "עִיר שֶׁחֻבְּרָה לָּהּ יַחְדָּו". במקום שכל אחד יעמוד על שלו, נעשה חיבור.</p>
+      <p>אבל איך יוצא מ"יראה" ו"שלם" – ירושלים? הרב הסביר את החשבון: באותיות האחרונות של "יראה" יש אל"ף וה"א. אל"ף ועוד ה"א בגימטריה הם שש, כמו האות וי"ו. כך נעשה "ירו", ויחד עם "שלם" – ירושלם.</p>
+      <p>ויש עוד דבר. בתנ"ך, כמעט בכל מקום, ירושלים כתובה בלי יו"ד לפני המ"ם: ירושלם. היו"ד נקראת, אבל אינה נכתבת. בסידורים כותבים לפעמים ירושלים עם יו"ד, אבל בתנ"ך היא חסרה. ולמה? על זה אומר החתם סופר דבר עמוק מאוד, השייך לסתרי תורה.</p>
+      <p class="bold-para">השם ירושלים מחובר מ"יראה" שקרא אברהם ומ"שלם" שקרא שם, והיו"ד הנוספת נקראת ואינה נכתבת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העשירי שבעשירי</div>
+      <h3 class="story-title">👑 נקודת הכתר</h3>
+      <p>אומר החתם סופר: היו"ד הזאת שבירושלים, שהיא נקראת ואינה נכתבת, היא נקודה דקה וקדושה גדולה וגבוהה, עד שהיא נוגעת בכתר עליון. ומה פירוש הדבר?</p>
+      <p>הרב הסביר בפשטות. בספרי הקבלה מדובר על עשר ספירות, כפי שמכירים מן התפילה "פתח אליהו". וכל ספירה בעצמה כלולה גם היא מעשר. כמו שמדברים על שבע שבתוך שבע, יש גם עשר שבתוך עשר, מניין שלם של מאה. והנקודה הגבוהה ביותר היא העשירית שבעשירית.</p>
+      <p>ממנה, אומר החתם סופר, מגיעה קדושת ירושלים. זו קדושה כל כך גבוהה, שאין לנו בה מושגים. איננו יכולים לתפוס אותה בשכל. ולכן היא לא נכתבת בתורה שבכתב, כי מה שכתוב הוא דבר שאפשר לתפוס. היא רק נקראת. היא קיימת, אבל נסתרת.</p>
+      <p>וזה גם הסוד של יעקב אבינו. כשהגיע למקום המקדש, נדר: "וְכֹל אֲשֶׁר תִּתֶּן לִי עַשֵּׂר אֲעַשְּׂרֶנּוּ לָךְ". למה כפל "עשר אעשרנו"? כי עיקר הקדושה הוא המעשר שבתוך המעשר. דרך זה המשיך יעקב את קדושת היו"ד העליונה לירושלים.</p>
+      <p class="bold-para">היו"ד הנסתרת של ירושלים רומזת לנקודה העליונה, העשירי שבעשירי, שאין לנו בה תפיסה ולכן אינה נכתבת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העשירי שבעשירי</div>
+      <h3 class="story-title">🌾 המעשר שבתוך המעשר</h3>
+      <p>הרב המחיש את הדברים בהלכות המעשרות. נניח שיש לאדם מאה פירות. הוא מפריש מעשר ראשון, עשרה פירות, ונותן ללוי. והלוי מפריש מתוך העשרה עשירית, פרי אחד, ונותן לכהן. זו תרומת מעשר.</p>
+      <p>כל אחד יכול לשאול: בשביל מה כל הסדר הזה? למה לא לתת ישר פרי אחד לכהן? התשובה היא שהתורה רוצה להגיע לנקודה העשירית שבעשירית. מפרישים עשרה, ומתוכם עוד אחד. וזו הנקודה הקדושה ביותר.</p>
+      <p>והרב הראה שזה נוגע לנו גם היום. כיום, בעוונותינו, איננו טהורים, ואין אוכלים תרומה. כשמפרישים מעשרות, לוקחים מעט יותר מאחד ממאה, עוטפים אותו ומניחים אותו בצד, ואין אוכלים אותו. כל השאר נאכל. ולמה דווקא החלק הזה? כי הוא העשירי שבעשירי, נקודת הכתר. הוא קדוש כל כך, שגם היום שומרים עליו ואין אוכלים אותו.</p>
+      <p>כך גם במאה ברכות שבכל יום, שגם בהן יש סוד של עשר בתוך עשר. זה הסוד הטמון בדיני המעשרות, והוא מוביל אותנו בחזרה אל עשרה בטבת.</p>
+      <p class="bold-para">בדיני המעשרות מגיעים לנקודה העשירית שבעשירית, תרומת מעשר, שגם היום אין אוכלים אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העשירי שבעשירי</div>
+      <h3 class="story-title">✍️ שם היום</h3>
+      <p>ועכשיו מגיע החתם סופר לפסוק. שאלנו מה פירוש "כתוב לך את שם היום", הרי אין שמות לימים. אומר החתם סופר: פשוט מאוד. איך קוראים ליום הזה? "בַּחֹדֶשׁ הָעֲשִׂירִי בֶּעָשׂוֹר לַחֹדֶשׁ". העשירי שבעשירי. זה שמו.</p>
+      <p>כאילו אמר הקדוש ברוך הוא לנביא: אם אתה רוצה להבין למה היום הזה כל כך גדול, ולמה גם אחרי אלפיים וחמש מאות שנה יצומו בו, הקשב לשמו. אם כל קדושת ירושלים באה מן הנקודה העשירית שבעשירית, מן הכתר, הרי היום הזה, שהוא העשירי שבעשירי, הוא היום הקובע על קדושת ירושלים.</p>
+      <p>לכן, אף שאחר כך נחרב גם בית שני, ועברו גלגולים רבים, היום הזה נשאר מאז ועד היום. בו נקבע מה יהיה עם ירושלים, כמה קדושה תהיה בה, ואיזה שפע יירד לעולם. ולכן עד היום צמים בו, והיה דוחה אפילו שבת.</p>
+      <p>וזה מיישב גם את שאלת האברבנאל: למה ציווה הקדוש ברוך הוא לכתוב דווקא את היום הזה? כי יש לו השפעה אדירה עד היום. "בעצם היום הזה" – לא ביום אחר, כי עצמו של היום הוא שגורם.</p>
+      <p class="bold-para">שמו של היום הוא העשירי שבעשירי, ולכן הוא היום הקובע על קדושת ירושלים עד היום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העשירי שבעשירי</div>
+      <h3 class="story-title">🎵 מזמור המאה</h3>
+      <p>הרב הוסיף הערה שקשורה מאוד לעבודת ההודיה. העשירי שבעשירי הוא מאה, והמזמור המאה בספר תהילים הוא "מזמור לתודה". יש בזה פשט ויש רמז.</p>
+      <p>על דרך הפשט, הרב הזכיר את מה שלמדו בשיעור קודם. בספר דברים מנויות קללות רבות, ויחד עם "כָּל חֳלִי וְכָל מַכָּה" שאינם כתובים, הן מגיעות למאה. ועל מה באו? "תַּחַת אֲשֶׁר לֹא עָבַדְתָּ אֶת ה' אֱלֹקֶיךָ בְּשִׂמְחָה". היו לך דברים טובים ולא הודית. בא דוד המלך וכתב את אותו רעיון בצורה חיובית: "עִבְדוּ אֶת ה' בְּשִׂמְחָה". ואיפה כתב זאת? במזמור המאה. כשם שיש מאה קללות כשאין עובדים בשמחה, כך יש מאה שערי ברכה כשעובדים בשמחה.</p>
+      <p>ועל דרך העומק, הרב הזכיר את מה שנלמד בחנוכה, שלעתיד לבוא תהיה שירת חנוכת המקדש, ושבה יהיה מקום מיוחד לקרבן התודה. מזמור לתודה הוא המזמור שיאמרו בפסגת הגאולה, כשהכול יגיע לשלמותו. לכן מקומו הוא במזמור המאה.</p>
+      <p>הרב סיפר שפעם הוציא לאור חוברת פירושים על מזמור לתודה, ובהשגחה פרטית היא יצאה מבית הדפוס בדיוק בעשרה בטבת, בעשירי שבעשירי.</p>
+      <p class="bold-para">מזמור לתודה הוא המזמור המאה בתהילים, ובו נרמזים מאה שערי ברכה ופסגת הגאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · העשירי שבעשירי</div>
+      <h3 class="story-title">✨ יום קדוש</h3>
+      <p>בסיום השיעור חזר הרב אל העיקר. עשרה בטבת אינו רק יום של זיכרון עצוב. הוא יום מאוד מאוד קדוש. יש בו נגיעה בקדושת הכתר, שאפשר לקרוא אותה ואי אפשר לכתוב אותה. ואם הוא היה דוחה אפילו שבת, אפשר להבין עד כמה גדול כוחו.</p>
+      <p>ולכל יהודי יש ביום הזה אפשרות להתחבר לנקודה העליונה הזאת. כל יהודי יכול להשפיע ביום הזה על קדושת ירושלים בשנה הקרובה: כמה קדושה תהיה בה, ומה ירד לעולם מן השפע. אדם צריך להרגיש ביום הזה שהוא עומד ביום של דין ושל בניין.</p>
+      <p>וזה מה שמשותף לשני המהלכים שלמדנו. לפי היערות דבש, זה יום של התחלה, וכל ההתחלות קובעות את ההמשך. לפי החתם סופר, זה יום דין על בניין המקדש, ובו נקבע בכל שנה מה ייעשה. ובשני המהלכים, הצום אינו רק בכי על העבר, אלא פעולה על העתיד.</p>
+      <p>והשפע שיורד לעולם באותו יום תלוי בנו. אם נזכה לנצל את היום הזה להתקדש ולקדש את העולם, בתפילה, בתשובה ובהודיה, נוכל להטות את הדין לטובה, ולזכות לראות את ירושלים בנויה.</p>
+      <p class="bold-para">עשרה בטבת אינו רק יום של צער, אלא יום קדוש שיש בו השפעה גדולה על ירושלים, והשפע תלוי בנו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/-Ngan7WzhYA · 2025-05-26 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"צום שאינו כשאר הצומות","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"מאורע של פעם בעשרים שנה","icon":"📅"},{"id":2,"title":"ארבע שאלות","icon":"❓"},{"id":3,"title":"שלושה ימים בטבת","icon":"📜"},{"id":4,"title":"האם צמו בזמן בית שני?","icon":"🏛️"}]},{"id":2,"name":"\"כתוב לך את שם היום\"","icon":"✍️","color":"#6d28d9","stories":[{"id":5,"title":"המקור ביחזקאל","icon":"📖"},{"id":6,"title":"אין שמות לימים","icon":"🗓️"},{"id":7,"title":"הרד\"ק והאברבנאל","icon":"🔎"},{"id":8,"title":"\"כמו ביום הכיפורים\"","icon":"🕊️"},{"id":9,"title":"דין שאין בו נפקא מינה","icon":"🤔"}]},{"id":3,"name":"התחלת הפורענות","icon":"🧱","color":"#e08e00","stories":[{"id":10,"title":"כל ההתחלות קשות","icon":"🧱"},{"id":11,"title":"אתחלתא דפורענותא עדיפא","icon":"🔥"},{"id":12,"title":"דור של התחלה","icon":"🌅"}]},{"id":4,"name":"יום דין על המקדש","icon":"⚖️","color":"#1e88b8","stories":[{"id":13,"title":"תענית חלום בשבת","icon":"🌙"},{"id":14,"title":"בית דין של מעלה","icon":"⚖️"},{"id":15,"title":"כל השאלות מתיישבות","icon":"🧩"}]},{"id":5,"name":"העשירי שבעשירי","icon":"👑","color":"#c62b6b","stories":[{"id":16,"title":"יראה ושלם","icon":"🏔️"},{"id":17,"title":"נקודת הכתר","icon":"👑"},{"id":18,"title":"המעשר שבתוך המעשר","icon":"🌾"},{"id":19,"title":"שם היום","icon":"✍️"},{"id":20,"title":"מזמור המאה","icon":"🎵"},{"id":21,"title":"יום קדוש","icon":"✨"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
