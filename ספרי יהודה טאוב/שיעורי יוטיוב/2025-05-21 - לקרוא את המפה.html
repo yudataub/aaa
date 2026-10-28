@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 לקרוא את המפה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 לקרוא את המפה</h1>
+  <p>פרשת התשובה והגאולה שבפרשת נצבים: גאולה שבאה בשלבים, ארבע הבטחות שמתקיימות לנגד עינינו, ו"ומל ה' את לבבך" – התעוררות שאין לה הסבר</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ לקרוא את המפה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/abY9uGdzoio?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/abY9uGdzoio/hqdefault.jpg" alt="לקרוא את המפה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=abY9uGdzoio" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פרשה של תשובה וגאולה</div>
+      <h3 class="story-title">📍 איפה אנחנו נמצאים</h3>
+      <p>השיעור הזה הוא שיעור שני בסדרה, אבל הוא עומד בפני עצמו. הנושא שלו פשוט וגדול כאחד: לקרוא את המפה. לפתוח את החומש ולשאול איפה אנחנו נמצאים בהיסטוריה, מה כבר עברנו ומה הולך להיות לפנינו.</p>
+      <p>המקום שבו עושים זאת הוא פרשת נצבים, בפרק ל, בפסוקים א עד י. זו פרשת התשובה. והיא נקראת בדיוק בזמן המתאים, לפני ימי התשובה: "וְהָיָה כִי יָבֹאוּ עָלֶיךָ כָּל הַדְּבָרִים הָאֵלֶּה, הַבְּרָכָה וְהַקְּלָלָה... וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ בְּכָל הַגּוֹיִם... וְשַׁבְתָּ עַד ה' אֱלֹקֶיךָ וְשָׁמַעְתָּ בְקֹלוֹ".</p>
+      <p>הרב העיר על הדיוק בלשון: לא כתוב "ושבת אל ה'", אלא "עד ה'". יש כאן דרגה של תשובה שעוד נעמוד עליה. ועוד דבר: השורש "שוב" חוזר בפרשה הקצרה הזאת שבע פעמים. מי שלומד את הפרשה מבחינת המבנה שלה, רואה כמה היא בנויה בחכמה, איך כל חלק בה מקביל לחלק אחר.</p>
+      <p>ובתוך פרשת התשובה הזאת שזורה פרשה נוספת, הדומה לה במהותה: פרשת הגאולה. ועליה בעיקר עומד השיעור.</p>
+      <p class="bold-para">השיעור מבקש לקרוא את המציאות מתוך התורה: מה עברנו, היכן אנחנו עומדים, ומה עוד לפנינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פרשה של תשובה וגאולה</div>
+      <h3 class="story-title">📖 התורה העידה על הגאולה</h3>
+      <p>הרמב"ם כותב בהלכות מלכים משפט חריף: מי שאינו מאמין בביאת המשיח, לא בדברי חז"ל והנביאים בלבד הוא כופר, אלא בתורה עצמה, שהרי התורה העידה עליו. ואיפה העידה? הרמב"ם מביא את הפסוקים מפרשת השבוע, מפרשת נצבים.</p>
+      <p>אבל כאן עולה שאלה. בפסוקים האלה לא כתובה המילה "משיח". כתוב שעם ישראל יחזור, שה' יקבץ אותו מן העמים ויביא אותו אל הארץ. איך אפשר לומר שהתורה העידה על המשיח?</p>
+      <p>הרב הזכיר שיש בזה שני כיוונים ליישב את דברי הרמב"ם. האחד: הרמב"ם מתכוון לעיקר הדבר, שתהיה לעם ישראל גאולה. מי שאינו מאמין בגאולה, בשיבת ישראל לארצו, כופר בתורה, שהרי זה כתוב בה במפורש. והשני: הגאולה השלמה כוללת ממילא גם את המשיח, ומי שמאמין בה מאמין בו.</p>
+      <p>כך או כך, היסוד ברור: הגאולה אינה רק תקווה שנמסרה בעל פה. היא הבטחה כתובה בחומש, ומי שקורא את פרשת נצבים קורא את דבר ה' על מה שיקרה לעמו באחרית הימים.</p>
+      <p class="bold-para">הרמב"ם כותב שמי שאינו מאמין בגאולה כופר בתורה עצמה, משום שהתורה העידה עליה בפרשה הזאת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פרשה של תשובה וגאולה</div>
+      <h3 class="story-title">✨ מציאות שעולה על כל דמיון</h3>
+      <p>הרב ביקש לעורר את השומעים לדבר שקל לשכוח: המציאות שאנחנו חיים בה עולה על כל דמיון. אנחנו פשוט התרגלנו אליה. אדם מתרגל לכל דבר, ומה שהיה פלא גדול נעשה לו דבר רגיל.</p>
+      <p>אבל מי שמסתכל במבט היסטורי רחב, רואה את התמונה אחרת. שעם ישראל יתקבץ מכל קצוות העולם, שהעמים יאפשרו ליהודים לעלות, שיהודים ישבו בארץ ישראל וייבנו בה – אף אחד לא העז לחלום על כך שיקרה בדרך טבעית, בלי ניסים גלויים ובלי משיח. זה היה נראה בלתי אפשרי לחלוטין.</p>
+      <p>כדי להמחיש עד כמה הדבר נראה רחוק, הזכיר הרב שאפילו מי שעמד בראש התנועה לשיבת ציון בדורו, ופנה לשליטים ולמעצמות כדי לבקש מקום לעם ישראל, נתקל בסירוב אחרי סירוב, ובסוף ימיו נראה היה שאין שום סיכוי. אף אחד לא רצה לתת. ובכל זאת, מה שנראה בלתי אפשרי קרה.</p>
+      <p>לקדוש ברוך הוא, אמר הרב, יש הרבה תוכניות מעניינות בעולם. ומי שפותח את החומש רואה שהתוכנית הזאת נכתבה בו מראש.</p>
+      <p class="bold-para">מה שאנחנו רואים היום היה נראה לדורות הקודמים דמיון גמור, ורק ההרגל מסתיר מאיתנו את הפלא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פרשה של תשובה וגאולה</div>
+      <h3 class="story-title">🪜 לא בבת אחת</h3>
+      <p>מה החידוש הגדול של הפרשה? התורה אינה אומרת שהגאולה תגיע בבת אחת. היא אומרת במפורש שהגאולה תגיע בשלבים.</p>
+      <p>במשך אלפיים שנה, החלום של עם ישראל היה אחר. בחלום שומעים קול שופר, וכולם רצים. באותו לילה כבר כולם בירושלים, על כנפי נשרים. בית המקדש בנוי ויורד מן השמים, הגויים נעלמים, ומלך מבית דוד יושב על כסאו. הכל באותו לילה.</p>
+      <p>והרב אמר שטוב שכך היה החלום. אילו היו יהודי הגלות יודעים כמה זמן ייקח התהליך, וכמה שלבים יהיו בו, אולי היו מתייאשים. החלום של הגאולה המיידית נתן להם כוח לחכות ולהתפלל בכל יום.</p>
+      <p>אבל התורה עצמה מתארת דבר אחר. כשקוראים את הפסוקים בעיון, רואים תהליך: שלב של תשובה, ואחריו שלב של גאולה, ואחריו שוב תשובה, ושוב גאולה. כל צעד בתשובה מביא צעד בגאולה. ומי שמחכה רק לרגע האחד הגדול, עלול שלא לשים לב לשלבים שכבר מתרחשים לנגד עיניו.</p>
+      <p>ועל כך בנוי כל השיעור: לקרוא את הפסוקים לפי הסדר, ולראות איפה אנחנו עומדים.</p>
+      <p class="bold-para">התורה מלמדת במפורש שהגאולה אינה מגיעה בבת אחת אלא בשלבים, ובכך היא שונה מן החלום של הדורות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבע הבטחות</div>
+      <h3 class="story-title">🧭 תשובה מסוג ראשון</h3>
+      <p>הפסוק הראשון מתאר מה יקרה אחרי כל הצרות: "וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ בְּכָל הַגּוֹיִם... וְשַׁבְתָּ עַד ה' אֱלֹקֶיךָ וְשָׁמַעְתָּ בְקֹלוֹ". עם ישראל עושה תשובה מסוג ראשון.</p>
+      <p>בשיעור הקודם דובר על כך שהתשובה הזאת קשורה בשיבה אל הארץ. והרב הצביע על דבר מעניין: בפסוק הזה אין מילה אחת על קיום מצוות. כתוב "ושבת עד ה'" ו"שמעת בקולו", אבל לא כתוב "ועשית את כל מצוותיו". זו עדיין אינה התשובה שאנחנו רגילים לחשוב עליה, של אדם שמקבל על עצמו עול תורה ומצוות.</p>
+      <p>משתתפים בשיעור הקשו: הרי כתוב "בכל לבבך ובכל נפשך", ונראה שזו תשובה שלמה. והרב הודה שהלשון קשה, ושצריך עיון. אבל עדיין, ההבדל בין הפסוק הזה לבין הפסוקים שבהמשך בולט מאוד, ונראה אותו בעוד רגע.</p>
+      <p>ומיד אחרי התשובה הראשונה בא שלב של גאולה: "וְשָׁב ה' אֱלֹקֶיךָ אֶת שְׁבוּתְךָ וְרִחֲמֶךָ, וְשָׁב וְקִבֶּצְךָ מִכָּל הָעַמִּים אֲשֶׁר הֱפִיצְךָ ה' אֱלֹקֶיךָ שָׁמָּה". וגם כאן מופיע השורש "שוב". התורה משתמשת באותה מילה גם לתשובה של עם ישראל אל ה', וגם לשיבה של עם ישראל אל ארצו.</p>
+      <p class="bold-para">בפסוקים הראשונים של הפרשה לא מוזכרות מצוות כלל: התשובה הראשונה היא שמיעה לקול ה' ושיבה אליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבע הבטחות</div>
+      <h3 class="story-title">🌐 "מקצה השמים"</h3>
+      <p>אולי, שאל הרב, הפסוקים האלה התקיימו כבר בימי בית שני? לא. בבית שני חזרו לארץ רק חלק מן היהודים, ובעיקר מבבל. היהודים שגרו בתימן ובמקומות אחרים לא חזרו. "וקבצך מכל העמים" לא היה אז.</p>
+      <p>ולא רק אצלנו. בכל ההיסטוריה של העולם אין תופעה כזאת. עוד לא היה עם שיצא מארצו, התפזר לכל עבר במשך מאות שנים, ואחר כך חזר אליה. בדרך הטבע, עם שמתפזר בין העמים שוקע בכל מקום שהוא נמצא בו, ונעלם.</p>
+      <p>והתורה מבטיחה יותר מזה: "אִם יִהְיֶה נִדַּחֲךָ בִּקְצֵה הַשָּׁמָיִם, מִשָּׁם יְקַבֶּצְךָ ה' אֱלֹקֶיךָ וּמִשָּׁם יִקָּחֶךָ". גם מן המקום הרחוק ביותר בעולם, שהדרך ממנו לכאן נמשכת כיום יותר מיממה שלמה. והנה, מכל מקום בעולם הגיעו יהודים לכאן. לא נשאר כמעט מקום שלא באו ממנו.</p>
+      <p>ואנחנו, אמר הרב, נמצאים בעיצומה של ההבטחה הזאת. ובפסוק הבא נראה ארבעה דברים שהתורה הבטיחה, וכולם מתקיימים בצורה מופלאה.</p>
+      <p class="bold-para">שיבה של עם שהתפזר בכל העולם אל ארצו לא הייתה מעולם, לא אצלנו ולא אצל שום עם אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבע הבטחות</div>
+      <h3 class="story-title">🏞️ "אל הארץ" ו"וירשתה"</h3>
+      <p>הפסוק אומר: "וֶהֱבִיאֲךָ ה' אֱלֹקֶיךָ אֶל הָאָרֶץ אֲשֶׁר יָרְשׁוּ אֲבֹתֶיךָ וִירִשְׁתָּהּ, וְהֵיטִבְךָ וְהִרְבְּךָ מֵאֲבֹתֶיךָ".</p>
+      <p>ההבטחה הראשונה: "אל הארץ אשר ירשו אבותיך". לא לארץ אחרת, לא למקום חלופי שמציעים לעם ישראל כמקלט, אלא אל הארץ של האבות. והרב הזכיר שהיו בהיסטוריה הצעות להושיב את עם ישראל במקומות אחרים, והן לא החזיקו מעמד. התורה אמרה "אל הארץ".</p>
+      <p>ההבטחה השנייה: "וירשתה". לא יהיה כמו בבית שני. בבית שני אמנם חזרו לארץ, אבל השלטון נשאר בידי אחרים: תחילה מלכי פרס, אחר כך היוונים, ואחר כך הרומאים. עם ישראל ישב בארצו תחת שלטון זר. וגם בדורות שלפנינו, יהודים צדיקים עלו לארץ ישראל, אבל לא היו בעלי הארץ. התורה מבטיחה כאן יותר: אתם תירשו את הארץ.</p>
+      <p>והרב העיר שלירושה הזאת קדמו ניסים רבים, ולפעמים הם באו דווקא מתוך ההתנגדות. מה שנראה בשעתו כקושי גדול, התגלגל בסופו של דבר כך שההבטחה התקיימה בשלמות רבה יותר ממה שציפו.</p>
+      <p class="bold-para">התורה מבטיחה שתי הבטחות ראשונות: לא לכל מקום אלא לארץ האבות, ולא רק לגור בה אלא לרשת אותה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · ארבע הבטחות</div>
+      <h3 class="story-title">🌾 "והיטבך והרבך מאבותיך"</h3>
+      <p>ההבטחה השלישית: "והיטבך". במשך שנים רבות ארץ ישראל הייתה מקום קשה מאוד לחיות בו. מחלות, עוני, אדמה שאינה נותנת את פריה. אנשים רבים שבאו לכאן לא החזיקו מעמד. והתורה מבטיחה: יהיה לך טוב בארץ. והנה, הרב אמר, מאז שעם ישראל חזר לארצו השפע הולך וגדל, באופן שקשה למצוא כמותו במקום אחר בעולם.</p>
+      <p>ההבטחה הרביעית: "והרבך מאבותיך". אולי בדורות הקודמים קראו את הפסוק הזה ולא הבינו אותו. היום אנחנו מבינים אותו היטב. בעבר הייתה שמחה משפחתית נערכת בבית הכנסת. אחר כך לקחו אולם. והיום, כשמזמינים את כל המשפחה, צריך כמעט מתחם שלם. כל דור גדול מן הדור שלפניו.</p>
+      <p>והרב הדגיש: זה המקום היחיד בעולם שבו מתקיים "והרבך מאבותיך". בכל מקום אחר שעם ישראל נמצא בו, מספר היהודים הולך ויורד. רק כאן הוא הולך ועולה.</p>
+      <p>ארבעה דברים הבטיחה התורה, וארבעתם מתקיימים בימינו. מספיק לפתוח את החומש מול העיניים. מי יכול היה לדעת מראש את כל הדברים האלה, שאיש לא חלם עליהם? רק מי שמנהיג את ההיסטוריה יכול לכתוב אותה מראש.</p>
+      <p class="bold-para">הארץ שהייתה שוממה וקשה נעשתה ארץ של שפע, ורק בה עם ישראל הולך ומתרבה מדור לדור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלבי התשובה</div>
+      <h3 class="story-title">⚖️ "ומל" – פסוק באמצע</h3>
+      <p>אחרי ארבע ההבטחות, התורה חוזרת לנושא התשובה: "וּמָל ה' אֱלֹקֶיךָ אֶת לְבָבְךָ וְאֶת לְבַב זַרְעֶךָ, לְאַהֲבָה אֶת ה' אֱלֹקֶיךָ בְּכָל לְבָבְךָ וּבְכָל נַפְשְׁךָ לְמַעַן חַיֶּיךָ". זה הפסוק שאומרים פעמים רבות בסליחות.</p>
+      <p>מה הוא מבטיח? שעם ישראל יחזור לאהבת ה'. לא רק יתקן חטאים, אלא יחזור לאהוב את בורא עולם.</p>
+      <p>אבל הרב ביקש לשים לב למקומו ולצורתו של הפסוק. הפרשה בנויה לסירוגין: תשובה, גאולה, תשובה, גאולה. והפסוק הזה עומד בדיוק באמצע, ולא ברור לאיזה צד הוא שייך. מצד התוכן, ודאי שהוא עוסק בתשובה. אבל מצד הלשון – מי עושה כאן את התשובה?</p>
+      <p>בפסוק הראשון כתוב "ושבת עד ה'": אתה שב. כאן לא כתוב "ואתה תשוב". כתוב "ומל ה' אלוקיך": הקדוש ברוך הוא מל את הלב. מי שפועל כאן הוא בורא עולם, כמו בפסוקי הגאולה. זו תשובה, אבל היא באה בסיוע של הקדוש ברוך הוא, כמו גאולה. על כך עוד נעמוד בהמשך, כי יש בזה תופעה מיוחדת מאוד.</p>
+      <p class="bold-para">הפסוק "ומל ה' את לבבך" עומד באמצע הפרשה, ולא ברור אם הוא שייך לתשובה או לגאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלבי התשובה</div>
+      <h3 class="story-title">📿 "ואתה תשוב" – תשובה של מצוות</h3>
+      <p>אחרי "ומל" בא שוב שלב של גאולה: "וְנָתַן ה' אֱלֹקֶיךָ אֵת כָּל הָאָלוֹת הָאֵלֶּה עַל אֹיְבֶיךָ". ואחריו שוב תשובה: "וְאַתָּה תָשׁוּב וְשָׁמַעְתָּ בְּקוֹל ה', וְעָשִׂיתָ אֶת כָּל מִצְוֹתָיו אֲשֶׁר אָנֹכִי מְצַוְּךָ הַיּוֹם".</p>
+      <p>כאן, בפעם הראשונה בפרשה, מופיעה תשובה של קיום מצוות. לא רק "ושבת עד ה'", ולא רק אהבת ה' שה' מעורר בלב, אלא "ועשית את כל מצוותיו". זו התשובה שאנחנו מכירים, תשובה של חזרה לתורה ולמצוות.</p>
+      <p>וכנגד זה באה הברכה: "וְהוֹתִירְךָ ה' אֱלֹקֶיךָ בְּכֹל מַעֲשֵׂה יָדֶךָ, בִּפְרִי בִטְנְךָ וּבִפְרִי בְהֶמְתְּךָ וּבִפְרִי אַדְמָתְךָ לְטֹבָה". שפע שקשה לשער, משהו שדומה כמעט לגן עדן.</p>
+      <p>והפסוק האחרון בפרשה מסיים: "כִּי תִשְׁמַע בְּקוֹל ה' אֱלֹקֶיךָ... כִּי תָשׁוּב אֶל ה' אֱלֹקֶיךָ בְּכָל לְבָבְךָ וּבְכָל נַפְשֶׁךָ". כאן כבר לא "עד ה'" אלא "אל ה'". זו התשובה השלמה.</p>
+      <p>כך בנויה הפרשה כולה: תשובה וגאולה, תשובה וגאולה, תשובה וגאולה. והרעיון ברור: הגאולה אינה מגיעה בבת אחת, וגם התשובה באה בהדרגה. ככל שעם ישראל חוזר בתשובה, הגאולה מתקרבת.</p>
+      <p class="bold-para">רק בשלב מאוחר בפרשה מופיעה תשובה של קיום מצוות, ואחריה ברכה ושפע שאין לשער.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלבי התשובה</div>
+      <h3 class="story-title">🛡️ חוזק אמיתי</h3>
+      <p>מכאן הסיק הרב מסקנה שנוגעת לכל אחד: כמה חשוב לעם ישראל שיחזרו בתשובה. לא רק למען הנשמה של כל אחד, אלא למען הכלל כולו.</p>
+      <p>לפי מה שעולה מן הפרשה, השמירה על עם ישראל בארצו אינה תלויה רק בכוח במובן הפשוט. היא תלויה בתהליך שהתורה מתארת: ככל שעם ישראל חוזר אל ה', כך הגאולה מתקדמת, וכך מתחזק השפע האלוקי, גם השפע הגשמי. התשובה והגאולה קשורות זו בזו, והתורה כתבה אותן בפרשה אחת, לסירוגין, כדי ללמד שהן תלויות זו בזו.</p>
+      <p>והרב הוסיף שבתורה עצמה ההבטחה על התשובה חוזרת כמה וכמה פעמים, בלשונות שונים: "והשבות אל לבבך", "ושבת עד ה'", "ומל ה' את לבבך", "ואתה תשוב", "כי תשוב אל ה'". כל אחת מהן היא שלב אחר.</p>
+      <p>והוא ציין שהרעיון שהגאולה באה לאט לאט מופיע גם בדברי חז"ל, בירושלמי, שמשווה את הגאולה לאור השחר שעולה מעט מעט. אבל כאן, בפרשת נצבים, הדבר כתוב בתורה עצמה. אין צורך לחכות שהכל יקרה בבת אחת. גם אם יבוא אליהו הנביא, לא בטוח שתחיית המתים תבוא מיד. וגם אם יבוא המשיח, לא בטוח שבית המקדש ייבנה באותו יום. איך בדיוק ייראו השלבים, איננו יודעים. אבל יודעים שיש שלבים.</p>
+      <p class="bold-para">ככל שעם ישראל חוזר בתשובה, כך מתחזקים הגאולה והשפע האלוקי, גם השפע הגשמי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלבי התשובה</div>
+      <h3 class="story-title">🔎 דרגות של תשובה</h3>
+      <p>בשיעור הובאו דברי מפרשים שעמדו על החזרה הזאת. הם שואלים: הרי ברור שהתורה לא חזרה על אותן מילים כמה פעמים סתם. כל פעם זה בא לסמן משהו. מה?</p>
+      <p>אחד המפרשים מסביר שהתורה באה לומר שהתשובה לא תבוא בבת אחת. התשובה הראשונה נעשית בתחילת הדרך, מתוך קושי וחולשה. עם ישראל נמצא בגלות, בעוצם החולשה והייאוש, והוא אינו מסוגל לתשובה מלאה. אבל הוא מתחיל במה שהוא יכול: לפחות "ושמעת בקולו". לפחות שמיעה, רצון, פנייה אל ה', גם אם המעשים עדיין אינם שלמים.</p>
+      <p>והנה, זו באמת התחלת התשובה. ועל כך נאמר שה' פותח לאדם פתח, ומשם הוא ממשיך. אחר כך באה גאולה, ואחריה תשובה טובה יותר, ואחריה גאולה גדולה יותר, ואחריה תשובה חזקה יותר.</p>
+      <p>גם האור החיים ניסה להסביר את החזרות האלה, והרב העיר שקשה מאוד לדעת מראש למה בדיוק הן מכוונות. אבל היום, כשחלק מן הדברים כבר התרחשו, אפשר להבין את הפירוש טוב יותר. מה שהיה קשה להבין לפני שקרה, מתבהר כשמסתכלים לאחור.</p>
+      <p class="bold-para">המפרשים מסבירים שהתורה חוזרת על התשובה כמה פעמים כדי לסמן שלבים: תשובה חלשה בתחילה, ותשובה חזקה יותר בהמשך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלבי התשובה</div>
+      <h3 class="story-title">🧩 ההחלטה שלא להיטמע</h3>
+      <p>ומהי התשובה הראשונה הזאת? הרב הציע: ההחלטה של עם ישראל שהוא אינו הולך להיטמע בין הגויים.</p>
+      <p>לפני כמאה וחמישים שנה, רבים מיהודי אירופה חשבו שהפתרון לבעיית היהודים הוא להתבולל. להיות כמו כולם, לשמור כמה שפחות, להיעלם בין העמים. והרב הביא דוגמה מן ההיסטוריה: אדם שגדל בדרך הזאת, והיה רחוק מאוד מתורה ומצוות. אבל כשראה במו עיניו את השנאה ליהודים, גם במקום שבו היהודים הרגישו שייכים לגמרי, הבין שההתבוללות לא תעזור. ההחלטה שלו הייתה: אנחנו לא נעלמים בין הגויים. עם ישראל צריך לשוב אל עצמו.</p>
+      <p>זו לא הייתה תשובה שלמה, רחוק מכך. הרב הדגיש שהיא הייתה חלקית מאוד, ושגדולי התורה בדורו התנגדו לדרכו. אבל באותה החלטה הייתה מעין שיבה: לחזור להיות עם, ולחזור אל הארץ. ובמידה מסוימת היא באה גם עם חזרה חלקית לסממנים של המסורת.</p>
+      <p>וזה מה שקרה לחלק גדול מעם ישראל: החלטה שאנחנו רוצים להישאר יהודים, ושאנחנו רוצים לשוב דווקא אל הארץ הזאת ולא לשום מקום אחר. יש כאן משהו שקשה להגדיר בדיוק, ועליו מדברת התורה בהתחלה: "ושבת עד ה'".</p>
+      <p class="bold-para">השלב הראשון של התשובה היה החלטה של חלק מעם ישראל שאין פתרון בהיטמעות בין העמים, ושעם ישראל צריך לשוב למקורו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "ומל ה' את לבבך"</div>
+      <h3 class="story-title">🤝 תשובה שבאה משני הצדדים</h3>
+      <p>עכשיו אפשר לחזור לפסוק המיוחד, "ומל ה' אלוקיך את לבבך ואת לבב זרעך". הוא מתאר שלב שלישי בתהליך, ובו התשובה והגאולה באות יחד.</p>
+      <p>מצד אחד, זו תשובה: עם ישראל חוזר לאהבת ה'. מצד שני, הקדוש ברוך הוא הוא שעושה אותה: הוא "מל" את הלב, מסיר ממנו את הערלה, וכך האדם מתעורר. הקדוש ברוך הוא מסייע במילת הלב.</p>
+      <p>כדי להבין זאת, אמר הרב, צריך להסתכל על מה שקרה בדורות האחרונים. בתחילת הדרך, בארץ ישראל כמעט לא היה דבר כזה, שיהודי שגדל רחוק מתורה יחזור בתשובה. הגשר עבר כמעט רק לכיוון אחד. מי שגדל בבית רחוק, אף אחד לא לימד אותו, והרחוב משך אותו לכיוון אחר. מה יגרום לאדם כזה לעשות מהפך בחייו?</p>
+      <p>מסופר שבימי החזון איש באו אליו כמה צעירים שחזרו בתשובה, וזו הייתה תופעה נדירה כל כך שסיפרו עליה כעל פלא. והחזון איש אמר שאולי עמדה להם זכות אבות, שאמותיהם בכו הרבה על כך שילדיהן התרחקו, והדמעות עזרו. כל כך מעטים היו אז.</p>
+      <p class="bold-para">"ומל ה' את לבבך" מתאר תשובה שהאדם עושה, אבל הקדוש ברוך הוא הוא שמסיר את הערלה מן הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "ומל ה' את לבבך"</div>
+      <h3 class="story-title">🔥 התעוררות שאין לה הסבר</h3>
+      <p>ואז השתנתה התמונה. אחרי מלחמת יום הכיפורים קמה בעם ישראל התעוררות עצומה. אנשים רבים מאוד התחילו לחזור לתורה ולמצוות, בממדים שאי אפשר היה לדמיין קודם לכן.</p>
+      <p>והדבר המעניין ביותר: כשאתה שואל אנשים מאותה תקופה למה חזרו בתשובה, רבים מהם אינם יודעים להסביר. הם מספרים שקראו כל מיני דברים, שהרגישו התעוררות, שמשהו נגע בלב. אבל הסבר מסודר אין להם. ובשיעור הוער שהיו גם ימי כיפורים אחרים, שבהם אנשים באו לבית הכנסת, שרו, ויצאו כמו שנכנסו. ודווקא אז, בתקופה ההיא, הלב נפתח.</p>
+      <p>הרב הביא סיפור ששמע מאחד ממובילי הארגונים שעסקו בקירוב באותן שנים. הם ערכו סמינרים קטנים בכל מקום, ויום אחד החליטו לערוך סמינר גדול של כמה ימים. ובעקבותיו חזרו רבים מאוד בתשובה, הרבה מעבר למה שציפו.</p>
+      <p>ולא רק ברוח. גם מבחינה גשמית הקדוש ברוך הוא עזר. היו כל כך הרבה תרומות למען הפעילות הזאת, שהמארגנים שאלו את הרבנים אם בכלל לגבות תשלום מן המשתתפים, כי היה אפשר לממן הכל. והרבנים הורו לגבות משהו, כדי שאנשים יעריכו את מה שהם מקבלים. היה שפע גדול לתשובה.</p>
+      <p class="bold-para">בדורות האחרונים התעוררו רבים לחזור לתורה, ורובם אינם יודעים להסביר מה עורר אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · "ומל ה' את לבבך"</div>
+      <h3 class="story-title">🌱 "כשהלב מתעורר"</h3>
+      <p>הרב הדגיש שההתעוררות הזאת לא הייתה רק אצל מי שגדלו רחוק מתורה. היא הייתה גם בקהילות שומרות מסורת.</p>
+      <p>הוא סיפר על קהילה אחת שבה, בשנים מסוימות, קבוצת הורים החליטה פתאום שמגיע לילדיהם חינוך תורני עמוק יותר. שילמדו יותר גמרא, שהמלמדים יהיו יראי שמים ובני תורה, ושהחינוך יהיה טהור יותר. הרב שוחח עם רבים מן ההורים שהקימו את המוסד, ושאל אותם: מה גרם לכם? מי שכנע אתכם? במשך שנים היה לכם טוב כך, ופתאום הרגשתם שאתם חייבים לשנות?</p>
+      <p>ואין להם הסבר. הם אומרים: התעורר הלב. אין להם מילים להסביר את זה. ומסירות הנפש שלהם הייתה גדולה מאוד. היו ביניהם שהיו מוכנים לסבול קשיים אישיים כבדים, העיקר שילדיהם יקבלו חינוך תורני. בסופו של דבר, בעזרת ה', לא היו צריכים להגיע לכך.</p>
+      <p>זה בדיוק מה שהתורה מתארת: "ומל ה' אלוקיך את לבבך". מצד אחד, עם ישראל חוזר בתשובה. מצד שני, הקדוש ברוך הוא מוריד מעין אור, מעורר את הלב, ואדם מתעורר בלי שיידע להסביר מניין זה בא. לא אחד ולא שניים, אלא רבים מאוד.</p>
+      <p class="bold-para">ראיה לכך שזה "ומל ה'": גם בקהילות שומרות מסורת קמה התעוררות לחינוך תורני עמוק יותר, בלי שאיש ידע להסביר מניין באה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לא לחלום בכיתה</div>
+      <h3 class="story-title">👀 רוב האנשים לא שמים לב</h3>
+      <p>ועכשיו בא הלקח שהרב רצה להשאיר. גם היום, אצל רבים מעם ישראל, הגאולה נתפסת כדבר דמיוני, כמו בסיפורים: משהו שיקרה בבת אחת, על כנפי נשרים, במקום אחר ובזמן אחר. קשה לאנשים לדמיין שהגאולה מגיעה גם דרך עוד דבר קטן שקורה בארץ ישראל: עוד יישוב שנבנה, עוד משפחה שעולה, עוד יהודי שמתחיל ללמוד. כל אחד מאלה הוא עוד שלב בגאולה. ומעטים רואים את זה.</p>
+      <p>הרב הציע ניסוי. בשבת שבה קוראים את פרשת נצבים, לעבור בבתי הכנסת ולשאול אנשים: איפה בתורה מופיעה פרשת הגאולה? האם שמת לב לנבואות שהתגשמו בפרשה שקראת עכשיו? והוא אמר מראש: רוב האנשים יקראו את הפרשה ולא ישימו לב שהם נמצאים באמצע המציאות שהיא מתארת.</p>
+      <p>אתה קורא מילה, והנה היא מתקיימת מולך. עוד מילה, והנה גם היא. אחד לאחד. ובכל זאת, רבים עדיין חולמים על משהו אחר, ואינם שמים לב למה שקורה לנגד עיניהם.</p>
+      <p class="bold-para">רוב האנשים קוראים את פרשת נצבים ואינם שמים לב שהם חיים בתוך הפסוקים שהם קוראים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לא לחלום בכיתה</div>
+      <h3 class="story-title">💭 "היינו כחולמים"</h3>
+      <p>על הפסוק "שִׁיר הַמַּעֲלוֹת, בְּשׁוּב ה' אֶת שִׁיבַת צִיּוֹן הָיִינוּ כְּחֹלְמִים" מובאים במפרשים כמה פירושים. לפי פירוש אחד, כל הגלות, כל מה שעבר עלינו, ייראה כמו חלום רע שנעלם. לפי פירוש אחר, הגאולה תהיה טובה ונפלאה כל כך, שנחשוב שאנחנו חולמים.</p>
+      <p>והרב הביא פירוש שלישי, שאינו מן המפרשים, ששמע מאחד הרבנים שהיה חוזר עליו תמיד, ונראה שהוא מתקיים בימינו יותר מכולם. מה זה "חולם"? כמו תלמיד שיושב בכיתה. המורה מדבר, והתלמיד נמצא שם. אין לו אוזניות, האוזניים שלו פתוחות. ובכל זאת הוא לא שומע. למה? כי הוא חולם.</p>
+      <p>כך "בשוב ה' את שיבת ציון היינו כחולמים": הקדוש ברוך הוא משיב את שיבת ציון, מחזיר ובונה, ואנחנו לא שמים לב. קוראים את הפרשה, והנה מילה במילה היא מתקיימת מול העיניים, ואנחנו חולמים.</p>
+      <p>והפסוק ממשיך: "אָז יֹאמְרוּ בַגּוֹיִם הִגְדִּיל ה' לַעֲשׂוֹת עִם אֵלֶּה. הִגְדִּיל ה' לַעֲשׂוֹת עִמָּנוּ הָיִינוּ שְׂמֵחִים". כאילו הגויים יראו קודם, ויאמרו שה' עשה גדולות. ורק אחר כך נשים לב גם אנחנו, ונאמר "הגדיל ה' לעשות עמנו", ואז נשמח.</p>
+      <p class="bold-para">"היינו כחולמים" אפשר לפרש כתלמיד החולם בכיתה: הקדוש ברוך הוא משיב את שיבת ציון, ואנחנו לא שומעים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · לא לחלום בכיתה</div>
+      <h3 class="story-title">🌅 להתעורר ולשמוח</h3>
+      <p>מה הבקשה שבסוף השיעור? שה' יעזור לנו להתעורר. לשים לב. לא לחכות שהעמים יגידו לנו כמה גדול מה שקורה כאן, אלא לראות בעצמנו ולשמוח.</p>
+      <p>מי שקורא את פרשת נצבים בעיניים פקוחות, רואה תורה אלוקית. ארבעה דברים נאמרו בפסוק אחד, וכולם מתקיימים. שום דבר מהם לא היה הגיוני בעיני הדורות הקודמים, ושום דבר מהם לא קרה לשום עם אחר. ומי שרואה את זה, מתחזק באמונה שה' מנהיג את עולמו ומקיים את דברו.</p>
+      <p>אבל השיעור אינו נגמר בהתפעלות. אם הגאולה באה בשלבים, ואם כל שלב של תשובה מביא שלב של גאולה, הרי שלכל אחד יש חלק בתהליך. כל צעד של התקרבות אל ה', של לימוד ושל קיום מצוות, מקרב את השלב הבא: "ואתה תשוב ושמעת בקול ה' ועשית את כל מצוותיו", ואחריו "כי תשוב אל ה' אלוקיך בכל לבבך ובכל נפשך".</p>
+      <p>בעזרת ה', נזכה לראות איך התשובה והגאולה ממשיכות הלאה והלאה, שלב אחר שלב, עד שנזכה לגאולה השלמה, במהרה בימינו, אמן.</p>
+      <p class="bold-para">התפילה היא שנתעורר לראות את מה שה' עושה עמנו, ונמשיך בתשובה עד הגאולה השלמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/abY9uGdzoio · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"פרשה של תשובה וגאולה","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"איפה אנחנו נמצאים","icon":"📍"},{"id":2,"title":"התורה העידה על הגאולה","icon":"📖"},{"id":3,"title":"מציאות שעולה על כל דמיון","icon":"✨"},{"id":4,"title":"לא בבת אחת","icon":"🪜"}]},{"id":2,"name":"ארבע הבטחות","icon":"🌍","color":"#6d28d9","stories":[{"id":5,"title":"תשובה מסוג ראשון","icon":"🧭"},{"id":6,"title":"\"מקצה השמים\"","icon":"🌐"},{"id":7,"title":"\"אל הארץ\" ו\"וירשתה\"","icon":"🏞️"},{"id":8,"title":"\"והיטבך והרבך מאבותיך\"","icon":"🌾"}]},{"id":3,"name":"שלבי התשובה","icon":"🪜","color":"#e08e00","stories":[{"id":9,"title":"\"ומל\" – פסוק באמצע","icon":"⚖️"},{"id":10,"title":"\"ואתה תשוב\" – תשובה של מצוות","icon":"📿"},{"id":11,"title":"חוזק אמיתי","icon":"🛡️"},{"id":12,"title":"דרגות של תשובה","icon":"🔎"},{"id":13,"title":"ההחלטה שלא להיטמע","icon":"🧩"}]},{"id":4,"name":"\"ומל ה' את לבבך\"","icon":"❤️","color":"#1e88b8","stories":[{"id":14,"title":"תשובה שבאה משני הצדדים","icon":"🤝"},{"id":15,"title":"התעוררות שאין לה הסבר","icon":"🔥"},{"id":16,"title":"\"כשהלב מתעורר\"","icon":"🌱"}]},{"id":5,"name":"לא לחלום בכיתה","icon":"👂","color":"#c62b6b","stories":[{"id":17,"title":"רוב האנשים לא שמים לב","icon":"👀"},{"id":18,"title":"\"היינו כחולמים\"","icon":"💭"},{"id":19,"title":"להתעורר ולשמוח","icon":"🌅"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
