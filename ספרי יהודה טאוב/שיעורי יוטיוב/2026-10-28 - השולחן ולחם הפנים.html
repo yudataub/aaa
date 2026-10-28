@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 השולחן ולחם הפנים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 השולחן ולחם הפנים</h1>
+  <p>מידות השולחן, הזר והמסגרת, הדפנות והקנים, איך אפו לחם עם קירות ולמה נשאר חם כל השבוע – שיעורי כיתה על כלי המשכן</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעת הכלים</div>
+      <h3 class="story-title">🏛️ ארבעה כלים</h3>
+      <p>השיעור נפתח בחזרה. כמה כלים היו בתוך המשכן ובבית המקדש? התלמידים התחילו למנות. ארון הברית – זה ברור. השולחן. המנורה. ואז נתקעו. חסר עוד אחד. אחרי רמז קטן מישהי נזכרה: המזבח! מזבח הזהב, שעליו הקטירו את הקטורת.</p>
+      <p>אלה ארבעת הכלים: ארון, שולחן, מנורה ומזבח. היו גם חלקים וכלים קטנים יותר, אבל אלה הכלים הגדולים, וכל אחד מהם הוא עולם שלם.</p>
+      <p>בשיעור הקודם למדו על הארון, הכלי היקר מכולם, שבו מונחים לוחות הברית. סיפרו שהוא גנוז עד היום מתחת לאדמה, ושאפילו הגויים לא הצליחו לקחת אותו. ראו גם דגמים של כלי המקדש שהכינו תלמידים, ובהם ארון הברית יפה מאוד.</p>
+      <p>עכשיו עוברים לכלי הבא: השולחן ועליו לחם הפנים. והרב הבטיח מראש: בסוף השיעור תדעו משהו שאפילו סבא לא יודע, ותוכלו לספר אותו בשולחן השבת.</p>
+      <p class="bold-para">בתוך המשכן עמדו ארבעה כלים: הארון, השולחן, המנורה ומזבח הזהב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · ארבעת הכלים</div>
+      <h3 class="story-title">🖼️ קודם הפסוקים, אחר כך התמונות</h3>
+      <p>בשיעורים האלה השתמשו בכיתה במצגות ובסרטונים. אבל הרב הזהיר מראש: חלק מן התמונות הראשונות הכין המחשב במהירות, והן לא מדויקות. הכנת תמונות מדויקות לוקחת זמן רב, ולכן קודם רואים תמונה כללית, ואחר כך מגיעים לתמונות ולסרטונים שנעשו בקפידה.</p>
+      <p>ולפני כל תמונה – הפסוקים. קוראים יחד בחומש מה התורה אומרת, מילה אחרי מילה, ורק אחר כך מסתכלים ושואלים: האם התמונה מתאימה למה שכתוב? כך התלמידים לומדים לא להאמין לכל ציור, אלא לבדוק אותו מול לשון התורה.</p>
+      <p>הרב גם סיפר שהוא מכין לכיתה סיור וירטואלי במשכן ובבית המקדש: נכנסים בעזרת המחשב לחצר, משם להיכל, ומשם לקודש הקודשים, ורואים כל כלי במקומו. וכשזמן השיעור קצר, צריך להזדרז. יש שיעור אחד לכל כלי, ולכן מקשיבים היטב, כדי שבשנה הבאה, כשילמדו את ספר ויקרא, יבינו את המושגים.</p>
+      <p class="bold-para">את כלי המשכן לומדים קודם מן הפסוקים, ורק אחר כך בודקים בתמונות ובסרטונים אם הבנו נכון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בניין השולחן</div>
+      <h3 class="story-title">📏 השולחן שבמשכן</h3>
+      <p>כך כתוב בפרשת תרומה: "וְעָשִׂיתָ שֻׁלְחָן עֲצֵי שִׁטִּים, אַמָּתַיִם אָרְכּוֹ, וְאַמָּה רָחְבּוֹ, וְאַמָּה וָחֵצִי קֹמָתוֹ".</p>
+      <p>כמה זה במטרים? אמה היא בערך חצי מטר. אמתיים – בערך מטר. אמה – בערך חצי מטר. ואמה וחצי – בערך שבעים וחמישה סנטימטרים. מה זה "קומתו"? לא אורך ולא רוחב, אלא הגובה.</p>
+      <p>הרב הצביע על השולחן שבכיתה: הוא באורך של מטר בערך. גם השולחנות של התלמידים דומים. כלומר, השולחן שבמשכן לא היה ענק. הוא היה בערך בגודל של שולחן רגיל, ואפילו קצת נמוך.</p>
+      <p>אבל זה רק הבסיס. מה שהיה מונח עליו הפך אותו לכלי מיוחד לגמרי. ולפני שמגיעים ללחם, צריך להכיר את העץ שממנו נבנה. עצי שיטים הם עצים חזקים וקשים מאוד, שנשארים יציבים ואינם מתקלקלים. מהם עשו את השולחן, וגם את הארון ואת שאר חלקי המשכן.</p>
+      <p class="bold-para">השולחן היה באורך של כמטר, ברוחב של כחצי מטר ובגובה של כשבעים וחמישה סנטימטרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בניין השולחן</div>
+      <h3 class="story-title">✏️ מה מונח על השולחן שלך?</h3>
+      <p>בשיעור השני על השולחן פתח הרב בשאלה פשוטה: בשביל מה צריך שולחן? כדי להניח עליו דברים. ומה מונח על השולחן שלך? אחד התלמידים הסתכל ואמר: קלמר ועיפרון.</p>
+      <p>ובשולחן שבמשכן? עליו מונח לחם הפנים. כשהרב שאל מה זה לחם הפנים, נשמעו תשובות שונות: לחם קדוש, לחם שנשאר חם. אחד אפילו הציע בצחוק שציירו עליו חיוך. כל התשובות האלה יתבררו במהלך השיעור, אחת אחרי השנייה.</p>
+      <p>יש כאן גם רמז לחיים. על השולחן שלנו אנחנו מניחים את מה שאנחנו צריכים ואת מה שחשוב לנו. על שולחן התלמיד – כלי הכתיבה והלימוד. על שולחן השבת – החלות, הנרות והיין. ועל השולחן שבמקדש עמד הלחם, הפרנסה והברכה של עם ישראל, לפני ה' תמיד.</p>
+      <p>וכך צריך לראות כל שולחן בבית: לא רק מקום לאכול עליו, אלא מקום שבו מודים לה' על הלחם ומברכים אותו.</p>
+      <p class="bold-para">שולחן הוא מקום שמניחים עליו את מה שחשוב, ועל השולחן שבמשכן הניחו לחם לפני ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בניין השולחן</div>
+      <h3 class="story-title">👑 זהב, זר ומסגרת</h3>
+      <p>ממשיך הפסוק: "וְצִפִּיתָ אֹתוֹ זָהָב טָהוֹר, וְעָשִׂיתָ לּוֹ זֵר זָהָב סָבִיב". לא השאירו את השולחן מעץ. ציפו אותו בזהב טהור.</p>
+      <p>מה זה "זר זהב"? התלמידים לא ידעו. הרב הסביר: זה כמו כתר שמקיף את השולחן מסביב. כמו שעושים כתר לספר תורה, כך היה לשולחן כתר של זהב. זה מראה של מלכות.</p>
+      <p>ועוד דבר: "וְעָשִׂיתָ לּוֹ מִסְגֶּרֶת טֹפַח סָבִיב". מסגרת ברוחב טפח מסביב לשולחן. בסרטון שראו בכיתה הוסבר שהמסגרת נועדה לכך ששום דבר לא ייפול מן השולחן.</p>
+      <p>כל פרט כאן מראה עד כמה השולחן חשוב. הוא לא סתם רהיט שמניחים עליו דברים. הוא כלי של מלכות, עטור בזהב, ועליו מונח הלחם שעומד "לפני ה' תמיד".</p>
+      <p class="bold-para">השולחן צופה זהב, וסביבו היו זר זהב כמו כתר ומסגרת שלא נתנה לדבר ליפול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · בניין השולחן</div>
+      <h3 class="story-title">🧳 טבעות ובדים</h3>
+      <p>"וְעָשִׂיתָ לּוֹ אַרְבַּע טַבְּעֹת זָהָב". למה צריך טבעות? הילדים הבינו מהר: כדי להרים את השולחן. ואז שאל הרב: למה בכלל צריך להרים אותו?</p>
+      <p>התשובה: כי זה היה משכן במדבר. בני ישראל לא נשארו במקום אחד. פעם חנו כאן, פעם שם. כל פעם שנסעו, היו צריכים לפרק את המשכן ולקחת את הכלים איתם.</p>
+      <p>לכן עשו בדים, מקלות ארוכים מעצי שיטים, וגם אותם ציפו זהב. הכניסו את הבדים לתוך הטבעות, והכהנים נשאו את השולחן על כתפיהם. כך עברו איתו ממקום למקום בכבוד.</p>
+      <p>ואז מגיעים לפסוק שמונה את כלי השולחן: "וְעָשִׂיתָ קְּעָרֹתָיו וְכַפֹּתָיו וּקְשׂוֹתָיו וּמְנַקִּיֹּתָיו". מה הם כל אלה? כדי להבין, צריך קודם להכיר את הלחם עצמו.</p>
+      <p class="bold-para">לשולחן היו ארבע טבעות ובדים, כי המשכן נסע ממקום למקום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לחם עם קירות</div>
+      <h3 class="story-title">🍞 לחם שיש לו קירות</h3>
+      <p>"וְנָתַתָּ עַל הַשֻּׁלְחָן לֶחֶם פָּנִים לְפָנַי תָּמִיד". על השולחן מונחים שנים עשר לחמים. שנים עשר – כמו מספר שבטי ישראל.</p>
+      <p>אבל לחם הפנים לא נראה כמו חלה רגילה. בתמונה שראו בכיתה הוא נראה כמו מגירה: יש לו בסיס ישר, ובצדדים עולים שני קירות. לחם עם דפנות.</p>
+      <p>והרב שאל שאלה קשה: איך עושים לחם כזה? קחו בצק, עשו ממנו פס ארוך, ונסו להרים את הצדדים שלו. מה יקרה? אחרי כמה שניות הכל נופל. בצק לא עומד לבד.</p>
+      <p>התלמידים הציעו רעיונות. אולי לחתוך? אולי לחבר חתיכה נפרדת? אחד הזכיר את הימים שבגן, כשעשו מבצק צורות של שמש וירח. אבל לחם עם קירות ישרים זה כבר משהו אחר. עד שמישהו אמר את המילה הנכונה: תבנית.</p>
+      <p class="bold-para">לחם הפנים היה לחם מיוחד עם דפנות, ולא כיכר רגילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · לחם עם קירות</div>
+      <h3 class="story-title">🥣 סוד התבנית</h3>
+      <p>התשובה היא תבנית. לוקחים תבנית מרובעת, מניחים בה את הבצק, ומה קורה אוטומטית? הבצק מקבל את צורת התבנית. כך נוצר לחם עם קירות ישרים, דופן מכאן ודופן מכאן.</p>
+      <p>הרב הוסיף שיש שתי אפשרויות: לשים את הבצק בתוך התבנית, או להניח אותו על התבנית מן הצד ההפוך שלה. איך בדיוק עשו בבית המקדש – הוא אמר בכנות שאינו יודע. אבל בסרטון שראו בכיתה רואים את האופה לוקח תבנית ומניח עליה את הבצק, וכך יוצא לחם עם שתי דפנות.</p>
+      <p>ומכאן אפשר להבין את המילה "קערותיו" שבפסוק: אלה התבניות שבהן עיצבו את הלחם. ו"כפותיו" – לפי מה שהוסבר בשיעור, אלה כלים שבהם נתנו על הלחם את הלבונה.</p>
+      <p>שימו לב לעוד פרט מפתיע: למרות שקוראים להם "חלות", הלחמים האלה היו בעצם מצות. הם לא החמיצו. כל השנה כולה, הלחם שעל השולחן היה כמו מצה של פסח.</p>
+      <p class="bold-para">את לחם הפנים אפו בתוך תבנית, וכך קיבל את הדפנות שלו – וזו כנראה ה"קערה" שבפסוק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · עשרים ושמונה קנים</div>
+      <h3 class="story-title">🥢 הלחמים לא נוגעים זה בזה</h3>
+      <p>עכשיו שאלה חדשה. אם מניחים שישה לחמים זה על גבי זה, מה יקרה? הם ייפלו. וגם אם לא ייפלו – כשלחם נוגע בלחם במשך שבוע, הוא מתעפש והכל הולך לאיבוד. צריך שיהיה רווח בין לחם ללחם.</p>
+      <p>מה עשו? כמו בארון עם מדפים. לצד השולחן העמידו דפנות, ובתוכן הכניסו מקלות. הלחם עמד על המקלות, ובין לחם ללחם נשאר רווח. אלה ה"קשׂוֹת" וה"מנקיות" שבפסוק.</p>
+      <p>וכך כתוב במשנה במסכת מנחות: היו ארבעה סניפים של זהב, מפוצלים בראשיהם, שהיו סומכים בהם – שניים לסדר זה ושניים לסדר זה. ועשרים ושמונה קנים, כחצי קנה חלול.</p>
+      <p>כלומר, היו שתי ערמות של שישה לחמים, אחת מכל צד, ובין הלחמים היו קנים. וכבר בשיעור הקודם שאל הרב חידה: כמה קנים היו בסך הכל? כל תלמיד ניחש מספר, ורק אחד אמר את המספר הנכון – עשרים ושמונה.</p>
+      <p class="bold-para">בין לחם ללחם הניחו קנים, כדי שהאוויר יעבור והלחם לא יתעפש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · עשרים ושמונה קנים</div>
+      <h3 class="story-title">🏠 נסו בבית</h3>
+      <p>כדי שהתלמידים ירגישו את הבעיה, הרב נתן להם משימה לשבת: כשאבא קונה לחמים, קחו אותם ונסו לשים אחד על השני. כמה לחמים אפשר לשים עד שהכל נופל? בואו וספרו לי בשבוע הבא.</p>
+      <p>התשובה, כנראה, תהיה: לא הרבה. אחרי שלושה או ארבעה לחמים המגדל מתחיל להתנדנד, ובום – הכל על הרצפה. ובמקדש עמדו שתי ערמות של שישה לחמים, שבוע שלם, בלי ליפול ובלי לגעת זה בזה.</p>
+      <p>תלמיד אחד שאל שאלה טובה: הסברנו איך הדופן של הלחם עומדת בזכות התבנית, אבל איך כל המבנה עומד? הרב שיבח את השאלה. ובאמת, על זה בדיוק בא המשך השיעור: הדפנות הגדולות שלצד השולחן, והקנים שבין הלחמים.</p>
+      <p>כך נבנה המבנה כולו: השולחן בבסיס, שתי דפנות מכל צד, ארבע בסך הכל, וביניהן מדפים של קנים. מבנה חכם ומדויק, שכל חלק בו נועד למטרה.</p>
+      <p class="bold-para">מי שינסה לערום לחמים זה על זה יגלה מהר למה היו צריכים דפנות וקנים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · עשרים ושמונה קנים</div>
+      <h3 class="story-title">🧮 החשבון שלא מסתדר</h3>
+      <p>בואו נחשב. בין כל לחם ללחם יש שלושה קנים. בכל ערמה שישה לחמים. אם כל לחם צריך שלושה, זה שישה כפול שלושה – שמונה עשרה בכל צד. בשני הצדדים – שלושים ושש.</p>
+      <p>אבל המשנה אומרת עשרים ושמונה. ארבעה עשר בכל צד. איפה נעלמו הקנים? מה הסוד?</p>
+      <p>תלמיד אחד הבין ראשון: הלחם התחתון לא צריך קנים! הוא מונח ישר על השולחן. השולחן עצמו מחזיק אותו. כבר ירדו שלושה.</p>
+      <p>ועכשיו חסר עוד להוריד אחד. התשובה: הלחם העליון צריך רק שניים. למה? כי אין עליו כלום. הוא לא נושא את משקלם של לחמים אחרים. הרב המחיש זאת במגדל של אנשים: מי שעומד הכי למטה סוחב את כולם, ומי שלמעלה כמעט אינו נושא דבר. כך גם כאן.</p>
+      <p>אז החשבון הוא כך: ארבעה לחמים באמצע, כל אחד עם שלושה קנים – שנים עשר. הלחם העליון עם שניים – ארבעה עשר. הלחם התחתון בלי כלום. ארבעה עשר בכל צד, ובסך הכל עשרים ושמונה.</p>
+      <p class="bold-para">לפי החשבון הפשוט היו צריכים להיות שלושים ושישה קנים, אבל המשנה אומרת עשרים ושמונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · עשרים ושמונה קנים</div>
+      <h3 class="story-title">✋ משכן בתוך כף היד</h3>
+      <p>ועכשיו ההפתעה. הרב ביקש מכל אחד להסתכל על היד שלו ולספור את הפרקים שבאצבעות. באגודל יש שניים, ובכל אחת מארבע האצבעות האחרות שלושה. כמה יוצא? שלוש כפול ארבע ועוד שניים – ארבעה עשר.</p>
+      <p>בדיוק כמו בשולחן! ארבעה לחמים עם שלושה קנים, ואחד עם שניים. ארבע אצבעות עם שלושה פרקים, ואגודל עם שניים. ובשתי הידיים – עשרים ושמונה, כמו מספר הקנים.</p>
+      <p>ועוד: המילה "יד" בגימטריה היא ארבע עשרה. יו"ד היא עשר, ודל"ת ארבע.</p>
+      <p>מה זה בא ללמד? שהקדוש ברוך הוא ברא את האדם בדומה למשכן. המשכן הוא מקום להשראת השכינה, וגם האדם נברא להיות מקום שהשכינה שורה בו. היד שלנו נושאת בתוכה זכר לשולחן שבמקדש. כשאנחנו נוטלים ידיים ומברכים על הלחם, אולי כדאי להיזכר בזה.</p>
+      <p class="bold-para">ארבעה עשר הקנים בכל צד מכוונים כנגד ארבעה עשר פרקי היד, ו"יד" בגימטריה ארבע עשרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הלחם בבית המקדש</div>
+      <h3 class="story-title">🔥 לחם חם במשך שבוע</h3>
+      <p>כמה זמן היה הלחם מונח על השולחן? שבוע שלם. ביום שישי אפו אותו, ובשבת החליפו: הוציאו את הלחם של השבוע הקודם והניחו את החדש.</p>
+      <p>וכאן קרה נס. הלחם שעמד על השולחן שבוע שלם לא התקלקל ולא התייבש. כשהוציאו אותו, הוא היה חם, כמו שהיה ביום שיצא מן התנור.</p>
+      <p>בית המקדש היה מקום של ניסים. דברים שבכל מקום אחר בעולם פועלים לפי הטבע, שם פעלו מעל הטבע. לחם שנשאר חם שבוע שלם הוא סימן קטן ומוחשי לכך שהשכינה שורה שם.</p>
+      <p>ומה עשו עם הלחם שהוציאו? חילקו אותו בשבת לכהנים. כהנים רבים היו שם, וכולם רצו לזכות בחלק, ולכן כל אחד קיבל רק מעט מאוד. אבל אפילו חתיכה קטנה מלחם כזה הייתה שווה הכל.</p>
+      <p class="bold-para">לחם הפנים נשאר על השולחן שבוע שלם, וכשהוציאו אותו היה חם כביום שנאפה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הלחם בבית המקדש</div>
+      <h3 class="story-title">🥖 לא כל לחם במקדש הוא לחם הפנים</h3>
+      <p>בזמן הצפייה בסרטון הופיעו על המסך כמה סוגים של לחם, והתלמידים התבלבלו. זה לחם הפנים? לא, הסביר הרב, זה עדיין לא. במקדש היו כמה סוגים של לחם ושל מנחות.</p>
+      <p>היו מצות בלולות בשמן, שעליהן ילמדו בהרחבה בספר ויקרא. היו שתי הלחם, שהביאו בחג השבועות. והייתה גם מצוות הפרשת חלה מן העיסה, שהיא מצווה שגם אנחנו מקיימים היום בבית.</p>
+      <p>לחם הפנים שונה מכולם. הוא אינו קרבן של יחיד, ואינו לחם של חג אחד בשנה. הוא עומד על השולחן תמיד, שבוע אחרי שבוע, בצורה המיוחדת שלו עם הדפנות, ובנס שהוא נשאר חם. לכן חשוב להבחין היטב, ולשאול בכל פעם: איזה לחם זה, ומה תפקידו? לא כל לחם שרואים במקדש הוא לחם הפנים.</p>
+      <p class="bold-para">במקדש היו כמה סוגי לחם ומנחות, ולחם הפנים הוא רק אחד מהם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הלחם בבית המקדש</div>
+      <h3 class="story-title">🧑‍🍳 משפחת בית גרמו</h3>
+      <p>בסרטון שהוצג בכיתה ראו כיצד נעשתה העבודה בלשכת עושי לחם הפנים. את הלחם המיוחד הזה הכינה משפחה אחת בלבד, משפחת בית גרמו. רק הם ידעו את סוד אפייתו.</p>
+      <p>בסרטון הוסבר שאנשי המשפחה הקפידו מאוד שבבתיהם לא תימצא פת נקייה ומשובחת, כדי שלא יאמרו שהם משתמשים לעצמם בסודות המקדש. הם שמרו על טוהר המלאכה, ולא נהנו ממנה לצורכיהם.</p>
+      <p>ראו שם גם את העבודה עצמה: אופים זריזים מכניסים את הבצק לתנורים חמים מאוד, כדי שלא יחמיץ. מכינים שתים עשרה חלות, מסדרים אותן על השולחן, ובשבת מחליפים.</p>
+      <p>והסרטון הסתיים במחשבה יפה: לחם הפנים מסמל את הברכה הגשמית שבעולם. ויהי רצון שבזכות ברכת השולחן, נזכה שהקדוש ברוך הוא ישלח ברכה במעשה ידינו.</p>
+      <p class="bold-para">את לחם הפנים אפתה משפחה אחת שידעה את סודו, והקפידה שלא ייחשדו בו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הלחם בבית המקדש</div>
+      <h3 class="story-title">😊 למה "לחם הפנים"?</h3>
+      <p>בסוף אחד השיעורים עלתה השאלה: למה קוראים לו "לחם הפנים"? תלמיד אחד צחק: אולי ציירו עליו פרצוף? אבל תלמיד אחר אמר דבר נכון מאוד. ללחם היו פנים לכאן ולכאן. הדופן מצד אחד והדופן מצד שני, כאילו הוא רואה מכאן ורואה מכאן.</p>
+      <p>ויש עוד כיוון בפסוק עצמו: "לֶחֶם פָּנִים לְפָנַי תָּמִיד". הלחם עומד לפני ה', כל הזמן, בלי הפסקה. אין שבוע שבו השולחן ריק.</p>
+      <p>נסכם את מה שלמדנו: שולחן מעצי שיטים מצופה זהב, עם זר כמו כתר ומסגרת. שתי דפנות מכל צד, ארבע בסך הכל. ארבעה עשר קנים בכל צד, כמו פרקי היד. שנים עשר לחמים כמו שבטי ישראל, שנאפו בתבנית ונשארו חמים שבוע שלם, ובשבת התחלקו לכהנים.</p>
+      <p>וכל אחד יכול לבוא הביתה ולספר בשולחן שבת: אצלנו על השולחן יש חלות, ובמקדש היה שולחן עם שנים עשר לחמים. ויהי רצון שנזכה במהרה לראות אותו שוב במקומו.</p>
+      <p class="bold-para">לחם הפנים נקרא כך כי היו לו פנים לכאן ולכאן, והוא עמד תמיד לפני ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בקו קול תודה של הרב יהודה טאוב · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"ארבעת הכלים","icon":"🏛️","color":"#c62b6b","stories":[{"id":1,"title":"ארבעה כלים","icon":"🏛️"},{"id":2,"title":"קודם הפסוקים, אחר כך התמונות","icon":"🖼️"}]},{"id":2,"name":"בניין השולחן","icon":"🪵","color":"#6d28d9","stories":[{"id":3,"title":"השולחן שבמשכן","icon":"📏"},{"id":4,"title":"מה מונח על השולחן שלך?","icon":"✏️"},{"id":5,"title":"זהב, זר ומסגרת","icon":"👑"},{"id":6,"title":"טבעות ובדים","icon":"🧳"}]},{"id":3,"name":"לחם עם קירות","icon":"🍞","color":"#e08e00","stories":[{"id":7,"title":"לחם שיש לו קירות","icon":"🍞"},{"id":8,"title":"סוד התבנית","icon":"🥣"}]},{"id":4,"name":"עשרים ושמונה קנים","icon":"🥢","color":"#1e88b8","stories":[{"id":9,"title":"הלחמים לא נוגעים זה בזה","icon":"🥢"},{"id":10,"title":"נסו בבית","icon":"🏠"},{"id":11,"title":"החשבון שלא מסתדר","icon":"🧮"},{"id":12,"title":"משכן בתוך כף היד","icon":"✋"}]},{"id":5,"name":"הלחם בבית המקדש","icon":"✨","color":"#c62b6b","stories":[{"id":13,"title":"לחם חם במשך שבוע","icon":"🔥"},{"id":14,"title":"לא כל לחם במקדש הוא לחם הפנים","icon":"🥖"},{"id":15,"title":"משפחת בית גרמו","icon":"🧑‍🍳"},{"id":16,"title":"למה \"לחם הפנים\"?","icon":"😊"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
