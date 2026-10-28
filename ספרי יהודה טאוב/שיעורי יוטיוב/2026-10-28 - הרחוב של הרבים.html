@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 הרחוב של הרבים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 הרחוב של הרבים</h1>
+  <p>עיון הלכתי בגזל הרבים: סוכה ברשות הרבים, רשות השלטון, חובת מחאה, ופיקוח נפש גשמי ורוחני</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה והיסוד</div>
+      <h3 class="story-title">⚖️ ברובד ההלכתי</h3>
+      <p>לפני שהתחיל, ביקש הרב בקשה מן המשתתפים: לנסות לשמור על השיעור ברובד הלכתי, ולא לעבור לאקטואליה. הנושא, אמר, מזמין זאת, ולכן צריך להשתדל במיוחד לתפוס את הרעיון העקרוני, את ההגדרה ההלכתית, ולא לגלוש לוויכוחים של היום.</p>
+      <p>השאלה העקרונית היא זו: אדם יוצא להפגנה. יש שני סוגים של הפגנות: הפגנה שיש לה אישור מן המשטרה, והפגנה שאין לה אישור. בשני הסוגים נגרם לפעמים נזק גדול לציבור. אדם שתכנן להגיע לחתונה עלול לא להגיע בכלל. חסימה כזו יכולה להימשך שלוש או ארבע שעות.</p>
+      <p>האם מותר לעשות זאת? האם יש בזה איסור גזל? ואם יש, האם יש מצבים שבהם הוא מותר? אלו השאלות שהשיעור בירר צעד אחר צעד, מתוך מקורות ההלכה.</p>
+      <p>הספר הזה מביא את הבירור כפי שנלמד: כעיון הלכתי בדיני גזל הרבים ופיקוח נפש, שנוגעים לכל אדם ולכל ציבור, בכל זמן ובכל מקום.</p>
+      <p class="bold-para">הרב ביקש מראש לשמור על השיעור ברובד ההלכתי והעקרוני, ולא לעבור לאקטואליה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה והיסוד</div>
+      <h3 class="story-title">❓ "עת לעשות לה'"?</h3>
+      <p>אחד המשתתפים הציע: אולי יש כאן היתר של "עֵת לַעֲשׂוֹת לַה' הֵפֵרוּ תּוֹרָתֶךָ"? אם המטרה חשובה מאוד, אולי מותר לעשות בשבילה דברים שבדרך כלל אסורים?</p>
+      <p>הרב השיב בשאלה: האם ראינו פעם במקום כלשהו שבשביל "עת לעשות לה'" מותר לגזול? אם יש לך ראיה, תביא. הוא אמר שהוא עצמו לא ראה מקום כזה. אולי יש היתרים של "עת לעשות" בדברים אחרים, אבל לקחת מאדם אחר את מה ששייך לו – זה לא נמצא.</p>
+      <p>ועוד: גם אם נניח לרגע שיש מטרה גדולה, ההפגנה עצמה אינה המעשה של "עת לעשות לה'". היא אינה מביאה מיד את התוצאה. מה שנעשה בפועל באותו רגע הוא רק הגזל עצמו, אם אכן יש כאן גזל.</p>
+      <p>ולכן צריך לברר את השאלה היסודית: האם בכלל יש כאן גזל? ומה הגדרת גזל בהלכה?</p>
+      <p class="bold-para">לא מצאנו בשום מקום בהלכה היתר לגזול מאדם אחר בשביל "עת לעשות לה'".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השאלה והיסוד</div>
+      <h3 class="story-title">⏱️ מה גזלתי?</h3>
+      <p>משתתף אחד שאל: מה בעצם גזלתי? והשיב משתתף אחר: זמן. גזלת לאנשים את הזמן שלהם.</p>
+      <p>הרב הבחין כאן הבחנה חשובה. נכון שהמושג "גזל זמן" מופיע בספרי המוסר. אבל בספרי ההלכה לא תמצא דבר כזה. מבחינה מוסרית ודאי שזה פסול, אבל מבחינה הלכתית אין איסור גזל על זמן.</p>
+      <p>והביא דוגמה: אדם שעושה רעש בשעה אחת עשרה בלילה. האם הוא עבר על גזל? הרב אמר שאינו יודע על מה בדיוק עבר. ודאי שיש כאן צער לשכנים, ויש בעיה של בין אדם לחברו, אבל לא ברור שיש כאן איסור גזל.</p>
+      <p>אם כן, מאיפה לקח הרב שבחסימת רחוב יש גזל? המקור, אמר, נמצא דווקא בהלכות סוכה. שם מתברר שהרחוב עצמו שייך לרבים, ומי שתופס אותו – גוזל אותם.</p>
+      <p class="bold-para">"גזל זמן" הוא מושג של ספרי המוסר; בהלכה צריך למצוא גזל של דבר ממשי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · סוכה ברשות הרבים</div>
+      <h3 class="story-title">🛖 הרמ"א והמגן אברהם</h3>
+      <p>בהלכות סוכה כותב הרמ"א שאסור לכתחילה לבנות סוכה בקרקע של חברו, וכן בקרקע של רבים. ומה הדין אם בנה? המגן אברהם סובר שאם אדם בנה סוכה ברשות הרבים, הרי זו סוכה גזולה, והיא פסולה.</p>
+      <p>מה הוא גזל? מסביר המגן אברהם: הרחוב שייך לרבים. כשבנית עליו סוכה, לקחת מן הרבים את מה ששייך להם. רואים כאן שהמגן אברהם סבר שלקחת את הרחוב לשימוש שהציבור אינו מסכים לו, נקרא גזל גמור. זה לא רק צער, אלא לקיחת חפץ ששייך לרבים.</p>
+      <p>ומכאן יסוד גדול לענייננו: לרחוב יש בעלים. הבעלים הם הציבור כולו. מי שתופס את הרחוב, תופס רכוש של רבים.</p>
+      <p>ואחד המשתתפים הביא דוגמה מן החיים: אדם שחונה על המדרכה. לפי היסוד הזה, הרב אמר, זה גזל גמור. המדרכה שייכת לרבים, וגזלת מהם את המקום.</p>
+      <p>ומשתתף אחר שאל על מרפסות ובליטות שבונים מעל הרחוב: מה גזלו שם, את האוויר? הרב השיב שכשמעמידים עמודים או בולטים אל הרחוב יש לזה חוקים מיוחדים, וזה כבר נושא אחר. אבל העיקרון ברור: מה שתופס את המקום של הרבים, תופס את מה ששייך להם.</p>
+      <p class="bold-para">סוכה שנבנתה ברשות הרבים בלי היתר היא לפי המגן אברהם סוכה גזולה, כי הרחוב שייך לרבים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · סוכה ברשות הרבים</div>
+      <h3 class="story-title">🏘️ והרי כולם בונים סוכות ברחוב</h3>
+      <p>ואם כן, שואלים: כל הסוכות שבונים על המדרכות? כמה אנשים בונים סוכות ברחוב! (סוכה ציבורית שהעירייה עצמה בונה לטובת הציבור היא כמובן עניין אחר, כי הממונים הם שבנו אותה.) וזו בדיוק השאלה שנשאלת בביאור הלכה של החפץ חיים.</p>
+      <p>שם מובאים דברי ספר ביכורי יעקב, וזה קטע חשוב מאוד. הוא כותב: אם נתן המלך רשות להעמיד דלתות בכניסה למבוי, זה תופס, משום ש"דינא דמלכותא דינא". למה יש למלך זכות להתיר? כי השווקים והרחובות שלו, והוא יכול לעשות בהם כרצונו. ומעתה, כיוון שהכול תחת רשות המלך, אם המלכות יודעת ואינה מוחה – מותר לעשות סוכה ברשות הרבים, ואין כאן איסור גזלה כלל.</p>
+      <p>כלומר: אם אתה רואה שהעירייה אינה מוציאה שום הוראה נגד הסוכות, ולא מפריע לה שבונים אותן, סימן שהיא מסכימה. ואם היא מסכימה, יש כאן רשות מצד "דינא דמלכותא", והסוכה אינה פסולה.</p>
+      <p>ומשתתף אחד העיר שיש אנשים שבנוסף לכך עוברים בין השכנים ברחוב ושואלים אם מפריע להם. זה, אמר הרב, ראוי מאוד.</p>
+      <p>ומשתתף נוסף העיר הערה חדה: רשות אמיתית אינה יכולה להיות רשות שבדיעבד. אם אתה הולך ומבקש אישור, ומקבל אותו, יש לך רשות. אבל אם בינתיים אתה פשוט תופס את המקום, ורק מפני שלא הספיקו לבוא ולפנות אותך אתה מתייחס לזה כאילו נתנו לך אישור – זה לא יפה.</p>
+      <p class="bold-para">המשנה ברורה שואל על המנהג, ומביא את הביכורי יעקב: כשהשלטון מתיר, אין כאן גזל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · סוכה ברשות הרבים</div>
+      <h3 class="story-title">👁️ האם העלמת עין היא הסכמה?</h3>
+      <p>על דברי הביכורי יעקב העיר הרב הערה שאפשר להסתפק בה. כל מי שמכיר רשויות יודע שיש בהן שני חלקים. יש חלק שבו נותנים אישור לעשות דבר. ויש חלק גדול מאוד שבו מעלימים עין. לא נותנים אישור, אבל גם לא נלחמים. הרב הביא דוגמה מעולם החינוך: יש דברים שהמערכת עקרונית אינה מתירה, והיא לא תיתן עליהם אישור, אבל גם לא תרדוף אחר מי שעושה אותם. אין לראות בכך הסכמה, אלא העלמת עין.</p>
+      <p>הרב הביא דוגמאות מן החיים. יש תחומים שבהם הרשות לא תאשר דבר, אבל גם לא תתעסק בו. ויש תחומים שבהם היא אינה מעלימה עין בכלל, למשל כשאדם סוגר מרפסת בלי היתר, ומיד מגיע מכתב. כך גם בסוכות: הרב אמר שלא ראה שהעירייה באה לפרק סוכות. אם מישהו יבנה סוכה במקום שמפריע ממש וחוסם את המדרכה, ודאי שיבואו. אבל אם לא, מעדיפים להעלים עין לשבוע אחד.</p>
+      <p>ולכן, לומר שמכיוון שהעירייה מעלימה עין סימן שהיא מסכימה, זה חידוש שאינו כל כך ברור. בדרך כלל, אמר הרב, אם שואלים בשקט, אומרים שאם זה אינו מפריע למעבר הרבים, ובונים סמוך לחג ומפרקים מיד אחריו, אין בעיה. ובכל אופן, ראוי מאוד להשתדל שגם השכנים יסכימו.</p>
+      <p class="bold-para">הרב העיר: עירייה שמעלימה עין אינה בהכרח עירייה שמסכימה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · סוכה ברשות הרבים</div>
+      <h3 class="story-title">⚠️ גזל הרבים חמור מאוד</h3>
+      <p>ובכל זאת, מן הדיון הזה עולה יסוד גדול מאוד. הרחוב נקרא שייך לרבים. מי שגוזל אותו, עובר על גזל הרבים. וזה מפורש בהלכה: אדם שבנה סוכה ברשות הרבים בלי היתר – גזל את הרבים, והסוכה פסולה לחלוטין.</p>
+      <p>וגזל הרבים חמור מאוד. בגזל רגיל, הגזלן יכול לתקן: הוא מחזיר את החפץ לבעליו, ומבקש ממנו מחילה. אבל כשגוזלים את הרבים, למי תחזיר? את מי תפייס? אין לך אפשרות להשיב לכל אחד ואחד שנפגע. לכן זה חמור במיוחד.</p>
+      <p>וגם הצד השני נלמד מאותו מקור. אם יש היתר מן השלטון – "דינא דמלכותא", המלך נתן רשות, העירייה או המשטרה נתנו רישיון – אז אין כאן גזל. הסיבה היא שמי שממונה על הרבים ואחראי עליהם נתן אישור.</p>
+      <p>ומשני הצדדים האלה, האיסור וההיתר, אפשר לגשת עכשיו לשאלה שבה פתח השיעור.</p>
+      <p class="bold-para">את גזל הרבים אי אפשר כמעט להשיב, ולכן הוא חמור במיוחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רשות, מחאה ורעש</div>
+      <h3 class="story-title">📋 הפגנה באישור</h3>
+      <p>הפגנה שקיבלה אישור משטרתי – יש לה לכאורה היתר. כביכול, מי שממונה על הכביש נתן אישור, ולכן אין זה נקרא גזל הרבים. וזה גם הסדר של "היום אני ומחר אתה": היום אתה מפגין, מחר אני מפגין, וכל עוד מקבלים אישור, זה חוקי.</p>
+      <p>וזה כך גם אם ההפגנה גורמת נזק. כמעט אין הפגנה גדולה שאינה גורמת נזק לציבור. אבל אם יש לה היתר מן הממונים, היא בסדר.</p>
+      <p>ואחד המשתתפים שאל: איך זה מסתדר עם הסוכות בחוץ לארץ, שם ודאי השכנים הגויים אינם מסכימים? התשובה: העירייה אינה הבעלים של המקום, אבל היא הממונה עליו והאחראית לו. אם היא נתנה אישור – מותר.</p>
+      <p>אבל יש תנאי חשוב: כל עוד אתה פועל במסגרת האישור. ההיתר של המשטרה ניתן להפגנה מסוימת, במקום מסוים. אם קיבלת היתר לעמוד על המדרכה וירדת לכביש, יצאת מן ההיתר. שם כבר יש גזל של הרבים שרוצים לעבור.</p>
+      <p class="bold-para">הפגנה שקיבלה אישור, כל עוד היא פועלת במסגרתו, אינה גזל הרבים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רשות, מחאה ורעש</div>
+      <h3 class="story-title">🚧 הפגנה בלי אישור</h3>
+      <p>ומה הדין בהפגנה שאין לה אישור? הרב העיר שהפגנה שכל מטרתה לחסום כבישים, כמעט לעולם לא תקבל אישור. אף משטרה לא תיתן היתר לכך.</p>
+      <p>צריך להבחין בין זה לבין מצב אחר: כשמגיעים אנשים רבים כל כך שאין מקום, והמשטרה עצמה מחליטה מראש לחסום כמה רחובות בגלל העומס. זה דבר אחר לגמרי. שם הממונים הם שהחליטו, ואין זה נקרא שהמפגינים לקחו את הרחוב.</p>
+      <p>ועלתה בשיעור גם הבחנה מן החוק עצמו: זכות ההפגנה נחשבת ערך בסיסי, אבל גם לפי החוק אין פירושה זכות לחסום את הרבים. אפשר לקבל היתר להפגין בכיכר או במקום מוגדר, אבל לא היתר לחסום כביש ראשי. ההבדל הוא בדיוק ההבדל שההלכה מדגישה: בין שימוש במקום שהממונים הקצו לכך, לבין לקיחת הדרך מכל מי שצריך לעבור בה.</p>
+      <p>אבל כשאין אישור, וההפגנה חוסמת את הרבים – זה כמו הסוכה שנבנתה ברשות הרבים בלי היתר. לקחת מן הציבור את מה ששייך לו. וכך גם במקרים קטנים יותר: אם נכנסים לפתח בניין ותופסים אותו, עד שהדיירים אינם יכולים לצאת – אין לזה שום היתר. לקחת מאדם את החפץ שלו, וזה שלו.</p>
+      <p>הרב הוסיף שיש בעניין הזה כמה תשובות של פוסקים, אבל זו ההוראה הכללית העקרונית, כפי שהיא עולה מן ההלכה.</p>
+      <p>והרב הדגיש שהשאלה אינה נוגעת לציבור מסוים. הדין הזה חל על כל מי שמפגין, מכל ציבור שהוא ועל כל מטרה שהיא, וגם כשמדובר באישי ציבור. ההלכה אינה בודקת מי מפגין ועל מה. היא בודקת דבר אחד: האם נלקח מן הרבים מה ששייך להם, והאם ניתן לכך היתר מן הממונים.</p>
+      <p class="bold-para">בלי היתר מן השלטון, ובמקום שנגרם נזק לרבים, חסימת רחוב היא איסור גזל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רשות, מחאה ורעש</div>
+      <h3 class="story-title">📣 האם יש חובה להצטרף למחאה?</h3>
+      <p>ומשתתף אחד העלה טענה מן הצד השני: אולי ההפגנה היא מצווה, ויש מצוות תוכחה ומחאה. אם כן, כולם חייבים לבוא ולמחות, ואם הם חייבים, אולי מותר לי "לזכות" אותם ולגרום להם להשתתף?</p>
+      <p>על זה השיב הרב: כתוב ברמ"א מפורש שאין חיוב מחאה כאשר הדבר גורם לאדם הפסד ממון. אם המחאה גורמת לך נזק ממוני, אינך חייב למחות.</p>
+      <p>ממילא, אי אפשר לחייב אדם אחר למחות כשהדבר גורם לו נזק – כשהוא מאחר לעבודה, או מפסיד דבר שתכנן. גם אם אתה צודק בטענתך, אין לך זכות לגרום לאחר להוציא ממון או להפסיד בשביל המטרה שלך.</p>
+      <p>כך שגם הטענה של "מצווה" אינה מתירה את הגזל. המצווה של המוחה אינה הופכת לחובה של העובר ברחוב, ובוודאי אינה נותנת זכות לקחת ממנו.</p>
+      <p class="bold-para">הרמ"א כותב שאין חיוב מחאה כאשר הדבר גורם לאדם הפסד ממון.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · רשות, מחאה ורעש</div>
+      <h3 class="story-title">🔔 רעש של תורה ותפילה</h3>
+      <p>ועלתה שאלה מעניינת: האם מותר לישיבה ללמוד בקול רם באמצע הלילה, גם אם זה מפריע לשכנים? או בתי כנסת שאומרים סליחות בקול ותוקעים בשופר בשעות מוקדמות, ולפעמים השכנים מתלוננים? האם גם זה גזל?</p>
+      <p>הרב אמר שאינו בטוח בדין, ושצריך לעיין בגמרא. ידוע לו שיש היתר מיוחד בעניין לימוד תורה, ואולי גם בעניין תפילה. יש גם תקנות וחוקים כלליים שקובעים כמה רעש מותר ובאילו שעות, וזה עניין בפני עצמו. אחד המשתתפים, שעוסק בתחום איכות הסביבה, הסביר שיש כלל קבוע: ככל שעוצמת הרעש גבוהה יותר, זמן החשיפה המותר קצר יותר. רעש חזק מאוד מותר רק דקות ספורות, ורעש חלש יותר מותר זמן ארוך יותר. והרב סיפר שגם בישיבה שבה למד באו פעם להתלונן על הרעש.</p>
+      <p>אבל הוא הדגיש שזה שונה מאוד מחסימת רחוב. בית המדרש לומד במקום שלו. הוא אינו לוקח דבר של אחר. לכל היותר הוא גורם נזק עקיף, מה שנקרא גרמא. וגם אם התירו זאת בהלכה, אין ללמוד מזה היתר לקחת משהו ששייך לשני.</p>
+      <p>והכלל חוזר: לא מצאנו בשום מקום שמותר לאדם לקחת מה ששייך לחברו בשביל מטרה של "עת לעשות לה'". ומכאן עבר השיעור לשאלה הבאה: האם יש מצב שבו מותר גם לגזול?</p>
+      <p class="bold-para">בית מדרש שלומד במקומו גורם לכל היותר נזק עקיף, וזה שונה מלקחת את מה ששייך לאחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · פיקוח נפש</div>
+      <h3 class="story-title">🛟 פיקוח נפש דוחה גם גזל</h3>
+      <p>ברור לכולם שפיקוח נפש דוחה את כל העבירות שבתורה, חוץ משלוש: עבודה זרה, גילוי עריות ושפיכות דמים. ממילא הוא דוחה גם את איסור גזל.</p>
+      <p>הרב הביא דוגמה פשוטה: אדם עומד למות בצמא, והוא רואה בקבוק מים של חברו. החבר אינו מסכים שייקח. האם מותר לקחת? ודאי שמותר. וכי ימות בשביל זה? כמו שפיקוח נפש דוחה שבת ומאכלות אסורות, כך הוא דוחה את "לא תגזול". (משתתף העיר על המקרה של שניים שהולכים במדבר ויש מים רק לאחד, אבל הרב הבהיר שכאן מדובר במי שיש לו מים בשפע, והשני ימות בלעדיהם.)</p>
+      <p>אבל יש הבדל: מי שלקח, חייב אחר כך לשלם. ההיתר הוא לקחת, לא לפטור את עצמו מן התשלום. פיקוח הנפש מתיר את המעשה, אבל אינו מבטל את החוב.</p>
+      <p>וזו גמרא מפורשת בפרק הכונס, לגבי דוד המלך: היה שם גדיש של תבואה שהתחבאו בו פלשתים, ודוד שאל אם מותר לשרוף אותו, אף שהוא שייך למישהו. והתשובה: ברור שמותר, רק צריך לשלם אחר כך. ונשאלה שם שאלה אם המלך פטור מלשלם. מכל מקום, כשיש סכנת נפשות, מותר אפילו להרוס בית, ופיקוח נפש דוחה הכול.</p>
+      <p class="bold-para">פיקוח נפש דוחה את כל העבירות חוץ משלוש, ומותר לקחת מים של חברו כדי לא למות בצמא – ולשלם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · פיקוח נפש</div>
+      <h3 class="story-title">🧭 מתי זה באמת פיקוח נפש?</h3>
+      <p>מכאן עלתה שאלה: מה אם המוחים סבורים שיש בעניין שעליו הם מוחים סכנת נפשות? הרב הביא שהרב דב ליאור נשאל בעבר על הפגנות שחסמו כבישים במאבק ציבורי שבו ראו המוחים סכנת נפשות. הוא השיב בשאלה: אם יש חפץ חשוד, מותר לעצור את התנועה? לא רק מותר, חייבים! ואיך עוצרים, הרי זה גזל? אלא שפיקוח נפש דוחה גזל. ולכן סבר שבמצב כזה מותר להפגין גם כשזה חוסם וגורם צער.</p>
+      <p>אבל לא כולם הסכימו איתו. והמחלוקת לא הייתה בהכרח על השאלה אם העניין חמור, אלא על השאלה אם זה "פיקוח נפש" במובן ההלכתי. היו שסברו שזה פיקוח נפש עקיף, לא מיידי, ואינו דומה לחפץ חשוד שעומד להתפוצץ. ולכן נחלקו הרבנים, ובמציאות היו ציבורים שנהגו כך והיו שנהגו אחרת.</p>
+      <p>הרב הוסיף שהמחלוקת הייתה מסובכת גם משום שהיה בה, מלבד הצד ההלכתי, גם צד השקפתי: האם צריך לחשוש לכך שהציבור הרחב אינו רואה דברים כאלה בעין יפה? זו שאלה יחסית, אמר, ותלויה בנסיבות. אבל היא חלק מן השיקול, ולא רק השאלה היבשה של מותר ואסור.</p>
+      <p>ומזה למד הרב כלל חשוב: כשפיקוח נפש מיידי – ודאי. אבל להתחיל להגדיר כל דבר כפיקוח נפש, צריך לדעת את הגבולות. המושג חזק מאוד, ודווקא בגלל זה אסור להרחיב אותו בלי זהירות.</p>
+      <p class="bold-para">יש פוסקים שהתירו חסימה כשראו בה פיקוח נפש, ויש שחלקו כי פיקוח נפש עקיף אינו כמיידי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · פיקוח נפש</div>
+      <h3 class="story-title">🕯️ פיקוח נפש רוחני – תשובת הרשב"א</h3>
+      <p>ועכשיו לשאלה מחודשת יותר: האם יש מושג של פיקוח נפש רוחני? האם מותר לעבור על איסורים חמורים כדי להציל אדם לא מסכנה גופנית אלא מסכנה רוחנית? אמנם חז"ל אמרו שהמחטיא את חברו קשה מן ההורגו, אבל האם יש לזה תוקף הלכתי, או שזה ביטוי של מוסר?</p>
+      <p>התשובה המפורסמת ביותר היא תשובת הרשב"א, שמובאת בהלכה. מדובר באדם שתפסו את בתו ורוצים להוציא אותה לשמד, להמיר את דתה. וזה קרה בשבת. כותב הרשב"א שמותר לאביה לרדוף אחריהם בשבת כדי להציל אותה, גם אם יהיה בזה חילול שבת. למה? כי זה פיקוח נפש רוחני: אדם עומד לאבד את כל חייו היהודיים.</p>
+      <p>הרב הזכיר דוגמה היסטורית מלפני מאה וחמישים שנה, גזירת הקנטוניסטים: תפסו נערים יהודים צעירים, לקחו אותם רחוק, וכל המטרה הייתה שישכחו שהם יהודים.</p>
+      <p>וזה בדיוק הכלל שחז"ל אמרו: "חַלֵּל עָלָיו שַׁבָּת אַחַת, כְּדֵי שֶׁיִּשְׁמֹר שַׁבָּתוֹת הַרְבֵּה".</p>
+      <p class="bold-para">הרשב"א התיר לחלל שבת כדי להציל בת שנלקחה לשמד: "חלל עליו שבת אחת כדי שישמור שבתות הרבה".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · פיקוח נפש</div>
+      <h3 class="story-title">🔒 היתר מוגבל מאוד</h3>
+      <p>אבל, אמר הרב, צריך לשים לב טוב מתי ההיתר הזה נאמר. ברשב"א לא מדובר על עבירה אחת, לא על שתיים ולא על עשר. מדובר במצב שבו רוצים לגרום לאדם שלא יידע בכלל שהוא יהודי. לוקחים ילדה קטנה ומעבירים אותה לגויים, והיא לא תדע שהיא יהודייה. מוציאים אותה לגמרי מכלל ישראל.</p>
+      <p>זה המושג שנקרא פיקוח נפש רוחני, והרב רצה לומר במפורש: הוא מוגבל מאוד. שמד הוא מצב שבו המטרה עצמה היא להמיר את דתו של האדם, לקחת אותו כדי שיפסיק להיות יהודי.</p>
+      <p>ולכן מי שרוצה להחיל את ההיתר הזה על מצב כלשהו, צריך לבדוק בזהירות רבה אם המצב באמת דומה לשמד: האם יש כאן כפייה שמטרתה להוציא את האדם מיהדותו, או שאין זה כך. זו שאלה הלכתית חמורה, שאינה נמסרת להרגשה של כל אחד.</p>
+      <p>וכך סיכם הרב: מי שסובר שיש כאן פיקוח נפש רוחני ממש, יש לו לפי שיטתו היתר כמו בכל פיקוח נפש. אבל זה מקרה מחודש מאוד, ולכן רוב הרבנים יורו שהפגנה שגורמת נזק לרבים אסורה, גם כשאדם כועס מאוד.</p>
+      <p class="bold-para">פיקוח נפש רוחני נאמר רק כשרוצים לעקור אדם מכל יהדותו, ולא על עבירה אחת או כמה עבירות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · פיקוח נפש</div>
+      <h3 class="story-title">🧱 כשהחוק נשבר</h3>
+      <p>ועוד הערה העיר הרב, הפעם מצד התוצאה. לפעמים, לצערנו, הפגנות כאלה מצליחות. אפשר היה לחשוב שזו ראיה שהן בסדר. אבל הרב אמר שדווקא ההצלחה עצמה בעייתית.</p>
+      <p>למה? כי כשרואים שאפשר לגבור על המשטרה ולשבש את הסדר הציבורי, גם אחרים לומדים מזה. כל מי שירצה בעתיד לכפות את רצונו על הרבים יאמר: הנה, זה עובד. ומי שמחזיק בסדר הציבורי נחלש. זה דבר לא פשוט, ויש בו סכנה לכלל.</p>
+      <p>וזה מתחבר ליסוד של כל השיעור. דין גזל הרבים אינו רק עניין של אדם אחד שאיחר לחתונה. הוא שומר על כך שהמרחב המשותף יישאר משותף, ושלא יהיה בו שלטון של מי שחזק יותר או רועש יותר. ולכן גם מי שמטרתו קדושה בעיניו, צריך לשאול לא רק אם הוא צודק, אלא גם מה הדרך שבה הוא פועל עושה לחברה כולה.</p>
+      <p class="bold-para">גם כשמחאה בלתי חוקית מצליחה, יש בהצלחתה נזק: היא מלמדת שאפשר לגבור על הסדר הציבורי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · סיכום</div>
+      <h3 class="story-title">📝 סיכום ההלכות</h3>
+      <p>בסוף השיעור סיכם הרב את הדברים. הפגנה שחוסמת כבישים בלי היתר היא איסור גזל גמור. המקור הוא בהלכות סוכה: אדם שבונה סוכה ברשות הרבים בלי היתר – הסוכה גזולה ופסולה. משם רואים במפורש שהרחוב שייך לרבים, ומי שלוקח אותו מהם גוזל דבר ששייך לרבים. וכך גם מי שתופס פתח בניין עד שהדיירים אינם יכולים לצאת.</p>
+      <p>אם יש אישור מן המשטרה, יש היתר, כמובן בגבולות האישור, גם אם הדבר גורם צער. וזה אותו יסוד שעליו סומכים בבניית סוכות ברחוב, אף שכפי שהעיר הרב, לא ברור שהעלמת עין של העירייה היא הסכמה, ולכן ראוי לבקש גם את הסכמת השכנים.</p>
+      <p>אין חובה על אדם להפסיד ממון כדי למחות, ולכן אין לחייב אחרים בכך. פיקוח נפש גשמי ודאי דוחה גזל, אבל צריך לדעת את גבולותיו, והפוסקים נחלקו כשמדובר בפיקוח נפש עקיף. ופיקוח נפש רוחני – יש כזה מושג, אבל הוא מוגבל מאוד, למצב של שמד ממש.</p>
+      <p class="bold-para">בלי היתר – גזל גמור; עם היתר ובמסגרתו – מותר; פיקוח נפש גשמי דוחה; פיקוח נפש רוחני – מחודש ומוגבל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · סיכום</div>
+      <h3 class="story-title">🕊️ כל צד רואה פיקוח נפש</h3>
+      <p>לקראת סוף השיעור הראה הרב דבר מעניין. הוא שאל את המחשב, מערכת של בינה מלאכותית, על השאלה, והתשובה שקיבל הייתה שיש שתי עמדות הפוכות, וכל צד מגדיר את "פיקוח הנפש" בצורה הפוכה לחלוטין. כל צד רואה פיקוח נפש, אבל כל אחד רואה אותו בכיוון השני.</p>
+      <p>יש בזה לימוד חשוב. המושג "פיקוח נפש" הוא מן החזקים שבהלכה: הוא דוחה כמעט את כל התורה. ודווקא משום כך, כל אחד יכול לנסות להשתמש בו לטובת עמדתו. מכאן הזהירות שהרב חזר עליה לאורך כל השיעור: לדעת את הגבולות, להבחין בין מיידי לעקיף, בין שמד ממש לבין דבר אחר, ולא להפוך את המושג לכלי בוויכוח.</p>
+      <p>וגם כשאדם בטוח בצדקתו, הגבולות של גזל הרבים נשארים. הרחוב שייך לכולם, וכל אחד מן העוברים בו הוא אדם שיש לו זכויות, תוכניות וצרכים.</p>
+      <p>הרב חתם בתפילה: יהי רצון שירבה השלום בישראל, ושנזכה, בעזרת ה', לעבוד אותו כך. והוא קיווה שהצליח להעביר את ההגדרות ההלכתיות כפי שביקש בתחילת השיעור – ברובד הלכתי, עקרוני ונקי.</p>
+      <p class="bold-para">בכל ויכוח ציבורי כל צד יכול לראות פיקוח נפש דווקא בכיוון שלו, ולכן צריך זהירות רבה; ושירבה השלום בישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בקו קול תודה של הרב יהודה טאוב · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"השאלה והיסוד","icon":"❓","color":"#c62b6b","stories":[{"id":1,"title":"ברובד ההלכתי","icon":"⚖️"},{"id":2,"title":"\"עת לעשות לה'\"?","icon":"❓"},{"id":3,"title":"מה גזלתי?","icon":"⏱️"}]},{"id":2,"name":"סוכה ברשות הרבים","icon":"🛖","color":"#6d28d9","stories":[{"id":4,"title":"הרמ\"א והמגן אברהם","icon":"🛖"},{"id":5,"title":"והרי כולם בונים סוכות ברחוב","icon":"🏘️"},{"id":6,"title":"האם העלמת עין היא הסכמה?","icon":"👁️"},{"id":7,"title":"גזל הרבים חמור מאוד","icon":"⚠️"}]},{"id":3,"name":"רשות, מחאה ורעש","icon":"📋","color":"#e08e00","stories":[{"id":8,"title":"הפגנה באישור","icon":"📋"},{"id":9,"title":"הפגנה בלי אישור","icon":"🚧"},{"id":10,"title":"האם יש חובה להצטרף למחאה?","icon":"📣"},{"id":11,"title":"רעש של תורה ותפילה","icon":"🔔"}]},{"id":4,"name":"פיקוח נפש","icon":"🛟","color":"#1e88b8","stories":[{"id":12,"title":"פיקוח נפש דוחה גם גזל","icon":"🛟"},{"id":13,"title":"מתי זה באמת פיקוח נפש?","icon":"🧭"},{"id":14,"title":"פיקוח נפש רוחני – תשובת הרשב\"א","icon":"🕯️"},{"id":15,"title":"היתר מוגבל מאוד","icon":"🔒"},{"id":16,"title":"כשהחוק נשבר","icon":"🧱"}]},{"id":5,"name":"סיכום","icon":"📝","color":"#c62b6b","stories":[{"id":17,"title":"סיכום ההלכות","icon":"📝"},{"id":18,"title":"כל צד רואה פיקוח נפש","icon":"🕊️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
