@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ברית עם בורא עולם</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ברית עם בורא עולם</h1>
+  <p>ברית מילה כהסכם בין שני צדדים: הספורנו וכיסא אליהו, שתי הברכות, ארבע הבטחות הארץ לאברהם, ומה מוסיפה "ברית עולם" – חלק א</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ברית עם בורא עולם" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/oLbGBdgvAU4?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/oLbGBdgvAU4/hqdefault.jpg" alt="ברית עם בורא עולם" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=oLbGBdgvAU4" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פתיחה: האדם והקשרים שלו</div>
+      <h3 class="story-title">🔬 המחקר הארוך בעולם</h3>
+      <p>לפני השיעור עצמו הקריא הרב מחקר שקרא, ונראה שיש בו לימוד לרבים. מדובר כנראה במחקר הארוך ביותר שנעשה בעולם: במשך כשבעים וחמש שנה ליוו חוקרים מאוניברסיטה מפורסמת בארצות הברית מאות גברים. קבוצה אחת הייתה של סטודנטים באותה אוניברסיטה, וקבוצה שנייה של נערים מן השכונות העניות של העיר.</p>
+      <p>משנת 1938 ואילך, בכל שנה, בדקו אותם החוקרים: בדיקות רפואיות, שיחות עומק, שאלונים, מעקב אחר ההתנהגות. ליוו אותם כשהתבגרו, כשנעשו עורכי דין, פועלים ורופאים, כשהקימו משפחות או נשארו בודדים, עד שהזדקנו. חלקם היו זקנים מאושרים וחלקם זקנים ממורמרים.</p>
+      <p>בסוף סיכמו החוקרים את ים המידע ושאלו: מה הבדיל בין המאושרים, שהיו שבעי רצון מחייהם, לבין המרירים והאומללים? והתשובה: לא כסף, לא עבודה, לא בריאות במובן הרפואי הצר. דבר אחד: מערכות יחסים. קשרים טובים עם אנשים שומרים עלינו מאושרים ובריאים יותר.</p>
+      <p>אחד החוקרים סיכם שמי שהיו מרוצים ביותר מן הקשרים שלהם בגיל חמישים, היו הבריאים והמאושרים ביותר גם בגיל שמונים. יותר מכסף ויותר מעבודה – מה שמביא לאדם בריאות ושמחה הוא שיש לו אנשים קרובים, שהוא פוגש אותם ומדבר איתם.</p>
+      <p class="bold-para">מחקר של עשרות שנים מצא שמה שמבדיל בין אנשים מאושרים לאומללים אינו כסף ולא עבודה, אלא קשרים טובים עם אנשים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · פתיחה: האדם והקשרים שלו</div>
+      <h3 class="story-title">🫂 "ואהבת לרעך כמוך"</h3>
+      <p>למה הביא הרב את המחקר הזה? השיעור נאמר בתקופה שבה רבים נמנעו ממפגשים בגלל המגפה. הרב אמר שצריך להיזהר, ודאי, אבל צריך לדעת שבדידות, באופן עקרוני, פוגעת באדם לא פחות מכל מחלה.</p>
+      <p>הקדוש ברוך הוא ברא את האדם כך. "וְאָהַבְתָּ לְרֵעֲךָ כָּמוֹךָ" הוא כלל גדול בתורה. כשאדם בא לבית הכנסת ופוגש אנשים, לא דרך מסך אלא פנים אל פנים, רואה אותם, מדבר איתם, בא לשיעור, משתתף בשמחה ואומר מזל טוב – כך הוא נעשה חי באמת. אדם הוא יצור חברתי.</p>
+      <p>והרב הוסיף שבמחקרים נמצא שארץ ישראל היא מן המקומות המאושרים בעולם. לא בגלל שקט, שהרי לא תמיד יש כאן שקט. כשניסו להסביר מה גורם לכך, אחת האפשרויות שעלו הייתה הקשר המשפחתי. כאן נוהגים להיפגש עם המשפחה לעתים קרובות, לבוא הביתה לשבת, להיפגש בחגים ובמועדים ובשמחות. במקומות אחרים בעולם המרחקים גדולים יותר, והאורח החיים שונה, ואנשים נפגשים עם משפחתם לעתים רחוקות.</p>
+      <p>זו עוד סיבה להודות לה' על הזכות לחיות כך. ומשם עבר הרב לנושא השיעור, שגם הוא, כפי שנראה, עוסק בקשר: הקשר שבין עם ישראל לבורא עולם.</p>
+      <p>ואולי יש כאן רמז לכל השיעור: אם הקשר בין אדם לחברו הוא שנותן לאדם חיים ושמחה, קל וחומר הקשר בין האדם לבוראו. וברית המילה היא היסוד של הקשר הזה, הסכם של אהבה שנחתם כבר בימיו הראשונים של התינוק.</p>
+      <p class="bold-para">האדם נברא יצור חברתי, ולכן המפגש עם אנשים – בבית הכנסת, בשיעור ובשמחות – הוא חלק מן החיים עצמם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה שהיא ברית</div>
+      <h3 class="story-title">👁️ "וירא אליו ה'" – למה?</h3>
+      <p>נושא השיעור הוא ברית מילה. בפרשת לך לך נאמרה המצווה, ובפרשת וירא "וַיָּמָל אַבְרָהָם אֶת יִצְחָק בְּנוֹ בֶּן שְׁמֹנַת יָמִים".</p>
+      <p>פרשת וירא נפתחת: "וַיֵּרָא אֵלָיו ה' בְּאֵלֹנֵי מַמְרֵא, וְהוּא יֹשֵׁב פֶּתַח הָאֹהֶל כְּחֹם הַיּוֹם". למה נגלה הקדוש ברוך הוא לאברהם? בתורה לא כתוב. רש"י אומר: לבקר את החולה. היה היום השלישי למילתו, ואברהם היה חולה, והקדוש ברוך הוא בא לבקר אותו. ורש"י ממשיך בסיפור הידוע, שאברהם אהב כל כך להכניס אורחים, והקדוש ברוך הוא הוציא חמה מנרתיקה כדי שלא יטריחוהו אורחים, וכשראה שאברהם מצטער, הביא אליו מלאכים בדמות אנשים.</p>
+      <p>אבל יש פירוש נוסף, מעניין מאוד, וכדאי להכיר אותו. הספורנו אומר: "באלוני ממרא" – כי שם נימול אברהם וכל ביתו. ושם הופיע האל יתברך שכינתו לעמוד בברית, כמשפט לכל כורתי ברית, כעניין "אַתֶּם נִצָּבִים הַיּוֹם כֻּלְּכֶם".</p>
+      <p>כלומר: ברית עושים שניים. צריך לפגוש את הצד השני. אברהם עשה ברית מילה, והקדוש ברוך הוא בא – לא רק לבקר חולה, אלא לכרות את הברית. לעמוד בה, כמו שעומדים שני צדדים להסכם.</p>
+      <p class="bold-para">רש"י מפרש שה' בא לבקר את החולה, והספורנו מפרש שה' בא לעמוד בברית, כמשפט כל כורתי ברית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה שהיא ברית</div>
+      <h3 class="story-title">🪑 כיסא של אליהו</h3>
+      <p>והספורנו מסיים בדבר מעניין: "ואולי בשביל זה נהגו להכין כסא בעת המילה ובמקומה". זה פירוש חדש למנהג הידוע שבכל ברית מילה מכינים כיסא של אליהו הנביא.</p>
+      <p>ההסבר כך: אצל אברהם, הקדוש ברוך הוא בעצמו בא לברית. היום איננו רואים אותו בא. אבל בכל ברית יש צד שני. ולכן הוא שולח נציג. ומי הנציג? אליהו, מלאך הברית. אתה כורת ברית עם בורא עולם, וצריך שהצד השני יבוא לחתום. אצל אברהם בא הקדוש ברוך הוא, ואצלנו בא אליהו כנציגו, לחתום על ההסכם.</p>
+      <p>הרב הזכיר שהשאלה למה אליהו בא לכל ברית היא נושא שלם בפני עצמו. יש שמסבירים שזה מעין עונש, על שקינא ואמר שעם ישראל עזבו את הברית, ולכן עליו לראות בכל דור שהם מקיימים אותה. ויש שמסבירים שזה שכר. אבל לפי הספורנו, זה לא עונש ולא שכר במובן הזה. אליהו פשוט ממלא תפקיד: הוא השליח של הקדוש ברוך הוא לברית, הנציג של הצד השני.</p>
+      <p>ומכאן לנקודה החשובה שהשיעור רוצה להדגיש: ברית מילה היא באמת ברית.</p>
+      <p class="bold-para">לפי הספורנו, הכיסא שמכינים לאליהו בברית הוא מקומו של נציג הקדוש ברוך הוא, הבא לחתום על הברית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה שהיא ברית</div>
+      <h3 class="story-title">🌈 לא רק הסרת ערלה</h3>
+      <p>יש מי שמתייחסים לברית מילה רק כאל פעולה: מסירים את הערלה. אבל ברית מילה איננה כמו לולב ושופר. היא, כלשון שמה, ברית. כורתים ברית עם בורא עולם. ודאי שיש גם מצווה להסיר את הערלה, אבל לפני הכל זהו הסכם. ומי שמבין זאת, רואה בכל ברית מילה לא רק מעשה או מנהג עתיק, אלא רגע שבו נחתם הסכם בין שני צדדים: הקדוש ברוך הוא מצד אחד, והתינוק ומשפחתו, ועמם עם ישראל כולו, מצד שני.</p>
+      <p>כדי להבין מהי ברית, הרב הביא דוגמאות מן התורה. הקשת בענן: התורה אומרת שהקשת היא אות ברית בין ה' לבין הארץ, שלא יהיה עוד מבול. כאן רואים שיש ברית, והקשת היא רק הסימן שלה. הברית עצמה היא ההבטחה שלא יבוא עוד מבול.</p>
+      <p>בספר בראשית יש עוד בריתות: ברית בין הבתרים, שעליה נדבר בהמשך. והברית שכרת אברהם עם אבימלך בבאר שבע, "וַיִּכְרְתוּ שְׁנֵיהֶם בְּרִית". שם ביקש אבימלך: "הִשָּׁבְעָה לִּי בֵאלֹקִים הֵנָּה אִם תִּשְׁקֹר לִי וּלְנִינִי וּלְנֶכְדִּי" – שלא תעשה רע לי, לבני ולנכדי. ברית שמחייבת לדורות.</p>
+      <p>וגם יעקב ולבן כרתו ברית. הם הקימו גל של אבנים ואמרו: הגל הזה עד, שאני לא אעבור אליך לרעה ואתה לא תעבור אליי לרעה. ברית של שני צדדים, שכל אחד מתחייב בה לשני. וכך גם ברית מילה: הסכם בינינו לבין הקדוש ברוך הוא, שבו כל צד נותן משהו ומתחייב למשהו.</p>
+      <p class="bold-para">ברית מילה אינה רק מצווה שעושים, כמו לולב או שופר; היא כפשוטה: כריתת ברית עם בורא עולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מילה שהיא ברית</div>
+      <h3 class="story-title">📖 "אחר הדברים האלה"</h3>
+      <p>בעניין הברית עם אבימלך הביא הרב את פירוש הרשב"ם על הפסוק שבא מיד אחריה: "וַיְהִי אַחַר הַדְּבָרִים הָאֵלֶּה וְהָאֱלֹקִים נִסָּה אֶת אַבְרָהָם". אחרי אילו דברים? רש"י מביא מדרשים שונים. אבל הרשב"ם, בדרך הפשט, אומר: אחרי הברית שכרת אברהם עם אבימלך.</p>
+      <p>לפי הרשב"ם, הייתה כאן הקפדה כלפי אברהם: הארץ ניתנה לו ולזרעו, והוא התחייב בשבועה לדורות, לו ולבניו ולבני בניו, שלא לנגוע לרעה ביושבי אותו חלק. ואז בא הניסיון: "קַח נָא אֶת בִּנְךָ" – אותו בן שבשמו ובשם צאצאיו התחייב אברהם בברית.</p>
+      <p>הרב הזכיר את הפירוש הזה כדי להמחיש עד כמה ברית היא דבר כבד. ברית אינה רק מילים. היא מחייבת, ולפעמים מחייבת דורות שלמים. ולכן כשאנחנו אומרים שמילה היא "ברית", צריך להבין את כובד המשמעות: הבן שנימול לא רק עבר פעולה, אלא נכנס להסכם מחייב עם בורא עולם, הסכם שנמשך לכל ימי חייו ולדורות אחריו.</p>
+      <p>ובהמשך השיעור נראה מה בדיוק מתחייב כל צד בהסכם הזה.</p>
+      <p class="bold-para">הרשב"ם מפרש שהעקדה באה מיד אחרי הברית עם אבימלך, ויש בזה לימוד על כובד משקלה של ברית לדורות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שתי ברכות ושני צדדים</div>
+      <h3 class="story-title">✡️ שתי ברכות בברית</h3>
+      <p>לפני שנגיע לתוכן ההסכם, הרב הצביע על פרט בהלכה שמתבאר יפה לפי היסוד הזה. בברית מילה מברכים שתי ברכות, גם אצל הספרדים וגם אצל האשכנזים. המוהל מברך "על המילה", ואבי הבן מברך "להכניסו בבריתו של אברהם אבינו".</p>
+      <p>בדרך כלל על מצווה אחת מברכים ברכה אחת. על שופר – ברכה אחת, על לולב – ברכה אחת. ונכון שיש מקומות שמברכים כמה ברכות, אבל אלה ברכות מסוגים שונים: "שהחיינו" על הזמן, "שעשה ניסים" על הנס, ברכת הנהנין על האוכל. כאן, בברית, יש שתי ברכות מצווה על אותה מצווה עצמה. למה?</p>
+      <p>לפי מה שלמדנו, הדבר נפלא מאוד. בברית מילה יש שני דברים: יש מעשה – להסיר את הערלה, כמו כל מצווה שעושים. ויש ברית – הסכם. מי שעושה את המעשה הוא המוהל, ולכן הוא מברך "על המילה", כמו שמברכים על כל מצווה. אבל מי שדואג להכניס את הבן לברית, לעשות את ההסכם, הוא האב. ולכן הוא מברך "להכניסו בבריתו של אברהם אבינו".</p>
+      <p>ברית מילה אינה רק מעשה. היא גם הכנסה לברית. ולכן יש לה שתי ברכות, אחת לכל אחד מחלקיה.</p>
+      <p class="bold-para">בברית מילה מברכים שתי ברכות על מצווה אחת: המוהל על המעשה, והאב על הכניסה לברית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שתי ברכות ושני צדדים</div>
+      <h3 class="story-title">👴 כשאין אב – הסבא מברך</h3>
+      <p>ומה עושים כשאבי הבן אינו נמצא? מי מברך "להכניסו בבריתו של אברהם אבינו"? משתתפים בשיעור הציעו אפשרויות שונות: אולי אחד האחים, אולי המוהל, אולי שליח. רבי עקיבא איגר פסק: אם אין אב, יברך הסבא. למה דווקא הסבא?</p>
+      <p>הרב אמר שזה חידוש יפה, ושהוא שמע אותו כמה פעמים בבריתות מפי סבים שאהבו לומר אותו. אחרי הברית אומרים: "כְּשֵׁם שֶׁנִּכְנַס לַבְּרִית, כֵּן יִכָּנֵס לְתוֹרָה וּלְחֻפָּה וּלְמַעֲשִׂים טוֹבִים". מה הקשר בין הברית לתורה?</p>
+      <p>כתוב: "אִם לֹא בְרִיתִי יוֹמָם וָלָיְלָה, חֻקּוֹת שָׁמַיִם וָאָרֶץ לֹא שָׂמְתִּי". חז"ל דורשים את הפסוק גם על ברית מילה וגם על התורה. ובספרים כתוב שעל ידי ברית המילה נפתח לאדם הלב ללמוד תורה. הברית מביאה ללימוד תורה "יומם ולילה".</p>
+      <p>ומי מצווה ללמד את הבן תורה? האב. וכשאין אב? התורה אומרת: "וְהוֹדַעְתָּם לְבָנֶיךָ וְלִבְנֵי בָנֶיךָ". הסבא מצווה ללמד את נכדו. ואם הברית היא פתח לתורה, וכשאין אב החובה ללמד תורה מוטלת על הסבא – הרי שגם תפקיד ההכנסה לברית שלו. ולכן פסק רבי עקיבא איגר שהסבא מברך.</p>
+      <p class="bold-para">רבי עקיבא איגר פסק שכאשר האב איננו, הסבא מברך "להכניסו", משום שברית המילה מביאה לתורה, והסבא מצווה ללמד את נכדו תורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שתי ברכות ושני צדדים</div>
+      <h3 class="story-title">❓ למה אברהם לא מל את עצמו קודם?</h3>
+      <p>והרב סיים את החלק הזה בשאלה מפורסמת. חז"ל אומרים שאברהם אבינו קיים את כל התורה עוד לפני שניתנה, כמו שכתוב: "עֵקֶב אֲשֶׁר שָׁמַע אַבְרָהָם בְּקֹלִי וַיִּשְׁמֹר מִשְׁמַרְתִּי מִצְוֹתַי חֻקּוֹתַי וְתוֹרֹתָי". הוא קיים אפילו עירובי תבשילין. אם כן, למה לא מל את עצמו עד שנצטווה, בגיל תשעים ותשע?</p>
+      <p>יש לשאלה הזאת תירוצים רבים. אחד מהם: אברהם ידע ברוח הקודש שהוא עתיד להצטוות על המילה, ולכן חיכה, כי "גדול המצווה ועושה ממי שאינו מצווה ועושה". מצווה שעתידים להצטוות עליה, עדיף לחכות ולעשות אותה כמצווה.</p>
+      <p>אבל לפי היסוד של השיעור יש תירוץ פשוט ויפה. את כל המצוות האחרות אפשר לקיים לבד. אבל ברית? ברית אי אפשר לעשות לבד. ברית צריכה שני צדדים. הסכם שצד אחד חותם עליו לבדו, אינו הסכם. אם רק צד אחד מכריז על הסכם והצד השני אינו שותף לו – אין כאן שום ברית.</p>
+      <p>ולכן ברית מילה, אברהם לא יכול היה לעשות מעצמו. כל זמן שהקדוש ברוך הוא לא בא לכרות עמו את הברית, לא היה לזה מקום. רק כשה' אמר "וְאֶתְּנָה בְרִיתִי בֵּינִי וּבֵינֶךָ", אפשר היה להיכנס לברית. ואז, כשנצטווה, לא התמהמה: "בְּעֶצֶם הַיּוֹם הַזֶּה נִמּוֹל אַבְרָהָם". מיד כשהצד השני הגיע, הוא נכנס לברית. עד כאן החלק הראשון: ברית מילה היא הסכם שאנחנו עושים עם בורא עולם.</p>
+      <p class="bold-para">אברהם קיים את כל המצוות לפני שנצטווה, אבל ברית אי אפשר לכרות לבד – צריך שהצד השני יבוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · על מה חותמים</div>
+      <h3 class="story-title">✍️ לקרוא את החוזה</h3>
+      <p>עכשיו לשאלה הבאה: על מה אנחנו חותמים בברית?</p>
+      <p>הרב סיפר משל מן החיים. כשאנשים חותמים על חוזה מסובך, למשל בעסקה של דירה שיש בה הרבה פרטים ובעיות, כל צד מביא עורך דין משלו. ועורכי הדין יושבים ומתווכחים על כל סעיף: אם יקרה כך, מה יהיה? ואם יקרה אחרת? תמחק את המילה הזאת, תוסיף את זו. עד שמגיעים להסדר. מי שעומד בצד ורואה את זה, מבין פתאום מה פירוש "לחתום". כל אות וכל מילה יכולות להיות חשובות מאוד.</p>
+      <p>וכך גם בברית מילה. כשנימולנו היינו בני שמונה ימים, ולא ידענו על מה חותמים. אבל אחר כך גדלים, והברית נשארת. צריך לפתוח את ההסכם ולקרוא: מה כל צד נותן? על מה התחייבנו, ועל מה התחייב הקדוש ברוך הוא?</p>
+      <p>ובהמשך השיעור, אמר הרב, נראה גם מה קרה בהיסטוריה כשההסכם לא נשמר כראוי, ומה המשמעות של זה. אבל קודם נפתח את החומש, בפרשת לך לך, פרק יז, ונקרא את לשון הברית.</p>
+      <p>ויש בזה גם לימוד לכל אדם. רבים חיים כל ימיהם כיהודים ואינם יודעים על מה חתמו. הם מכירים את הברית כטקס משפחתי, כשמחה, כמנהג. אבל מי שמעיין בפסוקים מגלה שבשעת הברית קיבל על עצמו התחייבות גדולה, וקיבל גם הבטחות גדולות מאוד. מי שיודע על מה חתם, יודע גם מה מגיע לו, ויודע מה מצופה ממנו.</p>
+      <p class="bold-para">בהסכם כל מילה חשובה, ולכן צריך לברר היטב על מה חתמנו בברית המילה, גם אם בשעת החתימה היינו בני שמונה ימים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · על מה חותמים</div>
+      <h3 class="story-title">💛 ברית של אהבה וברית הארץ</h3>
+      <p>בפרק יז נאמר: "וְאֶתְּנָה בְרִיתִי בֵּינִי וּבֵינֶךָ וְאַרְבֶּה אוֹתְךָ בִּמְאֹד מְאֹד". ובהמשך: "וַהֲקִמֹתִי אֶת בְּרִיתִי בֵּינִי וּבֵינֶךָ וּבֵין זַרְעֲךָ אַחֲרֶיךָ לְדֹרֹתָם לִבְרִית עוֹלָם, לִהְיוֹת לְךָ לֵאלֹקִים וּלְזַרְעֲךָ אַחֲרֶיךָ. וְנָתַתִּי לְךָ וּלְזַרְעֲךָ אַחֲרֶיךָ אֵת אֶרֶץ מְגֻרֶיךָ, אֵת כָּל אֶרֶץ כְּנַעַן לַאֲחֻזַּת עוֹלָם, וְהָיִיתִי לָהֶם לֵאלֹקִים".</p>
+      <p>ורש"י מסכם את הכל בכמה מילים: "ואתנה בריתי" – ברית של אהבה, וברית הארץ להורישה לך, על ידי מצווה זו.</p>
+      <p>שני דברים. הראשון: ברית של אהבה. הקדוש ברוך הוא יאהב אותנו. ומה כלול בזה? הכל. כשמלך אוהב אדם, כלולים בזה אין סוף דברים טובים, שקשה לפרט את כולם. ברית של אהבה פירושה שה' יאהב אותך, ומתוך אהבתו ייטיב לך בכל דרך.</p>
+      <p>והדבר השני: ארץ ישראל. "ונתתי לך ולזרעך אחריך את ארץ מגוריך". וכאן עולה קושיה גדולה, שכל הראשונים זועקים עליה: לשם מה צריך לתת לאברהם את ארץ ישראל עוד פעם? הרי הקדוש ברוך הוא כבר הבטיח לו אותה. ולא פעם אחת.</p>
+      <p class="bold-para">רש"י מסכם את ברית המילה בשני דברים: ברית של אהבה, וברית הארץ לתתה לבניו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · על מה חותמים</div>
+      <h3 class="story-title">🏔️ שכם, ואחרי פרידת לוט</h3>
+      <p>בואו נספור. הפעם הראשונה הייתה כשאברהם בא לארץ: "וַיַּעֲבֹר אַבְרָם בָּאָרֶץ עַד מְקוֹם שְׁכֶם עַד אֵלוֹן מוֹרֶה, וְהַכְּנַעֲנִי אָז בָּאָרֶץ. וַיֵּרָא ה' אֶל אַבְרָם וַיֹּאמֶר: לְזַרְעֲךָ אֶתֵּן אֶת הָאָרֶץ הַזֹּאת, וַיִּבֶן שָׁם מִזְבֵּחַ לַה' הַנִּרְאֶה אֵלָיו".</p>
+      <p>הרב סיפר שלא שם לב לכך עד שעמד פעם במקום עצמו, בסיור עם מדריך שידע לספר על כל מקום. המדריך עמד מעל העיר ושאל: אתם יודעים איפה היה המקום הראשון שבו הבטיח הקדוש ברוך הוא לאברהם את ארץ ישראל? בשכם. המקום הראשון בארץ שבו נגלה ה' לאברהם, הבטיח לו את הארץ, ואברהם בנה שם מזבח.</p>
+      <p>הפעם השנייה הייתה אחרי שלוט נפרד מאברהם: "שָׂא נָא עֵינֶיךָ וּרְאֵה מִן הַמָּקוֹם אֲשֶׁר אַתָּה שָׁם, צָפֹנָה וָנֶגְבָּה וָקֵדְמָה וָיָמָּה. כִּי אֶת כָּל הָאָרֶץ אֲשֶׁר אַתָּה רֹאֶה לְךָ אֶתְּנֶנָּה וּלְזַרְעֲךָ עַד עוֹלָם".</p>
+      <p>מה ההבדל בין הפעם הראשונה לשנייה? הרמב"ן מסביר: בפעם הראשונה אמר לו רק שזרעו יקבל את הארץ, אבל לא פירט כמה, איפה, מה הגבולות. בפעם השנייה כבר אמר לו: הכל, לכל הכיוונים, צפונה ונגבה וקדמה וימה. כל מה שאתה רואה.</p>
+      <p class="bold-para">ההבטחה הראשונה על הארץ ניתנה בשכם בלי גבולות, והשנייה אחרי פרידת לוט, על כל הארץ לכל הרוחות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · על מה חותמים</div>
+      <h3 class="story-title">🔥 ברית בין הבתרים</h3>
+      <p>הפעם השלישית היא ברית בין הבתרים. שם הבטיח הקדוש ברוך הוא לאברהם את הארץ בגבולות רחבים מאוד: "לְזַרְעֲךָ נָתַתִּי אֶת הָאָרֶץ הַזֹּאת, מִנְּהַר מִצְרַיִם עַד הַנָּהָר הַגָּדֹל נְהַר פְּרָת". הבטחה שעדיין לא התקיימה במלואה עד היום.</p>
+      <p>הרב העיר הערה אגב: אחד הפירושים לשם טבריה הוא שהיא "טבורה" של ארץ ישראל, האמצע שלה. היום זה נשמע מוזר, כי מטבריה הגבול קרוב מאוד. אבל אם הארץ מגיעה, כפי ההבטחה, מנהר מצרים ועד נהר פרת, טבריה נמצאת בערך באמצע. ועוד הזכיר שיש נושא שלם בהלכה של היחס בין גבולות הארץ שהובטחו לאברהם לבין הגבולות שבפרשת מסעי, ושיש לכך השלכות מעשיות בהלכות התלויות בארץ, כמו שמיטה, אבל זה נושא בפני עצמו.</p>
+      <p>ומה היא ברית בין הבתרים? הרב הסביר איך כרתו ברית בימים קדומים. מלבד ההסכם עצמו היה טקס: לוקחים בהמה, חוצים אותה לשניים, שמים חצי כאן וחצי כאן, ושני הצדדים עוברים באמצע. כמו שהבהמה, אף על פי שהיא חצויה, היא באמת בהמה אחת, כך גם אנחנו: אף על פי שאני כאן ואתה שם, אנחנו באמת אחד.</p>
+      <p>וכך היה בברית בין הבתרים: הקדוש ברוך הוא ואברהם "עברו" כביכול בין הבתרים, ונחתם הסכם. אם כן, השאלה חוזרת ביתר תוקף: אם כבר נחתמה ברית על הארץ, לשם מה צריך עוד ברית, ברית מילה?</p>
+      <p class="bold-para">בברית בין הבתרים הובטחה הארץ בגבולותיה הרחבים, בברית שנכרתה בין שני הצדדים בטקס הקדום של מעבר בין הבתרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · על מה חותמים</div>
+      <h3 class="story-title">♾️ "לברית עולם"</h3>
+      <p>הרמב"ן מתרץ, ויש בדבריו הבדל עצום. בברית בין הבתרים קיבל אברהם את ארץ ישראל פעם אחת בלבד. מה נאמר שם? "יָדֹעַ תֵּדַע כִּי גֵר יִהְיֶה זַרְעֲךָ בְּאֶרֶץ לֹא לָהֶם, וַעֲבָדוּם וְעִנּוּ אֹתָם אַרְבַּע מֵאוֹת שָׁנָה", ואחר כך יצאו ברכוש גדול, "וְדוֹר רְבִיעִי יָשׁוּבוּ הֵנָּה". הדור הרביעי ישוב ויקבל את הארץ. וזהו.</p>
+      <p>אילו היה הכל נגמר בברית בין הבתרים, לא הייתה לנו היום זכות על הארץ. כי באיזשהו שלב לא התנהגנו כראוי, והקדוש ברוך הוא הגלה אותנו מן הארץ. ובאיזו זכות נחזור? קיבלתם פעם אחת, וזה נגמר. ההבטחה התקיימה.</p>
+      <p>אבל בברית מילה נוסף דבר: "וַהֲקִמֹתִי אֶת בְּרִיתִי בֵּינִי וּבֵינֶךָ וּבֵין זַרְעֲךָ אַחֲרֶיךָ לְדֹרֹתָם לִבְרִית עוֹלָם". זו אינה ברית חד פעמית. זו ברית לדורות, ברית עולם, שממשיכה עד אין סוף. ומה שאנחנו כאן היום, אמר הרב, הוא בזכות ברית המילה.</p>
+      <p>אם כן, ארבע פעמים הובטחה הארץ בספר בראשית: בשכם, אחרי פרידת לוט, בברית בין הבתרים, ובברית מילה. ולמה צריך ארבע פעמים? בפשטות, כדי שנדע להעריך את ארץ ישראל. הקדוש ברוך הוא חוזר ומבטיח שוב ושוב, כדי שנבין כמה היא חשובה. וברית המילה, הברית היחידה מכולן שנחתמת בגוף עצמו, היא שמבטיחה את הארץ לדורות עולם.</p>
+      <p class="bold-para">הרמב"ן מסביר שברית בין הבתרים הבטיחה את הארץ פעם אחת, וברית המילה היא ברית עולם לדורות, ובזכותה אנחנו כאן היום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · על מה חותמים</div>
+      <h3 class="story-title">🩸 ברית שנחתמת בבשר</h3>
+      <p>הרמב"ן שואל: אם כבר קיבלת את הארץ, מה עוד נשאר לתת? מה הוסיפה ברית המילה? וראינו את תשובתו: היא הוסיפה את הנצח, את ה"לדורותם". אבל יש עוד הבדל, שהרב הצביע עליו, בין ברית המילה לבין כל שאר ההבטחות.</p>
+      <p>בכל הפעמים הקודמות הקדוש ברוך הוא מדבר עם אברהם. הוא אומר לו, מבטיח לו, מראה לו את הארץ. גם בברית בין הבתרים, הבתרים מונחים מחוץ לאברהם. אבל ברית המילה היא משהו פיזי, בתוך גופו של אברהם עצמו. מסירים את הערלה, והסימן נשאר בבשר. זו הפעם היחידה שבה ההסכם נחתם בגוף האדם.</p>
+      <p>ולכן מובן למה דווקא היא נעשית "ברית עולם". מה שנאמר בדיבור, אפשר לחשוב שהוא שייך לשעתו. אבל מה שנחתם בבשר, עובר עם האדם לכל מקום, וממנו לבניו ולבני בניו. כל ילד שנימול, בכל דור ובכל מקום בעולם, חותם מחדש על אותה ברית.</p>
+      <p>ומכאן הבנה עמוקה על הקשר שלנו לארץ. גם בשנות הגלות הארוכות, כשעם ישראל היה רחוק מארצו, הברית לא נמחקה. היא נשארה חתומה בבשרם של כל הדורות. וכשעם ישראל זכה לחזור לארצו, הוא חזר מכוח אותה ברית עולם, שלא פסקה לרגע.</p>
+      <p class="bold-para">בכל ההבטחות האחרות הקדוש ברוך הוא מדבר עם אברהם, ורק בברית המילה ההסכם נחתם בגופו של האדם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הברית בתפילה</div>
+      <h3 class="story-title">🕍 "ויעמידה ליעקב לחוק"</h3>
+      <p>בסוף החלק הראשון של השיעור הראה הרב שאנחנו מזכירים את הברית הזאת בכל יום, פעמיים, בתפילת שחרית.</p>
+      <p>הפעם הראשונה בפסוקי "הודו": "זִכְרוּ לְעוֹלָם בְּרִיתוֹ, דָּבָר צִוָּה לְאֶלֶף דּוֹר. אֲשֶׁר כָּרַת אֶת אַבְרָהָם וּשְׁבוּעָתוֹ לְיִצְחָק. וַיַּעֲמִידֶהָ לְיַעֲקֹב לְחֹק, לְיִשְׂרָאֵל בְּרִית עוֹלָם. לֵאמֹר לְךָ אֶתֵּן אֶרֶץ כְּנָעַן חֶבֶל נַחֲלַתְכֶם".</p>
+      <p>על איזו ברית מדובר כאן? על ברית בין הבתרים או על ברית המילה? הרב שאל את השומעים, ואחד מהם ענה יפה: כתוב "ברית עולם". ולפי מה שלמדנו מן הרמב"ן, ברית עולם היא ברית המילה. ברית בין הבתרים הבטיחה את הארץ פעם אחת, וברית המילה היא שנקראת "לברית עולם".</p>
+      <p>כך שבכל בוקר, כשאומרים "הודו", מזכירים את ברית המילה ואת הבטחת ארץ ישראל שבה. "לישראל ברית עולם, לאמר לך אתן ארץ כנען". זו אותה ברית שנכרתה עם אברהם, והיא עומדת לנו עד היום.</p>
+      <p class="bold-para">פעמיים בתפילת שחרית אנחנו מזכירים את הברית על ארץ ישראל, ונראה שהכוונה לברית המילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הברית בתפילה</div>
+      <h3 class="story-title">🍷 גם בסדר הברית</h3>
+      <p>הרב הוסיף שמי שזכה פעם לומר את הברכות בברית מילה, מכיר את הפסוקים האלה גם משם. אחרי הברית מברכים על הכוס, ובסדר הברכות אומרים: "וְנֶאֱמַר: זָכַר לְעוֹלָם בְּרִיתוֹ, דָּבָר צִוָּה לְאֶלֶף דּוֹר. אֲשֶׁר כָּרַת אֶת אַבְרָהָם וּשְׁבוּעָתוֹ לְיִצְחָק. וַיַּעֲמִידֶהָ לְיַעֲקֹב לְחֹק, לְיִשְׂרָאֵל בְּרִית עוֹלָם".</p>
+      <p>אלה אותם פסוקים שבתפילת "הודו". בסדר הברית אין ממשיכים עד "לאמר לך אתן את ארץ כנען", אבל הפסוקים עצמם הם אותם פסוקים. ומשום שבחרו לומר אותם דווקא בברית המילה, יש בזה עוד ראיה שהברית שעליה מדברים שם, ה"ברית עולם", היא ברית המילה.</p>
+      <p>כלומר, בכל ברית מילה, ממש ברגע שבו הילד נכנס בבריתו של אברהם אבינו, מזכירים את הברית הנצחית שנכרתה עם אברהם, יצחק ויעקב. ומי שמכיר את המשך הפסוקים יודע שבאותה ברית נמצאת גם ההבטחה על הארץ.</p>
+      <p>וכך מתחבר הכל: הספורנו מלמד שה' עצמו בא לכרות את הברית, ואליהו בא בשמו לכל ברית. האב מברך "להכניסו בבריתו של אברהם אבינו". ובסדר הברכות ובתפילה בכל בוקר מזכירים את "ברית עולם", ברית של אהבה וברית של ארץ, שעליה חתמנו כשהיינו בני שמונה ימים.</p>
+      <p class="bold-para">אחרי הברכה על הכוס בברית מילה אומרים את הפסוקים "זכר לעולם בריתו", וכך הברית ניכרת גם בנוסח הטקס עצמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · הברית בתפילה</div>
+      <h3 class="story-title">📖 "וכרות עמו הברית" באותיות גדולות</h3>
+      <p>הפעם השנייה בתפילה היא לפני שירת הים: "וְכָרוֹת עִמּוֹ הַבְּרִית לָתֵת אֶת אֶרֶץ הַכְּנַעֲנִי, הַחִתִּי, הָאֱמֹרִי וְהַפְּרִזִּי וְהַיְבוּסִי וְהַגִּרְגָּשִׁי, לָתֵת לְזַרְעוֹ".</p>
+      <p>והרב הצביע על דבר מעניין. בסידור הספרדי הפסוק הזה מופיע ברצף, באמצע הקטע, בלי שום הפסק. אבל בסידורי האשכנזים, בהרבה מהם, המילים "וכרות עמו הברית" נדפסות באותיות גדולות, כאילו מתחיל כאן קטע חדש. למה? הרי זה המשך ישיר של הפסוקים שלפניו.</p>
+      <p>התשובה נמצאת בספרי המנהגים. היה מנהג בקהילות אשכנז: ביום שיש בו ברית מילה, אומרים את הקטע הזה פסוק פסוק, החזן והקהל, כמו שנוהגים בשבת שירה בשירת הים. מתחילים מ"וכרות עמו הברית" וממשיכים. ובגלל המנהג הזה הדגישו בסידור את מקום ההתחלה באותיות גדולות. המנהג כמעט נשכח, אבל האותיות הגדולות נשארו בסידורים עד היום.</p>
+      <p>ומכאן ראיה ש"וכרות עמו הברית" הולך על ברית המילה: הברית שבה כרת הקדוש ברוך הוא עם אברהם לתת לזרעו את הארץ. ובהמשך השיעור, בחלק השני, ממשיכים לברר מה עוד כולל ההסכם הזה.</p>
+      <p class="bold-para">בסידורי האשכנזים הפסוק "וכרות עמו הברית" נדפס באותיות גדולות, משום שנהגו לומר ממנו והלאה פסוק פסוק ביום שיש בו ברית מילה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/oLbGBdgvAU4 · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"פתיחה: האדם והקשרים שלו","icon":"👥","color":"#c62b6b","stories":[{"id":1,"title":"המחקר הארוך בעולם","icon":"🔬"},{"id":2,"title":"\"ואהבת לרעך כמוך\"","icon":"🫂"}]},{"id":2,"name":"מילה שהיא ברית","icon":"🤝","color":"#6d28d9","stories":[{"id":3,"title":"\"וירא אליו ה'\" – למה?","icon":"👁️"},{"id":4,"title":"כיסא של אליהו","icon":"🪑"},{"id":5,"title":"לא רק הסרת ערלה","icon":"🌈"},{"id":6,"title":"\"אחר הדברים האלה\"","icon":"📖"}]},{"id":3,"name":"שתי ברכות ושני צדדים","icon":"📜","color":"#e08e00","stories":[{"id":7,"title":"שתי ברכות בברית","icon":"✡️"},{"id":8,"title":"כשאין אב – הסבא מברך","icon":"👴"},{"id":9,"title":"למה אברהם לא מל את עצמו קודם?","icon":"❓"}]},{"id":4,"name":"על מה חותמים","icon":"✍️","color":"#1e88b8","stories":[{"id":10,"title":"לקרוא את החוזה","icon":"✍️"},{"id":11,"title":"ברית של אהבה וברית הארץ","icon":"💛"},{"id":12,"title":"שכם, ואחרי פרידת לוט","icon":"🏔️"},{"id":13,"title":"ברית בין הבתרים","icon":"🔥"},{"id":14,"title":"\"לברית עולם\"","icon":"♾️"},{"id":15,"title":"ברית שנחתמת בבשר","icon":"🩸"}]},{"id":5,"name":"הברית בתפילה","icon":"🕍","color":"#c62b6b","stories":[{"id":16,"title":"\"ויעמידה ליעקב לחוק\"","icon":"🕍"},{"id":17,"title":"גם בסדר הברית","icon":"🍷"},{"id":18,"title":"\"וכרות עמו הברית\" באותיות גדולות","icon":"📖"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
