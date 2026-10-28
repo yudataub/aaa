@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>חברון – שער לירושלים – מפה ורשימה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;overflow-wrap:break-word}
+img,svg{max-width:100%}
+.qt{font-weight:600}
+:root{--bg:#efe4cc;--panel:#f7efdc;--ink:#3a2a18;--mut:#7a6447;--line:#d8c6a2;--sea:#f3e7c9;--gl:rgba(120,90,40,.08);--road:#c9ab76;--road2:#9c3d22;--ac:#9c3d22;--item:#fbf6ea}h1,h2,.lt b{font-family:"Frank Ruhl Libre",serif}
+body{background:var(--bg);color:var(--ink);font-family:Heebo,Assistant,sans-serif;font-size:17px;line-height:1.7}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 18px;border-bottom:1px solid var(--line);background:var(--panel)}
+.brand{display:flex;gap:12px;align-items:center}
+.bi{font-size:36px}
+h1{margin:0;font-size:clamp(24px,3.6vw,34px);line-height:1.2;font-weight:400}
+.k2 h1{font-weight:900}
+.rav{margin:0;color:var(--ac);font-weight:700;font-size:15px}.st{color:var(--mut);font-weight:400;font-size:12.5px}
+.vid{background:var(--ac);color:var(--bg);text-decoration:none;font-weight:700;padding:6px 18px;border-radius:30px;font-size:15px}
+.wrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0;max-width:1500px;margin:0 auto}
+.mapbox{position:sticky;top:0;height:100vh;padding:16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;scroll-margin-top:0}
+.map{width:100%;height:auto;border-radius:16px;display:block;border:1px solid var(--line);flex:none}
+.sea{fill:var(--sea)}.gl{fill:none;stroke:var(--gl);stroke-width:1}
+.sty{fill:#fff;opacity:.5}
+.river{fill:none;stroke:rgba(120,170,255,.25);stroke-width:10;stroke-linecap:round}
+.k2 .river{stroke:rgba(70,120,150,.28)}
+.hill{fill:none;stroke:#b39563;stroke-width:2}
+.frame{fill:none;stroke:#b39563;stroke-width:2;stroke-dasharray:6 4}
+.compass circle{fill:none;stroke:var(--mut);stroke-width:1.5;opacity:.6}.compass path{fill:var(--mut);opacity:.6}.compass text{fill:var(--mut);font-size:13px;text-anchor:middle;font-weight:700}
+.road{fill:none;stroke:var(--road);stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+.road2{fill:none;stroke:var(--road2);stroke-width:3;stroke-dasharray:0 100;stroke-linecap:round;transition:stroke-dasharray .6s}
+.k2 .road{stroke-dasharray:2 8;stroke-width:4}
+.pin{cursor:pointer;outline:0}
+.pin .drop{fill:var(--pc);stroke:rgba(0,0,0,.35);stroke-width:1;transition:transform .25s;transform-origin:0 0}
+.pin .halo{fill:var(--pc);opacity:0;transition:opacity .3s}
+.pn{fill:#1a1a1a;font-size:12px;font-weight:800;text-anchor:middle;dominant-baseline:middle;pointer-events:none;font-family:Heebo,Assistant,sans-serif}
+.k2 .pn{fill:#fff}
+.pin:hover .drop,.pin:focus-visible .drop{transform:scale(1.18)}
+.pin.on .drop{transform:scale(1.4)}
+.pin.on .halo{opacity:.35;animation:pulse 1.6s infinite}
+.k1 .pin .drop{filter:url(#glow)}
+.pin.dim{opacity:.25}
+@keyframes pulse{50%{opacity:.08}}
+.legend{display:flex;flex-wrap:wrap;gap:6px}
+.lg{font:inherit;font-size:13.5px;display:flex;align-items:center;gap:6px;background:var(--item);border:1px solid var(--line);color:var(--ink);border-radius:20px;padding:2px 12px;cursor:pointer}
+.lg i{width:10px;height:10px;border-radius:50%;background:var(--pc)}
+.lg.on{border-color:var(--pc);box-shadow:inset 0 0 0 1px var(--pc)}
+.info{background:var(--item);border:1px solid var(--line);border-radius:16px;padding:12px 16px}
+.info .ic{margin:0;font-size:13px;color:var(--mut)}
+.info h2{margin:2px 0 4px;font-size:22px;line-height:1.3;font-weight:400}
+.k2 .info h2{font-weight:700}
+.info p{margin:0 0 6px}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13.5px;color:var(--mut)}
+.nav button,#all{font:inherit;font-size:14px;background:transparent;color:var(--ac);border:1px solid var(--ac);border-radius:20px;padding:2px 12px;cursor:pointer}
+.list{border-right:1px solid var(--line);background:var(--panel);min-width:0}
+.lhd{padding:16px 18px 8px;border-bottom:1px solid var(--line)}
+.sub{margin:0 0 6px;color:var(--mut)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.tags span{font-size:13px;border:1px solid var(--line);border-radius:4px;padding:0 8px;color:var(--mut)}
+.lovebox{display:flex;gap:10px;background:var(--item);border-radius:12px;padding:10px 12px;border-right:4px solid var(--ac)}
+.lovebox span{font-size:22px}.lovebox p{margin:0;font-size:17.5px}.lovebox a{color:var(--ac);font-size:14px}
+.lovebox mark.love{background:transparent;color:inherit;font-weight:700}
+mark.love{color:inherit}
+.tx mark.love{background:color-mix(in srgb,var(--ac) 25%,transparent);border-radius:3px;font-weight:inherit}
+.tools{display:flex;justify-content:space-between;align-items:center;margin:10px 0 2px;font-size:14px;color:var(--mut)}
+.locs{list-style:none;margin:0;padding:0 0 20px}
+.grp{position:sticky;top:0;z-index:2;background:var(--panel);padding:8px 18px;font-weight:700;color:var(--ac);border-bottom:1px solid var(--line);font-size:15px}
+.loc{border-bottom:1px solid var(--line);padding:0 18px;scroll-margin-top:44px;transition:background .3s}
+.loc.on{background:var(--item);box-shadow:inset -4px 0 0 var(--pc)}
+.lh{display:flex;align-items:center;gap:12px;width:100%;font:inherit;color:inherit;background:transparent;border:0;padding:12px 0 2px;cursor:pointer;text-align:right}
+.num{flex:none;width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--pc);display:grid;place-items:center}
+.num{color:#1a1a1a;font-weight:800;font-size:13px}
+.k2 .num{color:#fff}
+.num i{transform:rotate(45deg);font-style:normal}
+.lt{flex:1;min-width:0}.lt b{display:block;font-size:19px;line-height:1.35;font-weight:500}
+.k2 .lt b{font-weight:700}
+.lt small{color:var(--mut);font-size:13px}
+.chev{transition:transform .3s;color:var(--mut)}
+.loc.open .chev{transform:rotate(180deg)}
+.tk{margin:4px 44px 10px 0;font-size:15.5px;color:var(--mut)}
+.tx{display:none;margin:0 44px 14px 0}
+.loc.open .tx{display:block}
+.tx p{margin:0 0 12px}
+.tomap{display:none;font-size:14px;color:var(--ac)}
+.qt{color:var(--ac);font-weight:600}
+.foot{text-align:center;color:var(--mut);font-size:14.5px;padding:14px 16px 26px;border-top:1px solid var(--line)}
+.foot a{color:var(--ac)}
+@media(max-width:900px){
+ .wrap{display:block}
+ .mapbox{position:relative;height:auto;padding:12px 12px 6px;overflow:visible}
+ .list{border-right:0}
+ .tomap{display:inline-block}
+ .lhd .sub{display:none}
+ .tk,.tx{margin-right:0}
+ .lhd,.loc{padding-left:16px;padding-right:16px}
+ .grp{padding:8px 16px}
+ body{font-size:16.5px}
+}
+
+</style>
+</head>
+<body class="k2">
+
+<header class="top">
+  <div class="brand"><span class="bi">🕍</span><div><h1>חברון – שער לירושלים</h1><p class="rav">שיעור של הרב יהודה טאוב <span class="st">· 🗺️ מפה ורשימה · map-list</span></p></div></div>
+  <a class="vid" href="https://youtu.be/byyY7tvnLcg" target="_blank" rel="noopener">▶ לצפייה בשיעור</a>
+</header>
+<div class="wrap">
+  <section class="mapbox" id="mapbox" aria-label="מפה">
+    <svg viewBox="0 0 600 400" class="map" role="group" aria-label="מפת השיעור">
+  <defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" class="gl"/></pattern>
+  <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect width="600" height="400" class="sea"/><rect width="600" height="400" fill="url(#grid)"/>
+  <path class="hill" d="M30,30 q14,-18 28,0 q12,-14 24,0"/><path class="hill" d="M470,20 q14,-18 28,0 q12,-14 24,0"/><path class="hill" d="M250,370 q14,-18 28,0 q12,-14 24,0"/><path class="hill" d="M520,385 q14,-18 28,0 q12,-14 24,0"/><path class="hill" d="M90,250 q14,-18 28,0 q12,-14 24,0"/><path class="hill" d="M390,200 q14,-18 28,0 q12,-14 24,0"/><path class="river" d="M600,120 C520,150 480,90 400,130 S260,170 180,140 S60,110 0,150"/><g class="compass" transform="translate(556,358)"><circle r="26"/><path d="M0,-22 L6,0 L0,22 L-6,0Z"/><text y="-30">צ</text></g><rect class="frame" x="6" y="6" width="588" height="388" rx="4"/>
+  <path d="M545,62 Q525,51 447,76 Q427,51 349,62 Q329,51 251,76 Q231,51 153,62 Q133,51 55,76 Q55,168 55,168 Q75,143 153,154 Q173,143 251,168 Q271,143 349,154 Q369,143 447,168 Q467,143 545,154 Q545,246 545,246 Q525,235 447,260 Q427,235 349,246 Q329,235 251,260 Q231,235 153,246 Q133,235 55,260 Q55,352 55,352" class="road"/><path d="M545,62 Q525,51 447,76 Q427,51 349,62 Q329,51 251,76 Q231,51 153,62 Q133,51 55,76 Q55,168 55,168 Q75,143 153,154 Q173,143 251,168 Q271,143 349,154 Q369,143 447,168 Q467,143 545,154 Q545,246 545,246 Q525,235 447,260 Q427,235 349,246 Q329,235 251,260 Q231,235 153,246 Q133,235 55,260 Q55,352 55,352" class="road2" id="road2" pathLength="100"/>
+  <g class="pin" data-j="0" transform="translate(545,62)" tabindex="0" role="button" aria-label="נקודה 1: עבר, הווה ועתיד" style="--pc:#9c3d22"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">1</text></g><g class="pin" data-j="1" transform="translate(447,76)" tabindex="0" role="button" aria-label="נקודה 2: לא רק קבורים, אלא גם חיים" style="--pc:#9c3d22"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">2</text></g><g class="pin" data-j="2" transform="translate(349,62)" tabindex="0" role="button" aria-label="נקודה 3: סמוך לפתח גן עדן" style="--pc:#2f5d50"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">3</text></g><g class="pin" data-j="3" transform="translate(251,76)" tabindex="0" role="button" aria-label="נקודה 4: למה נקראת חברון" style="--pc:#2f5d50"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">4</text></g><g class="pin" data-j="4" transform="translate(153,62)" tabindex="0" role="button" aria-label="נקודה 5: ארבעה ענקים וארבעה זוגות" style="--pc:#2f5d50"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">5</text></g><g class="pin" data-j="5" transform="translate(55,76)" tabindex="0" role="button" aria-label="נקודה 6: השער לירושלים" style="--pc:#2f5d50"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">6</text></g><g class="pin" data-j="6" transform="translate(55,168)" tabindex="0" role="button" aria-label="נקודה 7: מהי המדרגה השביעית" style="--pc:#7a4f9a"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">7</text></g><g class="pin" data-j="7" transform="translate(153,154)" tabindex="0" role="button" aria-label="נקודה 8: נשים שהתחפשו כדי להיכנס" style="--pc:#7a4f9a"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">8</text></g><g class="pin" data-j="8" transform="translate(251,168)" tabindex="0" role="button" aria-label="נקודה 9: אליהו שאיחר לשיעור" style="--pc:#7a4f9a"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">9</text></g><g class="pin" data-j="9" transform="translate(349,154)" tabindex="0" role="button" aria-label="נקודה 10: למה דווקא בראש חודש" style="--pc:#7a4f9a"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">10</text></g><g class="pin" data-j="10" transform="translate(447,168)" tabindex="0" role="button" aria-label="נקודה 11: אדם אחד ונהגו" style="--pc:#7a4f9a"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">11</text></g><g class="pin" data-j="11" transform="translate(545,154)" tabindex="0" role="button" aria-label="נקודה 12: &quot;מה&#x27; יצא הדבר&quot;" style="--pc:#a5791e"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">12</text></g><g class="pin" data-j="12" transform="translate(545,246)" tabindex="0" role="button" aria-label="נקודה 13: &quot;כאשר דבר ה&#x27;&quot;" style="--pc:#a5791e"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">13</text></g><g class="pin" data-j="13" transform="translate(447,260)" tabindex="0" role="button" aria-label="נקודה 14: למה שמונה ימים" style="--pc:#a5791e"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">14</text></g><g class="pin" data-j="14" transform="translate(349,246)" tabindex="0" role="button" aria-label="נקודה 15: שבת של הודיה" style="--pc:#a5791e"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">15</text></g><g class="pin" data-j="15" transform="translate(251,260)" tabindex="0" role="button" aria-label="נקודה 16: יום טוב של הרמב&quot;ם" style="--pc:#a5791e"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">16</text></g><g class="pin" data-j="16" transform="translate(153,246)" tabindex="0" role="button" aria-label="נקודה 17: כסף מלשון כיסופים" style="--pc:#2b5f8a"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">17</text></g><g class="pin" data-j="17" transform="translate(55,260)" tabindex="0" role="button" aria-label="נקודה 18: שש מאות השקלים החסרים" style="--pc:#2b5f8a"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">18</text></g><g class="pin" data-j="18" transform="translate(55,352)" tabindex="0" role="button" aria-label="נקודה 19: שכם ועמוד התורה" style="--pc:#2b5f8a"><circle class="halo" r="20"/><path class="drop" d="M0,0 C-11,-12 -12,-20 -12,-25 A12,12 0 1 1 12,-25 C12,-20 11,-12 0,0Z"/><text y="-21" class="pn">19</text></g>
+</svg>
+    <div class="legend"><button type="button" class="lg" data-ch="0" style="--pc:#9c3d22"><i></i>🏡 עיר שבה חיו האבות</button><button type="button" class="lg" data-ch="1" style="--pc:#2f5d50"><i></i>🌌 חיבור בין העולמות</button><button type="button" class="lg" data-ch="2" style="--pc:#7a4f9a"><i></i>🪜 שבע מאות שנה בחוץ</button><button type="button" class="lg" data-ch="3" style="--pc:#a5791e"><i></i>🙏 קודם כל להודות</button><button type="button" class="lg" data-ch="4" style="--pc:#2b5f8a"><i></i>🪙 שלושה מקומות בכסף מלא</button></div>
+    <div class="info" id="info" aria-live="polite"><p class="ic">📍 בחרו נקודה במפה או ברשימה</p><h2 id="it">חברון – שער לירושלים</h2><p id="itk">למה גרו האבות בחברון, החיבור בין העולם הזה לעולם הבא, שבע מאות שנה במדרגה השביעית, וההודיה שפותחת את הדרך לישועה</p><div class="nav"><button type="button" id="pv">→ הקודמת</button><span id="ip">19 נקודות בדרך</span><button type="button" id="nx">הבאה ←</button></div></div>
+  </section>
+  <aside class="list" aria-label="רשימת הנקודות">
+    <div class="lhd"><p class="sub">למה גרו האבות בחברון, החיבור בין העולם הזה לעולם הבא, שבע מאות שנה במדרגה השביעית, וההודיה שפותחת את הדרך לישועה</p><div class="tags"><span>חברון</span><span>מערת המכפלה</span><span>זכות אבות</span><span>הודיה</span><span>ראש חודש</span><span>חנוכה</span></div>
+      <div class="lovebox"><span>❤️</span><p><mark class="love">הם אמרו: תראו, בורא עולם אוהב אותנו.</mark><br><a href="#c14" data-j="13" class="lovea">← נקודה 14: למה שמונה ימים</a></p></div>
+      <div class="tools"><b>19 נקודות · 5 אזורים</b><button type="button" id="all">הרחב הכל</button></div></div>
+    <ol class="locs"><li class="grp" data-ch="0"><span>🏡 אזור א: עיר שבה חיו האבות</span></li><li class="loc" id="c1" data-j="0" data-ch="0" style="--pc:#9c3d22">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>1</i></span><span class="lt"><b>עבר, הווה ועתיד</b><small>📍 עיר שבה חיו האבות · 🎵</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">קודם משבחים, אחר כך מודים על מה שיש, ורק אז מבקשים על העתיד.</p>
+  <div class="tx"><p>השיעור הזה הוא המשכו של שיעור קודם, שנבנה סביב השיר <span class="qt">"חברון עיר האבות שלנו, לדורי דורות"</span>. הרב פתח בהערה על מבנה השיר: הוא בנוי משלושה חלקים, עבר, הווה ועתיד. הבית הראשון מספר איך קנה אברהם את המערה. הבית השני מספר על מה שקורה היום. והבית האחרון הוא תפילה על העתיד.</p><p>ויש בזה לימוד לחיים, וגם סגולה טובה להצלחה. כשאדם צריך משהו, אל לו לפתוח מיד בבקשה על העתיד. כך בנויה גם התפילה שלנו: קודם משבחים את ה', אחר כך מודים על מה שיש, ורק לאחר מכן מבקשים על מה שעוד חסר.</p><p>מי שזוכר את העבר ומודה על ההווה, מבקש על העתיד מתוך אמונה ומתוך שמחה, ולא מתוך תלונה. את היסוד הזה נפגוש שוב ושוב בשיעור, בסיפור של אליעזר עבד אברהם, בנס חנוכה, ובמה שאנחנו צריכים לעשות היום בחברון עצמה.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c2" data-j="1" data-ch="0" style="--pc:#9c3d22">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>2</i></span><span class="lt"><b>לא רק קבורים, אלא גם חיים</b><small>📍 עיר שבה חיו האבות · 🏡</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">חברון נקראת עיר האבות לא רק משום שהם קבורים בה, אלא משום שחיו בה רוב שנותיהם.</p>
+  <div class="tx"><p>בדרך כלל, כשאומרים <span class="qt">"חברון עיר האבות"</span>, חושבים על מערת המכפלה, המקום שבו קבורים האבות. אבל הרב הדגיש שאם בודקים, רואים שגם אברהם, גם יצחק וגם יעקב גרו בחברון, ואפילו רוב שנות חייהם. לא בירושלים ולא במקום אחר.</p><p>אברהם אבינו גר תקופה גם בבאר שבע, אבל שנים רבות ישב בחברון, ושם הגיעו אליו המלאכים. ועל יעקב כתוב בתורה במפורש: <span class="qt">"וַיָּבֹא יַעֲקֹב אֶל יִצְחָק אָבִיו מַמְרֵא קִרְיַת הָאַרְבַּע הִוא חֶבְרוֹן"</span>. שם ישב יצחק.</p><p>הרב נזכר בהקשר זה בסיפור משכונה יהודית קטנה על הר הזיתים. אחד מתושביה, מדריך טיולים, הדריך קבוצת רבנים מחוץ לארץ, והצביע באמצע הסיור על ביתו שם. האורחים הביטו בו בתדהמה. עד אותו יום ידעו שעל הר הזיתים יהודים קבורים, ולא ידעו שגם חיים שם יהודים. כך גם חברון: היא איננה רק עיר של קברים, אלא עיר שבה חיו האבות. והשאלה היא, למה דווקא שם?</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="grp" data-ch="1"><span>🌌 אזור ב: חיבור בין העולמות</span></li><li class="loc" id="c3" data-j="2" data-ch="1" style="--pc:#2f5d50">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>3</i></span><span class="lt"><b>סמוך לפתח גן עדן</b><small>📍 חיבור בין העולמות · 🌿</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">הזוהר מלמד שמערת המכפלה סמוכה לפתח גן עדן, ומשם עולה ריחו.</p>
+  <div class="tx"><p>בשיעור הקודם הובא המדרש על בן הבקר שברח מאברהם אל המערה, ועל ריח גן עדן שהריח שם. הזוהר מוסיף ואומר שמערת המכפלה סמוכה לפתחו של גן עדן, ושגם אדם הראשון, כשעבר שם, הריח את ריחות גן עדן.</p><p>יש גם מסורת שממערת המכפלה יוצאת מחילה עד לגן עדן, ושנשמות הצדיקים עוברות דרכה. ומסופר שאליעזר עבד אברהם עומד שם ושומר על הכניסה.</p><p>אם כן, המערה איננה רק מקום קבורה. היא מקום מעבר, מקום שבו העולם הזה נוגע בעולם הבא. וזה כבר מתחיל להסביר למה רצו האבות לחיות דווקא שם, ולא רק להיקבר שם. מי שחי סמוך לפתח גן עדן, חי כל ימיו בקרבה מיוחדת לעולם העליון.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c4" data-j="3" data-ch="1" style="--pc:#2f5d50">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>4</i></span><span class="lt"><b>למה נקראת חברון</b><small>📍 חיבור בין העולמות · 🔗</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">חברון היא המקום שבו הנפש מתחברת אל שורשה, ולכן חמדו אותה האבות.</p>
+  <div class="tx"><p>רבנו בחיי מסביר את השם <span class="qt">"חברון"</span>: היא נקראת כך משום שכל הקבור בה, נפשו מתחברת למעלה, בעיר אלוקים, במחנה השכינה. ולא לחינם חמדו אותה האבות, אלא משום שמשם זוכות הנשמות להתחבר לשורשן, שהוא כיסא הכבוד.</p><p>חברון היא אפוא מקום של חיבור: חיבור בין העולם הזה לעולם הבא, בין הגוף לנשמה, בין הארץ לשמים. וגם השם <span class="qt">"מערת המכפלה"</span> מרמז על כך. הכל במקום הזה כפול. יש בו את העולם הזה, ויש בו את העולם הבא.</p><p>מכאן מובן מדוע האבות חיו שם. הם לא חיפשו מקום נוח או מקום מרכזי. הם חיפשו את המקום שבו אפשר להיות מחוברים, כבר בחיים האלה, אל מה שלמעלה מהם. ומי שבא היום לחברון ומתפלל שם, נכנס גם הוא אל המקום של החיבור הזה.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c5" data-j="4" data-ch="1" style="--pc:#2f5d50">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>5</i></span><span class="lt"><b>ארבעה ענקים וארבעה זוגות</b><small>📍 חיבור בין העולמות · 🌳</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">המקום שבו צדיקים פורחים, פורח גם בגשמיות וגם ברוחניות.</p>
+  <div class="tx"><p>חברון נקראת גם <span class="qt">"קרית ארבע"</span>. ורש"י מביא שני פירושים לשם הזה. פירוש אחד: על שם ארבעה ענקים שישבו בה, אחימן, ששי ותלמי ואביהם. ופירוש שני: על שם ארבעה זוגות צדיקים שנקברו בה, אדם וחווה, אברהם ושרה, יצחק ורבקה, יעקב ולאה.</p><p>לכאורה אלה שני פירושים רחוקים זה מזה, כמעט הפוכים. מה הקשר בין ענקים לצדיקים? המהר"ל מסביר דבר נפלא: מקום שבו צדיקים מצליחים, הוא מקום פורח. הוא מצמיח גדולה בכל תחום, גם בגשמיות וגם ברוחניות.</p><p>בגשמיות, צמחו בחברון ענקים, בני אדם גדולים וחזקים יותר מכל אדם רגיל. וברוחניות, צמחו בה ענקי רוח, האבות והאמהות. שני הפירושים מספרים את אותו הסיפור: חברון היא אדמה שמגדלת ענקים.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c6" data-j="5" data-ch="1" style="--pc:#2f5d50">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>6</i></span><span class="lt"><b>השער לירושלים</b><small>📍 חיבור בין העולמות · 👑</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">דוד מלך בחברון לפני שעלה לירושלים, וייתכן שכך יהיה גם בדורנו.</p>
+  <div class="tx"><p>יש לכך דוגמה מובהקת: דוד המלך. לפני שמלך בירושלים, מלך שבע שנים בחברון בלבד. שם התחבר אליו העם כולו, ורק משם עלה ירושלימה.</p><p>ובספרים כתוב שחברון היא הפתח של ארץ ישראל, הפתח לירושלים. ירושלים היא מדרגה גבוהה יותר, אבל הדרך אליה עוברת דרך חברון. כך היה גם בימי יהושע: מסופר שכלב בן יפונה כבש את חברון, וירושלים נכבשה במלואה רק מאוחר יותר.</p><p>הרב אמר שייתכן מאוד שכך יהיה גם בדור שלנו, בגאולה השלישית. קודם כל נזכה לחזור לחברון במלואה, ורק אחר כך נזכה לירושלים בשלמותה. התחלנו, ברוך ה', אבל עדיין לא הגענו לסוף. ולכן ההשתוקקות לחברון איננה עניין צדדי. היא חלק מן הדרך אל הגאולה.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="grp" data-ch="2"><span>🪜 אזור ג: שבע מאות שנה בחוץ</span></li><li class="loc" id="c7" data-j="6" data-ch="2" style="--pc:#7a4f9a">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>7</i></span><span class="lt"><b>מהי המדרגה השביעית</b><small>📍 שבע מאות שנה בחוץ · 🪜</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">במשך כשבע מאות שנה הורשו יהודים לעלות רק עד המדרגה השביעית שמחוץ למערה.</p>
+  <div class="tx"><p>במשך כשבע מאות שנה לא הורשו יהודים להיכנס אל מערת המכפלה. היכן התפללו? על <span class="qt">"המדרגה השביעית"</span>. הרב הסביר מה זה. על הבניין העתיק של המערה, ליד אחד הקירות, היו פעם מדרגות שעלו לכיוון המערה. ליהודים הותר לעלות עד המדרגה השביעית, ולא יותר.</p><p>שם עמדו דור אחרי דור, התפללו ובכו, ולא יכלו לעבור הלאה. הרב הזכיר גם את המעשה באדמו"ר מגור, בעל אמרי אמת, שעלה מעבר למדרגה השביעית, ועל הסכנה הגדולה שנקלעו אליה הוא ומלוויו.</p><p>אחרי מלחמת ששת הימים פורקו המדרגות האלה. מי שהיה ממונה אז על האזור החליט להוריד אותן, ואמר שהן סמל לביזיון של מאות שנים, ואין סיבה להשאיר אותו. מאז אין עוד מדרגות במקום, ומי שבא היום לחברון רואה רק את הקיר ואת הדשא שלידו, ולא תמיד יודע שכאן עמדו אבותינו מאות שנים.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c8" data-j="7" data-ch="2" style="--pc:#7a4f9a">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>8</i></span><span class="lt"><b>נשים שהתחפשו כדי להיכנס</b><small>📍 שבע מאות שנה בחוץ · 🧕</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">הגעגוע אל המערה היה כה גדול, שנשים התחפשו כדי שיוכלו להיכנס.</p>
+  <div class="tx"><p>יש עדויות ממאות השנים שבהן היה אסור ליהודים להיכנס. הרב הביא את דבריו של רבי משולם מוולטרה, שביקר בארץ ישראל בשנת ה'רמ"א, כלומר בשנת 1481 למניינם.</p><p>הוא מספר שנשים יהודיות שרצו מאוד להיכנס אל המערה, היו מתחפשות לנשים מקומיות. הן לבשו רעלה שכיסתה את כל פניהן, כך שאיש לא יכול היה לדעת מי הן, ובדרך זו נכנסו פנימה.</p><p>תחשבו כמה געגוע היה צריך כדי לעשות דבר כזה. זה לא היה טיול ולא ביקור תיירותי. אלה היו נשים שהלב שלהן משך אותן אל קברי האבות והאמהות, אל שרה, רבקה ולאה, והן היו מוכנות לסכן את עצמן כדי לעמוד שם רגע אחד ולהתפלל.</p><p>והשאלה המתבקשת היא: למה היה חשוב כל כך למנוע מיהודים להיכנס? הרב הסביר שכנראה הבינו שתפילת יהודים במקום הזה איננה דבר רגיל. היא מעוררת זכות אבות, ולזכות אבות יש כוח עצום.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c9" data-j="8" data-ch="2" style="--pc:#7a4f9a">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>9</i></span><span class="lt"><b>אליהו שאיחר לשיעור</b><small>📍 שבע מאות שנה בחוץ · ⏰</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">האבות אינם מתפללים יחד, כי תפילתם המשותפת הייתה מביאה את הגאולה.</p>
+  <div class="tx"><p>הגמרא מספרת שפעם אחת, בראש חודש, איחר אליהו הנביא לבוא אל בית מדרשו של רבי. שאל אותו רבי: מה טעם איחרת?</p><p>אמר לו אליהו: הייתי צריך להעיר את אברהם אבינו, ולרחוץ את ידיו, ולתת לו להתפלל, ולהשכיבו. ואחר כך את יצחק, וכך גם את יעקב. שאל רבי: ולמה לא תעיר את כולם יחד? אמר לו אליהו: אם יתפללו שלושתם יחד, תפילתם תהיה כל כך חזקה שהם יביאו את המשיח שלא בזמנו.</p><p>מכאן רואים כמה כוח יש לתפילת האבות. הם קבורים במערת המכפלה, ובכוחם לעורר את הגאולה. ומי שבא להתפלל על קבריהם, מעורר את הכוח הזה. אין פלא שבמשך דורות כה רבים נעשה הכל כדי שיהודים לא יגיעו לשם. ואין פלא שהיום, כשאפשר להגיע, יש לכך משמעות כה גדולה.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c10" data-j="9" data-ch="2" style="--pc:#7a4f9a">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>10</i></span><span class="lt"><b>למה דווקא בראש חודש</b><small>📍 שבע מאות שנה בחוץ · 🌙</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">ראש חודש מסמל את התחדשות ישראל, ולכן הוא זמן מסוגל לתפילה על הגאולה.</p>
+  <div class="tx"><p>המהרש"א שואל על הסיפור: אם אליהו מעיר את האבות אחד אחד בכל יום, למה איחר דווקא בראש חודש? והוא מתרץ שראש חודש הוא יום שמסמל את גאולתם של ישראל, ויום שמעורר אותה, ולכן בו התפילה ארוכה וחזקה יותר.</p><p>מה הקשר בין ראש חודש לגאולה? עם ישראל נמשל ללבנה. כמו שהלבנה הולכת וקטנה, נעלמת, ושוב חוזרת וגדלה, כך גם עם ישראל עלה וירד במשך הדורות. אחרי כל הצרות, אחרי גלויות ושואה, הוא חוזר ומתחדש. וכך אנו אומרים בברכת הלבנה, שישראל עתידים להתחדש כמותה.</p><p>זו אחת הסיבות לשמחה של ראש חודש. אנחנו שמחים כבר עכשיו על הגאולה העתידה, ומרגישים את האור שלה. השיעור נאמר בערב ראש חודש כסלו, החודש של חנוכה, וזה זמן מיוחד להתפלל על הגאולה, וגם להתפלל במקומות הקדושים.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c11" data-j="10" data-ch="2" style="--pc:#7a4f9a">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>11</i></span><span class="lt"><b>אדם אחד ונהגו</b><small>📍 שבע מאות שנה בחוץ · 🚙</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">את חברון לא כבש צבא גדול, אלא אדם אחד שהשתוקק להגיע.</p>
+  <div class="tx"><p>בבית השני של השיר שרים: <span class="qt">"חיילינו נלחמו שם, שמיים הם קידשו"</span>. אבל כפי שסופר בשיעור הקודם, את חברון במלחמת ששת הימים לא כבש צבא גדול. הרב שלמה גורן, הרב הראשי לצה"ל, נסע לשם לבדו עם נהגו, בשעה שהמפקדים עוד היו עסוקים במקומות אחרים.</p><p>הוא מצא עיר שקטה, עם סדינים לבנים בחלונות, והודיע שהעיר נכבשה. איש לא נלחם, ולא היה צורך בקרב. הרב ראה בזה מתנה ממש מאת בורא עולם.</p><p>ומה הלקח? שכאשר יש השתוקקות אמיתית, ה' פותח את הדלתות. הרב גורן, שלמד בצעירותו בישיבת חברון, לא יכול היה לחכות. הלב שלו משך אותו אל המערה, והוא הלך. ומה שמאות שנים לא התאפשר, נפתח לפניו בבוקר אחד.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="grp" data-ch="3"><span>🙏 אזור ד: קודם כל להודות</span></li><li class="loc" id="c12" data-j="11" data-ch="3" style="--pc:#a5791e">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>12</i></span><span class="lt"><b><span class="qt">"מה' יצא הדבר"</span></b><small>📍 קודם כל להודות · 💍</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">אליעזר הודה לה' מיד כשמצא את רבקה, ובזכות ההודיה הצליח גם בהמשך הדרך.</p>
+  <div class="tx"><p>בפרשת חיי שרה, הפרשה של מערת המכפלה, מופיע סיפור שמלמד יסוד גדול. אליעזר הולך לחפש אישה ליצחק, ויש לפניו שתי בעיות: למצוא את הנערה המתאימה, ואחר כך לשכנע את משפחתה להסכים.</p><p>הפסימיים, אלה שאוהבים תמיד לחשוב על מה שעלול להשתבש, היו אומרים לו: נו, מצאת אותה, ומה יצא לך מזה? עוד לא פגשת את המשפחה, ואתה לא יודע מה מחכה לך. אבל אליעזר לא היה כזה. ברגע שמצא את רבקה, הוא הודה לה' הודיה שלמה, עוד לפני שידע אם המשפחה תסכים.</p><p>וכשהגיע אל הבית, והגישו לו לאכול, אמר: <span class="qt">"לֹא אֹכַל עַד אִם דִּבַּרְתִּי דְּבָרָי"</span>. קודם מספרים את הנס, ורק אחר כך אוכלים. והוא סיפר להם את כל מה שקרה. ותשובתם הייתה: <span class="qt">"מֵה' יָצָא הַדָּבָר, לֹא נוּכַל דַּבֵּר אֵלֶיךָ רַע אוֹ טוֹב"</span>. מי אמר את זה? לבן, שבשום פנים לא היה אדם צדיק. ההודיה של אליעזר פתחה את הדרך גם לחלק השני.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c13" data-j="12" data-ch="3" style="--pc:#a5791e">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>13</i></span><span class="lt"><b><span class="qt">"כאשר דבר ה'"</span></b><small>📍 קודם כל להודות · 🗣️</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">כשאדם רואה סייעתא דשמיא מופלאה, זה סימן שה' מדבר איתו.</p>
+  <div class="tx"><p>בהמשך אומרים לבן ובתואל: <span class="qt">"קַח וָלֵךְ, וּתְהִי אִשָּׁה לְבֶן אֲדֹנֶיךָ כַּאֲשֶׁר דִּבֶּר ה'"</span>. שואל הנצי"ב: היכן דיבר ה'? מתי ובאיזה מקום דיבר ה' עם לבן או עם אליעזר על השידוך הזה?</p><p>והנצי"ב עונה יסוד עצום. כאשר אדם רואה השגחה פרטית נפלאה, כאשר הוא מנסה לעשות משהו ורואה שמן השמים עוזרים לו בצורה יוצאת דופן, עליו לדעת: כאן ה' מדבר איתך. ההצלחה עצמה היא הדיבור.</p><p>אליעזר יצא, ובאותו רגע יצאה הנערה, ועשתה בדיוק את מה שביקש בתפילתו, ואף יותר. כשרואים סייעתא דשמיא כזאת, אין זה מקרה. זה ה' אומר לאדם: זה מה שאני רוצה ממך. וזה נכון לכל אחד מאיתנו. כשאדם רואה הצלחה בדרך שהוא הולך בה, וחש שה' עוזר לו, זה <span class="qt">"כאשר דבר ה'"</span>. ומה צריך לעשות אז? להודות. וההודיה היא שגורמת לישועה להימשך.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c14" data-j="13" data-ch="3" style="--pc:#a5791e">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>14</i></span><span class="lt"><b>למה שמונה ימים</b><small>📍 קודם כל להודות · 🕎</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">השמחה וההודיה על היום הראשון הן שגרמו לנס להימשך כל שמונת הימים.</p>
+  <div class="tx"><p>בחנוכה יש קושיה מפורסמת מאוד, קושיית הבית יוסף, ונאמרו עליה תירוצים רבים מאוד. הקושיה היא: למה חוגגים שמונה ימים? הרי בפך היה שמן ליום אחד, ואם כן היום הראשון לא היה נס, והנס היה רק שבעה ימים.</p><p>הרב הביא תירוץ שמתאים בדיוק ליסוד של אליעזר. כשמצאו את הפך, היו לפניהם שתי אפשרויות. אפשר היה לומר: נו, מה יצא מזה? יום אחד? ומה יהיה מחר? יש אנשים שתמיד רואים את מה שחסר, ואומרים: בשביל מה, הרי לא יצא מזה כלום.</p><p>אבל הם לא עשו כך. <mark class="love">הם אמרו: תראו, בורא עולם אוהב אותנו.</mark> מצאנו פך שמן טהור, וזו מתנה. והם שמחו מאוד על היום האחד, שרו והודו לה', והרגישו את אהבתו.</p><p>השמחה וההודיה על היום הראשון הן שגרמו לנס להימשך עוד ועוד, שמונה ימים. לכן גם היום הראשון נחגג, כי הוא זה שגרם את כל השאר.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c15" data-j="14" data-ch="3" style="--pc:#a5791e">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>15</i></span><span class="lt"><b>שבת של הודיה</b><small>📍 קודם כל להודות · 🕯️</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">לפני שמבקשים עוד על חברון, צריך להודות על מה שכבר זכינו לו.</p>
+  <div class="tx"><p>מכאן הרעיון של <span class="qt">"שבת חברון"</span>. יש מי שאומר: על מה להודות? הרי רק חלק מן העיר בידינו, ויש ימים שבהם אין כניסה ליהודים למערה. והרב ענה: אבל במשך שבע מאות שנה לא היה כלום. לא יום אחד, אלא שבע מאות שנה.</p><p>הרב סיפר שלמד בישיבת חברון, הישיבה שנקראת על שם העיר. בפרעות תרפ"ט נרצחו רבים מתלמידי הישיבה בחברון, וזכרם שמור בה עד היום. השרידים עברו לירושלים, ושם הישיבה נקראת <span class="qt">"חברון"</span> לזכר מה שהיה. ואילו היום, ברוך ה', יש ישיבה בעיר חברון עצמה, הלימוד בה מתרחב והולך, והחיים במקום פורחים.</p><p>אי אפשר להשוות את מה שהיה פעם למה שיש היום. ודאי שצריך להמשיך ולבקש עוד. אבל כמו אליעזר וכמו החשמונאים, צריך קודם כל להודות על מה שיש. ועל ידי ההודיה, הישועה ממשיכה הלאה והלאה.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c16" data-j="15" data-ch="3" style="--pc:#a5791e">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>16</i></span><span class="lt"><b>יום טוב של הרמב"ם</b><small>📍 קודם כל להודות · 📜</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">הרמב"ם קבע לעצמו יום טוב לדורות על היום שבו זכה להתפלל במערת המכפלה.</p>
+  <div class="tx"><p>ויש לכך דוגמה מגדולי ישראל. הרמב"ם, כשעלה לארץ ישראל, זכה להגיע אל מערת המכפלה. וכך כתב: ביום ראשון, בתשעה לחודש מרחשוון, עמדתי במערה והתפללתי שבח לא-ל יתברך על הכל. ונדר שיהיה לו היום הזה כיום טוב, יום של תפילה, שמחה, אכילה ושתייה.</p><p>תחשבו: הרמב"ם זכה פעם אחת בחייו להגיע אל המערה, ועל זה עשה סעודה לדורות. כמה אנחנו, שיכולים להגיע לשם שוב ושוב, צריכים לשמוח ולהודות לקדוש ברוך הוא.</p><p>זה הדבר הראשון של שבת חברון: לשיר, לשבח ולהודות על מה שכבר זכינו לו. ורק אחר כך באה התפילה שבסוף השיר: <span class="qt">"ואנו פה נושאים תפילה לאחדותה של האומה, לשנה הבאה בחברון הבנויה"</span>. קודם עבר, אחר כך הווה, ורק בסוף עתיד, בדיוק כמו בשיר.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="grp" data-ch="4"><span>🪙 אזור ה: שלושה מקומות בכסף מלא</span></li><li class="loc" id="c17" data-j="16" data-ch="4" style="--pc:#2b5f8a">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>17</i></span><span class="lt"><b>כסף מלשון כיסופים</b><small>📍 שלושה מקומות בכסף מלא · 💰</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">שלושת המקומות שנקנו בכסף מלא הם כנגד שלושת עמודי העולם, וכסף בא מלשון כיסופים.</p>
+  <div class="tx"><p>בסוף השיעור חזר הרב לרעיון שהובא בשיעור הקודם, ושמעו אותו בשם החתם סופר, אף שהרב לא מצא אותו בעצמו בספריו. שלושה מקומות בתנ"ך נקנו בכסף מלא: מערת המכפלה בחברון, מקום המקדש בירושלים, וחלקת השדה בשכם. והם כנגד שלושת הדברים שהעולם עומד עליהם: תורה, עבודה וגמילות חסדים.</p><p>לכל עמוד יש מקום בארץ ישראל, נקודה שבה הוא עומד. ומקום שמתחברים אליו צריך לשלם עליו. לא לחינם, אלא בכסף. ו"כסף" הוא מלשון כיסופים: כשאדם משלם על מקום בכוונה, הוא נכסף אליו, אוהב אותו, חושב עליו ומשקיע בו.</p><p>חברון היא עמוד החסד. אברהם גילה את המערה כשחיפש אורחים ועשה חסד עם המלאכים. הוא קנה אותה כדי לעשות חסד עם שרה ולקבור אותה. ויעקב, כשביקש להיקבר בה, אמר ליוסף: <span class="qt">"וְעָשִׂיתָ עִמָּדִי חֶסֶד וֶאֱמֶת"</span>.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c18" data-j="17" data-ch="4" style="--pc:#2b5f8a">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>18</i></span><span class="lt"><b>שש מאות השקלים החסרים</b><small>📍 שלושה מקומות בכסף מלא · 🪙</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">דוד המלך שילם שש מאות שקל, וכך השלים את מה שהפסיד עפרון.</p>
+  <div class="tx"><p>עמוד העבודה הוא הר המוריה, ואותו קנה דוד המלך מארונה היבוסי, בשש מאות שקל. והרב הביא על כך רעיון יפה.</p><p>עפרון ביקש מאברהם ארבע מאות שקל כסף. אבל כמה היה אברהם מוכן לתת לו, אילו לא ביקש? הובא שהיה נותן לו אלף שקל. למה דווקא אלף? כי אבימלך נתן לאברהם אלף כסף בגלל שרה, כמו שנאמר: <span class="qt">"הִנֵּה נָתַתִּי אֶלֶף כֶּסֶף לְאָחִיךְ"</span>. את הכסף שקיבל בגלל שרה, רצה אברהם לתת עבור קבורתה של שרה.</p><p>אבל עפרון ביקש רק ארבע מאות, ואברהם נתן לו בדיוק את מה שביקש. נמצא שעפרון הפסיד שש מאות שקל. ויש מי שראה רמז לכך בכך שבפסוק <span class="qt">"וַיִּשְׁקֹל אַבְרָהָם לְעֶפְרֹן"</span> נכתב שמו חסר, בלי האות וי"ו.</p><p>מה נעשה עם שש מאות השקלים האלה? יום אחד בא דוד המלך, וקנה את מקום המקדש בשש מאות שקל, והשלים את מה שחסר.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li><li class="loc" id="c19" data-j="18" data-ch="4" style="--pc:#2b5f8a">
+  <button type="button" class="lh" aria-expanded="false"><span class="num"><i>19</i></span><span class="lt"><b>שכם ועמוד התורה</b><small>📍 שלושה מקומות בכסף מלא · 📖</small></span><span class="chev" aria-hidden="true">▾</span></button>
+  <p class="tk">יעקב קנה את שכם, ובשכם כרת יהושע ברית עם ישראל על התורה.</p>
+  <div class="tx"><p>העמוד השלישי הוא עמוד התורה, ואותו קנה יעקב אבינו בשכם. מה הקשר בין שכם לתורה? ראשית, שכם סמוכה להר גריזים ולהר עיבל, שעליהם קיבלו ישראל את הברכות והקללות כשנכנסו לארץ.</p><p>ויותר מזה, בספר יהושע, בפרק כ"ד, מסופר שיהושע אסף את כל ישראל שכמה, וכרת שם ברית עם העם, ושם להם חוק ומשפט. בשכם התחייבו ישראל לשמור את התורה, ושם לימד אותם יהושע את חוקיה. ויעקב, שהיה <span class="qt">"איש תם יושב אהלים"</span>, הוא שקנה את המקום.</p><p>וכך יש לנו שלושה עמודים: חסד בחברון, עבודה בירושלים, ותורה בשכם. הרב סיים בכך ששלושת המקומות האלה הם דווקא אלה שהכי קשה לנו להחזיק בהם בימינו, ונראה שיש בזה עומק: מי שמחזיק בעמודים, מחזיק בעולם. ותפקידנו הוא להמשיך את דרכם של האבות, להיכסף אל המקומות האלה, להודות על מה שכבר זכינו לו, ולהתפלל על השאר.</p><a class="tomap" href="#mapbox">🗺️ הצג במפה</a></div>
+</li></ol>
+  </aside>
+</div>
+<footer class="foot">📚 חלק ממאגר הקול החמישי – <a href="https://www.kol-toda.co.il/">kol-toda.co.il</a></footer>
+
+<script>
+(function(){
+var T=19,pins=[].slice.call(document.querySelectorAll(".pin")),locs=[].slice.call(document.querySelectorAll(".loc")),cur=-1;
+var it=document.getElementById("it"),itk=document.getElementById("itk"),ip=document.getElementById("ip"),road=document.getElementById("road2");
+function sel(j,scroll,openIt){cur=j;pins.forEach(function(p){p.classList.toggle("on",+p.dataset.j===j)});locs.forEach(function(l){l.classList.toggle("on",+l.dataset.j===j)});
+ var l=locs[j];it.innerHTML=l.querySelector(".lt b").innerHTML;itk.innerHTML=l.querySelector(".tk").innerHTML;ip.textContent="נקודה "+(j+1)+" מתוך "+T;
+ road.style.strokeDasharray=(T>1?j/(T-1)*100:100)+" 100";
+ if(openIt)setOpen(l,true);
+ if(scroll)l.scrollIntoView({behavior:"smooth",block:"start"})}
+function setOpen(l,o){l.classList.toggle("open",o);l.querySelector(".lh").setAttribute("aria-expanded",o)}
+pins.forEach(function(p){function go(){sel(+p.dataset.j,innerWidth>900,true)}p.addEventListener("click",go);p.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();go()}})});
+locs.forEach(function(l){l.querySelector(".lh").addEventListener("click",function(){var o=!l.classList.contains("open");setOpen(l,o);sel(+l.dataset.j,false,false)});l.addEventListener("mouseenter",function(){pins.forEach(function(p){p.classList.toggle("hov",+p.dataset.j===+l.dataset.j)})})});
+document.getElementById("nx").addEventListener("click",function(){sel(Math.min(T-1,cur+1),innerWidth>900,true)});
+document.getElementById("pv").addEventListener("click",function(){sel(Math.max(0,cur-1),innerWidth>900,true)});
+var lgs=[].slice.call(document.querySelectorAll(".lg"));lgs.forEach(function(b){b.addEventListener("click",function(){var on=!b.classList.contains("on");lgs.forEach(function(x){x.classList.toggle("on",x===b&&on)});var ch=b.dataset.ch;pins.forEach(function(p){var l=locs[+p.dataset.j];p.classList.toggle("dim",on&&l.dataset.ch!==ch)});if(on){var first=locs.filter(function(l){return l.dataset.ch===ch})[0];sel(+first.dataset.j,innerWidth>900,false)}})});
+var all=document.getElementById("all"),allOpen=false;all.addEventListener("click",function(){allOpen=!allOpen;locs.forEach(function(l){setOpen(l,allOpen)});all.textContent=allOpen?"כווץ הכל":"הרחב הכל"});
+document.querySelector(".lovea").addEventListener("click",function(ev){ev.preventDefault();sel(+this.dataset.j,true,true)});
+if(innerWidth>900){var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting)sel(+en.target.dataset.j,false,false)})},{rootMargin:"-30% 0px -65% 0px"});locs.forEach(function(l){io.observe(l)})}
+})();
+</script>
+</body>
+</html>

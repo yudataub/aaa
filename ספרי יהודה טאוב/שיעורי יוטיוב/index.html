@@ -45,7 +45,7 @@ footer.ft a{color:var(--purple-2)}
   <div id="view"></div>
   <div class="msg" id="msg">טוען את השיעורים... ⏳</div>
 </div>
-<footer class="ft">🍭 קול תודה — לומדים ורואים גאולה · <a href="index-%D7%A7%D7%95%D7%93%D7%9D.html">לתצוגה הקודמת (לפי קטגוריות)</a></footer>
+<footer class="ft">🍭 קול תודה — לומדים ורואים גאולה · <a href="%D7%A2%D7%9E%D7%95%D7%93%D7%99%D7%9D%20%D7%9E%D7%A2%D7%95%D7%A6%D7%91%D7%99%D7%9D/index.html">🎨 גלריית סגנונות</a> · <a href="index-%D7%A7%D7%95%D7%93%D7%9D.html">לתצוגה הקודמת (לפי קטגוריות)</a></footer>
 <!-- page.js-topics -->
 <script>
 // classify.js — מיון שיעורי יוטיוב לנושאים ולתת-נושאים (רץ בדף עצמו, וגם ב-node לבדיקה)
@@ -64,6 +64,7 @@ var TOPICS = [
   {k:"הלכה", e:"⚖️", subs:["הלכות ברכות","הלכות שבת","הלכה ומנהג"]},
   {k:"הוראה, חוסן והדרכה", e:"🧑‍🏫", subs:["חוסן לילדים בעת חירום","הכשרת מורים וסטודנטים","כלים טכנולוגיים","הדרכה כללית"]},
   {k:"חוברות להדפסה", e:"📄", subs:[]},  // ממולא בשמות הגופנים
+  {k:"עמודים מעוצבים", e:"🎨", subs:["מבנים","מבנים יהודיים","סגנונות גרפיים","פלטות צבעים","אנימציות","רעיונות תוכן","תוכן יהודי לילדים","סגנונות גרפיים לילדים","פלטות ילדים","אנימציות לילדים"]},  // לפי קטגוריית הסגנון
   {k:"שונות", e:"⭐", subs:["שונות"]}
 ];
 var CHUMASH = {"בראשית":"בראשית","נח":"בראשית","לך לך":"בראשית","וירא":"בראשית","חיי שרה":"בראשית","תולדות":"בראשית","ויצא":"בראשית","וישלח":"בראשית","וישב":"בראשית","מקץ":"בראשית","ויגש":"בראשית","ויחי":"בראשית",
@@ -126,6 +127,7 @@ function classify(l){
   if (tags.indexOf("חוברת להדפסה") >= 0) {   // חוברות: במדור שלהן + בנושא "חוברות להדפסה" לפי הגופן
     var font = tags[tags.length - 1]; m.push(["חוברות להדפסה", font]);
   }
+  if (tags.indexOf("עמוד מעוצב") >= 0) m.push(["עמודים מעוצבים", l.style_cat || "מבנים"]);   // עמודי סגנון: בנושא של השיעור + בגלריית העיצובים
   var p = parashaOf(l);
   if (cat === "פרשת השבוע") { tp = "פרשת השבוע"; sb = p || "פרשות שונות"; }
   else if (cat === "חגים ומועדים") { tp = "שבת, חגים ומועדים"; sb = subBy(tp, l, "מועדים נוספים"); }
@@ -161,12 +163,12 @@ function classify(l){
   function pic(l){ var v = vid(l); return (v && ART[v]) || ART[l.file] || (v ? "https://i.ytimg.com/vi/" + v + "/mqdefault.jpg" : ""); }
   function card(l, sb){
     var c = col(l.tp), p = pic(l); sb = sb || l.sb;
-    var book = (l.tags || []).indexOf("חוברת להדפסה") >= 0;
+    var book = (l.tags || []).indexOf("חוברת להדפסה") >= 0, styled = (l.tags || []).indexOf("עמוד מעוצב") >= 0;
     return '<a class="card" href="' + href(l) + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '">' +
       '<div class="pic">' + (p ? '<img src="' + esc(p) + '" alt="" loading="lazy">' : esc(l.icon || emo(l.tp))) + "</div>" +
       '<div class="body"><span class="cat">' + esc(emo(l.tp) + " " + sb) + "</span><h3>" + esc((l.icon ? l.icon + " " : "") + l.title) + "</h3>" +
       "<p>" + esc(l.subtitle || "") + "</p>" +
-      '<div class="foot"><span>' + (book ? "📄 חוברת להדפסה" : (l.cards ? "📖 " + l.cards.length + " נושאים" : "📖 ספר")) + '</span><span class="go">לקריאה ⟵</span></div></div></a>';
+      '<div class="foot"><span>' + (styled ? "🎨 " + esc(l.style || "עמוד מעוצב") : book ? "📄 חוברת להדפסה" : (l.cards ? "📖 " + l.cards.length + " נושאים" : "📖 ספר")) + '</span><span class="go">לקריאה ⟵</span></div></div></a>';
   }
   function counts(){ var c = {}; D.lessons.forEach(function(l){ c[l.tp] = (c[l.tp] || 0) + 1; (l.m || []).forEach(function(x){ if (x[0] !== l.tp) c[x[0]] = (c[x[0]] || 0) + 1; }); }); return c; }
   function chips(){
