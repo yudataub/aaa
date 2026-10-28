@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 האדם מחפש משמעות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 האדם מחפש משמעות</h1>
+  <p>סיפורו של ויקטור פרנקל: הפסיכיאטר מווינה שוויתר על אשרה לאמריקה כדי לכבד את הוריו, עבר את השואה עם ספר בראשו, ולמה הרבי מלובביץ' שלח לו מסר שלא יתייאש</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מסר מברוקלין</div>
+      <h3 class="story-title">🚪 האישה שדפקה בדלת</h3>
+      <p>בתחילת השיעור הראה הרב שתי תמונות ושאל: מי אלה? הנושא היה משמעות, ואיך הוא קשור לרבי מלובביץ'. ובמרכזו עמד ויקטור פרנקל, אחד הפסיכולוגים המפורסמים ביותר בעולם. הוא היה יהודי שחי רחוק מחיי הקהילה היהודית, וגר בווינה אחרי השואה.</p>
+      <p>יום אחד נקשה דלת ביתו. עמדה שם אישה יהודייה, מחסידות חב"ד מברוקלין, כדי להביא לו מסר. היא אמרה לו: הרבי מלובביץ' ביקש למסור לך – אל תתייאש מהפצת השיטה שלך בתורת הנפש. חזק את דרכך והמשך את משנתך, וה' יברך אותך שתהיה לך פריצת דרך בשיטה שפיתחת. גם אם כרגע אתה רואה מתנגדים רבים, זה יצליח.</p>
+      <p>היא לא ידעה מה יחוללו המילים האלה אצל הפרופסור המלומד. בעיניה זה היה רק שליחות קטנה, דרישת שלום מן הרבי. אבל לפעמים כמה מילים שנאמרות ברגע הנכון, בשליחות של צדיק, משנות חיים שלמים, ומשם גם את חייהם של מיליונים שיקראו אחר כך את ספרו. זמן מה קודם לכן סיפרה לרבי שהיא נוהגת לנסוע לווינה. אמר לה הרבי: בפעם הבאה שאת נוסעת, גשי לביתו של פרופסור ויקטור פרנקל, ואמרי לו שאני מבקש שלא יסטה מדרכו.</p>
+      <p>למה היה כל כך אכפת לרבי מפסיכולוג אחד בווינה? הרבי עצמו למד באוניברסיטה, וקרא מחקרים, ושמע על השיטה הזאת שעומדת להיקבר. זו שיטה לטיפול בנפש האדם שמחברת אותו למשמעות, וקרובה מאוד לאמונה.</p>
+      <p class="bold-para">מילים ספורות של עידוד, שנשלחו מברוקלין, החזירו את פרנקל אל דרכו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מסר מברוקלין</div>
+      <h3 class="story-title">🧳 הניירות לאוסטרליה</h3>
+      <p>באותם ימים היה פרנקל במשבר קשה. רבים התנגדו לשיטתו, והוא חדל מהרצאותיו והסתגר בביתו. הוא היה בטוח שאין לשיטה שלו סיכוי.</p>
+      <p>כששמע את דברי האישה, פרץ בבכי. הוא הראה לה שעל שולחנו מונחים טפסי הגירה לאוסטרליה. בגלל ההתנגדויות האישיות למשנתו, החליט לוותר על הפצתה ולהגר. ועכשיו, כשקיבל את המסר מהרבי, החליט להתעודד ולחזור להפיץ את שיטתו.</p>
+      <p>ואכן, זמן קצר אחר כך קיבלה שיטתו הכרה בינלאומית. ספרו "האדם מחפש משמעות" נמכר במיליוני עותקים. הוא קיבל פרסי כבוד מאוניברסיטאות רבות, הרצה בכל העולם, ונעשה אחת הדמויות המפורסמות ביותר בפסיכולוגיה.</p>
+      <p>את הסיפור הזה סיפר גם שליח חב"ד בווינה. מדי שנה, לקראת יום מיוחד, שלחו בבית חב"ד בקשות תרומה לכל יהודי העיר. והוא ראה שוב ושוב בקבלות שפרופסור ויקטור פרנקל המפורסם תורם מדי שנה. הוא תמה: מה הקשר בין הפרופסור המלומד לבית חב"ד? עד שיום אחד פגש את אותה אישה, והיא אמרה לו: אתה חושב שאתה השליח הראשון כאן? והיא סיפרה לו את הסיפור.</p>
+      <p class="bold-para">פרנקל כבר עמד לעזוב הכל, והמסר של הרבי הפך את ההחלטה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מסר מברוקלין</div>
+      <h3 class="story-title">🌅 אור של תקווה</h3>
+      <p>השליח רצה לשמוע את הסיפור מפי פרנקל עצמו. הוא התקשר אליו. פרנקל היה כבר בן תשעים, ואמר שאינו מקבל אנשים, אין לו כוח. אבל כששמע שמדובר בשליח חב"ד שמכיר את אותה אישה, התעורר מאוד וסיפר: נכון, הסיפור נכון. הייתי מיואש, וחשבתי שאין סיכוי לשיטה שלי. ובזכות המסר של הרבי, שיבוא יום והיא תצליח, התעודדתי מאוד.</p>
+      <p>הרב הוסיף שזה היה אחד הדברים המיוחדים אצל הרבי: לתת לאדם אור ותקווה. לא רק לדבר על המשיח שיבוא בעתיד, אלא לתת לאנשים "אור של משיח" עכשיו. שיאמינו שגם בעולם הזה, בחייהם, הישועה שלהם קרובה. שיש תקווה. כך גם לפני מלחמת ששת הימים, כשרבים פחדו מאוד, הרבי האמין ואמר לעם ישראל שיצליחו. הוא לא הסתפק בעידוד כללי, אלא נתן לאנשים תחושה ממשית שהטוב קרוב, ושיש בשביל מה להחזיק מעמד.</p>
+      <p>תמיד היה לו אור של גאולה, אמר הרב: אל תתייאש, בסוף תצליח. ובשיעור ביקשו לראות מי היה האיש הזה, ולמה היה כל כך חשוב לרבי שדווקא הוא יצליח.</p>
+      <p class="bold-para">אחד הדברים המיוחדים אצל הרבי מלובביץ' היה לתת לאדם אור ותקווה שיבוא יום והוא יצליח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הצעיר מווינה</div>
+      <h3 class="story-title">🧠 רופא לנפש</h3>
+      <p>ויקטור פרנקל נולד בווינה בתחילת המאה העשרים. כבר בגיל שלוש או ארבע אמר לאביו שהוא רוצה להיות רופא. כשגדל, החליט שרפואת הגוף אינה מספיקה לו, והוא רוצה להתמקד ברפואת הנפש – פסיכיאטריה.</p>
+      <p>המקום היה מתאים מאוד. ווינה הייתה אז בירת הפסיכולוגיה. מוסדות הלימוד והמחקר בה היו מן המתקדמים בעולם, והעיר הייתה מלאה בחוקרים ידועי שם. פרנקל למד אצל זיגמונד פרויד עצמו, וניהל איתו התכתבות רבה. כשנפגשו לבסוף, אמר לו פרויד מיד את כתובתו המדויקת – מרוב מכתבים כבר זכר אותה בעל פה. בהתחלה תמך פרויד בתלמידו הצעיר, ובעידודו פרסם פרנקל את מאמרו הראשון. אבל בהמשך, כפי שנראה, פרנקל לא היסס לצאת נגד שיטת רבו, כשהגיע למסקנה שהיא אינה מסבירה את העיקר שבנפש האדם.</p>
+      <p>הוא היה מוכשר וחרוץ, מלא רעיונות גדולים ואמונה בנפש האדם. כבר בגיל חמש עשרה נשא את נאומו הראשון, ונושאו היה – משמעות החיים. בגיל עשרים פרסם מאמר ראשון, ובקושי בן עשרים וחמש קיבל את הדוקטורט הראשון שלו.</p>
+      <p>בתקופה הזאת התחיל לנסח את שיטתו העצמאית, "לוגותרפיה". "לוגוס" פירושו משמעות, ו"תרפיה" פירושה ריפוי. ריפוי הנפש על ידי משמעות.</p>
+      <p class="bold-para">כבר בילדותו רצה פרנקל להיות רופא, ובנעוריו בחר ברפואת הנפש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הצעיר מווינה</div>
+      <h3 class="story-title">🏛️ שלושה אבות, שלוש דרכים</h3>
+      <p>הרב עמד על עובדה מעניינת: שלושת אבות הפסיכולוגיה – פרויד, אדלר ופרנקל – היו כולם יהודים. לפניהם לא היה כמעט המושג הזה. לא היו רופאים לנפש ולא מוסדות כאלה. מי שחיפש עזרה לנפשו לא ידע לאן ללכת.</p>
+      <p>פרנקל למד גם אצל אדלר, אבל בהמשך נוצר ביניהם קרע. השיטה שלו נקראה לימים "האסכולה הווינאית השלישית לפסיכותרפיה". הראשונה הייתה של פרויד, והשנייה של אדלר. אדלר, שבתחילה היה מתומכיו, לא אהב את עצמאותו של הכוכב הצעיר, ואף הוציא אותו מן החברה לפסיכולוגיה שבראשה עמד.</p>
+      <p>אבל זה לא פגע בפרנקל. להפך, הוא התפרסם באירופה ובעולם בזכות עצמו, והוזמן להרצות במוסדות אקדמיים מובילים. הוא לא התייאש, אף שנשאר לבד.</p>
+      <p>ועל מה היה הוויכוח? בשאלה מה הכוח החזק ביותר בנפש האדם, ואיך מרפאים אותה. הוויכוח הזה נשאר עד היום. ואת התשובה של פרנקל, הוא עתיד להוכיח בדרך הקשה ביותר שאפשר לתאר. כשפרצה השואה, כבר היה בידו הבסיס של כולם – הוא הכיר לעומק את שיטות פרויד ואדלר, וכולם העריכו את ידיעותיו – ונוסף לזה הייתה לו התיאוריה שלו, שעדיין לא הייתה מוכרת כמעט לאיש. ודווקא שם, במקום שבו נשלל מן האדם הכל, היא עמדה במבחן.</p>
+      <p class="bold-para">שלושת אבות הפסיכולוגיה היו יהודים, ופרנקל חלק על שני האחרים בשאלה מה מניע את האדם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · האבן מבית הכנסת</div>
+      <h3 class="story-title">🏥 רופא תחת שלטון הנאצים</h3>
+      <p>ואז הגיעה השואה. הנאצים סיפחו את אוסטריה, ופרנקל נדרש להוריד פרופיל. הוא כבר לא יכול היה להשתמש בתואר דוקטור, שנשלל מרופאים יהודים, ונאלץ לסגור את הקליניקה הפרטית שפתח זמן קצר קודם.</p>
+      <p>אבל שימו לב, אמר הרב: גם הגרמנים היו צריכים אותו. הוא היה מומחה עצום. בשנת 1940 מונה למנהל המחלקה הנוירולוגית בבית החולים היהודי בווינה. שם, בסכנת חיים, נתן לחולים אבחנות פסיכיאטריות כוזבות, כדי להציל חולי נפש מן ההוצאה להורג שהנאצים תכננו להם.</p>
+      <p>כיהודי, היה ברור שאין לו עתיד בווינה. רבות מן המדינות סגרו אז את שעריהן בפני היהודים. אבל כשמדובר באדם כמוהו, האמריקאים פתחו לו את שערי ארצם. הוא קיבל אשרה לנסוע לאמריקה.</p>
+      <p>ובכל זאת הוא נשאר. למה? הרי כל ההיגיון אמר לו לברוח: אדם צעיר ומוכשר, עם שיטה חדשה שהעולם עוד לא שמע עליה, ומולו ארץ שמחכה לו ומעריכה את תחומו. וכאן, בווינה, אין לו שום עתיד, ורק הסכנה הולכת וגדלה. את התשובה הוא סיפר בעצמו, בסרט שהוקרן בשיעור. ומה שגרם לו להישאר, הוא בדיוק מה שהפך אחר כך ללב התיאוריה שלו.</p>
+      <p class="bold-para">גם בשנות האימה המשיך פרנקל לעזור לחולים, ואף הציל אותם במחיר סכנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · האבן מבית הכנסת</div>
+      <h3 class="story-title">🪨 "כבד את אביך ואת אמך"</h3>
+      <p>הוא סיפר: כשהגיעה האשרה, הוריו קרנו משמחה. סוף סוף הבן יוכל לצאת. אבל הוא חשב: כל עוד אני עובד בבית החולים, ההורים שלי מוגנים מגירוש. אם אסע, הם יאבדו את ההגנה הזאת.</p>
+      <p>הוא התלבט מאוד. מצד אחד – אמריקה, שבה הפסיכותרפיה מפותחת מאוד, ושם יוכל לפתח את שיטתו. מצד שני – אביו ואמו. ההורים עצמם העדיפו שייסע. נכון, זה על חשבון חייהם, אבל הם רצו שבנם יצליח.</p>
+      <p>ואז, אמר הרב, הוא קיבל אות מן השמים. גם הפסיכולוג הגדול הזה האמין שה' שולח סימנים. כשחזר הביתה, ראה על השולחן אבן. שאל את אביו: מה זה? אמר לו אביו: בליל הבדולח, כשהנאצים שרפו את בתי הכנסת, עברתי ליד בית הכנסת הגדול השרוף, וראיתי את האבן הזאת. הבנתי שהיא קדושה. זה חלק מלוחות עשרת הדיברות שהיו בבית הכנסת.</p>
+      <p>על האבן הייתה חרוטה אות אחת, שבכל עשרת הדיברות היא פותחת רק דיבר אחד: "כַּבֵּד אֶת אָבִיךָ וְאֶת אִמֶּךָ". פרנקל הבין: זה מה שה' אומר לי. עליי לכבד את הוריי ולהישאר. ובאותו רגע החליט להישאר.</p>
+      <p class="bold-para">פרנקל ראה בשבר אבן מלוחות הברית בבית הכנסת אות מן השמים להישאר עם הוריו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · האבן מבית הכנסת</div>
+      <h3 class="story-title">🔄 דווקא ההפך</h3>
+      <p>הרב סיכם: הסיפור הזה עשה את חייו. אם חשב שבהחלטה הזאת הוא מפסיד את חייו ואת הצלחתו, קרה בדיוק ההפך. היו לפניו שתי דרכים: אם אתה רוצה חיים – סע לאמריקה. אם אתה רוצה דבר ערכי – הישאר, וכבד את אביך ואת אמך.</p>
+      <p>בפועל, ההישארות לא הצילה את הוריו לאורך זמן. אבל באותו רגע הוא חשב שכך הוא שומר עליהם, ובחר בערך על פני נוחותו. והוא עבר את השואה, ותוך כדי המחנות כתב את הספר שהפך לאחד הספרים המשפיעים בעולם.</p>
+      <p>דווקא מה שנראה כוויתור על כל התוכנית, הוא שנתן לשיטה שלו את ההוכחה החזקה ביותר. הוא לא נשאר עוד חוקר שכותב תיאוריה. הוא נעשה אדם שחי אותה, במקום החשוך ביותר בעולם.</p>
+      <p>באותם ימים קשים הכיר בבית החולים אחות, ונשא אותה לאישה. הם היו, לפי הסיפור, הזוג היהודי האחרון שקיבל אישור רשמי להינשא בווינה תחת שלטון הנאצים. אבל העתיד היה ענן שחור, ואשתו לא שרדה את השואה.</p>
+      <p class="bold-para">מה שנראה כוויתור על כל העתיד, הוא שבנה את כל העתיד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ספר שנכתב בגיהנום</div>
+      <h3 class="story-title">⛓️ הגטו והמחנות</h3>
+      <p>בשנת 1942 נשלח פרנקל עם אשתו, הוריו ובני משפחתם לגטו שהנאצים קראו לו "גטו המיוחסים". גם שם המשיך בתפקידו כרופא ופסיכיאטר. הוא פיתח תוכניות לעזור לבאים החדשים להתמודד עם ההלם, ועבד כדי למנוע התאבדויות בתקופה הנוראה הזאת.</p>
+      <p>שנתיים אחר כך נשלחו פרנקל ואשתו לאחד המשלוחים למזרח, למחנה שממנו כמעט איש לא שב – אושוויץ. הוא נשא איתו כתב יד כמעט מוכן של ספרו הראשון על הלוגותרפיה. הנאצים מצאו אותו ולקחו ממנו את כתב היד.</p>
+      <p>פרנקל סיפר שבאותו יום שנלקח ממנו כתב היד, מצא במעיל שקיבל במחנה דף קרוע מסידור תפילה, ועליו מילות "שְׁמַע יִשְׂרָאֵל". הוא ראה בכך סימן: עכשיו הגיע תורו לא רק לנסח רעיונות גבוהים, אלא בעיקר לחיות לפיהם.</p>
+      <p>ועוד סיפר הרב: אף שפרנקל היה משכיל ורחוק לכאורה, כל חייו נהג להיכנס בבוקר לחדרו הפרטי. פעם הציץ מישהו לראות מה הוא עושה שם, וראה אותו מניח תפילין ומתפלל.</p>
+      <p class="bold-para">גם בגטו המשיך פרנקל לעזור לאחרים, וכשנלקח ממנו כתב היד – מצא דף משמע ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ספר שנכתב בגיהנום</div>
+      <h3 class="story-title">✏️ זנב של עיפרון</h3>
+      <p>גם כשנלקח ממנו הספר, פרנקל לא ויתר עליו. הוא המשיך לכתוב אותו לאורך כל התקופה – בעיקר בראשו, אבל גם על פיסות נייר קטנות שהשיג. והספר נכתב מחדש בצורה אחרת לגמרי: תוך כדי התנסות בשטח, במצב הקשה ביותר שאדם יכול לעבור על פני האדמה.</p>
+      <p>הוא כתב: אני משוכנע שאני חב את הישרדותי, בין השאר, להחלטה שלי לשחזר את כתב היד שאבד. כשחלה בטיפוס, השתדל להישאר ער אפילו בלילות. וביום הולדתו קיבל מתנה: זנב של עיפרון, שהושג כמעט בנס, וכמה דפים. עליהם רשם את ראשי הפרקים של הספר שרצה לשחזר.</p>
+      <p>תחשבו, אמר הרב: מה המתנה הנפלאה ביותר שאדם מוצא שם? לא לחם ולא בגד חם, אלא חתיכת עיפרון וכמה דפים. כי יש לו בשביל מה לחיות, והעיפרון הוא הקשר שלו אל המטרה הזאת.</p>
+      <p>פרנקל עבר ארבעה מחנות ריכוז. האחרון היה לא הרחק ממינכן, ובאפריל 1945 שוחרר. הוא סיפר שהרגיש אז שזה סוף של שנים מלאות ייסורים, אבל גם התחלה גדולה של משהו. הוא לא ידע מי עוד מחכה לו. ואכן, כשחזר, איש לא חיכה לו.</p>
+      <p class="bold-para">הרצון לשחזר את ספרו הוא שהחזיק את פרנקל בחיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ספר שנכתב בגיהנום</div>
+      <h3 class="story-title">📕 תשעה ימים של כתיבה</h3>
+      <p>מיד אחרי המלחמה, בווינה, כתב פרנקל ספר חדש, בתשעה ימים רצופים. זה לא היה הספר שתכנן לפני המלחמה. על תורתו המדעית נוסף סיפור חייו במחנות הריכוז – סיפור אישי ששימש מקרה בוחן לשיטה.</p>
+      <p>כי תוך כדי החיים הבלתי אפשריים של המחנה, הוא בחן על עצמו ועל הסובבים אותו את תורתו. הוא מצא שלושה יסודות יקרים שעליהם עומדת הלוגותרפיה: חופש הרצון, השאיפה למשמעות, ומשמעות החיים – ואיך הם עומדים גם במצב הקשה ביותר.</p>
+      <p>והוא כתב: אנחנו, שהיינו במחנות הריכוז, זוכרים את אלה שהיו עוברים בין הצריפים כדי לחזק את רוחם של אחרים, או כדי לתת להם את פרוסת הלחם האחרונה שלהם. אולי היו מעטים, אבל די בהם כדי להוכיח שאפשר לקחת מן האדם הכל, חוץ מדבר אחד: האחרונה שבחירויות האדם – לבחור את עמדתו בכל מצב שהוא.</p>
+      <p>כלומר, איך אתה רואה את מה שקורה לך, ואיך אתה בוחר לעבור אותו. את זה אף אחד אינו יכול לקחת, גם לא מי שלקח את כל השאר.</p>
+      <p class="bold-para">"האדם מחפש משמעות" נכתב בתשעה ימים, והוא סיפור חייו של פרנקל במחנות כהוכחה לשיטתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מי שיש לו למה</div>
+      <h3 class="story-title">💪 החזק ביותר בנפש האדם</h3>
+      <p>בספרו מוכיח פרנקל בראיות רבות: הדבר החזק ביותר באדם אינו הנאה ואינו עונג. הדבר החזק ביותר הוא משמעות שבשבילה תחיה. אם יש לך ערך שאתה שואף אליו, תוכל לעבור את כל הצרות ואת כל הייסורים. ואם אין לך משמעות, גם חיים נפלאים ומלאי עונג קשה מאוד לחיות.</p>
+      <p>ומאיפה הוא מוכיח זאת? מן השואה עצמה. הוא ראה מול עיניו אנשים רבים שמתו, ואחרים שנשארו בחיים. הוא בדק: מה קובע? אולי הכוח הגופני? והוא גילה: מי שהיה לו חלום, שאיפה, משהו שהוא רוצה להשיג כשייצא – לפגוש את הילדים, להקים משהו, לראות את המשיח – היה לו כוח לעבור את הרעב והייסורים הגדולים ביותר.</p>
+      <p>האנשים ששרדו, לפי פרנקל, לא היו בהכרח החזקים ביותר או העליזים ביותר. הם היו אלה שהצליחו למצוא משמעות ששווה לחיות עבורה. ומכאן המשפט המפורסם שהוא מביא: מי שיש לו "למה" שלמענו יחיה, יוכל לשאת כמעט כל "איך".</p>
+      <p>הספר הצליח כל כך, אמר הרב, כי אינו רק כותב תיאוריה. הוא מראה בפועל איך התיאוריה עבדה, במקום הקשה ביותר. אנשים ראו את ההוכחה, ולכן האמינו.</p>
+      <p class="bold-para">הכוח החזק ביותר באדם אינו ההנאה, אלא משמעות שבשבילה הוא חי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מי שיש לו למה</div>
+      <h3 class="story-title">🇮🇱 משמעות בתקופה שלנו</h3>
+      <p>הרב חיבר את הדברים לימינו. מדינת ישראל נמצאת עכשיו במצב לא פשוט, ועדיין לא ידוע לאן זה יוביל. ונשאלת שאלה מעניינת: האם מבחינה נפשית המצב היום טוב יותר או גרוע יותר?</p>
+      <p>כי כשאנשים נהנים ויש להם כל טוב, אבל אין להם משמעות, הם לא מחפשים שום דבר שהם רוצים, ורבים סובלים מאוד בגוף ובנפש. וכשיש לאדם מטרה, דבר שהוא שואף אליו, יש לו הרבה מאוד כוח.</p>
+      <p>התוצאה של מה שכתב פרנקל הייתה ספר קטן, של עמודים לא רבים, שנמכר במיליוני עותקים ונחשב בעיני רבים לאחד הספרים המשפיעים בעולם. הוא פרסם אחר כך עשרות ספרים שתורגמו לשפות רבות, נשאר לגור בווינה עד סוף ימיו, ונסע להרצאות בכל העולם.</p>
+      <p>והרב הראה מודעה של הספרייה הלאומית: איך ייתכן שספר ישן, שנכתב לפני כמעט שמונים שנה באוסטריה, בכריכה מיושנת, נכנס לרשימת רבי המכר בישראל בשנת 2023? כי דווקא בתקופה קשה ומאתגרת, מתגלה כמה הרעיון שלו נצחי. והרב העיר שהוא מכיר את הספר שנים, ושגם משגיחים רבים בישיבות קוראים אותו.</p>
+      <p class="bold-para">דווקא בתקופות קשות מתגלה כמה המשמעות נותנת כוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מי שיש לו למה</div>
+      <h3 class="story-title">🕯️ מה ראינו</h3>
+      <p>בסוף החלק הראשון של השיעור סיכם הרב: ראינו איך הרבי מלובביץ' שכנע את פרנקל להמשיך בדרכו, כשכבר עמד לעזוב הכל. ראינו איך פרנקל עצמו בחר בחיים של משמעות על פני חיים של הנאה – כשוויתר על אמריקה כדי לכבד את הוריו. וראינו איך הספר שלו נולד דווקא מתוך השואה.</p>
+      <p>יש כאן קו אחד שעובר בכל הסיפור. הרבי נתן לפרנקל "למה" כשהוא איבד אותו – תקווה שיבוא יום והשיטה תצליח. האבן מבית הכנסת נתנה לו "למה" כשעמד בצומת – כיבוד הורים. דף "שמע ישראל" וזנב העיפרון נתנו לו "למה" במחנות – לחיות את מה שלימד ולשחזר את ספרו.</p>
+      <p>ובשביל יהודי, המשמעות הזאת אינה רעיון מופשט. היא השליחות שה' נתן לכל אחד: מצווה שהוא מקיים, הורים שהוא מכבד, תורה שהוא לומד, ותקווה לגאולה. מי שחי עם השליחות הזאת, יש לו כוח לעבור כל "איך".</p>
+      <p>את החלק הבא של השיעור, שבו נלמד מה בדיוק כתוב בספר ולמה הוא כל כך מעניין דווקא היום, השאיר הרב להמשך.</p>
+      <p class="bold-para">פרנקל בחר בחיים של משמעות על פני חיים של הנאה, ולכן נעשה עד נאמן לכוחה של המשמעות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בקו קול תודה של הרב יהודה טאוב · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מסר מברוקלין","icon":"✉️","color":"#c62b6b","stories":[{"id":1,"title":"האישה שדפקה בדלת","icon":"🚪"},{"id":2,"title":"הניירות לאוסטרליה","icon":"🧳"},{"id":3,"title":"אור של תקווה","icon":"🌅"}]},{"id":2,"name":"הצעיר מווינה","icon":"🎓","color":"#6d28d9","stories":[{"id":4,"title":"רופא לנפש","icon":"🧠"},{"id":5,"title":"שלושה אבות, שלוש דרכים","icon":"🏛️"}]},{"id":3,"name":"האבן מבית הכנסת","icon":"🪨","color":"#e08e00","stories":[{"id":6,"title":"רופא תחת שלטון הנאצים","icon":"🏥"},{"id":7,"title":"\"כבד את אביך ואת אמך\"","icon":"🪨"},{"id":8,"title":"דווקא ההפך","icon":"🔄"}]},{"id":4,"name":"ספר שנכתב בגיהנום","icon":"📝","color":"#1e88b8","stories":[{"id":9,"title":"הגטו והמחנות","icon":"⛓️"},{"id":10,"title":"זנב של עיפרון","icon":"✏️"},{"id":11,"title":"תשעה ימים של כתיבה","icon":"📕"}]},{"id":5,"name":"מי שיש לו למה","icon":"🌱","color":"#c62b6b","stories":[{"id":12,"title":"החזק ביותר בנפש האדם","icon":"💪"},{"id":13,"title":"משמעות בתקופה שלנו","icon":"🇮🇱"},{"id":14,"title":"מה ראינו","icon":"🕯️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
