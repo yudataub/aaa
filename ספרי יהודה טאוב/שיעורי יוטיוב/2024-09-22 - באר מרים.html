@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 באר מרים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 באר מרים</h1>
+  <p>למה ניתנה הבאר בזכות מרים, שלוש המתנות כנגד שלוש אהבות לפי המהר"ל, ושירה שעולה מן הלב כמו מים מן הבאר</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ באר מרים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/ouprLI395SI?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/ouprLI395SI/hqdefault.jpg" alt="באר מרים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=ouprLI395SI" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שלוש מתנות</div>
+      <h3 class="story-title">🎁 שלושה פרנסים טובים</h3>
+      <p>השיעור עוסק בבאר מרים, בעבר, בהווה ובעתיד. באר מרים היא נושא שמעורר עניין עד היום. יש מקומות שנקראים בשם זה, ויש מסורות על המקום שבו היא נמצאת.</p>
+      <p>כך שנינו במדרש: רבי יוסי אומר, שלושה פרנסים טובים עמדו לישראל, ואלו הם: משה, אהרן ומרים. ובזכותם ניתנו להם שלוש מתנות טובות: באר, ענן ומן. באר בזכות מרים, עמוד ענן בזכות אהרן, מן בזכות משה.</p>
+      <p>המדרש ממשיך: מתה מרים, נסתלקה הבאר, שנאמר "ותמת שם מרים", ומיד "ולא היה מים לעדה". וחזרה בזכות שניהם, משה ואהרן. מת אהרן, נסתלקו ענני הכבוד. וחזרו שניהם בזכות משה. מת משה, נסתלקו שלושתם ולא חזרו עוד.</p>
+      <p>אחרי פטירת משה כבר לא היה בהם צורך: עם ישראל עמד להיכנס לארץ, ונשאר רק זמן קצר עד שיעברו את הירדן. אבל השאלה העיקרית נשארת: מה הקשר בין מרים לבאר? המתנות האלה לא ניתנו סתם, וכל אחת מהן קשורה לבעליה. השיעור מביא כמה פירושים, מן הפשט ועד העומק.</p>
+      <p class="bold-para">שלושה מנהיגים עמדו לישראל במדבר, ובזכות כל אחד מהם ניתנה מתנה אחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · שלוש מתנות</div>
+      <h3 class="story-title">🏜️ מוביל המים של המדבר</h3>
+      <p>כדי להבין את גודל המתנה, צריך להבין מה זה מדבר. במדבר אין אפשרות קיום. אי אפשר לגדל בו כלום, ואי אפשר כמעט לגור בו. לאורך הדורות גרו במדבר רק מעטים, בתנאים קשים מאוד, שאינם צורת חיים רגילה של בני אדם.</p>
+      <p>הרב הזכיר בהקשר זה את הפסוק "ישושום מדבר וציה, ותגל ערבה ותפרח כחבצלת", ואמר שזו נבואה שמתקיימת דווקא בימינו. בעבר לא הייתה אפשרות שהמדבר יפרח, כי לא היו מים. היום, כשמביאים מים למדבר, רואים ערים שלמות שנבנו במקומות צחיחים ופורחות בצורה מופלאה.</p>
+      <p>בדרך אגב העלה הרב גם שאלה שבה רצה לעסוק בשיעור אחר: עד היכן משתרעת ארץ ישראל בדרום? בפרשת מסעי הגבולות נגמרים לא הרחק מים המלח, ובמקומות אחרים בתורה מוזכרים גבולות רחוקים יותר. אחת האפשרויות שהועלו היא שבמסעי חילק משה את הארץ לפי מקומות שאפשר לגור בהם, ולא בהכרח שם נגמרת הארץ. אבל זה נושא לשיעור אחר.</p>
+      <p>ועם ישראל, ארבעים שנה, חי במדבר כזה. איך? היה לו מוביל מים משלו: באר מרים. ונשאלת השאלה: למה דווקא בזכותה?</p>
+      <p class="bold-para">במדבר אין קיום בלי מים, ובאר מרים הייתה כמו מוביל מים ארצי שליווה את העם ארבעים שנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מדוע דווקא מרים</div>
+      <h3 class="story-title">🌊 מידה כנגד מידה</h3>
+      <p>הפירוש הפשוט הוא שכל מידותיו של הקדוש ברוך הוא מידה כנגד מידה. מה היה המעשה הטוב של מרים, שבזכותו קיבל עם ישראל מים ארבעים שנה?</p>
+      <p>רבנו בחיי מבאר בפרשת השבוע: הבאר הייתה בזכות מרים, כי היא זכתה במים של משה, שנאמר "ותתצב אחתו מרחוק לדעה מה יעשה לו". כשהשליכו את התינוק אל היאור, היא עמדה על המים לראות מה יקרה לו.</p>
+      <p>ולא סתם עמדה. חז"ל מספרים שמרים ניבאה שאמה עתידה ללדת בן שיושיע את ישראל. וכשהושלך משה ליאור, נראה כאילו הנבואה התבטלה. אבל היא האמינה. היא הייתה בטוחה שהנס עומד לקרות, ובאה לראות איך הוא יקרה.</p>
+      <p>ובאמת זכתה לסייע בהצלתו. היא פנתה בחוכמה לבת פרעה, והצליחה לדאוג שאם התינוק עצמה תניק אותו, כדי שהפה שעתיד לדבר עם בורא עולם לא יינק מנשים נוכריות.</p>
+      <p>רבנו בחיי מסכם: היא עמדה ליד היאור להושיע את חיי אחיה התינוק, לא התייאשה, האמינה בישועת ה', וזכתה לראות את חסדי ה' בהצלת משה מן המים. לכן זכתה להביא מים לעם ישראל, להיות להם לרווח והצלה בלב המדבר כשצמאו.</p>
+      <p class="bold-para">מרים עמדה על המים להציל את משה, ולכן זכתה להביא מים לכל ישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מדוע דווקא מרים</div>
+      <h3 class="story-title">🌱 אמונה שאינה מתייאשת</h3>
+      <p>כדאי להתעכב על מה שראינו ברבנו בחיי. הרגע שבו עמדה מרים על שפת היאור היה רגע של ייאוש גמור לכאורה. התינוק הושלך למים. הגזירה התקיימה. הנבואה שאמרה נראתה כאילו התבטלה.</p>
+      <p>ובכל זאת היא לא הלכה הביתה. היא עמדה מרחוק, "לדעה מה יעשה לו". היא לא באה לראות אם יקרה נס, אלא איך יקרה הנס. זו אמונה שאינה תלויה במה שהעיניים רואות.</p>
+      <p>ודווקא אמונה כזו זוכה למים. המדבר הוא המקום שבו אין שום סיכוי טבעי לחיים, בדיוק כמו היאור שבו הושלך התינוק. ומי שהאמינה בישועה במקום של סכנה, זכתה שבזכותה יהיו חיים במקום של צחיחות.</p>
+      <p>יש בזה לימוד לכל אדם. גם כשנראה שהכל אבד, אפשר לעמוד ולחכות לישועת ה'. ומי שעומד כך, נעשה בעצמו מקור של מים לאחרים.</p>
+      <p class="bold-para">מרים לימדה שאמונה אמיתית אינה נשברת גם כשנראה שהכל אבד, ודווקא היא מביאה מים בלב המדבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מדוע דווקא מרים</div>
+      <h3 class="story-title">🎵 עוד שני טעמים</h3>
+      <p>הרב הביא עוד שני פירושים. יש מי שכתב שהבאר ניתנה למרים בזכות מה שעשתה בהצלת הילדים במצרים. היא דאגה להם, סיפקה להם מים ומזון, והסתירה אותם כדי שלא יושלכו ליאור. מי שעשתה כל כך הרבה למען אחרים סביב המים, זכתה שהמים יבואו בזכותה.</p>
+      <p>פירוש שלישי מביא המדרש תנחומא: הבאר ניתנה בזכות מרים שאמרה שירה על המים. אחרי קריעת ים סוף, "ותקח מרים הנביאה אחות אהרן את התף בידה", ושרה עם הנשים. ולא הייתה זו סתם שירה, אלא שירה מיוחדת מאוד.</p>
+      <p>כל הפירושים האלה נכונים ונפלאים. אבל המהר"ל, כדרכו, מעמיק בכל דבר. הוא לא רק מסביר למה יש באר בזכות מרים, אלא טוען שהמן בזכות משה, ענני הכבוד בזכות אהרן והבאר בזכות מרים רומזים כל אחד לתפקיד אחר בעבודת ה'. בדבריו נמצא גם את הקשר העמוק בין הבאר לבין השירה.</p>
+      <p class="bold-para">יש מפרשים שהבאר ניתנה בזכות מסירותה של מרים לילדים, ויש שניתנה בזכות השירה שאמרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלוש אהבות</div>
+      <h3 class="story-title">🔗 שלושה חיבורים</h3>
+      <p>המהר"ל כותב: שלושה פרנסים נתן הקדוש ברוך הוא לישראל, משה אהרן ומרים, והם כנגד שלושה חיבורים שיש לעם ישראל. ושלוש המתנות שניתנו בזכותם מסמנות את אותם חיבורים עצמם.</p>
+      <p>החיבור הראשון, כנגד משה, הוא החיבור שבא מלמעלה למטה: האהבה שאוהב הקדוש ברוך הוא את עם ישראל. כמו שאנו אומרים בכל יום: "הבוחר בעמו ישראל באהבה". זו האמונה הבסיסית של כל יהודי: שבורא עולם אוהב אותו, בכל מצב ובכל שעה.</p>
+      <p>ולכן בזכות משה מגיע המן. המן הוא לחם שיורד מן השמים אל עם ישראל. אין דבר שמבטא יותר אהבה שיורדת מלמעלה למטה מאשר לחם שהאב שולח לבניו בכל בוקר מן השמים.</p>
+      <p>החיבור השני, כנגד אהרן, הוא החיבור שיש בין בני ישראל עצמם. והחיבור השלישי, כנגד מרים, הוא החיבור שעולה מלמטה למעלה. נראה כל אחד מהם בנפרד, ונראה כיצד כל מתנה מתאימה בדיוק לחיבור שהיא מסמלת.</p>
+      <p class="bold-para">לפי המהר"ל, משה, אהרן ומרים הם כנגד שלושה חיבורים שיש לעם ישראל עם הקדוש ברוך הוא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלוש אהבות</div>
+      <h3 class="story-title">🕊️ "אין אדם טורח בסעודה ומפסידה"</h3>
+      <p>הרב סיפר סיפור שקרא, שמבטא את האמונה הזו באהבת ה'. לפני מלחמת ששת הימים פגש אדם ערבי בצפת חסיד מחסידי סלונים, ושאל אותו: למה אתה לא מפחד? כל השכנים מסביב אומרים שעוד מעט יבואו. יש להם הרבה יותר נשק, יותר מטוסים, יותר אנשים. איך אתה רגוע?</p>
+      <p>אמר לו החסיד: האלוקים שלנו אוהב אותנו, והוא ישמור עלינו. שאל אותו השואל שאלה קשה: אם הוא אוהב אתכם, למה הרגו כל כך הרבה מכם בשואה?</p>
+      <p>ענה לו החסיד: יש הבדל עצום בין כשהיינו בחוץ לארץ לבין עכשיו שאנחנו בארץ ישראל. בגמרא במסכת כתובות כתוב: "אין אדם טורח בסעודה ומפסידה". מי שטרח והכין חתונה, חזקה שאינו רוצה לקלקל אותה. בגלות, התורה הזהירה מראש שיהיו צרות. אבל בארץ ישראל, הקדוש ברוך הוא מביא אותנו כדי לגאול אותנו. אם טרח, כינס את נדחי עמו ועשה ניסים ונפלאות, הוא לא הביא אותנו לכאן כדי להרוס. לכן אין לי ממה לפחד.</p>
+      <p>זו אמונה פשוטה ועמוקה, שאינה נשענת על חשבונות של כוח ומספרים, אלא על הידיעה שהקדוש ברוך הוא אוהב את עמו. הרב הוסיף שזו אחת הסיבות שחשוב לדעת שהימצאותנו כאן היא חלק מקיבוץ הגלויות של הגאולה. זה נותן מבט אחר על כל החיים. גם כשיש קשיים ויש על מה להתפלל, יודעים שהכל הוא חלק ממהלך של גאולה, גם אם איננו יודעים בדיוק איך ומתי.</p>
+      <p class="bold-para">יהודי מאמין שה' אוהב אותו, ושמי שקיבץ את ישראל לארצו לא הביא אותם כדי לאבדם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלוש אהבות</div>
+      <h3 class="story-title">☁️ אהרן וענני הכבוד</h3>
+      <p>החיבור השני, כנגד אהרן, הוא החיבור שיש בבני ישראל עצמם, מחמת האהבה שהם אוהבים זה את זה. אהרן הוא הקו האמצעי, שמחבר את כולם. "הוי מתלמידיו של אהרן, אוהב שלום ורודף שלום, אוהב את הבריות ומקרבן לתורה". הוא קירב את הבריות זו לזו.</p>
+      <p>הרב סיפר בדרך צחות על אדם ששאל חסיד ברסלב: הרבי שלכם נפטר לפני הרבה שנים, איך אתה קורא לעצמך חסיד שלו? ענה לו: לא קראת את המשנה? "הוי מתלמידיו של אהרן". רואים שאפשר להיות תלמיד גם של מי שכבר אינו בעולם.</p>
+      <p>ולמה דווקא ענני הכבוד באים בזכות אהרן? כי כשעם ישראל מאוחד, השכינה יכולה לשרות עליו. "ויהי בישורון מלך, בהתאסף ראשי עם יחד שבטי ישראל". כשכולם אוהבים זה את זה, שורה עליהם השכינה, והיא מתגלה בענני הכבוד.</p>
+      <p>את הקשר הזה רואים גם בחג הסוכות. הסוכה היא זכר לענני הכבוד, ועליה נאמר "ופרוס עלינו סוכת שלומך". הסוכה היא סמל השלום. ובחג הזה עצמו לוקחים ארבעה מינים שונים ומחברים אותם יחד, כולם אהובים, כולם ברורים, כולם באגודה אחת.</p>
+      <p class="bold-para">אהרן מסמל את האהבה שבין יהודי ליהודי, ובזכותה שורה השכינה בענני הכבוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלוש אהבות</div>
+      <h3 class="story-title">🤲 "ואהבת לרעך כמוך, אני ה'"</h3>
+      <p>הרב הרחיב על מצוות אהבת ישראל. בפסוק כתוב: "ואהבת לרעך כמוך, אני ה'". רבים שואלים מה הקשר בין שני חלקי הפסוק. הפירוש הוא: למה אתה אוהב כל יהודי? כי "אני ה'". כולנו בניו של בורא עולם, כולנו נבראנו בצלם אלוקים. אני, בורא עולם, אוהב אותם, לכן אהוב גם אתה אותם.</p>
+      <p>ומכאן שיש דרגות באהבה. קודם כל צריך לאהוב ולכבד את תלמידי החכמים ויראי ה', כמו שכתוב "מפני שיבה תקום והדרת פני זקן". אחר כך יש מצווה לאהוב כל יהודי שומר מצוות. ובדרגה נוספת גם אדם שעדיין אינו שומר תורה ומצוות, אבל הוא אדם טוב והגון.</p>
+      <p>הלל אמר "אוהב את הבריות ומקרבן לתורה". הוא לא אמר "אוהב יהודים" בלבד, אלא "אוהב את הבריות": כל מי שהוא בריה שברא הקדוש ברוך הוא. ועל ידי האהבה הזו מקרבים לתורה.</p>
+      <p>הרב הוסיף שהתורה מוציאה מכלל זה רק מקרה חריג וקיצוני מאוד: מי שמבקש באופן פעיל להסית אחרים ולעקור מהם את התורה, שעליו נאמר "לא תאבה לו". הוא הדגיש שאין זה עוסק כלל ביהודי רגיל שאינו שומר מצוות, שאותו מצווה לאהוב ולקרב. ועוד הדגיש שאין לערבב מושגים: אחדות ואהבת ישראל הם דבר אחד, והסכמה לכל דרך היא דבר אחר.</p>
+      <p class="bold-para">אוהבים כל יהודי כי כולנו בניו של בורא עולם, ויש באהבה הזו דרגות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלוש אהבות</div>
+      <h3 class="story-title">💧 מרים והבאר</h3>
+      <p>החיבור השלישי, כנגד מרים, הוא החיבור שיש לעם ישראל מחמת האהבה שישראל אוהבים את הקדוש ברוך הוא ומשתוקקים אליו. זו אהבה מלמטה למעלה. אנחנו רואים כמה בורא עולם מטיב איתנו, ומתוך כך אנחנו אוהבים אותו, רוצים לתת לו, מחפשים איך להודות לו.</p>
+      <p>המהר"ל כותב: כמו שה' חפץ בדביקות ישראל, כך ישראל חפצים ומשתוקקים לה'. "אני לדודי ודודי לי". ולכן היה פרנס שלישי, מרים, כנגד ישראל המשתוקקים לה'. והיה זה דווקא אישה, כי החיבור הזה הוא מצד ישראל, שנחשבים כאישה לפני הקדוש ברוך הוא. התשוקה מלמטה למעלה נמשלה לתשוקת האישה, כמו שנאמר "ואל אישך תשוקתך".</p>
+      <p>ולמה דווקא באר? כי הבאר נובעת ועולה מלמטה למעלה. כמו שכתוב "עלי באר": המים שמתחת לארץ עולים למעלה. וזה ההפך מן הענן, שמתייחס אל השמים ונקרא "ענני שמיא". הענן מורה על מה שיורד מלמעלה; הבאר מורה על השתוקקות התחתונים כלפי מעלה.</p>
+      <p>ומכאן גם הקשר שהתורה מרבה להזכיר בין אישה לבאר. אבותינו מצאו את נשותיהם על הבאר: עבד אברהם את רבקה, יעקב את רחל, משה את צפורה. והמהר"ל מבאר שהאישה והבאר מתדמים זה לזה. והמהר"ל מסכם שהדברים האלה נאמנים מאוד ואין בהם ספק.</p>
+      <p class="bold-para">מרים מסמלת את האהבה שעולה מלמטה למעלה, והבאר, שמימיה נובעים מלמטה, היא הביטוי שלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שלוש אהבות</div>
+      <h3 class="story-title">🔺 שלוש אהבות בכל מקום</h3>
+      <p>המהר"ל מצא דבר נפלא: הקשר בין המן, ענני הכבוד והבאר לבין שלושת החלקים של עבודת ה'. האמונה שהקדוש ברוך הוא אוהב אותנו, האהבה שאנחנו אוהבים זה את זה, והאהבה שאנחנו אוהבים את בורא עולם.</p>
+      <p>והמהר"ל הולך עם היסוד הזה במקומות רבים. הוא מסביר כך גם את המשנה "על שלושה דברים העולם עומד: על התורה, ועל העבודה, ועל גמילות חסדים". התורה ניתנה מלמעלה, על ידי משה, והיא ביטוי לאהבת ה' אלינו. גמילות חסדים היא האהבה שבין אדם לחברו. והעבודה, הקרבנות והתפילה, היא מה שאנחנו מעלים מלמטה כלפי מעלה.</p>
+      <p>ויש שמבארים כך גם את שלושת האבות. כל אחד מהם מייצג סוג אחר של אהבה. ובכלל, אפשר לתאר את עולמו הפנימי של האדם בשלוש אהבות: אהבה שהאדם מרגיש כלפי עצמו, כשהוא מאמין שאוהבים אותו; אהבה שהוא אוהב את זולתו; ואהבה שהוא אוהב את בורא עולם.</p>
+      <p>המהר"ל מרחיב את הרעיון בהרבה מקומות. ובאר מרים, שהייתה נובעת ומעלה מים, מסמלת את הכיסופים של עם ישראל לאהוב ולדבוק בבוראם.</p>
+      <p class="bold-para">המהר"ל מוצא את שלושת סוגי האהבה גם בשלושת העמודים שעליהם העולם עומד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחה של שירה</div>
+      <h3 class="story-title">🎶 למה שרו רק על הבאר</h3>
+      <p>מכאן מובן דבר נפלא: למה עם ישראל שר שירה דווקא על הבאר? "אז ישיר ישראל את השירה הזאת, עלי באר ענו לה". על המן לא שרו, ועל ענני הכבוד לא שרו. רק על הבאר.</p>
+      <p>כי השירה היא ביטוי החיבור וההשתוקקות שיש לעם ישראל אל הבורא. כמו שאמרו בזוהר הקדוש על הלויים המשוררים: למה נקראים "לוי"? כי כל מי ששומע את שירתם נלווה ונדבק בנפשו למעלה בה'. השירה היא האמצעי שבו האדם נקשר ונדבק בבורא עולם.</p>
+      <p>על "אז ישיר משה" מבאר רש"י: אז, כשראה את הנס, עלה בלבו שישיר שירה. הלב עלה על גדותיו. שירה נובעת מלב שעולה על גדותיו באהבה לה', ומתוכו פורצת השירה.</p>
+      <p>וזה בדיוק דמיון הבאר. "עלי באר" – הבאר נובעת באדמה, ומרוב מים היא עולה על גדותיה ופורצת אל היבשה. וכשהבאר עולה – "ענו לה", שרים לה. השירה והבאר הן אותו דבר עצמו: משהו שעולה מבפנים, מלמטה למעלה, ואינו יכול להישאר בפנים.</p>
+      <p class="bold-para">השירה היא ביטוי לתשוקה שעולה מן הלב אל ה', ולכן שרו דווקא על הבאר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחה של שירה</div>
+      <h3 class="story-title">💓 מה זו שירה אמיתית</h3>
+      <p>המהר"ל מסביר יפה מה זו שירה. שירה אינה ללחוץ על כפתור ולהשמיע שיר, ובזה זה נגמר. לשיר שירה, אומר המהר"ל, פירושו שאדם מרגיש כל כך הרבה אהבה לבורא עולם, שהוא מרגיש שאינו יכול לעצור. אי אפשר שלא לשיר. הלב זועק.</p>
+      <p>יש רגעים שבהם אדם מחפש איך להוציא את ההתרגשות שפורצת בו. איך אני מביע את מה שיש בלבי? אין דרך אחרת, חייבים לשיר. הלב עולה על גדותיו.</p>
+      <p>וזה הפירוש האמיתי של "עלה בלבו". משה הרגיש צורך אדיר לשיר. וכך גם בקריעת ים סוף: עלה בלבם לשיר. שירה היא כשאדם מרגיש אהבה עצומה לבורא עולם, ושר לו מתוכה.</p>
+      <p>ולכן מובן למה השירה קשורה דווקא למרים. היא שרה על הים, והבאר באה בזכותה. שתיהן מבטאות את אותה תכונה: אהבה שאינה ממתינה שיורידו אותה מלמעלה, אלא עולה ופורצת מלמטה, מתוך הלב. מי שזכה לזה, זכה לבאר בתוך עצמו, מקור של שירה שאינו פוסק.</p>
+      <p>וזה גם מה שקרה כשמרים נפטרה. הבאר נסתלקה, ומיד "ולא היה מים לעדה". כאילו התורה אומרת לנו: כשאין מי שמעורר את האהבה שמלמטה, את הכיסופים ואת השירה, גם המים נעצרים. ובהמשך הפרשה, כשהבאר שוב נובעת לפניהם, עם ישראל עומד ושר עליה את שירת הבאר, כאילו ממשיך את דרכה של מרים ואת שירתה על הים.</p>
+      <p class="bold-para">שירה אמיתית היא כשאדם מרגיש אהבה כה גדולה לבורא עולם שאינו יכול שלא לשיר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחה של שירה</div>
+      <h3 class="story-title">📜 מצוות השירה בספר חרדים</h3>
+      <p>הספר חרדים כותב שיש ענף של מצוות אהבת ה' לשיר לפניו שירים. איפה זה כתוב בתורה? הרי לא כתוב "שירו שירים". אלא כך הוא מבאר: דרך החושק לשורר. מי שאוהב באמת, שר. וכיוון שאהבת היוצר נפלאה מכל אהבה אחרת, מי שאוהב אותו בלב שלם ישורר לפניו.</p>
+      <p>וכך עשו משה ובני ישראל, ומרים, ודבורה, ויהושע, ובני קורח, ודוד ושלמה, ברוח הקודש. כמו שכתוב "שיר השירים אשר לשלמה", למלך שהשלום שלו. וכתוב "שירו לו זמרו לו".</p>
+      <p>ובתוקף החשק אליו יתברך, גם הראשונים שוררו לפניו: רבי יהודה הלוי, רבי יהודה החסיד, רבי אברהם אבן עזרא וחבריהם. מהם קיבלנו את הפיוטים והזמירות שאנו שרים עד היום.</p>
+      <p>כך הוא בשיר הכבוד: "אנעים זמירות ושירים אארוג, כי אליך נפשי תערוג". מה ההבדל בין זמר לשיר? הרב הסביר: הזמר הוא המנגינה, מה שמנעים בקול. השיר הוא המילים, המחוברות ומשובצות זו בזו. ולכן "אארוג", כמו מי שאורג בד, שמשלב חוט בחוט. שירה צריכה להיות ארוגה, מחוברת.</p>
+      <p class="bold-para">ספר חרדים כותב שאהבת ה' מביאה לשיר לפניו שירים, כמו שעשו גדולי הראשונים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחה של שירה</div>
+      <h3 class="story-title">🎤 להנעים בקול</h3>
+      <p>הרב הרחיב על "אנעים זמירות". מה פירוש להנעים? מי שיודע להנעים בקולו, שר בצורה מרגשת מאוד. לכן אוהבים לשמוע זמרים שיודעים להנעים, ומבקשים מהם לשיר.</p>
+      <p>הרב נתן דוגמה מזמר ידוע שבשירתו את התפילה "כי הנה כחומר ביד היוצר" מרגש מאוד את השומעים. המילים מוכרות לכולם, ומופיעות בכל מחזור. אבל כשהן מושרות בהנעמה, הן נשמעות כמו עולם אחר. השומע מרגיש פתאום מה פירוש להיות כחומר ביד היוצר, והלב נפתח.</p>
+      <p>זה כוחו של הזמר. המילים, השיר, נותנות את התוכן. המנגינה, הזמר, נותנת לו כנפיים ומכניסה אותו אל הלב. ושניהם יחד, הזמירות והשירים, הם מה שהפייטן מבקש להגיש לפני בורא עולם: "אנעים זמירות ושירים אארוג".</p>
+      <p class="bold-para">הזמר הוא המנגינה שמנעימה את השיר, ובכוחה לעורר את הלב יותר מכל הסבר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחה של שירה</div>
+      <h3 class="story-title">🧵 השירה ארוגה ומעוררת</h3>
+      <p>בדורות הקודמים, כתיבת שירה וחריזה היו כמעט מקצוע. היו לומדים את כללי השיר, את המשקל והחרוז, ואת שירי רבי יהודה הלוי. רבי אברהם אבן עזרא אהב מאוד חרוזים. הוא חיבר בקלות ובמהירות, ואפילו תשובות כתב לפעמים בחרוזים. הרב הזכיר את דעתו שחרוז אמיתי צריך להיות של יותר מהברה אחת.</p>
+      <p>גם ספר תהלים אינו רק ספר של שבחים. הוא בנוי פעמים רבות במשקל, בהקבלות, בחזרה של התחלה וסוף. גם שיר השירים, שכולנו אוהבים לשיר, יפה מאוד לא רק במילותיו אלא גם במבנה שלו.</p>
+      <p>ולמה זה חשוב? אמרנו שהשירה נובעת מן הלב. אבל זה פועל גם הפוך: כשהמילים בנויות בצורה יפה ומעניינת, ארוגות ומחורזות, הלב נפתח.</p>
+      <p>והראיה: אם תאמר לאדם אותו משפט שלוש, ארבע, חמש פעמים, הוא יאמר: די, כבר שמעתי. אבל שיר יפה שרים שוב ושוב, ואוהבים לשמוע אותו עוד פעם ועוד פעם. למה? כי ידיעות נובעות מן השכל, והשכל מסתפק בפעם אחת. השירה נובעת מן הלב, מן הרגש, והלב יכול לשמוע אותה שוב ושוב בלי לשבוע.</p>
+      <p class="bold-para">השירה בנויה במשקל ובחרוז, וכך היא לא רק נובעת מן הלב אלא גם פותחת אותו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · כוחה של שירה</div>
+      <h3 class="story-title">⚖️ שכל ורגש</h3>
+      <p>מכאן הרב עבר לרעיון רחב יותר. הקדוש ברוך הוא ברא בכל אדם שכל ורגש. לכולם יש את שניהם, השאלה היא איזה כוח דומיננטי יותר.</p>
+      <p>לפי דברי הרב, אצל רוב הגברים הכוח השכלי חזק יותר. הם נהנים מאוד להפעיל את השכל. מי שלומד גמרא, מקשה קושיות ומתרץ תירוצים, נהנה מן היצירה השכלית שיצר. גם במאמר הזה של המהר"ל, יש מי שייהנה דווקא מן הבניין השכלי: איך חיבר המהר"ל את משה, אהרן ומרים לשלוש אהבות, ואיך הכל מתיישב.</p>
+      <p>ולעומת זאת, הרב אמר שנשים רבות נהנות יותר להפעיל את הרגש, והוא גורם להן הנעה עצומה ושמחה. ולכן, אמר, נשים רבות מחוברות מאוד לשירה, להודיה ולאהבת ה', כשהלב עולה. אין זה אומר שלאחד יש רק שכל ולשני רק רגש. כולם צריכים את שניהם.</p>
+      <p>והמסקנה היא שכל אדם צריך לפתח ולהשתמש במיוחד בכוח שבורא עולם נתן לו, ולהקדיש אותו לשמו. מרים, שהבאר באה בזכותה ושרה על הים, מלמדת אותנו את כוחו של הלב שעולה מלמטה למעלה. יזכנו ה' שתהיה בנו באר כזו, שתעלה ותשיר: "עלי באר, ענו לה".</p>
+      <p class="bold-para">לכל אדם יש שכל ורגש, וכל אחד צריך לפתח את שניהם ולהשתמש בכוח הבולט בו לעבודת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/ouprLI395SI · 2024-09-22 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"שלוש מתנות","icon":"🎁","color":"#c62b6b","stories":[{"id":1,"title":"שלושה פרנסים טובים","icon":"🎁"},{"id":2,"title":"מוביל המים של המדבר","icon":"🏜️"}]},{"id":2,"name":"מדוע דווקא מרים","icon":"💧","color":"#6d28d9","stories":[{"id":3,"title":"מידה כנגד מידה","icon":"🌊"},{"id":4,"title":"אמונה שאינה מתייאשת","icon":"🌱"},{"id":5,"title":"עוד שני טעמים","icon":"🎵"}]},{"id":3,"name":"שלוש אהבות","icon":"❤️","color":"#e08e00","stories":[{"id":6,"title":"שלושה חיבורים","icon":"🔗"},{"id":7,"title":"\"אין אדם טורח בסעודה ומפסידה\"","icon":"🕊️"},{"id":8,"title":"אהרן וענני הכבוד","icon":"☁️"},{"id":9,"title":"\"ואהבת לרעך כמוך, אני ה'\"","icon":"🤲"},{"id":10,"title":"מרים והבאר","icon":"💧"},{"id":11,"title":"שלוש אהבות בכל מקום","icon":"🔺"}]},{"id":4,"name":"כוחה של שירה","icon":"🎶","color":"#1e88b8","stories":[{"id":12,"title":"למה שרו רק על הבאר","icon":"🎶"},{"id":13,"title":"מה זו שירה אמיתית","icon":"💓"},{"id":14,"title":"מצוות השירה בספר חרדים","icon":"📜"},{"id":15,"title":"להנעים בקול","icon":"🎤"},{"id":16,"title":"השירה ארוגה ומעוררת","icon":"🧵"},{"id":17,"title":"שכל ורגש","icon":"⚖️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
