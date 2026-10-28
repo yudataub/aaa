@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 כוחו של מחול</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 כוחו של מחול</h1>
+  <p>לקראת י"ז בתמוז: למה שבר משה את הלוחות רק כשראה את המחולות, הנשים שרקדו בים ולא חטאו בעגל, וכוחה של חוויה רגשית לשמור על הדור הבא</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הלוחות שנשברו</div>
+      <h3 class="story-title">⛰️ "לך רד"</h3>
+      <p>ביום חמישי, י"ז בתמוז, אנו צמים. המשנה במסכת תענית מונה את הדברים שאירעו ביום הזה, והראשון שבהם: נשתברו הלוחות. כולם בטוחים שהם יודעים איך זה קרה: משה רבנו ירד מן ההר, ראה פתאום את העגל, נבהל מן המראה, ושבר את הלוחות.</p>
+      <p>אבל כשפותחים את החומש, בפרשת כי תשא, רואים שאי אפשר להסביר כך. כתוב: "וַיְדַבֵּר ה' אֶל מֹשֶׁה לֶךְ רֵד כִּי שִׁחֵת עַמְּךָ אֲשֶׁר הֶעֱלֵיתָ מֵאֶרֶץ מִצְרָיִם. סָרוּ מַהֵר מִן הַדֶּרֶךְ אֲשֶׁר צִוִּיתִם עָשׂוּ לָהֶם עֵגֶל מַסֵּכָה וַיִּשְׁתַּחֲווּ לוֹ וַיִּזְבְּחוּ לוֹ". משה עוד נמצא בשמים, והקדוש ברוך הוא כבר מגלה לו הכל.</p>
+      <p>ולא רק זה. מיד אחר כך כתוב "וַיְחַל מֹשֶׁה אֶת פְּנֵי ה' אֱלֹקָיו" – את הפסוקים האלה אנו קוראים בתורה ביום הצום, בבוקר ובמנחה. משה מתפלל עליהם עוד לפני שראה במו עיניו, ומבקש מחילה. הוא יודע בדיוק מה קרה.</p>
+      <p>אם כן, נשאלת שאלה גדולה. אם משה ידע כבר למעלה שיש עגל, ואם חשב שמי שעשה עגל אינו ראוי ללוחות, למה הוריד אותם בכלל? שישאיר אותם למעלה! ואם הוריד אותם כדי לתת להם, למה שבר אותם כשהגיע? מה השתנה בין השמים לבין המחנה?</p>
+      <p class="bold-para">משה ידע עוד בשמים שעם ישראל עשה עגל, ובכל זאת הוריד את הלוחות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הלוחות שנשברו</div>
+      <h3 class="story-title">👀 "אינו דומה שמיעה לראייה"</h3>
+      <p>תשובה אחת, פשוטה: "אינה דומה שמיעה לראייה". משה שמע מה' על העגל, אבל כשראה אותו בעיניו, זה זעזע אותו הרבה יותר.</p>
+      <p>לפני שנים ניסה מכון שמפיץ את לימוד הדף היומי להפיץ גם לימוד יומי בזוהר. הם עשו לכך פרסומת עם פתגם יפה: "אינו דומה תא שמע לתא חזי". מה פירושו? בגמרא, כמעט כל קטע מתחיל ב"תא שמע" – בוא ושמע. ובזוהר, כמעט כל קטע מתחיל ב"תא חזי" – בוא וראה. למשל: "תא חזי, בזמנא דבר נש בביתא, עיקרא דביתא אתתיה" – בוא וראה, בזמן שאדם בביתו, עיקר הבית הוא אשתו, משום שהשכינה אינה עוזבת את הבית בזכותה. הפתגם רצה לומר שהזוהר הוא מדרגה גבוהה יותר: לא רק לשמוע, אלא לראות.</p>
+      <p>וזה נכון גם במציאות. כששומעים בחדשות על אסון, זה דבר אחד. כשרואים את התמונות, זה נכנס ללב חזק מדי, ולפעמים אף אינו בריא לנפש. אבל גם להפך: כשאדם רואה דבר טוב, הוא מתפעל ממנו הרבה יותר.</p>
+      <p>אם כן, אפשר לומר שמשה ידע, אבל הראייה זעזעה אותו. זה פירוש נכון. אבל יש פירוש נוסף, מחודש מאוד, של הספורנו.</p>
+      <p class="bold-para">מה שאדם רואה בעיניו נכנס ללב חזק הרבה יותר ממה ששמע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הלוחות שנשברו</div>
+      <h3 class="story-title">📺 שמירה על העיניים ועל הלב</h3>
+      <p>העיקרון של "אינה דומה שמיעה לראייה" אינו רק פירוש בפסוק, אלא יסוד שנוגע לכל אחד מאיתנו בימינו.</p>
+      <p>כששומעים בחדשות על פיגוע, זה כואב. אבל כשרואים את התמונות ואת הסרטונים, זה נכנס ללב בעוצמה אחרת לגמרי. הרב העיר שלצערנו הדבר נכנס ללב יותר מדי חזק, ושזה לא בריא לנפש. כך גם כשרואים מראות קשים של מהומות ועימותים – מה שרואים נחרט עמוק יותר.</p>
+      <p>ולכן אדם צריך לשים לב מה הוא מכניס פנימה דרך העיניים. לא כל מה שאפשר לראות, כדאי לראות. מי שרוצה לשמור על נפש שמחה ובריאה, נזהר שלא להציף אותה במראות שמכבידים עליה.</p>
+      <p>אבל יש לכך גם צד שני, טוב. אדם שרואה בעיניו דבר טוב – מעשה חסד, שמחה של מצווה, ילדים שרוקדים עם ספר תורה – מתפעל ממנו הרבה יותר מאשר אילו רק שמע עליו. לכן כדאי להראות לילדים, ולא רק לספר להם. ונראה בהמשך שזה בדיוק כוחה של החוויה: מה שרואים ומרגישים נשאר.</p>
+      <p class="bold-para">מה שאדם רואה משפיע על הנפש עמוק יותר ממה ששומע, ולכן צריך לבחור מה מכניסים פנימה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · העגל והמחולות</div>
+      <h3 class="story-title">🐂 "וירא את העגל ומחולות"</h3>
+      <p>אומר הספורנו: משה רבנו שמע מה' על העגל, אבל דבר אחד הוא לא ידע. שימו לב לפסוקים. הקדוש ברוך הוא אמר לו: "עָשׂוּ לָהֶם עֵגֶל מַסֵּכָה וַיִּשְׁתַּחֲווּ לוֹ וַיִּזְבְּחוּ לוֹ". הם עשו, השתחוו וזבחו.</p>
+      <p>ומה כתוב כשמשה מגיע למטה? "וַיְהִי כַּאֲשֶׁר קָרַב אֶל הַמַּחֲנֶה וַיַּרְא אֶת הָעֵגֶל וּמְחֹלֹת וַיִּחַר אַף מֹשֶׁה וַיַּשְׁלֵךְ מִיָּדָו אֶת הַלֻּחֹת וַיְשַׁבֵּר אֹתָם תַּחַת הָהָר". יש כאן דבר שלישי, שלא נאמר לו בשמים: מחולות. עם ישראל לא רק עשה את חטא העגל. הם התחילו לרקוד סביבו. הם כבר נהנו מן העסק.</p>
+      <p>את זה הקדוש ברוך הוא לא גילה לו. וכשמשה ראה שיש מחולות, הוא לא יכול היה להחזיק מעמד. הוא הבין שהעסק אבוד, וזרק את הלוחות.</p>
+      <p>כלומר: משה לא התכוון לשבור את הלוחות כשהוריד אותם. הוא התכוון לתת להם אותם. הוא ידע שהם חטאו, אבל אדם שחטא יכול לעשות תשובה. אבל כשראה שהם שמחים בחטא, הבין שאין תקנה כרגע. ונשאלת השאלה: מה יש בריקוד שהוא נורא כל כך? מה ההבדל בין חוטא לבין חוטא שרוקד?</p>
+      <p class="bold-para">לפי הספורנו, את העגל ידע משה, אבל את המחולות לא סיפר לו ה', והם ששברו את הלוחות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · העגל והמחולות</div>
+      <h3 class="story-title">⚠️ השמחה בחטא</h3>
+      <p>אחד המשתתפים הציע: אדם שחוטא ומצטער על כך, שעצוב לו שחטא, נמצא כבר בדרך לתשובה. אבל אדם ששמח בחטא, זה הדבר הנורא ביותר. כשמשה ראה שהם חוגגים, הבין שהם אינם מצטערים כלל.</p>
+      <p>ובאמת, זה עומק הדברים. כל עוד החטא הוא מעשה, או אפילו מחשבה, אפשר לשכנע את האדם כמה זה רע, להסביר לו, והוא יעשה תשובה וה' יכפר. אבל כשהחטא הגיע ללב, כשאדם כבר רוקד סביבו, הוא נכנס פנימה עמוק מאוד, ואינו יוצא בקלות. אז אי אפשר להמשיך כרגיל. צריך זעזוע עצום.</p>
+      <p>ולכן משה שבר את הלוחות. זה היה הזעזוע שהיה נחוץ כדי לעקור מן הלב את מה שנכנס לתוכו בריקוד. בלי מכה כזאת, לא היה סיכוי לשנות דבר.</p>
+      <p>אבל כדי להבין עד כמה חזק כוחו של ריקוד, נצא רגע מן המדבר, ונעבור לבית הספר. כי שם אפשר לראות את הדבר הזה בבירור, אצל כל אחד מאיתנו.</p>
+      <p class="bold-para">אדם שמצטער על חטאו קרוב לתשובה, אבל אדם ששמח ורוקד בחטא, החטא נחרט בלבו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה שנחרט בלב</div>
+      <h3 class="story-title">🎉 סיום שזוכרים שלושים שנה</h3>
+      <p>הרב סיפר שפעם השתתף בכנס של מפקחים ומנהלים. המפקח הארצי אמר שם: אני רוצה מאוד שהשנה יהיה בכל בתי הספר סיום מסכת. ולמה? הוא סיפר: לפני כשלושים שנה הייתי תלמיד בבית ספר, ועד היום אני זוכר איך המלמד שלנו עשה לנו סיום מסכת. איזו שמחה הוא עשה, איזו התלהבות! הוא הלך וקנה כיבוד, עשה מסיבה גדולה, והיה שמח כל כך שגמרנו.</p>
+      <p>ושאל: מי זוכר משנה אחת מבית הספר? מי זוכר אפילו איזו מסכת למדנו? כמעט אף אחד. אבל את הסיום, את הריקודים, את השמחה – זוכרים עד היום.</p>
+      <p>המפקח השקיע בזה הרבה, ודרבן מורים, מנהלים ומפקחים, וזכה שלמעלה מעשרים אלף תלמידים בכל הארץ עשו באותה שנה סיומי מסכת.</p>
+      <p>ולמה זה כך? משום שכך ברא הקדוש ברוך הוא את האדם. מחשבות וידיעות פורחות ונשכחות. אבל חוויה, דבר שקורה בלב עם הרגש, נחרטת עמוק, ויכולה להישאר בלי גבול. כשאדם עושה לא רק פעולה, אלא גם שר, רוקד ושמח, הדבר נכנס חזק ללב ויכול להישאר לכל החיים.</p>
+      <p class="bold-para">את המשניות שוכחים, אבל את השמחה של הסיום זוכרים כל החיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מה שנחרט בלב</div>
+      <h3 class="story-title">🕺 מעט ידיים ומאה עשרים ילדים</h3>
+      <p>הרב סיפר שלקח את הרעיון הזה ללב, ולימד אותו בכיתה. השנה, כשהילדים סיימו מסכתות משנה – ראש השנה, תענית וברכות – החליט שלא יעשו סתם סיום, אלא סיום רציני ושמח באמת.</p>
+      <p>אבל הייתה בעיה: בבית הספר מעט מאוד אנשי צוות גברים, כמעט כולן מורות. ולהרקיד מאה ועשרים ילדים זה לא פשוט. ילדים לא קל להרקיד. צריך לתפוס אותם, למשוך, להרחיב את המעגל. מעט אנשים לא יכולים לעשות זאת לבד. צריך "מניין", צריך עוד ידיים.</p>
+      <p>הוא ניסה להביא אנשים, אבל כולם עובדים בבוקר. בסוף, אחרי השתדלות רבה, הלך לבית מדרש סמוך שבו לומדים בחורים צעירים בכל בוקר. ביקש מן הרב שם: מחר אנחנו עושים סיום לילדים. כבודה של תורה גדול מלימוד תורה. בואו, זה יישאר להם בנפש. והרב ענה מיד: בסדר גמור, אני בא איתך.</p>
+      <p>הוא הגיע והביא את הבחורים, ובסוף הגיעו אפילו יותר מן הצפוי. היה סיום שמח, רקדו, והיה מרגש מאוד. ורואים כאן כמה כוח יש לריקוד: הוא יכול להיות לרעה, כמו בעגל, אבל גם לטובה, כשהוא מכניס ללב הילדים את שמחת התורה.</p>
+      <p class="bold-para">כדי להכניס שמחה של תורה ללב הילדים, כדאי להשקיע ולהביא מי שיודע לרקוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הנשים שרקדו בים</div>
+      <h3 class="story-title">🥁 הפרשה היחידה לנשים</h3>
+      <p>ועכשיו נחזור לתורה. בשירת הים כתובה השירה פעמיים. פעם אחת: "אָז יָשִׁיר מֹשֶׁה וּבְנֵי יִשְׂרָאֵל אֶת הַשִּׁירָה הַזֹּאת". השירה נגמרת, ואחר כך יש קטע נוסף: "וַתִּקַּח מִרְיָם הַנְּבִיאָה אֲחוֹת אַהֲרֹן אֶת הַתֹּף בְּיָדָהּ וַתֵּצֶאןָ כָל הַנָּשִׁים אַחֲרֶיהָ בְּתֻפִּים וּבִמְחֹלֹת".</p>
+      <p>שימו לב: אין בכל התורה מקום אחר שבו התורה עושה פרשה נפרדת רק לנשים, כשהיו שם גם גברים וגם נשים. בדרך כלל התורה כותבת את כולם יחד, כמו בתרומת המשכן: "וַיָּבֹאוּ הָאֲנָשִׁים עַל הַנָּשִׁים". כאן, אחרי שנגמרה השירה, יש פרשה נפרדת. למה?</p>
+      <p>כי אצל הנשים היה משהו אחר: הן לא רק שרו, אלא יצאו במחולות. הן רקדו.</p>
+      <p>ומה ההבדל? שירה יוצאת מן הפה ומן הלב. אבל בריקוד משתתף כל הגוף: האדם קופץ, מסתובב, מוחא כפיים, ושמח בכל איבריו. וכשכל האדם משתתף בשמחה, היא נחרטת בו עמוק הרבה יותר. לכן התורה מבדילה בין השירה של הגברים לבין השירה עם התופים והמחולות של הנשים, ומקדישה לה פרשה בפני עצמה.</p>
+      <p>ודרך אגב, עד היום יש כלי נגינה שרק בישראל יש לו את השם הזה: "תוף מרים". לך לחנות כלי נגינה בחוץ לארץ, ובקש "תוף מרים" – יסתכלו עליך ולא יבינו. כל הגננות בארץ יודעות מה זה. השם בא מן הפסוק הזה: "וַתִּקַּח מִרְיָם... אֶת הַתֹּף בְּיָדָהּ". ועוד נראה למה הריקוד הזה היה חשוב כל כך.</p>
+      <p class="bold-para">לשירת הנשים בים יש פרשה נפרדת, כי הן לא רק שרו – הן גם רקדו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הנשים שרקדו בים</div>
+      <h3 class="story-title">💍 הנשים שלא נתנו את נזמיהן</h3>
+      <p>בחטא העגל אמר אהרן: "פָּרְקוּ נִזְמֵי הַזָּהָב אֲשֶׁר בְּאָזְנֵי נְשֵׁיכֶם בְּנֵיכֶם וּבְנֹתֵיכֶם וַהֲבִיאוּ אֵלָי". מה קרה? הנשים לא הסכימו. הן לא נתנו. ובפסוק הבא כתוב "וַיִּתְפָּרְקוּ כָּל הָעָם אֶת נִזְמֵי הַזָּהָב אֲשֶׁר בְּאָזְנֵיהֶם" – הגברים נתנו משלהם, אבל הנשים לא השתתפו.</p>
+      <p>וחז"ל אמרו שעל כך קיבלו הנשים מתנה: את ראש חודש, משום שלא חטאו בחטא העגל. ומה הקשר בין העגל לראש חודש?</p>
+      <p>הוסבר כך: אחרי שהנשים לא נתנו לעגל, היו ליצני הדור שאמרו: עזבו, הן אותו דבר כמונו. הן לא סירבו משום שהן אוהבות את ה', אלא משום שהן אוהבות את התכשיטים שלהן.</p>
+      <p>איך יודעים מי צדק? עברו חודש או חודשיים, ומשה אמר: מי רוצה לתרום למשכן? ומה קרה? "וַיָּבֹאוּ הָאֲנָשִׁים עַל הַנָּשִׁים" – הנשים באו ראשונות, והגברים הצטרפו אליהן. אם הן אוהבות תכשיטים, למה נתנו אותם למשכן? סימן שלא את התכשיטים אהבו, אלא את ה'. והמשכן הוקם באחד בניסן, בראש חודש. לכן קיבלו את ראש חודש: המשכן הוכיח את אהבתן.</p>
+      <p class="bold-para">הנשים לא השתתפו בחטא העגל, ועל כך קיבלו את ראש חודש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הנשים שרקדו בים</div>
+      <h3 class="story-title">🌊 הריקוד שהגן עליהן</h3>
+      <p>ועכשיו החידוש העצום. למה דווקא הגברים חטאו, והנשים לא? חזרו לים סוף. הגברים שרו, כל אחד עמד ושר. הנשים לא רק שרו – הן רקדו. וכשאדם רוקד, קופץ ושמח, הדבר נכנס ללב באופן אחר לגמרי.</p>
+      <p>הן שרו "שִׁירוּ לַה' כִּי גָאֹה גָּאָה סוּס וְרֹכְבוֹ רָמָה בַיָּם". כעבור זמן באו אליהן ואמרו: יש עגל, הוא הוציא אותנו ממצרים. הסתכלו עליהם הנשים: מה, שכחתם? שרנו לה' כי גאה גאה! מה אתם מספרים סיפורים על עגל? לא בא בחשבון. הריקוד עדיין היה חי בלבן. זה נכנס חזק ללב, ולא יצא.</p>
+      <p>וזכרו את המפקח שזכר שלושים שנה את הסיום. בין שירת הים לחטא העגל עברו פחות משנה. אם אדם זוכר שלושים שנה, הן ודאי זכרו שנה אחת.</p>
+      <p>לכן התורה עשתה מזה עניין גדול, ופרשה נפרדת. כי הריקוד של הנשים השפיע לאורך זמן רב. ובשיעור הוסף שגם בחטא המרגלים לא חטאו הנשים. מה שנכנס ללב בחוויה של שמחה עם ה', שמר עליהן מכל החטאים הגדולים של המדבר.</p>
+      <p class="bold-para">מה שנכנס ללב בריקוד של קריעת ים סוף, שמר על הנשים מחטא העגל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קשר בלי מתווך</div>
+      <h3 class="story-title">🐂 מה היה העגל?</h3>
+      <p>אחד המשתתפים שאל שאלה טובה: האם עם ישראל באמת שכח את כל הניסים? הם חשבו שהעגל הוציא אותם ממצרים? זה לא נשמע הגיוני. מה היה בכלל הרעיון בעגל?</p>
+      <p>התשובה: לא הייתה להם לרגע מחשבה שהשור הזה הוא אלוקים. הם חשבו שאפשר לעשות אמצעי, משהו שיתווך בינם לבין הבורא. משה רבנו היה המתווך, הוא נעלם, ועכשיו רצו מתווך חדש. בתקופה ההיא היה מקובל מאוד בעולם לקחת חפץ ולראות בו מתווך לאלוקות. כי האלוקים בשמים, ואיך אני יוצר איתו קשר?</p>
+      <p>והיה בזה גם צד נוח: משה ידע גם להוכיח ולצעוק. מתווך שעשוי בידי אדם אינו מוכיח ואינו דורש. וכך, לאט לאט, אדם עלול להעביר את הקשר הישיר עם הבורא אל משהו אחר.</p>
+      <p>והיה זה ניסיון לא פשוט בזמנם. בשיעור הוזכר שהעגל אף נראה כמדבר, וקראו לפניו "אֵלֶּה אֱלֹקֶיךָ יִשְׂרָאֵל". לנו זה נראה רחוק, אבל בזמנם, כשעבודה זרה הייתה בכל מקום, היה לה כוח משיכה גדול.</p>
+      <p>ובשיעור הובאה גם דוגמה מימינו, בזהירות: יש אנשים שהופכים צדיק למי שכביכול מפרנס אותם בעצמו, כאילו יש לו כוח בפני עצמו. כמובן שאין זה דומה לעבודה זרה, אבל צריך להיזהר מכך. הצדיק הוא מורה דרך ומתפלל, אבל הכל מאת ה'.</p>
+      <p class="bold-para">חטא העגל לא היה אמונה שהעגל הוא אל, אלא רצון לשים מתווך בין האדם לה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קשר בלי מתווך</div>
+      <h3 class="story-title">🎶 גם בשירים צריך לדייק</h3>
+      <p>ומתוך הנושא הזה העיר הרב הערה מעשית על שירים ותפילות. כל כך חשוב שהקשר יהיה ישיר אל הבורא, שצריך להיזהר אפילו בהגייה ובפיסוק, כדי שלא ייצא משהו שנשמע הפוך.</p>
+      <p>דוגמה ראשונה: יש שירים לכבוד צדיקים שבהם, כשמאריכים בהגייה או משבשים את המילים, יוצא נוסח שנשמע כאילו מייחסים אלוקות לצדיק. והרי כל מה שאנחנו עושים לכבוד הצדיקים צריך להיות לכבוד ה', שהצדיק עבד אותו כל חייו. ובמיוחד כשבאותה שעה גם מדליקים ושורפים דברים "לכבוד" הצדיק, צריך להיזהר שלא ייראה הדבר כמו הקטרה למתווך. כמובן שאין כאן שום כוונה רעה, אבל מי ששם לב יכול לתקן.</p>
+      <p>דוגמה שנייה, ששמע הרב ממי שמלמד טעמי המקרא: באדון עולם אומרים "אֲדוֹן עוֹלָם אֲשֶׁר מָלַךְ, בְּטֶרֶם כָּל יְצִיר נִבְרָא". צריך לעשות הפסקה נכונה. אם מחברים את המילים לא נכון, עלול לצאת כאילו לפני שה' מלך, היה מישהו אחר שנברא. הפיסוק הנכון אומר שה' מלך עוד לפני שנברא כל יציר.</p>
+      <p>אלה דברים קטנים לכאורה, אבל הם נוגעים ליסוד הגדול של הדיברה השנייה: אין שום דבר בינינו לבין הקדוש ברוך הוא.</p>
+      <p class="bold-para">גם בשירה ובתפילה צריך להיזהר שלא ייצא, אפילו בטעות, שאנחנו מייחסים כוח למשהו מלבד ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קשר בלי מתווך</div>
+      <h3 class="story-title">🔗 "לא תעשה לך פסל"</h3>
+      <p>על זה בדיוק מדברת הדיברה השנייה: "לֹא יִהְיֶה לְךָ אֱלֹקִים אֲחֵרִים עַל פָּנָי. לֹא תַעֲשֶׂה לְךָ פֶסֶל וְכָל תְּמוּנָה". הקדוש ברוך הוא רוצה שיהיה לנו קשר ישיר איתו. לא קשר דרך משהו באמצע.</p>
+      <p>וזה מתחבר לכל מה שראינו. הריקוד של הנשים בים היה ריקוד של קשר ישיר: "שִׁירוּ לַה'". הן רקדו לפני הבורא עצמו, והאהבה הזאת נחרטה בלבן. ואילו הריקוד סביב העגל היה ריקוד סביב מתווך, תחליף. וגם הוא נחרט בלב, אבל לרעה.</p>
+      <p>ומשה רבנו הבין שכשהריקוד סביב המתווך נכנס ללב, צריך לעקור אותו בכוח. לכן שבר את הלוחות. הוא ידע שהוא יכול לבקש מחילה על העגל, ובאמת התפלל עוד בשמים. אבל כשראה שהם רוקדים, הבין שהחטא נכנס לעומק הלב, וצריך זעזוע כדי להוציא אותו.</p>
+      <p>וכשאנחנו נמצאים בי"ז בתמוז וזוכרים את שבירת הלוחות, כדאי לזכור גם את זה: מה גרם לחטא, וכמה כוח יש לחוויה – לרעה, אבל גם לטובה. והשאלה שלנו היא איך משתמשים בכוח הזה לטובה.</p>
+      <p class="bold-para">הקדוש ברוך הוא רוצה קשר ישיר עמנו, בלי שום דבר באמצע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · קשר בלי מתווך</div>
+      <h3 class="story-title">🧭 שלוש דוגמאות לכוחה של חוויה</h3>
+      <p>לפני שנעבור לחינוך, כדאי לסכם את מה שראינו, כי יש כאן חוט אחד שעובר בכל הדוגמאות.</p>
+      <p>הדוגמה הראשונה: בקריעת ים סוף, הגברים רק שרו, והנשים גם רקדו. אחר כך, בחטא העגל ובחטא המרגלים, הגברים נכשלו, והנשים לא. החוויה של הריקוד לפני ה' נכנסה חזק ללבן ושמרה עליהן.</p>
+      <p>הדוגמה השנייה: בחטא העגל עצמו. משה ידע שחטאו, והתפלל עליהם. אבל כשראה שהם רוקדים סביב העגל, הבין שהחטא נכנס ללב, ושבר את הלוחות. גם כאן, החוויה היא שקבעה.</p>
+      <p>הדוגמה השלישית: אצלנו, בבתי הספר. את המשניות שוכחים, ואת הסיום זוכרים שלושים שנה. ובבית, ילדים זוכרים לא רק מה אמרו להם, אלא איך הרגישו את השבת, את החג ואת המצוות.</p>
+      <p>מכאן הלקח של י"ז בתמוז: כשאנחנו זוכרים את שבירת הלוחות, כדאי לזכור גם מה גרם לה, וכמה כוח יש לחוויה הרגשית. היא יכולה להפיל, והיא יכולה לשמור. היום זה לא קל, אבל צריך לחפש הרבה רעיונות איך הופכים את הלימוד והמצוות לחוויה של שמחה.</p>
+      <p class="bold-para">מה שנכנס ללב בחוויה, נשאר – ולכן צריך לדאוג שייכנס ללב דווקא הטוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · חוויה ששומרת על הדור</div>
+      <h3 class="story-title">🛡️ מה ישמור על הילדים?</h3>
+      <p>אנחנו חיים בדור שמתקדם במהירות עצומה. יש המצאות חדשות, מכשירים, ניסיונות לא פשוטים. ואדם שואל את עצמו: מה יעזור לבן שלי לעמוד בכל זה? מה יחזיק אותו?</p>
+      <p>צריך לדעת דבר מדהים: מה שיקבע את עתיד הילדים אינו רק הידיעה השכלית שלהם, אלא בעיקר החוויה הרגשית שהם חוו כלפי המצוות. אפשר לראות את זה אצל נערים שמגיעים לתיכון או לצבא, ופוגשים שם חברה שאינה שומרת תורה ומצוות, ושעושה מה שהיא רוצה. מה יחזיק את הנער מול כל האתגרים?</p>
+      <p>לא רק מה שלימדו אותו, אלא כמה חוויה רגשית עשו לו כלפי המצוות. איך הוא ראה את השבת בבית. איך הוא ראה את השמחה של מצווה. האם ראה שמתלהבים מן המצוות, שרוקדים מדי פעם, שיש אווירה של שמחה. זה מה ששומר על הנער יותר מכל דבר אחר.</p>
+      <p>ויש לכך סיפור מפורסם מאוד, שמביאים בשם הגאון רבי משה פיינשטיין, שממחיש את הדבר בצורה חדה.</p>
+      <p class="bold-para">מה שיקבע את עתיד הילדים אינו רק הידיעה השכלית, אלא בעיקר החוויה הרגשית שחוו במצוות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · חוויה ששומרת על הדור</div>
+      <h3 class="story-title">🍰 שני אבות שפוטרו</h3>
+      <p>בתקופתו של רבי משה פיינשטיין היה קשה מאוד לשמור שבת באמריקה. יום המנוחה שם הוא יום ראשון. יהודי ששמר שבת לא עבד בשבת, וגם ביום ראשון העסק היה סגור. ומי שלא בא לעבוד בשבת, ביום שני קיבל מכתב פיטורים. אנשים פוטרו שוב ושוב, ומשפחות התמודדו בקושי גדול.</p>
+      <p>היו שתי משפחות, זו ליד זו. בשתיהן האבות מסרו נפש על השבת ופוטרו פעם אחר פעם. אבל במשפחה אחת עזבו הילדים בסופו של דבר את דרך התורה, ובשנייה הם המשיכו בה. שאל האב הראשון את רבי משה: למה? גם אני מסרתי נפש!</p>
+      <p>שאל אותו רבי משה: כשקיבלת מכתב פיטורים ובאת הביתה ביום שני, מה אמרת? השיב: אמרתי כמה קשה לשמור מצוות, איזה קורבן, איזה ניסיון קשה, מה לעשות, ה' יעזור. אמר לו רבי משה: הבן שמע זאת וחשב: לאבא יש כוח להקריב. לי אין. בהזדמנות הראשונה עזב.</p>
+      <p>ומה עשה השכן? כל פעם שפוטר, בא הביתה ביום שני, הביא עוגות, ואמר לילדים: אברהם אבינו עמד בעקדה, ואני לא פחות ממנו! תראו איזה ניסיון זכיתי לו! הוא היה כולו מאושר שזכה. והילדים, שראו אור חזק כל כך, נמשכו אחריו. אנשים נמשכים לאור.</p>
+      <p>שני האבות עשו בדיוק אותו מעשה. שניהם מסרו נפש, ושניהם פוטרו. ההבדל היה רק במה שהילדים ראו בעיניים ושמעו באוזניים: האחד העביר להם את תחושת הקושי, והשני את תחושת הזכות. ומה שעובר אל הילדים אינו רק המעשה, אלא הרגש שמלווה אותו.</p>
+      <p class="bold-para">אב שהתלונן על הקושי איבד את ילדיו, ואב ששמח בניסיון העביר להם את אהבתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · חוויה ששומרת על הדור</div>
+      <h3 class="story-title">🏡 שתי ישיבות במושבה</h3>
+      <p>הרב סיפר על ביקור במושבה ותיקה ליד רחובות, מזכרת בתיה, שהוקמה בימי הברון רוטשילד ונקראה על שם אמו. במושבה הזאת היה מאבק עצום. פקידי הברון לחצו על המתיישבים לעבוד בשנת השמיטה, והם סירבו בתוקף, ומסרו נפשם על כך. היו שם מאבקים קשים, ממש עד כדי סכנה.</p>
+      <p>ומה קרה בסוף? בדור השלישי, כך סיפרו במהלך הסיור, כמעט לא נשאר שם אף אחד שומר מצוות. נאבקו ונאבקו, ומה יצא? הרב בדק וחיפש מה הייתה הבעיה. והתברר: הם היו צדיקים, השקיעו בהרבה דברים, אבל בחינוך הילדים לא השקיעו. הם השאירו את המלמד הישן והזקן, שלימד עם מקל ארוך.</p>
+      <p>לעומת זאת הגיעו צעירים שהביאו מורה חדש, צעיר ושמח, שלקח את הילדים לטיולים ולים, ועשה עמם חוויות. והנוער נמשך אוטומטית אחרי מי שהיה שמח וטוב לב. הם השקיעו במסירות נפש, אבל לא חשבו כמה כוח יש לחוויה של הנוער.</p>
+      <p>ברוך ה', היום רבים שם חזרו לאט לאט. אבל הלקח ברור: אפשר למסור נפש על המצוות, ובכל זאת להפסיד את הדור הבא, אם לא משקיעים בשמחת חיים, בלב ובחוויה הרגשית.</p>
+      <p class="bold-para">כשמשקיעים במסירות נפש ולא בשמחת חיים ובחוויה, הנוער עלול להימשך למקום אחר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · חוויה ששומרת על הדור</div>
+      <h3 class="story-title">🕯️ הסליחות שהן אלף שיעורים</h3>
+      <p>ועוד סיפור. פעם אמרה מורה לתלמידות בכיתה: ילדה שהולכת לסליחות ואחר כך מגיעה מאוחר ועייפה לבית הספר, יצא שכרה בהפסדה. עדיף שלא תלך. בערב סיפרה זאת אחת הילדות לאביה, הרב יהודה עדס, ראש ישיבת "כל יעקב", שהיה צדיק גדול.</p>
+      <p>הרב עדס הרים טלפון למורה, ואמר לה בנחת: את צודקת שסליחות אינן חובה לילדות. אבל תשמעי: מה שסליחות עושות לפעמים לילדה, לא יעשו אלף שיעורים. היא באה לסליחות, היא אוהבת את השירה, את המנגינה, וזה נכנס ללב. יש צעירים שלצערנו אינם שומרים שבת, ובכל זאת מגיעים לסליחות, כי זו שירה, זה לב, זה רגש. אל תאמרי לתלמידות כאלה דברים.</p>
+      <p>לא תמיד הולכים לפי חשבונות של מה יותר חשוב. צריך לחשוב הרבה מה מעורר את הלב, כי זה שווה המון.</p>
+      <p>המורה חשבה בצורה הגיונית: שעת שינה, שיעור בבוקר, ריכוז בכיתה. אבל הרב עדס ראה דבר נוסף: את הלב של הילדה. מה שנכנס ללב בגיל צעיר, בלילה של סליחות עם ניגון ותפילה, עשוי ללוות אותה כל החיים.</p>
+      <p class="bold-para">דבר שמעורר את הלב שווה הרבה, גם אם על פי החשבון הוא נראה פחות חשוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · חוויה ששומרת על הדור</div>
+      <h3 class="story-title">😊 שמחה – עבודה גדולה</h3>
+      <p>אומרת הגמרא: "רחמנא ליבא בעי" – הקדוש ברוך הוא רוצה את הלב. כשהלב של האדם מתעורר, זה שווה המון המון. לא רק המעשה נחשב, אלא מה שהמעשה עושה בלב.</p>
+      <p>וכך כתב הרמב"ם: "השמחה שישמח אדם בעשיית המצוה ובאהבת הא-ל שצוה בהן, עבודה גדולה היא". כלומר, השמחה אינה תוספת נחמדה על המצווה, אלא עבודה בפני עצמה, ועבודה גדולה. ומיד ממשיך הרמב"ם ומביא את הפסוק מן הקללות: "תַּחַת אֲשֶׁר לֹא עָבַדְתָּ אֶת ה' אֱלֹקֶיךָ בְּשִׂמְחָה".</p>
+      <p>ובספר אורחות צדיקים מובא, כפי שהביא הרב, שמצווה הנעשית בשמחה שווה פי אלף ממצווה שנעשית בלי שמחה. זה מספר מבהיל. אותו מעשה בדיוק, אותה מצווה, ובכל זאת ההבדל עצום, רק בגלל הלב שבו היא נעשית.</p>
+      <p>ומכאן אפשר להבין גם את משה רבנו ואת הנשים בים. מה שנעשה בשמחה ובהתלהבות, יש לו משקל עצום – לטובה. ולכן, כשהשמחה הזאת הופנתה אל העגל, היה לה משקל עצום גם לרעה. הכוח הוא אותו כוח. השאלה היא רק לאן מכוונים אותו.</p>
+      <p class="bold-para">השמחה במצווה אינה תוספת, אלא עבודה גדולה, והקדוש ברוך הוא רוצה את הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · חוויה ששומרת על הדור</div>
+      <h3 class="story-title">🌾 "תחת אשר לא עבדת"</h3>
+      <p>בפרשת כי תבוא יש תשעים ושמונה קללות, ובאמצען כתוב: "תַּחַת אֲשֶׁר לֹא עָבַדְתָּ אֶת ה' אֱלֹקֶיךָ בְּשִׂמְחָה וּבְטוּב לֵבָב מֵרֹב כֹּל". וכי בגלל שלא עבדו בשמחה באו כל הצרות? זה לא נראה פרופורציונלי.</p>
+      <p>בעל התניא מסביר: ודאי שהקללות באו בגלל עבירות. אבל יש כלל: "עַל כָּל פְּשָׁעִים תְּכַסֶּה אַהֲבָה". אם לאדם יש מצוות שהוא עושה בשמחה עצומה ובהתלהבות, האהבה שהשמחה יוצרת מכסה על הכל, ואי אפשר להעניש אותו. העונש בא כשאין את השמחה הזאת.</p>
+      <p>ויש על כך משל מבדח. מלמד שאל ילד: מה יש מתחת לאל"ף? הילד ענה: קמץ. מתחת לבי"ת? קמץ. מתחת לה"א? הילד שתק. שאל שוב ושוב – והוא שותק. מה קרה? ביידיש נשמעה המילה כמו "חציר", ואביו של הילד הסתיר מתחת לחציר מעדר שגנב. הילד חשב שהמלמד יודע, ולא רצה לגלות.</p>
+      <p>ועל כך אמר מישהו: מה מונח מתחת לכל החטאים? "תַּחַת אֲשֶׁר לֹא עָבַדְתָּ... בְּשִׂמְחָה". אילו עבד האב את ה' בשמחה, גם הילדים היו ממשיכים בדרך התורה. היעדר השמחה הוא מה שמונח מתחת לכל השאר, כמו מה שמסתירים מתחת לשטיח.</p>
+      <p class="bold-para">מה שמונח מתחת לכל החטאים הוא היעדר השמחה בעבודת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · חוויה ששומרת על הדור</div>
+      <h3 class="story-title">🔨 להפוך מצווה לחוויה</h3>
+      <p>ואיך עושים זאת למעשה? צריך מחשבה, וכל פעם רעיונות חדשים: איך עושים מן המצווה לא רק "אני חייב", אלא דבר שעושים בהתלהבות, בידיים, בשמחה.</p>
+      <p>דוגמה: הרב סיפר שלקח את הילדים בבית הספר לבנות סוכה בעצמם. כמו קורס נגרות קטן: איך בונים, איך עושים. הילדים תקעו בפטיש, חיברו, בנו – וזו חוויה שנשארת להם. לא סתם סוכה, אלא סוכה שהם בנו בעצמם.</p>
+      <p>בפסח – אפשר לאפות מצות עם הילדים, שיעשו את המצות בעצמם. בארבעת המינים – אפשר להראות להם איך יש אנשים שהופכים עולמות כדי למצוא אתרוג מהודר, ואכפת להם מכל פרט קטן. כך הילד רואה שהמצווה חשובה ואהובה.</p>
+      <p>והוזכר רב אחד שאמר שהוא אינו מתפלל בבית כנסת שאין בו עזרת נשים. למה? כי איך אפשר שהנשים והבנות לא יבואו בשמחת תורה, ולא יראו את ההתלהבות, את הריקודים, את השמחה של יהודים עם התורה? אי אפשר בלי זה. וכך גם בהלל ובכל מצווה: צריך לחשוב איך עושים אותה בשמחה של מצווה. זה לא קל, אבל זה מה ששומר עלינו ועל הדור הבא.</p>
+      <p class="bold-para">צריך כל הזמן רעיונות חדשים כדי להפוך את המצוות לחוויה של שמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בקו קול תודה של הרב יהודה טאוב · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הלוחות שנשברו","icon":"🪨","color":"#c62b6b","stories":[{"id":1,"title":"\"לך רד\"","icon":"⛰️"},{"id":2,"title":"\"אינו דומה שמיעה לראייה\"","icon":"👀"},{"id":3,"title":"שמירה על העיניים ועל הלב","icon":"📺"}]},{"id":2,"name":"העגל והמחולות","icon":"🐂","color":"#6d28d9","stories":[{"id":4,"title":"\"וירא את העגל ומחולות\"","icon":"🐂"},{"id":5,"title":"השמחה בחטא","icon":"⚠️"}]},{"id":3,"name":"מה שנחרט בלב","icon":"🎉","color":"#e08e00","stories":[{"id":6,"title":"סיום שזוכרים שלושים שנה","icon":"🎉"},{"id":7,"title":"מעט ידיים ומאה עשרים ילדים","icon":"🕺"}]},{"id":4,"name":"הנשים שרקדו בים","icon":"🥁","color":"#1e88b8","stories":[{"id":8,"title":"הפרשה היחידה לנשים","icon":"🥁"},{"id":9,"title":"הנשים שלא נתנו את נזמיהן","icon":"💍"},{"id":10,"title":"הריקוד שהגן עליהן","icon":"🌊"}]},{"id":5,"name":"קשר בלי מתווך","icon":"🔗","color":"#c62b6b","stories":[{"id":11,"title":"מה היה העגל?","icon":"🐂"},{"id":12,"title":"גם בשירים צריך לדייק","icon":"🎶"},{"id":13,"title":"\"לא תעשה לך פסל\"","icon":"🔗"},{"id":14,"title":"שלוש דוגמאות לכוחה של חוויה","icon":"🧭"}]},{"id":6,"name":"חוויה ששומרת על הדור","icon":"🌱","color":"#6d28d9","stories":[{"id":15,"title":"מה ישמור על הילדים?","icon":"🛡️"},{"id":16,"title":"שני אבות שפוטרו","icon":"🍰"},{"id":17,"title":"שתי ישיבות במושבה","icon":"🏡"},{"id":18,"title":"הסליחות שהן אלף שיעורים","icon":"🕯️"},{"id":19,"title":"שמחה – עבודה גדולה","icon":"😊"},{"id":20,"title":"\"תחת אשר לא עבדת\"","icon":"🌾"},{"id":21,"title":"להפוך מצווה לחוויה","icon":"🔨"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
