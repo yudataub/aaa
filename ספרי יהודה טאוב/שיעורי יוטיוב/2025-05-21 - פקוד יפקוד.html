@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 פקוד יפקוד</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 פקוד יפקוד</h1>
+  <p>סימן הגאולה שמסר יוסף לאחיו, הפקידה שלפני הגאולה לפי הרמח"ל, "קול דודי דופק" בדורנו, ואיך גם מחשבות הרע נהפכות לטובה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ פקוד יפקוד" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/KSIv4tOkcgU?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/KSIv4tOkcgU/hqdefault.jpg" alt="פקוד יפקוד" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=KSIv4tOkcgU" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הסימן שנמסר</div>
+      <h3 class="story-title">📖 ספר הגלות והגאולה</h3>
+      <p>עם פרשת שמות מתחיל חומש חדש. הרמב"ן קורא לחומש שמות "ספר הגלות והגאולה". בתחילתו ישראל נמצאים בגלות, ובהמשכו הם נגאלים.</p>
+      <p>והרמח"ל מוסיף יסוד חשוב: כל מה שרוצים ללמוד על הגאולה האחרונה, צריך להסתכל בגאולה הראשונה. כמו שאומרים בקדושה של מוסף: "הֵן גָּאַלְתִּי אֶתְכֶם אַחֲרִית כְּרֵאשִׁית". אתה רוצה לדעת איך תהיה הגאולה, מה יהיו שלביה ופרטיה? פתח את ספר שמות והסתכל היטב.</p>
+      <p>על פי זה, הפרשה אינה רק סיפור על מה שהיה לפני אלפי שנים. היא מפה. מי שמבין איך התחילה הגאולה במצרים, יבין גם איך היא מתחילה בכל דור, ואיך היא נראית בדורנו.</p>
+      <p>השיעור בנוי סביב מילה אחת שחוזרת שוב ושוב בסוף ספר בראשית ובתחילת ספר שמות: "פקוד". נראה מה טמון בה, ואיך היא מלמדת על הדרך שבה הקדוש ברוך הוא מביא את הגאולה: לא בבת אחת, אלא בשלבים.</p>
+      <p class="bold-para">מה שהיה בגאולת מצרים הוא הדגם לגאולה האחרונה, ולכן ספר שמות מלמד גם על ימינו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הסימן שנמסר</div>
+      <h3 class="story-title">🔑 הסיסמה של הגאולה</h3>
+      <p>בסוף ספר בראשית אומר יוסף לאחיו: "אָנֹכִי מֵת, וֵאלֹקִים פָּקֹד יִפְקֹד אֶתְכֶם וְהֶעֱלָה אֶתְכֶם מִן הָאָרֶץ הַזֹּאת אֶל הָאָרֶץ אֲשֶׁר נִשְׁבַּע לְאַבְרָהָם לְיִצְחָק וּלְיַעֲקֹב". ומיד אחר כך הוא משביע את בני ישראל: "פָּקֹד יִפְקֹד אֱלֹקִים אֶתְכֶם, וְהַעֲלִתֶם אֶת עַצְמֹתַי מִזֶּה".</p>
+      <p>יש כאן מסירה של סימן. יעקב מסר ליוסף, ויוסף מוסר לאחים. מה תהיה סיסמת הגאולה? "פקוד יפקוד", בכפל לשון. הסימן הזה נמסר מדור לדור, כדי שכשיבוא הגואל, ידעו לזהות אותו.</p>
+      <p>ובפרשת שמות הסיסמה חוזרת. הקדוש ברוך הוא אומר למשה בסנה: "לֵךְ וְאָסַפְתָּ אֶת זִקְנֵי יִשְׂרָאֵל וְאָמַרְתָּ אֲלֵהֶם, ה' אֱלֹקֵי אֲבֹתֵיכֶם נִרְאָה אֵלַי... לֵאמֹר, פָּקֹד פָּקַדְתִּי אֶתְכֶם וְאֶת הֶעָשׂוּי לָכֶם בְּמִצְרָיִם".</p>
+      <p>ורש"י מסביר: "וְשָׁמְעוּ לְקֹלֶךָ" – כיוון שתאמר להם לשון זה, ישמעו לקולך, שכבר סימן זה מסור בידם מיעקב ומיוסף, שבלשון זה הם נגאלים. כשמשה בא ואומר "פקוד פקדתי", הזקנים מזהים את הסימן ומאמינים.</p>
+      <p class="bold-para">יוסף מסר לאחיו את סימן הגאולה: "פקוד יפקוד".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · הסימן שנמסר</div>
+      <h3 class="story-title">❓ שתי שאלות</h3>
+      <p>כאן נשאלת שאלה מפורסמת, שכמעט כל ילד שלומד חומש שואל אותה, והרמב"ן והמהר"ל עוסקים בה: אם הסימן מסור בידם, הרי גם משה יכול היה לדעת אותו, כמו שכולם ידעו. מה הראיה בכך שהוא אומר "פקוד פקדתי"? כל אחד יכול לבוא ולומר את הסיסמה.</p>
+      <p>ויש עוד דבר שצריך לשים אליו לב. מי יכול למצוא את ההבדל? אצל יוסף כתוב "פקוד יפקוד", בלשון עתיד. אצל משה כתוב "פקוד פקדתי", בלשון עבר. כבר פקדתי. ומה היה? משה עומד בסנה. ישראל עדיין עובדים בפרך. לא קרה שום דבר. אין ישועה, אין יציאה, אין סימן. מה פירוש "פקדתי"?</p>
+      <p>וגם בסוף הפרשה, כשמשה ואהרן מדברים אל העם, כתוב: "וַיִּשְׁמְעוּ כִּי פָקַד ה' אֶת בְּנֵי יִשְׂרָאֵל וְכִי רָאָה אֶת עָנְיָם". לא "יפקוד", אלא "פקד" – כבר פקד.</p>
+      <p>אם כן, "פקידה" אינה בדיוק מה שאנחנו חושבים. היא אינה הגאולה עצמה. כדי להבין מה היא, פונה השיעור אל הרמח"ל.</p>
+      <p class="bold-para">אם הסימן היה ידוע לכולם, מה הראיה בו? ומדוע נאמר "פקדתי" בלשון עבר?</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי פקידה</div>
+      <h3 class="story-title">🌅 שני זמנים לגאולה</h3>
+      <p>לרמח"ל יש מאמר על הגאולה, מאמר עמוק אבל מעניין מאוד, ובו הוא מבאר את סודות הגאולה ואת סדרה. וזה תוכן דבריו: דע כי לגאולה נמצאו שני זמנים, ומצאנום בגאולת מצרים ובגאולת בבל, ונודע לנו שכן יהיה בגאולה העתידה.</p>
+      <p>הזמן הראשון נקרא פקידה, והשני נקרא זכירה. ועל שני הזמנים האלה רמוזים פסוקים רבים. "אַל תִּשְׂמְחִי אֹיַבְתִּי לִי, כִּי נָפַלְתִּי קָמְתִּי" – זו הפקידה. "כִּי אֵשֵׁב בַּחֹשֶׁךְ ה' אוֹר לִי" – זו הזכירה. "הִתְנַעֲרִי מֵעָפָר קוּמִי" – פקידה. וכן "קוּמִי אוֹרִי כִּי בָא אוֹרֵךְ" – פקידה, "וּכְבוֹד ה' עָלַיִךְ זָרָח" – זכירה.</p>
+      <p>הרמח"ל כותב שיש בזמנים האלה סודות גדולים מאוד, ולכן אינו מפרש הרבה, אלא רק מה שאפשר להבין. גם אנחנו לא נכנס לעומק הסודות. אבל היסוד פשוט וחשוב: הגאולה אינה רגע אחד. יש לה שלב של התחלה, ושלב של השלמה.</p>
+      <p>ומכאן עולה שאלה מעשית לכל דור: אם הגאולה האחרונה תהיה כמו הראשונה, צריך לדעת היכן הייתה הפקידה במצרים, היכן הייתה בבבל, והיכן היא בדורנו.</p>
+      <p class="bold-para">הרמח"ל מלמד שלגאולה יש שני זמנים: פקידה וזכירה, וכך היה במצרים, בבבל, וכך יהיה בגאולה העתידה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי פקידה</div>
+      <h3 class="story-title">🕯️ תיקון שמתחיל</h3>
+      <p>הרמח"ל ממשיך ומסביר: זמן הפקידה היה במצרים, והוא שנאמר "וַיַּרְא אֱלֹקִים אֶת בְּנֵי יִשְׂרָאֵל וַיֵּדַע אֱלֹקִים". הקדוש ברוך הוא גילה, כביכול, שהוא זוכר את ישראל, שהוא רואה מה עובר עליהם. זו הפקידה.</p>
+      <p>והוא מוסיף: דע שבפקידה מתתקן רק הקלקול הראשון, ולא לגמרי. שאר הקלקולים אינם מתתקנים עד הזכירה. אל תחשוב שבפקידה הכל כבר מתוקן. רק משהו אחד מתחיל להתתקן. ומבאר שכאשר עולה הרצון לפני הקדוש ברוך הוא לגאול את השכינה ואת ישראל, יוצא כוח מלפניו ומתחיל לרדת ממדרגה למדרגה.</p>
+      <p>כלומר: עם ישראל נמצא בגלות. שום דבר אינו נראה. הסתר פנים מוחלט. ופתאום מתחיל איזה אור קטן, איזו התעוררות. ישראל מתחילים לראות שלבורא עולם אכפת מהם. זו הפקידה.</p>
+      <p>עכשיו מובן מה אמר משה. מאתיים ועשר שנים ישבו ישראל במצרים, וכלום. חושך מוחלט. ופתאום מגיע שליח ואומר: הקדוש ברוך הוא רוצה לגאול אתכם. זה כבר לא "יפקוד". זה "פקדתי". עצם ההתגלות הזאת היא כבר הפקידה, עוד לפני שיצאו.</p>
+      <p class="bold-para">פקידה היא תחילת ההתעוררות: הקדוש ברוך הוא מגלה שהוא זוכר את עמו, עוד לפני שהגאולה באה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי פקידה</div>
+      <h3 class="story-title">🌸 בראש השנה נפקדה שרה</h3>
+      <p>הדוגמה הטובה ביותר למשמעות המילה מצויה בגמרא במסכת ראש השנה: בראש השנה נפקדה שרה, רחל וחנה. לכן קוראים בראש השנה "וַה' פָּקַד אֶת שָׂרָה". אבל מתי נולד יצחק? בפסח. אז מה פירוש שנפקדה שרה בראש השנה?</p>
+      <p>רש"י מסביר: בא זכרונן לפני הקדוש ברוך הוא, ונגזר עליהן הריון. זו פקידה. הקדוש ברוך הוא זכר אותן, והחליט לעשות להן טובה. הטובה עצמה באה אחר כך. אבל ברגע הפקידה כבר נקבע שהיא תבוא.</p>
+      <p>וזה הסוד שמסר יוסף לאחים. רבים חשבו שהגאולה תבוא מיד, שבורא עולם יגאל אותם ברגע אחד. בא יוסף ואמר להם: דעו לכם, הגאולה תבוא בשלבים. בשלב הראשון "פקוד יפקוד": יהיה סימן שהקדוש ברוך הוא זוכר אתכם. עוד לא תהיה גאולה. תהיה התעוררות, ואחריה אולי שקט. ורק לאחר מכן תבוא הגאולה.</p>
+      <p>ושימו לב: לא כל אחד יכול היה לומר את זה. מי שבא ואומר "פקדתי", וגם אומר שהגאולה לא תבוא מיד, מסתכן. אפשר לתפוס אותו: בוא נחכה ונראה מה יקרה. סימן כזה אינו נאמר סתם.</p>
+      <p class="bold-para">פקידה פירושה שהאדם עולה לזיכרון לפני ה' ונגזרת עליו טובה, גם אם היא תתממש רק אחר כך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מהי פקידה</div>
+      <h3 class="story-title">✌️ למה פעמיים</h3>
+      <p>נשאלת עוד שאלה: למה הלשון כפולה? "פקוד יפקוד", "פקוד פקדתי". כולם שואלים את זה. לפי דרכו של הרמח"ל אפשר לומר שבגאולת מצרים היו שתי פקידות.</p>
+      <p>הפקידה הראשונה הייתה כשהקדוש ברוך הוא בא ואמר להם, על ידי משה, שהוא זוכר אותם. והפקידה השנייה הייתה בראש השנה, כשבטלה העבודה מאבותינו במצרים, כמו שאמרו חז"ל. מה היה מאותו ראש השנה ועד ניסן? מצב ביניים. לא גלות ולא גאולה. השעבוד פסק, אבל הגאולה עדיין לא באה. זו הייתה הפקידה השנייה.</p>
+      <p>רואים כאן עיקרון: הגאולה מתקדמת. יש התחלה, ועוד התחלה, ועוד שלב. מי שמחכה לרגע אחד שבו הכל משתנה, עלול שלא לראות את השלבים שכבר קורים לנגד עיניו.</p>
+      <p>ומכאן קופץ השיעור שלושת אלפים שנה קדימה, אל מאמר מפורסם שכתב הרב סולובייצ'יק, ובו הוא מונה את הדפיקות של הדוד על דלת כנסת ישראל בדורנו.</p>
+      <p class="bold-para">הכפל "פקוד יפקוד" רומז לשתי פקידות: כשנגלה ה' למשה, וכשבטלה העבודה בראש השנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קול דודי דופק</div>
+      <h3 class="story-title">🚪 הדוד דופק בלילה</h3>
+      <p>הרמח"ל עצמו כותב שעל זה נאמר בשיר השירים "קוֹל דּוֹדִי דוֹפֵק". הפקידה היא דפיקה על הדלת. והרב סולובייצ'יק, באמריקה, קרא למאמרו הידוע בשם הזה: "קול דודי דופק". הוא לא בחר בשם הזה סתם. כמו שאמר הרמח"ל, הגאולה הראשונה והאחרונה בנויות באותו סדר. הגאולה אינה אמורה לבוא בבת אחת. יש פקידות בהתחלה, התעוררויות, ועוד אחת ועוד אחת.</p>
+      <p>הרב סולובייצ'יק מתאר את התקופה שאחרי השואה כלילה של הסתר פנים מוחלט. כנסת ישראל, כמו הרעיה בשיר השירים, שוכבת מעונה ונדכאה, אחרי כל מה שעבר עליה. ופתאום, בתוך החושך, מופיע הדוד ומתחיל לדפוק על פתח האוהל.</p>
+      <p>בלשונו, לפחות שש דפיקות אפשר למנות. הרב העיר בשיעור שאולי זה מספר רב, שהרי בגאולת מצרים מנינו שתי פקידות. אבל העיקר הוא העיקרון: הקדוש ברוך הוא דופק, שוב ושוב, ומבקש שיפתחו לו.</p>
+      <p>בשיעור עבר הרב על הדפיקות אחת אחת. נביא אותן כאן כפי שהובאו, כלימוד על דרך ההשגחה, ולא כעיסוק בשאלות של יום יום.</p>
+      <p class="bold-para">הרב סולובייצ'יק מתאר את דורו כלילה של הסתר פנים, שבו הדוד מתחיל לדפוק על הדלת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קול דודי דופק</div>
+      <h3 class="story-title">🏛️ הדפיקה הראשונה: הכרעת העמים</h3>
+      <p>הדפיקה הראשונה נשמעה, לדבריו, בזירה המדינית. איש לא יכחיש שקום המדינה במובן המדיני היה התרחשות כמעט על טבעית. באותו זמן היו מעצמות המזרח והמערב חלוקות כמעט בכל דבר. והנה בעניין הזה, אולי ההצעה היחידה מסוגה, הסכימו ביניהן.</p>
+      <p>והוא כותב משפט מפליא: נוטה הוא להאמין שארגון האומות המאוחדות נוצר במיוחד לשם כך, כדי למלא את השליחות שהטילה עליו ההשגחה. מי שהסתכל במה שקרה באותה ישיבה בעין רוחנית, הרגיש שהיושב ראש האמיתי, שניהל את הדיונים, היה הדוד, שדפק בפטישו על השולחן.</p>
+      <p>יש בזה סוד, למה דווקא העמים צריכים להחליט. גם בגלות השנייה, בבבל, התחילה ההתעוררות על ידי מלך מן האומות: כורש קרא לישראל לעלות. וגם כאן הקדוש ברוך הוא סובב שהעולם כולו יתכנס למקום אחד ויקרא לישראל לחזור לארצם.</p>
+      <p>ומביא הרב סולובייצ'יק את המדרש על "בַּלַּיְלָה הַהוּא נָדְדָה שְׁנַת הַמֶּלֶךְ": שנת מלכו של עולם. אילו היה זה רק אחשוורוש שלא ישן, לא היה הדבר חשוב כלל. אבל מאחורי נדודי השינה של מלך בשר ודם עמד מלכו של עולם, ומשם נולדה הישועה. זו פקידה.</p>
+      <p class="bold-para">ההחלטה של אומות העולם על הקמת מדינה לישראל נראתה לרב סולובייצ'יק כדפיקה מן השמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קול דודי דופק</div>
+      <h3 class="story-title">🛡️ הדפיקה השנייה: שדה הקרב</h3>
+      <p>הדפיקה השנייה נשמעה בשדה הקרב. כוח קטן עמד מול צבאות גדולים ממנו בהרבה, ונעשה נס של רבים ביד מעטים. ופלא גדול עוד יותר: לדבריו, הקדוש ברוך הוא הקשה את לב שכני ישראל, שיצאו למלחמה נגד המדינה הקטנה.</p>
+      <p>למה זה פלא? כי אילו הסכימו לתוכנית החלוקה ולא יצאו למלחמה, הייתה המדינה נשארת עד היום בגבולות צרים מאוד: בלי ירושלים, בלי חלקים גדולים מן הגליל והנגב. מי שראה את המפה של אז, יודע כמה צר היה השטח.</p>
+      <p>וכאן משווה הרב סולובייצ'יק לגאולת מצרים. אילו פרעה היה נענה מיד לבקשת משה ומשלח את ישראל לשלושה ימים, היה משה צריך לעמוד בדיבורו, וישראל היו חוזרים אחרי שלושה ימים. אבל פרעה הכביד את לבו ולא שמע, והקדוש ברוך הוא הוציא את ישראל ביד חזקה ובזרוע נטויה. ממילא פקע תוקפה של אותה הצעה. הסכם מחייב רק כששני הצדדים עומדים בו.</p>
+      <p>כלומר: מה שנראה כרע, ההתנגדות והמלחמה, הוא עצמו מה שהביא את הישועה הגדולה יותר. ליסוד הזה עוד נחזור בסוף השיעור.</p>
+      <p class="bold-para">גם המלחמה שנכפתה על ישראל הייתה לדברי הרב סולובייצ'יק דפיקה, כמו הקשיית לב פרעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קול דודי דופק</div>
+      <h3 class="story-title">🌾 הדפיקה השלישית: לב התאולוגיה</h3>
+      <p>הדפיקה השלישית, וייתכן שהיא החזקה ביותר, נשמעה בתחום האמונה. במשך דורות רבים טענו תאולוגים של דת אחרת שהקדוש ברוך הוא לקח מישראל את זכויותיהם בארץ, ושכל ההבטחות על ציון וירושלים כבר אינן מכוונות אליהם. והנה, בקום עם ישראל בארצו, התבדתה הטענה הזאת בפומבי, לעיני כל.</p>
+      <p>הרב סיפר מעשה שקרא בספר של הרב שמואל אליהו. בשנים שלפני מלחמת ששת הימים ביקר בארץ ראש הכנסייה הקתולית. הוא לא הכיר במדינה, ונמנע מכל מחווה של הכרה. באחד הימים עמד על הר גבוה וצפה על הארץ, וראה שדות ירוקים ופורחים לאורך ולרוחב.</p>
+      <p>הוא שאל את מי שליווה אותו: של מי כל השדות האלה? ענה לו: של היהודים. אמר: אם כך, חייבים לומר שאלוקים אוהב אותם. איך ייתכן שהכל פורח כל כך?</p>
+      <p>ועל זה, אמר הרב, נאמר במזמור "לַמְנַצֵּחַ בִּנְגִינֹת", הידוע כמזמור המנורה: "יוֹדוּךָ עַמִּים אֱלֹקִים, יוֹדוּךָ עַמִּים כֻּלָּם; אֶרֶץ נָתְנָה יְבוּלָהּ". כשהעמים יראו את הארץ נותנת את יבולה, לא תהיה להם ברירה. הם יראו בחוש שהקדוש ברוך הוא אוהב את עמו.</p>
+      <p class="bold-para">עצם קיומו של עם ישראל בארצו הפריך את הטענה שהקדוש ברוך הוא עזב את עמו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קול דודי דופק</div>
+      <h3 class="story-title">💓 הדפיקה הרביעית: לבבות הנבוכים</h3>
+      <p>הדפיקה הרביעית, לדברי הרב סולובייצ'יק, נשמעה בלבבות של הנוער הנבוך. תקופת הסתר הפנים בשנות הארבעים הביאה לבלבול גדול. הייאוש גבר, ורבים ביקשו לברוח מן היהדות, לטשטש את זהותם ולהיטמע. היה נדמה שאין לזה עצירה.</p>
+      <p>ופתאום התחיל הדוד לדפוק על דלתות הלבבות הנבוכים, וקום המדינה עצר, לפחות במידה מסוימת, את תהליך הבריחה. רבים שהתרחקו נקשרו שוב בקשרי רגש לעמם. יהודים רבים בחוץ לארץ, גם כאלה שאינם שומרי מצוות, דואגים לשלומה של הארץ בכל משבר.</p>
+      <p>והוא מוסיף נקודה עמוקה: סימן טוב הוא ליהודי שאינו יכול להתעלם מזהותו, ושהוא נאלץ לענות תמיד על השאלה "מי אתה". לכל עבר שהוא פונה, ברדיו, בעיתון, בשיחות, הוא שומע את השם "ישראל". זה מזכיר לו שאי אפשר לברוח מכנסת ישראל. וכשיהודי מתחיל לחשוב ולהתבונן, אי אפשר לדעת לאן יובילו אותו מחשבותיו.</p>
+      <p>הרב העיר שיש מי שעדיין אינם רואים את היד הזאת. אבל עצם ההתעוררות, שאדם מרגיש גאווה להיות יהודי ואינו מתבייש בכך, היא עצמה פקידה.</p>
+      <p class="bold-para">קום המדינה עצר את תהליך הבריחה מן היהדות, והחזיר לרבים את הקשר לעמם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · קול דודי דופק</div>
+      <h3 class="story-title">🏠 הדפיקה החמישית והשישית</h3>
+      <p>הדפיקה החמישית, ואולי החשובה ביותר: לראשונה בתולדות הגלות, כך כתב, הפתיעה ההשגחה את מי שתמיד ביקשו להרע לישראל, והתברר שדם יהודי אינו הפקר. הרב סולובייצ'יק מבסס זאת על התורה: התורה מלמדת שחובתו הקדושה של אדם היא להגן על עצמו, כמו בדין הבא במחתרת. ושני הגיבורים הגדולים, אברהם ומשה, אחזו בחרב כדי להגן על אחיהם: אברהם רדף אחר המלכים להציל את לוט, ומשה הכה את המצרי שהכה איש עברי.</p>
+      <p>והוא מזכיר שגם במצרים רצה הקדוש ברוך הוא להראות שיש מחיר למי שפוגע בילדי ישראל: פרעה גזר על הבנים להשליכם ליאור, ונענש במים, בים סוף. הרב קיצר כאן, והשאיר את שאר הדברים בצד.</p>
+      <p>והדפיקה השישית נשמעה בפתיחת שערי הארץ. יהודי שנמלט מארץ אויב יודע עכשיו שיש מקום שבו ימצא מקלט בטוח, בארץ אבותיו. במשך דורות נדדו גולים מארץ לארץ בלי למצוא בית, ועכשיו יש לאן לכוון את הפנים.</p>
+      <p>סיכום הדברים: שש דפיקות של הדוד על הדלת. ולפי הרמח"ל, אלה הן בדיוק פקידות: סימנים שהקדוש ברוך הוא זוכר את עמו, עוד לפני הזכירה השלמה.</p>
+      <p class="bold-para">דם יהודי אינו עוד הפקר, ולכל יהודי נרדף יש עתה בית לשוב אליו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבות מחשבות בלב איש</div>
+      <h3 class="story-title">🔄 "ועצת ה' היא תקום"</h3>
+      <p>ומכאן עובר השיעור ליסוד שהופיע כבר בדפיקה השנייה: "רַבּוֹת מַחֲשָׁבוֹת בְּלֶב אִישׁ, וַעֲצַת ה' הִיא תָקוּם". שואלים המפרשים: מה חידש הפסוק? שאדם חושב כך, והקדוש ברוך הוא חושב אחרת, ובורא עולם מנצח? זה ברור.</p>
+      <p>אלא החידוש הוא כזה: רבות המחשבות שבלב האדם, איך להרוס את עצת ה', ובסוף עצת ה' תקום. ואיך? על ידי המחשבות הרעות של אותו אדם עצמו. התוכנית נגד ישראל היא עצמה הכלי שדרכו מתקיימת התוכנית של הקדוש ברוך הוא.</p>
+      <p>וזה מתחיל כבר בפרשה שלנו. פרעה גוזר: "כָּל הַבֵּן הַיִּלּוֹד הַיְאֹרָה תַּשְׁלִיכֻהוּ". מה גרמה הגזירה הזאת? בגללה שמה יוכבד את משה בתיבה על שפת היאור. ובגללה מצאה אותו בת פרעה ולקחה אותו לביתה. משה רבנו גדל בבית פרעה, מכוח הגזירה שנועדה להרוג אותו.</p>
+      <p>ולא זו בלבד. פרעה ביקש להשמיד את ישראל במים, ובסוף נענשו המצרים במים. מה שתכנן לישראל, הוא שבא עליו.</p>
+      <p class="bold-para">מחשבות הרע שבלב האדם הן עצמן הכלי שבו מתקיימת עצת ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבות מחשבות בלב איש</div>
+      <h3 class="story-title">👑 מנהיג שגדל בבית המלך</h3>
+      <p>אבן עזרא אומר דבר נפלא: אילו גדל משה רבנו כמו כל יהודי, בבית של עבדים, ועבד במצרים כמו כולם, לא היה יכול להיות הגואל. למה? הגואל צריך לעמוד מול פרעה ולהודיע לו שעכשיו יוצאים. הוא צריך להוציא את כל העם, להוביל אותו ולצוות עליו.</p>
+      <p>אדם שגדל במנטליות של עבד לא יכול יום אחד להפוך למושל. מנהיג אינו יכול להיות קטן ומסכן. הוא צריך לדעת לומר לעם: קדימה, זוזו. ובחטא העגל משה צריך היה לעמוד ולצוות על בני לוי לקחת חרב. אדם שגדל כעבד לא יוכל לעשות זאת.</p>
+      <p>מה עשה הקדוש ברוך הוא? שם את משה בבית פרעה. שם למד מה פירוש שמה שאתה אומר, עושים. שם גדל כבן מלכים. ונמצא שמי שגידל את מנהיג ישראל היה פרעה עצמו, וגזירת פרעה היא שגילתה את המנהיג.</p>
+      <p>זו דוגמה מוחשית ל"רבות מחשבות בלב איש": אין צורך שהרע ייעלם כדי שהטוב יבוא. הקדוש ברוך הוא בונה את הטוב מתוך הרע עצמו.</p>
+      <p class="bold-para">אבן עזרא מלמד שמשה היה צריך לגדול בבית המלוכה, כדי שתהיה לו נפש של מנהיג ולא של עבד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבות מחשבות בלב איש</div>
+      <h3 class="story-title">🌳 העץ של המן</h3>
+      <p>וכך במגילת אסתר. יום אחד נופל להמן רעיון בראש: להרוג את מרדכי. הוא מכין עץ גבוה חמישים אמה, כדי שכולם יראו. ומה קורה בסוף? אומרים למלך: הנה העץ אשר עשה המן למרדכי, עומד בבית המן. "וַיֹּאמֶר הַמֶּלֶךְ תְּלֻהוּ עָלָיו".</p>
+      <p>מי הרג את המן? המחשבה שלו עצמו. התוכנית להרוג את מרדכי היא היא שהביאה את מפלתו. לא היה צריך דבר חיצוני. הרע נפל לתוך הבור שחפר.</p>
+      <p>וכך, לפי דברי הרב סולובייצ'יק שהובאו בשיעור, גם בדורנו: דווקא המלחמות שנכפו על ישראל הן שהביאו לכך שהארץ שבידיו גדולה בהרבה ממה שהוצע לו. לא למרות ההתנגדות, אלא בגללה. הרב הוסיף שבזמן כתיבת המאמר עוד לא היה הדבר בשלמותו, ואילו ראה הרב סולובייצ'יק את מלחמת ששת הימים, היה אומר זאת ביתר שאת: הכותל, מערת המכפלה ושאר המקומות הקדושים חזרו לעם ישראל בעקבות מלחמה שלא ישראל ביקשה.</p>
+      <p>המסקנה המעשית אינה פוליטית אלא אמונית: מי שמביט על ההיסטוריה צריך ללמוד לא לפחד מן השנאה. היא אינה מנצחת את עצת ה'. היא משמשת אותה.</p>
+      <p class="bold-para">המן הכין את העץ שעליו נתלה בעצמו, וזה דרכו של עולם: הרע מביא את מפלתו בידיו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · רבות מחשבות בלב איש</div>
+      <h3 class="story-title">✨ "ביום ההוא יהיה ה' אחד"</h3>
+      <p>הרמח"ל מסביר שיש בזה עניין עצום. למה הקדוש ברוך הוא עושה דווקא כך? הרי יכול היה פשוט להביא את הטוב ולבטל את הרע. אלא שהקדוש ברוך הוא רוצה לא רק להיטיב לעם ישראל. הוא רוצה להראות להם שגם הרע עצמו נהפך לטוב, ושהרע עצמו הוא סולם לטוב.</p>
+      <p>זהו פירוש "בַּיּוֹם הַהוּא יִהְיֶה ה' אֶחָד וּשְׁמוֹ אֶחָד". לא שיש שני כוחות, רע וטוב, והטוב מנצח. אלא שיתגלה שגם הרע לא היה אלא חלק מן הטוב. זו תכלית הבריאה: להראות לישראל שהכל אחד.</p>
+      <p>ראינו כמה דוגמאות. פרעה גזר להשליך את הבנים ליאור, ומשם צמח משה, מושיען של ישראל. המן ביקש לתלות את מרדכי, ונתלה הוא עצמו. וההתנגדות לשיבת ישראל לארצם הביאה, בפועל, להרחבת הארץ שבידיהם.</p>
+      <p>ומכאן לכל אחד מאיתנו. כשאדם רואה מישהו ששונא אותו ומבקש להרע לו, הוא יכול לומר בלבו: אל דאגה. השנאה שלך לא תצליח להזיק. היא עצמה עוד תביא טוב. כך מתגלה "פקוד יפקוד" בכל דור: סימנים קטנים של זיכרון, דפיקות על הדלת, עד שתבוא הזכירה השלמה, במהרה בימינו.</p>
+      <p class="bold-para">תכלית הבריאה היא שיתגלה שגם הרע עצמו נהפך לטוב, ובזה מתגלה אחדות ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/KSIv4tOkcgU · 2025-05-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"הסימן שנמסר","icon":"🔑","color":"#c62b6b","stories":[{"id":1,"title":"ספר הגלות והגאולה","icon":"📖"},{"id":2,"title":"הסיסמה של הגאולה","icon":"🔑"},{"id":3,"title":"שתי שאלות","icon":"❓"}]},{"id":2,"name":"מהי פקידה","icon":"🌅","color":"#6d28d9","stories":[{"id":4,"title":"שני זמנים לגאולה","icon":"🌅"},{"id":5,"title":"תיקון שמתחיל","icon":"🕯️"},{"id":6,"title":"בראש השנה נפקדה שרה","icon":"🌸"},{"id":7,"title":"למה פעמיים","icon":"✌️"}]},{"id":3,"name":"קול דודי דופק","icon":"🚪","color":"#e08e00","stories":[{"id":8,"title":"הדוד דופק בלילה","icon":"🚪"},{"id":9,"title":"הדפיקה הראשונה: הכרעת העמים","icon":"🏛️"},{"id":10,"title":"הדפיקה השנייה: שדה הקרב","icon":"🛡️"},{"id":11,"title":"הדפיקה השלישית: לב התאולוגיה","icon":"🌾"},{"id":12,"title":"הדפיקה הרביעית: לבבות הנבוכים","icon":"💓"},{"id":13,"title":"הדפיקה החמישית והשישית","icon":"🏠"}]},{"id":4,"name":"רבות מחשבות בלב איש","icon":"🔄","color":"#1e88b8","stories":[{"id":14,"title":"\"ועצת ה' היא תקום\"","icon":"🔄"},{"id":15,"title":"מנהיג שגדל בבית המלך","icon":"👑"},{"id":16,"title":"העץ של המן","icon":"🌳"},{"id":17,"title":"\"ביום ההוא יהיה ה' אחד\"","icon":"✨"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
