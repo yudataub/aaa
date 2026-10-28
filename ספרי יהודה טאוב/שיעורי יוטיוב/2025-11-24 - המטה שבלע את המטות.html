@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 המטה שבלע את המטות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 המטה שבלע את המטות</h1>
+  <p>"נתתיך אלוקים לפרעה", למה הוקשה לב פרעה, "צבאותי", התנין מול החרטומים – ופרעה שהשכים אל היאור; שיעור כיתה בשמות פרק ז</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ המטה שבלע את המטות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/ZsIqzDTJ3TM?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/ZsIqzDTJ3TM/hqdefault.jpg" alt="המטה שבלע את המטות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=ZsIqzDTJ3TM" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השליחות מתחדשת</div>
+      <h3 class="story-title">👑 "נְתַתִּיךָ אֱלֹקִים לְפַרְעֹה"</h3>
+      <p>פרק ז' נפתח בדברי ה' למשה: "רְאֵה נְתַתִּיךָ אֱלֹקִים לְפַרְעֹה, וְאַהֲרֹן אָחִיךָ יִהְיֶה נְבִיאֶךָ".</p>
+      <p>מה פירוש? אומר ה' למשה: אתה עכשיו הולך להיות כמו "אלוקים" של פרעה. אתה תחליט מה יקרה לו. אתה תביא עליו את המכות, ואתה תסיר אותן. כלפי פרעה, אתה תהיה כמו השליט שמעליו.</p>
+      <p>ואהרן אחיך? הוא יהיה הנביא שלך. אתה תגיד לו, והוא ישמיע לכולם. כי משה, כמו שלמדנו, היה כבד פה, ואהרן הוא זה שידבר. "אַתָּה תְדַבֵּר אֵת כָּל אֲשֶׁר אֲצַוֶּךָּ, וְאַהֲרֹן אָחִיךָ יְדַבֵּר אֶל פַּרְעֹה, וְשִׁלַּח אֶת בְּנֵי יִשְׂרָאֵל מֵאַרְצוֹ".</p>
+      <p>זו תמונה מפליאה. פרעה חושב שהוא אל, שהוא שולט בכל. והנה ה' אומר: מי שישלוט בפרעה הוא דווקא משה, הרועה הצנוע, כבד הפה. כך ה' מראה, כבר בתחילת הפרק, שהכוח אינו בידי מי שמתגאה, אלא בידי מי שה' שולח.</p>
+      <p>והרב שאל את הכיתה: מי יכול לסכם בשלוש מילים מה ה' אמר כאן למשה? והתלמידים ניסו: משה ילך לפרעה, יחליט מה יקרה לו, פרעה לא יסכים, ולכן ה' יכה אותו במכות – עד שכולם יראו שיש אלוקים בעולם, שיש מי ששולט על הכל.</p>
+      <p class="bold-para">ה' מעמיד את משה כמי ששולט בגורלו של פרעה, ואת אהרן כנביאו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לב קשה ואותות רבים</div>
+      <h3 class="story-title">🪨 "וַאֲנִי אַקְשֶׁה אֶת לֵב פַּרְעֹה"</h3>
+      <p>אבל ה' מודיע מראש: זה לא יהיה פשוט. "וַאֲנִי אַקְשֶׁה אֶת לֵב פַּרְעֹה, וְהִרְבֵּיתִי אֶת אֹתֹתַי וְאֶת מוֹפְתַי בְּאֶרֶץ מִצְרָיִם". מה זה "אקשה"? התלמידים ידעו: הלב שלו יהיה עקשן. כמה שמשה ידבר איתו, הוא לא יסכים.</p>
+      <p>ולמה? "והרביתי את אותותי". בגלל שפרעה לא יסכים, ה' יעשה הרבה אותות, הרבה מופתים. אילו פרעה היה מסכים מיד, לא היו עשר מכות. העקשנות שלו היא שמביאה את כל הניסים.</p>
+      <p>בחידון שאחרי השיעור הופיעה בדיוק השאלה הזאת: למה אמר ה' "אני אקשה את לב פרעה"? רוב התלמידים בחרו בתשובה "כי ה' רוצה שפרעה יסבול". והרב אמר: לא! התשובה הנכונה היא: כדי שיהיו הרבה מופתים במצרים.</p>
+      <p>זה הבדל חשוב. ה' אינו נוקם לשם הנקמה. הוא רוצה שהעולם כולו יראה ויידע. הקשיית הלב היא הדרך שבה הניסים מתרבים, והאמת מתגלה.</p>
+      <p>ועוד דבר: הקשיית הלב באה רק אחרי שפרעה עצמו בחר שוב ושוב לסרב. הוא לא רצה באמת לשלח את ישראל, וגם כשהסכים, הסכים רק מפחד המכות. ה' רק חיזק את מה שכבר היה בלבו, כדי שהאמת תתגלה עד הסוף.</p>
+      <p class="bold-para">ה' יקשה את לב פרעה כדי להרבות את האותות והמופתים במצרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לב קשה ואותות רבים</div>
+      <h3 class="story-title">🌍 "וְיָדְעוּ מִצְרַיִם כִּי אֲנִי ה'"</h3>
+      <p>"וְלֹא יִשְׁמַע אֲלֵכֶם פַּרְעֹה, וְנָתַתִּי אֶת יָדִי בְּמִצְרָיִם, וְהוֹצֵאתִי אֶת צִבְאֹתַי אֶת עַמִּי בְנֵי יִשְׂרָאֵל מֵאֶרֶץ מִצְרַיִם בִּשְׁפָטִים גְּדֹלִים".</p>
+      <p>פרעה לא ישמע, ולכן ה' יביא "שפטים גדולים" – עונשים גדולים. ואז מגיע הפסוק החשוב: "וְיָדְעוּ מִצְרַיִם כִּי אֲנִי ה', בִּנְטֹתִי אֶת יָדִי עַל מִצְרָיִם, וְהוֹצֵאתִי אֶת בְּנֵי יִשְׂרָאֵל מִתּוֹכָם".</p>
+      <p>כולם יכירו שיש בורא עולם. הרב שאל: איך ייתכן שיהיה אדם אחד במצרים שלא יכיר את בורא עולם, אחרי כל מה שיקרה? לא ייתכן! לאט לאט, על ידי הניסים והנפלאות, כולם יכירו.</p>
+      <p>וזכרו מה אמר פרעה בפרק הקודם: "לא ידעתי את ה'". והנה ה' עונה: "וידעו מצרים כי אני ה'". מה שפרעה לא ידע – יידע. והמכות הן השיעור הגדול של מצרים, ושל כל העולם, בהכרת ה'. בסוף השיעור שאל הרב בחידון: איך יכירו המצרים שה' הוא האלוקים? והתשובה בפסוק: כשה' יוציא את בני ישראל מתוכם.</p>
+      <p class="bold-para">מטרת המכות היא שכל מצרים, ובסוף כל העולם, יכירו שיש בורא עולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לב קשה ואותות רבים</div>
+      <h3 class="story-title">🎖️ "צִבְאֹתַי"</h3>
+      <p>לפני שהמשיכו, הרב ביקש מן התלמידים לחפש בפסוק: איך ה' קורא כאן לעם ישראל? לקח קצת זמן עד שמצאו – בפסוק ד': "וְהוֹצֵאתִי אֶת צִבְאֹתַי". צבאותי! הצבא שלי.</p>
+      <p>ואז השמיע הרב לכיתה שיר של ילדים, שבו הם קוראים לעצמם "צבאות ה'" ושרים שהם הולכים בכל הכוח. ושאל: איך הילדים בשיר קוראים לעצמם? "צבאות ה'". ומאיפה לקוחה המילה? מן הפסוק הזה, "והוצאתי את צבאותי".</p>
+      <p>מה פירוש שעם ישראל הוא צבא של ה'? צבא הוא קבוצה מסודרת, שהולכת יחד, לפי פקודה, בשליחות. עם ישראל אינו סתם אוסף של אנשים. הוא צבא של מלך העולם, שיש לו תפקיד בעולם: לגלות את שמו של ה' בכל מקום.</p>
+      <p>ויש בזה כבוד גדול. עבדים במצרים, שעובדים בטיט ובלבנים, נקראים בפי ה' "צבאותי". עוד לפני שיצאו, ה' כבר רואה אותם כצבא שלו, מסודר ומוכן לשליחות. וכל ילד שלומד תורה ומקיים מצוות, הוא חייל קטן בצבא הזה.</p>
+      <p>הרב הדגיש שהביא את השיר רק בשביל המילה. העיקר הוא להבין מאיפה היא לקוחה: מן התורה עצמה, מן הפסוק שבו ה' קורא לנו בשם הזה כבר במצרים.</p>
+      <p class="bold-para">ה' קורא לעם ישראל "צבאותי" – הצבא שלו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · לב קשה ואותות רבים</div>
+      <h3 class="story-title">👴 בן שמונים</h3>
+      <p>"וּמֹשֶׁה בֶּן שְׁמֹנִים שָׁנָה, וְאַהֲרֹן בֶּן שָׁלֹשׁ וּשְׁמֹנִים שָׁנָה, בְּדַבְּרָם אֶל פַּרְעֹה". הרב שאל: אתם מכירים מישהו בן שמונים? אולי סבא, אולי שכן. תחשבו: בגיל כזה משה ואהרן הולכים אל המלך החזק בעולם.</p>
+      <p>הם לא היו צעירים. הם היו מבוגרים. ובכל זאת, דווקא בגיל הזה, מתחילה השליחות הגדולה של חייהם. מה שהם עשו עד עכשיו היה הכנה. עכשיו מתחילה העבודה עצמה.</p>
+      <p>יש בזה לימוד גדול. אדם אף פעם אינו זקן מדי לשליחות. ה' יכול לבחור באדם בכל גיל, ולתת לו כוח לעשות דברים גדולים. משה בן שמונים עמד מול פרעה, הוביל עם שלם, עלה להר סיני, והנהיג את ישראל במדבר עוד ארבעים שנה.</p>
+      <p>ומי שמבוגר יכול להתחזק מזה: עוד לא מאוחר. ומי שצעיר יכול ללמוד: ההכנה של היום, הלימוד והמידות הטובות, הם שיכינו אותו לשליחות שעוד לא ידוע מתי תגיע.</p>
+      <p>והתורה מספרת את גילם דווקא כאן, ברגע שבו הם עומדים מול פרעה. כאילו לומר: לא הנעורים ולא הכוח הגופני הם שינצחו את פרעה, אלא דבר ה' שבפיהם.</p>
+      <p class="bold-para">משה היה בן שמונים ואהרן בן שמונים ושלוש כשדיברו אל פרעה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · התנין</div>
+      <h3 class="story-title">🐊 "תְּנוּ לָכֶם מוֹפֵת"</h3>
+      <p>"כִּי יְדַבֵּר אֲלֵכֶם פַּרְעֹה לֵאמֹר: תְּנוּ לָכֶם מוֹפֵת". ה' יודע מראש מה פרעה יאמר: תביאו סימן! איך אתם יודעים שאלוקים שלח אתכם? מי אמר?</p>
+      <p>"וְאָמַרְתָּ אֶל אַהֲרֹן: קַח אֶת מַטְּךָ וְהַשְׁלֵךְ לִפְנֵי פַרְעֹה, יְהִי לְתַנִּין". והם עשו כך: "וַיָּבֹא מֹשֶׁה וְאַהֲרֹן אֶל פַּרְעֹה וַיַּעֲשׂוּ כֵן כַּאֲשֶׁר צִוָּה ה', וַיַּשְׁלֵךְ אַהֲרֹן אֶת מַטֵּהוּ לִפְנֵי פַרְעֹה וְלִפְנֵי עֲבָדָיו, וַיְהִי לְתַנִּין".</p>
+      <p>הרב הראה ציור, ותלמידים העירו: זה לא תנין, זה נחש! והרב הסכים מיד: אתם צודקים מאה אחוז, הצייר כאן לא טוב, לא שמתי לב. בסנה המטה נהפך לנחש, אבל כאן, לפני פרעה, הוא נהפך לתנין – יצור גדול ומפחיד.</p>
+      <p>גם זה לימוד: לקרוא בדיוק מה כתוב. בסנה כתוב "נחש", כאן כתוב "תנין". מי שקורא בעיון, שם לב להבדל, ולא מסתפק בציור.</p>
+      <p>והרב לא התבייש לומר שהציור שהכין טעה. להפך, הוא שמח שהתלמידים שמו לב. תלמיד שמתקן את המורה לפי הפסוק – זה סימן שהוא לומד באמת, ושהוא מתייחס לכל מילה בתורה ברצינות.</p>
+      <p class="bold-para">פרעה ידרוש אות, ואהרן ישליך את מטהו והוא יהיה לתנין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · התנין</div>
+      <h3 class="story-title">🪄 החרטומים עושים כמותו</h3>
+      <p>ומה עשה פרעה? "וַיִּקְרָא גַּם פַּרְעֹה לַחֲכָמִים וְלַמְכַשְּׁפִים, וַיַּעֲשׂוּ גַם הֵם חַרְטֻמֵּי מִצְרַיִם בְּלַהֲטֵיהֶם כֵּן".</p>
+      <p>גם הם זרקו את המקלות שלהם, וגם המקלות שלהם נהיו תנינים. ועכשיו כולם במצרים אומרים: אתה רואה? זה לא רק משה. גם אנחנו יכולים! זה לא מיוחד. אין כאן שום הוכחה.</p>
+      <p>תחשבו איך הרגישו משה ואהרן באותו רגע. הם עשו את האות שה' נתן להם, ופתאום נראה שכל מכשף במצרים יכול לעשות אותו. מה יהיה עכשיו? האם השליחות נכשלה?</p>
+      <p>והרב בנה את המתח בכיתה: חכו, תראו מה קורה עכשיו. כי ה' לא סיים. מה שנראה כמו תיקו, עומד להפוך לניצחון ברור.</p>
+      <p>ויש כאן לימוד לחיים: לא כל מי שנראה כאילו עושה אותו דבר, באמת עושה אותו דבר. חיקוי יכול להיראות מבחוץ כמו האמת, אבל מבפנים הוא ריק. הזמן והמבחן מגלים את ההבדל.</p>
+      <p class="bold-para">חכמי מצרים הצליחו גם הם להפוך את מטותיהם לתנינים, ונראה היה שאין כאן דבר מיוחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · התנין</div>
+      <h3 class="story-title">💪 "וַיִּבְלַע מַטֵּה אַהֲרֹן"</h3>
+      <p>"וַיַּשְׁלִיכוּ אִישׁ מַטֵּהוּ וַיִּהְיוּ לְתַנִּינִם, וַיִּבְלַע מַטֵּה אַהֲרֹן אֶת מַטֹּתָם". מטה אהרן בלע את כל המטות שלהם! לא רק תנין מול תנין, אלא המטה של אהרן בלע את כולם.</p>
+      <p>בחידון שאל הרב: מה מלמד הביטוי "ויבלע מטה אהרן את מטותם"? היו תלמידים שחשבו שהתנין היה רעב. אבל התשובה הנכונה: שכוחו של ה' חזק יותר מכוח החרטומים.</p>
+      <p>המכשפים יכולים לחקות. הם יכולים לעשות משהו שנראה דומה. אבל כשהאמת והשקר נפגשים, האמת בולעת את השקר. ומה שנראה לרגע כמו שוויון, מתגלה כהבדל עצום. מה שה' עושה – אין לו מתחרה.</p>
+      <p>ובכל זאת: "וַיֶּחֱזַק לֵב פַּרְעֹה, וְלֹא שָׁמַע אֲלֵהֶם, כַּאֲשֶׁר דִּבֶּר ה'". פרעה ראה, ולא שמע. כמו שה' אמר מראש. ולכן צריך להמשיך – אל המכות, אחת אחרי השנייה, עד הסוף.</p>
+      <p>וזה אולי הדבר המפליא ביותר: אדם יכול לראות נס מול עיניו, ועדיין לא להשתנות. ראייה לבדה אינה מספיקה. צריך גם לב פתוח. ופרעה, שלבו כבד, ראה ולא הבין.</p>
+      <p class="bold-para">מטה אהרן בלע את כל מטות החרטומים, להראות שכוח ה' גדול מכל כוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · התנין</div>
+      <h3 class="story-title">📱 משחק הקליקרים</h3>
+      <p>באמצע השיעור הגיעה המנהלת לראות משחק מיוחד: חידון בקליקרים. לכל תלמיד יש כרטיס עם אותיות, והוא מרים אותו כשהאות של התשובה הנכונה פונה למעלה. הרב סורק את כל הכיתה, ותוך שנייה כל התשובות נרשמות.</p>
+      <p>השאלות היו על מה שלמדו: למה הקשה ה' את לב פרעה? מה מלמד "ויבלע מטה אהרן"? מה המשמעות של "נתתיך אלוקים לפרעה"? איך יכירו המצרים שה' הוא האלוקים?</p>
+      <p>בחלק מן השאלות הרב אמר בהגינות: האמת היא שגם התשובה הזאת וגם ההיא נכונות. ובשאלה האחרונה הסביר: אני התכוונתי לתשובה שכתובה בפסוק עצמו, "בהוציאי את בני ישראל מתוכם", אבל גם התשובה האחרת יכולה להיות נכונה.</p>
+      <p>כל תשובה נשמרת, אמר הרב, ואפשר אחר כך לבדוק כמה כל אחד ידע. ובסוף רשמו שיעורי בית בחוברת, והמורה עברה לבדוק מי השלים את שיעורי הבית הקודמים. כך הלימוד מתחבר לחוויה, והחוויה מחזקת את הלימוד.</p>
+      <p class="bold-para">בסוף החלק הראשון שיחקו התלמידים בחידון בכרטיסים שנסרקים, וכל תשובה נשמרה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · על שפת היאור</div>
+      <h3 class="story-title">🌅 "לֵךְ אֶל פַּרְעֹה בַּבֹּקֶר"</h3>
+      <p>ואז ממשיך הפרק: "וַיֹּאמֶר ה' אֶל מֹשֶׁה: כָּבֵד לֵב פַּרְעֹה, מֵאֵן לְשַׁלַּח הָעָם. לֵךְ אֶל פַּרְעֹה בַּבֹּקֶר, הִנֵּה יֹצֵא הַמַּיְמָה, וְנִצַּבְתָּ לִקְרָאתוֹ עַל שְׂפַת הַיְאֹר".</p>
+      <p>הרב שאל: למה דווקא בבוקר? והסביר לפי רש"י: פרעה עשה את עצמו אל. הוא אמר לכולם שהוא כל יכול, ושהוא אפילו אינו צריך ללכת לשירותים, כמו בני אדם רגילים. אז איך הסתדר? כל בוקר, מוקדם מאוד, כשאיש לא ראה, הוא יצא אל היאור, ושם עשה את צרכיו.</p>
+      <p>ולשם בדיוק ה' שולח את משה. משה תופס אותו שם, בבוקר, לפני שהוא מספיק. "פרעה, יש לי משהו להגיד לך". הרב תיאר זאת בחיוך: פרעה, שבטוח שהוא אל, נתפס דווקא ברגע שבו הוא הכי אנושי.</p>
+      <p>וזה מה שה' עושה לגאוותנים: הוא מגלה את חולשתם. מי שאומר "אני אל", מתגלה כאדם רגיל, שצריך בדיוק מה שכל אדם צריך.</p>
+      <p>ומשה אינו פוחד ללכת אליו דווקא שם, במקום שבו פרעה רוצה להיות לבד. ה' יודע את כל הסודות של המלך, ושולח את שליחו אל המקום הנכון ובזמן הנכון.</p>
+      <p class="bold-para">ה' שולח את משה לפגוש את פרעה בבוקר על שפת היאור, ושם מתחילה מכת דם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · על שפת היאור</div>
+      <h3 class="story-title">🩸 "וְהִנֵּה לֹא שָׁמַעְתָּ עַד כֹּה"</h3>
+      <p>"וְהַמַּטֶּה אֲשֶׁר נֶהְפַּךְ לְנָחָשׁ תִּקַּח בְּיָדֶךָ". שוב המטה. ומה יאמר משה לפרעה? שימו לב שגם כאן משה אומר "אלוקי העברים", כמו שאמר בפעם השנייה בפרק ה'. "וְאָמַרְתָּ אֵלָיו: ה' אֱלֹקֵי הָעִבְרִים שְׁלָחַנִי אֵלֶיךָ לֵאמֹר, שַׁלַּח אֶת עַמִּי וְיַעַבְדֻנִי בַּמִּדְבָּר, וְהִנֵּה לֹא שָׁמַעְתָּ עַד כֹּה".</p>
+      <p>עד עכשיו לא שמעת. ראית את המטה הופך לתנין, ראית את מטה אהרן בולע את כל המטות, ועדיין לא שמעת. ועכשיו – מה יקרה?</p>
+      <p>כאן השיעור נעצר, ממש לפני המכה הראשונה. הרב השאיר את הכיתה במתח: עכשיו מתחילות המכות. מה ה' יעשה? מה יקרה ליאור, שפרעה עושה ממנו אלוהות? והתלמידים כבר חיכו לשיעור הבא.</p>
+      <p>ובאמת, המכה הראשונה פוגעת דווקא ביאור. המקום שבו פרעה מסתיר את אנושיותו, המקום שהמצרים עובדים כאל, יהפוך לדם. על זה – בשיעור הבא.</p>
+      <p>וכך מסתיים השיעור: מן המטה שבלע את המטות, אל הנהר שעומד להפוך לדם. שלב אחר שלב, ה' עונה לשאלה של פרעה, "מי ה'", ומלמד אותו – ואת כל העולם – את התשובה.</p>
+      <p class="bold-para">משה מצטווה לומר לפרעה שלא שמע עד עכשיו, ולכן תבוא המכה הראשונה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/ZsIqzDTJ3TM · 2025-11-24 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"השליחות מתחדשת","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"\"נְתַתִּיךָ אֱלֹקִים לְפַרְעֹה\"","icon":"👑"}]},{"id":2,"name":"לב קשה ואותות רבים","icon":"🪨","color":"#6d28d9","stories":[{"id":2,"title":"\"וַאֲנִי אַקְשֶׁה אֶת לֵב פַּרְעֹה\"","icon":"🪨"},{"id":3,"title":"\"וְיָדְעוּ מִצְרַיִם כִּי אֲנִי ה'\"","icon":"🌍"},{"id":4,"title":"\"צִבְאֹתַי\"","icon":"🎖️"},{"id":5,"title":"בן שמונים","icon":"👴"}]},{"id":3,"name":"התנין","icon":"🐊","color":"#e08e00","stories":[{"id":6,"title":"\"תְּנוּ לָכֶם מוֹפֵת\"","icon":"🐊"},{"id":7,"title":"החרטומים עושים כמותו","icon":"🪄"},{"id":8,"title":"\"וַיִּבְלַע מַטֵּה אַהֲרֹן\"","icon":"💪"},{"id":9,"title":"משחק הקליקרים","icon":"📱"}]},{"id":4,"name":"על שפת היאור","icon":"🌅","color":"#1e88b8","stories":[{"id":10,"title":"\"לֵךְ אֶל פַּרְעֹה בַּבֹּקֶר\"","icon":"🌅"},{"id":11,"title":"\"וְהִנֵּה לֹא שָׁמַעְתָּ עַד כֹּה\"","icon":"🩸"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
