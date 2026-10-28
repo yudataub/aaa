@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ארון הברית</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ארון הברית</h1>
+  <p>למה מתכננים את הארון לפני המשכן, מידותיו ושלוש הקופסאות, הבדים שאינם זזים, הלוחות שהם עדות, והכרובים הפונים איש אל אחיו – שיעור כיתה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמש הפרשיות</div>
+      <h3 class="story-title">📐 תכנון ובנייה</h3>
+      <p>השיעור נפתח בחזרה על מה שנלמד: בסוף חומש שמות יש חמש פרשיות שעוסקות במשכן, והן מחולקות בצורה מעניינת מאוד. מי שמבין את החלוקה פעם אחת, יודע את הכל.</p>
+      <p>פרשת תרומה עוסקת בתכנון של המשכן ושל הכלים: הבניין, הקרשים, הארון, השולחן. בקיצור, כל מה שבונים. פרשת תצווה עוסקת בעיקר בבגדי הכהונה: מה שתופרים ואורגים.</p>
+      <p>ואז מגיעות ויקהל ופקודי. שם כבר לא מתכננים, אלא בונים בפועל. הרב המשיל זאת לבניין בימינו: לפעמים לוקח שנתיים לתכנן בית, ועוד שנתיים לבנות אותו. התוכנית לחוד, והבנייה לחוד.</p>
+      <p>ולמה כל כך חשוב להקשיב עכשיו? כי לכל הנושא הזה יש חודש אחד בלבד. בשנה הבאה לומדים את ספר ויקרא, ושם כבר מדברים על ארון, שולחן, מנורה ומזבח כמושגים ידועים. מי שלא יכיר אותם עכשיו, לא יבין שנה שלמה. לכן לומדים מהר ובמרץ, וכדאי לנצל את החודש הזה עד הסוף. הבנה טובה עכשיו תאיר את כל הלימוד של השנה הבאה, ותהפוך כל פסוק בויקרא למוכר וברור.</p>
+      <p class="bold-para">תרומה ותצווה הן תוכנית המשכן, וויקהל ופקודי הן הבנייה בפועל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · חמש הפרשיות</div>
+      <h3 class="story-title">🏗️ מטבח לפני בית?</h3>
+      <p>בשיעור הקודם עלתה שאלה: למה התורה מתחילה דווקא בארון? הרי זה מוזר. האם ראיתם פעם מישהו שבונה מטבח לפני שיש לו בית? איפה הוא ישים את השיש? קודם בונים קירות, ורק אחר כך מכניסים רהיטים.</p>
+      <p>התשובה כבר טמונה בחלוקה שלמדנו. פרשת תרומה היא תוכנית, לא בנייה. ובתוכנית אפשר להתחיל מכל מקום. אפשר לחלום על המטבח לפני שהבית קיים. אפשר לשרטט קודם את מה שהכי חשוב.</p>
+      <p>ומה הכי חשוב במשכן? הארון. בו מונחים לוחות הברית, והוא הלב של כל המקום. לכן בתוכנית הוא בא ראשון. כשבונים בפועל, בויקהל ופקודי, יש סדר אחר, אבל כשחולמים ומתכננים, מתחילים מן העיקר.</p>
+      <p>זה לימוד יפה גם לחיים: כשאדם מתכנן את דרכו, כדאי לו לשאול קודם מה הדבר החשוב ביותר, ולשים אותו במרכז. את השאר אפשר לבנות סביבו. מי שמתחיל מן העיקר, לא ילך לאיבוד בפרטים.</p>
+      <p>בתחילת השיעור הראה הרב על המסך את השאלות ששאלו התלמידים בשיעור הקודם. כל אחד יכול היה לחפש ולמצוא את השאלה שהוא עצמו שאל. השאלות לא נשכחו. הן נכתבו, נשמרו, והפכו לחלק מן החזרה.</p>
+      <p>וזה מסר חשוב לכל לומד. שאלה טובה אינה הפרעה לשיעור, היא הדרך אל השיעור. כששואלים "למה הארון לפני המשכן?" או "למה לא עשו לוחות חדשים?", הלימוד מעמיק, והתשובה נחרטת בזיכרון הרבה יותר מכל הסבר שנאמר בלי שאלה.</p>
+      <p>ובאמת, שתי השאלות הגדולות של השיעור הקודם הן שפתחו את השיעור הזה, וממנו המשיכו אל הפסוקים עצמם. מי ששואל – לומד פעמיים: פעם כשהוא מחפש, ופעם כשהוא מוצא.</p>
+      <p class="bold-para">הארון מופיע ראשון בפרשה כי בתוכנית אפשר לתכנן קודם את העיקר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הלוחות שאין להם תחליף</div>
+      <h3 class="story-title">📜 תעודה שכותבים לבד</h3>
+      <p>עוד שאלה מן השיעור הקודם: בבית המקדש השני בנו מחדש כמעט הכל. עשו מזבח, מנורה, שולחן. אז למה לא עשו גם לוחות חדשים? הלוחות הראשונים נשברו, והשניים נגנזו. למה לא לכתוב לוחות שלישיים?</p>
+      <p>התשובה: כי זה לא שווה כלום. הרב הסביר במשל. מישהו קיבל תעודה, והתעודה נשברה או אבדה. האם הוא יכול לשבת ולכתוב לעצמו תעודה חדשה? זו תעודה מצחיקה! כל הרעיון של תעודה הוא שמישהו אחר נתן אותה לך.</p>
+      <p>כך גם הלוחות. ערכם אינו באבן ולא בכתב. ערכם הוא בכך שהקדוש ברוך הוא נתן אותם לנו. לוחות שנעשה בעצמנו לא יהיו לוחות.</p>
+      <p>ואיפה הלוחות היום? לפי מה שסופר בשיעור, הם גנוזים מתחת לאדמה בירושלים, במקום המקדש. עדיין איננו מגיעים לשם ואיננו חופרים שם, ומחכים שה' יזכה אותנו לגלות אותם, ולראות שוב את העדות הקדושה במקומה, בבית המקדש השלישי.</p>
+      <p class="bold-para">את הלוחות אי אפשר לעשות מחדש, כי כל ערכם הוא בכך שה' נתן אותם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הלוחות שאין להם תחליף</div>
+      <h3 class="story-title">🛡️ על הכתפיים, לא בעגלה</h3>
+      <p>עוד דבר שלמדו קודם: את הארון נשאו בני לוי על הכתפיים. למה? האם בגלל שהוא כבד מאוד? הרב אמר: הפוך. אם משהו כבד, דווקא לוקחים חמור ועגלה. בעגלה מעמיסים משאות כבדים.</p>
+      <p>את הארון נשאו בכתף מרוב קדושתו. לא מתאים שהדבר הקדוש ביותר בעולם יונח על עגלה שחמור מושך. הוא צריך להינשא בידי אדם, בכבוד, על הכתף.</p>
+      <p>יש כאן לימוד על היחס לדברים קדושים. יש דברים שמותר לעשות בדרך הנוחה והמהירה. ויש דברים שצריך לטרוח בשבילם, לשאת אותם בעצמנו, דווקא בגלל שהם יקרים וקדושים. ספר תורה, תפילין, ספרי קודש – נוהגים בהם כבוד, ולא מטפלים בהם כמו בחפץ רגיל. נושקים להם, מניחים אותם במקום מכובד, ומרימים אותם בזהירות.</p>
+      <p>ועכשיו, אחרי החזרה, עוברים לפסוקים שמתארים איך בונים את הכלי המיוחד ביותר בעולם, שעמד בקודש הקודשים.</p>
+      <p class="bold-para">את הארון נשאו על הכתפיים לא בגלל כובדו אלא בגלל קדושתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בניין הארון</div>
+      <h3 class="story-title">🕍 הכלי הקדוש ביותר</h3>
+      <p>לפני שקוראים את הפסוקים, שאל הרב: איפה עמד הכלי הזה? והתלמידים ענו: בקודש הקודשים. במשכן היה סדר של קדושה. מסביב החצר, בפנים אוהל מועד, ובתוכו, מאחורי הפרוכת, קודש הקודשים. ושם, במקום הפנימי ביותר, עמד הארון.</p>
+      <p>הרב סיפר שהכין לכיתה סיור וירטואלי: בעזרת המחשב אפשר כאילו ללכת ולטייל בתוך המשכן. נכנסים לחצר, אחר כך לוחצים ונכנסים לאוהל מועד, ומשם לקודש הקודשים, ורואים את הכל בנוי. בשיעור הזה לא הספיקו, אבל הסיור כבר מוכן, ובעזרת ה' יגיעו אליו.</p>
+      <p>וכדאי לזכור: בכל המשכן אין מקום קדוש יותר מן המקום שבו עמד הארון. לשם נכנס הכהן הגדול רק פעם אחת בשנה, ביום הכיפורים. וכך מתחילים ללמוד עליו: ביראה, בהתרגשות, ובידיעה שזה הכלי החשוב ביותר בעולם.</p>
+      <p class="bold-para">הארון עמד בקודש הקודשים, המקום הפנימי והקדוש ביותר במשכן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בניין הארון</div>
+      <h3 class="story-title">🔎 משחק הטעויות</h3>
+      <p>בשיעור הזה השתמש הרב בתמונות שהמחשב בנה לבד. הוא הזהיר מראש: המחשב קיבל את הפסוק וניסה לצייר, אבל לא היה זמן להסביר לו הכל, ולכן יש בתמונות טעויות. ומכאן נולד משחק: מי ימצא מה לא נכון?</p>
+      <p>וכך, לאורך כל השיעור, אחרי כל פסוק עלתה תמונה, והתלמידים חיפשו. כאן הזהב נראה כמו צבע ולא כמו ארון בתוך ארון. כאן המקלות בתחתית ולא באמצע. כאן חסרים הבדים. כאן הארון עגול ולא מרובע. כאן הכרובים לא במקומם.</p>
+      <p>ובסוף הגיעו התמונות המדויקות, וכולם יכלו להשוות ולראות שהבינו נכון.</p>
+      <p>יש בזה לימוד חשוב: לא כל מה שמופיע על מסך הוא אמת. גם תמונה יפה מאוד יכולה להיות שגויה. הדרך לדעת היא לחזור אל הפסוק, לקרוא בעיון, ולבדוק כל פרט מול לשון התורה. מי שמתרגל לכך, יודע ללמוד חומש בעצמו.</p>
+      <p class="bold-para">תמונות שיש בהן טעויות הופכות ללימוד, כשמחפשים מה בהן אינו מתאים לפסוק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בניין הארון</div>
+      <h3 class="story-title">📏 מטר ורבע</h3>
+      <p>"וְעָשׂוּ אֲרוֹן עֲצֵי שִׁטִּים, אַמָּתַיִם וָחֵצִי אָרְכּוֹ, וְאַמָּה וָחֵצִי רָחְבּוֹ, וְאַמָּה וָחֵצִי קֹמָתוֹ". עצי שיטים הם עץ טוב וחזק.</p>
+      <p>מה זו אמה? הרב שאל, והתלמידים הראו בידיים. בדרך כלל אומרים שאמה היא בערך חצי מטר. אם כך, כמה זה אמתיים וחצי? זו כבר שאלה של חשבון: שתיים וחצי לחלק לשתיים. תלמיד אחד חישב יפה: מטר ועשרים וחמישה סנטימטרים.</p>
+      <p>כלומר, הארון היה בערך בגובה של ילד בכיתה א'. די נמוך. והרוחב והגובה – אמה וחצי, כשבעים וחמישה סנטימטרים.</p>
+      <p>הרב הוסיף שיש כמה דעות בשיעור האמה, ויש גם פירושים שונים במידות הארון. אבל כך כתוב בפסוק, וזו התמונה הפשוטה: ארון קטן יחסית, שבתוכו מונח הדבר הגדול ביותר.</p>
+      <p class="bold-para">הארון היה באורך של כמטר ורבע, ברוחב ובגובה של כשבעים וחמישה סנטימטרים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בניין הארון</div>
+      <h3 class="story-title">🎁 שלושה ארונות זה בתוך זה</h3>
+      <p>"וְצִפִּיתָ אֹתוֹ זָהָב טָהוֹר, מִבַּיִת וּמִחוּץ תְּצַפֶּנּוּ". מה פירוש לצפות? התלמידים הציעו: מורחים זהב מבחוץ. הרב הראה תמונה שהמחשב צייר, שבה הזהב נראה כמו צבע על הארון, ואמר: זו תמונה לא נכונה.</p>
+      <p>איך באמת ציפו? בנו ארון אחד מעץ. אחר כך בנו עוד ארון מזהב, קצת קטן יותר, והכניסו אותו לתוך ארון העץ. ועוד ארון מזהב, גדול יותר, ושמו אותו מבחוץ. סך הכל שלושה ארונות, זה בתוך זה.</p>
+      <p>וכך הארון מצופה זהב מבפנים ומבחוץ. מבחוץ רואים זהב, מבפנים רואים זהב, ובאמצע יש עץ. הרב העיר שאפשר לראות מכאן שהיו אז אנשים חכמים מאוד, שידעו לבנות דברים מופלאים בלי הכלים של היום.</p>
+      <p>ויש בזה גם רמז שמובא בדברי חז"ל: תלמיד חכם צריך להיות "תוכו כברו", כמו הארון, זהב מבפנים כמו מבחוץ.</p>
+      <p class="bold-para">את הארון ציפו זהב מבית ומחוץ בכך שעשו שלוש תיבות, זהב-עץ-זהב, זו בתוך זו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בניין הארון</div>
+      <h3 class="story-title">⚖️ בדים באמצע הגובה</h3>
+      <p>"וְיָצַקְתָּ לּוֹ אַרְבַּע טַבְּעֹת זָהָב". למה צריך טבעות? כדי להכניס בהן בדים, מקלות של עצי שיטים מצופים זהב, ולשאת את הארון. שתי טבעות מכאן ושתיים מכאן.</p>
+      <p>הרב הראה שוב תמונה של המחשב ושאל: מה לא נכון כאן? תלמיד אחד שם לב: המקלות בתמונה נמצאים למטה, בתחתית הארון. אבל במציאות הם לא היו למטה.</p>
+      <p>למה? הרב הציע ניסוי: קחו בבית שולחן, הצמידו לו מקלות בתחתית, ונסו להרים אותו. מה יקרה? הוא יתהפך. כשהמקלות למטה, הכל מתנדנד ומאבד שיווי משקל. כשהם באמצע, יש שיווי משקל. לכן הבדים היו גבוה יותר, ולא בתחתית.</p>
+      <p>באחד השיעורים עלתה גם שאלה של תלמיד: התורה אוסרת להניף ברזל על אבני המזבח. האם יש איסור כזה גם בארון? הרב אמר בכנות: שאלה טובה, אינני יודע, אבדוק. גם זה לימוד – לא להמציא תשובות.</p>
+      <p class="bold-para">הבדים עברו בטבעות שבאמצע הגובה, כי כך שומרים על שיווי המשקל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · בניין הארון</div>
+      <h3 class="story-title">🚶 "לֹא יָסֻרוּ מִמֶּנּוּ"</h3>
+      <p>"בְּטַבְּעֹת הָאָרֹן יִהְיוּ הַבַּדִּים, לֹא יָסֻרוּ מִמֶּנּוּ". זה דבר מיוחד. לכלים אחרים במשכן היו גם בדים, אבל כשהגיעו למקום חנייה, הוציאו אותם. בארון – לא. הבדים נשארו בו תמיד.</p>
+      <p>למה? התלמידים הציעו רעיונות. אחד אמר: כדי שלא יבזבזו זמן. ויש באמת פירוש כזה, שהופיע גם על המסך בכיתה: דבר קדוש צריך להיות תמיד מוכן לנסיעה. אם יקרה משהו, אם צריך לצאת מיד – הארון מוכן.</p>
+      <p>הרב הוסיף שיש כמה פירושים בדבר, וזה אחד היפים שבהם. הארון אינו כלי שנח במקומו ומחכה. הוא תמיד מוכן ללכת עם עם ישראל לכל מקום.</p>
+      <p>וגם התורה, שבתוך הארון, כך. היא אינה נשארת בבית המדרש. היא הולכת עם היהודי לכל מקום, ותמיד מוכנה לצאת איתו לדרך.</p>
+      <p class="bold-para">הבדים לא הוצאו מן הארון לעולם, כדי שיהיה תמיד מוכן לדרך.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הכפורת והכרובים</div>
+      <h3 class="story-title">⚖️ למה הלוחות נקראים "עדות"</h3>
+      <p>"וְנָתַתָּ אֶל הָאָרֹן אֵת הָעֵדֻת אֲשֶׁר אֶתֵּן אֵלֶיךָ". בתוך הארון שמים את לוחות הברית. אבל איך התורה קוראת להם? לא "לוחות", אלא "העדות".</p>
+      <p>מה זה עדות? איזו מילה מסתתרת כאן? "עד". כמו בבית משפט, שבו העדים מעידים על מה שקרה. גם הלוחות מעידים. על מה? על כך שהקדוש ברוך הוא בחר בנו, אוהב אותנו ונתן לנו את התורה. יש לנו ברית עם בורא עולם, והלוחות הם העדים שלה.</p>
+      <p>תחשבו: איזה עוד חפץ בעולם קיבלנו ישירות מאלוקים? אין עוד כזה. לכן זה הדבר היקר ביותר שיש בעולם.</p>
+      <p>הרב הזכיר גם שבתקופה מסוימת הארון נשבה בידי אויבים, וזה היה אסון נורא. את הסיפור המלא, אמר, נלמד בעזרת ה' בהזדמנות אחרת. אבל כבר עכשיו אפשר להבין כמה כאב היה כשהעדות היקרה הזאת נלקחה.</p>
+      <p class="bold-para">הלוחות הם עדות לכך שהקדוש ברוך הוא בחר בנו ונתן לנו את תורתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הכפורת והכרובים</div>
+      <h3 class="story-title">🟨 הכפורת</h3>
+      <p>"וְעָשִׂיתָ כַפֹּרֶת זָהָב טָהוֹר". הכפורת היא המכסה שמעל הארון. והיא היה הדבר המעניין ביותר מכולם. היא לא הייתה מצופה, אלא כולה זהב טהור.</p>
+      <p>על הכפורת עמדו שני כרובים. מה הם כרובים? דמויות כמו של ילדים קטנים, עם כנפיים. ואת שניהם עשו מחתיכה אחת עם הכפורת, לא חיברו אותם אחר כך.</p>
+      <p>הרב שוב הראה תמונה של המחשב ושאל מה לא נכון בה. התלמידים מצאו כמה טעויות: חסרו המקלות, ובחלק מן הארון חסר הזהב. ועוד דבר: הארון בתמונה היה מעוגל. אבל במשכן הכל היה מרובע. כמו השולחנות בכיתה.</p>
+      <p>ומכאן נתן הרב משימה לבית: חפשו בבריאה, בדברים שהקדוש ברוך הוא ברא, דבר אחד מרובע. לא משהו שבני אדם בנו או חתכו, אלא אבן, עץ, עלה, בעל חיים. מי שימצא – יביא תמונה ויקבל פרס. כי הבריאה כמעט כולה עגולה ומעוגלת, ובמשכן, להפך, הכל מרובע.</p>
+      <p class="bold-para">מעל הארון הייתה הכפורת, מכסה של זהב טהור, ועליה שני כרובים מחתיכה אחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · הכפורת והכרובים</div>
+      <h3 class="story-title">💞 "וּפְנֵיהֶם אִישׁ אֶל אָחִיו"</h3>
+      <p>"וְהָיוּ הַכְּרֻבִים פֹּרְשֵׂי כְנָפַיִם לְמַעְלָה, סֹכְכִים בְּכַנְפֵיהֶם עַל הַכַּפֹּרֶת, וּפְנֵיהֶם אִישׁ אֶל אָחִיו". שני כרובים, כנפיהם פרושות, והם מסתכלים זה על זה.</p>
+      <p>הרב שאל: בשביל מה שמו שתי דמויות קטנות שמסתכלות זו על זו? מה זה בא לסמל? תלמיד אחד אמר: לרמז שעם ישראל צריך להיות באהבה, איש אל אחיו. הרב שיבח את הפירוש. תלמיד אחר אמר: שלום.</p>
+      <p>ועוד תלמיד הוסיף כיוון נוסף: אולי זה לא רק בין יהודי ליהודי, אלא בין הקדוש ברוך הוא לעם ישראל. הכרובים מסמלים שה' אוהב את עם ישראל, ועם ישראל אוהב את ה'.</p>
+      <p>ושני הכיוונים נכונים יחד. כשיש אהבה בין יהודים, כשהם פונים זה אל זה, אז גם השכינה שורה ביניהם. ומי שרוצה להרגיש את אהבת ה', יתחיל באהבה אל אחיו שלידו.</p>
+      <p class="bold-para">הכרובים הפונים זה אל זה מסמלים אהבה – בין ה' לישראל ובין יהודי ליהודי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקום של ניסים</div>
+      <h3 class="story-title">🔄 כרובים שמסתובבים</h3>
+      <p>הרב סיפר שהגמרא מתארת דבר מופלא: הכרובים לא היו פסלים קבועים. כשעם ישראל עשה רצונו של מקום, פניהם היו איש אל אחיו. וכשלא התנהגו כראוי, הם פנו לכיוון אחר. ולא היה שם שום חשמל ושום מנגנון.</p>
+      <p>בית המקדש היה מקום של ניסים. בכל העולם, קיר הוא קיר והכל פועל לפי הטבע. ובבית המקדש קרו ניסים בלי הפסקה. מי שנכנס לשם ראה ניסים כל הזמן. למשל, כפי שילמדו בהמשך, נרות המנורה דלקו בצורה פלאית.</p>
+      <p>ולמה? כי הקדוש ברוך הוא נמצא שם. במקום שבו השכינה שורה, הטבע נסוג מפניה.</p>
+      <p>והכרובים הם אולי הסימן הבולט ביותר: הם היו כמו מראה של הקשר בין ה' לעם ישראל. כשישראל אוהבים את ה' ועושים רצונו, ה' כביכול פונה אליהם באהבה.</p>
+      <p class="bold-para">חז"ל מספרים שהכרובים פנו זה אל זה כשעשו ישראל רצון המקום – נס בלי שום טכנולוגיה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקום של ניסים</div>
+      <h3 class="story-title">📜 מה היה בתוך הארון</h3>
+      <p>כדאי לחזור ולהבין למה הארון נקרא בשמות שלו. הוא נקרא "ארון העדות", כי בתוכו מונחת העדות, הלוחות. והוא נקרא "ארון הברית", כי הלוחות הם לוחות הברית שבין ה' לישראל.</p>
+      <p>כשתלמיד אחד בכיתה אמר "ארון הלוחות", הרב שאל את כולם להסתכל בפסוק ולראות איך התורה עצמה קוראת להם. זה הרגל חשוב: לא להסתפק במה שאנחנו רגילים לומר, אלא לחפש את לשון הכתוב.</p>
+      <p>והעיקר: הארון אינו קופסה יפה של זהב. הוא בית לדבר הקדוש ביותר. כל הזהב, הכרובים והבדים נועדו לשמור על מה שבפנים, על המתנה שקיבלנו מאת ה' בהר סיני.</p>
+      <p>כך גם אצלנו: בית הכנסת יפה, ארון הקודש מקושט, אבל העיקר הוא מה שבתוכו – ספר התורה. וכשאנחנו עומדים לפני ארון הקודש, אנחנו נזכרים בארון הברית ובלוחות שבתוכו.</p>
+      <p class="bold-para">בתוך הארון מונחת העדות, ולכן הוא נקרא "ארון העדות" ו"ארון הברית".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקום של ניסים</div>
+      <h3 class="story-title">🗣️ קול מבין הכרובים</h3>
+      <p>ועכשיו הנס הגדול מכולם: "וְנוֹעַדְתִּי לְךָ שָׁם, וְדִבַּרְתִּי אִתְּךָ מֵעַל הַכַּפֹּרֶת, מִבֵּין שְׁנֵי הַכְּרֻבִים אֲשֶׁר עַל אֲרוֹן הָעֵדֻת, אֵת כָּל אֲשֶׁר אֲצַוֶּה אוֹתְךָ אֶל בְּנֵי יִשְׂרָאֵל".</p>
+      <p>תארו לכם: משה רבנו נכנס לאוהל מועד, ושומע את ה' מדבר איתו. מאיפה? מבין שני הכרובים. זה כמו קסם, אבל זה לא קסם, זה אמת. המקום הקטן שבין שני הכרובים, מעל הארון שבו מונחים הלוחות, הוא המקום שממנו יוצא דבר ה'.</p>
+      <p>בסוף השיעור הראה הרב תמונות מדויקות יותר: הבדים באמצע, למעלה; שלוש התיבות של זהב ועץ; הכרובים מעל הארון, כנפיהם פרושות. ראו גם דגם של ארון הברית שהכין אחד התלמידים מקרטון, והכיתה כולה שמחה בו.</p>
+      <p>ובשיעור הבא, אמר הרב, עוברים לשאר הכלים, ונלמד איך נעשה כל כלי וכלי. אבל הארון נשאר הלב: שם הלוחות, שם הכרובים, ושם הקול. יהי רצון שנזכה לראותו שוב במקומו, במהרה בימינו.</p>
+      <p class="bold-para">משם, מבין שני הכרובים, דיבר ה' עם משה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בקו קול תודה של הרב יהודה טאוב · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"חמש הפרשיות","icon":"📖","color":"#c62b6b","stories":[{"id":1,"title":"תכנון ובנייה","icon":"📐"},{"id":2,"title":"מטבח לפני בית?","icon":"🏗️"}]},{"id":2,"name":"הלוחות שאין להם תחליף","icon":"📜","color":"#6d28d9","stories":[{"id":3,"title":"תעודה שכותבים לבד","icon":"📜"},{"id":4,"title":"על הכתפיים, לא בעגלה","icon":"🛡️"}]},{"id":3,"name":"בניין הארון","icon":"🪵","color":"#e08e00","stories":[{"id":5,"title":"הכלי הקדוש ביותר","icon":"🕍"},{"id":6,"title":"משחק הטעויות","icon":"🔎"},{"id":7,"title":"מטר ורבע","icon":"📏"},{"id":8,"title":"שלושה ארונות זה בתוך זה","icon":"🎁"},{"id":9,"title":"בדים באמצע הגובה","icon":"⚖️"},{"id":10,"title":"\"לֹא יָסֻרוּ מִמֶּנּוּ\"","icon":"🚶"}]},{"id":4,"name":"הכפורת והכרובים","icon":"👼","color":"#1e88b8","stories":[{"id":11,"title":"למה הלוחות נקראים \"עדות\"","icon":"⚖️"},{"id":12,"title":"הכפורת","icon":"🟨"},{"id":13,"title":"\"וּפְנֵיהֶם אִישׁ אֶל אָחִיו\"","icon":"💞"}]},{"id":5,"name":"מקום של ניסים","icon":"✨","color":"#c62b6b","stories":[{"id":14,"title":"כרובים שמסתובבים","icon":"🔄"},{"id":15,"title":"מה היה בתוך הארון","icon":"📜"},{"id":16,"title":"קול מבין הכרובים","icon":"🗣️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
