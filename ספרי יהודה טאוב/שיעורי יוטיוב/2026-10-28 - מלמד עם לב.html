@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מלמד עם לב</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מלמד עם לב</h1>
+  <p>הדרכה למורים: איך מספרים סיפור של תנא כך שיהיה מעניין גם לתלמידים וגם למורה – עם סיפור רבי חנינא בן דוסא והעזים כדוגמה, שאלות לעיון, והתאמת החומר לכל גיל</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סיפור אחד, הרבה שאלות</div>
+      <h3 class="story-title">🌰 עני ושמח</h3>
+      <p>בהדרכה למורים הדגים הרב איך אפשר ללמד סיפור מוכר בצורה מעניינת. הוא בחר סיפור שכולם מכירים: רבי חנינא בן דוסא, העזים והדובים. ותוך כדי הסיפור עצר שוב ושוב, והראה כמה שאלות מסתתרות בו.</p>
+      <p>הסיפור מתחיל: רבי חנינא בן דוסא ואשתו היו עניים מאוד. בביתם לא היה אוכל, רק שמחה של תורה. ועליו נאמר: "וַחֲנִינָא בְּנִי דַּיּוֹ בְּקַב חֲרוּבִין מֵעֶרֶב שַׁבָּת לְעֶרֶב שַׁבָּת".</p>
+      <p>כבר כאן אפשר לעצור עם הילדים ולשאול: איך זה ייתכן? חרובים הם דבר שגדל כמעט בחינם, מוצאים אותם ברחוב, ואף אחד לא מחפש לאכול אותם. הם קשים ולא טעימים. וזה מה שהוא אוכל, והוא שמח? איך שני הדברים הולכים יחד?</p>
+      <p>וכאן מסבירים את דברי המשנה: "אֵיזֶהוּ עָשִׁיר? הַשָּׂמֵחַ בְּחֶלְקוֹ". אדם יכול להיות עני מרוד, אבל אם הוא מבין שמה שה' נתן לו הוא הדבר הטוב ביותר בשבילו, הוא יכול להיות שמח ומאושר גם עם קב חרובים.</p>
+      <p class="bold-para">רבי חנינא בן דוסא אכל רק חרובים והיה שמח, כי "איזהו עשיר – השמח בחלקו".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סיפור אחד, הרבה שאלות</div>
+      <h3 class="story-title">🐓 תרנגולות בפתח</h3>
+      <p>יום אחד הופרע השקט בבית: קוקוריקו! האישה פתחה את הדלת וראתה תרנגולות שאינן שלהם. מישהו שכח אותן שם. מה עושים כשמוצאים תרנגולות בפתח הבית?</p>
+      <p>כאן אפשר ללמד את הילדים הלכה: בודקים אם יש סימן. אם אין סימן, אפשר לפעמים לקחת. אם יש סימן, צריך לשמור ולהשיב. ואפשר לשאול אותם: פעם מצאתם משהו? מה עשיתם איתו? בסיפור היה סימן – לתרנגולות היה חוט אדום. והתורה אומרת שצריך לשמור, שמא יבוא הבעלים ויאמר את הסימן.</p>
+      <p>ומה היה עושה אדם רגיל, אדם רעב? מיד היה אוכל את הביצים. אבל רבי חנינא, שאנחנו זוכרים שהיה עני מרוד, הכריז: חלילה לנו לגעת בהן! זו השבת אבדה. נשמור עליהן מכל משמר עד שיבוא הבעלים. דבר שאינו שלי – גם אם אני רעב, אינו שלי.</p>
+      <p>ורבי חנינא לא נגע בביצים. הוא נתן לתרנגולת לשבת עליהן, ומהביצים יצאו אפרוחים, שגדלו לתרנגולות, שהטילו עוד ביצים. עוד מעט כבר לא היה לרבי חנינא מקום לשבת בביתו מרוב ציוצים.</p>
+      <p class="bold-para">מוצאים אבדה – בודקים אם יש בה סימן, ושומרים עד שיבוא הבעלים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סיפור אחד, הרבה שאלות</div>
+      <h3 class="story-title">⏳ כמה זמן צריך לשמור?</h3>
+      <p>כאן שאל הרב שאלה שגם מבוגרים לא תמיד יודעים: באמת צריך לשמור על אבדה כל כך הרבה זמן, עד שאין מקום בבית? חודש? חודשיים? עשרה חודשים?</p>
+      <p>הרב סיפר שבדק, ומצא שלפי ההלכה, בדבר כזה, השמירה היא לכל היותר עד שנים עשר חודש. רבי חנינא שמר הרבה יותר מזה. למה? נדבר על זה.</p>
+      <p>ועוד שאלה: כשראה רבי חנינא שאין לו מקום, הלך ומכר את התרנגולות, ובכסף קנה עזים שתופסות פחות מקום. רגע, עצר הרב. מה אדם אמור לעשות על פי התורה עם הכסף, אחרי שמכר את האבדה? לשים אותו בצד, וזהו. ודאי לא לקנות בו עזים.</p>
+      <p>ובשיחה עם המורים נאמר: זה אפילו לא "לפנים משורת הדין" רגיל. זו מידת חסידות עליונה, מעל ומעבר. והשאלה נשארת פתוחה לעיון: האם יש באמת מידת חסידות שהיא מעל מידת החסידות הרגילה, ולמה רבי חנינא נהג בה?</p>
+      <p class="bold-para">על פי ההלכה יש גבול לשמירת אבדה כזו, ורבי חנינא הלך הרבה מעבר לו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סיפור אחד, הרבה שאלות</div>
+      <h3 class="story-title">❓ איך גידל רבי חנינא עזים?</h3>
+      <p>ועוד שאלה, הפעם קשה מאוד. הרב אמר שאם הוא זוכר נכון את המשנה במסכת בבא קמא, אסור לגדל בהמה דקה, כמו עזים, בארץ ישראל, כי הן מזיקות לשדות. אם כן, איך רבי חנינא מגדל עזים? זה פשוט אסור!</p>
+      <p>בשיחה עלו כמה תשובות. אחד המשתתפים אמר: הוא שומר כמצווה, הוא שליח מצווה, ואולי לשליח מצווה מותר. הרב השיב: אם היה מוצא עזים, עוד הייתי מסכים שאולי מצוות השבת אבדה דוחה את גזרת חכמים. אבל הוא מצא תרנגולות, והלך בעצמו וקנה עזים!</p>
+      <p>משתתף אחר הציע: הוא הרגיש מחויבות לבעלים. כמו שהתרנגולות התרבו, הוא רצה שהממון ימשיך לגדול, לעשות עוד יותר טוב לאדם שיבוא. אם כך, אולי במקום מצווה אין את האיסור. חידוש.</p>
+      <p>ועוד אפשרות: רבי חנינא ידע שהוא רגיל בנסים. הוא ידע שהעזים שלו לעולם לא יאכלו משדות של אחרים, ולכן הגזרה, שנועדה למנוע נזק, לא חלה עליו. ומי יודע – אולי גידל אותן מחוץ לעיר.</p>
+      <p class="bold-para">חכמים אסרו לגדל בהמה דקה בארץ ישראל, וזו שאלה קשה על הסיפור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · סיפור אחד, הרבה שאלות</div>
+      <h3 class="story-title">🐻 העזים והדובים</h3>
+      <p>שנים רבות גדלו העזים, ורבי חנינא לא לקח לעצמו אפילו טיפת חלב. הכל שייך לבעלים. ושוב שאלה: באמת כך הדין? אדם שמצא אבדה צריך להשקיע בה את זמנו בחינם? בארצות הברית אומרים "הזמן שווה כסף". אולי גם זה לפנים משורת הדין.</p>
+      <p>יום אחד כעסו השכנים: העזים שלך אוכלות מן השדות שלנו! רבי חנינא ידע שזה לא נכון. מאיפה ידע? אולי השגיח עליהן היטב. אולי ידע שקורה לו נס, כמו שבעלי חיים של צדיקים אינם אוכלים מאכל אסור. והרב הזכיר שזו סוגיה שלמה בתוספות, והקשה: הרי אברהם אבינו חסם את פי בהמותיו כדי שלא יאכלו בשדות של אחרים. אם בהמות של צדיקים אינן אוכלות גזל מעצמן, למה היה צריך? שאלה לעיון.</p>
+      <p>אמר רבי חנינא: אם העזים אוכלות גזל, יבואו דובים ויאכלו אותן. ואם לא, כל עז תחזור עם דוב על קרניה. ולעת ערב חזרו העזים, ועל כל קרן – דוב. כולם הבינו שהעזים רחוקות מגזל עד כדי נס גלוי.</p>
+      <p>אחרי ימים עבר האיש ונזכר בתרנגולותיו. נתן סימן – חוט אדום – ורבי חנינא החזיר לו עדר שלם. בסיכום אמר הרב: "חסיד" אינו מי שמתפלל הרבה, אלא מי שעושה חסדים שאינו חייב בהם. רבי חנינא לא רק שמר, הוא נזהר בצורה שאין לשער. קל וחומר שאנחנו צריכים להיזהר ברכוש החבר.</p>
+      <p class="bold-para">חסיד אמיתי הוא מי שעושה חסד מעבר למה שהוא חייב, ושומר על רכוש חברו יותר משלו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מורה שאינו משתעמם</div>
+      <h3 class="story-title">🔎 לקרוא שוב את הסיפור</h3>
+      <p>באמצע הסיפור עצר הרב ואמר דבר שהוא מרגיש שהוא אומר קודם כל לעצמו: אנחנו המורים מספרים את אותם סיפורים בכיתות המון פעמים. אנחנו מכירים אותם, ולפעמים זה כבר משעמם.</p>
+      <p>לכן כדאי מאוד לקרוא את הסיפור עוד פעם, ולשים לב להמון השאלות שיש בו. יש בו שאלות שגם אנחנו המבוגרים יכולים להתמודד איתן. זה יהפוך את הסיפור למעניין גם בשבילנו.</p>
+      <p>למשל, מה שנשאל קודם: כמה זמן צריך לשמור את התרנגולות? חודש, חודשיים, עשרה חודשים? גם אני המבוגר לא בטוח שאני יודע. האם יש מידת חסידות מעל מידת חסידות רגילה, ולמה רבי חנינא נוהג בה? איך גידל בהמה דקה? מאיפה ידע שהעזים אינן מזיקות?</p>
+      <p>כשהמורה עצמו מתעניין, הכיתה מרגישה את זה. אחרי שמספרים סיפור כמה פעמים נשחקים, אבל אם מפעילים את הראש, כל פעם הסיפור נעשה חי מחדש.</p>
+      <p class="bold-para">מורה שמחפש שאלות בסיפור המוכר, הופך אותו למעניין גם בשבילו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מורה שאינו משתעמם</div>
+      <h3 class="story-title">📚 לשאול מה כתבו הראשונים והאחרונים</h3>
+      <p>ועוד עצה נתן הרב: היום אפשר להיעזר בכלים של בינה מלאכותית. אפשר להביא את הסיפור ולבקש: בדוק לי אילו נקודות עוררו על הסיפור הזה הראשונים והאחרונים. ופתאום שמים לב להמון דברים, והסיפור נעשה מעניין הרבה יותר.</p>
+      <p>הרב הדגים זאת בשאלה על גידול העזים. הוא כתב את השאלה, והתקבלה רשימה מסודרת של כיווני תשובה: אולי מצוות השבת אבדה ברמה גבוהה כזאת, לפנים משורת הדין, דוחה את הגזרה. אולי גידל אותן מחוץ לעיר. ואולי, משום שהיה רגיל בנסים, ידע שעזיו לעולם לא יאכלו מגזל, ולכן הגזרה לא חלה עליו.</p>
+      <p>וכל זה, אמר הרב, הוא תוספת לתמונות ולמצגות. מעבר לכל העזרים, צריך להפעיל את הראש. העבודה הטכנית נעשית היום כמעט מעצמה, אבל המחשבה, השאלה והעיון – אלה התפקיד של המורה. הכלים רק מאפשרים לו להקדיש להם יותר זמן.</p>
+      <p class="bold-para">אפשר להיעזר בכלים חדשים כדי למצוא את השאלות שהמפרשים עוררו על סיפור.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · מורה שאינו משתעמם</div>
+      <h3 class="story-title">📄 שאלה של תלמיד הופכת לדף</h3>
+      <p>בסוף הראה הרב "טיפ" שהוא אוהב במיוחד. קודם הדגיש: אצל תלמידים שאינם נוגעים במחשב – אל תכניסו אותם לזה בשום פנים ואופן. אבל מי שכבר יושב מול מחשב ומשחק בו, זה לא יזיק לו, ואפשר לתת לו דרבון יפה.</p>
+      <p>הוא לקח את השאלה שעלתה: איך גידל רבי חנינא עזים? הכתיב אותה עם כיווני התשובה, וביקש להכין ממנה דף מעוצב. תוך דקה בערך היה מוכן דף יפה, עם כותרת, השאלה ההלכתית, התירוצים והמקורות מן הגמרא.</p>
+      <p>ובדף הופיע גם התירוץ שאחד המשתתפים אמר באמצע השיחה. הרב פנה אליו: אתה רואה? התירוץ שלך כתוב כאן!</p>
+      <p>תחשבו מה מרגיש תלמיד ששאל שאלה, ורואה אותה מוגשת לו כמערכה כתובה ומסודרת, עם קושיה ותירוצים, ואולי גם עם התירוץ שהוא עצמו אמר. התלמיד לא יאמין למראה עיניו. כך מלמדים אותו שיש לשאלה שלו ערך, ושהוא יכול לכתוב חידושים ולשמור אותם.</p>
+      <p class="bold-para">כשתלמיד שואל שאלה טובה, אפשר להפוך אותה לדף מסודר עם תשובות ומקורות, והוא ירגיש שותף בלימוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מספרים – לא מקריאים</div>
+      <h3 class="story-title">🎙️ לא רובוט במקום המורה</h3>
+      <p>בפגישה נוספת, עם מורה שהתחילה להשתמש בקטלוג סיפורי התנאים, נשאלה שאלה: איך משתמשים במצגת בכיתה? האם מקריאים מה שכתוב בה?</p>
+      <p>הרב ענה: אני משתדל מאוד לא להפוך את השיעור למצגת. אני עצמי מספר את הסיפור, ושואל שאלות. אם רק מקריאים, אפשר לקחת רובוט במקומי.</p>
+      <p>ולמה בכל זאת מצגת? כי היא מאוד עוזרת לזכור את כל חלקי הסיפור, לדעת היכן לעצור, ולשמור על ריכוז. עקרונית, אמר, היה צריך שיהיה כתוב בה כמה שפחות, והמורה יספר את הרוב. הבעיה היא שגם המורה לא תמיד זוכר הכל, ולכן הכתוב עוזר. אבל הכתוב הוא בשביל המורה, ולא במקומו.</p>
+      <p>ועוד עצה מעשית: להציג את המצגת במסך מלא, בלי סרגלים וחלונות צדדיים, ולעבור בין השקופיות במקשים. כשרואים את כל התמונה גדולה וברורה, זה מושך גם מבוגרים.</p>
+      <p class="bold-para">המצגת היא עזר לזיכרון של המורה, אבל את הסיפור צריך לספר בעל פה, ולשאול שאלות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · מספרים – לא מקריאים</div>
+      <h3 class="story-title">🔥 שאלה קשה גם למבוגרים</h3>
+      <p>הרב הדגים זאת בסיפור על רבן יוחנן בן זכאי. ירושלים במצור. הרומאים מקיפים את העיר. שאל את הילדים: ראיתם פעם את חומת ירושלים? היא ענקית. הרומאים רוצים לכבוש את העיר, ולכן הם צרים עליה. ומה קורה במצור? אנשים רעבים, אין לחם.</p>
+      <p>ואז קורה דבר מוזר מאוד: הבריונים שבתוך העיר שורפים את המחסנים. איזה דבר מוזר! אם יש רעב, למה לשרוף את האוכל? מה הם הרוויחו בזה?</p>
+      <p>הרב אמר: זו שאלה קשה מאוד, גם למבוגרים. המורה שאיתו שוחח ניסתה לענות: אולי חשבו שאם לא תהיה ברירה, אנשים יילחמו. אולי. אבל הנקודה היא שגם בסיפור לילדים יש מקום לעצור ולתת לשאלה לעמוד, להתווכח, לחשוב.</p>
+      <p>שאלה כזאת עושה את הסיפור לחי. הילדים לא רק שומעים מה קרה, אלא מנסים להבין למה. וזה, יותר מכל, מה שהם יזכרו.</p>
+      <p class="bold-para">גם בסיפור לילדים כדאי לעצור על שאלות שאין להן תשובה פשוטה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לכל גיל לפי דרכו</div>
+      <h3 class="story-title">🖍️ כיתה א' – לצבוע, לסדר, לספר</h3>
+      <p>המורה שאלה על דפי העבודה המוכנים בקטלוג. הרב אמר שהם בסדר, אבל מתאימים לכיתות גבוהות יותר. לפי הכתב והניסוח, הם אינם לכיתה א', וגם לא בטוח שלכיתה ב'.</p>
+      <p>ומה כן מתאים לכיתה א'? שם רוב הילדים עוד לא קוראים. לכן תמונות: לצבוע דמות, לסדר תמונות לפי הסדר – מה היה קודם ומה אחר כך, אולי לכתוב מספרים, ולכל היותר משפטים בודדים.</p>
+      <p>ועוד פעילות יפה: הילדים גוזרים בעצמם את הדמויות מן הציור, נניח ארבע דמויות, ובעזרתן מספרים את הסיפור. ואם ילד בכיתה א' מצליח לספר דקה אחת – זה יפה מאוד. זה המקסימום שילדים בגיל הזה מצליחים בדרך כלל. דקה של סיפור בפי הילד היא הישג.</p>
+      <p>ואם רוצים דף עבודה מותאם, אפשר לקחת את קטע "קריאת הסיפור" שבקטלוג ולבקש מן הבינה המלאכותית להכין ממנו דף לכיתה א'. והעצה החשובה: לא להשאיר לה לבחור, אלא לומר בדיוק מה רוצים. הכי טוב – להביא לה דוגמה של דף עבודה אחר, ולבקש דף כזה לסיפור הזה.</p>
+      <p class="bold-para">בכיתות הנמוכות מתאימים פעילויות של ציור וסידור, ודקה אחת של סיפור בפי הילד היא הישג.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · לכל גיל לפי דרכו</div>
+      <h3 class="story-title">📅 לפי סדר הדורות</h3>
+      <p>המורה שאלה: באיזה סדר ללמד? הרב סיפר שלימד את סיפורי התנאים בכיתות א' עד ד', ובשלב מסוים התחיל לעבוד לפי סדר הדורות. היה לו חשוב מאוד שהתלמידים יתפסו מתי חי כל תנא.</p>
+      <p>בכיתות הנמוכות, אמר, אין טעם לנסות ללמד סדר זמנים. שם רק רוצים לראות שהילדים זוכרים כמה סיפורים: כמה סיפורים יש על רבי עקיבא, כמה על נחום איש גם זו. אבל מכיתה ג' והלאה, הסדר חשוב.</p>
+      <p>למה? במיוחד אצל בנים, שילמדו תנאים כל החיים. אם תהיה להם סדרה קבועה, כל פעם שילמדו במשנה "רבי אליעזר" יזכרו מיד: רבי אליעזר בן הורקנוס, תלמיד רבן יוחנן בן זכאי, ורבי יהושע בן חנניה היה חברו. הם יבינו למה תמיד מופיע במשנה "רבי אליעזר ורבי יהושע" – כי היו ביחד באותו בית מדרש.</p>
+      <p>אם מצליחים להגיע לזה – זה הישג אדיר. התנא במשנה אינו עוד שם זר, אלא אדם שהם מכירים. ואם אין סדרה קבועה, אפשר ללכת לפי לוח השנה, למשל לספר על רבן יוחנן בן זכאי בתקופת בין המצרים. וגם לבנות, שמתחילות ללמוד משנה, סיפורים רבים יעזרו להתחבר אליה.</p>
+      <p class="bold-para">מי שלמד את התנאים לפי הסדר, יזהה אותם כשיפגוש אותם במשנה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · אוצר של חומרים</div>
+      <h3 class="story-title">🗂️ הקטלוג והכלים</h3>
+      <p>בהדרכות סיפר הרב על הכלים שבנה לעצמו בשנה שבה לימד על גדולי ישראל כהכנה ללימוד משנה, והוא משתף בהם את כל המורים. באתר שלו יש קטלוגים כמעט לכל נושא, עם עשרות אלפי קבצים.</p>
+      <p>בקטלוג סיפורי התנאים כל סיפור מופיע עם תמונה, ולצידו: פתיחת מצגת, קריאת הסיפור, מדריך למורה, דף עבודה ומשחק לימוד. מחפשים לפי שם התנא, ועדיף לכתוב רק את השם עצמו, בלי "רבי". למשל, את רבן יוחנן בן זכאי לא ימצאו תחת "רבי יוחנן", כי קוראים לו "רבן".</p>
+      <p>יש גם קטלוג של גדולי ישראל לפי סדר הדורות: משמעון הצדיק, דרך התנאים, ועד גדולי הדורות האחרונים. לכל אחד יש תיקייה עם מצגות וחומרים. ועוד: מורה אחד מסר במשך שנים רבות שיעורים קבועים על גדולי ישראל, הכין המון דפי עבודה, כרטיסים ודפי צביעה לכעשרים וחמישה תנאים, ומסר את כל החומר שלו לשימוש כולם.</p>
+      <p>ויש כלי שבו מקלידים שם של תנא או נושא, ומקבלים חומר מוכן לשיעור: קורות חייו, הסיפור, הנקודות הדרמטיות, איך לספר בכיתה, והמקורות בגמרא. אפשר גם לבקש ממנו מצגת. אבל, כפי שראינו, כל זה רק נותן למורה זמן לעשות את מה שאף כלי לא יעשה במקומו: לחשוב, לשאול, ולספר מן הלב.</p>
+      <p class="bold-para">קטלוג סיפורי התנאים מסודר לפי סדר הדורות, ולכל סיפור מצורפים מצגת, מדריך למורה, דף עבודה ומשחק.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בקו קול תודה של הרב יהודה טאוב · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"סיפור אחד, הרבה שאלות","icon":"🐐","color":"#c62b6b","stories":[{"id":1,"title":"עני ושמח","icon":"🌰"},{"id":2,"title":"תרנגולות בפתח","icon":"🐓"},{"id":3,"title":"כמה זמן צריך לשמור?","icon":"⏳"},{"id":4,"title":"איך גידל רבי חנינא עזים?","icon":"❓"},{"id":5,"title":"העזים והדובים","icon":"🐻"}]},{"id":2,"name":"מורה שאינו משתעמם","icon":"💡","color":"#6d28d9","stories":[{"id":6,"title":"לקרוא שוב את הסיפור","icon":"🔎"},{"id":7,"title":"לשאול מה כתבו הראשונים והאחרונים","icon":"📚"},{"id":8,"title":"שאלה של תלמיד הופכת לדף","icon":"📄"}]},{"id":3,"name":"מספרים – לא מקריאים","icon":"🎙️","color":"#e08e00","stories":[{"id":9,"title":"לא רובוט במקום המורה","icon":"🎙️"},{"id":10,"title":"שאלה קשה גם למבוגרים","icon":"🔥"}]},{"id":4,"name":"לכל גיל לפי דרכו","icon":"🧒","color":"#1e88b8","stories":[{"id":11,"title":"כיתה א' – לצבוע, לסדר, לספר","icon":"🖍️"},{"id":12,"title":"לפי סדר הדורות","icon":"📅"}]},{"id":5,"name":"אוצר של חומרים","icon":"🗂️","color":"#c62b6b","stories":[{"id":13,"title":"הקטלוג והכלים","icon":"🗂️"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
