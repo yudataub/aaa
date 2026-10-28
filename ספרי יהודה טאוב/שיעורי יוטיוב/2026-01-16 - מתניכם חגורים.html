@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מתניכם חגורים</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מתניכם חגורים</h1>
+  <p>שיעור לילדים בפרשת בא: אכילת קורבן פסח כמעשה של אמונה, מכת בכורות והשפטים באלילי מצרים, איסור חמץ, מקרא קודש, ושמירת המצות</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מתניכם חגורים" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/n13SrNHOYD0?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/n13SrNHOYD0/hqdefault.jpg" alt="מתניכם חגורים" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=n13SrNHOYD0" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אוכלים בחיפזון</div>
+      <h3 class="story-title">🚪 סוף סוף יוצאים</h3>
+      <p>השיעור, שנאמר לילדים והוקלט גם בשביל חבר שלא יכול היה להגיע, נפתח בשאלה: כמה שנים היו בני ישראל במצרים? מאתיים ועשר שנים. שנים ארוכות של עבודה קשה. אפשר לתאר כמה חלמו כבר על היום שבו יצאו לחופשי.</p>
+      <p>והנה מגיע הלילה שלפני היציאה. התורה מצווה לאכול באותו לילה את קורבן הפסח, אבל בצורה מעניינת מאוד, כמעט מוזרה: "וְכָכָה תֹּאכְלוּ אֹתוֹ: מָתְנֵיכֶם חֲגֻרִים, נַעֲלֵיכֶם בְּרַגְלֵיכֶם, וּמַקֶּלְכֶם בְּיֶדְכֶם, וַאֲכַלְתֶּם אֹתוֹ בְּחִפָּזוֹן, פֶּסַח הוּא לַה'".</p>
+      <p>ארבעה דברים יש כאן: חגורה, נעליים, מקל, וחיפזון. כל אחד מהם מספר משהו על האופן שבו אכלו את הקורבן, וכולם יחד מלמדים יסוד גדול באמונה.</p>
+      <p>בשיעור קראו את הפסוקים יחד, והילדים התבקשו לדמיין את עצמם שם: עבדים שעוד אתמול עבדו בטיט ובלבנים, ועכשיו יושבים בבית, אוכלים בשר צלי, ומחכים לרגע שבו ייצאו לחירות.</p>
+      <p>"מתניכם חגורים": לא חגורה רגילה. הכוונה לחגורה של דרך, כמו חגורה של חייל או של מטייל, שתלויים עליה כל הדברים הדרושים בדרך, כמו מימייה וציוד. מי שחוגר חגורה כזאת, מוכן לצאת.</p>
+      <p>"נעליכם ברגליכם": לא נעלי בית, אלא נעליים של הליכה, כמו נעליים שהולכים בהן לטיול. "ומקלכם בידכם": מקל הליכה. אדם מבוגר שיוצא לדרך ארוכה, שיש בה עליות וטיפוס, לוקח לפעמים מקל ביד.</p>
+      <p>תחשבו על התמונה: משפחה יושבת ואוכלת, כולם חגורים, נעולים, המקל ביד. כמו אנשים שיושבים ומחכים שעוד רגע יצלצל הפעמון ויקראו להם לצאת. עוד רגע יוצאים ממצרים.</p>
+      <p class="bold-para">אחרי מאתיים ועשר שנות שעבוד, התורה מצווה לאכול את קורבן הפסח בצורה מיוחדת מאוד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אוכלים בחיפזון</div>
+      <h3 class="story-title">☕ השוקו של הבוקר</h3>
+      <p>ומה פירוש "ואכלתם אותו בחיפזון"? בשיעור הובאה דוגמה שכל ילד מכיר. בבוקר מכינים כוס שוקו, והשעה כבר מאוחרת. עוד רגע ההסעה מגיעה. מסתכלים על השעון: אספיק לגמור את השוקו או לא? והשוקו עוד חם, ואי אפשר לשתות אותו בבת אחת.</p>
+      <p>מה עושים? שותים מהר מהר, עם עין אחת על השעון ואוזן אחת לדלת. זה אדם שאוכל בחיפזון: הוא אוכל, אבל כל כולו כבר בדרך החוצה.</p>
+      <p>כך אכלו בני ישראל את קורבן הפסח. לא בנחת ובישיבה ארוכה, אלא כמי שיודע שבכל רגע יקראו לו לצאת. ונשאלת השאלה: למה? מה העניין לאכול כך? הרי אפשר היה לאכול כרגיל, ולהתארגן ליציאה אחרי הסעודה.</p>
+      <p class="bold-para">"בחיפזון" פירושו לאכול כמו מי שיודע שעוד רגע הוא צריך לצאת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · אוכלים בחיפזון</div>
+      <h3 class="story-title">🙌 אמונה שעושה מעשים</h3>
+      <p>התשובה עמוקה מאוד. שימו לב באיזה רגע הם נמצאים. עדיין אף אחד לא פרסם הודעה רשמית שמחר בעשר בבוקר יוצאים לחירות. פרעה עוד לא הסכים. אם היו שואלים אותו, היה עונה: מה פתאום? מחר אתם הולכים לעבודה כרגיל.</p>
+      <p>מי הבטיח להם שמחר יוצאים? רק ה'. ועליהם להכניס בלבם את האמונה שאם ה' אמר שמחר יוצאים, זה באמת יקרה מחר.</p>
+      <p>ואיך מחזקים אמונה? לא רק מדברים עליה, אלא עושים מעשים. מקריבים קורבן, ואוכלים אותו חגורים, נעולים, עם מקל ביד, מוכנים לצאת. אפשר לדמיין את המצרים מסתכלים עליהם ושואלים: על מה אתם מדברים? פרעה עוד לא הסכים! והם עונים: אנחנו מאמינים שבבוקר זה יקרה.</p>
+      <p>זו אמונה גדולה מאוד: להתנהג כבר עכשיו כאילו ההבטחה התקיימה, כי מי שהבטיח הוא ה'. וזה גם לימוד לכל אדם: כשה' מבטיח, אין מה לפחד, ואפשר לפעול מתוך ביטחון.</p>
+      <p class="bold-para">את האמונה לא מספיק לומר בפה; עושים מעשים שמראים שמאמינים שהבטחת ה' תתקיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הלילה הזה</div>
+      <h3 class="story-title">🌙 שלושה סוגי בכורות</h3>
+      <p>התורה ממשיכה: "וְעָבַרְתִּי בְאֶרֶץ מִצְרַיִם בַּלַּיְלָה הַזֶּה, וְהִכֵּיתִי כָל בְּכוֹר בְּאֶרֶץ מִצְרַיִם מֵאָדָם וְעַד בְּהֵמָה". הילדים נשאלו: כמה סוגים של בכורות מתו?</p>
+      <p>התשובה: בכור אדם, וגם בכורי השפחות והשבויים, כפי שלמדו בשיעור קודם, ובכור בהמה. המכה לא פסחה על אף שכבה בחברה המצרית: מן הבכור של פרעה ועד הבכור של השפחה.</p>
+      <p>ולמה גם הבהמות? כי המצרים עבדו לבהמות והשתחוו להן. הבהמות נעשו אצלם עבודה זרה, ולכן גם בכורי הבהמה נענשו. כך ראו המצרים שהדברים שבהם בטחו אין בהם ממש.</p>
+      <p>ושימו לב: המכה באה "בלילה הזה", בדיוק באותו לילה שבו ישבו בני ישראל ואכלו את הפסח בחיפזון. בזמן שהמצרים התעוררו לזעקה גדולה, ישראל היו מוכנים, חגורים ונעולים, ממתינים לרגע היציאה.</p>
+      <p class="bold-para">במכת בכורות מתו בכורי האדם, בכורי השפחות והשבויים, ובכורי הבהמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הלילה הזה</div>
+      <h3 class="story-title">🗿 "ובכל אלוהי מצרים אעשה שפטים"</h3>
+      <p>המשך הפסוק: "וּבְכָל אֱלֹהֵי מִצְרַיִם אֶעֱשֶׂה שְׁפָטִים, אֲנִי ה'". אלוהי מצרים כאן הם האלילים שלהם. איך מענישים פסל? מה אפשר לעשות לאליל?</p>
+      <p>הפסוק אינו מפרט, אבל הרב תיאר שבאותו לילה קרה נס. במדרש מובא שהאלילים נפגעו כל אחד לפי החומר שממנו היה עשוי, ושאלילי המתכת נמסו. כך תואר בשיעור: הברזל נעשה כמו מים, והפסלים הגבוהים נמסו, נפלו על הרצפה והתנפצו. בכל מצרים, בבת אחת, נשברו כל הפסלים.</p>
+      <p>זה היה חלק חשוב מן המכה. המצרים ראו לא רק שהבכורים מתו, אלא גם שהאלילים שבהם בטחו אינם יכולים להושיע אפילו את עצמם. ובני ישראל, באותו לילה ממש, ישבו בבתיהם ואכלו את קורבן הפסח באמונה בה' לבדו.</p>
+      <p class="bold-para">בלילה הזה נשברו גם אלילי מצרים, כדי שיראו כולם שאין כוח מלבד ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · הלילה הזה</div>
+      <h3 class="story-title">🏠 למה קוראים לו פסח</h3>
+      <p>"וְהָיָה הַדָּם לָכֶם לְאֹת עַל הַבָּתִּים אֲשֶׁר אַתֶּם שָׁם, וְרָאִיתִי אֶת הַדָּם וּפָסַחְתִּי עֲלֵכֶם, וְלֹא יִהְיֶה בָכֶם נֶגֶף לְמַשְׁחִית בְּהַכֹּתִי בְּאֶרֶץ מִצְרָיִם".</p>
+      <p>מכאן שמו של החג. "פסח" פירושו דילג, קפץ. הקדוש ברוך הוא, כביכול, עבר בין הבתים, ובמקום שהיה בית של יהודי, דילג עליו ולא פגע בו. בשיעור שאלו את הילדים בחיוך: אפשר לקפוץ מעל בית? כאן כן. ה' פסח על הבית, והמשחית לא נכנס.</p>
+      <p>כך כל שם החג מזכיר את ההשגחה הפרטית: באותו לילה, באותה עיר, ברחוב אחד, בית אחד נפגע ובית סמוך לו נשמר. אין כאן מקרה, אלא יד ה' שמבחינה בין בית לבית.</p>
+      <p>ולכן גם בליל הסדר, כשמגיעים בהגדה לקורבן הפסח, שואלים: "פסח שהיו אבותינו אוכלים... על שום מה?" ועונים: על שום שפסח הקדוש ברוך הוא על בתי אבותינו במצרים.</p>
+      <p class="bold-para">ה' דילג על בתי ישראל, ומכאן שמו של החג: פסח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · חוקת עולם</div>
+      <h3 class="story-title">📅 "לדורותיכם חוקת עולם"</h3>
+      <p>"וְהָיָה הַיּוֹם הַזֶּה לָכֶם לְזִכָּרוֹן, וְחַגֹּתֶם אֹתוֹ חַג לַה' לְדֹרֹתֵיכֶם, חֻקַּת עוֹלָם תְּחָגֻּהוּ". מה פירוש "לדורותיכם"? אתם, הילדים, הנכדים, הנינים, וכל הצאצאים. כולם יחגגו את החג הזה.</p>
+      <p>בשיעור חשבו יחד כמה שנים עברו מאז נאמר הפסוק: יותר משלושת אלפים שנה. ובכל השנים האלה, בכל דור ובכל מקום, ישבו יהודים בליל הפסח וזכרו את היציאה ממצרים.</p>
+      <p>זה דבר שאין לו דוגמה. אין עוד אומה בעולם ששומרת חג אחד כבר יותר משלושת אלפים שנה ברציפות. אנחנו היחידים. וזה עצמו מלמד על אמיתות הסיפור: הבטחת התורה "חוקת עולם" מתקיימת לנגד עינינו בכל שנה מחדש.</p>
+      <p>ויש בזה גם אחריות. כל ילד שיושב בליל הסדר הוא חוליה בשרשרת הארוכה הזאת. מה שקיבלנו מן ההורים, נעביר לילדינו, וכך יימשך החג עד סוף כל הדורות, כמו שהבטיחה התורה.</p>
+      <p class="bold-para">מאז נאמר הפסוק עברו אלפי שנים, ועם ישראל עדיין חוגג את הפסח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שבעת ימים מצות</div>
+      <h3 class="story-title">🍞 "תשביתו שאור מבתיכם"</h3>
+      <p>אחד הילדים קרא את הפסוק: "שִׁבְעַת יָמִים מַצּוֹת תֹּאכֵלוּ, אַךְ בַּיּוֹם הָרִאשׁוֹן תַּשְׁבִּיתוּ שְּׂאֹר מִבָּתֵּיכֶם". יש מצווה לאכול מצות שבעה ימים, ומה המצווה ביום הראשון? להשבית את השאור. כלומר, עוד לפני שמתחילים לאכול מצות, הבית צריך להיות נקי מחמץ.</p>
+      <p>מה זה שאור? לא שעורה, כמו שאחד הילדים חשב. שאור הוא בצק שהחמיץ. נותנים אותו בתוך עיסה חדשה, והוא גורם לכל העיסה להחמיץ. לכן צריך להוציא אותו מן הבית, ולא להשאיר ממנו כלום.</p>
+      <p>המצווה היא שלא יהיה חמץ בבית כל ימי החג, ושבמקום הלחם יאכלו מצה, לחם פשוט שלא הספיק להחמיץ.</p>
+      <p>השאור הוא דבר קטן, חתיכת בצק בלבד, אבל כוחו גדול: מעט ממנו מחמיץ עיסה שלמה. לכן התורה אינה מסתפקת בכך שלא נאכל חמץ, אלא מצווה להשבית אותו לגמרי, שלא יימצא ממנו דבר בבית כל שבעת ימי החג.</p>
+      <p class="bold-para">שבעה ימים אוכלים מצות, וכבר מן היום הראשון משביתים את השאור מן הבית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שבעת ימים מצות</div>
+      <h3 class="story-title">⚠️ "ונכרתה הנפש ההיא"</h3>
+      <p>הפסוק ממשיך: "כִּי כָּל אֹכֵל חָמֵץ וְנִכְרְתָה הַנֶּפֶשׁ הַהִוא מִיִּשְׂרָאֵל". מה פירוש "ונכרתה"? זהו עונש כרת: הנפש נכרתת, כביכול, מבורא עולם. זה עונש בידי שמיים, ולא בידי אדם.</p>
+      <p>זו אחת העבירות החמורות ביותר בתורה. ילד שעדיין לא הגיע לגיל מצוות אינו חייב כרת, אבל יש עליו מצוות חינוך, ומרגילים אותו להיזהר מחמץ כמו הגדולים. כך, כשיגדל, יהיה הדבר טבעי אצלו.</p>
+      <p>הפסוק האחרון בעניין חוזר ומדגיש: "שִׁבְעַת יָמִים שְׂאֹר לֹא יִמָּצֵא בְּבָתֵּיכֶם", והאיסור חל "בַּגֵּר וּבְאֶזְרַח הָאָרֶץ", גם על מי שנולד יהודי וגם על מי שהתגייר. כל יהודי שותף בזיכרון הזה.</p>
+      <p>למה חמור כל כך? כי הפסח מזכיר לנו שהקדוש ברוך הוא גאל אותנו. מי שאוכל חמץ בפסח, מראה כביכול שאינו מאמין בניסים שה' עשה לנו ביציאת מצרים. המצה היא עדות, והחמץ הוא הפך העדות. לכן התורה החמירה כל כך.</p>
+      <p class="bold-para">אכילת חמץ בפסח היא מן העבירות החמורות בתורה, כי מי שאוכל חמץ כאילו מראה שאינו מאמין בניסי היציאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · שבעת ימים מצות</div>
+      <h3 class="story-title">🔥 "ושמרתם את המצות"</h3>
+      <p>ועכשיו פסוק מעניין מאוד: "וּשְׁמַרְתֶּם אֶת הַמַּצּוֹת". הילדים צחקו: איפה שומרים אותן? מתחת למיטה? במחסן? ממי צריך לשמור עליהן?</p>
+      <p>רש"י מסביר: שלא יבואו לידי חימוץ. השמירה היא שהמצות לא יחמיצו. ואיך שומרים? עובדים מהר. מי שהיה פעם באפיית מצות ראה את זה: מרגע ששמו מים בקמח, כולם עובדים מהר מהר, בלי רגע של הפסקה. לשים, לרדד, לנקב, להכניס לתנור. כל הזמן ממשיכים לעבוד על הבצק, כדי שלא יספיק להחמיץ.</p>
+      <p>אחד הילדים סיפר שבבית הספר עשו פעם אפיית מצות, וראו בדיוק את זה: כולם עבדו מהר מאוד, בלי לעצור, והמבוגרים השגיחו שלא יישאר בצק בלי עבודה אפילו לרגע. וזה מתחבר לכל מה שלמדנו: היציאה ממצרים הייתה בחיפזון, והמצה היא הלחם של החיפזון. גם שמירת המצות מזכירה לנו שה' הוציא אותנו מהר, ברגע אחד.</p>
+      <p class="bold-para">שומרים את המצות שלא יחמיצו, ולכן עובדים על הבצק מהר ובלי הפסקה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקרא קודש</div>
+      <h3 class="story-title">🕯️ שני ימים קדושים</h3>
+      <p>"וּבַיּוֹם הָרִאשׁוֹן מִקְרָא קֹדֶשׁ, וּבַיּוֹם הַשְּׁבִיעִי מִקְרָא קֹדֶשׁ יִהְיֶה לָכֶם". בפסח יש שני ימים של חג: הראשון, ושביעי של פסח. מה זה "מקרא קודש"? לעשות מן היום הזה משהו קדוש, שיהיה ניכר שהוא יום מיוחד.</p>
+      <p>איך עושים זאת? התורה לא פירטה, ובשיעור הילדים הציעו רעיונות רבים: מפה לבנה על השולחן, קידוש, כל המשפחה שמתאספת יחד, תפילה בבית הכנסת, שירים. לובשים בגדים יפים, אוכלים ארוחה חגיגית, ומי שאוהב שותה יין לכבוד החג.</p>
+      <p>אם מישהו הולך ביום טוב בבגדי חול, משהו חסר. התורה ציוותה "מקרא קודש", שיראו עליך שהיום הוא יום קדוש. לכן כדאי שיהיו לאדם בגדים מיוחדים לשבת ולחג. רבים לובשים חולצה לבנה, וכל אחד לובש משהו מיוחד, כדי שיהיה ניכר שהיום שבת או חג.</p>
+      <p class="bold-para">ביום הראשון וביום השביעי של פסח יש מקרא קודש, ואת הקדושה צריך לעשות ניכרת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מקרא קודש</div>
+      <h3 class="story-title">🍲 "אשר יאכל לכל נפש"</h3>
+      <p>"כָּל מְלָאכָה לֹא יֵעָשֶׂה בָהֶם, אַךְ אֲשֶׁר יֵאָכֵל לְכָל נֶפֶשׁ, הוּא לְבַדּוֹ יֵעָשֶׂה לָכֶם". נשאלה השאלה: מה ההבדל בין חג לשבת?</p>
+      <p>בשבת כל מלאכה אסורה. ביום טוב מלאכה אסורה באופן כללי, אבל מה שקשור לאוכל נפש הותר. לכן ביום טוב מבשלים. בשיעור הוסבר העיקרון: אין מדליקים אש חדשה, אבל מעבירים אש מאש קיימת, מנר לנר. כך אפשר לבשל ולהכין אוכל לכבוד החג. את הפרטים יש ללמוד בהלכות יום טוב.</p>
+      <p>וכאן הכל מתחבר. ההיתר לבשל ביום טוב הוא חלק מן ה"מקרא קודש": עושים אוכל מיוחד, ארוחה חגיגית, ומכבדים את החג בשמחה. היום אינו רק יום של מנוחה, אלא יום של שמחה לפני ה'.</p>
+      <p>יוצא שבשבת הקדושה ניכרת בכך שנמנעים מכל מלאכה, וביום טוב היא ניכרת גם בכך שמכינים אוכל טרי וחם לכבוד החג. בשני המקרים המטרה אחת: שיהיה ניכר שהיום הוא יום קדוש.</p>
+      <p>בסיום השיעור נאספו התשובות של הילדים, ונשלחה ברכת רפואה שלמה לחבר שלא יכול היה להגיע, שיזכה להצטרף כבר בשבוע הבא.</p>
+      <p class="bold-para">ביום טוב אסורה מלאכה, אבל מה שנחוץ לאוכל נפש הותר, כדי לשמוח בחג.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/n13SrNHOYD0 · 2026-01-16 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"אוכלים בחיפזון","icon":"👟","color":"#c62b6b","stories":[{"id":1,"title":"סוף סוף יוצאים","icon":"🚪"},{"id":2,"title":"השוקו של הבוקר","icon":"☕"},{"id":3,"title":"אמונה שעושה מעשים","icon":"🙌"}]},{"id":2,"name":"הלילה הזה","icon":"🌙","color":"#6d28d9","stories":[{"id":4,"title":"שלושה סוגי בכורות","icon":"🌙"},{"id":5,"title":"\"ובכל אלוהי מצרים אעשה שפטים\"","icon":"🗿"},{"id":6,"title":"למה קוראים לו פסח","icon":"🏠"}]},{"id":3,"name":"חוקת עולם","icon":"📅","color":"#e08e00","stories":[{"id":7,"title":"\"לדורותיכם חוקת עולם\"","icon":"📅"}]},{"id":4,"name":"שבעת ימים מצות","icon":"🥖","color":"#1e88b8","stories":[{"id":8,"title":"\"תשביתו שאור מבתיכם\"","icon":"🍞"},{"id":9,"title":"\"ונכרתה הנפש ההיא\"","icon":"⚠️"},{"id":10,"title":"\"ושמרתם את המצות\"","icon":"🔥"}]},{"id":5,"name":"מקרא קודש","icon":"🕯️","color":"#c62b6b","stories":[{"id":11,"title":"שני ימים קדושים","icon":"🕯️"},{"id":12,"title":"\"אשר יאכל לכל נפש\"","icon":"🍲"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
