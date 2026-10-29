@@ -284,12 +284,25 @@ function classify(l){
       r.m.forEach(function(x){ if (x[0] === "חוברות להדפסה" && fonts.indexOf(x[1]) < 0) fonts.push(x[1]); }); });
     TOPICS.forEach(function(t){ if (t.k === "חוברות להדפסה") t.subs = fonts; });
     // גרסאות של אותו שיעור (ספר, חוברת, עמוד מעוצב) — כרטיס אחד עם הפניות לכולן
+    // איחוד לפי סרטון (כולל הקלטות נוספות) ולפי שם — union-find, כך שגם שני ספרים שונים של אותו שיעור נכנסים לכרטיס אחד
+    var P = L.map(function(_, i){ return i; });
+    function fd(i){ while (P[i] !== i) { P[i] = P[P[i]]; i = P[i]; } return i; }
+    function un(i, j){ i = fd(i); j = fd(j); if (i !== j) P[j] = i; }
+    var seenK = {};
+    L.forEach(function(l, i){
+      var keys = [vid(l)].concat((l.extra_videos || []).map(function(u){ return vid({video: u}); })).filter(Boolean);
+      var tn = norm(l.title).replace(/\s+/g, ""); if (tn.length > 5) keys.push("t:" + tn);
+      keys.push("f:" + l.file); (l.same_as || []).forEach(function(f){ keys.push("f:" + f); });   // ספרים כפולים של אותו שיעור (לפי תוכן)
+      keys.forEach(function(k){ if (k in seenK) un(seenK[k], i); else seenK[k] = i; });
+    });
     var G = {};
-    L.forEach(function(l){ var k = vid(l) || ("t:" + norm(l.title).replace(/\s+/g, "")); (G[k] = G[k] || []).push(l); });
+    L.forEach(function(l, i){ var r = fd(i); (G[r] = G[r] || []).push(l); });
     Object.keys(G).forEach(function(k){ var g = G[k]; if (g.length < 2) return;
-      var main = g.filter(function(x){ return kind(x) === "book"; })[0] || g[0];
+      var books = g.filter(function(x){ return kind(x) === "book"; });
+      var main = books.sort(function(a, b){ return (b.cards || []).length - (a.cards || []).length; })[0] || g[0];
       main.vers = g.filter(function(x){ return x !== main; });
-      main.vers.forEach(function(x){ x.alt = true; x.main = main; if (kind(x) === "book") x.vlabel = x.file.indexOf("/") > 0 ? "גרסת " + x.file.split("/")[0] : "גרסה נוספת"; }); });
+      main.vers.forEach(function(x){ x.alt = true; x.main = main;
+        if (kind(x) === "book") x.vlabel = norm(x.title) !== norm(main.title) ? "ספר נוסף: " + x.title : (x.file.indexOf("/") > 0 ? "גרסת " + x.file.split("/")[0] : "גרסה נוספת"); }); });
     D = {topics: TOPICS, lessons: L};
     var cats = {}; L.forEach(function(l){ cats[l.tp] = 1; });
     $("stats").innerHTML = '<span class="stat">📖 ' + L.filter(function(l){ return !l.alt; }).length + ' ספרים ושיעורים</span><span class="stat">🗂️ ' + Object.keys(cats).length + ' נושאים</span><span class="stat">🔍 חיפוש בכל השיעורים</span>';
