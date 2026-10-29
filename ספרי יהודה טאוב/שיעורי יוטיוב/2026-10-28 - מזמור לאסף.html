@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מזמור לאסף</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 מזמור לאסף</h1>
+  <p>שלושה שיעורים לימי בין המצרים: למה אומרים שירה על החורבן, צחוקו של רבי עקיבא, נעמי שחזרה ריקם, ובכי שהופך לשירה</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מזמור לאסף" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/AOsbVJyBEWI?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/AOsbVJyBEWI/hqdefault.jpg" alt="מזמור לאסף" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=AOsbVJyBEWI" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מזמור ולא קינה</div>
+      <h3 class="story-title">🥛 בן שעמד כפוף עד שאביו התעורר</h3>
+      <p>השיעור הראשון נמסר בשבעה עשר בתמוז, והוא פותח בסיפור מן הגמרא במסכת קידושין. האמורא אבימי, בנו של רבי אבהו, היה זהיר מאוד בכבוד אביו. פעם אחת ביקש ממנו אביו שישקה אותו מים. עד שהביא אבימי את המים, נרדם אביו.</p>
+      <p>מה עשה אבימי? הוא לא הניח את הכוס ולא הלך לעיסוקיו. הוא נשאר עומד, כפוף ליד אביו, עד שיתעורר, כדי שיהיה מזומן להשקות אותו מיד כשיפקח את עיניו.</p>
+      <p>והגמרא מוסיפה פרט נפלא: באותם רגעים של המתנה דרש אבימי דרשה חשובה ויסודית על הפסוק "מִזְמוֹר לְאָסָף". הרב הדגיש שאין זה מקרה. בזכות הזהירות המיוחדת שלו בכיבוד אב, נתנו לו מן השמים בדעתו ליישב קושיה גדולה דווקא באותה שעה.</p>
+      <p>יש בזה לימוד גם לנו. לפעמים אדם חושב שהזמן שבו הוא "רק מחכה" בשביל אחר הוא זמן מבוזבז. אבימי מלמד שדווקא ברגעים כאלה, כשאדם מבטל את עצמו בשביל מצווה, נפתחים לו שערי הבנה. ומה הייתה הקושיה שהוא יישב? על כך הכרטיס הבא.</p>
+      <p class="bold-para">דרשה גדולה על החורבן נולדה ברגעים שבהם בן עמד וחיכה לכבוד אביו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מזמור ולא קינה</div>
+      <h3 class="story-title">🔥 למה "מזמור" ולא "קינה"?</h3>
+      <p>רש"י מביא את הדרשה של אבימי מן המדרש על מגילת איכה. הקושיה פשוטה וחזקה. דוד המלך פותח את המזמור כך: "מִזְמוֹר לְאָסָף, אֱלֹקִים בָּאוּ גוֹיִם בְּנַחֲלָתֶךָ, טִמְּאוּ אֶת הֵיכַל קָדְשֶׁךָ, שָׂמוּ אֶת יְרוּשָׁלַ‍ִם לְעִיִּים". ובהמשך המזמור מתוארים דם שנשפך כמים סביבות ירושלים, נבלות עבדי ה' שניתנו למאכל לעוף השמים, וחרפה בעיני השכנים.</p>
+      <p>המזמור כולו מקונן על חורבן בית המקדש ועל הריגת הצדיקים. אם כן, מה מקום יש לקרוא לו "מזמור"? מזמור הוא מלשון זמר, שיר ושבח והודיה. היה לו לומר "קינה לאסף".</p>
+      <p>ודרש אבימי: אסף אמר שירה על כך שה' כילה את חמתו בעצים ובאבנים של ביתו. מתוך כך השאיר פליטה בישראל. שאלמלא כן, לא היה נשאר מישראל שריד. וזה מה שנאמר: "כִּלָּה ה' אֶת חֲמָתוֹ... וַיַּצֶּת אֵשׁ בְּצִיּוֹן".</p>
+      <p>הרי שלמרות שריפת בית מקדשנו ותפארתנו, ולמרות שנשפך דמם של צדיקים וקדושי עליון, יש מקום למצוא בתוך הצער עצמו נחמה וטוב. החמה נשפכה על העצים ועל האבנים, ועם ישראל נשאר חי. ועל זה אפשר, ואף צריך, לומר מזמור של תודה ושירה.</p>
+      <p class="bold-para">המזמור נאמר על כך שה' שפך את חמתו על העצים ועל האבנים, ומתוך כך השאיר פליטה בישראל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · מזמור ולא קינה</div>
+      <h3 class="story-title">📜 שירה ביום של חמישה אסונות</h3>
+      <p>השיעור נמסר בשבעה עשר בתמוז, ובו נזכרים חמשת הדברים הקשים שאירעו לאבותינו ביום הזה: נשתברו הלוחות, בטל התמיד, הובקעה העיר, שרף אפוסטמוס את התורה, והועמד צלם בהיכל. חמישה אסונות קשים מאוד.</p>
+      <p>ועם כל זה, כפי שהרב הביא, נוהגים לומר ביום הזה, אחר שיר של יום, את "מזמור לאסף", המזמור השבעים ותשעה בתהילים. וגם בתיקון חצות אומרים את המזמור הזה. בתוך כל האבלות, אומרים מזמור: לזמר, ולראות את הטוב, ולהודות גם על זה.</p>
+      <p>אבל כאן מתעוררת שאלה חדשה. נכון שיש נחמה בכך שה' שפך את חמתו על העצים ועל האבנים. אבל הצער עדיין גדול וכואב. איך אפשר באמת לזמר כשהלב בוכה? כדי להבין זאת, הרב פנה לסיפור מפורסם מסוף מסכת מכות – סיפור שבו אחד מגדולי התנאים צחק דווקא כשכולם בכו.</p>
+      <p class="bold-para">דווקא ביום של אבלות נוהגים לומר את "מזמור לאסף", כדי לראות את הטוב גם בתוך החורבן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רבי עקיבא מצחק</div>
+      <h3 class="story-title">🦊 השועל בבית קודשי הקודשים</h3>
+      <p>הגמרא מספרת על רבן גמליאל, רבי אלעזר בן עזריה, רבי יהושע ורבי עקיבא, שהיו עולים לירושלים אחרי חורבן הבית. כשהגיעו להר הצופים, קרעו את בגדיהם, וגם רבי עקיבא קרע עמהם. כשהגיעו להר הבית, ראו שועל שיוצא מבית קודשי הקודשים. התחילו הם בוכים, ורבי עקיבא מצחק.</p>
+      <p>אמרו לו: מפני מה אתה מצחק? אמר להם: מפני מה אתם בוכים? אמרו לו: מקום שכתוב בו "וְהַזָּר הַקָּרֵב יוּמָת", ועכשיו שועלים הלכו בו, ולא נבכה?</p>
+      <p>אמר להם: לכך אני מצחק. הנביא הזכיר שני עדים נאמנים, אוריה הכהן וזכריה. מה עניין אוריה, שהיה במקדש ראשון, אצל זכריה, שהיה במקדש שני? אלא שתלה הכתוב את נבואתו של זכריה בנבואתו של אוריה. אוריה ניבא על החורבן, שציון שדה תיחרש. זכריה ניבא על הגאולה, שעוד ישבו זקנים וזקנות ברחובות ירושלים. עד שלא נתקיימה נבואתו של אוריה, הייתי מתיירא שמא לא תתקיים נבואתו של זכריה. עכשיו שנתקיימה נבואתו של אוריה, בידוע שנבואתו של זכריה מתקיימת.</p>
+      <p>ובלשון הזה אמרו לו: "עֲקִיבָא, נִחַמְתָּנוּ! עֲקִיבָא, נִחַמְתָּנוּ!". אבל הרב ביקש להבין יותר לעומק: מה הייתה הנחמה שהתנחמו בה התנאים, ומה הצדיק את הצחוק של רבי עקיבא?</p>
+      <p class="bold-para">רבי עקיבא צחק, כי ראה בהתקיימות הנבואה הקשה עדות ודאית לנבואת הנחמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רבי עקיבא מצחק</div>
+      <h3 class="story-title">👼 הכרובים שפניהם איש אל אחיו</h3>
+      <p>במדרש מובא דבר מפליא: מיד אחר החורבן ראו את הכרובים, ופניהם היו איש אל אחיו, מעורים זה בזה, כמו בעת רצון ואהבה, בזמן הטוב ביותר של בית המקדש. איך ייתכן? הרי זה היה רגע של חרון אף.</p>
+      <p>המפרשים מבארים זאת בשתי סיבות. הראשונה: ה' ברוב רחמיו וחסדיו רצה להראות לישראל, דווקא אחרי החורבן ובתוך הכעס, אהבה וחיבה. שיידעו שלא ייטוש ה' את עמו, ושאין זה חרון אף גמור, אלא דבר זמני.</p>
+      <p>הסיבה השנייה משלימה את הראשונה. כאשר ראו ישראל את החורבן ואת שריפת בית ה', עשו תשובה גמורה. הם גילו כניעה וחרטה. ואילו היו נכנעים כך קודם לכן, היה החורבן נמנע. אבל משלא עשו זאת, היה הכרח להחריב את הבית, כדי להביא אותם לידי כניעה ולשוב אליו.</p>
+      <p>שתי הסיבות הן בעצם דבר אחד. כל רצונו של ה' הוא שנתקרב אליו, נירא ממנו, נאהב אותו ונעבוד אותו. כשעושים זאת בזמן של גילוי והארת פנים, מה טוב. אבל כשלא עושים, בא הסתר פנים, והעבודה היא לגלות מתוך ההסתר עצמו כניעה וקרבה. ואז, "אֲנִי לְדוֹדִי וְדוֹדִי לִי", זוכים בחזרה לקרבת ה'.</p>
+      <p class="bold-para">גם ברגע החורבן הראה ה' חיבה לישראל, והחורבן עצמו הביא את העם לתשובה ולקרבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · רבי עקיבא מצחק</div>
+      <h3 class="story-title">🕯️ "אודך ה' כי אנפת בי"</h3>
+      <p>זהו עומק הצחוק של רבי עקיבא. גם הוא קרע את בגדיו עם חבריו והצטער על החורבן. אבל מיד אחר כך צחק, כי ראה שהמטרה הושגה: מתוך הצער באה קרבת ה'. לפעמים, דווקא כשרואים את הצער, מבינים לאן הוא מוביל.</p>
+      <p>ומכאן יסוד גדול לכל אחד מאיתנו. כל תפילה, כל מצווה וכל לימוד שאדם מצליח לעשות במצב ירוד, בזמן של הסתר פנים, מעלתם גדולה ונשגבה מאוד. הם גורמים עוד ועוד קרבת ה'.</p>
+      <p>וזה המקום לומר "מזמור לאסף", שירה ושבח על החורבן ועל השריפה עצמם. כי כאשר נוצר מצב כזה, הייתה לו מטרה: שדרך מידת הדין נגיע לכניעה ולתשובה, נחזור אל ה', ונתקרב שוב לעבודתו, לתורתו וליראתו.</p>
+      <p>וזה עומק הפסוק "אוֹדְךָ ה' כִּי אָנַפְתָּ בִּי". לכאורה היה די לומר: אני מקבל באהבה את מה שבא עליי. למה להודות על עונש? אלא שהעונש עצמו גרם לי להיכנע, לשוב בתשובה ולחזור אליך. ועל זה באמת יש להודות. בכך נחתם השיעור הראשון, בהבטחה להמשיך בשבוע הבא.</p>
+      <p class="bold-para">מצווה שנעשית בזמן של הסתר פנים מעלתה גדולה מאוד, ולכן אפשר להודות גם על העונש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שבטך ומשענתך</div>
+      <h3 class="story-title">🪵 "טוב לי כי עניתי"</h3>
+      <p>השיעור השני נמסר שבוע אחר כך, בכ"ד בתמוז. הוא פותח בחזרה קצרה: אסף אמר מזמור על כך שה' כילה את חמתו בעצים ובאבנים, ולא בעם ישראל. ורבי עקיבא צחק כשראה שועל יוצא מבית קודשי הקודשים, כי דווקא מתוך מידת הדין רואים יותר את ה' ומתקרבים אליו.</p>
+      <p>למה צריך את זה? כי כשהיה רווח והצלה, לא עשינו את מה שהיה צריך. היינו בבחינת "וַיִּשְׁמַן יְשֻׁרוּן וַיִּבְעָט". וזה מה שדוד המלך אומר: "טוֹב לִי כִי עֻנֵּיתִי, לְמַעַן אֶלְמַד חֻקֶּיךָ". יש מצבים שה' מביא עינוי וסבל, כדי שנתקרב אליו במה שלא עשינו כשהיה מצב טוב.</p>
+      <p>וכך גם הפסוק "שִׁבְטְךָ וּמִשְׁעַנְתֶּךָ הֵמָּה יְנַחֲמֻנִי". "ינחמוני" הוא מלשון נחמה. אבל הרב הוסיף: פעמים רבות השבט והמשענת גם מנחים אותי, מלשון הנחיה. הם מובילים אותי ומחזירים אותי לדרך טובה ולקרבת ה'.</p>
+      <p>ועל זה צריך להודות. גם על החורבן, גם על הייסורים, כי כל מטרתם אחת: לטובה. להוביל אותנו אל הדרך הטובה, אל קרבת ה', אל עבודת ה' ואל אהבת ה'.</p>
+      <p class="bold-para">לפעמים ה' מביא מצב של סבל כדי שנתקרב אליו, במה שלא עשינו כשהיה טוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שבטך ומשענתך</div>
+      <h3 class="story-title">🏃 "כל רודפיה השיגוה בין המצרים"</h3>
+      <p>עוד הביא הרב מה שמובא בספרים הקדושים בשם האר"י הקדוש, על הפסוק במגילת איכה: "כָּל רֹדְפֶיהָ הִשִּׂיגוּהָ בֵּין הַמְּצָרִים". בפשט הפסוק מדבר על האויבים שרדפו את ירושלים. אבל האר"י דרש: "כל רודפי י-ה", כל מי שרודף אחרי הקדוש ברוך הוא, ישיג אותו, ומתי? "בין המצרים".</p>
+      <p>כלומר, ימי בין המצרים הם זמן ועת רצון להשיג את ה' ולהתקרב אליו. ממילא זה גם זמן לבקש ולהתפלל, והמבקשים ישיגו את מבוקשם.</p>
+      <p>וכנראה, אמר הרב, שזה מאותה סיבה שלמדנו. דווקא בזמן של אבלות וצער האדם מגלה כניעה לפני ה'. ומי שנכנע, זוכה ליותר קרבת ה'. והתוצאה של קרבת ה' היא מה שנאמר: "קָרוֹב ה' לְכָל קֹרְאָיו, לְכֹל אֲשֶׁר יִקְרָאֻהוּ בֶאֱמֶת".</p>
+      <p>אם כן, ימי בין המצרים אינם רק ימים של עצב. הם ימים שבהם הדלת פתוחה במיוחד. מי שמנצל אותם לרדוף אחרי ה', לבקש קרבתו ולהתפלל מתוך לב נשבר, ימצא אותו קרוב.</p>
+      <p class="bold-para">דווקא בימי הצער והכניעה נפתחת עת רצון להתקרב לה' ולהתפלל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שבטך ומשענתך</div>
+      <h3 class="story-title">🌾 נעמי שחזרה ריקם</h3>
+      <p>ועוד פירוש נפלא הביא הרב, מן הגאון מווילנא, על דברי נעמי בסוף הפרק הראשון של מגילת רות: "אַל תִּקְרֶאנָה לִי נָעֳמִי, קְרֶאןָ לִי מָרָא, כִּי הֵמַר שַׁדַּי לִי מְאֹד. אֲנִי מְלֵאָה הָלַכְתִּי וְרֵיקָם הֱשִׁיבַנִי ה'".</p>
+      <p>בפשטות, נעמי שופכת את מר לבה. היא יצאה עם בעלה ושני בניה ועם עושר רב, וחזרה אלמנה, ענייה ושכולה. לכן השם "נעמי", מלשון נעימות, כבר אינו מתאים לה.</p>
+      <p>אבל הגאון שופך כאן אור חדש. הוא מדייק שנעמי מזכירה פעמיים את שם ה' שהוא מידת הרחמים: "וריקם השיבני ה'", "וה' ענה בי". לכאורה היה לה לומר "אלוקים", שהוא מידת הדין. ומבאר הגאון: כשיש לאדם תמיד רק טוב, הטוב עצמו עלול להיות לו לרדיפה, כי ברוב הטוב הוא בועט ביוצרו ומקטין את ביטחונו בו. ואדרבה, טוב לאדם שיהיו לו מעט ייסורים בעולם הזה, כי הם מקרבים אותו לעבודת ה'. וכך "צָרוֹת לְבָבִי הִרְחִיבוּ": הצרות הרחיבו את הלב לעבודתו.</p>
+      <p>וזו כוונת נעמי: הטוב שהיה לי קודם היה לי לגירעון באמונה. כשהייתי מלאה, הלכתי מארץ ישראל, ממקום קדוש, וירדתי במדרגה. וכשנעשיתי ריקה ובאו עליי צרות, זכיתי שה' השיב אותי למקום הקדוש.</p>
+      <p class="bold-para">הגאון מווילנא: נעמי הבינה שהצרות החזירו אותה למקום הקדוש, ולכן ראתה בהן את מידת הרחמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שבטך ומשענתך</div>
+      <h3 class="story-title">👑 שלא יחזור הטוב הישן</h3>
+      <p>נעמי ראתה כמה הרוויחה ברוחניות ובקרבת ה' בגלל הצרות. ואחר כך זכתה שמביתה, דרך רות, תקום מלכות בית דוד, ומשם משיח בן דוד. אז הבינה שכל הצרות באו דווקא ממידת הרחמים, ולכן אמרה "וה' ענה בי", בשם הרחמים.</p>
+      <p>ומשום כך התחילה להודות, להלל ולשבח על הצרות שהרחיבו את לבה והחזירו אותה למקום הטוב, לקדושה ולקרבת ה'. עד כדי כך, שביקשה שיישאר המצב הזה, ושלא יחזור אליה הטוב הגשמי של פעם. הוא היה נעימות של העולם הזה, אבל לא נעימות של נצח.</p>
+      <p>וזה, אמר הרב, מה שאנו אומרים בימים האלה ב"מזמור לאסף". גם על מצב החורבן, שאנחנו גרמנו לעצמנו כשלא עבדנו את ה' כראוי בזמן שהייתה הארת פנים ובית המקדש עמד. אז הביא ה' מצב של חיסרון והסתר פנים, כדי שמתוכו נתעורר ונתקרב אליו. וזו תכלית הגלות כולה.</p>
+      <p class="bold-para">מן הצרות של נעמי צמחה מלכות בית דוד, והיא למדה להודות עליהן.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · שבטך ומשענתך</div>
+      <h3 class="story-title">💙 ללמד זכות על ישראל</h3>
+      <p>וכאן, אמר הרב, המקום ללמד זכות על ישראל ולסנגר עליהם. ברוך ה', יש הרבה מאוד טוב בעם ישראל, בהרבה תחומים. יש הרבה חסד. יש הרבה תורה, באיכות ובכמות. אברכים ובחורים יושבים ועמלים בתורה באמת.</p>
+      <p>וגם בתפילה: רואים איך אברכים מתפללים בכל בית כנסת, איך אנשים מתפללים מקירות לבם, אומרים תיקון חצות ומתוודים ממש. יש הרבה מאוד התקרבות אל ה', והרבה דברים טובים ונפלאים של תודה ושל אמת.</p>
+      <p>אם כן, אנחנו ממש מיישמים את מה שצריך: דווקא מתוך הסתר הפנים להתקרב אליו. ובזכות זה, סיים הרב, נראה את הגאולה השלמה בקרוב, ובניין מקדשנו ותפארתנו. ויהפוך תשעה באב ליום טוב, כמו שנאמר "קָרָא עָלַי מוֹעֵד", שיהיה מועד אמיתי, ונזכה לראות פני משיח צדקנו.</p>
+      <p>יש בזה גם הוראה לכל אחד: בימים האלה לא רק לבכות על מה שחסר, אלא גם לשים לב לטוב שכבר יש, ולהודות עליו. גם זו דרך לקרב את הגאולה.</p>
+      <p class="bold-para">יש הרבה טוב בעם ישראל, והוא עצמו סימן שאנו מתקרבים מתוך ההסתר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי הבכי באה השירה</div>
+      <h3 class="story-title">⏳ למה מקילים אחרי חצות?</h3>
+      <p>השיעור השלישי נמסר בב' במנחם אב, ונפתח בשאלה ששאלו את הרב. עיקר שריפת בית המקדש היה בעשירי באב. בתשיעי לעת ערב הציתו את האש, ועיקר השריפה הייתה בליל העשירי וביומו. משום כך אין אוכלים בשר גם ביום העשירי, ויש מגדולי ישראל שנהגו להתענות את התשיעי ואת העשירי, יומיים רצופים, וכך נהגו צדיקי אמת רבים.</p>
+      <p>אם כן, נשאלת השאלה: מדוע דווקא בתשעה באב מחצות היום והלאה יש הקלה בדיני האבלות? נוהגים לשבת על כיסא ולא על הרצפה, לנקות את הבית וכדומה. הרי השריפה רק התחילה אז!</p>
+      <p>הרב ענה על דרך הדרוש, לפי מה שנלמד בשני השיעורים הקודמים. כמו רבי עקיבא: רק אחרי שקרע והתאבל והצטער, גילה כניעה לפני ה' והשיג ממקום זה קרבת ה'. וכאשר נמצאים קרוב לה', שם "הוֹד וְהָדָר לְפָנָיו, עֹז וְחֶדְוָה בִּמְקֹמוֹ". קרוב אליו, השירה והמזמור מתפרצים מעצמם, וזוכים לראות את הטוב שבחיסרון, בחורבן ובייסורים.</p>
+      <p>וכך בתשעה באב: מתאבלים מתחילת הצום ועד חצות, כי העיקר הוא ההתחלה. אחרי שהתאבלנו עד חצות, כבר נכנענו והשגנו את המטרה ואת קרבת ה' הגדולה. ולכן יש הקלה מעט בצום אחר חצות.</p>
+      <p class="bold-para">אחרי שהתאבלו ונכנעו עד חצות, כבר הושגה המטרה של קרבת ה', ולכן יש הקלה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי הבכי באה השירה</div>
+      <h3 class="story-title">🚪 שערי השירה</h3>
+      <p>כך כותב הרב בעל "פלא יועץ" בספרו "בית תפילה". הוא סידר שירות ותשבחות נפלאות לה', לאומרן אחר תיקון חצות בכל לילה. ויש לתמוה: למה דווקא אחרי תיקון חצות? בחצות הלילה ישבנו, גם בכינו, וזכרנו את ציון. היה מקום לחשוב שצריך להישאר בצער לפחות עד התפילה, כי עדיין השכינה בגלות, ועם ישראל בגלות, ובית המקדש עוד לא נבנה.</p>
+      <p>אלא שזה העניין: אחרי שיושבים ובוכים ונכנעים לפני ה' על צער החורבן, מתקרבים אליו. ואז יש מקום, ואף צריך, לשיר ולזמר ולשבח.</p>
+      <p>וכך לשונו: "כתבו המקובלים שיש שערים בשמים לתפילות, ויש לשירות, ופעמים ששערי תפילה ננעלים ושערי שירות פתוחים". והביא מעשה שסיפרו: בירושלים התפללו על הגשמים ולא נענו. התחילו בשירות ותשבחות, ונענו.</p>
+      <p>וזכר לדבר, הפסוק "מוֹצִיא אֲסִירִים בַּכּוֹשָׁרוֹת", שדרשו חז"ל: "בכושרות" – בכי ושירות. אחרי הבכי באות השירות. ודייק הפלא יועץ לומר שיש לאומרן "באשמורת הבוקר, בנועם שיח ובהכנעה". מתוך הכניעה עצמה כבר אפשר לומר שירות ותשבחות בנועם.</p>
+      <p class="bold-para">פלא יועץ: יש פעמים ששערי התפילה ננעלים ושערי השירה פתוחים, ואחרי הבכי באה השירה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי הבכי באה השירה</div>
+      <h3 class="story-title">📖 דרכם של הצדיקים בדורות הקודמים</h3>
+      <p>עוד הביא הרב קטע יפה מספר "צדה לדרך", המובא בספר "יוסף לקח" בפרשת וישלח. שם מתואר איך עבדו הצדיקים בדורות הקודמים את ה' בדבקות, והחוט השוזר את כל עבודתם הוא השיר והשבח לחי העולמים, על הכל, ואף על הייסורים.</p>
+      <p>כותב שם: צריך שיקבל על עצמו הכנעה גדולה לפני הבורא, ולפני עבדיו ואוהביו, התלמידי חכמים והצדיקים. שיעבוד לו בדיבור ובמעשה, בשירה ובזמרה, בכל זמן, לפי שהוא לפניו תמיד ואין דבר נסתר ממנו. "וישבח אותו לילו ויומו, ויזכור טובתו עמו בסתר ובגלוי, וירוץ לעבודתו בשמחה ובטוב לבב".</p>
+      <p>הרב הדגיש את המילים "וישבח אותו לילו ויומו". ויש כאן גם תוצאה: מתוך ההודיה התמידית והכרת הטוב, האדם רץ לעבודת ה' בשמחה ובטוב לבב.</p>
+      <p>ועוד שם: שיתחנן לפניו תמיד ויבקש מחילה על עוונותיו, וישיב אל לבו את העוונות שחטא, בבחינת "וְחַטָּאתִי נֶגְדִּי תָמִיד". זה מועיל מאוד לכניעה. ומיד אחר כך ישיב אל לבו את הטובות שעשה לו ה' כל ימי חייו, ובכל זאת הוא מרד בו. כך ירגיש את עצמו בעל חוב גדול, וזה ימנע ממנו להיות כפוי טובה.</p>
+      <p class="bold-para">החוט שעובר בכל עבודת הצדיקים הוא השיר והשבח לה' על הכל, גם על הייסורים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי הבכי באה השירה</div>
+      <h3 class="story-title">🦶 החסיד שהודה על המכה ברגלו</h3>
+      <p>ממשיך שם: שיכיר את קטנות מעלותיו ואת גודל כבוד יוצרו ועוצם גבורתו, וירבה להשתחוות לפניו בכניעה ובשפלות. ושיודה על כל הבא עליו, כמו שהיה עושה נחום איש גם זו, שאמר "גם זו לטובה" על כל הקורות אותו, בין לטוב בין למוטב. והביא הרב שענוה היא מפתח לכל המידות הטובות.</p>
+      <p>ושם מובא מעשה שאמרו הקדמונים. אחד ראה חסיד שהיה מוכה ברגלו, ואמר לו: אני חס על המכה אשר ברגלך. אמר לו החסיד: אני מחזיק טובה ליוצרי שלא נתנה בעיניי.</p>
+      <p>הרב אמר שזו הודיה ששייכת לכל אדם: לראות שטוב שזה לא קרה במקום אחר, כי היה יכול להיות גרוע יותר. אבל מי שמתבונן לעומק מוצא כאן הודיה עמוקה יותר, וזו ההודיה שדובר עליה בשלושת השיעורים: הודיה על המכה עצמה. ה' יודע מה הוא עושה, ומגיעה לאדם המכה כדי לתקן את עצמו, לכפר על חטאיו, לקדש ולטהר אותו, להכניע אותו לפניו ולקרב אותו אליו.</p>
+      <p class="bold-para">ההודיה העמוקה ביותר אינה רק על כך שהיה יכול להיות גרוע יותר, אלא על המכה עצמה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · אחרי הבכי באה השירה</div>
+      <h3 class="story-title">🌈 "מפי עליון לא תצא הרעות והטוב"</h3>
+      <p>"מִפִּי עֶלְיוֹן לֹא תֵצֵא הָרָעוֹת וְהַטּוֹב". מאת ה' אין שום רע, הכל טוב כל הזמן. טבעו של הטוב המוחלט הוא להיטיב. ממילא, גם מה שנראה לעינינו לא טוב – ייסורים, חורבן וכדומה – ה' עושה הכל לטובה.</p>
+      <p>גם הגלות הנוראה הנמשכת כל כך הרבה זמן: ודאי שה' ברחמיו היה רוצה לגאול אותנו מזמן. אלא שגדולים רחמיו, והוא רוצה שעם ישראל יתקן את עצמו יותר ויותר, כל אחד באופן פרטי ועם ישראל באופן כללי. ושעוד ועוד יהודים יתקרבו אליו ויתקנו את עצמם.</p>
+      <p>והרב סיים בתקווה: השנה הזאת כבר גילינו הרבה כניעה. עברנו הרבה צרות וייסורים, ועם ישראל גילה הרבה ענווה והרבה נכונות להתקרב אל ה'. ממילא זה הזמן הראוי שנגאל, שיחיש ה' את גאולתנו ויבנה את בית מקדשנו ותפארתנו, ויהפכו הימים האלה לששון ולשמחה, לישועה ולנחמה.</p>
+      <p>וזה מה ששלושת השיעורים מלמדים יחד: אסף אמר מזמור על החורבן, רבי עקיבא צחק מול השועל, נעמי הודתה על שחזרה ריקם, והצדיקים שרו אחרי תיקון חצות. כולם ראו שהבכי אינו סוף הדרך. אחריו באה השירה.</p>
+      <p class="bold-para">מן הטוב המוחלט יוצא רק טוב, וגם הגלות הארוכה נועדה כדי שנתקן ונתקרב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/AOsbVJyBEWI · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"מזמור ולא קינה","icon":"🎶","color":"#c62b6b","stories":[{"id":1,"title":"בן שעמד כפוף עד שאביו התעורר","icon":"🥛"},{"id":2,"title":"למה \"מזמור\" ולא \"קינה\"?","icon":"🔥"},{"id":3,"title":"שירה ביום של חמישה אסונות","icon":"📜"}]},{"id":2,"name":"רבי עקיבא מצחק","icon":"🦊","color":"#6d28d9","stories":[{"id":4,"title":"השועל בבית קודשי הקודשים","icon":"🦊"},{"id":5,"title":"הכרובים שפניהם איש אל אחיו","icon":"👼"},{"id":6,"title":"\"אודך ה' כי אנפת בי\"","icon":"🕯️"}]},{"id":3,"name":"שבטך ומשענתך","icon":"🪵","color":"#e08e00","stories":[{"id":7,"title":"\"טוב לי כי עניתי\"","icon":"🪵"},{"id":8,"title":"\"כל רודפיה השיגוה בין המצרים\"","icon":"🏃"},{"id":9,"title":"נעמי שחזרה ריקם","icon":"🌾"},{"id":10,"title":"שלא יחזור הטוב הישן","icon":"👑"},{"id":11,"title":"ללמד זכות על ישראל","icon":"💙"}]},{"id":4,"name":"אחרי הבכי באה השירה","icon":"🌅","color":"#1e88b8","stories":[{"id":12,"title":"למה מקילים אחרי חצות?","icon":"⏳"},{"id":13,"title":"שערי השירה","icon":"🚪"},{"id":14,"title":"דרכם של הצדיקים בדורות הקודמים","icon":"📖"},{"id":15,"title":"החסיד שהודה על המכה ברגלו","icon":"🦶"},{"id":16,"title":"\"מפי עליון לא תצא הרעות והטוב\"","icon":"🌈"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
