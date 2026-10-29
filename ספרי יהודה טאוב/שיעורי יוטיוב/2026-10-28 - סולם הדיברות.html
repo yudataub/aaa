@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 סולם הדיברות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 סולם הדיברות</h1>
+  <p>שיעור לילדים על חמש הדיברות שבלוח השני: מה כל דיברה לוקחת מן האדם, מעשה דיבור ומחשבה, ומה באמת פירוש "לא תחמוד"</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ סולם הדיברות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/7PNSKMpz6ss?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/7PNSKMpz6ss/hqdefault.jpg" alt="סולם הדיברות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=7PNSKMpz6ss" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לזכור בלי לשנן</div>
+      <h3 class="story-title">🎁 להגיע למתן תורה עם הדיברות</h3>
+      <p>השיעור הזה נאמר בכיתה, בסיום הלימוד על עשרת הדיברות, לקראת חג השבועות. "איזה דבר נחמד יש למתן תורה", אמר הרב לתלמידים, "יותר מאשר להגיע אליו כשאתה יודע בעל פה את עשרת הדיברות?" מי שידע אותן בשיעור הבא, יזכה בפרס מיוחד ובנקודות נוספות. והרב קיווה גם לצלם סרטון של כל מי שיאמר אותן בעל פה, ולשלוח אותו להורים ולמנהלת – שיראו שהתלמידים מתכוננים למתן תורה כשהם יודעים את עשרת הדיברות.</p>
+      <p>אבל הרב לא ביקש מן הילדים לשנן. "אני אתן לכם היום שיטה איך זוכרים את עשרת הדיברות", אמר. "לא צריך סתם לדקלם. ברגע שתופסים איך הדיברות בנויות, מה הסדר שלהן, קל מאוד לזכור את כולן. אתה לא צריך לדקלם כמו תוכי. אתה זוכר איך זה בנוי, ואז אתה זוכר הכול."</p>
+      <p>בשיעורים הקודמים למדו התלמידים את חמש הדיברות הראשונות. היום הם גומרים את חמש האחרונות. ובדרך יתברר שהסדר של הדיברות אינו מקרי. הוא בנוי כמו סולם, שיורד שלב אחר שלב. ומי שמבין את הסולם, יכול לומר את כל הדיברות במילים שלו, בלי לטעות.</p>
+      <p class="bold-para">ההכנה היפה ביותר למתן תורה היא לדעת את עשרת הדיברות – ולהבין איך הן בנויות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · לזכור בלי לשנן</div>
+      <h3 class="story-title">🪨 שני צדי הלוחות</h3>
+      <p>הרב פתח בשאלה שנלמדה כבר בשיעור הקודם: מה ההבדל בין הצד הימני של הלוחות לצד השמאלי? התשובה: בצד ימין חקוקות המצוות שבין אדם למקום – "אנכי", "לא יהיה לך", "לא תשא", השבת וכיבוד אב ואם. ובצד שמאל המצוות שבין אדם לחברו. כל הדיברות שנלמד היום נוגעות לבין אדם לחברו.</p>
+      <p>ויש עוד דבר שבולט מיד: כל חמש הדיברות שבלוח השני פותחות באותה מילה – "לא". לא תרצח, לא תנאף, לא תגנוב, לא תענה, לא תחמוד. אלה חמישה איסורים, חמישה גבולות שהתורה מציבה, כדי שאדם לא יפגע בחברו.</p>
+      <p>ואת המצוות האלה, כך מספרים חז"ל, לא רצו האומות לקבל. הרב הזכיר לילדים שיר מוכר שמספר איך המלאך עובר מאומה לאומה ומציע לה את התורה, וכל אומה מוצאת סיבה לסרב. ובמדרש מובא שכאשר בא הקדוש ברוך הוא לבני עשו ושאלו: מה כתוב בה? אמר להם: "לא תרצח" – ולא רצו. בא לבני עמון ומואב, ואמר להם "לא תנאף" – ולא רצו. בא לבני ישמעאל, ואמר להם "לא תגנוב" – ולא רצו. ורק ישראל אמרו: "נעשה ונשמע".</p>
+      <p class="bold-para">בלוח הימני המצוות שבין אדם למקום, ובלוח השמאלי המצוות שבין אדם לחברו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האדם, אשתו וממונו</div>
+      <h3 class="story-title">🛡️ לא תרצח</h3>
+      <p>הדיברה הראשונה בלוח השני, שהיא הדיברה השישית: "לא תרצח". אסור לאדם לרצוח. הרב ביקש מכל תלמיד להשלים בעצמו: "אסור להרוג..." – את מי? לא חתולים. אסור להרוג אנשים. התורה שומרת על חיי האדם.</p>
+      <p>אחד התלמידים שאל: האם מדובר רק ביהודים, או גם בגויים? "שאלה מעניינת", אמר הרב, והשאיר אותה לדיון אחר. העיקר שצריך לרשום עכשיו במחברת: אסור להרוג אנשים.</p>
+      <p>הילדים הזכירו את הנאצים, שעברו על "לא תרצח" ורצחו כל כך הרבה, בלי סוף. הם עברו על הדיברה הזאת באכזריות שאין לה שיעור. והתורה, שניתנה לפני אלפי שנים, אומרת בשתי מילים פשוטות: לא תרצח.</p>
+      <p>ועכשיו נשים לב מה לוקח הרוצח. הוא אינו לוקח מן האדם חפץ, ואינו לוקח ממנו משהו ששייך לו. הוא לוקח את האדם עצמו. "לקח לי את עצמי", אמר הרב. אחרי רצח, אין בן אדם. לא נשאר אדם. זה הדבר החמור ביותר שאפשר לקחת, ולכן הדיברה הזאת עומדת ראשונה.</p>
+      <p>זה השלב העליון של הסולם. נזכור אותו: הראשון לוקח את האדם עצמו. מכאן הסולם יורד, שלב אחר שלב.</p>
+      <p class="bold-para">הדיברה הראשונה בלוח השני שומרת על האדם עצמו – על חייו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האדם, אשתו וממונו</div>
+      <h3 class="story-title">💍 לא תנאף</h3>
+      <p>הדיברה השנייה בלוח השני: "לא תנאף". הרב הסביר לילדים בעדינות: כשאדם מתחתן עם אשה, אסור לבוא אחר ולשכנע אותה לעזוב את בעלה ולבוא אליו. וגם אם היא רוצה – אסור. למה?</p>
+      <p>כי כשבני זוג מתחתנים, הם כורתים ביניהם ברית. הם מסכמים שהם יהיו יחד, זוג לנצח. ואם יש, חלילה, צורך להיפרד, הולכים לבית הדין ונותנים גט על פי התורה. אבל כל זמן שהם נשואים, הם קשורים זה לזה. מי שבא ומשכנע אותה, לוקח מן האדם את אשתו.</p>
+      <p>התורה מחשיבה מאוד את הבית היהודי, את המשפחה. אילו היה הדבר מותר, הייתה הפקרות. לא הייתה משפחה, לא היה אבא ולא הייתה אמא. אדם לא היה בטוח שמחר אמא שלו עדיין תהיה אמא שלו, ואבא שלו יהיה אבא שלו. לכן זה אחד הדברים שהתורה מקפידה עליהם במיוחד: התחתנתם – זה אבא, וזו אמא.</p>
+      <p>וכל כך החמירה התורה בדבר, שמי שלוקח אשת איש חייב מיתה. בזמן שבית הדין היה קיים בירושלים, היו מענישים במיתה אדם שלוקח אשה נשואה שאינה שלו. וגם אם בעלה אינו יודע – אסור. ואיסור זה חל גם על אומות העולם.</p>
+      <p class="bold-para">הדיברה השנייה שומרת על הבית – אסור לקחת מאדם את אשתו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האדם, אשתו וממונו</div>
+      <h3 class="story-title">🏜️ אברהם ופרעה</h3>
+      <p>הרב שאל את הילדים חידה: מי בתורה פחד שגוי ירצה לקחת את אשתו? אחרי כמה ניחושים הגיעו לתשובה: אברהם אבינו, כשירד עם שרה למצרים.</p>
+      <p>התורה מספרת שהיה רעב בארץ, ואברהם ירד מצרימה. כשהתקרבו למצרים, אמר לשרה: "הִנֵּה נָא יָדַעְתִּי כִּי אִשָּׁה יְפַת מַרְאֶה אָתְּ. וְהָיָה כִּי יִרְאוּ אֹתָךְ הַמִּצְרִים וְאָמְרוּ אִשְׁתּוֹ זֹאת וְהָרְגוּ אֹתִי וְאֹתָךְ יְחַיּוּ". ולכן ביקש ממנה: "אִמְרִי נָא אֲחֹתִי אָתְּ".</p>
+      <p>ממה פחד אברהם? הרב הסביר: גם האומות בתקופה ההיא נזהרו מאוד לא לקחת אשה של מישהו אחר. פרעה יראה את שרה וירצה אותה, אבל יש לו "בעיה" – היא נשואה. ומה יעשה? הוא ימצא "פתרון": יהרוג את אברהם, ואז היא כבר לא תהיה אשת איש. "ראיתם איזה פתרון?" אמר הרב. "פתרון נורא. זה פתרון של רשעים."</p>
+      <p>יש כאן לימוד מפתיע. אפילו מי שנזהר מן הדיברה הזאת, אם אין בו יראת שמים אמיתית, עלול לעבור בשבילה על דיברה חמורה עוד יותר. התורה אינה רוצה "פתרונות" כאלה. היא רוצה אדם ששומר על חיי חברו, על ביתו ועל ממונו – כולם יחד.</p>
+      <p class="bold-para">גם האומות נזהרו מאשת איש, ולכן פחד אברהם שפרעה יחפש "פתרון" נורא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האדם, אשתו וממונו</div>
+      <h3 class="story-title">💰 לא תגנוב</h3>
+      <p>הדיברה השלישית בלוח השני: "לא תגנוב". זו דיברה מפורסמת מאוד, כולם מכירים אותה. אבל הרב גילה לילדים דבר שלא ידעו: הגניבה שעליה מדברת הדיברה הזאת היא גניבת אדם. פעם היו שגונבים בן אדם ומוכרים אותו לעבד. על זה נאמר "לא תגנוב" שבעשרת הדיברות.</p>
+      <p>ואיסור גניבת ממון נאמר במקום אחר בתורה: "לֹא תִּגְנֹבוּ". אבל ודאי שבכלל הדיברה הזאת יש גם אזהרה לא לגנוב לאדם את ממונו, את החפצים שלו.</p>
+      <p>ועכשיו נסתכל על שלוש הדיברות יחד, ונראה את הסולם. הראשונה – "לא תרצח" – לוקחת את האדם עצמו. השנייה – "לא תנאף" – לוקחת את אשתו. השלישית – "לא תגנוב" – לוקחת את הממון שלו. "ראיתם איך זה יורד?" שאל הרב. זה מדורג מלמעלה למטה: הכי חמור, פחות חמור, ועוד פחות.</p>
+      <p>הראשון לקח לי את עצמי. השני לקח לי את אשתי. השלישי לקח לי את הממון שלי. מי שזוכר את הסדר הזה, כבר יודע שלוש דיברות בעל פה, בלי לשנן אף מילה.</p>
+      <p class="bold-para">הדיברה השלישית שומרת על הממון, וכך הסולם יורד: האדם, אשתו, ממונו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · האדם, אשתו וממונו</div>
+      <h3 class="story-title">🔍 דבר הלמד מעניינו</h3>
+      <p>מניין שהדיברה "לא תגנוב" עוסקת דווקא בגניבת אדם? כך מפרש רש"י על הפסוק: "בגונב נפשות הכתוב מדבר". ואת הראיה הוא לומד מן ההקשר, ממה שנקרא "דבר הלמד מעניינו".</p>
+      <p>שתי הדיברות שלפני "לא תגנוב" הן "לא תרצח" ו"לא תנאף". על שתיהן חייבים מיתת בית דין. ואם כן, גם "לא תגנוב" שעומד לידן עוסק בדבר שחייבים עליו מיתת בית דין – וזה הגונב אדם ומוכרו. ואילו "לֹא תִּגְנֹבוּ" שבפרשת קדושים עוסק בגונב ממון.</p>
+      <p>וכך מתברר שגם השלב השלישי בסולם חמור מאוד. אדם שגונב אדם אחר ומוכר אותו לעבד, לוקח ממנו את חירותו ואת חייו כאדם חופשי. ובכל זאת, הגונב אינו לוקח את האדם עצמו כמו הרוצח, ואינו מפרק את ביתו כמו הנואף. ולכן הדיברה הזאת עומדת שלישית. ובתוכה כלולה גם האזהרה הכללית: לא לקחת מן החבר שום דבר משלו. מן הנפש ועד הממון – הכול שמור.</p>
+      <p class="bold-para">"לא תגנוב" שבדיברות עוסק בגונב אדם, כי הוא עומד בין שתי דיברות שחייבים עליהן מיתה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · עדות שקר</div>
+      <h3 class="story-title">⚖️ לא תענה ברעך עד שקר</h3>
+      <p>הדיברה הרביעית בלוח השני ארוכה יותר: "לֹא תַעֲנֶה בְרֵעֲךָ עֵד שָׁקֶר". מה פירוש המילים? רוב הילדים ענו: לא לשקר. אבל הרב עצר אותם. "זה לא קשור", אמר. את האיסור לשקר באופן כללי לומדים מפסוק אחר, פסוק שכתוב על שלטים רבים: "מִדְּבַר שֶׁקֶר תִּרְחָק".</p>
+      <p>כאן הכוונה למשהו מסוים. איפה האדם משקר? לא סתם הוא משקר. הוא בא לבית הדין ומעיד עדות שקר. הוא מתחיל לספר כל מיני עדויות שלא היו: שפלוני רצח, שפלוני גנב, שפלוני עשה דברים רבים שלא עשה.</p>
+      <p>וזה חמור מאוד. אדם שמשקר בבית הדין יכול לגרום לחברו צרות גדולות. בגלל עדותו יכולים להעניש את חברו, לקחת ממנו את ממונו, ואפילו לגרום למותו. לכן התורה מזהירה בעשרת הדיברות: לא תענה ברעך עד שקר. אסור לאדם להעיד עדות שקר בבית הדין.</p>
+      <p>ושימו לב שזו כבר דיברה מסוג אחר. שלוש הדיברות הראשונות עסקו בדברים שאדם עושה. בדיברה הזאת אדם אינו לוקח דבר בידיו. הוא רק מדבר. ועל כך נחזור בסוף השיעור.</p>
+      <p class="bold-para">הדיברה הרביעית אינה עוסקת בשקר רגיל, אלא בעדות שקר בבית הדין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מה פירוש לא תחמוד</div>
+      <h3 class="story-title">💻 הדגם של המחשב</h3>
+      <p>והדיברה האחרונה: "לֹא תַחְמֹד בֵּית רֵעֶךָ לֹא תַחְמֹד אֵשֶׁת רֵעֶךָ וְעַבְדּוֹ וַאֲמָתוֹ וְשׁוֹרוֹ וַחֲמֹרוֹ וְכֹל אֲשֶׁר לְרֵעֶךָ". "אני רוצה לראות אם יש אחד שיודע מה פירוש לא תחמוד", אמר הרב. "ואני אומר לכם מראש: מה שאתם חושבים שאתם יודעים, זה לא הפירוש הנכון."</p>
+      <p>התורה אינה אומרת שאם ראיתי אצל חברי חטיף ואני רוצה גם חטיף כזה, עברתי על לא תחמוד. אני יורד למטה בבית הספר ורואה דגם יפה מאוד של בית המקדש שעשה אחד התלמידים, ואני רוצה גם לעשות כזה. עברתי על לא תחמוד? לא.</p>
+      <p>ולמה? כי אני לא רוצה את שלו. אין לי עניין לקחת את מה שהוא עשה. אני רוצה שגם אני אדע לעשות. לא אכפת לי שלו יהיה; אני רוצה שגם לי יהיה. אני רואה אצל מישהו מחשב טוב מאוד, ושואל: איזה דגם זה? איפה קונים אותו? זה לא קשור ללא תחמוד. לא אכפת לי איזה מחשב יש לך. אני רוצה שגם לי יהיה כזה.</p>
+      <p>"אם אני רוצה שגם לי יהיה – זה בסדר גמור", חזר הרב והדגיש. אדרבה, אפשר לבקש מן החבר שילמד אותי איך עשה, אפשר ללכת לחנות ולקנות את החומרים, ואפשר לעשות יחד. ככה צריך להיות.</p>
+      <p class="bold-para">אם אני רוצה שיהיה גם לי דבר כמו של חברי – אין בזה "לא תחמוד".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מה פירוש לא תחמוד</div>
+      <h3 class="story-title">🛠️ גם לי – הדרך הנכונה</h3>
+      <p>באותו שבוע הכינו התלמידים דגמים לקראת מתן תורה. אחד מהם בנה דגם של ארון הברית, והוא הוצג למטה, בבית הספר. הרב השתמש בדגם הזה כדוגמה חיה. "אם אני רוצה את ארון הברית שהוא עשה", אמר, "זה דבר אחד. ואם אני רוצה שגם לי יהיה ארון ברית – זה דבר אחר לגמרי".</p>
+      <p>ואחד הילדים כבר הציע תכנית מעשית: לקנות מקלות, לחבר אותם, לצבוע אותם בצבע זהב, ולשים קופסה באמצע. והנה יש לך ארון ברית משלך. הרב שמח על ההצעה. זו בדיוק הדרך הנכונה. מי שרוצה דבר יפה כמו של חברו, אינו צריך לקחת דבר מאיש. הוא יכול ללמוד, להשתדל ולבנות בעצמו.</p>
+      <p>וכך בכל דבר בחיים. כשאדם רואה אצל חברו משהו טוב, יש לפניו שתי דרכים. אפשר לקנא, ולהתחיל לחשוב איך להוציא ממנו את מה שיש לו. ואפשר לשמוח בשבילו, ולהשתדל להשיג דבר דומה בדרך ישרה. התורה מלמדת אותנו ללכת בדרך השנייה. לכן הגבול של "לא תחמוד" אינו עובר בין רצון לחוסר רצון. הוא עובר בין "גם לי" לבין "את שלו".</p>
+      <p class="bold-para">מי שרוצה דבר כמו של חברו, הולך ובונה לעצמו – ואינו מתכנן איך לקחת את של חברו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מה פירוש לא תחמוד</div>
+      <h3 class="story-title">🏛️ כשאני רוצה דווקא את שלו</h3>
+      <p>אז מתי זה לא תחמוד? כשאני רוצה את שלו. לא דגם כמו שלו – אלא את הדגם שהוא עשה. הרב שאל את התלמידים: אם אני ארד למטה ואקח את הדגם שעשה חבר שלי, על מה אעבור? ענו: על לא תחמוד. "לא", אמר הרב, "על לא תגנוב". לקחת בגניבה, להתגנב ולקחת – זה "לא תגנוב".</p>
+      <p>אז מה זה לא תחמוד? כשאני הולך ורוצה משהו של אחרים, ומתחיל לחשוב איך להשיג אותו. אולי אשכנע אותו, אולי אלחץ עליו למכור לי, אפילו אשלם לו – העיקר שאוציא ממנו את החפץ. אני חולם כל היום איך להצליח לקחת לו את זה בכל מיני צורות.</p>
+      <p>למשל, אם אלך למנהלת ואשכנע אותה לקחת ממנו את הדגם, כי "הוא לא טוב", ולתת אותו לי – וכל מה שעשיתי אינו בגלל שהדגם לא טוב, אלא בגלל שרציתי אותו – אז עברתי על לא תחמוד. עצם המחשבות והתכניות, איך אצליח לקחת לו את מה שיש לו, גם אם אשלם לו, זה נקרא לא תחמוד.</p>
+      <p>אחד התלמידים הוסיף: וזה גם לא יפה, כי הוא עבד על זה קשה. "נכון מאוד", אמר הרב, "לכן התורה אסרה זאת". ותלמיד אחר אמר: הכי טוב זה לשמוח במה שיש לו. "נכון מאוד", אמר הרב. "זו המצווה הגדולה – לא לקנא, אלא לשמוח עם החבר במה שיש לו."</p>
+      <p class="bold-para">לא תחמוד הוא כשאדם רוצה את החפץ של חברו עצמו, ומחפש דרכים להוציא אותו ממנו – אפילו בתשלום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מה פירוש לא תחמוד</div>
+      <h3 class="story-title">🏠 וכל אשר לרעך</h3>
+      <p>הרב הפנה את תשומת לב התלמידים ללשון הפסוק. התורה אינה אומרת רק "לא תחמוד" סתם. היא מונה: בית רעך, אשת רעך, עבדו ואמתו, שורו וחמורו, "וְכֹל אֲשֶׁר לְרֵעֶךָ". אסור לחמוד שום דבר ששייך לחבר, מן הגדול ועד הקטן.</p>
+      <p>אחד התלמידים ניסה להסביר: לא תחמוד אשת רעך – כשיש אשה של מישהו, ומתחילים לשכנע אותה לבוא אליך, אפילו לשכנע אותה שתתגרש. הרב קיבל שזה יכול להיות בכלל הדברים. אבל הוא רצה שהתלמידים יבינו את ההגדרה הכללית, שתתאים לכל מה שנמנה בפסוק: לבית, לשור, לחמור ולכל דבר.</p>
+      <p>וכאן מתבהר גם ההבדל בין "לא תנאף" ובין "לא תחמוד אשת רעך". "לא תנאף" הוא המעשה עצמו. "לא תחמוד" הוא המחשבות והתכניות שקודמות לו: איך לקחת את מה ששייך לאחר. התורה שומרת על האדם פעמיים: גם מן המעשה, וגם מן הדרך שמובילה אליו.</p>
+      <p class="bold-para">האיסור כולל כל מה ששייך לחבר – ביתו, אשתו, עבדו, שורו וחמורו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · מה פירוש לא תחמוד</div>
+      <h3 class="story-title">💭 לחשוב או לעשות</h3>
+      <p>בחוברת שלמדו בכיתה הייתה שאלה: האם האיסור של לא תחמוד הוא במחשבה או במעשה? התשובה, אמר הרב, היא במחשבה. אבל לא כל מחשבה. לא מחשבה של "גם אני רוצה כזה". מחשבה של תכנון: אדם יושב ומתכנן תכניות, חושב כל היום איך יצליח לקחת את החפץ של חברו.</p>
+      <p>ההבדל דק, אבל חשוב מאוד. "גם לי" – זה בסדר. "את שלו" – זה לא תחמוד. מי שרוצה שגם לו יהיה, יכול לשמוח בהצלחת חברו, ללמוד ממנו, ולהשתדל בעצמו. מי שרוצה את של חברו, נכנס למחשבות שאין להן סוף, ובסוף הן עלולות להביא אותו לחטאים חמורים יותר.</p>
+      <p>ולכן התורה עוצרת את האדם כבר כאן, בשלב המחשבה. היא אינה מחכה שיגנוב, או שישקר, או שיפגע. היא מלמדת אותו לשמור גם על הלב ועל הראש. כך מגיע הסולם לשלב האחרון שלו.</p>
+      <p class="bold-para">לא תחמוד הוא האיסור של המחשבה – של תכנון התכניות איך לקחת את של חברי.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מעשה, דיבור ומחשבה</div>
+      <h3 class="story-title">🔑 מעשה, דיבור ומחשבה</h3>
+      <p>עכשיו שאל הרב את השאלה הגדולה: "לא תרצח, לא תנאף, לא תגנוב – זה במעשה, בדיבור או במחשבה?" אחד הילדים ענה: בדיבור. "אתה ראית פעם מישהו שרוצח במחשבות?" שאל הרב. "כשגנב מגיע וגונב, הוא גונב בדיבור או בפועל?" – בפועל, ענו הילדים.</p>
+      <p>הרב סיפר שפעם ראה בעיניו גנב. הוא צעק עליו בקולי קולות, כל הרחוב שמע, והגנב נבהל וברח. "ובכן", שאל, "הגנב גונב בדיבור או במעשה?" – במעשה. שלוש הדיברות הראשונות הן פעולות שאדם עושה בגוף: בידיים, ברגליים.</p>
+      <p>והדיברה הרביעית, "לא תענה" – באיזו פעולה עושים אותה? מעידים בבית הדין – בפה. זו דיברה של דיבור. והאחרונה, "לא תחמוד" – איפה עושים אותה? במחשבה.</p>
+      <p>ועכשיו הסולם שלם. בתחילה אסרה התורה פעולות שאדם עושה במעשה, בידיים וברגליים: לא לקחת את האדם עצמו, לא את אשתו, ולא את ממונו. אחר כך אסרה דבר שעושים בדיבור: לא להעיד עדות שקר. ובסוף אסרה אפילו את המחשבה: לא לחמוד. מן החמור אל הקל, ומן הגוף אל הפה ואל הלב.</p>
+      <p class="bold-para">שלוש הדיברות הראשונות הן במעשה, הרביעית בדיבור, והחמישית במחשבה – וכך הסולם שלם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · מעשה, דיבור ומחשבה</div>
+      <h3 class="story-title">🌟 לא עובד עם זיכרון – עובד עם רעיון</h3>
+      <p>"מי יכול עכשיו לבד להגיד את כל חמש הדיברות האחרונות במילים שלו?" שאל הרב. "לא לדקלם – להגיד במילים שלך. אם תפסתם את הרעיון, לא צריך לעבוד כדי לזכור. בשנייה אחת זוכרים הכול."</p>
+      <p>ואכן, תלמיד אחר תלמיד ניסה. מי שחשב בראש על הסדר – לא התבלבל. לא תרצח: אל תיקח לאדם את עצמו. לא תנאף: אל תיקח לו את אשתו. לא תגנוב: אל תיקח לו את ממונו. לא תענה: אל תעיד עליו שקר בפה. לא תחמוד: אל תתכנן בלב איך לקחת את שלו.</p>
+      <p>"אתם רואים?" אמר הרב, "אני לא זוכר טוב שמות, אבל את זה לא צריך לזכור. זה לא עובד עם זיכרון, זה עובד עם רעיון. אם אתה מבין איך זה בנוי, אתה ישר זוכר."</p>
+      <p>ויש כאן לימוד גדול יותר מאשר שיטת זיכרון. עשרת הדיברות אינן רשימה של איסורים בלבד. הן מסלול שלם, שמלמד אדם לשמור על חברו בכל הרבדים: בגופו, בביתו ובממונו, בדיבורו ובמחשבותיו. מי שמגיע לחג השבועות כשהוא מבין את זה, מגיע למתן תורה מוכן באמת.</p>
+      <p class="bold-para">מי שמבין איך הדיברות בנויות, זוכר את כולן בבת אחת, במילים שלו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/7PNSKMpz6ss · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"לזכור בלי לשנן","icon":"🧠","color":"#c62b6b","stories":[{"id":1,"title":"להגיע למתן תורה עם הדיברות","icon":"🎁"},{"id":2,"title":"שני צדי הלוחות","icon":"🪨"}]},{"id":2,"name":"האדם, אשתו וממונו","icon":"🪜","color":"#6d28d9","stories":[{"id":3,"title":"לא תרצח","icon":"🛡️"},{"id":4,"title":"לא תנאף","icon":"💍"},{"id":5,"title":"אברהם ופרעה","icon":"🏜️"},{"id":6,"title":"לא תגנוב","icon":"💰"},{"id":7,"title":"דבר הלמד מעניינו","icon":"🔍"}]},{"id":3,"name":"עדות שקר","icon":"⚖️","color":"#e08e00","stories":[{"id":8,"title":"לא תענה ברעך עד שקר","icon":"⚖️"}]},{"id":4,"name":"מה פירוש לא תחמוד","icon":"💭","color":"#1e88b8","stories":[{"id":9,"title":"הדגם של המחשב","icon":"💻"},{"id":10,"title":"גם לי – הדרך הנכונה","icon":"🛠️"},{"id":11,"title":"כשאני רוצה דווקא את שלו","icon":"🏛️"},{"id":12,"title":"וכל אשר לרעך","icon":"🏠"},{"id":13,"title":"לחשוב או לעשות","icon":"💭"}]},{"id":5,"name":"מעשה, דיבור ומחשבה","icon":"🔑","color":"#c62b6b","stories":[{"id":14,"title":"מעשה, דיבור ומחשבה","icon":"🔑"},{"id":15,"title":"לא עובד עם זיכרון – עובד עם רעיון","icon":"🌟"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
