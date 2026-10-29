@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 יוצרי ובוראי</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 יוצרי ובוראי</h1>
+  <p>מתוך צוואת בעל יסוד ושורש העבודה: הודיה על כל דבר קטן וגדול, וצידוק הדין בשמחה על כל צער</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ יוצרי ובוראי" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/6caFi9bXP4U?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/6caFi9bXP4U/hqdefault.jpg" alt="יוצרי ובוראי" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=6caFi9bXP4U" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · צוואה לבנים</div>
+      <h3 class="story-title">📜 עבודה שהיא יסוד ושורש</h3>
+      <p>בשיעור נלמדה עבודת ההודיה כפי שהיא מופיעה בצוואה הקדושה של בעל "יסוד ושורש העבודה". לפני פטירתו כתב הצדיק צוואה לבניו. הוא לא השאיר להם רק רכוש, אלא הנהגות חשובות שהנהיג בחייו, והזהיר אותם ללכת בדרך הזאת.</p>
+      <p>באחד הסימנים הוא כותב, בתוכן הדברים, שהיה נזהר מאוד לתת הודיה ושבח לה' על כל מה שהגיע אליו. גם על רעה, קטנה או גדולה, מכל מה שהפה יכול לדבר והלב לחשוב, היה מצדיק עליו את הדין בשמחה, ונותן לה' הודיה בשמחה עצומה.</p>
+      <p>כאשר קרה לו דבר רע, הוא עשה שתי עבודות. האחת: הצדיק את הדין. השנייה: הודה לקדוש ברוך הוא. וכך היה אומר: יוצרי ובוראי, אתה צדיק על כל הבא עלי, כי אמת עשית ואני הרשעתי, ואני נותן לך שבח והודיה על זה, כי בוודאי לטובתי עשית.</p>
+      <p>ואותו דבר על הטוב. על כל טובה, קטנה או גדולה, בדבר מצווה ובדבר רשות, היה נותן לה' הודיה ושבח על הטובה שגמל עמו. על הכול היה מודה.</p>
+      <p class="bold-para">בעל יסוד ושורש העבודה ציווה לבניו שעבודת ההודיה היא שורש כל העבודה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · צוואה לבנים</div>
+      <h3 class="story-title">⚖️ חייב אדם לברך על הרעה</h3>
+      <p>מה המקור לכל זה? בעל יסוד ושורש העבודה כותב שזו משנה מפורשת בפרק תשיעי של מסכת ברכות: "חייב אדם לברך על הרעה כשם שהוא מברך על הטובה".</p>
+      <p>הוא מדייק בלשון המשנה. המשנה אינה צריכה ללמד שמברכים על הטובה. זה פשוט, ולכן היא מזכירה אותו רק כדבר ידוע: "כשם שהוא מברך על הטובה". החידוש הוא שגם על הרע חייבים לברך. ואם על הרע חייבים לתת שבח והודיה, קל וחומר על הטוב.</p>
+      <p>ואז הוא מוסיף משפט נוגע ללב. יודע תעלומות יעיד עליו, כך הוא כותב לבניו, שמלבד החיוב שבמשנה הקדושה, הוא עבד את העבודה הזאת בתמידות מגודל אהבת ה' שהייתה תקועה בליבו. לא רק משום שכך כתוב, אלא משום שאהב.</p>
+      <p>ואחר כך הוא פונה אליהם: אציג לפניכם כמה דוגמאות, מה שיעלה על דעתי, ומהן תקישו בעצמכם דבר לדבר, כי רבים הם, ואי אפשר לפרט את כולם. וכאן מתחילה רשימה מופלאה של חיים שלמים שכולם תודה.</p>
+      <p class="bold-para">המשנה מלמדת שצריך לברך על הרעה כמו על הטובה, ועל הטובה פשוט שחייבים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · תודה על הבית והדרך</div>
+      <h3 class="story-title">🚪 חדר מיוחד לעבודת ה'</h3>
+      <p>הדוגמה הראשונה: על גודל הטובה שעשה עמו יוצרו, שנתן לו חדר מיוחד לעבודתו הקדושה מיום עמדו על דעתו. כנראה היה לו חדר שבו יכול היה להיות לבד ולעבוד את ה', מה שנקרא התבודדות. והרב הזכיר את מה שמובא במסילת ישרים על מעלת ההתבודדות.</p>
+      <p>בעל יסוד ושורש העבודה כותב שזה יסוד ושורש לאדם שרוצה לקנות שלמות בעולם השפל הזה: שיהיה לו מקום שבו הוא לבד, רק הוא והבורא. ולכן, בכל עת שעלה על דעתו גודל הטובה הזו, ולפעמים כמה פעמים ביום, היה מודה עליה בשמחה עצומה ובפה מלא.</p>
+      <p>ונוסח ההודיה היה בערך כך: יוצרי ובוראי, יתברך שמך, אני נותן לך הודיה גדולה על שנתת לי חדר מיוחד לעבודתך הקדושה, לא כפי מעשי הטובים, אלא כפי רחמיך הרבים וחסדיך הגדולים.</p>
+      <p>וגם בכל יום, בברכת "שעשה לי כל צרכי", היה מכוון במחשבתו להודות על החדר המיוחד, ועל כל הבית שנתן לו לדירה, לו ולכל בני ביתו. וכשחזר מתפילת שחרית וערבית והגיע לביתו, הודה שוב בפה מלא. והוא מבקש: הזהרו, בני אהובי, בהודיה הזאת מאוד מאוד.</p>
+      <p class="bold-para">הצדיק הודה כמה פעמים ביום על כך שהיה לו חדר להתבודד בו עם בוראו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · תודה על הבית והדרך</div>
+      <h3 class="story-title">🧱 החומה העומדת ליפול</h3>
+      <p>דוגמה נוספת מן הצוואה: בכל פעם שהלך מביתו לבית הכנסת או מבית הכנסת לביתו, היה מוכרח לעבור ליד חומה רעועה שעמדה ליפול, ליד בית חרב. היה צריך ממש לעבור תחתיה.</p>
+      <p>קודם שהגיע אל החומה, התחיל להתפלל לה' שיציל אותו ושלא תיפול עליו. וכך התפלל: יוצרי ובוראי, הצילני שלא תיפול החומה עלי, ולא על כל אדם שבראת. הוא כותב שהתכוון דווקא ללשון הזאת, שלא תיפול על שום אדם, גם לא על גוי. והוא מסביר שחשש לשלום הקהל, שמא יבוא היזק בגלל מי שלא תיקן את החומה.</p>
+      <p>ואחרי שעבר את החומה, נתן הודיה לה' שהציל אותו מנפילתה: יוצרי ובוראי, יתברך שמך בפי כל חי, אני נותן שבח והודיה לך שהצלת אותי ולא נפלה החומה עלי.</p>
+      <p>וכך היה עושה כל יום, ולפעמים כמה פעמים זו אחר זו: מתפלל לפני, ומודה אחרי. סכנה שאדם אחר היה עובר לידה בלי לחשוב, הפכה אצלו לשתי עבודות: תפילה ותודה.</p>
+      <p class="bold-para">לפני הסכנה התפלל, ואחריה הודה, וכך עשה בכל יום, אפילו כמה פעמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · תודה על הבית והדרך</div>
+      <h3 class="story-title">✉️ בשורה טובה מן הבנים</h3>
+      <p>סימן נוסף בצוואה: בכל פעם שהגיע אליו מכתב שלום מבניו, או אפילו בלי מכתב, כששמע לבד שהם בריאים, נתן שבח והודיה לה'. ונוסח הדברים: יוצרי ובוראי, אני נותן שבח והודיה לך, יתברך שמך, שבישרת לי בשורה טובה על בריאות בני ובני בני.</p>
+      <p>ולא רק על הבריאות. גם כשראה או הבין בשכלו שבניו הולכים בדרך טובה, דרך ה', וכל דבר שהבין שמגיע מהם נחת רוח לה' יתברך, על כל אלה נתן שבח והודיה בשמחה עצומה על בחירתם הטובה.</p>
+      <p>יש כאן לימוד גדול להורים. אפשר לקבל ידיעה טובה על ילד ולהמשיך הלאה, כאילו זה מובן מאליו. ואפשר לעצור ולהודות. הצדיק לא נתן לבשורה טובה לעבור בלי תודה. כל מכתב, כל שמועה, כל סימן של נחת, היו אצלו הזדמנות לומר לבוראו: ראיתי את חסדך.</p>
+      <p class="bold-para">כל ידיעה על בריאות הבנים ועל דרכם הטובה הייתה אצלו סיבה להודיה עצומה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תודה על כל צורכי</div>
+      <h3 class="story-title">🧥 בגדים לכבוד שבת</h3>
+      <p>בסימן אחר הוא כותב: כשלבשתי בערב שבת קודש, סמוך למנחה, את בגדי השבת, נתתי לה' הודיה גדולה בשמחה עצומה ובפה מלא. והנוסח: יוצרי ובוראי, אני נותן לך הודיה על שנתת לי בגדים חשובים לכבוד שבת קודש, לא כפי מעשי הטובים, אלא כפי רחמיך הרבים וחסדיך הגדולים.</p>
+      <p>ומה עורר אותו להודות? הוא חשב בדעתו כמה צדיקים גדולים, שהוא אינו מגיע לקרסוליהם, חסרים להם בגדים כאלה. וחשב בליבו שמניעת ההודיה על זה תהיה ממש מרד ומעל, חס ושלום. ולכן אמר את ההודיה כמה פעמים בשעת לבישת הבגדים.</p>
+      <p>וגם על בגד חם לחורף: היה לו בגד צמר חם מאוד, ובכל פעם שלבש אותו הודה לה'. הוא שיער בדעתו שאלמלא הבגד הזה, היה מגיע אליו צער גדול מן הקור.</p>
+      <p>ההודיה אצלו נולדה מתוך השוואה: לא להסתכל על מי שיש לו יותר, אלא לזכור את מי שחסר לו, ולראות כמה קיבל.</p>
+      <p class="bold-para">בלבישת בגדי שבת וביגוד חם בחורף הודה, כי חשב על צדיקים שחסרים להם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תודה על כל צורכי</div>
+      <h3 class="story-title">🛒 כל צורכי, גם בדבר קטן</h3>
+      <p>בצוואה מופיעה גם הודיה על דברים שבשגרה. כל דבר שהיה צריך מאוד, והיה מצוי אצלו, כך שלא נצרך לחפש אחריו או לשאול מאחרים, היה נותן עליו הודיה בשמחה עצומה: יוצרי ובוראי, אני נותן שבח והודיה לך שנתת לי כל צורכי. ולפעמים היה כופל את הדברים כמה פעמים זו אחר זו.</p>
+      <p>ואפילו בדבר רשות, בדבר קל, כשהיה צריך לקנות משהו פשוט שאינו חשוב כלל, והיה בידו כסף לקנותו, הודה. כי חשב בדעתו כמה צדיקים גדולים אין ידם משגת לקנות את צורכם.</p>
+      <p>וכל שכן בדבר מצווה: כשהיה צריך צימוקים ליין לקידוש של שבת, והיה בידו כסף, או כסף לקנות ציצית או תפילין כשרים ויקרים למצווה, על כל אלה נתן הודיה לה' בשמחה עצומה.</p>
+      <p>ואפילו כשהשחיז את הסכין ביום שישי לכבוד שבת, נתן הודיה לה' בכל ערב שבת, על שזיכה אותו במצווה. מי שמסתכל כך על חייו, מגלה שאין כמעט רגע שאין בו סיבה לומר תודה.</p>
+      <p class="bold-para">גם כשהיה לו כסף לקנות דבר פשוט, או למצווה, הודה על שנתן לו כל צורכו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תודה על כל צורכי</div>
+      <h3 class="story-title">🕍 לא לוותר על קדושה</h3>
+      <p>דוגמה אחת מן הצוואה מלמדת על לב שכואב על כל מצווה שהחמיץ. בעל יסוד ושורש העבודה כותב שמחמת האריכות שלו בתפילת שמונה עשרה, על פי רוב לא הגיע לענות קדושה עם הציבור, ולא "מודים" עם הציבור. והיה לו מזה צער גדול.</p>
+      <p>לכן, בכל פעם שהגיע בזמן וענה קדושה ומודים יחד עם הציבור, נתן מיד במחשבתו הודיה עצומה לה' על שזיכה אותו בזה.</p>
+      <p>יש כאן שני רגשות שמשלימים זה את זה. האחד הוא הצער על מה שחסר. הצדיק לא היה אדיש לכך שהחמיץ קדושה. השני הוא השמחה על מה שזכה. ודווקא מתוך שהצטער כשלא זכה, ידע לשמוח כשזכה.</p>
+      <p>מי שמרגיש את ערכה של מצווה, יודע גם להודות עליה. מי שאינו מרגיש את החיסרון, מתקשה גם להרגיש את המתנה. ההודיה הזאת אינה מנומסת או שגרתית; היא נובעת מלב שמעריך כל דבר שבקדושה.</p>
+      <p class="bold-para">כשזכה לענות קדושה עם הציבור אחרי צער שלא זכה, הודה מיד בשמחה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · תודה על כל צורכי</div>
+      <h3 class="story-title">🌿 שתי הודיות על הנאה אחת</h3>
+      <p>בצוואה מופיעה גם הודיה על דבר קטן מאוד: הרחת טבק. בימים ההם נהגו אנשים להריח קמצוץ טבק. הצדיק כותב שבכל פעם שהריח, נתן במחשבתו שתי הודיות לה'.</p>
+      <p>הודיה ראשונה: על שנתן לו כל צורכו. הוא חשב כמה צדיקים גדולים, שאינו מגיע לקרסוליהם, הם עניים מאוד ואין בכיסם פרוטה יתרה, ומצטערים באותה שעה מחמת חיסרון כיס. ואילו לו, בעזרת ה', לא חסר, ויש לו כסף לקנות טבק כמה שירצה. ואיך לא יודה על זה, שנתן לו מה שלא נתן לאדם שטוב ממנו?</p>
+      <p>הודיה שנייה: כל מה שבראת, לכבודך בראת, שייהנו ממנו בריותיך ועל ידי זה יכירו אותך. כלומר, הוא שמח שה' ברא בריאה נפלאה כזו, שיש לה ריח טוב, כדי שהאדם ייהנה ויכיר את בוראו. ומי שנהנה מבריאת יוצרו בלי לתת לו הודיה, כך כתב, הרי זה כמו מרד ומעל.</p>
+      <p>ולכן הוא מבקש מבניו: הזהרו מאוד בכל פעם שתהנו, לתת לה' שתי הודיות. על נפלאות הבריאה, ועל שנתן לכם כל צורכיכם.</p>
+      <p class="bold-para">על כל הנאה הודה פעמיים: על שנתן לו כל צורכו, ועל הבריאה שנבראה לכבודו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גם על הצער</div>
+      <h3 class="story-title">🦷 על כל צער, אפילו קטן</h3>
+      <p>ועכשיו הצוואה עוברת מן הטוב אל הקשה. על כל צרה ויסורים שאירעו לו, היה מצדיק את הדין ואומר: יוצרי ובוראי, אתה צדיק על כל הבא עלי, כי אמת עשית ואני הרשעתי.</p>
+      <p>בין ביסורי ממון ובין ביסורי הגוף. הוא מספר שכמעט בכל יום היה לו כאב שיניים, ולפעמים כאב גדול כל כך שלא יכול היה ללמוד באותה שעה מגודל היסורים. ובכל זאת, כמעט בכל רגע היה מצדיק את הדין. ואפילו בזמן התפילה, במקום שאין להפסיק, הצדיק את הדין במחשבתו.</p>
+      <p>ולא רק בצער גדול. גם ביסורים קטנים: הליכה מיותרת, כששכח לקחת משהו בפעם הראשונה ונאלץ לחזור וללכת שוב דרך קצרה, הצדיק את הדין. וכן בהפסד ממון קטן: כשנפל הטבק על הרצפה ונתפזר, אפילו כשההפסד היה פחות משווה פרוטה, הצדיק עליו את הדין.</p>
+      <p>כך נבנה אדם שכל חייו הם קשר עם ה'. בטוב הוא מודה, וברע הוא מצדיק ומאמין שהכול לטובתו.</p>
+      <p class="bold-para">גם על כאב שיניים, על דרך כפולה ועל הפסד של פרוטה, היה מצדיק את הדין.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · גם על הצער</div>
+      <h3 class="story-title">✨ כמה עשרות הודיות בכל יום</h3>
+      <p>בסוף הדברים מסכם בעל יסוד ושורש העבודה ופונה שוב אל בניו: בני אהובי, בבקשה מכם מאוד ומאוד, שתזהרו גם אתם בעבודה הרמה הזאת, ואז בוודאי יצאו מפיכם כמה עשרות הודיות בכל יום ליוצרנו ובוראנו, יתברך שמו.</p>
+      <p>יש כאן חשבון פשוט. אם אדם מודה על החדר, על הבית, על החזרה בשלום, על בשורה טובה, על הבגד, על כל קנייה, על כל מצווה ועל כל הנאה, הרי שההודיות מצטברות מעצמן לעשרות בכל יום. החיים עצמם נעשים שיחה מתמדת עם הבורא.</p>
+      <p>וחשוב לשים לב: ההודיות האלה אינן נוסח קבוע שנלמד בעל פה. הן נאמרו במילים פשוטות, "יוצרי ובוראי", מתוך הלב, ברגע שהדבר קרה. זה סוד כוחן.</p>
+      <p>הדרך שהציג הצדיק פתוחה לכל אחד. אין צורך בנסים גדולים. צריך רק לפקוח עיניים לחסדים הקטנים שבכל שעה, ולומר עליהם תודה. כך מתקיימים הדברים שהיו תקועים בליבו: אהבת ה' בתמידות, בטוב וגם בצער.</p>
+      <p class="bold-para">מי שמתרגל לעבודה הזאת, יוצאות מפיו עשרות הודיות בכל יום ליוצרו.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/6caFi9bXP4U · 2026-10-28 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"צוואה לבנים","icon":"📜","color":"#c62b6b","stories":[{"id":1,"title":"עבודה שהיא יסוד ושורש","icon":"📜"},{"id":2,"title":"חייב אדם לברך על הרעה","icon":"⚖️"}]},{"id":2,"name":"תודה על הבית והדרך","icon":"🏠","color":"#6d28d9","stories":[{"id":3,"title":"חדר מיוחד לעבודת ה'","icon":"🚪"},{"id":4,"title":"החומה העומדת ליפול","icon":"🧱"},{"id":5,"title":"בשורה טובה מן הבנים","icon":"✉️"}]},{"id":3,"name":"תודה על כל צורכי","icon":"🧥","color":"#e08e00","stories":[{"id":6,"title":"בגדים לכבוד שבת","icon":"🧥"},{"id":7,"title":"כל צורכי, גם בדבר קטן","icon":"🛒"},{"id":8,"title":"לא לוותר על קדושה","icon":"🕍"},{"id":9,"title":"שתי הודיות על הנאה אחת","icon":"🌿"}]},{"id":4,"name":"גם על הצער","icon":"⚖️","color":"#1e88b8","stories":[{"id":10,"title":"על כל צער, אפילו קטן","icon":"🦷"},{"id":11,"title":"כמה עשרות הודיות בכל יום","icon":"✨"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
