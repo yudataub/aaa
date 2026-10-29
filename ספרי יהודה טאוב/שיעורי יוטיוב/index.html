@@ -171,19 +171,33 @@ function classify(l){
   function href(l){ return encodeURIComponent(l.file); }
   function vid(l){ var m = String(l.video || "").match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/); return m ? m[1] : ""; }
   function pic(l){ var v = vid(l); return (v && ART[v]) || ART[l.file] || (v ? "https://i.ytimg.com/vi/" + v + "/mqdefault.jpg" : ""); }
+  var SPECIAL = {"עמודים מעוצבים": 1, "חוברות להדפסה": 1};   // בנושאים האלה כל גרסה מוצגת בפני עצמה
+  function kind(l){ var t = l.tags || []; return t.indexOf("עמוד מעוצב") >= 0 ? "styled" : t.indexOf("חוברת להדפסה") >= 0 ? "booklet" : "book"; }
+  function verLabel(v){ var k = kind(v), t = v.tags || [];
+    return k === "styled" ? "🎨 עמוד מעוצב: " + (v.style || t[t.length - 1]) : k === "booklet" ? "📄 חוברת להדפסה: " + t[t.length - 1] : "📖 " + (v.vlabel || "גרסה נוספת"); }
+  function vis(l){ return topic && SPECIAL[topic] ? true : !l.alt; }
   function card(l, sb){
     var c = col(l.tp), p = pic(l); sb = sb || l.sb;
-    var book = (l.tags || []).indexOf("חוברת להדפסה") >= 0, styled = (l.tags || []).indexOf("עמוד מעוצב") >= 0;
-    return '<a class="card" href="' + href(l) + '" style="--c1:' + c[0] + ';--c2:' + c[1] + '">' +
-      '<div class="pic">' + (p ? '<img src="' + esc(p) + '" alt="" loading="lazy">' : esc(l.icon || emo(l.tp))) + "</div>" +
-      '<div class="body"><span class="cat">' + esc(emo(l.tp) + " " + sb) + "</span><h3>" + esc((l.icon ? l.icon + " " : "") + l.title) + "</h3>" +
-      "<p>" + esc(l.subtitle || "") + "</p>" +
-      '<div class="foot"><span>' + (styled ? "🎨 " + esc(l.style || "עמוד מעוצב") : book ? "📄 חוברת להדפסה" : (l.cards ? "📖 " + l.cards.length + " נושאים" : "📖 ספר")) + '</span><span class="go">לקריאה ⟵</span></div></div></a>';
+    var book = kind(l) === "booklet", styled = kind(l) === "styled";
+    var vers = (!topic || !SPECIAL[topic]) ? (l.vers || []) : [];
+    var nv = vers.length + (l.pdf ? 1 : 0);
+    var style = ' style="--c1:' + c[0] + ';--c2:' + c[1] + '"';
+    var picH = '<div class="pic">' + (p ? '<img src="' + esc(p) + '" alt="" loading="lazy">' : esc(l.icon || emo(l.tp))) +
+      (nv ? '<span class="parts">🔗 ' + (nv + 1) + " גרסאות</span>" : "") + "</div>";
+    var head = '<span class="cat">' + esc(emo(l.tp) + " " + sb) + "</span><h3>" + esc((l.icon ? l.icon + " " : "") + l.title) + "</h3>" +
+      "<p>" + esc(l.subtitle || "") + "</p>";
+    var foot = '<div class="foot"><span>' + (styled ? "🎨 " + esc(l.style || "עמוד מעוצב") : book ? "📄 חוברת להדפסה" : (l.cards ? "📖 " + l.cards.length + " נושאים" : "📖 ספר")) + '</span><span class="go">לקריאה ⟵</span></div>';
+    if (!nv) return '<a class="card" href="' + href(l) + '"' + style + ">" + picH + '<div class="body">' + head + foot + "</div></a>";
+    var chips = '<div class="vers"><a href="' + href(l) + '">📖 ' + (styled ? "עמוד מעוצב" : book ? "חוברת להדפסה" : "הספר") + "</a>" +
+      vers.map(function(v){ return '<a href="' + href(v) + '">' + esc(verLabel(v)) + "</a>"; }).join("") +
+      (l.pdf ? '<a href="' + encodeURIComponent(l.pdf) + '">🖨️ PDF להדפסה</a>' : "") + "</div>";
+    return '<div class="card multi"' + style + '><a class="main" href="' + href(l) + '">' + picH + '<div class="body">' + head + "</div></a>" +
+      chips + '<a class="mfoot" href="' + href(l) + '">' + foot + "</a></div>";
   }
-  function counts(){ var c = {}; D.lessons.forEach(function(l){ c[l.tp] = (c[l.tp] || 0) + 1; (l.m || []).forEach(function(x){ if (x[0] !== l.tp) c[x[0]] = (c[x[0]] || 0) + 1; }); }); return c; }
+  function counts(){ var c = {}; D.lessons.forEach(function(l){ if (l.alt && !(l.m || []).some(function(x){ return SPECIAL[x[0]]; })) return; if (!l.alt) c[l.tp] = (c[l.tp] || 0) + 1; (l.m || []).forEach(function(x){ if (x[0] !== l.tp && (!l.alt || SPECIAL[x[0]])) c[x[0]] = (c[x[0]] || 0) + 1; }); }); return c; }
   function chips(){
     var c = counts();
-    $("chips").innerHTML = '<button class="chip' + (topic ? "" : " on") + '" data-t="">🏠 כל הנושאים<span class="n">' + D.lessons.length + "</span></button>" +
+    $("chips").innerHTML = '<button class="chip' + (topic ? "" : " on") + '" data-t="">🏠 כל הנושאים<span class="n">' + D.lessons.filter(function(l){ return !l.alt; }).length + "</span></button>" +
       D.topics.filter(function(t){ return c[t.k]; }).map(function(t){
         return '<button class="chip' + (topic === t.k ? " on" : "") + '" data-t="' + esc(t.k) + '">' + esc(t.e + " " + t.k) + '<span class="n">' + c[t.k] + "</span></button>"; }).join("");
   }
@@ -198,7 +212,7 @@ function classify(l){
     $("subtoc").innerHTML = "";
     $("view").innerHTML = '<div class="topics">' + D.topics.filter(function(t){ return c[t.k]; }).map(function(t){
       var p = col(t.k), has = {};
-      D.lessons.forEach(function(l){ var s = subIn(l, t.k); if (s) has[s] = (has[s] || 0) + 1; });
+      D.lessons.forEach(function(l){ if (l.alt && !SPECIAL[t.k]) return; var s = subIn(l, t.k); if (s) has[s] = (has[s] || 0) + 1; });
       var subs = subsOf(t).filter(function(s){ return has[s]; });
       if (t.k === "פרשת השבוע") subs = ["בראשית","שמות","ויקרא","במדבר","דברים"].map(function(b){ return "חומש " + b; });
       var more = subs.length > 8 ? '<span>ועוד ' + (subs.length - 8) + "...</span>" : "";
@@ -207,7 +221,7 @@ function classify(l){
   }
   function topicView(){
     var t = D.topics.filter(function(x){ return x.k === topic; })[0], by = {};
-    D.lessons.forEach(function(l){ var s = subIn(l, topic); if (s) (by[s] = by[s] || []).push(l); });
+    D.lessons.forEach(function(l){ if (!vis(l)) return; var s = subIn(l, topic); if (s) (by[s] = by[s] || []).push(l); });
     var subs = subsOf(t).filter(function(s){ return by[s]; });
     $("gridTitle").textContent = "";
     var toc = "";
@@ -227,10 +241,13 @@ function classify(l){
   }
   function searchView(){
     var w = norm(q), hits = [];
-    D.lessons.forEach(function(l){
-      if (topic && !subIn(l, topic)) return;
-      var head = norm([l.title, l.sb, l.tp].join(" ")), rest = norm([l.subtitle, l.yt_title || "", (l.tags || []).join(" "), (l.cards || []).join(" ")].join(" "));
-      if (head.indexOf(w) >= 0) hits.push([0, l]); else if (rest.indexOf(w) >= 0) hits.push([1, l]);
+    var seenM = {};
+    D.lessons.forEach(function(l0){
+      var l = vis(l0) ? l0 : l0.main;   // גרסה נוספת שנמצאה בחיפוש — מציגים את הכרטיס המאוחד שלה
+      if (!l || seenM[l.file]) return;
+      if (topic && !subIn(l, topic) && !subIn(l0, topic)) return;
+      var head = norm([l0.title, l0.sb, l0.tp].join(" ")), rest = norm([l0.subtitle, l0.yt_title || "", (l0.tags || []).join(" "), (l0.cards || []).join(" ")].join(" "));
+      if (head.indexOf(w) >= 0) { hits.push([0, l]); seenM[l.file] = 1; } else if (rest.indexOf(w) >= 0) { hits.push([1, l]); seenM[l.file] = 1; }
     });
     hits.sort(function(a, b){ return a[0] - b[0]; });
     $("subtoc").innerHTML = "";
@@ -266,9 +283,16 @@ function classify(l){
     L.forEach(function(l){ var r = classify(l); l.tp = r.tp; l.sb = r.sb; l.m = r.m;
       r.m.forEach(function(x){ if (x[0] === "חוברות להדפסה" && fonts.indexOf(x[1]) < 0) fonts.push(x[1]); }); });
     TOPICS.forEach(function(t){ if (t.k === "חוברות להדפסה") t.subs = fonts; });
+    // גרסאות של אותו שיעור (ספר, חוברת, עמוד מעוצב) — כרטיס אחד עם הפניות לכולן
+    var G = {};
+    L.forEach(function(l){ var k = vid(l) || ("t:" + norm(l.title).replace(/\s+/g, "")); (G[k] = G[k] || []).push(l); });
+    Object.keys(G).forEach(function(k){ var g = G[k]; if (g.length < 2) return;
+      var main = g.filter(function(x){ return kind(x) === "book"; })[0] || g[0];
+      main.vers = g.filter(function(x){ return x !== main; });
+      main.vers.forEach(function(x){ x.alt = true; x.main = main; if (kind(x) === "book") x.vlabel = x.file.indexOf("/") > 0 ? "גרסת " + x.file.split("/")[0] : "גרסה נוספת"; }); });
     D = {topics: TOPICS, lessons: L};
     var cats = {}; L.forEach(function(l){ cats[l.tp] = 1; });
-    $("stats").innerHTML = '<span class="stat">📖 ' + L.length + ' ספרים ושיעורים</span><span class="stat">🗂️ ' + Object.keys(cats).length + ' נושאים</span><span class="stat">🔍 חיפוש בכל השיעורים</span>';
+    $("stats").innerHTML = '<span class="stat">📖 ' + L.filter(function(l){ return !l.alt; }).length + ' ספרים ושיעורים</span><span class="stat">🗂️ ' + Object.keys(cats).length + ' נושאים</span><span class="stat">🔍 חיפוש בכל השיעורים</span>';
     var m = decodeURIComponent(location.hash || "").match(/^#t=(.+)$/);
     topic = m && TOPICS.some(function(t){ return t.k === m[1]; }) ? m[1] : "";
     render();
