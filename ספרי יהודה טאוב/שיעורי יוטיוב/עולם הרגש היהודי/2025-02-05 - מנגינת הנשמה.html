@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 מנגינת הנשמה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/%D7%A2%D7%95%D7%9C%D7%9D%20%D7%94%D7%A8%D7%92%D7%A9%20%D7%94%D7%99%D7%94%D7%95%D7%93%D7%99/">📚 כל השיעורים</a>
+  <h1>🍭 מנגינת הנשמה</h1>
+  <p>שירה כגשר בין לב האדם לתורה: "בנערינו ובזקנינו נלך", "כל הקורא בלא נעימה", ארבעה טעמים ללימוד בניגון, וההבדל בין ידע לבין אהבה בעידן הבינה המלאכותית</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ מנגינת הנשמה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/vKz28VXYY-I?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/vKz28VXYY-I/hqdefault.jpg" alt="מנגינת הנשמה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=vKz28VXYY-I" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · דבר תורה שלא נשכח</div>
+      <h3 class="story-title">🎤 מה זוכרים בסוף השבת?</h3>
+      <p>השיעור נאמר לקראת שבת שירה, ועוסק במעלת השירה ביהדות. והוא פותח בסיפור פשוט מן המציאות.</p>
+      <p>בשבת של שבע ברכות, כמו שכולם יודעים, כולם מדברים. זה מדבר, וזה מדבר, וזה מדבר. ובמוצאי שבת, נסה להיזכר: מה אמרו? קשה מאוד. דיברו כל כך הרבה, ואי אפשר לזכור.</p>
+      <p>אבל באותה שבת קרה דבר מיוחד. יום לפני כן פנה אל הרב מנהל של בית ספר, וביקש: אני רוצה לומר להורים כמה חשוב שבכיתה לא ילמדו את המשניות סתם, אלא בניגון, כדי שיישאר. האם תוכל למצוא לי מקורות? הרב ישב וחיפש מקורות רבים. ותוך כדי כך אמר לעצמו: בוא ננסה בעצמי. אומר את דבר התורה בשבת בשירה, ונראה מה יקרה.</p>
+      <p>ומה שקרה הפתיע אותו מאוד. דבר התורה הזה, היחיד מכל השבת, לא נשכח. הוא חזר ועלה שוב ושוב, מסעודה לסעודה, עד הרגע האחרון של סעודה שלישית. כדי להבין למה, צריך לשמוע את דבר התורה עצמו.</p>
+      <p class="bold-para">מכל הדיבורים של שבת אחת, נשאר בזיכרון דווקא מה שנאמר בשירה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · דבר תורה שלא נשכח</div>
+      <h3 class="story-title">🎉 "בנערינו ובזקנינו נלך"</h3>
+      <p>דבר התורה היה על פרשת בא. פרעה כבר מרגיש שהגיעו מים עד נפש. אומרים לו: עד מתי? הוא אינו מסוגל יותר, ואומר למשה: אתם יכולים ללכת. אבל מי ילך? "לְכוּ נָא הַגְּבָרִים וְעִבְדוּ אֶת ה' כִּי אֹתָהּ אַתֶּם מְבַקְשִׁים". ומשה רבנו אינו מסכים: "בִּנְעָרֵינוּ וּבִזְקֵנֵינוּ נֵלֵךְ, בְּבָנֵינוּ וּבִבְנוֹתֵנוּ... כִּי חַג ה' לָנוּ".</p>
+      <p>על מה היה הוויכוח ביניהם? חשבו: אדם שהולך לעבודה, את מי הוא לוקח איתו? ראיתם פעם אדם שלוקח את ילדיו לעבודה? לעבודה הולכים הגברים. אבל לאן לוקחים את הילדים? למקום שיש בו מסיבה, אירוע, שמחה – שמחת תורה וכדומה. לשם לוקחים את כולם.</p>
+      <p>פרעה אומר: "לכו נא הגברים ועבדו". אתם מבקשים לעבוד? לעבודה הולכים הגברים. ומשה אומר: לא ולא! בנערינו ובזקנינו נלך, כולם! למה? "כי חג ה' לנו". אצלנו עבודת ה' אינה עבודה קשה. היא חגיגה, היא מסיבה. ולמסיבה הולכים כולם.</p>
+      <p>ומכאן המשיך הרב לדבר על כמה חשוב לחנך כך, שבבית תהיה כל מצווה חגיגה. אבל את הדבר תורה הוא אמר בשירה, בניגון המוכר והשמח של "בנערינו ובזקנינו נלך".</p>
+      <p class="bold-para">עבודת ה' אצלנו אינה עבודה קשה אלא חגיגה, ולחגיגה לוקחים את כולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · דבר תורה שלא נשכח</div>
+      <h3 class="story-title">🏡 בית שבו כל מצווה היא חגיגה</h3>
+      <p>מן הוויכוח בין משה לפרעה עולה יסוד גדול בחינוך. פרעה ראה בעבודת ה' עבודה: משהו שהגברים הולכים לעשות, ושאין לילדים מה לחפש בו. משה ראה בה חג: משהו שכולם רוצים להיות בו, הקטנים והגדולים.</p>
+      <p>וזו השאלה שכל בית צריך לשאול את עצמו: איך נראות המצוות אצלנו? האם הן נראות לילדים כמו "עבודה" של המבוגרים, דבר כבד שצריך לעשות, או כמו חגיגה, שמחה שכולם שותפים לה?</p>
+      <p>כשהמצוות בבית נעשות בשמחה, בשירה, בהתלהבות, הילד אינו צריך שישכנעו אותו להצטרף. הוא רוצה להיות שם, כמו שילד רוצה לבוא למסיבה. אף אחד אינו צריך להכריח ילד ללכת לשמחת תורה. הוא רץ לשם מעצמו.</p>
+      <p>ולכן אמר משה "כי חג ה' לנו": זה הסוד של "בנערינו ובזקנינו נלך". רק כשעבודת ה' היא חג, אפשר לקחת אליה את כולם. והדרך הטבעית ביותר להפוך אותה לחג היא השירה.</p>
+      <p class="bold-para">ילד שגדל בבית שבו המצוות הן שמחה, ירצה ללכת איתן כמו שהולכים למסיבה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · דבר תורה שלא נשכח</div>
+      <h3 class="story-title">🎶 כל השבת שרו</h3>
+      <p>ומה קרה? כל השבת לא הפסיקו האנשים לשיר "בנערינו ובזקנינו נלך". בכל פעם הזכירו את זה שוב. אפילו בסעודה שלישית, רגע לפני סוף השבת, עוד שרו. מכל הדברים שנאמרו באותה שבת, אולי אף אחד אינו זוכר מה אמרו. אבל דבר אחד זכרו כולם: "כי חג ה' לנו" – אצלנו עבודת ה' היא חגיגה, ולחגיגה לוקחים את כולם. זה נשאר אצל כולם.</p>
+      <p>ואותו מנהל ביקש לקבל את דבר התורה הזה, כדי לפתוח בו את דבריו להורים. כי הוא ראה כאן בדיוק את מה שרצה להוכיח.</p>
+      <p>מה רואים מכאן? לשירה יש כוח אדיר. מה שאדם לומד בשכל, נכנס למוח, ולפעמים גם יוצא ממנו. השירה נוגעת ברגש. זה דבר שמובנה בתוך האדם, ואין גבול כמה עמוק הוא יכול להישאר.</p>
+      <p>זו בדיוק הנקודה שהמנהל רצה להעביר להורים: משנה שנלמדת בניגון אינה נשארת רק בדף. היא נכנסת אל הלב, ומשם אינה זזה.</p>
+      <p class="bold-para">דבר שנאמר בשירה נכנס לנפש בצורה שאינה נשכחת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · דבר תורה שלא נשכח</div>
+      <h3 class="story-title">🔁 למה שיר לא נמאס</h3>
+      <p>יש כאן עוד דבר מופלא. נסו לחזור על אותו משפט פעם, פעמיים, שלוש. אחרי חמש פעמים זה כבר נמאס. אבל שיר אפשר לשיר עוד פעם, ועוד פעם, ועוד פעם. למה זה אינו נשבר?</p>
+      <p>קחו לדוגמה את השיר המוכר על כך שה' תמיד אוהב אותי, ותמיד יהיה לי טוב, ועוד יותר טוב. כמה אנשים שרים אותו בלי סוף! ולמה זה לא נמאס? כי שיר אינו נוגע בשכל. הוא נוגע ברגשות, בנשמה. ובדבר שנוגע בנשמה אין לאדם בעיה לחזור עוד ועוד. אדרבה, הוא מתרגש בכל פעם מחדש.</p>
+      <p>ויותר מזה: שיר שאדם מכיר, הוא אוהב הרבה יותר משיר שאינו מכיר. בשיר חדש קשה לו להתחבר ולהנות. החזרה, שבשכל מעייפת, ברגש דווקא מוסיפה אהבה.</p>
+      <p class="bold-para">השכל מתעייף מחזרה, אבל הרגש והנשמה אוהבים לחזור על שיר שוב ושוב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · דבר תורה שלא נשכח</div>
+      <h3 class="story-title">🌊 שירה שאינה נגמרת</h3>
+      <p>וזו גם מעלתה של שירת הים, שעליה נקראת שבת שירה. אפשר לשיר אותה עוד פעם, ועוד פעם, ועוד פעם, כי היא מגיעה מן הרגש, ואינה נגמרת. היא לא נאמרה פעם אחת על שפת הים ונשכחה. היא נעשתה חלק מן התפילה.</p>
+      <p>בכל יום, גם ביום חול רגיל, אנחנו אומרים בתפילת שחרית "אז ישיר משה ובני ישראל את השירה הזאת". לו הייתה זו רק ידיעה היסטורית, די היה לקרוא אותה פעם בשנה. אבל שירה חוזרים עליה, כי בכל פעם היא מעוררת מחדש את ההודיה על הישועה.</p>
+      <p>ויש שהוסיפו בזה עוד. במקומות מסוימים, מתפללי ותיקין החליטו לפני כמה שנים לשיר את שירת הים בכל יום, ולא רק לאמרה. ויש חסידים ששרים אותה בראש חודש בניגון מיוחד.</p>
+      <p>ומה הדבר מלמד אותנו? שהתורה עצמה בחרה לשמור את הרגע הגדול של קריעת ים סוף לא כסיפור, אלא כשיר. כי מה שנשמר בשיר, נשמר בלב, דור אחרי דור.</p>
+      <p class="bold-para">את שירת הים אומרים בכל יום, כי שירה שבאה מן הרגש אינה מתיישנת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כל הקורא בלא נעימה</div>
+      <h3 class="story-title">📜 "חקים לא טובים"</h3>
+      <p>עכשיו נלמד את הסוגיה של השירה. היא מתחילה בגמרא במסכת מגילה (דף לב): "אמר רבי יוחנן: כל הקורא בלא נעימה ושונה בלא זמרה, עליו הכתוב אומר: וְגַם אֲנִי נָתַתִּי לָהֶם חֻקִּים לֹא טוֹבִים".</p>
+      <p>מה פירוש הכפל? "קורא בלא נעימה" ו"שונה בלא זמרה" – מה ההבדל בין שני החלקים? אין זה כפל סתם. "קורא" הולך על המקרא, על החומש: מי שקורא בתורה בלי טעמי המקרא, קורא יבש. ו"שונה" הוא מלשון משנה: מי ששונה את המשניות בלי לזמר אותן. בזמנם היה נהוג לומר את המשניות בניגון.</p>
+      <p>גם היום חוזרים לזה. יש מי שהוציאו את פרקי אבות כולו בניגון: "משה קבל תורה מסיני ומסרה ליהושע", וכן הלאה. בבתי ספר רבים עושים זאת, והילדים נהנים מאוד ושרים. בזמן המשנה, כשעוד לא כתבו את התורה שבעל פה, היו השירים והניגונים חלק מן הדרך לזכור.</p>
+      <p>ומה פירוש "חקים לא טובים"? מי שלומד בלי ניגון, כביכול מתייחס לתורה כמו לדבר יבש. הוא אינו מרגיש שזו חגיגה. אילו הרגיש שזו חגיגה, היה שר.</p>
+      <p class="bold-para">רבי יוחנן אמר שמי שקורא ושונה בלי ניגון, עליו נאמר "גם אני נתתי להם חקים לא טובים".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כל הקורא בלא נעימה</div>
+      <h3 class="story-title">🎼 נעימה וזמרה</h3>
+      <p>ומה ההבדל בין נעימה לבין זמרה? בשיעור עלו כמה הצעות. נעימה היא כנראה משהו שקט, רגוע. אדם שקורא לאט, במתינות, נהנה מכל מילה, "מנעים" את המילים. זה עדיין אינו שיר. וזמרה היא כבר שיר של ממש, מזמור, ניגון.</p>
+      <p>טעמי המקרא בפסוקי התורה שייכים יותר ל"נעימה". הם אינם שיר, אבל הם נותנים לכל מילה את מקומה ואת טעמה. ומי שקורא בלי זה, קורא יבש. כמו אדם שקורא תהילים במהירות, בלי שום רגש – נראה כאילו הדברים אינם מעניינים אותו, כאילו התורה אצלו אינה טובה ואינה מתוקה.</p>
+      <p>והגמרא ממשיכה: הקשה אביי על רבי יוחנן. משום שאדם אינו יודע להנעים את קולו, תקרא עליו את המשך הפסוק "וּמִשְׁפָּטִים לֹא יִחְיוּ בָּהֶם"? הרי הפסוק ממשיך וכאילו אומר שמגיע לו מוות. איך ייתכן עונש חמור כל כך?</p>
+      <p>לכן פירש אביי את הפסוק אחרת, כדברי רב משרשיא: מדובר בשני תלמידי חכמים היושבים בעיר אחת ואינם נוחים זה לזה בהלכה. הם אינם באים לדון זה עם זה. ומי שדן לבד, בלי חברותא שתתווכח איתו ותבדוק את דבריו, קשה לו מאוד להגיע לתשובה ברורה. עליו נאמר "משפטים לא יחיו בהם".</p>
+      <p class="bold-para">"נעימה" היא קריאה מתונה שנהנית מכל מילה, ו"זמרה" היא שיר של ממש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · כל הקורא בלא נעימה</div>
+      <h3 class="story-title">✅ ההלכה: ללמוד בנעימה</h3>
+      <p>ומה למעשה? הפוסקים כתבו שדברי רבי יוחנן לא נדחו לגמרי. אביי דחה רק את החומרה הגדולה, כאילו מי שאינו מנגן ראוי לעונש חמור. אבל ודאי שראוי לאדם לנגן את מה שהוא לומד. מי שאינו עושה כך, כביכול נאמר עליו "חקים לא טובים". ורק כשהאדם מנגן, התורה נראית אצלו "חקים טובים".</p>
+      <p>מכאן הלכה למעשה: לימוד תורה ותפילה צריך לעשות בנעימה ובזמרה, ולא באופן יבש וחסר חיות.</p>
+      <p>אבל צריך להבין: למה כל כך חשוב לנגן? למה הגמרא רואה בזה ערך כה גדול, עד שמי שאינו מנגן, כביכול מזלזל בתורה כולה, כאילו קיבל חוקים לא טובים? הרי הוא קורא את אותן מילים בדיוק. מה מוסיף הניגון?</p>
+      <p>בשיעור הובאו ארבעה טעמים, וכל אחד מהם מאיר צד אחר של הקשר בין הלב לבין התורה.</p>
+      <p class="bold-para">גם אם אין זה חמור כרבי יוחנן, ראוי מאוד ללמוד ולהתפלל בנעימה ובזמרה ולא באופן יבש.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה לנגן</div>
+      <h3 class="story-title">🔍 טעם ראשון: לרדת לעומק</h3>
+      <p>הטעם הראשון שנאמר במפרשים: הלימוד בנעימה מסייע לחדד את ההבנה ולרדת לעומקם של דברים. כשאדם לוקח דבר ומתחיל לנגן אותו, הוא חושב עליו עוד פעם. הוא מתעכב, חוזר, מתבונן. וכך הוא יורד לעומק.</p>
+      <p>ויש לזה רמז יפה. כשמספרים לשאול המלך על דוד, אומרים לו שיש בן לישי שהוא "יֹדֵעַ נַגֵּן". לפי הפשט, הוא יודע לנגן בכינור. אבל חז"ל דרשו את המילים האלה על דוד כתלמיד חכם, על ידיעתו בתורה ועל כוחו לשאת ולתת בה.</p>
+      <p>לכאורה הגמרא לקחה פסוק והוציאה אותו מפשוטו. מה הקשר בין נגינה לבין עומק בתורה? והביאור היפה: הגמרא באה ללמד איך אדם זוכה להגיע למצב שבו הוא יורד לעומקה של ההלכה. כשהוא לוקח דבר ומנגן אותו, מתעמק בו וחושב עליו שוב ושוב, כך הוא יורד לעומק הדברים.</p>
+      <p>הניגון מסוגל מאוד לעזור לאדם לרדת לעומקם של דברים. מי ש"יודע נגן" בתורה, יודע גם לשאת ולתת בה.</p>
+      <p class="bold-para">הניגון גורם לאדם לחזור על הדבר ולהתבונן בו, וכך הוא יורד לעומקם של דברים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה לנגן</div>
+      <h3 class="story-title">🤖 טעם שני: ידע או אהבה?</h3>
+      <p>הטעם השני, ואולי העיקרי: הזמרה מאפשרת חיבור רגשי עמוק יותר לתוכן הנלמד. בואו נחשוב: האם מצוות לימוד התורה היא לדעת חומר, כמו שלומדים באוניברסיטה? מה המטרה של לימוד באוניברסיטה? לדעת. רופא לומד כדי לדעת לרפא, מהנדס לומד כדי לדעת לבנות.</p>
+      <p>והנה בימינו קמה הבינה המלאכותית, שעוד רגע יודעת כמעט הכל. כל שאלה שתשאל, היא תדע לתת לך תשובה. הרב סיפר כיצד היא עזרה לו באותו בוקר: בהוראות טכניות במחשב שלא ידע להפעיל, ובאיתור תקלות באתר אינטרנט שאיש לא הצליח למצוא. היא סרקה, חשבה, והביאה רשימה מסודרת. וגם בשאלות הלכה, היא עונה לא רע. ודאי שאסור לסמוך עליה לבדה, צריך לבדוק, אבל בדברים הפשוטים היא קולעת לא מעט.</p>
+      <p>אם כן, נשאל: אם הבינה המלאכותית תדע הכל, האם נהיה פטורים מללמוד? אם המטרה היא רק לדעת – אולי. אבל זו אינה המטרה.</p>
+      <p>איפה כתובה מצוות לימוד תורה? פעם אחת: "וּלְמַדְתֶּם אֹתָם וּשְׁמַרְתֶּם לַעֲשֹׂתָם" – ללמוד כדי לעשות. אבל יש מקום נוסף, שאנחנו אומרים בכל יום בקריאת שמע: "וְאָהַבְתָּ אֵת ה' אֱלֹקֶיךָ... וְהָיוּ הַדְּבָרִים הָאֵלֶּה... וְדִבַּרְתָּ בָּם". איך תאהב את בורא עולם? על ידי שתלמד, תתעמק בדבריו ותבין מה הוא רוצה. ללימוד יש מטרה נוספת: להתחבר לבורא עולם.</p>
+      <p class="bold-para">אם התכלית הייתה רק לדעת, הבינה המלאכותית הייתה פוטרת אותנו; אבל לומדים כדי לאהוב את ה'.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה לנגן</div>
+      <h3 class="story-title">❤️ כשאדם שר, הוא מתחבר</h3>
+      <p>ואם המטרה היא להתחבר, נשאל: מתי אדם מתחבר? כשהוא קורא טקסט באופן טכני, כמו טופס של מס הכנסה? אפשר להתחבר גם כך, אבל החיבור חלש מאוד.</p>
+      <p>אבל כשאדם שר את הדברים, הכל משתנה. הוא קורא את המשנה הראשונה בברכות, "מאימתי קורין את שמע בערבית", בניגון, והמילים מתעוררות. הוא קורא "וַיּוֹשַׁע ה' בַּיּוֹם הַהוּא אֶת יִשְׂרָאֵל" בשירה, ובני ישראל יוצאים ביד רמה – והוא מתלהב, ממש מרגיש את ישועת ה'. זה מחבר אותו לבורא עולם הרבה יותר מכל קריאה יבשה.</p>
+      <p>ולכן הלימוד מתוך שירה הוא מעלה גבוהה מאוד. הזמרה מאפשרת חיבור רגשי עמוק לתוכן הנלמד, והחיבור הזה הוא בדיוק תכלית הלימוד: לאהוב את ה'.</p>
+      <p>בזה התורה שונה מכל מדע. את המדע אפשר להעביר למכונה. את האהבה אי אפשר. אדם יכול לשאול את המחשב מה כתוב, אבל רק הוא עצמו יכול לשיר את הדברים ולהתרגש מהם. ולכן גם בעידן שבו הכל ידוע, הלימוד בניגון נשאר צורך של הנשמה.</p>
+      <p class="bold-para">קריאה טכנית מחברת מעט; מי ששר את הדברים מרגיש אותם ומתקרב לבורא עולם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · למה לנגן</div>
+      <h3 class="story-title">🧠 טעם שלישי ורביעי: לזכור ולקיים</h3>
+      <p>הטעם השלישי מובא בתוספות במקום: הלימוד בנעימה מסייע לזכור את החומר הנלמד באופן טוב יותר. וכך נאמר בפסוק: "בְּחֻקֹּתֶיךָ אֶשְׁתַּעֲשָׁע, לֹא אֶשְׁכַּח דְּבָרֶךָ". כשהלימוד נעשה שעשוע, כשאדם אוהב את השיר ונהנה ממנו, הוא אינו שוכח.</p>
+      <p>והראיה מן החיים: הזמירות של שבת. רבים יודעים בעל פה את "יה ריבון", את "ידיד נפש" ואת שאר הזמירות. איך? פעם בשבוע זה לא מספיק כדי לזכור דבר בעל פה. אבל כולם זוכרים, כי את הזמירות לא אומרים – שרים אותן. דבר שאדם שר, קל לו הרבה יותר לזכור.</p>
+      <p>והטעם הרביעי, שעלה בשיעור מפי המשתתפים: מי שמנגן את הדבר, רוצה לקיים אותו. כי הוא אוהב אותו, הוא מתחבר אליו, והדבר נעשה אצלו חוויה. ומה שאדם אוהב, הוא רוצה לעשות.</p>
+      <p>נמצא שהניגון פועל בכל השלבים: הוא מעמיק את ההבנה, מחבר את הלב, מחזק את הזיכרון ומעורר רצון לקיים. ניגון אחד – ארבע מתנות.</p>
+      <p class="bold-para">מה שאדם שר, הוא זוכר; ומה שהוא אוהב, הוא רוצה לקיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ככה לומדים</div>
+      <h3 class="story-title">🌙 הלומדים בקול מנגנים</h3>
+      <p>אפשר לשאול: האם צריך ממש לשיר, או שהכוונה היא שלא ילמד יבש, אלא בניגון מסוים ובהתלהבות? הרב שלח את השאלה הזאת לתלמיד חכם אחד: האם באמת כל תלמידי החכמים שרים כשהם לומדים?</p>
+      <p>התשובה שקיבל הייתה סרטון: תלמיד חכם גדול, שנמצא לבדו בבית המדרש בלילה, ואינו יודע שמישהו רואה אותו, ולומד בניגון. אין קהל, אין מי שיתרשם. הוא פשוט לומד כך, כי כך הלימוד נכנס אל הלב.</p>
+      <p>ועוד אמר לו מישהו כלל פשוט: תבדוק את אלה שמקפידים על מה שאמרה הגמרא, שצריך ללמוד בקול. הלומדים בקול – כמעט כולם מנגנים. ואלה שאינם מנגנים? בדרך כלל הם גם אינם לומדים בקול.</p>
+      <p>והגמרא במסכת עירובין מספרת על ברוריה, אשתו של רבי מאיר, שמצאה פעם תלמיד שלמד בלחש. אמרה לו: הרי כתוב "עֲרוּכָה בַכֹּל וּשְׁמֻרָה" – אם ערוכה ברמ"ח האברים שלך, היא משתמרת. ואם לאו, אינה משתמרת. ככה לומדים תורה: בכל הגוף, בקול, בחיות.</p>
+      <p class="bold-para">תלמידי חכמים רבים לומדים בניגון, ובמיוחד אלה שלומדים בקול כפי שציוו חז"ל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ככה לומדים</div>
+      <h3 class="story-title">🎙️ שיר של ממש או ניגון של לימוד?</h3>
+      <p>נשאלת השאלה: האם הכוונה שאדם יעשה מכל משנה שיר, עם לחן ומקצב? או שהכוונה היא שלא ילמד באופן יבש, אלא בניגון מסוים, בהתלהבות?</p>
+      <p>כשאדם קורא "מאימתי קורין את שמע בערבית, משעה שהכהנים נכנסים לאכול בתרומתן", אפשר לקרוא את זה כמו רשימה, ואפשר לקרוא בניגון הלימוד המוכר, שעולה ויורד, שואל ומשיב. הניגון הזה אינו שיר שנכתב לכבוד המשנה, אבל הוא מכניס בה חיים. ייתכן שזו כוונת הגמרא: לא דווקא שירה במובן של מנגינה מוגדרת, אלא לימוד בהתלהבות, שבו הקול והלב שותפים.</p>
+      <p>ואת שני הדברים אפשר לראות בעולם הלימוד. יש מי שמחברים לחנים ממש למשניות ולפרקי אבות, כמו בבתי הספר. ויש תלמידי חכמים שלומדים גמרא בניגון הלימוד שלהם, לבדם, שעות ארוכות.</p>
+      <p>המשותף לשניהם הוא העיקר: הלימוד אינו נשאר על הדף. הוא עובר דרך הקול, ומשם אל הלב.</p>
+      <p class="bold-para">אין חובה להלחין כל משנה, אבל צריך שהלימוד יהיה בקול, בניגון ובהתלהבות, ולא בקריאה יבשה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · ככה לומדים</div>
+      <h3 class="story-title">🥀 "התורה חוגרת שק"</h3>
+      <p>ועל לימוד התורה בלילה נאמר: "קוּמִי רֹנִּי בַלַּיְלָה". התורה נקראת "רינה". כך לומדים תורה: ברינה, בשירה, בשמחה.</p>
+      <p>רבנו יונה, בספר היראה, כותב לגבי קריאת שניים מקרא ואחד תרגום מילים חריפות מאוד: "כי התורה חוגרת שק על הקורא בלא טעמים". תשמעו איזה ביטוי! שק הוא בגד של אבל. הביטוי ממחיש את הצער, כביכול, של התורה, כשהיא נקראת בלי הנגינה הראויה לה.</p>
+      <p>יש שאומרים שאולי זה נאמר רק על מי שקורא בספר התורה בציבור. אבל הרעיון מובן, ויש מן הפוסקים שהרחיבו את הדבר: אדם צריך לקרוא כל פסוק בטעמו, גם במהלך הלימוד הרגיל, על פי הכלל של הגמרא "כל הקורא בלא נעימה".</p>
+      <p>ומי שאינו יודע את הטעמים? אינו צריך להיבהל. אפשר לקרוא בניגון פשוט ונעים, וזה כבר מוציא את התורה מן היובש. ובשיעור, כשהמלמד מלמד בניגון ובהתלהבות, השומע יוצא בזה, כדין שומע כעונה. העיקר הוא שהתורה לא תיקרא כמו מסמך, אלא כמו שיר אהבה.</p>
+      <p class="bold-para">רבנו יונה כתב שהתורה מתאבלת על מי שקורא בה בלי טעמים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · נעימות התורה</div>
+      <h3 class="story-title">🍯 "דבש וחלב תחת לשונך"</h3>
+      <p>במדרש מופיע משפט מדהים: הקורא את המקרא בנעימת קולו, בהתאמה הנכונה, עליו נאמר הפסוק "דְּבַשׁ וְחָלָב תַּחַת לְשׁוֹנֵךְ". אדם שמתענג מכל מילה, ומנגן אותה כראוי – מתחת ללשונו דבש וחלב.</p>
+      <p>ולמה דווקא דבש וחלב? הביאור יפה מאוד. מתיקות הניגון והנעימה מוסיפה מתיקות לדברי התורה, והופכת אותם לערבים לאוזן ולנפש – זה הדבש. וכשם שהחלב מזין את הגוף, כך הקריאה בנעימה מזינה את הנשמה, ומעמיקה את הקשר לתורה – זה החלב.</p>
+      <p>יש כאן שני דברים: הנאה ומזון. הדבש מתוק, אבל אינו מזון של יום יום. החלב מזין, אבל אינו תמיד מתוק. תורה שנלמדת בניגון היא גם וגם: היא מתוקה ללב, והיא גם בונה את הנשמה מבפנים.</p>
+      <p>תראו כמה גדולה המעלה. מי שקורא את התורה בעינוג ניגונו, עליו נאמר "דבש וחלב תחת לשונך". המילים עוברות דרך הפה, והטעם נשאר.</p>
+      <p class="bold-para">הקורא את התורה בעינוג ניגונו, דבריו מתוקים כדבש ומזינים את הנשמה כחלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · נעימות התורה</div>
+      <h3 class="story-title">✨ אשרי הזוכה להרגיש</h3>
+      <p>רבי נחמן מברסלב אמר: "אשרי הזוכה להרגיש נעימות התורה, כי יש נעימות בתורה, וזהו העיקר – לזכות להרגיש הנעימות שיש בתורה". ועל המילים האלה חוברה מנגינה, שבשיעור הושמעה ושרו אותה יחד: "אשרי הזוכה להרגיש נעימות התורה".</p>
+      <p>הדברים מתחברים לכל מה שלמדנו. לימוד התורה אינו רק לדעת. המצווה היא בעיקר להתחבר: לדברים, לבורא עולם, לתורה האלוקית. ומי שאינו שר את הדברים ואינו מנגן אותם, חסר לו הרבה מאוד בדרך להתחבר אליהם.</p>
+      <p>כשאדם לומד בנעימה, יש לו חשק ללמוד. הוא מתגבר על היצר, הקשר שלו לתורה מתחזק, והזיכרון שלו משתפר. זו זכות עצומה.</p>
+      <p>וכל אחד צריך לחפש איפה הוא יכול לעשות זאת. אולי בקריאת שניים מקרא בטעמים, אולי בלימוד משנה בניגון, אולי בשירת הזמירות בשבת, אולי בניגון קטן בשעת הלימוד. לא לקרוא סתם, יבש, אלא לנגן את הדברים. כמה זכות יש לאדם שמחפש איפה לשיר את התורה.</p>
+      <p class="bold-para">רבי נחמן מברסלב לימד שהעיקר הוא לזכות להרגיש את הנעימות שיש בתורה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · נעימות התורה</div>
+      <h3 class="story-title">🎼 לסכם בשיר</h3>
+      <p>נסכם את הדרך. התחלנו במציאות: דבר תורה אחד שנאמר בניגון, "בנערינו ובזקנינו נלך", נשאר בלב כולם לאורך כל השבת, כשכל שאר הדברים נשכחו. לשירה יש כוח לטעת דבר בנפש כך שלא יישכח.</p>
+      <p>אחר כך למדנו את הגמרא במסכת מגילה: "כל הקורא בלא נעימה ושונה בלא זמרה". רבי יוחנן החמיר מאוד, ואביי דחה את החומרה הגדולה, אבל להלכה ודאי ראוי ללמוד ולהתפלל בנעימה ובזמרה ולא באופן יבש.</p>
+      <p>וראינו ארבעה טעמים: הניגון מוריד לעומק הדברים; הוא מחבר את הלב לבורא עולם, כי לא לומדים רק בשביל לדעת אלא בשביל לאהוב, וזה דבר שאף מכונה לא תעשה במקומנו; הוא מחזק את הזיכרון, כמו שנאמר "בחקותיך אשתעשע לא אשכח דברך"; והוא מעורר רצון לקיים. ראינו שהלומדים בקול מנגנים, ושהתורה, כביכול, מתאבלת על מי שקורא בה בלי טעמים, ושמתחת ללשונו של המנגן – דבש וחלב.</p>
+      <p>יהי רצון שנזכה כולנו להרגיש את הנעימות שיש בתורה, ושכל לימוד ותפילה שלנו יהיו שיר של אהבה לבורא עולם. כי חג ה' לנו.</p>
+      <p class="bold-para">שבת שירה מלמדת שהתורה היא שיר, ומי ששר אותה – מבין, אוהב, זוכר ומקיים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/vKz28VXYY-I · 2025-02-05 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"דבר תורה שלא נשכח","icon":"🎤","color":"#c62b6b","stories":[{"id":1,"title":"מה זוכרים בסוף השבת?","icon":"🎤"},{"id":2,"title":"\"בנערינו ובזקנינו נלך\"","icon":"🎉"},{"id":3,"title":"בית שבו כל מצווה היא חגיגה","icon":"🏡"},{"id":4,"title":"כל השבת שרו","icon":"🎶"},{"id":5,"title":"למה שיר לא נמאס","icon":"🔁"},{"id":6,"title":"שירה שאינה נגמרת","icon":"🌊"}]},{"id":2,"name":"כל הקורא בלא נעימה","icon":"📜","color":"#6d28d9","stories":[{"id":7,"title":"\"חקים לא טובים\"","icon":"📜"},{"id":8,"title":"נעימה וזמרה","icon":"🎼"},{"id":9,"title":"ההלכה: ללמוד בנעימה","icon":"✅"}]},{"id":3,"name":"למה לנגן","icon":"🎼","color":"#e08e00","stories":[{"id":10,"title":"טעם ראשון: לרדת לעומק","icon":"🔍"},{"id":11,"title":"טעם שני: ידע או אהבה?","icon":"🤖"},{"id":12,"title":"כשאדם שר, הוא מתחבר","icon":"❤️"},{"id":13,"title":"טעם שלישי ורביעי: לזכור ולקיים","icon":"🧠"}]},{"id":4,"name":"ככה לומדים","icon":"📖","color":"#1e88b8","stories":[{"id":14,"title":"הלומדים בקול מנגנים","icon":"🌙"},{"id":15,"title":"שיר של ממש או ניגון של לימוד?","icon":"🎙️"},{"id":16,"title":"\"התורה חוגרת שק\"","icon":"🥀"}]},{"id":5,"name":"נעימות התורה","icon":"🍯","color":"#c62b6b","stories":[{"id":17,"title":"\"דבש וחלב תחת לשונך\"","icon":"🍯"},{"id":18,"title":"אשרי הזוכה להרגיש","icon":"✨"},{"id":19,"title":"לסכם בשיר","icon":"🎼"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
