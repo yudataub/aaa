@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 ארבעה עולמות</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+
+/* Print edition: continuous standalone book, A4. */
+@page {size:A4;margin:17mm 16mm 18mm;}
+@media print {
+ html,body{background:#fff!important;color:#111!important;min-height:0;}
+ body{font-family:"David","Noto Serif Hebrew","Segoe UI",Arial,sans-serif;font-size:11.5pt;}
+ header.hero{background:none!important;color:#111!important;box-shadow:none;padding:0 0 7mm;text-align:center;border-bottom:1pt solid #888;}
+ header.hero::before{display:none;} header.hero h1{font-size:24pt;text-shadow:none;}header.hero p{font-size:12pt;}
+ .layout,main{display:block!important;width:auto!important;max-width:none!important;margin:0!important;padding:0!important;}
+ nav.toc,.video-card,.story-footer,.back-link,.edit-link,.copy-link-btn,.copy-toast,.book-meta,.print-action{display:none!important;}
+ .story-card{display:block!important;background:none!important;color:#111!important;box-shadow:none;border:0;border-radius:0;margin:0 0 5mm;padding:4mm 0 0;break-inside:auto;}
+ .story-kicker{color:#444!important;font-size:9pt;margin:0 0 2mm;break-after:avoid;}
+ .story-card h3.story-title{display:block;font-size:16pt;line-height:1.3;break-after:avoid;margin:0 0 3mm;color:#111!important;}
+ .story-card p,blockquote.story-quote,ul.story-list{color:#111!important;font-size:11.5pt;line-height:1.55;orphans:3;widows:3;margin:0 0 3mm;}
+ h1,h2,h3{break-after:avoid;} footer.book-footer{padding:4mm 0 0;font-size:9pt;}
+ a{text-decoration:none;color:#111!important;} .story-icon{display:none;} .bold-para{background:none!important;}
+}
+.print-action{display:inline-block;border:0;border-radius:20px;padding:10px 18px;margin:12px 0 0;background:#fff;color:#4d285d;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 ארבעה עולמות</h1>
+  <p>מבוא לתורת הנסתר: אצילות, בריאה, יצירה ועשייה כדרגות של העלם, "אין עוד מלבדו", מעשה בראשית, ארבעת השומרים וסודות המספרים</p>
+<p>עריכה לקריאה עצמאית · מתוך שיעור בערוץ הרב יהודה טאוב</p><button class="print-action" onclick="window.print()">🖨️ הדפסת הספר</button></header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ ארבעה עולמות" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/5sMypQHPIJg?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/5sMypQHPIJg/hqdefault.jpg" alt="ארבעה עולמות" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=5sMypQHPIJg" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · עולם מלשון העלם</div>
+      <h3 class="story-title">📜 "כל הנקרא בשמי"</h3>
+      <p>השיעור נפתח בפסוק מספר ישעיהו: "כֹּל הַנִּקְרָא בִשְׁמִי וְלִכְבוֹדִי בְּרָאתִיו יְצַרְתִּיו אַף עֲשִׂיתִיו". ועל כך אומרים חז"ל: כל מה שברא הקדוש ברוך הוא בעולמו, לא בראו אלא לכבודו.</p>
+      <p>בפסוק יש ארבע מילים: "שמי", "בראתיו", "יצרתיו", "עשיתיו". לפי תורת הקבלה, אלה הם ארבעת העולמות שברא הקדוש ברוך הוא. "שמי" הוא עולם האצילות. השם אינו דבר נפרד מן האדם; הוא כינוי שלו, נאצל ממנו. "בראתיו" הוא עולם הבריאה. "יצרתיו" הוא עולם היצירה. "עשיתיו" הוא עולם העשייה.</p>
+      <p>אם כן, ארבעה עולמות: אצילות, בריאה, יצירה ועשייה. בשלב הזה הדברים נשמעים מופשטים מאוד. האם באמת יש כאן ארבעה סוגים של עולמות? מה פירוש "עולם" בכלל? ואולי זה רק משחק מילים? השיעור כולו בא להסביר את הדברים, בצורה הקלה והמובנת ביותר שאפשר, אף שעדיין לא עד הסוף.</p>
+      <p class="bold-para">ארבע המילים "שמי, בראתיו, יצרתיו, עשיתיו" רומזות לארבעת העולמות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-2" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · עולם מלשון העלם</div>
+      <h3 class="story-title">🌫️ עולם – מלשון העלם</h3>
+      <p>למה העולם נקרא "עולם"? מלשון העלם. מה נעלם? הקדוש ברוך הוא נעלם מן העולם. וכיוון שהוא נעלם, גם העולם עצמו נעלם מאיתנו: אנחנו לא רואים אותו נכון, כפי שהוא באמת.</p>
+      <p>בהעלם הזה יש כמה דרגות, וכל עולם הוא דרגה מסוימת של העלם. יש עולם שבו ההעלם גדול יותר, ויש עולם שבו ההעלם קטן יותר. בעולם שלנו יש דרגה מסוימת של העלם. בקצה השני עומד הקדוש ברוך הוא בעצמותו, שהוא גילוי שאין כמותו. ובין שני הקצוות האלה יש עוד דרגות.</p>
+      <p>זה פירוש המושג "ארבעה עולמות": ארבע דרגות של העלם אלוקי. לא ארבעה מקומות שונים במובן הגשמי, אלא ארבע מדרגות של עד כמה האלוקות מוסתרת, ועד כמה היא גלויה. וכדי להבין מה מוסתר, צריך קודם להבין מהי האמת שמאחורי ההעלם.</p>
+      <p class="bold-para">כל עולם הוא דרגה של העלם האלוקות, וארבעת העולמות הם ארבע דרגות של העלם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-1">⟶ הקודם</a>
+          <a href="#story-3">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(2, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-3" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · עולם מלשון העלם</div>
+      <h3 class="story-title">☝️ "אין עוד מלבדו"</h3>
+      <p>אומרת התורה: "וְיָדַעְתָּ הַיּוֹם וַהֲשֵׁבֹתָ אֶל לְבָבֶךָ כִּי ה' הוּא הָאֱלֹקִים בַּשָּׁמַיִם מִמַּעַל וְעַל הָאָרֶץ מִתָּחַת אֵין עוֹד". אין עוד מלבדו. אין שום מציאות חוץ מן הקדוש ברוך הוא.</p>
+      <p>כל המציאות שנראית לנו היא בעצם מציאות מדומה, רק מבחינתנו. אנחנו רואים בעולם אנשים וחיות, סוסים וחמורים, דומם צומח חי ומדבר. נדמה לנו שכל אלה הם מציאות מלבד מציאותו של הקדוש ברוך הוא. אבל זו טעות אופטית. במציאות האמיתית, אין עוד מלבדו.</p>
+      <p>עכשיו מובן מה זה העלם. כשנדמה לנו שיש מציאות מלבדו, זה ההעלם הגדול ביותר שיכול להיות. הגילוי האמיתי הוא גילוי שמבטל כל מציאות אחרת. נמצא שבעולם יש "יש" אחד, הקדוש ברוך הוא, וכל השאר הוא "אין".</p>
+      <p>הרב העיר בחיוך: אילו היה אומר את הדברים האלה בפני ציבור כלשהו בלי ההסברים, היו חושבים שהשתבשה דעתו. למה? כי החושים שלנו מלמדים אותנו אחרת. וזה עצמו ההעלם: שהחושים מלמדים אותנו אחרת.</p>
+      <p class="bold-para">אין שום מציאות מלבד הקדוש ברוך הוא, וכל מה שנראה לנו כמציאות נפרדת הוא טעות אופטית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-2">⟶ הקודם</a>
+          <a href="#story-4">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(3, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-4" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · עולם מלשון העלם</div>
+      <h3 class="story-title">❤️ לדעת בשכל ולהרגיש בלב</h3>
+      <p>איך מתיישבים הדברים? הרי אנחנו רואים בעיניים מציאות נפרדת. כבר הוסבר בשיעורים קודמים: כל קיום העולם הוא גילוי של הרצון האלוקי. בעשרה מאמרות נברא העולם, והמאמר הוא גילוי רצון. והגילוי הזה לא היה חד פעמי בששת ימי בראשית. הוא נמשך והולך כל הזמן, ומכוחו מתקיימת הבריאה. כשהגילוי מסתלק, היש הופך לאין.</p>
+      <p>אם כן, כשאני רואה כאן כל מיני מציאויות, אין זו ישות נפרדת מן הקדוש ברוך הוא אלא גילוי הרצון האלוקי. אבל את זה אני מבין לכל היותר בשכל. אני לא מרגיש את זה. אני מרגיש שיש כאן עוד אדם, וכאן חמור, וכאן סוס, כי אני לא רואה שכל אלה הם רק רצון אלוקי.</p>
+      <p>לכן אומרת התורה שני דברים: "וידעת היום" – זה אפשר ללמוד, ילמדו אותך קבלה ופילוסופיה. אבל גם "והשבות אל לבבך". צריך שהדבר ייכנס לתחושה, שכאשר אני רואה גוף כלשהו בעולם, אני רואה בו גילוי רצון אלוקי. בשכל אפשר להבין. לתרגם את זה לעין, לאוזן ולכל החושים – זו העבודה הקשה.</p>
+      <p class="bold-para">התורה דורשת לא רק לדעת שאין עוד מלבדו, אלא גם להשיב זאת אל הלב.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-3">⟶ הקודם</a>
+          <a href="#story-5">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(4, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-5" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · עולם מלשון העלם</div>
+      <h3 class="story-title">🪜 השתלשלות העולמות</h3>
+      <p>עכשיו אפשר לקרוא לילד בשמו. "השתלשלות העולמות" פירושה דרגות של העלם. ככל שההעלם קטן יותר, המציאות של העולם היא "אין" גדול יותר, ורואים יותר את "אין עוד מלבדו". ככל שההעלם גדול יותר, ה"יש" שנראה לנו מלבדו גדול יותר.</p>
+      <p>כלומר: יותר הסתר – יותר "יש". יותר גילוי ופחות הסתר – רואים יותר את ה"אין" מאשר את ה"יש"; רואים יותר את הביטול של כל המציאות כלפי הקדוש ברוך הוא.</p>
+      <p>ההבנה הזאת היא המפתח לכל מה שיבוא בהמשך. אין כאן ארבעה בניינים זה על גבי זה, אלא סולם אחד של גילוי והעלם. בראש הסולם, עולם האצילות, אין כמעט העלם בכלל. בתחתיתו, עולם העשייה שלנו, ההעלם הוא הגדול ביותר. ובין שניהם, הבריאה והיצירה, יש שלבי ביניים. נעבור עליהם אחד אחד.</p>
+      <p class="bold-para">ככל שההעלם קטן יותר, רואים יותר את ה"אין" של הבריאה כלפי הבורא.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-4">⟶ הקודם</a>
+          <a href="#story-6">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(5, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-6" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · עולם האצילות</div>
+      <h3 class="story-title">✨ אצילות – מלשון צל</h3>
+      <p>"אצילות" היא מלשון "וַיָּאצֶל", לתת. אבל השורש של המילה הוא "צל". מה זה צל? הגוף עומד, וזה הצל שלו. הצל אינו יצירה בפני עצמה. הוא רק תוצאה של הגוף. כשהגוף זז, הצל זז. כשהגוף נעלם, הצל נעלם.</p>
+      <p>עולם האצילות הוא עולם שאין בו שום ישות מלבד האלוקות. עולם שכולו "אין", שיש בו רק המציאות האלוקית, ושבו הכל רואים שאין עוד מלבדו. כולו צל אלוקי. "נאצל" פירושו לקבל שפע, אבל כאן קבלת השפע האלוקי גלויה לעין. כמו שהקשר בין הצל לגוף גלוי לכל, וכל אחד מבין שהצל אינו ממשות אלא רק צל של הגוף.</p>
+      <p>על עולם האצילות אומר הזוהר: "איהו וגרמוהי חד" – הוא ועצמותיו אחד, הוא והכוחות שלו אחד. כבר דובר בשיעור השני על כך שאצל הקדוש ברוך הוא יש רצון אינסופי, והעולם שלנו הוא הגבלה של הרצון הזה. בעולם האצילות האורות, הכוחות והכלים הם הכל אחד, כי אין דבר מלבדו. הקדוש ברוך הוא אינסוף, ולכן הכל שם אינסוף.</p>
+      <p class="bold-para">עולם האצילות הוא כולו צל אלוקי, ואין בו שום ישות מלבד האלוקות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-5">⟶ הקודם</a>
+          <a href="#story-7">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(6, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-7" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · עולם האצילות</div>
+      <h3 class="story-title">🔠 סוד השם</h3>
+      <p>עולם האצילות נקרא בספרי הקבלה "רזא דשמא", סוד שמו של הקדוש ברוך הוא. שמו המפורש של הקדוש ברוך הוא מבטא את מציאות כל ההוויה: אין מציאות מלבדו.</p>
+      <p>ארבע האותיות של השם הן כנגד ארבעה כוחות. האות י' היא כנגד החכמה. ה' הראשונה כנגד הבינה. האות ו' כנגד המידות. ה' האחרונה כנגד המלכות. חכמה היא הנתון היסודי שיש לי. בינה היא מה שאני מתבונן ומבין מתוך הדברים שאני יודע. מידות הן התכונות שאני רוכש לעצמי כתוצאה מן השכל שיש לי. והמלכות – עליה יידובר בהמשך.</p>
+      <p>בעולם שלנו השם הוא רק קריאה חיצונית. כשאני קורא למישהו "יוסף", השם אינו הוא עצמו; זה רק כינוי אליו. גם כשאנחנו אומרים בעולם שלנו שהקדוש ברוך הוא הוא כל ההוויה, זה רק כינוי, כי במציאות אנחנו לא רואים את זה. אבל בעולם האצילות השם אינו כינוי. שם הוא ושמו דבר אחד, ואין הבדל בין פנימיות לחיצוניות, כי הכל הוא המהות האלוקית עצמה.</p>
+      <p class="bold-para">ארבע אותיות השם הן חכמה, בינה, מידות ומלכות, ובאצילות השם והמהות הם אחד.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-6">⟶ הקודם</a>
+          <a href="#story-8">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(7, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-8" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · עולם האצילות</div>
+      <h3 class="story-title">👑 מה זה "כבוד ה'"</h3>
+      <p>חוזרים לפסוק: "כל הנקרא בשמי ולכבודי בראתיו". מה זה "כבודי"? מה זה כבוד? הכבוד הוא גילוי האצילות, הביטול של כל המציאות אל המציאות האלוקית, גם בעולמות התחתונים. כלומר, התפשטות הביטול לאלוקות מעולם האצילות אל העולמות שמתחתיו – זה נקרא כבוד ה'.</p>
+      <p>על העתיד כתוב: "וְנִגְלָה כְּבוֹד ה'". מה פירוש? שתתגלה האמת, ויתגלה שכל המציאות היא מציאות בטלה ומבוטלת, היא "אין", וה"יש" היחיד הוא הקדוש ברוך הוא. זה גילוי כבוד שמיים.</p>
+      <p>ובספר במדבר, פרק י"ד: "וְאוּלָם חַי אָנִי וְיִמָּלֵא כְבוֹד ה' אֶת כָּל הָאָרֶץ". מה פירוש שיימלא כבוד ה' את כל הארץ? אומר המדרש שהקדוש ברוך הוא נתאווה להיות לו דירה בתחתונים. מקומו בעליונים, והוא רצה דירה גם בתחתונים. זו תכלית הבריאה: התפשטות הכבוד לתחתונים, ביטול כל הבריאה למציאות האלוקית, ואיחוד כל העולמות. מה שקיים כבר בעולם האצילות, ששם שמו ומהותו אחד, צריך להתפשט לכל העולמות שמתחתיו.</p>
+      <p class="bold-para">כבוד ה' הוא התפשטות הביטול של האצילות אל העולמות התחתונים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-7">⟶ הקודם</a>
+          <a href="#story-9">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(8, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-9" data-chapter="2" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ב · עולם האצילות</div>
+      <h3 class="story-title">🧭 "אף עשיתיו" – הבחירה שלנו</h3>
+      <p>יש הבדל גדול בין העולמות. בעולם האצילות הביטול הוא מציאות שכך נוצרה מלכתחילה. עולם העשייה לא נברא כך. התפשטות האצילות לעולם העשייה תלויה בבחירה שלנו.</p>
+      <p>כאשר אנחנו מגיעים לדרגה של "וידעת היום והשבות אל לבבך כי ה' הוא האלוקים... אין עוד" – לא רק בשכל אלא בתחושה – אנחנו מאחדים את כל העולמות. אנחנו הופכים את העולם התחתון שלנו לשווה לעולם האצילות.</p>
+      <p>זה פירוש "אַף עֲשִׂיתִיו". העולם שלנו נקרא עולם העשייה, התחתון והנחות ביותר, שבו כבוד ה' אינו ניכר. "אף עשיתיו" – אפילו בעולם העשייה יתפשט הכבוד האלוקי.</p>
+      <p>ועל זה נאמר: "סוף מעשה במחשבה תחילה". מה הייתה המחשבה התחילה, לפני הבריאה? אין עוד מלבדו; לא הייתה שום מציאות אחרת. סוף המעשה, תכלית הבריאה, היא שהעולם יחזור להיות במצב של המחשבה התחילה: שלא תהיה שום מציאות מלבדו, גם כשהעולם קיים.</p>
+      <p class="bold-para">התפשטות האצילות לעולם העשייה תלויה בבחירה שלנו, וזו תכלית הבריאה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-8">⟶ הקודם</a>
+          <a href="#story-10">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(9, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-10" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · האלף השביעי</div>
+      <h3 class="story-title">⏳ שש אלפי שנה</h3>
+      <p>כבר הוזכר בשיעורים קודמים שהעולם הזה הוא יצירה זמנית, לא יצירה נצחית. העולם נברא בשישה ימים, וכל יום אצל הקדוש ברוך הוא הוא אלף שנים. לכן העולם עתיד להתקיים שש אלפים שנה, כנגד ששת ימי בראשית.</p>
+      <p>ומה שקורה בכל אלף שנים רמוז במה שנברא ביום שכנגדו. מה שקרה באלף הראשון לבריאת העולם רמוז קצת בבריאה של היום הראשון. מה שקורה באלף השלישי רמוז בבריאת היום השלישי, ומה שבאלף החמישי – ביום החמישי. הרב לא רצה להרחיב בכך כעת, רק לגעת בנקודה ידועה.</p>
+      <p>ועל היום השביעי כתוב: "וַיְכֻלּוּ הַשָּׁמַיִם וְהָאָרֶץ וְכָל צְבָאָם, וַיְכַל אֱלֹקִים בַּיּוֹם הַשְּׁבִיעִי מְלַאכְתּוֹ אֲשֶׁר עָשָׂה". והשאלה: מתי גמר הקדוש ברוך הוא את בריאת העולם? ביום השישי. אם כן, למה כתוב "ויכל ביום השביעי"? ויותר מזה: למה התורה בוחרת דווקא במילה "ויכל"? הרי יש מילים אחרות שמשמעותן גמר: השלים, סיים.</p>
+      <p class="bold-para">העולם נברא בשישה ימים ועתיד להתקיים שש אלפים שנה, כנגד ששת ימי בראשית.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-9">⟶ הקודם</a>
+          <a href="#story-11">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(10, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-11" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · האלף השביעי</div>
+      <h3 class="story-title">🌀 "ויכל" – לשון כליון</h3>
+      <p>המילה "ויכל" רומזת לכליון. ביום השביעי עתיד הקדוש ברוך הוא לכלות את מלאכתו אשר עשה. שש אלפים שנה מתקיים העולם, ובאלף השביעי, שהוא כנגד יום השבת, היום שבו שבתה המלאכה, עתידה הבריאה לכלות.</p>
+      <p>מה בדיוק הכליון של הבריאה? אנחנו מסתכלים על ששת ימי בראשית ונדמה לנו שבכל יום נבראה מציאות. השמיים שנבראו ביום השני – מציאות. הצמחים שביום השלישי – מציאות. שמש ירח וכוכבים ביום הרביעי, בעלי החיים והאדם בחמישי ובשישי – מציאות.</p>
+      <p>באלף השביעי תתגלה האמת: אין מציאות של "יש" מלבד הקדוש ברוך הוא. כל הבריאה תתגלה כצל אלוקי, ולא כמציאות עצמית. זו ה"חורבה". כשהעולם יבוא אל תיקונו, ועולם האצילות יתפשט לעולמות התחתונים, יתגלה שגם עולם העשייה שלנו הוא מציאות אלוקית.</p>
+      <p>פתאום השמיים שאנחנו מסתכלים עליהם, הצמח, הים והיבשה יקבלו משמעות אחרת. אין זו היבשה שראינו, היבשה שעמדה מולנו כמציאות נפרדת. אין צורך שתבוא פצצה ותהרוס הכל. המציאות שנראית לנו היום כעולם נפרד מן הבורא היא שתעלה מן העולם.</p>
+      <p class="bold-para">באלף השביעי תכלה לא הבריאה הגשמית, אלא תפיסת המציאות הנפרדת.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-10">⟶ הקודם</a>
+          <a href="#story-12">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(11, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-12" data-chapter="3" style="--chap-color:#ffd166;--chap-color-2:#e08e00;">
+      <div class="story-kicker">פרק ג · האלף השביעי</div>
+      <h3 class="story-title">🏔️ "ונשגב ה' לבדו ביום ההוא"</h3>
+      <p>את הדבר הזה מתאר הנביא ישעיהו בפרק ב'. ראיית המהות האלוקית פירושה ביטול כל מציאות אחרת. כשאני רואה את המהות האלוקית שבכל יצירה, היצירה כבר אינה יצירה נפרדת; היא מתבטלת אל המהות האלוקית.</p>
+      <p>וכך אומר הנביא: "בּוֹא בַצּוּר וְהִטָּמֵן בֶּעָפָר מִפְּנֵי פַּחַד ה' וּמֵהֲדַר גְּאֹנוֹ". מה פירוש "להיטמן", להתחבא? ההתחבאות היא ביטול העצמיות, הסתרת הישות שלי. ומיד: "עֵינֵי גַּבְהוּת אָדָם שָׁפֵל וְשַׁח רוּם אֲנָשִׁים, וְנִשְׂגַּב ה' לְבַדּוֹ בַּיּוֹם הַהוּא". מה זה "ונשגב ה' לבדו"? כל המציאות מתבטלת כלפיו, ואין מציאות מלבדו.</p>
+      <p>והנביא ממשיך: "כִּי יוֹם לַה' צְבָאוֹת עַל כָּל גֵּאֶה וָרָם", על כל ארזי הלבנון הרמים והנישאים ועל כל אלוני הבשן. כמעט כל הפרק חוזר על הרעיון הזה, וכך גם במקומות נוספים בספרי הנביאים. "יום ה'" פירושו יום התגלות ה'. והתגלות ה' מבטלת מאליה כל מציאות אחרת. אילו חיינו בעולם של גילוי, לא הייתה ישות מלבד הישות האלוקית.</p>
+      <p class="bold-para">ביום התגלות ה' כל הישות מתבטלת, וזה פירוש "בוא בצור והטמן בעפר".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-11">⟶ הקודם</a>
+          <a href="#story-13">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(12, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-13" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">🌑 "יוצר אור ובורא חושך"</h3>
+      <p>בתפילה אנחנו אומרים: "יוֹצֵר אוֹר וּבוֹרֵא חֹשֶׁךְ, עֹשֶׂה שָׁלוֹם וּבוֹרֵא אֶת הַכֹּל". אם הקדוש ברוך הוא יוצר אור, משמע שלפני כן היה כבר חושך. יצירת האור באה לסלק את החושך. אם כן, מה היה קודם? חושך. וכך אומרת הגמרא: בתחילת בריאת העולם חושך, ואחר כך אור.</p>
+      <p>עולם הבריאה, העולם השני, הוא החושך. וכך כתוב: "וְחֹשֶׁךְ עַל פְּנֵי תְהוֹם". עולם האצילות הוא מציאות של אחדות, שבה לא ייתכן שום דבר נפרד מן הקדוש ברוך הוא. עולם הבריאה הוא עולם שבו ייתכן דבר נפרד – בכוח ולא בפועל. תיאורטית, במחשבה, יש מציאות כזו, אבל בפועל היא לא קיימת.</p>
+      <p>ומה פירוש המילה "ברא"? "בר" פירושו חוץ. אומרים "צמחי בר", "חיות בר" – לא ביתיים, ההפך מביתי. "ברא" פירושו הוצאה החוצה. לפני כן הייתה מציאות אחת, ופתאום יש יציאה החוצה מן המציאות הראשונה. בעולם הבריאה יש יציאה ראשונה מן האצילות: מציאות נפרדת, לפחות בכוח.</p>
+      <p class="bold-para">עולם הבריאה הוא החושך: מציאות נפרדת בכוח ולא בפועל.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-12">⟶ הקודם</a>
+          <a href="#story-14">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(13, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-14" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">🪵 חומר בלי צורה</h3>
+      <p>בשיעור הקודם דובר על חומר וצורה. חומר הוא מה שממנו הדברים עשויים. צורה היא מה שמייחד אותם. השולחן והכיסא עשויים מאותו חומר; מה שמבדיל ביניהם הוא הצורה. אדם וחמור אולי מורכבים מבחינה כימית מאותם יסודות; מה שמייחד אותם הוא הצורה.</p>
+      <p>בעולם שלנו אין חומר בלי צורה ואין צורה בלי חומר. גם גוש עץ הוא צורה מסוימת. כל חומר מגיע אלינו עם צורה, וכל צורה חייבת להיות לבושה בחומר.</p>
+      <p>אבל בעולם הבריאה, כיוון שכל המציאות הנפרדת היא רק בכוח ולא בפועל, יש בו חומר בלי צורה. ולכן זו רק מציאות בכוח, כי מה שנותן לדבר את ייחודו בפועל הוא הצורה. לזה קוראים בספרי הקבלה "חומר היולי".</p>
+      <p>היחס בין הבריאה לאצילות הוא כמו היחס בין בינה לחכמה. החכמה היא "אין"; אין מושג של התבוננות, כי אין מציאות נוספת. הבינה היא כבר התבוננות על החכמה – "יש": גם אני כאן, ואני מתבונן. לכן עולם הבריאה הוא בריאת יש מאין. ועדיין, כיוון שהיש הזה רק בכוח, בפועל כל היש בטל לאין.</p>
+      <p class="bold-para">בעולם הבריאה יש "חומר היולי" בלי צורה, ולכן הנפרדות בו היא רק בכוח.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-13">⟶ הקודם</a>
+          <a href="#story-15">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(14, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-15" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">🔥 שירת השרפים</h3>
+      <p>כיוון שבעולם הבריאה יש כבר מציאות נפרדת בכוח, יש בו כבר מלאכים. המלאכים של עולם הבריאה נקראים "שרפים". מה זה שרפים? לשון שריפה. ומה היא שריפה? כליון.</p>
+      <p>למה דווקא שם זה? כי זו רק מציאות בכוח, בלי מציאות בפועל. זו מציאות שמתבטלת בכל רגע. לא מציאות מתמשכת, לא מציאות ממשית, אלא מציאות שמבטלת את עצמה.</p>
+      <p>והשרפים שרים לפני הקדוש ברוך הוא את שירתם: "קָדוֹשׁ קָדוֹשׁ קָדוֹשׁ ה' צְבָאוֹת, מְלֹא כָל הָאָרֶץ כְּבוֹדוֹ". מה פירוש "מלא כל הארץ כבודו"? כי בעולם הבריאה, בפועל, אין שום מציאות נפרדת מן הקדוש ברוך הוא. המציאות הנפרדת היא רק בכוח. וכיוון שבפועל אין עוד מלבדו, השרפים רואים שכל הארץ מלאה כבודו.</p>
+      <p>בשירה הזאת אנחנו משתתפים בכל יום בקדושה. כשאנחנו אומרים "מלא כל הארץ כבודו", אנחנו מצטרפים לשירה של עולם שבו ה"יש" עוד לא התממש, ומבקשים לראות גם בעולמנו את מה שהשרפים רואים.</p>
+      <p class="bold-para">המלאכים של עולם הבריאה נקראים שרפים, כי מציאותם מתבטלת בכל רגע.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-14">⟶ הקודם</a>
+          <a href="#story-16">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(15, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-16" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">💡 עולם היצירה – יש שמבטל את עצמו</h3>
+      <p>אם עולם הבריאה הוא החושך, עולם היצירה הוא האור. בעולם היצירה כבר יש מציאות נפרדת גם בפועל. אלא שזו מציאות של "יש" שמבטל את עצמו.</p>
+      <p>מה הכוונה? לפעמים יש לי מציאות, אבל אני מכיר בכל רגע שהמציאות הזו היא צל אלוקי. מצד אחד יש כאן מציאות נפרדת. מצד שני, בכל רגע היא מתבטלת לאלוקות, כי בעולם היצירה קיימת הרגשה תמידית שכל הקיום שלו הוא מכוח האלוקות. יש כאן גילוי מוחלט שהכל רק מכוח הרצון האלוקי, וממילא המציאות מבטלת את עצמה.</p>
+      <p>אפשר לתאר זאת כך: עולם האצילות הוא כמו אב. הוא רק נותן, ואין בו מציאות של מקבל. עולם הבריאה כבר יש בו מקבל, לפחות בכוח. עולם היצירה הוא כבר תוצאה של שני העליונים, כמו לידה. החכמה היא המציאות האלוקית, הבינה היא דבר נוסף אבל רק בכוח, והמידות שנוצרות בלב מתוך החכמה והבינה הן כבר דבר בפועל. כך גם עולם היצירה: יש בו דבר בפועל, שמתבטל בכל רגע ורגע.</p>
+      <p class="bold-para">בעולם היצירה יש מציאות בפועל, אבל היא מרגישה תמיד שכל קיומה מכוח האלוקות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-15">⟶ הקודם</a>
+          <a href="#story-17">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(16, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-17" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">🔄 "והחיות רצוא ושוב"</h3>
+      <p>המלאכים בעולם היצירה נקראים "חיות הקודש", מלשון חיות. ועליהם אומר הנביא יחזקאל במעשה מרכבה: "וְהַחַיּוֹת רָצוֹא וָשׁוֹב". "רצוא" הוא הביטול לאלוקות. "שוב" הוא החזרה למקום הראשון, למציאות. זו מציאות שמתבטלת ומתקיימת, מתבטלת ומתקיימת.</p>
+      <p>למה צריך שלב כזה? כי הכל הוא השתלשלות הדרגתית. כדי להגיע לעולם העשייה, שבו המציאות מתקיימת באמת, צריך שלב ביניים: כבר יש מציאות, אבל מציאות שאינה מתקיימת. כשהתמונה תהיה שלמה, רואים את ההדרגתיות שבדברים.</p>
+      <p>גם שירתם שונה. השרפים אמרו "מלא כל הארץ כבודו". החיות והאופנים אומרים: "בָּרוּךְ כְּבוֹד ה' מִמְּקוֹמוֹ". כאן יש "מקומו" ויש מקום אחר; כבר יש מציאות נפרדת. לכן הם רק מבקשים ומתפללים שהשפע ממקומו יתפשט אל כל המציאות. וכתוב שהם אומרים זאת "בְּרַעַשׁ גָּדוֹל". הרעש הגדול בא מן הרצון להשיג ביטול. יש להם רצון פנימי להתבטל, וזו התכלית והשלמות שלהם, בדיוק כמו השרפים.</p>
+      <p>ועוד: הישות של עולם היצירה היא ישות כוללת, לא פרטית. כשמבחינים שכל יצירה היא גילוי רצון אלוקי, כל היצירות שוות, ואין בה פרטים נבדלים.</p>
+      <p class="bold-para">חיות הקודש מתבטלות וחוזרות, והן שרות "ברוך כבוד ה' ממקומו".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-16">⟶ הקודם</a>
+          <a href="#story-18">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(17, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-18" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">🌍 עולם העשייה – ההעלם הגדול</h3>
+      <p>בעולם העשייה יש העלם גדול עוד יותר. שימו לב לדרגות: בעולם האצילות אין העלם. בעולם הבריאה יש כבר העלם מסוים, אפשרות של מציאות מלבדו בכוח. בעולם היצירה, שיש בו מציאות כוללת בפועל, ההעלם גדול יותר. בעולם העשייה יש גם מציאות פרטית בפועל – וזה ההעלם הגדול ביותר. כאן אני רואה את היצירות כנפרדות, ואינני רואה את הרצון האלוקי שבהן.</p>
+      <p>המילה "עשייה" פירושה תיקון ושכלול, כמו שכתוב: "אֲשֶׁר בָּרָא אֱלֹקִים לַעֲשׂוֹת". ובברכה: "יוצר אור ובורא חושך, עושה שלום". המילה "שלום" היא ראשי תיבות של "שכלול מלכות". הוזכר שה' האחרונה שבשם, כנגד עולם העשייה, היא מידת המלכות.</p>
+      <p>בעולם הזה המלכות אינה ניכרת. "שכלול המלכות" פירושו שהמלכות עתידה להתפשט גם לעולם שבו ההעלם גדול, ועולם האצילות יתפשט לעולם הזה. וזה גילוי האמת. ונפלא: "שכלול מלכות" בגימטריה 882, שהוא פעמיים "אמת". אמת על הכלל – שהמציאות הכוללת בטלה למציאות האלוקית. ואמת על הפרט – שגם המציאות הפרטית היא "אין" מול המציאות האלוקית.</p>
+      <p class="bold-para">בעולם העשייה כל פרט נראה כמציאות נפרדת, ותפקידו להיות "שכלול מלכות".</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-17">⟶ הקודם</a>
+          <a href="#story-19">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(18, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-19" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">🕊️ "אהיה אשר אהיה" – שם הגאולה</h3>
+      <p>בפעם הראשונה שנגלה ה' למשה, שאל אותו משה: מה שמך? והשיב לו הקדוש ברוך הוא: "אֶהְיֶה אֲשֶׁר אֶהְיֶה". למה פעמיים "אהיה"? אהיה בכלל ואהיה בפרט. הכלל כולו בטל לאלוקות, וגם הפרט בטל לאלוקות.</p>
+      <p>זה השם שבו באה הגאולה. מה היא הגאולה? גילוי האלוקות. זה התפקיד של המשיח: "וְעָלוּ מוֹשִׁעִים בְּהַר צִיּוֹן לִשְׁפֹּט אֶת הַר עֵשָׂו, וְהָיְתָה לַה' הַמְּלוּכָה". פרסום מלכות ה' הוא גילוי האלוקות, והוא עצמו הגאולה. ולכן "אהיה אשר אהיה" הוא שם הגאולה: שכל המציאות, הכללית והפרטית, תתבטל לקדוש ברוך הוא.</p>
+      <p>ואיך מגיעים לזה? על ידי קיום המצוות. בשיעורים הבאים יידובר הרבה על האופן שבו המצוות משפיעות על העולמות העליונים. אבל כבר עכשיו מובן שקיום המצוות מקרב את התכלית: שכלול ותיקון, והתפשטות העולמות העליונים לתוך עולם העשייה. זה הטעם של כל המצוות.</p>
+      <p>וזה מה שעתיד להיות: "בַּיּוֹם הַהוּא יִהְיֶה ה' אֶחָד וּשְׁמוֹ אֶחָד". השם לא יהיה עוד רק כינוי. המציאות והשם יהיו אחד, כי גם בעולם העשייה נראה את הביטול המוחלט למציאות האלוקית.</p>
+      <p class="bold-para">אהיה פעמיים – ביטול הכלל וביטול הפרט – זה השם שבו באה הגאולה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-18">⟶ הקודם</a>
+          <a href="#story-20">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(19, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-20" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">⚙️ האופנים – בין רוח לחומר</h3>
+      <p>המלאכים שבעולם העשייה נקראים "אופנים". מה זה אופנים? לא הכוונה לגלגל. "אופן" הוא צורה, דרך; ו"אופנים" הם שני אופנים, שני פנים.</p>
+      <p>עולם העשייה הוא הסוף של העולם הרוחני ותחילת ההתלבשות של העולם הגשמי. בעולם היצירה הגילוי האלוקי מוחלט, ויש בו מציאות נפרדת שבכל רגע מתבטלת – וזו עדיין מציאות רוחנית. בעולם העשייה יש מעבר בין המציאות הרוחנית למציאות הגשמית.</p>
+      <p>למה? כי מציאות גשמית אינה יכולה להתקיים אלא כאשר "אין עוד מלבדו" מוסתר. אם "אין עוד מלבדו" גלוי, אין זו גשמיות אלא רוחניות. הגשמיות היא בעצם הסתרת ה"אין עוד מלבדו".</p>
+      <p>לכן עולם העשייה הוא עולם שיש בו קצה הרוחניות ותחילת הגשמיות, והמלאכים שבו נקראים אופנים, בעלי שני פנים: פנים אחד אל הרוח ופנים אחד אל החומר. ומכאן מובנת גם עבודתנו. אנחנו עומדים בתוך החומר, ובכל מעשה שלנו אנחנו יכולים להפנות אותו אל הרוח.</p>
+      <p class="bold-para">גשמיות קיימת רק במקום שבו "אין עוד מלבדו" מוסתר, והאופנים עומדים על הגבול.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-19">⟶ הקודם</a>
+          <a href="#story-21">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(20, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-21" data-chapter="4" style="--chap-color:#60d3ff;--chap-color-2:#1e88b8;">
+      <div class="story-kicker">פרק ד · בריאה, יצירה ועשייה</div>
+      <h3 class="story-title">✒️ קוצו של י' – אדם קדמון</h3>
+      <p>נסכם: ארבעת העולמות – אצילות, בריאה, יצירה ועשייה – הם ארבע דרגות של העלם. בעולם האצילות אין העלם כלל, ובעולם העשייה ההעלם מוחלט. בדרך כלל כותבים אותם בראשי תיבות: אבי"ע. עולם האצילות כנגד הי' שבשם, הבריאה כנגד ה' הראשונה, היצירה כנגד הו', והעשייה כנגד ה' האחרונה.</p>
+      <p>אבל יש עוד דבר בשם: "קוצו של י'". משתמשים הרבה בביטוי הזה, ובשפת הקבלה קוצו של י' הוא מה שקרוי "אדם קדמון". זה לא אדם הראשון; זה משהו אחר לגמרי.</p>
+      <p>בשלב הזה די לדעת: אדם קדמון הוא הרצון האלוקי ליצור את כל ארבעת העולמות. זה עדיין לא הרצון האינסופי. מי שהיה בשיעור הראשון והשני יודע מה ההבדל בין הרצון האינסופי לבין צמצום הרצון, ויבין שגם אדם קדמון הוא צמצום. למה? כי ארבעת העולמות אינם אינסוף. הרצון לברוא דווקא אותם הוא כבר שלב מסוים של צמצום הרצון האינסופי.</p>
+      <p class="bold-para">מעל ארבעת העולמות עומד "אדם קדמון": הרצון האלוקי ליצור אותם, שהוא כבר צמצום.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-20">⟶ הקודם</a>
+          <a href="#story-22">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(21, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-22" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · בראשית ברא</div>
+      <h3 class="story-title">🌅 "בראשית ברא" – התורה פותחת בעולם הבריאה</h3>
+      <p>עכשיו נקרא את פרשת בריאת העולם: "בְּרֵאשִׁית בָּרָא אֱלֹקִים אֵת הַשָּׁמַיִם וְאֵת הָאָרֶץ". אם כתוב כאן "ברא", מבינים לבד על מה מדובר: על עולם הבריאה. בעולם האצילות עדיין אין עוד מלבדו, ואין שם מה לספר. לכן התורה מתחילה מעולם הבריאה. ואפילו המילה "בראשית" – שלוש אותיותיה הראשונות הן ב-ר-א, "ברא".</p>
+      <p>ומיד עולה קושיה. באיזה יום נבראו השמיים? ביום השני. ובאיזה יום נבראה הארץ? ביום השלישי. אם כן, מה פירוש "בראשית ברא אלוקים את השמיים ואת הארץ" כבר בהתחלה?</p>
+      <p>התשובה: "ברא" הוא כינוי לבריאה של יש מאין. "יצר" אינו יש מאין. עולם האצילות הוא עדיין "אין", ועולם הבריאה הוא ה"יש" הראשון. והוסבר שעולם הבריאה הוא חומר בלי צורה. לכן "את השמיים ואת הארץ" שבפסוק הראשון הם החומר ההיולי של השמיים והארץ, עצם החומר הרוחני שממנו נוצרו אחר כך כל שאר הדברים. ואילו השמיים עם צורתם נוצרו ביום השני, והארץ עם צורתה ביום השלישי. אלה יצירת השורשים של המציאות הגשמית.</p>
+      <p class="bold-para">התורה מתחילה מעולם הבריאה, כי על האצילות אין מה לספר.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-21">⟶ הקודם</a>
+          <a href="#story-23">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(22, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-23" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · בראשית ברא</div>
+      <h3 class="story-title">🌟 "יהי אור" – האור הגנוז</h3>
+      <p>"וְהָאָרֶץ הָיְתָה תֹהוּ וָבֹהוּ וְחֹשֶׁךְ עַל פְּנֵי תְהוֹם" – זה עולם הבריאה, החושך. "וַיֹּאמֶר אֱלֹקִים יְהִי אוֹר" – כאן מתחיל עולם היצירה, האור.</p>
+      <p>ושוב שאלה: באיזה יום נבראו המאורות? ביום הרביעי. אז איזה אור נברא ביום הראשון? אומר רש"י: ראהו הקדוש ברוך הוא שאינו כדאי שישתמשו בו רשעים, והבדילו לצדיקים לעתיד לבוא. אבל מה פירוש הדבר? וכי זה כמו אדם שקנה מנורה מיוחדת, ראה שהיא טובה מדי, ושמר אותה לאירוע מיוחד, ובינתיים הוא משתמש בנורות רגילות? מה פירוש אור טוב מדי, ומה פירוש שגנז אותו?</p>
+      <p>עומק הדברים כך: האור שנגנז הוא האור של עולם היצירה. והאור של עולם היצירה הוא הגילוי האלוקי שכל המציאות היא צל אלוקות, שכל המציאות היא גילוי הרצון האלוקי. את האור הזה גנז הקדוש ברוך הוא לצדיקים לעתיד לבוא. לעתיד לבוא נכיר בזה, והוא יתפשט גם לעולם העשייה. אבל בעולם העשייה עכשיו אין אור כזה, כי ההעלם בו גדול יותר.</p>
+      <p class="bold-para">האור של היום הראשון הוא אור עולם היצירה, הגילוי שהכל צל אלוקי, והוא נגנז לצדיקים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-22">⟶ הקודם</a>
+          <a href="#story-24">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(23, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-24" data-chapter="5" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק ה · בראשית ברא</div>
+      <h3 class="story-title">1️⃣ "יום אחד" ו"ויעש"</h3>
+      <p>"וַיְהִי עֶרֶב וַיְהִי בֹקֶר יוֹם אֶחָד". למה לא כתוב "יום ראשון", לפי הסדר, כמו שכתוב אחר כך יום שני, יום שלישי ויום רביעי? כי "אחד" פירושו יחיד ומיוחד: הקדוש ברוך הוא יחיד בעולמו. בעולם היצירה, אף שכבר יש ישות נפרדת, היא עדיין מתבטלת אל האחד, ולכן היום הזה נקרא "יום אחד".</p>
+      <p>ואחר כך: "יְהִי רָקִיעַ בְּתוֹךְ הַמָּיִם וִיהִי מַבְדִּיל בֵּין מַיִם לָמָיִם, וַיַּעַשׂ אֱלֹקִים אֶת הָרָקִיעַ". מה זה "ויעש"? כאן מתחיל עולם העשייה. הוסבר שעשייה היא שכלול ותיקון. החומר ההיולי כבר היה; השכלול והתיקון הם נתינת הצורה – וזה עולם העשייה. ובשאר הימים באמת חוזרת הלשון "ויעש".</p>
+      <p>וכך נסגר המעגל: "וַיְכַל אֱלֹקִים בַּיּוֹם הַשְּׁבִיעִי מְלַאכְתּוֹ אֲשֶׁר עָשָׂה". את עולם העשייה עתיד הקדוש ברוך הוא "לכלות" באלף השביעי: לא להשמיד, אלא לגלות שעולם האצילות מתפשט לתוך עולם העשייה, ושגם בעולם העשייה נרגיש את "אין עוד מלבדו".</p>
+      <p class="bold-para">"יום אחד" מבטא את היחיד בעולמו, ו"ויעש" מסמן את תחילת עולם העשייה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-23">⟶ הקודם</a>
+          <a href="#story-25">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(24, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-25" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סודות המספרים והשומרים</div>
+      <h3 class="story-title">🔢 "האלף לך שלמה"</h3>
+      <p>לפי מה שהוסבר, יש שלושה שלבים שבהם אין כלל מציאות בפועל מלבד המציאות האלוקית: אדם קדמון, אצילות ובריאה. לכל היותר יש בבריאה מציאות נפרדת בכוח. ובשני העולמות האחרים, היצירה והעשייה, יש מציאות בפועל.</p>
+      <p>נעשה חשבון של הגימטריה. "אדם" – 45. "קדמון" – 200. "אצילות" – 537. "בריאה" – 218. ביחד: בדיוק 1000. בספרי הקבלה זה נקרא סוד "אלף האורות".</p>
+      <p>ובשיר השירים כתוב: "הָאֶלֶף לְךָ שְׁלֹמֹה". מי זה שלמה? מי שהשלום שלו – הקדוש ברוך הוא. האלף הזה כולו שלו, כי שם אין שום מציאות נבדלת מן המציאות האלוקית.</p>
+      <p>ועכשיו העולמות שיש בהם מציאות בפועל: "יצירה" – 315. "עשיה" – 385. ביחד: 700. ונזכור את המספרים האלה, 1000 ו-700, כי עוד נפגוש אותם.</p>
+      <p class="bold-para">אדם קדמון, אצילות ובריאה הם בגימטריה אלף, ויצירה ועשייה הם שבע מאות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-24">⟶ הקודם</a>
+          <a href="#story-26">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(25, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-26" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סודות המספרים והשומרים</div>
+      <h3 class="story-title">🌠 תשע מאות חמישים וחמישה רקיעים</h3>
+      <p>אם מורידים מן האלף את המילה "אדם", שהיא 45, נשארים 955. ולפי ספרי הקבלה, יש בעולמות האלה 955 רקיעים. הרב הביא בשם האבן עזרא, על הפסוק בקהלת "כִּי גָבֹהַּ מֵעַל גָּבֹהַּ שֹׁמֵר וּגְבֹהִים עֲלֵיהֶם", שיש 955 רקיעים, כל אחד גבוה מחברו.</p>
+      <p>ובספרי הקבלה מובא שב-900 מהם יש רשות למלאכים להיכנס, אבל ב-55 העליונים אין רשות. ועל זה אומרת התורה: "הֵן לַה' אֱלֹקֶיךָ הַשָּׁמַיִם וּשְׁמֵי הַשָּׁמָיִם". "הן" בגימטריה 55. שם אין רשות לאף אחד להיכנס.</p>
+      <p>ועוד דבר נפלא הובא בשיעור. בספר דברים יש 955 פסוקים. משה אמר את ספר דברים בשבועות שלפני פטירתו, כשהיה כבר יותר בשמיים מאשר בארץ, ובכל פסוק התרומם עוד רקיע. באמצע שירת "האזינו" יש פסוק שלכאורה אין מקומו שם. מדברים על הגויים ועל אליליהם: "אֵי אֱלֹקֵימוֹ צוּר חָסָיוּ בוֹ... יָקוּמוּ וְיַעְזְרֻכֶם". ופתאום: "רְאוּ עַתָּה כִּי אֲנִי אֲנִי הוּא וְאֵין אֱלֹקִים עִמָּדִי". לפי מה שהובא בשיעור, זהו הפסוק ה-901 בספר דברים. משה עבר את 900 הרקיעים שבהם יש מלאכים, והגיע למקום שאין בו אף אחד – ושם "אני אני הוא", אין עוד מלבדו.</p>
+      <p class="bold-para">בלי "אדם" נשארים 955, כנגד הרקיעים, ומשה עלה רקיע בכל פסוק של ספר דברים.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-25">⟶ הקודם</a>
+          <a href="#story-27">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(26, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-27" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סודות המספרים והשומרים</div>
+      <h3 class="story-title">🛡️ "משמר לעומת משמר"</h3>
+      <p>בספר נחמיה, פרק י"ב, מסופר על המשמרות שהעמיד נחמיה: "מִשְׁמָר לְעֻמַּת מִשְׁמָר". חשבון הגימטריה של המילים האלה הוא 1700. ומה מזכיר לנו המספר 1700? את ה-1000 ועוד ה-700: כל ארבעת העולמות עם אדם קדמון.</p>
+      <p>למה דווקא "משמר"? כי כל העולמות הם שמירה זה על זה. כל עולם תלוי בעולמות שמעליו, ולכן כל עולם הוא שמירה על העולם שמתחתיו. כמו שהובא מקהלת: "כִּי גָבֹהַּ מֵעַל גָּבֹהַּ שֹׁמֵר וּגְבֹהִים עֲלֵיהֶם" – כל גבוה שומר על מה שתחתיו, ולכל גבוה יש עוד שומר מעליו.</p>
+      <p>ומכאן לפרשת משפטים. כולם יודעים שיש ארבעה שומרים: שומר חינם, שומר שכר, שואל ושוכר. ויש היום כל מיני חכמים שחושבים שכל התורה נכתבה רק כדי לעשות סדר בין בני אדם: לא לגנוב ולא לרצוח, ומי ששבר לחברו את הראש ישלם. אבל התורה מתייחסת לכל העולמות. יש לה הבנה בצורה הגשמית ביותר, ויש לה תכנים רוחניים עמוקים מאוד.</p>
+      <p class="bold-para">כל עולם שומר על העולם שמתחתיו, ו"משמר לעומת משמר" הוא 1700 – כל העולמות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-26">⟶ הקודם</a>
+          <a href="#story-28">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(27, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-28" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סודות המספרים והשומרים</div>
+      <h3 class="story-title">📚 התורה בנויה בכמה רמות</h3>
+      <p>בתורה יש רשימה של מלכי אדום. נדמה לנו שהתורה סתם צריכה למנות לנו את כל מלכי אדום; מה זה נוגע לנו? עוד נראה מה יודעים מזה. יש בתורה תיאורים מדויקים איך נראו הכבשים של יעקב: עקודים, נקודים וברודים. את מי זה מעניין, איך בדיוק נראו הכבשים של יעקב?</p>
+      <p>אבל הכל בנוי בכמה רמות. ברור שאם התורה אומרת שליעקב היו כבשים עקודים נקודים וברודים, אז באמת היו לו כאלה. אבל אם התורה סיפרה זאת, היא מתכוונת ליותר מאשר לכבשים של יעקב.</p>
+      <p>וכך גם בדיני השומרים. ארבעת השומרים הם כנגד ארבעת העולמות. הרי אמרנו שכל העולמות הם שומרים לעולמות שתחתיהם. הפרטים ההלכתיים נכונים כפשוטם, וחלים בבית הדין ובחיי היום יום. ובתוכם, כמו בתוך לבוש, מסתתר סדר העולמות כולו. נראה עכשיו כיצד כל שומר מתאים לעולם אחד.</p>
+      <p class="bold-para">גם רשימת מלכי אדום וכבשי יעקב נאמרו בתורה, כי הם מכוונים ליותר מפשוטם.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-27">⟶ הקודם</a>
+          <a href="#story-29">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(28, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-29" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סודות המספרים והשומרים</div>
+      <h3 class="story-title">🔑 ארבעה שומרים, ארבעה עולמות</h3>
+      <p>שומר חינם הוא כנגד עולם האצילות. אין לו שום תועלת ושום הנאה; הוא בטל ומבוטל. וכך עולם האצילות: אין בו שום דבר מלבדו.</p>
+      <p>שומר שכר הוא כנגד עולם הבריאה. גם הוא עושה טובה למפקיד: לא לקחתי את החמור כי אני צריך אותו, אני שומר אותו בשבילך. ובכל זאת מגיעה לי תועלת מסוימת, שכר שמירה. בעולם הבריאה יש מציאות בכוח ולא בפועל, ולכן אין שכר בפועל, אבל עצם הסיפוק ממילוי התפקיד, מפרסום הכבוד האלוקי, הוא לבדו שכר.</p>
+      <p>השואל והשוכר כבר לוקחים את החפץ לעצמם. אדם שואל חפץ לא כדי לשמור אותו לבעליו, אלא כי הוא צריך אותו. ובכל זאת יש הבדל: השואל אינו משלם, ומרגיש שקיבל מתנת חינם, שכל מה שבידו תלוי בנותן. זה עולם היצירה – מציאות שמתבטלת. השוכר משלם, ומרגיש "זה שלי, שילמתי, אי אפשר לקחת ממני". זה עולם העשייה, שמרגיש מציאות נפרדת, כמעט "כֹּחִי וְעֹצֶם יָדִי".</p>
+      <p>ולכן התורה כותבת שואל ואחר כך שוכר, אף שלפי דרגת החיוב היה מתבקש סדר אחר: זה סדר העולמות. ואדם קדמון הוא המפקיד העליון, הרצון לבריאת כל העולמות, שממנו נמשכת כל ההפקדה.</p>
+      <p class="bold-para">שומר חינם – אצילות, שומר שכר – בריאה, שואל – יצירה, שוכר – עשייה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-28">⟶ הקודם</a>
+          <a href="#story-30">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(29, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-30" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סודות המספרים והשומרים</div>
+      <h3 class="story-title">💠 "אשת חן תתמוך כבוד"</h3>
+      <p>בספרי הקבלה יש עניינים רבים של "זיווגים", ובאמת היחס בין העולמות הוא יחס של משפיע ומקבל, זכר ונקבה. הנותן מכונה תמיד זכר, והמקבל נקבה.</p>
+      <p>בספר משלי כתוב: "אֵשֶׁת חֵן תִּתְמֹךְ כָּבוֹד". מה זה כבוד? התפשטות הגילוי האלוקי. ומה זה "אשת"? א' היא אלף – 1000, ו"שת" היא 700. ביחד 1700 – ארבעת העולמות. בשביל מה "תתמוך כבוד"? כדי למשוך את הכבוד למטה.</p>
+      <p>כל עולם הוא נותן ביחס לעולם שמתחתיו, ומקבל ביחס לעולם שמעליו. עולם האצילות הוא זכר ביחס לבריאה, ונקבה ביחס לאדם קדמון. הבריאה נותנת ליצירה ומקבלת מן האצילות. היצירה נותנת לעשייה ומקבלת מן הבריאה. ולכן כל ארבעת העולמות ביחד, ביחס לאדם קדמון ולאור האינסופי, הם "אשת": המקבל.</p>
+      <p>ואפשר לתאר זאת כמו לידה. עולם האצילות הוא האב. עולם הבריאה הוא האם, שמרגישה את העובר כשאיש עוד אינו מרגיש – הריון בכוח. עולם היצירה הוא ההריון אחרי שהוולד כבר נוצר וניכר לכל, אבל עדיין אינו יצירה חיצונית. ועולם העשייה הוא הלידה, כשרואים כבר את המציאות הנבדלת בפועל.</p>
+      <p class="bold-para">ארבעת העולמות מקבלים מן האור האינסופי כאישה, ותפקידם למשוך את הכבוד למטה.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-29">⟶ הקודם</a>
+          <a href="#story-31">הבא ⟵</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(30, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+    <section class="story-card" id="story-31" data-chapter="6" style="--chap-color:#a78bfa;--chap-color-2:#6d28d9;">
+      <div class="story-kicker">פרק ו · סודות המספרים והשומרים</div>
+      <h3 class="story-title">🙏 מאה ברכות ועשרים ושמונה אותיות</h3>
+      <p>1700 – זה טוב. "טוב" בגימטריה 17, ו-1700 הם מאה פעמים "טוב". ומה זה טוב? "טוֹב עַיִן הוּא יְבֹרָךְ" – הטוב הוא ברכה. ולכן צריך אדם לברך בכל יום מאה ברכות. למה דווקא מאה? כדי להשלים את כל ארבעת העולמות.</p>
+      <p>ועוד חשבון. במילה "אדם" שלוש אותיות. "קדמון" – חמש. "אצילות" – שש. "בריאה" – חמש. "יצירה" – חמש. "עשיה" – ארבע. ביחד: 28 אותיות. ובפסוק "בראשית ברא אלוקים את השמים ואת הארץ" יש גם כן 28 אותיות. כל העולמות כלולים בפסוק הראשון של התורה.</p>
+      <p>והמילים "את השמים ואת הארץ": האותיות הראשונות שלהן הן א', ה', ו', ה'. ביחד 17 – "טוב". כל הבריאה כולה בנויה על הטוב.</p>
+      <p>בזה נסתיים השיעור. העולם הוא העלם, אבל כל העלם בנוי בשביל הגילוי. אנחנו עומדים בעולם העשייה, בתחתית הסולם, ובכל ברכה ובכל מצווה אנחנו מושכים את הכבוד למטה, עד שיתקיים "ונשגב ה' לבדו ביום ההוא".</p>
+      <p class="bold-para">1700 הוא מאה פעמים "טוב", ולכן מברכים מאה ברכות בכל יום כדי להשלים את העולמות.</p>
+      <div class="story-footer">
+        <div class="nav-links">
+          <a href="#story-30">⟶ הקודם</a>
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(31, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור בערוץ הרב יהודה טאוב https://youtu.be/5sMypQHPIJg · 2024-09-21 · נערך לספר: Claude</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"עולם מלשון העלם","icon":"🌫️","color":"#c62b6b","stories":[{"id":1,"title":"\"כל הנקרא בשמי\"","icon":"📜"},{"id":2,"title":"עולם – מלשון העלם","icon":"🌫️"},{"id":3,"title":"\"אין עוד מלבדו\"","icon":"☝️"},{"id":4,"title":"לדעת בשכל ולהרגיש בלב","icon":"❤️"},{"id":5,"title":"השתלשלות העולמות","icon":"🪜"}]},{"id":2,"name":"עולם האצילות","icon":"✨","color":"#6d28d9","stories":[{"id":6,"title":"אצילות – מלשון צל","icon":"✨"},{"id":7,"title":"סוד השם","icon":"🔠"},{"id":8,"title":"מה זה \"כבוד ה'\"","icon":"👑"},{"id":9,"title":"\"אף עשיתיו\" – הבחירה שלנו","icon":"🧭"}]},{"id":3,"name":"האלף השביעי","icon":"⏳","color":"#e08e00","stories":[{"id":10,"title":"שש אלפי שנה","icon":"⏳"},{"id":11,"title":"\"ויכל\" – לשון כליון","icon":"🌀"},{"id":12,"title":"\"ונשגב ה' לבדו ביום ההוא\"","icon":"🏔️"}]},{"id":4,"name":"בריאה, יצירה ועשייה","icon":"🪜","color":"#1e88b8","stories":[{"id":13,"title":"\"יוצר אור ובורא חושך\"","icon":"🌑"},{"id":14,"title":"חומר בלי צורה","icon":"🪵"},{"id":15,"title":"שירת השרפים","icon":"🔥"},{"id":16,"title":"עולם היצירה – יש שמבטל את עצמו","icon":"💡"},{"id":17,"title":"\"והחיות רצוא ושוב\"","icon":"🔄"},{"id":18,"title":"עולם העשייה – ההעלם הגדול","icon":"🌍"},{"id":19,"title":"\"אהיה אשר אהיה\" – שם הגאולה","icon":"🕊️"},{"id":20,"title":"האופנים – בין רוח לחומר","icon":"⚙️"},{"id":21,"title":"קוצו של י' – אדם קדמון","icon":"✒️"}]},{"id":5,"name":"בראשית ברא","icon":"🌅","color":"#c62b6b","stories":[{"id":22,"title":"\"בראשית ברא\" – התורה פותחת בעולם הבריאה","icon":"🌅"},{"id":23,"title":"\"יהי אור\" – האור הגנוז","icon":"🌟"},{"id":24,"title":"\"יום אחד\" ו\"ויעש\"","icon":"1️⃣"}]},{"id":6,"name":"סודות המספרים והשומרים","icon":"🔢","color":"#6d28d9","stories":[{"id":25,"title":"\"האלף לך שלמה\"","icon":"🔢"},{"id":26,"title":"תשע מאות חמישים וחמישה רקיעים","icon":"🌠"},{"id":27,"title":"\"משמר לעומת משמר\"","icon":"🛡️"},{"id":28,"title":"התורה בנויה בכמה רמות","icon":"📚"},{"id":29,"title":"ארבעה שומרים, ארבעה עולמות","icon":"🔑"},{"id":30,"title":"\"אשת חן תתמוך כבוד\"","icon":"💠"},{"id":31,"title":"מאה ברכות ועשרים ושמונה אותיות","icon":"🙏"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
