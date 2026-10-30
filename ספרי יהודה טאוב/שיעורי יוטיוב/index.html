@@ -180,7 +180,10 @@ function classify(l){
     var c = col(l.tp), p = pic(l); sb = sb || l.sb;
     var book = kind(l) === "booklet", styled = kind(l) === "styled";
     var vers = (!topic || !SPECIAL[topic]) ? (l.vers || []) : [];
-    var nv = vers.length + (l.pdf ? 1 : 0);
+    var extra = [];   // קישורים לגרסאות מחוץ לאינדקס (הקראה, PDF) — מכל חברי הקבוצה
+    [l].concat(vers).forEach(function(v){ (v.links || []).forEach(function(k){ if (!extra.some(function(e){ return e.u === k.u; })) extra.push(k); }); });
+    if (topic && SPECIAL[topic]) extra = [];
+    var nv = vers.length + (l.pdf ? 1 : 0) + extra.length;
     var style = ' style="--c1:' + c[0] + ';--c2:' + c[1] + '"';
     var picH = '<div class="pic">' + (p ? '<img src="' + esc(p) + '" alt="" loading="lazy">' : esc(l.icon || emo(l.tp))) +
       (nv ? '<span class="parts">🔗 ' + (nv + 1) + " גרסאות</span>" : "") + "</div>";
@@ -190,7 +193,8 @@ function classify(l){
     if (!nv) return '<a class="card" href="' + href(l) + '"' + style + ">" + picH + '<div class="body">' + head + foot + "</div></a>";
     var chips = '<div class="vers"><a href="' + href(l) + '">📖 ' + (styled ? "עמוד מעוצב" : book ? "חוברת להדפסה" : "הספר") + "</a>" +
       vers.map(function(v){ return '<a href="' + href(v) + '">' + esc(verLabel(v)) + "</a>"; }).join("") +
-      (l.pdf ? '<a href="' + encodeURIComponent(l.pdf) + '">🖨️ PDF להדפסה</a>' : "") + "</div>";
+      (l.pdf ? '<a href="' + encodeURIComponent(l.pdf) + '">🖨️ PDF להדפסה</a>' : "") +
+      extra.map(function(k){ return '<a href="' + esc(k.u) + '">' + esc(k.t) + "</a>"; }).join("") + "</div>";
     return '<div class="card multi"' + style + '><a class="main" href="' + href(l) + '">' + picH + '<div class="body">' + head + "</div></a>" +
       chips + '<a class="mfoot" href="' + href(l) + '">' + foot + "</a></div>";
   }
