@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🍭 🎤 פחות לדבר, יותר להפעיל: שיחת משוב למורה</title>
+<style>
+:root{--pink-1:#ff6b9d;--pink-2:#c62b6b;--purple-1:#a78bfa;--purple-2:#6d28d9;--blue-1:#60d3ff;--blue-2:#1e88b8;--amber-1:#ffd166;--amber-2:#e08e00;--bg:#fff7fb;--card-bg:#ffffff;--ink:#3a2545;--ink-soft:#6b5a76;--shadow:0 10px 30px rgba(198,43,107,.14);}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:"Varela Round","Segoe UI",Arial,sans-serif;background:radial-gradient(circle at 8% 0%,#ffe3ef 0,transparent 45%),radial-gradient(circle at 100% 10%,#e3f4ff 0,transparent 40%),var(--bg);color:var(--ink);min-height:100vh;}
+a{color:inherit;}
+header.hero{padding:38px 20px 28px;text-align:center;background:linear-gradient(135deg,var(--pink-1),var(--purple-1) 55%,var(--blue-1));color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+header.hero::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.08) 0 18px,transparent 18px 36px);pointer-events:none;}
+header.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,4vw,2.3rem);font-weight:800;text-shadow:0 3px 12px rgba(0,0,0,.15);}
+header.hero p{margin:0;font-size:1.05rem;opacity:.95;}
+.layout{display:flex;gap:22px;max-width:1180px;margin:0 auto;padding:26px 18px 70px;align-items:flex-start;}
+nav.toc{flex:0 0 270px;position:sticky;top:18px;background:var(--card-bg);border-radius:20px;box-shadow:var(--shadow);padding:16px 14px;max-height:calc(100vh - 36px);overflow-y:auto;}
+nav.toc h2{font-size:.95rem;margin:2px 4px 10px;color:var(--pink-2);letter-spacing:.02em;}
+#search{width:100%;padding:10px 14px;border-radius:999px;border:2px solid #ffd7e6;font-family:inherit;font-size:.92rem;margin-bottom:12px;outline:none;background:#fff8fb;}
+#search:focus{border-color:var(--pink-1);}
+.toc-chapter{margin-bottom:6px;}
+.toc-chapter-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.88rem;padding:8px 8px;border-radius:12px;color:var(--ink);}
+.toc-story{display:block;padding:7px 10px 7px 30px;margin:2px 0;border-radius:10px;font-size:.85rem;color:var(--ink-soft);text-decoration:none;transition:.15s;}
+.toc-story:hover,.toc-story.active{background:#ffeef5;color:var(--pink-2);font-weight:700;}
+.no-results{font-size:.85rem;color:var(--ink-soft);padding:10px;display:none;}
+main{flex:1;min-width:0;}
+.story-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:26px 28px 22px;margin-bottom:26px;scroll-margin-top:18px;border-top:8px solid var(--chap-color,var(--pink-1));}
+.story-kicker{font-size:.78rem;font-weight:700;letter-spacing:.03em;color:var(--chap-color-2,var(--pink-2));text-transform:uppercase;margin-bottom:4px;}
+.story-card h3.story-title{margin:0 0 12px;font-size:1.45rem;display:flex;align-items:center;gap:10px;}
+.story-card p{line-height:1.85;font-size:1.05rem;margin:0 0 14px;color:var(--ink);}
+.story-card h3.section-heading{margin:18px 0 8px;font-size:1.05rem;color:var(--purple-2);}
+ul.story-list{margin:0 0 14px;padding-inline-start:22px;line-height:1.8;}
+blockquote.story-quote{margin:0 0 14px;padding:10px 16px;border-inline-start:4px solid var(--purple-1);background:#f7f3ff;border-radius:12px;line-height:1.85;font-size:1.05rem;}
+p.bold-para{font-weight:800;background:#fff2f8;border-radius:14px;padding:12px 16px;border-inline-start:5px solid var(--pink-1);}
+.story-footer{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px dashed #f0d7e4;flex-wrap:wrap;gap:8px;}
+.copy-link-btn{background:linear-gradient(135deg,var(--pink-1),var(--purple-1));color:#fff;border:none;padding:8px 18px;border-radius:999px;font-size:.85rem;cursor:pointer;font-weight:700;box-shadow:0 4px 12px rgba(198,43,107,.25);}
+.copy-link-btn:active{transform:translateY(1px);}
+.copy-toast{font-size:.8rem;color:var(--purple-2);font-weight:700;opacity:0;transition:.25s;}
+.copy-toast.show{opacity:1;}
+.nav-links{display:flex;gap:10px;font-size:.85rem;}
+.nav-links a{text-decoration:none;color:var(--ink-soft);font-weight:700;}
+.nav-links a:hover{color:var(--pink-2);}
+footer.book-footer{text-align:center;color:var(--ink-soft);font-size:.85rem;padding:20px 16px 40px;}
+.book-meta{font-size:.75rem;opacity:.8;margin-top:6px;}
+a.back-link{position:absolute;top:14px;inset-inline-start:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.back-link:hover{background:rgba(255,255,255,.35);}
+a.edit-link{position:absolute;top:14px;inset-inline-end:16px;z-index:1;background:rgba(255,255,255,.22);color:#fff;text-decoration:none;font-weight:700;font-size:.85rem;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.45);}
+a.edit-link:hover{background:rgba(255,255,255,.35);}
+@media (max-width:520px){header.hero{padding-top:54px;}}
+@media (max-width:820px){.layout{flex-direction:column;}nav.toc{position:static;width:100%;max-height:none;}}
+.video-card{background:var(--card-bg);border-radius:22px;box-shadow:var(--shadow);padding:14px;margin-bottom:26px;border-top:8px solid #ff0033;}.video-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;}.video-frame button{all:unset;cursor:pointer;position:absolute;inset:0;display:block;}.video-frame img{width:100%;height:100%;object-fit:cover;display:block;}.video-frame .play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:54px;border-radius:14px;background:#ff0033;box-shadow:0 6px 20px rgba(0,0,0,.35);transition:transform .15s;}.video-frame .play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);border-style:solid;border-width:12px 0 12px 20px;border-color:transparent transparent transparent #fff;}.video-frame button:hover .play,.video-frame button:focus-visible .play{transform:translate(-50%,-50%) scale(1.1);}.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}.video-link{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-weight:700;color:var(--ink-soft);}.video-link a{color:#c4002b;text-decoration:none;}.video-link a:hover{text-decoration:underline;}@media print{.video-frame{display:none;}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <a class="back-link" href="https://yudataub.github.io/aaa/%D7%A1%D7%A4%D7%A8%D7%99%20%D7%99%D7%94%D7%95%D7%93%D7%94%20%D7%98%D7%90%D7%95%D7%91/%D7%A9%D7%99%D7%A2%D7%95%D7%A8%D7%99%20%D7%99%D7%95%D7%98%D7%99%D7%95%D7%91/">📚 כל השיעורים</a>
+  <h1>🍭 🎤 פחות לדבר, יותר להפעיל: שיחת משוב למורה</h1>
+</header>
+
+<div class="layout">
+
+  <nav class="toc" id="toc">
+    <h2>📖 תוכן העניינים</h2>
+    <input type="text" id="search" placeholder="חיפוש בספר...">
+    <div class="no-results" id="noResults">לא נמצאו תוצאות 🔍</div>
+    <div id="tocList"></div>
+  </nav>
+
+  <main id="main">
+    <section class="video-card" id="video">
+      <div class="video-frame"><button type="button" aria-label="▶ 🎤 פחות לדבר, יותר להפעיל: שיחת משוב למורה" onclick="var f=document.createElement('iframe');f.src='https://www.youtube-nocookie.com/embed/ah3SqRA_aQ4?autoplay=1&amp;rel=0';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';f.allowFullscreen=true;f.title=this.getAttribute('aria-label');this.replaceWith(f);"><img src="https://i.ytimg.com/vi/ah3SqRA_aQ4/hqdefault.jpg" alt="🎤 פחות לדבר, יותר להפעיל: שיחת משוב למורה" loading="lazy"><span class="play"></span></button></div>
+      <div class="video-link"><span>📺 השיעור המלא בווידאו</span><a href="https://www.youtube.com/watch?v=ah3SqRA_aQ4" target="_blank" rel="noopener">צפייה ביוטיוב ↗</a></div>
+    </section>
+
+
+    <section class="story-card" id="story-1" data-chapter="1" style="--chap-color:#ff6b9d;--chap-color-2:#c62b6b;">
+      <div class="story-kicker">פרק א · השיעור</div>
+      <h3 class="story-title">📜 איך אתה מרגיש השנה</h3>
+      <p>איך אתה מרגיש השנה? איך מה? איך אתה מרגיש השנה? איך השנה נחמד מאוד יותר כאילו הוא מרגיש יותר יציב כאילו מה קרה? כי אתה לא מתרגש מיוחד אתה כבר רגיל למה לפני כיתה זה לא אתה לא מרגיש פחד מה אתה רוצה להמשיך כאן א לעבוד כאן אולי לא נראה לי אה לא יודע כאן צריך הרבה רוצה להיות מורה עשיתי גם מורה בפועל אני אני מורה מפועל מה הכוונה אתה פה אני עכשיו מורה לא בנועם בנועם היום אני גם הלכת מורה אה אוקיי אזס פה ולא שם כי אי אפשר כי זה יסודי מה אני אעשה הוא לא אומר שזה הם כותבים לשם עושים הוא אמר הוא הסביר לי פעם צחי נכון הנסו אמר לי כן הוא אמר לי שאי אפשר כי אנחנו כותבים ככה ואנחנו נס יותר זמן מחפשים מה זה זה יוצא יותר חוסך זמן אם עושים בסדר יפה טוב אז אני לא אנחנו לא כ צריכים לעשות את זה יותר מדי עירוך אז נעשה את זה ממש שיפה א אה קודם כל אמרתי לך גם את זה שנה שעברה כיף לי לראות אותך בכיתה יש לך את האווירה הזאתי יש לך את החיוך יש לך את השמחה יש לך את ה את האנרגיות יש לך את ה את האווירה בתוך הכיתה וזה דבר שהוא מאוד מאוד חשוב למורה אולי הכי חשוב למורה בסדר ו ואולי עם פיין טיונינג קטן זה יכול להיות כאילו ממש ממש טוב אז בוא בוא נלך אתה תגיד לי אתה אני הולך רגע ל למערך שיעור לא הגבתי עליך קיבלתי את זה רק אתמול אז אני לא זמן אבל הסתכלתי עליו. אז בוא נלך ל א בוא נלך למהלך למהלך שיעור ולמטרות. בוא בוא נראה מה אתה אומר. אז המטרות היו ככה. התלמיד יזכור את א אני הולך על המטרות האופרטיביות. התלמיד יזכור את שמות את יזכור את שמות התאריכים המרכזיים או את שמונת התאריכים המרכזיים בחלק א' של ציר הזמן. כן. התלמיד יתאר במילותיו את משמעות כל תחנה בציר הזמן. היה לנו את זה? אה לא עשים את זה כל כך. טוב. בוא נמשיך התלמיד ינתח את הקשר המספרי בין שנת הלידה של אברהם אבינו לבין שנת יזה לא הבנתי למה לא שבנו לשנת קורמדינה אה לבין אה כתוב שעות אוקיי א התלמיד ישלב מידע משני חלקי ציר הזמן לכדי תמונה רציפה אחת של תולדות עם ישראל כן זה צמר ב כן יפה זה היה ה התלמיד יישם את עיקרון המספרים העגולים בבניית הכנת זמן נוספת משלו על גבי הציר נכון שזה בסוף אולי עם דף עבודה לא יודע כן שמה הרעיון שזכרו שזה מאוד כה זה 400 אחר כך 500 כן זה היה הרעיון שיזכרו גמור אחרי זה התלמיד יביע את דעתו בנוגע לחשיבות הכרת א שרשרת הדורות זה אישית היה גם מאוד קשה אני מצליח למה לאנים לדעתי לאונים זרוק עליהם מה אם מישהו יודע למה זה חשוב לזכור כן זרוק עליהם התלמיד יגלה אחריות ביוזמה בשיתוף משפחתו בידע אשר רכש בשיעור לצות שיעורי הבית טוב פה אפשר לעשות שיעורי הבית זה אז לשים את זה אם לא היה חובה זה שיעורי הבית לא זה היה בדף כתוב לא חובה אם יש שיעורי בית שני אה כן איך זה ש חייבים את כל הפרטים לא לא אני לא אני לא מכי אחרי שיעורים שיש שם שיעורים שיעור שאין בשיעור טוב אני כתוב אזה אני לא מחייב אם אם כתבת את זה בתוך ה אם לא כי זה החלק מהתפריש</p>
+      <p>מהמשות אם אתה שם בתוך המערך שיעור זה חייב לה נופע בשיעור אתה לא חייב לשים את הכלת אה יופי שנדחק כל הבר הפוך אני תמיד אמרתי וגמרתי לך שנה שעברה שאני מעדיף שיעור שהוא א אתה יודע לא יותר מדי ולא פחות מדי אלא שיעור שהוא אה א עומד ב עומד במה שהכיתה יכולה לזה עכשיו יום אחד אני מגיע לכיתה שהיא יכולה להיות כיתה מדהימה של א מכוננים וכולם תלמידים מדהימים והמורה יכול להספיק יום אחד אני מגיע לכיתה של א בימין אורד שזה עולים וילדים ככה אתה יודע נוח בסיכון ששמה הוא יכול להספיק הרבה פחות אבל אבל הוא אבל הוא ידע מול מי הוא עומד זאת אומרת חשוב לי ש המורה ידע מול מי הוא מת שלא יעשי יותר מדי כי הוא חושב שהוא עומד עם כיתה מוצלחת מדי ולא יעשי קצת מדי שכשונה מי הוא עומד אז אז מה שנראה לך שעומד א זה לא זה כלל טוב ש חמש משפצות החייבים מלאות לא לא לא אני לא אין שמה את פעם פה אין שמה זה אז אז אהבתי לראות את המה שכת מערכ עם ה עם הידע האקדמאי ומה שהיה לפני זה ובאמת ה ה הדבר היחידי שהיה לי חשוב זה שני דברים וזה אה וזה דיברנו גם שנה שעברה כשדיברנו על סונמה שלום וזה גם הקלטתי בשיעור הזה שהקלטתי את השיעור בקלטה וזה גם מדבר זה ש אנחנו רוצים שבמהלך השיעור הוא יהיה לנו כמה צורות חשיבה סליחה כמה רמות חשיבה נכון שאמרנו שהיא לעשות ועשית את זה במטרות אבל לא כל כך קשה כן וכשאנחנו במטרות חשיבה אנחנו רוצים שלתלמידים יהיו כמה שיותר שאלות פתוחות אנחנו רוצים שיהיה להם כמה שיותר שאלות פתוחות כמה ש דברים ש יותר והשיעור לא היה קצר השיעור היה בערך 42 דקות תי שהוא נגמר אם ברגע שחקת המקרן כמה לפי דעתך מהזמן הזה אתה דיברת וכמה זמן המון אז אז אז זה עוד דבר שכבר דיברנו פעם קודמת כן הפה לא יכלתי אין לי חלגמור לא נכון לא נכון לא אכפת לי לא לא אם אני אם אני אם אני רואה שאני אני אומר לך חציני זה זה זה כל מה שרקשה יפה שכולם יוצאו מרגשת סיפוק אדירה גם מראתי את ההיסטוריה הם לא יוצאים אף אף אחד אף פעם לא יוצא מ אף אחד אף פעם לא יוצא זה בתחושת סיפוקאים האלה סיפוק השתפו אם הם לא פעלו אם הם פעלו כתבו את זה בסוף לא זה היה ממש שבה קטנה וזה בטח לא שאלות פתוחות אבל אם אני עכשיו אתה אם מתאים יודת הוא מומחה עולמי להיסטוריה עולמית והוא מוכר ב83 בערב כרטיסים לזוגות או ליחידים שישלמו 200 ש₪ לשמוע ההוצאה שלו של שעה שידבר שעה וחצי אבל אנחנו נמצאים היום במורה בכיתה ודיברנו על זה פעם קודמת אם אני רואה שהשיעור שלתי גורם לי לדבר 40 דקות זה בכלל לא מעניין אותי מי אתה מה אתה איזה מורה אתה איזה מה אתה זה לא מעניין אותי כלום אין שם חבר של התלמידים שהם פעלו במהלך השיעור היום אין את זה לא זה בכיתה כ אתה לא אתה לא שמת לב אבל הרבה תלמידים זה מה שהוא לקח אותי לדבר המחנך שחיף את השם שלו יצחק גדנדי יצחק אה א הוא לקח אותי ואמר לי תשמע אני מצטער שהתלמידים היו בטלפון בזמן זמן השיעור זה לא קורה בדרך הרבה תלמידים פחזמן השיעור למה כי הם היו צריכים רק</p>
+      <p>להקשיב ולא לקחת חלק אינטגטיב אני לא יודע אם שמת לב לזה אבל הרבה תלמידים היו כל הזמן מש הוא ניגש אליהם והוא העיר להם הוא לקח לא איך היו בהתחלה זה ראיתי כי צריך להפס אותם לא היה גם באמצע יודע לא חשוב כן לא חשוב לא חשוב היה עוד אחד שכל הזמן היה אפילו שתיים שהוא היו והוא לא רא ראיתי כי ישבתי מאחורה אני רואה ש אבל זה לא משנה זה לא הנקודה זה גם אני לא בא לתפוס אותך אני רק בא ל אני רק בא להגיד לך לעיקרון יכול להיות ששיעור כזה צריך לעשות רק חצי להגיד אני עכשיו אומר א שאני עושה שיעור אחד עד אבית הראשון כן צור עד הבית שני תחובה לבית השני שהם ידעו ככה את הזה הרבה הרבה אנשים לא יודעים את זה אני עושה יום חיומני אבל הרבה אנשים לא יודעים את זה ואני אבל ואני הוא יודע שאני מדבר רבע שעה ואחרי זה הם פעילים 20 דקות ואחרי זה אני סוגר את השיעור עוד חמש דקות זה עדיף לי מאשר שתיתן את כל ההיסטוריה ורק אתה תדבר והם רק בסוף ישו את זה דף כן שאלות אומנם היה כן שאלות היה כל הזמן היה שאלות של מי זוכר וזה אבל לא היו שאלות של רמות חשיבה לא היו שאלות של רמות חשיבה היו לא שאלות שביקשת היו שאלות של ידע שאלות של ידע זה שיעור ברמה נמוכה אין שיעור אין שאלות של הבנה אין שאלות של ייסום אין שאלות של מה שבסינתזה אנליזה והערכה אין לנו יש לנו שאלות של ידע שאלות של ידע זה זה שיעור ברמה נמוכה נכון זה זה ה זה הקומה הכי תחתונה בטקסומה של זה ידע נכון אז אז אז אבל זה פחות מפריע לי כי אפשר לעשות שיעורי ידע מדהים. יהיה לזה דבר חשוב אבל עוד פעם אני רק חוזר על הנקודה הזאתי. זה נקודה ממש ממש פשוטה. אם אני הולך להעביר שיעור ואתה תראה אנחנו גם ניפגש מחר. אני אנחנו ניפגש מחר בשיעור שלי. אני לא הולך לדבר שעה וחצי. מי אני בכלל שאני אדבר שעה וחצי? איזה יתרון אדיר יש לי מול 30 סטודנטים שיושבים מולי שהם רוצים עכשיו לשמוע אותי מדבר חצי שעה. מה אני איזה מומחה טופולמיל לא יודע מה שהם קנו כרטיס לשמי מדבר. לא הם לא. יש לי את הידע של מה שהמכללה רוצה להעביר. יש לי קצת מהניסיון שלי אני יכול לפתוח את השיעור ב10 דקות רבע שעה שלי אני יש לי יותר נכון יש לי שעה וחצי אתה יש לך פה רק 45 דקות אז אני יכול לפתוח את השיעור שלי ב10 דקות רבע שעה דיבור שאני מדבר מקסימום לפני שאני מאבד את כולם לא יודע לאן בטח בזום בטח בזום בבית אין אין סיכוי זה גם אני גם לא רוצה גם אני לא אני גם לא מחזיק מעצמי מישהו עכשיו שידבר שעה וחצי מה קרה אחרי זה אני אתן פעילות תהיה פעילות של כמעט חצי שעה 40 דקות ואחרי זה נתכנס כולם ביחד חזרה לדבר עליה. גם שנדבר על הפעילות אתה תראה אני אתן שאלות מנחות הסטודנטים ידברו אני מוציא את הידע מהם אני הם יודעים כבר רק צריך לכוון אותם לסדר להם קצת את החשיבה לשכנע אותם בדרך הנכונה עם כל מישות מערכות הם יוצא את הכל זהו אז אני אז אני בא להגיד זה לא משנה אם זה סטודנטים לא משנה תם פניות ב וזה גם לא משנה היום אם ילדים בבית ספר יסודי</p>
+      <p>כי גם מנים בבית ספר יסודי יותר קשה יותר קשה להם איך יסודי המקובל ש הרבה פחות יש להם קשב יפה אני אומר שתיים ככה מקובל אבל אז כל הידע הבוח גם ילד בגל זה הוא גם אז בגלל זה אני אומר אנחנו אם אתה רואה שהשיעור הוא שיעור שבו אני חייב להספיק את כל ההיסטוריה אבל זה גורם לי לדבר את כל השיעור לא זה לא השיקול אני אחלק את השיעור לשתיים אני אדבר רק על חץ היסטוריה ואני אתן לתלמידים לפעול ולהיות כל הזמן להיות פעילים בשיעור זה הדבר זה העיקרון שתשים אותו אצלך מה שנקרא להות על ידיך אחותם הילדים התלמידים פעילים נגמר אני גמר אני יודע שאולי אני לא יודע אם אתה לא תשובה אולי לא אבל אתה מתוכה תגיד אז אתה רגיל שרבנים מדברים כל השיעור אנחנו מ בטח נגמר נגמר נגמר נגמר הם יהיו כל הזמן תכף אתה לא מעניין אותם כי מהזה תגיד לי עד מה שאתה הראת עכשיו כמה שניות בחיפוש באינטרנט לוקח לי לדעת את זה לא זה כאן לא אם זה מעניין אותי הפעם לא הפעם אין לנו סיכוי לדעת באינטרנט לא כי את השיטה שלמדתי אין סיכוי עזוב את השיטה אני עזוב את השיטה אני רוצה לדעת אני רוצה לדעת באינטרנט את ההיסטוריה היהודית כמה זמן צריך למצוא את זה היה שיעור שנת אז מה אני צריך 45 דקות עכשיו לשמוע אותך לדבר על 10 לא מני רוצה לפני אני רוצה לעבוד בואנה אני באתי לשיעור אני רוצה להיות פעיל אני רוצה לעשות דברים אני לא עכשיו א אני לא עכשיו רוצה לשבת בזה אני רוצה להיות פעיל בטח בגילאים האלה וגם בגילאים אתה צריך בסדר אז אז אני אומר עוד פעם זה זה אני אני חוזר על זה איתך כל הזמן כי זה תכניס לך את זה מה שנקרא ללורי תסריק לא בסדי עושה ככה הרבה פעמים בכיתה כי אין ברירה כי אין לי משמעת פה פהפה הוא היה אותו ואם הוא לא היה ואם הוא יכול כי הם מעריכים אותו למה כי הם מעריכים אותו כי הם מעריכים אותו למה הם מעריכים אותו קודם כל אין התנסאות אין התנסאות עכשיו ההתנסאות היא לאו דווקא ב ההתנסאות היא לא דווקא במילים או בלהתנשא ההתנסות היא לפעמים לשדר אצלי מוחזק הידע אצלי מוחזק הידע ואתם תשתו ממני עכשיו אני בטוח שהוא נותן להם לפעול אני בטוח שהוא מפעיל אותם אני בטוח שהוא נותן להם א להביע את דעתם שהוא מעריך את הדעה שלהם מפה מגיע הכבוד מהמשמעת אם אני הערכת את מה שאני עושה הערכת את העבודה ש זה הסיבה אולי שם יודעים שהוא הוא גם קיר מה מה זה לא שהוא כאילו אם הוא אמר משהו זה חייב להיות מתלבט מאוד יכול להיות שהוא מאוד חזק זה לא סותר זה שני הדברים האלה ביחד זה גם חלק מכבוד שאתה לא אומר אני לא פלסטלינה יש לי אמירה יש לי אמירה אבל אני גם מחשיב אותך בתור תלמיד אתה כבר ב גבר לא אני מחשיב אותך אגרגב זה גם בייסודי ככה הילד רוצה שיחשיבו אותו את דעתו שיעריך אותו למרות שהוא ילד זה תמיד ה זה תמיד הא'ב של זה תמיד הא'ב של קשר זה תמיד לב של קשר כי כי אני בתור מורה שנכנס לכיתה אני לא צריך להעניף דגל עכשיו אני סמכות עצם בתוך הכיתה אני כבר אני אני כבר יש לי את זה אני כבר יש לי את זה</p>
+      <p>עכשיו איך אני מכבד את התלמיד איך אני נותן לתלמיד שדעתו תכשב ש שיש ערך לדעה שלו שגם אם הוא טועה אני לא שללל אותו בבוז וכאילו אני ה אני ה אני הבעל הניסיון, בעל הסמכות, אני אני המלך פה ואתה רק תשעב ממני ותוריד את הראש ותקבל ממני את הזה. הוא מעריך אותם, הוא מחשיב אותם, הוא מכבד אותם, הוא לא צועק להם, הוא לא רואה ילד, הוא לא עומד פה ורואה ילד עם פלאפון שם. אומר לו, " היי היי מוטי, מה זה? איך אתה ניתן בשיעור? תוריד את הטלפון. כמה אומרים כאלה? אני רואה הוא ניגש אליהם, מדבר איתו בעון הזה אמר, תשמע זוכר לי בדבר הזה שם טלפון בשיעור הוא סיפר לי עכשיו שהם לא לוקחים לו את הטלפון. את השיעור כן זה אז הוא אמר אנחנו שמחנו עליכם אנחנו תראה מהשיר אבל זה בכיס אז הוא בא אליו פוז אני ראיתי אותו אומר לו אני הייתי קשרתי לדו אני אומר לו את רוצה שדיברנו על זה שאנחנו לא את הטלפון באיזה משהו בים יש מודים אבל להתנהג בצורה מכבדת טלפון במהלך השיעור אני מכניס את הטלפון לשיעור הוא לא צק למצב שיש תק אומר לו לא נדבר כמו רחב כן אז זה אז אז זה כמה דברים ביחד אבל הנקודה הסופית שלי כי אנחנו יכולים לטחון על זה הרבה זה תשתחרר את תעבוד גם יותר ק אל תבר דקות מלך השיעור. אין עולם כזה יותר. תן פתיחה, תן ידע התחלתי וזרוק לתלמידים את הפעילות בשיעור. זרוק לתלמידים את הפעילות בשיעור. בסדר? כן. זה הכי חשוב. כן. זהו. אז אז א א זהו. אז תזכור שהשיעור הזה אנחנו צים את המערך שיעור שלו בתלקית</p>
+      <div class="story-footer">
+        <div class="nav-links">
+        </div>
+        <button class="copy-link-btn" onclick="copyStoryLink(1, this)">🔗 העתק קישור</button>
+        <span class="copy-toast">הקישור הועתק!</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer class="book-footer">🍭 קול תודה — לומדים ורואים גאולה<div class="book-meta">תומלל אוטומטית מתוך: שיעור ביוטיוב https://youtu.be/ah3SqRA_aQ4 · 2026-11-02</div></footer>
+
+<script>
+(function(){
+  var CHAPTERS = [{"id":1,"name":"השיעור","icon":"📖","color":"#c62b6b","stories":[{"id":1,"title":"איך אתה מרגיש השנה","icon":"📜"}]}];
+  var tocList = document.getElementById('tocList');
+  tocList.innerHTML = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.story-card'), function(c){ c.style.display = ''; });
+  Array.prototype.forEach.call(document.querySelectorAll('.copy-toast.show'), function(t){ t.classList.remove('show'); });
+  document.getElementById('search').value = '';
+  var editLink = document.getElementById('editLink');
+  if (editLink) {
+    var inFrame = true; try { inFrame = window.top !== window.self; } catch(e) {}
+    var file = ''; try { file = decodeURIComponent(location.pathname.split('/').pop() || ''); } catch(e) {}
+    var show = /^https?:$/.test(location.protocol) && !inFrame && /[.]html$/.test(file);
+    if (show) editLink.href = 'editor/?file=' + encodeURIComponent(file);
+    editLink.style.display = show ? '' : 'none';
+  }
+  CHAPTERS.forEach(function(ch){
+    var chDiv = document.createElement('div'); chDiv.className = 'toc-chapter';
+    var chTitle = document.createElement('div'); chTitle.className = 'toc-chapter-title'; chTitle.style.color = ch.color;
+    chTitle.textContent = ch.icon + ' ' + ch.name; chDiv.appendChild(chTitle);
+    ch.stories.forEach(function(st){
+      var a = document.createElement('a'); a.href = '#story-' + st.id; a.className = 'toc-story';
+      a.textContent = st.icon + ' ' + st.title; chDiv.appendChild(a);
+    });
+    tocList.appendChild(chDiv);
+  });
+  var searchInput = document.getElementById('search'), noResults = document.getElementById('noResults');
+  var storyCards = Array.prototype.slice.call(document.querySelectorAll('.story-card'));
+  var tocStories = Array.prototype.slice.call(document.querySelectorAll('.toc-story'));
+  function norm(s){ return (s || '').toLowerCase().trim(); }
+  searchInput.addEventListener('input', function(){
+    var q = norm(searchInput.value), anyVisible = false, visibleIds = {};
+    storyCards.forEach(function(card){
+      var match = !q || norm(card.textContent).indexOf(q) !== -1;
+      card.style.display = match ? '' : 'none';
+      if (match) visibleIds['#' + card.id] = true;
+    });
+    tocStories.forEach(function(a){
+      var match = !q || visibleIds[a.getAttribute('href')];
+      a.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+    document.querySelectorAll('.toc-chapter').forEach(function(chDiv){
+      chDiv.style.display = chDiv.querySelectorAll('.toc-story:not([style*="display: none"])').length ? '' : 'none';
+    });
+    noResults.style.display = (q && !anyVisible) ? 'block' : 'none';
+  });
+  window.copyStoryLink = function(storyId, btn){
+    var base;
+    try { base = (window.top !== window.self && document.referrer) ? document.referrer : location.href; }
+    catch(e) { base = document.referrer || location.href; }
+    var link = base.split('#')[0] + '#story-' + storyId;
+    function showToast(){ var t = btn.nextElementSibling; if (t) { t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, 1600); } }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(link).then(showToast, function(){ fallbackCopy(link, showToast); });
+    else fallbackCopy(link, showToast);
+  };
+  function fallbackCopy(text, cb){
+    try {
+      var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); cb();
+    } catch(e) { window.prompt('העתק את הקישור:', text); }
+  }
+  function landOnHash(){
+    if (!location.hash) return;
+    var el = document.querySelector(location.hash); if (!el) return;
+    var htmlEl = document.documentElement, prev = htmlEl.style.scrollBehavior, tries = 0;
+    htmlEl.style.scrollBehavior = 'auto';
+    function settle(){ el.scrollIntoView({block:'start'}); if (++tries < 6) requestAnimationFrame(settle); else htmlEl.style.scrollBehavior = prev || ''; }
+    requestAnimationFrame(settle);
+  }
+  window.addEventListener('load', landOnHash);
+  window.addEventListener('hashchange', landOnHash);
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        var link = document.querySelector('.toc-story[href="#' + entry.target.id + '"]');
+        if (link && entry.isIntersecting) { tocStories.forEach(function(a){ a.classList.remove('active'); }); link.classList.add('active'); }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px' });
+    storyCards.forEach(function(card){ observer.observe(card); });
+  }
+})();
+</script>
+
+</body>
+</html>
